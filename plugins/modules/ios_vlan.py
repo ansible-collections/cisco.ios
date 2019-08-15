@@ -128,12 +128,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 
 
 def search_obj_in_list(vlan_id, lst):
-    obj = list()
     for o in lst:
         if o["vlan_id"] == vlan_id:
             return o

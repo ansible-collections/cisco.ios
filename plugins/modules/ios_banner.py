@@ -94,7 +94,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import exec_command
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     load_config,
-    run_commands,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -194,7 +193,7 @@ def main():
 
     if commands:
         if not module.check_mode:
-            response = load_config(module, commands)
+            load_config(module, commands)
 
         result["changed"] = True
 

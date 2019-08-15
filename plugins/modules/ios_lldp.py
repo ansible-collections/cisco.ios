@@ -57,7 +57,6 @@ commands:
 """
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    get_config,
     load_config,
     run_commands,
 )
