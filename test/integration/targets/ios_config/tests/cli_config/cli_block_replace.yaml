@@ -2,12 +2,12 @@
 - debug: msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection }}"
 
 - name: setup - remove configuration
-  cli_config:
+  network.cli.cli_config:
     config: "{{ lookup('template', 'basic/setupblock.j2') }}"
     diff_match: none
 
 - name: block replace
-  cli_config: &block
+  network.cli.cli_config: &block
     config: "{{ lookup('template', 'basic/configblock.j2') }}"
     diff_replace: block
   register: result
@@ -17,7 +17,7 @@
       - "result.changed == true"
 
 - name: block replace (Idempotence)
-  cli_config: *block
+  network.cli.cli_config: *block
   register: result
 
 - assert:
@@ -25,7 +25,7 @@
       - "result.changed == false"
 
 - name: teardown
-  cli_config:
+  network.cli.cli_config:
     config: no ip access-list extended test
     diff_match: none
 

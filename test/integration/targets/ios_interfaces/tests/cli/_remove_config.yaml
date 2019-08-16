@@ -1,6 +1,6 @@
 ---
 - name: Remove Config
-  cli_config:
+  network.cli.cli_config:
     config: "{{ lines }}"
   vars:
     lines: |

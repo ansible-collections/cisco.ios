@@ -2,12 +2,12 @@
 - debug: msg="START cli_config/cli_strict_match.yaml on connection={{ ansible_connection }}"
 
 - name: setup - remove configuration
-  cli_config:
+  network.cli.cli_config:
     config: "{{ lookup('template', 'basic/setupstrict.j2') }}"
     diff_match: none
 
 - name: configure using strict match
-  cli_config:
+  network.cli.cli_config:
     config: "{{ lookup('template', 'basic/configstrict1.j2') }}"
     diff_match: strict
   register: result
@@ -17,7 +17,7 @@
       - "result.changed == true"
 
 - name: teardown
-  cli_config:
+  network.cli.cli_config:
     config: no ip access-list extended test
     diff_match: none
 

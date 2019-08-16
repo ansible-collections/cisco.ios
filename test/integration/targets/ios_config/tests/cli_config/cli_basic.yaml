@@ -2,7 +2,7 @@
 - debug: msg="START cli_config/cli_basic.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  cli_config: &rm
+  network.cli.cli_config: &rm
     config: |
       interface loopback999
       no description
@@ -10,7 +10,7 @@
     diff_match: none
 
 - name: configure device with config
-  cli_config: &conf
+  network.cli.cli_config: &conf
     config: "{{ lookup('template', 'basic/config.j2') }}"
   register: result
 
@@ -19,7 +19,7 @@
       - "result.changed == true"
 
 - name: Idempotence
-  cli_config: *conf
+  network.cli.cli_config: *conf
   register: result
 
 - assert:
@@ -27,10 +27,10 @@
       - "result.changed == false"
 
 - name: remove config
-  cli_config: *rm
+  network.cli.cli_config: *rm
 
 - name: configure device with config
-  cli_config:
+  network.cli.cli_config:
     config: "{{ lookup('template', 'basic/config.j2') }}"
     defaults: yes
   register: result
@@ -40,6 +40,6 @@
       - "result.changed == true"
 
 - name: teardown
-  cli_config: *rm
+  network.cli.cli_config: *rm
 
 - debug: msg="END cli_config/cli_basic.yaml on connection={{ ansible_connection }}"
