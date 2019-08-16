@@ -46,6 +46,8 @@ description: This module manages the interface attributes of Cisco IOS network d
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
+- This module works with connection C(network_cli).
+  See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of interface options
@@ -276,12 +278,12 @@ EXAMPLES = """
 #  duplex auto
 #  speed auto
 # interface GigabitEthernet0/2
-#  description Configured and Overridden by Ansible Network
+#  description Configured by Ansible Network
 #  no ip address
 #  duplex auto
 #  speed 1000
 # interface GigabitEthernet0/3
-#  description Configured and Replaced by Ansible Network
+#  description Configured by Ansible Network
 #  mtu 2500
 #  no ip address
 #  shutdown
@@ -292,7 +294,6 @@ EXAMPLES = """
   ios_interfaces:
     config:
       - name: GigabitEthernet0/2
-      - name: GigabitEthernet0/3
     state: deleted
 
 # After state:
@@ -308,9 +309,12 @@ EXAMPLES = """
 #  duplex auto
 #  speed auto
 # interface GigabitEthernet0/3
+#  description Configured by Ansible Network
+#  mtu 2500
 #  no ip address
-#  duplex auto
-#  speed auto
+#  shutdown
+#  duplex full
+#  speed 1000
 
 # Using Deleted without any config passed
 #"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
@@ -324,12 +328,12 @@ EXAMPLES = """
 #  duplex auto
 #  speed auto
 # interface GigabitEthernet0/2
-#  description Configured and Overridden by Ansible Network
+#  description Configured by Ansible Network
 #  no ip address
 #  duplex auto
 #  speed 1000
 # interface GigabitEthernet0/3
-#  description Configured and Replaced by Ansible Network
+#  description Configured by Ansible Network
 #  mtu 2500
 #  no ip address
 #  shutdown
