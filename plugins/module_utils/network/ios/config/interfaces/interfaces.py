@@ -23,7 +23,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
-    dict_diff,
+    dict_to_set,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
@@ -246,8 +246,8 @@ class Interfaces(ConfigBase):
         interface = "interface " + want["name"]
 
         # Get the diff b/w want and have
-        want_dict = dict_diff(want)
-        have_dict = dict_diff(have)
+        want_dict = dict_to_set(want)
+        have_dict = dict_to_set(have)
         diff = want_dict - have_dict
 
         if diff:
