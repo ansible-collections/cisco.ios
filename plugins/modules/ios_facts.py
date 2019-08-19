@@ -56,7 +56,8 @@ options:
         to a given subset. Possible values for this argument include
         all and the resources like interfaces, vlans etc.
         Can specify a list of values to include a larger subset.
-    choices: ['all', '!all', 'interfaces', '!interfaces']
+    choices: ['all', '!all', 'interfaces', '!interfaces', 'l2_interfaces', '!l2_interfaces', 'vlans', '!vlans',
+    'lag_interfaces', '!lag_interfaces']
     version_added: "2.9"
 """
 
@@ -92,6 +93,11 @@ EXAMPLES = """
   ios_facts:
     gather_subset: min
     gather_network_resources: interfaces
+
+- name: Gather L2 interfaces resource and minimal legacy facts
+  ios_facts:
+    gather_subset: min
+    gather_network_resources: l2_interfaces
 """
 
 RETURN = """
@@ -196,11 +202,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )

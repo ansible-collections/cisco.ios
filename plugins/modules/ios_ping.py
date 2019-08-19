@@ -108,12 +108,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     run_commands,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
     check_args,
 )
-
 import re
 
 

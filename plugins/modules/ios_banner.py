@@ -95,12 +95,10 @@ from ansible.module_utils.connection import exec_command
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     load_config,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
     check_args,
 )
-
 import re
 
 

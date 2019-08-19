@@ -22,11 +22,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     run_commands,
     get_capabilities,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     normalize_interface,
 )
-
 from ansible.module_utils.six import iteritems
 from ansible.module_utils.six.moves import zip
 

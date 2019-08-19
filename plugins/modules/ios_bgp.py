@@ -347,7 +347,6 @@ from ansible.module_utils._text import to_text
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
     NetworkModule,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     REDISTRIBUTE_PROTOCOLS,
 )

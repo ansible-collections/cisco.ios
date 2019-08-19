@@ -7,7 +7,6 @@ from ansible.module_utils.connection import Connection
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers import (
     providers,
 )
-
 from ansible.module_utils._text import to_text
 
 

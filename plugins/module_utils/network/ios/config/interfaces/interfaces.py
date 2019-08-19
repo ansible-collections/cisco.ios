@@ -20,17 +20,14 @@ from ansible.module_utils.network.common.utils import to_list
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     dict_to_set,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
     add_command_to_config_list,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     filter_dict_having_none_value,
     remove_duplicate_interface,
