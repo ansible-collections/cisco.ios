@@ -345,20 +345,16 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     run_commands,
     get_config,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_defaults_flag,
     get_connection,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     check_args as ios_check_args,
 )
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.network.common.config import NetworkConfig, dumps
 

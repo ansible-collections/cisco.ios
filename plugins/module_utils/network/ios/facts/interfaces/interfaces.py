@@ -22,7 +22,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     get_interface_type,
     normalize_interface,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )

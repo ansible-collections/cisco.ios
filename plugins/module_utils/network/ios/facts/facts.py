@@ -17,12 +17,19 @@ __metaclass__ = type
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
 )
-
 from ansible.module_utils.network.common.facts.facts import FactsBase
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
-
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2_interfaces.l2_interfaces import (
+    L2_InterfacesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
+    VlansFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lag_interfaces.lag_interfaces import (
+    Lag_interfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -35,7 +42,12 @@ FACT_LEGACY_SUBSETS = dict(
     default=Default, hardware=Hardware, interfaces=Interfaces, config=Config
 )
 
-FACT_RESOURCE_SUBSETS = dict(interfaces=InterfacesFacts)
+FACT_RESOURCE_SUBSETS = dict(
+    interfaces=InterfacesFacts,
+    l2_interfaces=L2_InterfacesFacts,
+    vlans=VlansFacts,
+    lag_interfaces=Lag_interfacesFacts,
+)
 
 
 class Facts(FactsBase):

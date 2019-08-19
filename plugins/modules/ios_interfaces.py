@@ -385,7 +385,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.interfaces.interfaces import (
     Interfaces,
 )
