@@ -30,6 +30,16 @@ class FactsArgs(object):
         "!vlans",
         "lag_interfaces",
         "!lag_interfaces",
+        "lacp",
+        "!lacp",
+        "lacp_interfaces",
+        "!lacp_interfaces",
+        "lldp_global",
+        "!lldp_global",
+        "lldp_interfaces",
+        "!lldp_interfaces",
+        "l3_interfaces",
+        "!l3_interfaces",
     ]
 
     argument_spec = {

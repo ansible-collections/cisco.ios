@@ -1,0 +1,7 @@
+---
+- name: Enable LLDP Config
+  network.cli.cli_config:
+    config: "{{ lines }}"
+  vars:
+    lines: |
+      lldp run
