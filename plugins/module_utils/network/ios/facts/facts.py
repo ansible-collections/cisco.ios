@@ -30,6 +30,21 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lag_interfaces.lag_interfaces import (
     Lag_interfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import (
+    LacpFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp_interfaces.lacp_interfaces import (
+    Lacp_InterfacesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_global.lldp_global import (
+    Lldp_globalFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_interfaces.lldp_interfaces import (
+    Lldp_InterfacesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces import (
+    L3_InterfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -47,6 +62,11 @@ FACT_RESOURCE_SUBSETS = dict(
     l2_interfaces=L2_InterfacesFacts,
     vlans=VlansFacts,
     lag_interfaces=Lag_interfacesFacts,
+    lacp=LacpFacts,
+    lacp_interfaces=Lacp_InterfacesFacts,
+    lldp_global=Lldp_globalFacts,
+    lldp_interfaces=Lldp_InterfacesFacts,
+    l3_interfaces=L3_InterfacesFacts,
 )
 
 
