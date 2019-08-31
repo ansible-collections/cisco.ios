@@ -85,7 +85,7 @@ EXAMPLES = """
     name: GigabitEthernet0/5
     mode: trunk
     native_vlan: 10
-    trunk_vlans: 5-10
+    trunk_allowed_vlans: 5-10
 - name: Ensure GigabitEthernet0/5 is a trunk port and ensure 2-50 are being tagged (doesn't mean others aren't also being tagged)
   ios_l2_interface:
     name: GigabitEthernet0/5
@@ -126,7 +126,16 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 def get_interface_type(interface):
     intf_type = "unknown"
-    if interface.upper()[:2] in ("ET", "GI", "FA", "TE", "FO", "HU", "TWE"):
+    if interface.upper()[:2] in (
+        "ET",
+        "GI",
+        "FA",
+        "TE",
+        "FO",
+        "HU",
+        "TWE",
+        "TW",
+    ):
         intf_type = "ethernet"
     elif interface.upper().startswith("VL"):
         intf_type = "svi"
