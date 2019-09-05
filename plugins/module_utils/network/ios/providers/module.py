@@ -33,7 +33,9 @@ class NetworkModule(AnsibleModule):
             if network_api == "cliconf":
                 connection_type = "network_cli"
 
-            cls = providers.get(network_os, self._name, connection_type)
+            cls = providers.get(
+                network_os, self._name.split(".")[-1], connection_type
+            )
 
             if not cls:
                 msg = (
