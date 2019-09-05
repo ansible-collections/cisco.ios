@@ -14,9 +14,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
-    FactsArgs,
-)
 from ansible.module_utils.network.common.facts.facts import FactsBase
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
@@ -90,15 +87,9 @@ class Facts(FactsBase):
         :rtype: dict
         :return: the facts gathered
         """
-        netres_choices = FactsArgs.argument_spec[
-            "gather_network_resources"
-        ].get("choices", [])
         if self.VALID_RESOURCE_SUBSETS:
             self.get_network_resources_facts(
-                netres_choices,
-                FACT_RESOURCE_SUBSETS,
-                resource_facts_type,
-                data,
+                FACT_RESOURCE_SUBSETS, resource_facts_type, data
             )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
