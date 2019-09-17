@@ -453,8 +453,16 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+    ]
+
     module = AnsibleModule(
-        argument_spec=VlansArgs.argument_spec, supports_check_mode=True
+        argument_spec=VlansArgs.argument_spec,
+        required_if=required_if,
+        supports_check_mode=True,
     )
 
     result = Vlans(module).execute_module()
