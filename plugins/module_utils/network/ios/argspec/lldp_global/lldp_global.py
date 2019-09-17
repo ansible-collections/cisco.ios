@@ -39,7 +39,7 @@ class Lldp_globalArgs(object):
             "options": {
                 "holdtime": {"type": "int"},
                 "reinit": {"type": "int"},
-                "enable": {"type": "bool"},
+                "enabled": {"type": "bool"},
                 "timer": {"type": "int"},
                 "tlv_select": {
                     "options": {
