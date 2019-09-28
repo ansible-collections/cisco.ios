@@ -155,7 +155,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 
 
@@ -193,7 +192,6 @@ def main():
 
     warnings = list()
     result = {"changed": False, "warnings": warnings}
-    check_args(module, warnings)
     commands = parse_commands(module, warnings)
     wait_for = module.params["wait_for"] or list()
 

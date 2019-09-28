@@ -263,7 +263,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 from ansible.module_utils.network.common.config import NetworkConfig
 from ansible.module_utils.six import iteritems
@@ -733,7 +732,6 @@ def main():
     result = {"changed": False}
 
     warnings = list()
-    check_args(module, warnings)
     result["warnings"] = warnings
 
     want = map_params_to_obj(module)
