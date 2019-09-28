@@ -178,7 +178,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 from ansible.module_utils.network.common.config import NetworkConfig
 from ansible.module_utils.network.common.utils import (
@@ -513,7 +512,6 @@ def main():
         supports_check_mode=True,
     )
     warnings = list()
-    check_args(module, warnings)
 
     result = {"changed": False}
     if warnings:

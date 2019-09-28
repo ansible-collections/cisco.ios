@@ -352,15 +352,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    check_args as ios_check_args,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.network.common.config import NetworkConfig, dumps
 
 
 def check_args(module, warnings):
-    ios_check_args(module, warnings)
     if module.params["multiline_delimiter"]:
         if len(module.params["multiline_delimiter"]) != 1:
             module.fail_json(

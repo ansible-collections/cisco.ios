@@ -110,7 +110,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 import re
 
@@ -138,7 +137,6 @@ def main():
     vrf = module.params["vrf"]
 
     warnings = list()
-    check_args(module, warnings)
 
     results = {}
     if warnings:

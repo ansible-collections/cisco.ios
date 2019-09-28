@@ -138,7 +138,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 
 
@@ -479,7 +478,6 @@ def main():
     os_version = device_info["device_info"]["network_os_version"]
 
     warnings = list()
-    check_args(module, warnings)
 
     result = {"changed": False}
     if warnings:

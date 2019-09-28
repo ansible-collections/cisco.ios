@@ -97,7 +97,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
-    check_args,
 )
 import re
 
@@ -178,7 +177,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
 
     result = {"changed": False}
     if warnings:
