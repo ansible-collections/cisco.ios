@@ -1,13 +1,9 @@
-authors: []
-dependencies: {}
-description: ''
-documentation: ''
-homepage: ''
-issues: ''
-license: []
+---
+authors:
+  - Ansible Network Community (ansible-network)
+license_file: LICENSE
 name: ios
 namespace: cisco
-readme: README.md
-repository: ''
-tags: []
-version: 1.0.0
+readme: README.rst
+repository: https://github.com/ansible-network/ansible_collections.cisco.ios
+version: 0.0.1
