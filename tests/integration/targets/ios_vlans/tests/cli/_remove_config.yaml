@@ -1,11 +1,15 @@
 ---
 - name: Remove Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      no vlan 10
+    lines: 'no vlan 10
+
       no vlan 20
+
       no vlan 30
+
       no vlan 40
+
+      '
   when: ansible_net_version != "15.6(2)T"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

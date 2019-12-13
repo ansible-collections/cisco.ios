@@ -8,47 +8,47 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: ios_ntp
-extends_documentation_fragment: ios
-version_added: "2.8"
+DOCUMENTATION = """module: ios_ntp
+extends_documentation_fragment:
+- cisco.ios.ios
 short_description: Manages core NTP configuration.
 description:
-    - Manages core NTP configuration.
+- Manages core NTP configuration.
 author:
-    - Federico Olivieri (@Federico87)
+- Federico Olivieri (@Federico87)
 options:
-    server:
-        description:
-            - Network address of NTP server.
-    source_int:
-        description:
-            - Source interface for NTP packets.
-    acl:
-        description:
-            - ACL for peer/server access restricition.
-    logging:
-        description:
-            - Enable NTP logs. Data type boolean.
-        type: bool
-        default: False
-    auth:
-        description:
-            - Enable NTP authentication. Data type boolean.
-        type: bool
-        default: False
-    auth_key:
-        description:
-            - md5 NTP authentication key of tye 7.
-    key_id:
-        description:
-            - auth_key id. Data type string
-    state:
-        description:
-            - Manage the state of the resource.
-        default: present
-        choices: ['present', 'absent']
+  server:
+    description:
+    - Network address of NTP server.
+  source_int:
+    description:
+    - Source interface for NTP packets.
+  acl:
+    description:
+    - ACL for peer/server access restricition.
+  logging:
+    description:
+    - Enable NTP logs. Data type boolean.
+    type: bool
+    default: false
+  auth:
+    description:
+    - Enable NTP authentication. Data type boolean.
+    type: bool
+    default: false
+  auth_key:
+    description:
+    - md5 NTP authentication key of tye 7.
+  key_id:
+    description:
+    - auth_key id. Data type string
+  state:
+    description:
+    - Manage the state of the resource.
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """

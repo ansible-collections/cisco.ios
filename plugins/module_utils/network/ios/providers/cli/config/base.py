@@ -3,8 +3,12 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
 from ansible.module_utils.six import iteritems
-from ansible.module_utils.network.common.utils import to_list
-from ansible.module_utils.network.common.config import NetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    NetworkConfig,
+)
 
 
 class ConfigBase(object):

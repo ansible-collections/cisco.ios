@@ -26,59 +26,55 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: ios_static_route
-version_added: "2.4"
-author: "Ricardo Carrillo Cruz (@rcarrillocruz)"
+DOCUMENTATION = """module: ios_static_route
+author: Ricardo Carrillo Cruz (@rcarrillocruz)
 short_description: Manage static IP routes on Cisco IOS network devices
 description:
-  - This module provides declarative management of static
-    IP routes on Cisco IOS network devices.
+- This module provides declarative management of static IP routes on Cisco IOS network
+  devices.
 notes:
-  - Tested against IOS 15.6
+- Tested against IOS 15.6
 options:
   prefix:
     description:
-      - Network prefix of the static route.
+    - Network prefix of the static route.
   mask:
     description:
-      - Network prefix mask of the static route.
+    - Network prefix mask of the static route.
   next_hop:
     description:
-      - Next hop IP of the static route.
+    - Next hop IP of the static route.
   vrf:
     description:
-      - VRF of the static route.
-    version_added: "2.8"
+    - VRF of the static route.
   interface:
     description:
-      - Interface of the static route.
-    version_added: "2.8"
+    - Interface of the static route.
   name:
     description:
-      - Name of the static route
-    aliases: ['description']
-    version_added: "2.8"
+    - Name of the static route
+    aliases:
+    - description
   admin_distance:
     description:
-      - Admin distance of the static route.
+    - Admin distance of the static route.
   tag:
     description:
-      - Set tag of the static route.
-    version_added: "2.8"
+    - Set tag of the static route.
   track:
     description:
-      - Tracked item to depend on for the static route.
-    version_added: "2.8"
+    - Tracked item to depend on for the static route.
   aggregate:
     description: List of static route definitions.
   state:
     description:
-      - State of the static route configuration.
+    - State of the static route configuration.
     default: present
-    choices: ['present', 'absent']
-extends_documentation_fragment: ios
+    choices:
+    - present
+    - absent
+extends_documentation_fragment:
+- cisco.ios.ios
 """
 
 EXAMPLES = """
@@ -137,7 +133,7 @@ from copy import deepcopy
 from re import findall
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.utils import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     validate_ip_address,
 )

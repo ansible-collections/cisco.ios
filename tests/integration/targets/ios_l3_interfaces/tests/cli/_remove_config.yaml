@@ -1,12 +1,18 @@
 ---
 - name: Remove Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      interface GigabitEthernet 0/1
+    lines: 'interface GigabitEthernet 0/1
+
       no ip address
+
       no ipv6 address
+
       interface GigabitEthernet 0/2
+
       no ip address
+
       no ipv6 address
+
+      '
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

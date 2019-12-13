@@ -1,144 +1,128 @@
 ---
-- debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
-
+- debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection
+    }}"
 - name: Clear all static routes
-  cisco.ios.ios_static_route: &delete_all
+  ios_static_route: &id003
     aggregate:
-      - { prefix: 172.16.31.0 }
-      - { prefix: 172.16.32.0 }
-      - { prefix: 172.16.33.0 }
-      - { prefix: 172.16.34.0 }
+      - prefix: 172.16.31.0
+      - prefix: 172.16.32.0
+      - prefix: 172.16.33.0
+      - prefix: 172.16.34.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: absent
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - name: create static route
-  cisco.ios.ios_static_route:
+  ios_static_route:
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8"]'
-
+      - result.changed == true
+      - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8"]
 - name: Verify idempotence with default admin_distance
-  cisco.ios.ios_static_route:
+  ios_static_route:
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     admin_distance: 1
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == false'
-
+      - result.changed == false
 - name: modify admin distance of static route
-  cisco.ios.ios_static_route: &admin2
+  ios_static_route: &id001
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     admin_distance: 2
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8 2"]'
-
+      - result.changed == true
+      - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8 2"]
 - name: modify admin distance of static route again (idempotent)
-  cisco.ios.ios_static_route: *admin2
+  ios_static_route: *id001
   register: result
-
 - assert:
     that:
-      - 'result.changed == false'
-
+      - result.changed == false
 - name: Verify idempotence with unspecified admin_distance
-  cisco.ios.ios_static_route:
+  ios_static_route:
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == false'
-
+      - result.changed == false
 - name: delete static route
-  cisco.ios.ios_static_route: &delete
+  ios_static_route: &id002
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: absent
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["no ip route 172.16.31.0 255.255.255.0 10.0.0.8"]'
-
+      - result.changed == true
+      - result.commands == ["no ip route 172.16.31.0 255.255.255.0 10.0.0.8"]
 - name: delete static route again (idempotent)
-  cisco.ios.ios_static_route: *delete
+  ios_static_route: *id002
   register: result
-
 - assert:
     that:
-      - 'result.changed == false'
-
+      - result.changed == false
 - name: Add static route aggregates
-  cisco.ios.ios_static_route:
+  ios_static_route:
     aggregate:
-      - { prefix: 172.16.32.0 }
-      - { prefix: 172.16.33.0 }
+      - prefix: 172.16.32.0
+      - prefix: 172.16.33.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["ip route 172.16.32.0 255.255.255.0 10.0.0.8", "ip route 172.16.33.0 255.255.255.0 10.0.0.8"]'
-
+      - result.changed == true
+      - result.commands == ["ip route 172.16.32.0 255.255.255.0 10.0.0.8", "ip route
+        172.16.33.0 255.255.255.0 10.0.0.8"]
 - name: Add and remove static route aggregates with overrides
-  cisco.ios.ios_static_route:
+  ios_static_route:
     aggregate:
-      - { prefix: 172.16.32.0 }
-      - { prefix: 172.16.33.0, state: absent }
-      - { prefix: 172.16.34.0 }
+      - prefix: 172.16.32.0
+      - prefix: 172.16.33.0
+        state: absent
+      - prefix: 172.16.34.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["no ip route 172.16.33.0 255.255.255.0 10.0.0.8", "ip route 172.16.34.0 255.255.255.0 10.0.0.8"]'
-
+      - result.changed == true
+      - result.commands == ["no ip route 172.16.33.0 255.255.255.0 10.0.0.8", "ip route
+        172.16.34.0 255.255.255.0 10.0.0.8"]
 - name: Remove static route aggregates
-  cisco.ios.ios_static_route: *delete_all
+  ios_static_route: *id003
   register: result
-
 - assert:
     that:
-      - 'result.changed == true'
-      - 'result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no ip route 172.16.34.0 255.255.255.0 10.0.0.8"]'
-
-- debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
+      - result.changed == true
+      - result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no ip
+        route 172.16.34.0 255.255.255.0 10.0.0.8"]
+- debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection
+    }}"

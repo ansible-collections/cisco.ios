@@ -1,7 +1,8 @@
 ---
 - name: Enable LLDP Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      lldp run
+    lines: 'lldp run
+
+      '
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

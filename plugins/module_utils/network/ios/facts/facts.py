@@ -14,7 +14,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from ansible.module_utils.network.common.facts.facts import FactsBase
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts import (
+    FactsBase,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
 )

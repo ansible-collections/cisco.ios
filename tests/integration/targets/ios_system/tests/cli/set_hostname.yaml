@@ -1,36 +1,29 @@
 ---
 - debug: msg="START cli/set_hostname.yaml on connection={{ ansible_connection }}"
-
 - name: setup
-  cisco.ios.ios_config:
+  ios_config:
     lines: hostname switch
     match: none
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - name: configure hostname
-  cisco.ios.ios_system:
+  ios_system:
     hostname: foo
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == true"
-
+      - result.changed == true
 - name: verify hostname
-  cisco.ios.ios_system:
+  ios_system:
     hostname: foo
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == false"
-
+      - result.changed == false
 - name: teardown
-  cisco.ios.ios_config:
-    lines: "hostname {{ inventory_hostname }}"
+  ios_config:
+    lines: hostname {{ inventory_hostname }}
     match: none
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - debug: msg="END cli/set_hostname.yaml on connection={{ ansible_connection }}"

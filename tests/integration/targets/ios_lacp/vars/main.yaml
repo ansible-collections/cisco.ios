@@ -3,34 +3,26 @@ merged:
   before:
     system:
       priority: 32768
-
   commands:
-    - "lacp system-priority 10"
-
+  - lacp system-priority 10
   after:
-    - system:
-        priority: 10
-
+  - system:
+      priority: 10
 replaced:
   before:
     system:
       priority: 500
-
   commands:
-    - "lacp system-priority 20"
-
+  - lacp system-priority 20
   after:
     system:
       priority: 20
-
 deleted:
   before:
     system:
       priority: 500
-
   commands:
-    - "no lacp system-priority"
-
+  - no lacp system-priority
   after:
     system:
       priority: 32768

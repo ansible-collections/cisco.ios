@@ -17,9 +17,15 @@ __metaclass__ = type
 
 
 import re
-from ansible.module_utils.network.common import utils
-from ansible.module_utils.network.common.cfg.base import ConfigBase
-from ansible.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
+    ConfigBase,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )

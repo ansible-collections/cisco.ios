@@ -15,42 +15,46 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: ios_linkagg
-version_added: "2.5"
-author: "Trishna Guha (@trishnaguha)"
+DOCUMENTATION = """module: ios_linkagg
+author: Trishna Guha (@trishnaguha)
 short_description: Manage link aggregation groups on Cisco IOS network devices
 description:
-  - This module provides declarative management of link aggregation groups
-    on Cisco IOS network devices.
+- This module provides declarative management of link aggregation groups on Cisco
+  IOS network devices.
 notes:
-  - Tested against IOS 15.2
+- Tested against IOS 15.2
 options:
   group:
     description:
-      - Channel-group number for the port-channel
-        Link aggregation group. Range 1-255.
+    - Channel-group number for the port-channel Link aggregation group. Range 1-255.
   mode:
     description:
-      - Mode of the link aggregation group.
-    choices: ['active', 'on', 'passive', 'auto', 'desirable']
+    - Mode of the link aggregation group.
+    choices:
+    - active
+    - 'on'
+    - passive
+    - auto
+    - desirable
   members:
     description:
-      - List of members of the link aggregation group.
+    - List of members of the link aggregation group.
   aggregate:
     description: List of link aggregation definitions.
   state:
     description:
-      - State of the link aggregation group.
+    - State of the link aggregation group.
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
   purge:
     description:
-      - Purge links not defined in the I(aggregate) parameter.
-    default: no
+    - Purge links not defined in the I(aggregate) parameter.
+    default: false
     type: bool
-extends_documentation_fragment: ios
+extends_documentation_fragment:
+- cisco.ios.ios
 """
 
 EXAMPLES = """
@@ -102,8 +106,12 @@ import re
 from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
-from ansible.module_utils.network.common.utils import remove_default_spec
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    remove_default_spec,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,

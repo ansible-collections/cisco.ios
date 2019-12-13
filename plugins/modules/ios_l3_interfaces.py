@@ -38,14 +38,10 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: ios_l3_interfaces
-version_added: 2.9
+DOCUMENTATION = """module: ios_l3_interfaces
 short_description: Manage Layer-3 interface on Cisco IOS devices.
 description:
-- This module provides declarative management of Layer-3 interface
-  on Cisco IOS devices.
+- This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 author: Sumit Jaiswal (@justjais)
 options:
   config:
@@ -55,15 +51,14 @@ options:
     suboptions:
       name:
         description:
-        - Full name of the interface excluding any logical unit number,
-          i.e. GigabitEthernet0/1.
+        - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
         type: str
-        required: True
+        required: true
       ipv4:
         description:
-        - IPv4 address to be set for the Layer-3 interface mentioned in
-          I(name) option. The address format is <ipv4 address>/<mask>,
-          the mask is number in range 0-32 eg. 192.168.0.1/24.
+        - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
+          The address format is <ipv4 address>/<mask>, the mask is number in range
+          0-32 eg. 192.168.0.1/24.
         type: list
         elements: dict
         suboptions:
@@ -77,23 +72,20 @@ options:
             type: bool
           dhcp_client:
             description:
-            - Configures and specifies client-id to use over DHCP ip.
-              Note, This option shall work only when dhcp is configured
-              as IP.
+            - Configures and specifies client-id to use over DHCP ip. Note, This option
+              shall work only when dhcp is configured as IP.
             - GigabitEthernet interface number
             type: int
           dhcp_hostname:
             description:
-            - Configures and specifies value for hostname option over
-              DHCP ip. Note, This option shall work only when dhcp is
-              configured as IP.
+            - Configures and specifies value for hostname option over DHCP ip. Note,
+              This option shall work only when dhcp is configured as IP.
             type: str
       ipv6:
         description:
-        - IPv6 address to be set for the Layer-3 interface mentioned in
-          I(name) option.
-        - The address format is <ipv6 address>/<mask>, the mask is number
-          in range 0-128 eg. fd5d:12c9:2201:1::1/64
+        - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
+        - The address format is <ipv6 address>/<mask>, the mask is number in range
+          0-128 eg. fd5d:12c9:2201:1::1/64
         type: list
         elements: dict
         suboptions:

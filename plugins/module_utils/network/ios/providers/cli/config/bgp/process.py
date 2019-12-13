@@ -5,7 +5,9 @@
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers import (
     register_provider,
 )

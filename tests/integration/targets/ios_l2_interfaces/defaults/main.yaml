@@ -1,3 +1,3 @@
 ---
-testcase: "[^_].*"
+testcase: '[^_].*'
 test_items: []
