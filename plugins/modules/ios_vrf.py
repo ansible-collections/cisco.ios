@@ -22,114 +22,102 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: ios_vrf
-version_added: "2.3"
-author: "Peter Sprygada (@privateip)"
+DOCUMENTATION = """module: ios_vrf
+author: Peter Sprygada (@privateip)
 short_description: Manage the collection of VRF definitions on Cisco IOS devices
 description:
-  - This module provides declarative management of VRF definitions on
-    Cisco IOS devices.  It allows playbooks to manage individual or
-    the entire VRF collection.  It also supports purging VRF definitions from
-    the configuration that are not explicitly defined.
-extends_documentation_fragment: ios
+- This module provides declarative management of VRF definitions on Cisco IOS devices.  It
+  allows playbooks to manage individual or the entire VRF collection.  It also supports
+  purging VRF definitions from the configuration that are not explicitly defined.
+extends_documentation_fragment:
+- cisco.ios.ios
 notes:
-  - Tested against IOS 15.6
+- Tested against IOS 15.6
 options:
   vrfs:
     description:
-      - The set of VRF definition objects to be configured on the remote
-        IOS device.  Ths list entries can either be the VRF name or a hash
-        of VRF definitions and attributes.  This argument is mutually
-        exclusive with the C(name) argument.
+    - The set of VRF definition objects to be configured on the remote IOS device.  Ths
+      list entries can either be the VRF name or a hash of VRF definitions and attributes.  This
+      argument is mutually exclusive with the C(name) argument.
   name:
     description:
-      - The name of the VRF definition to be managed on the remote IOS
-        device.  The VRF definition name is an ASCII string name used
-        to uniquely identify the VRF.  This argument is mutually exclusive
-        with the C(vrfs) argument
+    - The name of the VRF definition to be managed on the remote IOS device.  The
+      VRF definition name is an ASCII string name used to uniquely identify the VRF.  This
+      argument is mutually exclusive with the C(vrfs) argument
   description:
     description:
-      - Provides a short description of the VRF definition in the
-        current active configuration.  The VRF definition value accepts
-        alphanumeric characters used to provide additional information
-        about the VRF.
+    - Provides a short description of the VRF definition in the current active configuration.  The
+      VRF definition value accepts alphanumeric characters used to provide additional
+      information about the VRF.
   rd:
     description:
-      - The router-distinguisher value uniquely identifies the VRF to
-        routing processes on the remote IOS system.  The RD value takes
-        the form of C(A:B) where C(A) and C(B) are both numeric values.
+    - The router-distinguisher value uniquely identifies the VRF to routing processes
+      on the remote IOS system.  The RD value takes the form of C(A:B) where C(A)
+      and C(B) are both numeric values.
   interfaces:
     description:
-      - Identifies the set of interfaces that
-        should be configured in the VRF.  Interfaces must be routed
-        interfaces in order to be placed into a VRF.
+    - Identifies the set of interfaces that should be configured in the VRF.  Interfaces
+      must be routed interfaces in order to be placed into a VRF.
   associated_interfaces:
     description:
-      - This is a intent option and checks the operational state of the for given vrf C(name)
-        for associated interfaces. If the value in the C(associated_interfaces) does not match with
-        the operational state of vrf interfaces on device it will result in failure.
-    version_added: "2.5"
+    - This is a intent option and checks the operational state of the for given vrf
+      C(name) for associated interfaces. If the value in the C(associated_interfaces)
+      does not match with the operational state of vrf interfaces on device it will
+      result in failure.
   delay:
     description:
-      - Time in seconds to wait before checking for the operational state on remote
-        device.
-    version_added: "2.4"
+    - Time in seconds to wait before checking for the operational state on remote
+      device.
     default: 10
   purge:
     description:
-      - Instructs the module to consider the
-        VRF definition absolute.  It will remove any previously configured
-        VRFs on the device.
+    - Instructs the module to consider the VRF definition absolute.  It will remove
+      any previously configured VRFs on the device.
     default: false
     type: bool
   state:
     description:
-      - Configures the state of the VRF definition
-        as it relates to the device operational configuration.  When set
-        to I(present), the VRF should be configured in the device active
-        configuration and when set to I(absent) the VRF should not be
-        in the device active configuration
+    - Configures the state of the VRF definition as it relates to the device operational
+      configuration.  When set to I(present), the VRF should be configured in the
+      device active configuration and when set to I(absent) the VRF should not be
+      in the device active configuration
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
   route_both:
     description:
-      - Adds an export and import list of extended route target communities to the VRF.
-    version_added: "2.5"
+    - Adds an export and import list of extended route target communities to the VRF.
   route_export:
     description:
-      - Adds an export list of extended route target communities to the VRF.
-    version_added: "2.5"
+    - Adds an export list of extended route target communities to the VRF.
   route_import:
     description:
-      - Adds an import list of extended route target communities to the VRF.
-    version_added: "2.5"
+    - Adds an import list of extended route target communities to the VRF.
   route_both_ipv4:
     description:
-      - Adds an export and import list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
+    - Adds an export and import list of extended route target communities in address-family
+      configuration submode to the VRF.
   route_export_ipv4:
     description:
-      - Adds an export list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
+    - Adds an export list of extended route target communities in address-family configuration
+      submode to the VRF.
   route_import_ipv4:
     description:
-      - Adds an import list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
+    - Adds an import list of extended route target communities in address-family configuration
+      submode to the VRF.
   route_both_ipv6:
     description:
-      - Adds an export and import list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
+    - Adds an export and import list of extended route target communities in address-family
+      configuration submode to the VRF.
   route_export_ipv6:
     description:
-      - Adds an export list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
+    - Adds an export list of extended route target communities in address-family configuration
+      submode to the VRF.
   route_import_ipv6:
     description:
-      - Adds an import list of extended route target communities in address-family configuration submode to the VRF.
-    version_added: "2.7"
-
+    - Adds an import list of extended route target communities in address-family configuration
+      submode to the VRF.
 """
 EXAMPLES = """
 - name: configure a vrf named management
@@ -264,7 +252,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-from ansible.module_utils.network.common.config import NetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    NetworkConfig,
+)
 from ansible.module_utils.six import iteritems
 
 
@@ -290,15 +280,7 @@ def get_interface_type(interface):
 
 def add_command_to_vrf(name, cmd, commands):
     if "vrf definition %s" % name not in commands:
-        commands.extend(
-            [
-                "vrf definition %s" % name,
-                "address-family ipv4",
-                "exit",
-                "address-family ipv6",
-                "exit",
-            ]
-        )
+        commands.extend(["vrf definition %s" % name])
     commands.append(cmd)
 
 
@@ -322,15 +304,31 @@ def map_obj_to_commands(updates, module):
             continue
 
         if not have.get("state"):
-            commands.extend(
-                [
-                    "vrf definition %s" % want["name"],
-                    "address-family ipv4",
-                    "exit",
-                    "address-family ipv6",
-                    "exit",
-                ]
+            commands.extend(["vrf definition %s" % want["name"]])
+            ipv6 = (
+                len(
+                    [
+                        k
+                        for k, v in module.params.items()
+                        if (k.endswith("_ipv6") or k.endswith("_both")) and v
+                    ]
+                )
+                != 0
             )
+            ipv4 = (
+                len(
+                    [
+                        k
+                        for k, v in module.params.items()
+                        if (k.endswith("_ipv4") or k.endswith("_both")) and v
+                    ]
+                )
+                != 0
+            )
+            if ipv4:
+                commands.extend(["address-family ipv4", "exit"])
+            if ipv6:
+                commands.extend(["address-family ipv6", "exit"])
 
         if needs_update(want, have, "description"):
             cmd = "description %s" % want["description"]

@@ -1,15 +1,24 @@
 ---
 - name: Populate Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      interface GigabitEthernet 0/0
+    lines: 'interface GigabitEthernet 0/0
+
       lldp receive
+
       lldp transmit
+
       interface GigabitEthernet 0/1
+
       lldp receive
+
       lldp transmit
+
       interface GigabitEthernet 0/2
+
       lldp receive
+
       lldp transmit
+
+      '
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

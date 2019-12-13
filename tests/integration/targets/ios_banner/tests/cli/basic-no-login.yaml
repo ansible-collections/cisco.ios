@@ -1,41 +1,33 @@
 ---
 - name: Setup
-  cisco.ios.ios_banner:
+  ios_banner:
     banner: login
-    text: |
-      Junk login banner
+    text: 'Junk login banner
+
       over multiple lines
+
+      '
     state: present
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - name: remove login
-  cisco.ios.ios_banner:
+  ios_banner:
     banner: login
     state: absent
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - debug:
-    msg: "{{ result }}"
-
+    msg: '{{ result }}'
 - assert:
     that:
-      - "result.changed == true"
-      - "'no banner login' in result.commands" # does this break due to "contains?"
-
+      - result.changed == true
+      - '''no banner login'' in result.commands'
 - name: remove login (idempotent)
-  cisco.ios.ios_banner:
+  ios_banner:
     banner: login
     state: absent
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == false"
-      - "result.commands | length == 0"
-
-
-# FIXME add in tests for everything defined in docs
-# FIXME Test state:absent + test:
-# FIXME Without powers ensure "privileged mode required"
+      - result.changed == false
+      - result.commands | length == 0

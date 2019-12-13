@@ -1,36 +1,29 @@
 ---
 - debug: msg="START cli/set_domain_name.yaml on connection={{ ansible_connection }}"
-
 - name: setup
-  cisco.ios.ios_config:
+  ios_config:
     lines: no ip domain-name
     match: none
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - name: configure domain_name
-  cisco.ios.ios_system:
+  ios_system:
     domain_name: eng.ansible.com
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == true"
-
+      - result.changed == true
 - name: verify domain_name
-  cisco.ios.ios_system:
+  ios_system:
     domain_name: eng.ansible.com
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == false"
-
+      - result.changed == false
 - name: teardown
-  cisco.ios.ios_config:
+  ios_config:
     lines: no ip domain-name
     match: none
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
 - debug: msg="END cli/set_domain_name.yaml on connection={{ ansible_connection }}"

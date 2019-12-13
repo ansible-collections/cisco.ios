@@ -1,11 +1,15 @@
 ---
 - name: Remove Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      interface GigabitEthernet 0/1
+    lines: 'interface GigabitEthernet 0/1
+
       no channel-group
+
       interface GigabitEthernet 0/2
+
       no channel-group
+
+      '
   when: ansible_net_version != "15.6(2)T"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

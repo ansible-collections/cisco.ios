@@ -37,42 +37,40 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: ios_lacp_interfaces
-version_added: 2.9
-short_description: Manage Link Aggregation Control Protocol (LACP) on Cisco IOS devices interface.
-description: This module provides declarative management of LACP on Cisco IOS network devices lacp_interfaces.
+DOCUMENTATION = """module: ios_lacp_interfaces
+short_description: Manage Link Aggregation Control Protocol (LACP) on Cisco IOS devices
+  interface.
+description: This module provides declarative management of LACP on Cisco IOS network
+  devices lacp_interfaces.
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL.
-  - This module works with connection C(network_cli),
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
+- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
-      description: A dictionary of LACP lacp_interfaces option
-      type: list
-      elements: dict
-      suboptions:
-        name:
-          description:
-          - Name of the Interface for configuring LACP.
-          type: str
-          required: True
-        port_priority:
-          description:
-          - LACP priority on this interface.
-          - Refer to vendor documentation for valid port values.
-          type: int
-        fast_switchover:
-          description:
-          - LACP fast switchover supported on this port channel.
-          type: bool
-        max_bundle:
-          description:
-          - LACP maximum number of ports to bundle in this port channel.
-          - Refer to vendor documentation for valid port values.
-          type: int
+    description: A dictionary of LACP lacp_interfaces option
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of the Interface for configuring LACP.
+        type: str
+        required: true
+      port_priority:
+        description:
+        - LACP priority on this interface.
+        - Refer to vendor documentation for valid port values.
+        type: int
+      fast_switchover:
+        description:
+        - LACP fast switchover supported on this port channel.
+        type: bool
+      max_bundle:
+        description:
+        - LACP maximum number of ports to bundle in this port channel.
+        - Refer to vendor documentation for valid port values.
+        type: int
   state:
     description:
     - The state of the configuration after module completion

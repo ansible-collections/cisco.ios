@@ -36,17 +36,15 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: ios_lacp
-version_added: 2.9
-short_description: Manage Global Link Aggregation Control Protocol (LACP) on Cisco IOS devices.
-description: This module provides declarative management of Global LACP on Cisco IOS network devices.
+DOCUMENTATION = """module: ios_lacp
+short_description: Manage Global Link Aggregation Control Protocol (LACP) on Cisco
+  IOS devices.
+description: This module provides declarative management of Global LACP on Cisco IOS
+  network devices.
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
-  - This module works with connection C(network_cli),
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL
+- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: The provided configurations.
@@ -61,7 +59,7 @@ options:
             - LACP priority for the system.
             - Refer to vendor documentation for valid values.
             type: int
-            required: True
+            required: true
   state:
     description:
     - The state of the configuration after module completion

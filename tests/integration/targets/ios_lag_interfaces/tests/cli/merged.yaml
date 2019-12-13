@@ -1,46 +1,42 @@
 ---
 - debug:
-      msg: "START Merged ios_lag_interfaces state for integration tests on connection={{ ansible_connection }}"
-
+    msg: START Merged ios_lag_interfaces state for integration tests on connection={{
+      ansible_connection }}
 - include_tasks: _remove_config.yaml
-
 - block:
     - name: Merge provided configuration with device configuration
-      cisco.ios.ios_lag_interfaces: &merged
+      ios_lag_interfaces: &id001
         config:
           - name: Port-channel1
             members:
-            - member: GigabitEthernet0/1
-              mode: active
-            - member: GigabitEthernet0/2
-              mode: passive
+              - member: GigabitEthernet0/1
+                mode: active
+              - member: GigabitEthernet0/2
+                mode: passive
         state: merged
       register: result
-
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-
+          - '{{ merged[''commands''] | symmetric_difference(result[''commands'']) | length
+            == 0 }}'
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
-
+          - '{{ merged[''before''] | symmetric_difference(result[''before'']) | length
+            == 0 }}'
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
-
+          - '{{ merged[''after''] | symmetric_difference(result[''after'']) | length ==
+            0 }}'
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
-      cisco.ios.ios_lag_interfaces: *merged
+      ios_lag_interfaces: *id001
       register: result
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
-          - "result['changed'] == false"
+          - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
-
   always:
     - include_tasks: _remove_config.yaml

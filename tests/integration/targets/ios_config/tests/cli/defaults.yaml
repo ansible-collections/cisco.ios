@@ -1,57 +1,44 @@
 ---
 - debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
-
 - name: setup
-  cisco.ios.ios_config:
+  ios_config:
     commands:
       - no description
       - shutdown
     parents:
       - interface Loopback999
     match: none
-
 - name: configure device with defaults included
-  cisco.ios.ios_config:
+  ios_config:
     src: defaults/config.j2
-    defaults: yes
+    defaults: true
   register: result
-
 - debug: var=result
-
 - assert:
     that:
-      - "result.changed == true"
-# FIXME Bug https://github.com/ansible/ansible/issues/19382
-#    - "result.updates is not defined"
-
+      - result.changed == true
 - name: check device with defaults included
-  cisco.ios.ios_config:
+  ios_config:
     src: defaults/config.j2
-    defaults: yes
+    defaults: true
   register: result
-
 - debug: var=result
-
 - assert:
     that:
-      - "result.changed == false"
-      - "result.updates is not defined"
-
+      - result.changed == false
+      - result.updates is not defined
 - name: Check device is in proper prompt after error
-  cisco.ios.ios_config:
+  ios_config:
     lines:
-        - mac-address-table notification mac-move
-  ignore_errors: yes
-
+      - mac-address-table notification mac-move
+  ignore_errors: true
 - name: show interfaces brief to ensure deivce goes to valid prompt
-  cisco.ios.ios_command:
+  ios_command:
     commands:
       - show interfaces
   register: result
-
 - assert:
     that:
-      - "result.changed == false"
-      - "result.stdout is defined"
-
+      - result.changed == false
+      - result.stdout is defined
 - debug: msg="END cli/defaults.yaml on connection={{ ansible_connection }}"

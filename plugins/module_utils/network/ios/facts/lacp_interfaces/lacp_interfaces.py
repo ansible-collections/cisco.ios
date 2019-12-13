@@ -17,7 +17,9 @@ __metaclass__ = type
 
 import re
 from copy import deepcopy
-from ansible.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     normalize_interface,

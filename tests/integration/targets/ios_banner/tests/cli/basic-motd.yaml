@@ -1,50 +1,50 @@
 ---
-
 - name: setup - remove motd
-  cisco.ios.ios_banner:
+  ios_banner:
     banner: motd
     state: absent
-    provider: "{{ cli }}"
-
-
+    provider: '{{ cli }}'
 - name: Set motd
-  cisco.ios.ios_banner:
+  ios_banner:
     banner: motd
-    text: |
-      this is my motd banner
+    text: 'this is my motd banner
+
       that has a multiline
+
       string
+
+      '
     state: present
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
   register: result
-
 - debug:
-    msg: "{{ result }}"
-
+    msg: '{{ result }}'
 - assert:
     that:
-      - "result.changed == true"
-      - "'banner motd @\nthis is my motd banner\nthat has a multiline\nstring\n@' in result.commands"
+      - result.changed == true
+      - '''banner motd @
 
-- name: Set motd again (idempotent)
-  cisco.ios.ios_banner:
-    banner: motd
-    text: |
       this is my motd banner
+
       that has a multiline
+
       string
+
+      @'' in result.commands'
+- name: Set motd again (idempotent)
+  ios_banner:
+    banner: motd
+    text: 'this is my motd banner
+
+      that has a multiline
+
+      string
+
+      '
     state: present
-    provider: "{{ cli }}"
-
+    provider: '{{ cli }}'
   register: result
-
 - assert:
     that:
-      - "result.changed == false"
-      - "result.commands | length == 0"
-
-
-# FIXME add in tests for everything defined in docs
-# FIXME Test state:absent + test:
-# FIXME Without powers ensure "privileged mode required"
+      - result.changed == false
+      - result.commands | length == 0

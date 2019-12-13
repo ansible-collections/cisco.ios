@@ -1,10 +1,14 @@
 ---
 - name: Populate Config
-  network.cli.cli_config:
-    config: "{{ lines }}"
   vars:
-    lines: |
-      lldp holdtime 10
+    lines: 'lldp holdtime 10
+
       lldp run
+
       lldp timer 100
+
       lldp reinit 3
+
+      '
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

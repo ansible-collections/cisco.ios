@@ -1,19 +1,16 @@
 ---
 - debug: msg="START cli/timeout.yaml on connection={{ ansible_connection }}"
-
 - name: test bad condition
-  cisco.ios.ios_command:
+  ios_command:
     commands:
       - show version
-    provider: "{{ cli }}"
+    provider: '{{ cli }}'
     wait_for:
-      - "result[0] contains bad_value_string"
+      - result[0] contains bad_value_string
   register: result
-  ignore_errors: yes
-
+  ignore_errors: true
 - assert:
     that:
-      - "result.failed == true"
-      - "result.msg is defined"
-
+      - result.failed == true
+      - result.msg is defined
 - debug: msg="END cli/timeout.yaml on connection={{ ansible_connection }}"

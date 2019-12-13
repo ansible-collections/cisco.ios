@@ -37,17 +37,14 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: ios_lag_interfaces
-version_added: 2.9
+DOCUMENTATION = """module: ios_lag_interfaces
 short_description: Manage Link Aggregation on Cisco IOS devices.
-description: This module manages properties of Link Aggregation Group on Cisco IOS devices.
+description: This module manages properties of Link Aggregation Group on Cisco IOS
+  devices.
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
-  - This module works with connection C(network_cli).
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL
+- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A list of link aggregation group configurations.
@@ -59,7 +56,7 @@ options:
         - ID of Ethernet Channel of interfaces.
         - Refer to vendor documentation for valid port values.
         type: str
-        required: True
+        required: true
       members:
         description:
         - Interface options for the link aggregation group.
@@ -74,11 +71,11 @@ options:
             - Etherchannel Mode of the interface for link aggregation.
             type: str
             choices:
-            - 'auto'
+            - auto
             - 'on'
-            - 'desirable'
-            - 'active'
-            - 'passive'
+            - desirable
+            - active
+            - passive
           link:
             description:
             - Assign a link identifier used for load-balancing.

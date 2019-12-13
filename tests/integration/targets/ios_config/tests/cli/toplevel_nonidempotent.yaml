@@ -1,35 +1,34 @@
 ---
-- debug: msg="START cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection }}"
-
+- debug: msg="START cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection
+    }}"
 - name: setup
-  cisco.ios.ios_config:
-    lines: ['hostname {{ shorter_hostname }}']
+  ios_config:
+    lines:
+      - hostname {{ shorter_hostname }}
     match: none
-
 - name: configure top level command
-  cisco.ios.ios_config:
-    lines: ['hostname foo']
+  ios_config:
+    lines:
+      - hostname foo
     match: strict
   register: result
-
 - assert:
     that:
-      - "result.changed == true"
-      - "'hostname foo' in result.updates"
-
+      - result.changed == true
+      - '''hostname foo'' in result.updates'
 - name: configure top level command idempotent check
-  cisco.ios.ios_config:
-    lines: ['hostname foo']
+  ios_config:
+    lines:
+      - hostname foo
     match: strict
   register: result
-
 - assert:
     that:
-      - "result.changed == true"
-
+      - result.changed == true
 - name: teardown
-  cisco.ios.ios_config:
-    lines: ['hostname {{ shorter_hostname }}']
+  ios_config:
+    lines:
+      - hostname {{ shorter_hostname }}
     match: none
-
-- debug: msg="END cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection }}"
+- debug: msg="END cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection
+    }}"

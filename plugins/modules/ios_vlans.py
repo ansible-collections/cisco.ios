@@ -37,16 +37,14 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
-module: ios_vlans
-version_added: 2.9
+DOCUMENTATION = """module: ios_vlans
 short_description: Manage VLANs on Cisco IOS devices.
-description: This module provides declarative management of VLANs on Cisco IOS network devices.
+description: This module provides declarative management of VLANs on Cisco IOS network
+  devices.
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
-  - This module works with connection C(network_cli).
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL
+- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of VLANs options
@@ -56,13 +54,14 @@ options:
       name:
         description:
         - Ascii name of the VLAN.
-        - NOTE, I(name) should not be named/appended with I(default) as it is reserved for device default vlans.
+        - NOTE, I(name) should not be named/appended with I(default) as it is reserved
+          for device default vlans.
         type: str
       vlan_id:
         description:
         - ID of the VLAN. Range 1-4094
         type: int
-        required: True
+        required: true
       mtu:
         description:
         - VLAN Maximum Transmission Unit.
