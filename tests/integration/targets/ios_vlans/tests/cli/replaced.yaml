@@ -9,7 +9,8 @@
 
 - block:
     - name: Replaces device configuration of listed VLANs with provided configuration
-      ios_vlans: &id001
+      register: result
+      cisco.ios.ios_vlans: &id001
         config:
           - vlan_id: 20
             name: Test_VLAN20
@@ -19,7 +20,6 @@
             name: Test_VLAN30
             mtu: 1000
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -37,8 +37,8 @@
             == 0 }}'
     - name: Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
-      ios_vlans: *id001
       register: result
+      cisco.ios.ios_vlans: *id001
     - name: Assert that task was idempotent
       assert:
         that:

@@ -1,33 +1,33 @@
 ---
 - name: Remove host logging
-  ios_logging: &id001
+  cisco.ios.ios_logging: &id001
     dest: host
     name: 172.16.0.1
     state: absent
     provider: '{{ cli }}'
 
 - name: Remove console
-  ios_logging:
+  cisco.ios.ios_logging:
     dest: console
     level: warnings
     state: absent
     provider: '{{ cli }}'
 
 - name: Remove buffer
-  ios_logging:
+  cisco.ios.ios_logging:
     dest: buffered
     size: 8000
     provider: '{{ cli }}'
     state: absent
 
 - name: Set up host logging
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     facility: local7
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -36,20 +36,20 @@
       - '"logging facility local7" in result.commands'
 
 - name: Set up host logging again (idempotent)
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert: &id002
     that:
       - result.changed == false
 
 - name: Delete/disable host logging
-  ios_logging: *id001
   register: result
+  cisco.ios.ios_logging: *id001
 
 - assert:
     that:
@@ -57,18 +57,18 @@
       - '"no logging host 172.16.0.1" in result.commands'
 
 - name: Delete/disable host logging (idempotent)
-  ios_logging: *id001
   register: result
+  cisco.ios.ios_logging: *id001
 
 - assert: *id002
 
 - name: Console logging with level warnings
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     dest: console
     level: warnings
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -76,11 +76,11 @@
       - '"logging console warnings" in result.commands'
 
 - name: Configure Buffer size
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     dest: buffered
     size: 8000
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -88,14 +88,14 @@
       - '"logging buffered 8000" in result.commands'
 
 - name: Change logging parameters using aggregate
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     aggregate:
       - dest: console
         level: notifications
       - dest: buffered
         size: 9000
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -104,14 +104,14 @@
       - '"logging console notifications" in result.commands'
 
 - name: Set both logging destination and facility
-  ios_logging: &id003
+  register: result
+  cisco.ios.ios_logging: &id003
     dest: buffered
     facility: uucp
     level: alerts
     size: 4096
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -120,13 +120,14 @@
       - '"logging facility uucp" in result.commands'
 
 - name: Set both logging destination and facility (idempotent)
-  ios_logging: *id003
   register: result
+  cisco.ios.ios_logging: *id003
 
 - assert: *id002
 
 - name: remove logging as collection tearDown
-  ios_logging:
+  register: result
+  cisco.ios.ios_logging:
     aggregate:
       - dest: console
         level: notifications
@@ -136,7 +137,6 @@
       - facility: uucp
     state: absent
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

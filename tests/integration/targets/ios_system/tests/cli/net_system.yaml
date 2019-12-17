@@ -2,7 +2,7 @@
 - debug: msg="START ios cli/net_system.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
@@ -24,7 +24,7 @@
       - '''ip domain list redhat.com'' in result.commands'
 
 - name: teardown
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com

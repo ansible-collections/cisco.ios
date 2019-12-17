@@ -2,11 +2,11 @@
 - debug: msg="START cli/output.yaml on connection={{ ansible_connection }}"
 
 - name: get output for single command
-  ios_command:
+  register: result
+  cisco.ios.ios_command:
     commands:
       - show version
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -14,12 +14,12 @@
       - result.stdout is defined
 
 - name: get output for multiple commands
-  ios_command:
+  register: result
+  cisco.ios.ios_command:
     commands:
       - show version
       - show interfaces
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

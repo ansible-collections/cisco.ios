@@ -2,7 +2,7 @@
 - debug: msg="START cli/sublevel_block.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -16,7 +16,8 @@
     match: none
 
 - name: configure sub level command using block resplace
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -27,7 +28,6 @@
     replace: block
     after:
       - exit
-  register: result
 
 - assert:
     that:
@@ -39,7 +39,8 @@
       - '''permit ip host 192.0.2.4 any log'' in result.updates'
 
 - name: check sub level command using block replace
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -50,14 +51,13 @@
     replace: block
     after:
       - exit
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: teardown
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none

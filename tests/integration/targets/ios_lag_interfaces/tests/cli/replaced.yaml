@@ -9,7 +9,8 @@
 
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
-      ios_lag_interfaces: &id001
+      register: result
+      cisco.ios.ios_lag_interfaces: &id001
         config:
           - name: Port-channel2
             members:
@@ -20,7 +21,6 @@
               - member: GigabitEthernet0/2
                 mode: active
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -38,8 +38,8 @@
             == 0 }}'
     - name: Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
-      ios_lag_interfaces: *id001
       register: result
+      cisco.ios.ios_lag_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

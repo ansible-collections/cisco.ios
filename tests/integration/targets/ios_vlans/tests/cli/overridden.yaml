@@ -9,7 +9,8 @@
 
 - block:
     - name: Override device configuration of all VLANs with provided configuration
-      ios_vlans: &id001
+      register: result
+      cisco.ios.ios_vlans: &id001
         config:
           - name: VLAN_10
             vlan_id: 10
@@ -18,7 +19,6 @@
             vlan_id: 40
             mtu: 850
         state: overridden
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -36,8 +36,8 @@
             == 0 }}'
     - name: Override device configuration of all interfaces with provided configuration
         (IDEMPOTENT)
-      ios_vlans: *id001
       register: result
+      cisco.ios.ios_vlans: *id001
     - name: Assert that task was idempotent
       assert:
         that:

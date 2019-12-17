@@ -2,7 +2,7 @@
 - debug: msg="START cli/cli_backup.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - no shutdown
@@ -24,10 +24,10 @@
   with_items: '{{backup_files.files|default([])}}'
 
 - name: configure device with config
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     src: basic/config.j2
     backup: true
-  register: result
 
 - assert:
     that:
@@ -53,13 +53,13 @@
     - '{{ role_path }}/backup/backup.cfg'
 
 - name: take configuration backup in custom filename and directory path
-  ios_config:
+  become: true
+  register: result
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       filename: backup.cfg
       dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
-  become: true
-  register: result
 
 - assert:
     that:
@@ -76,12 +76,12 @@
       - backup_file.files is defined
 
 - name: take configuration backup in custom filename
-  ios_config:
+  become: true
+  register: result
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       filename: backup.cfg
-  become: true
-  register: result
 
 - assert:
     that:
@@ -98,12 +98,12 @@
       - backup_file.files is defined
 
 - name: take configuration backup in custom path and default filename
-  ios_config:
+  become: true
+  register: result
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
-  become: true
-  register: result
 
 - assert:
     that:

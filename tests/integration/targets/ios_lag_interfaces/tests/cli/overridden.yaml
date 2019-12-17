@@ -9,14 +9,14 @@
 
 - block:
     - name: Override device configuration of all interfaces with provided configuration
-      ios_lag_interfaces: &id001
+      register: result
+      cisco.ios.ios_lag_interfaces: &id001
         config:
           - name: Port-channel10
             members:
               - member: GigabitEthernet0/2
                 mode: passive
         state: overridden
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -34,8 +34,8 @@
             == 0 }}'
     - name: Override device configuration of all interfaces with provided configuration
         (IDEMPOTENT)
-      ios_lag_interfaces: *id001
       register: result
+      cisco.ios.ios_lag_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

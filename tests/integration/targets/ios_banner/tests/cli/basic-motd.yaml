@@ -1,12 +1,13 @@
 ---
 - name: setup - remove motd
-  ios_banner:
+  cisco.ios.ios_banner:
     banner: motd
     state: absent
     provider: '{{ cli }}'
 
 - name: Set motd
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: motd
     text: 'this is my motd banner
 
@@ -17,7 +18,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - debug:
     msg: '{{ result }}'
@@ -36,7 +36,8 @@
       @'' in result.commands'
 
 - name: Set motd again (idempotent)
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: motd
     text: 'this is my motd banner
 
@@ -47,7 +48,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

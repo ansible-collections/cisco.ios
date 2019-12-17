@@ -1,7 +1,7 @@
 ---
 - block:
     - name: Create user with password
-      ios_user:
+      cisco.ios.ios_user:
         name: auth_user
         privilege: 15
         role: network-operator
@@ -30,11 +30,11 @@
           - results.failed
   always:
     - name: delete user
-      ios_user:
+      register: result
+      cisco.ios.ios_user:
         name: auth_user
         state: absent
         provider: '{{ cli }}'
-      register: result
     - name: reset connection
       meta: reset_connection
 
@@ -44,7 +44,7 @@
         path: '{{ role_path }}/files/test_rsa'
         mode: 384
     - name: Create user with sshkey
-      ios_user:
+      cisco.ios.ios_user:
         name: ssh_user
         privilege: 15
         role: network-operator
@@ -71,10 +71,10 @@
           - results.failed
   always:
     - name: delete user
-      ios_user:
+      register: result
+      cisco.ios.ios_user:
         name: ssh_user
         state: absent
         provider: '{{ cli }}'
-      register: result
     - name: reset connection
       meta: reset_connection

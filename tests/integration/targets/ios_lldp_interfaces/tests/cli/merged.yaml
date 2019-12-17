@@ -9,7 +9,8 @@
 
 - block:
     - name: Merge the provided configuration with the exisiting running configuration
-      ios_lldp_interfaces: &id001
+      register: result
+      cisco.ios.ios_lldp_interfaces: &id001
         config:
           - name: GigabitEthernet0/0
             receive: true
@@ -21,7 +22,6 @@
             receive: true
             transmit: false
         state: merged
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -39,8 +39,8 @@
             0 }}'
     - name: Merge the provided configuration with the exisiting running configuration
         (IDEMPOTENT)
-      ios_lldp_interfaces: *id001
       register: result
+      cisco.ios.ios_lldp_interfaces: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

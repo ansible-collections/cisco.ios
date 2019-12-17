@@ -2,24 +2,24 @@
 - debug: msg="START cli/invalid.yaml on connection={{ ansible_connection }}"
 
 - name: run invalid command
-  ios_command:
-    commands: show foo
-    provider: '{{ cli }}'
   register: result
   ignore_errors: true
+  cisco.ios.ios_command:
+    commands: show foo
+    provider: '{{ cli }}'
 
 - assert:
     that:
       - result.failed
 
 - name: run commands that include invalid command
-  ios_command:
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_command:
     commands:
       - show version
       - show foo
     provider: '{{ cli }}'
-  register: result
-  ignore_errors: true
 
 - assert:
     that:

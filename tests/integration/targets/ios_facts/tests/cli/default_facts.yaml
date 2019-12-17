@@ -2,9 +2,9 @@
 - debug: msg="START cli/default_facts.yaml on connection={{ ansible_connection }}"
 
 - name: test getting default facts
-  ios_facts:
-    provider: '{{ cli }}'
   register: result
+  cisco.ios.ios_facts:
+    provider: '{{ cli }}'
 
 - assert:
     that:

@@ -9,7 +9,8 @@
 
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
-      ios_interfaces: &id001
+      register: result
+      cisco.ios.ios_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             description: Configured and Replaced by Ansible-Network
@@ -18,7 +19,6 @@
             description: Configured and Replaced by Ansible-Network
             speed: 10
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -36,8 +36,8 @@
             == 0 }}'
     - name: Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
-      ios_interfaces: *id001
       register: result
+      cisco.ios.ios_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

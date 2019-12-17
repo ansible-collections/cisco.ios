@@ -2,7 +2,7 @@
 - debug: msg="START cli/sublevel_exact.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -15,7 +15,8 @@
     match: none
 
 - name: configure sub level command using exact match
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -25,7 +26,6 @@
     before: no ip access-list extended test
     after: exit
     match: exact
-  register: result
 
 - assert:
     that:
@@ -38,7 +38,8 @@
       - '''permit ip host 192.0.2.5 any log'' not in result.updates'
 
 - name: check sub level command using exact match
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -46,14 +47,13 @@
       - permit ip host 192.0.2.4 any log
     parents: ip access-list extended test
     match: exact
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: teardown
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none

@@ -2,15 +2,15 @@
 - debug: msg="START cli/bad_operator.yaml on connection={{ ansible_connection }}"
 
 - name: test bad operator
-  ios_command:
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_command:
     commands:
       - show version
       - show interfaces GigabitEthernet 0/0
     provider: '{{ cli }}'
     wait_for:
       - 'result[0] contains ''Description: Foo'''
-  register: result
-  ignore_errors: true
 
 - assert:
     that:
