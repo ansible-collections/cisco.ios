@@ -2,8 +2,11 @@
 - debug:
     msg: Start Deleted integration state for ios_lacp_interfaces  ansible_connection={{
       ansible_connection }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Delete LACP attributes for all configured interfaces
       ios_lacp_interfaces: &id001

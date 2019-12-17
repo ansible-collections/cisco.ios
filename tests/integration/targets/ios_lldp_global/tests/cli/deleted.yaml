@@ -2,8 +2,11 @@
 - debug:
     msg: Start Deleted integration state for ios_lldp_global  ansible_connection={{
       ansible_connection }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Delete configured Global LLDP
       ios_lldp_global: &id001

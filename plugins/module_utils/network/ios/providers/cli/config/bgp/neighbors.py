@@ -204,3 +204,19 @@ class AFNeighbors(CliProvider):
         )
         if not config or cmd not in config:
             return cmd
+
+    def _render_prefix_list_in(self, item, config=None):
+        cmd = "neighbor %s prefix-list %s in" % (
+            item["neighbor"],
+            item["prefix_list_in"],
+        )
+        if not config or cmd not in config:
+            return cmd
+
+    def _render_prefix_list_out(self, item, config=None):
+        cmd = "neighbor %s prefix-list %s out" % (
+            item["neighbor"],
+            item["prefix_list_out"],
+        )
+        if not config or cmd not in config:
+            return cmd

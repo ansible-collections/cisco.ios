@@ -9,24 +9,29 @@
       '
     state: present
     provider: '{{ cli }}'
+
 - name: remove login
   ios_banner:
     banner: login
     state: absent
     provider: '{{ cli }}'
   register: result
+
 - debug:
     msg: '{{ result }}'
+
 - assert:
     that:
       - result.changed == true
       - '''no banner login'' in result.commands'
+
 - name: remove login (idempotent)
   ios_banner:
     banner: login
     state: absent
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == false

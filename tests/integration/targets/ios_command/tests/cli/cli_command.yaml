@@ -1,6 +1,7 @@
 ---
 - debug:
     msg: START cli/cli_command.yaml on connection={{ ansible_connection }}
+
 - block:
     - name: get output for single command
       register: result
@@ -19,5 +20,6 @@
         that:
           - result.failed == true
           - result.msg is defined
-  when: ansible_connection == 'network_cli'
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+
 - debug: msg="END cli/cli_command.yaml on connection={{ ansible_connection }}"

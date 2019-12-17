@@ -1,5 +1,6 @@
 ---
 - debug: msg="START cli/error_regex.yaml on connection={{ ansible_connection }}"
+
 - block:
     - name: clear logs 1
       ignore_errors: true
@@ -45,5 +46,6 @@
       assert:
         that:
           - result.failed == false
-  when: ansible_connection == 'network_cli'
+  when: ansible_connection == 'ansible.netcommon.network_cli'
+
 - debug: msg="END cli/error_regex.yaml on connection={{ ansible_connection }}"

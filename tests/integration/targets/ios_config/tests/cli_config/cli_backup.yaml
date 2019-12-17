@@ -1,5 +1,6 @@
 ---
 - debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"
+
 - name: delete configurable backup file path
   file:
     path: '{{ item }}'
@@ -7,34 +8,41 @@
   with_items:
     - '{{ role_path }}/backup_test_dir/'
     - '{{ role_path }}/backup/backup.cfg'
+
 - name: collect any backup files
   find:
     paths: '{{ role_path }}/backup'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_files
   connection: local
+
 - name: delete backup files
   file:
     path: '{{ item.path }}'
     state: absent
   with_items: '{{backup_files.files|default([])}}'
+
 - name: take config backup
   become: true
   register: result
   ansible.netcommon.cli_config:
     backup: true
+
 - assert:
     that:
       - result.changed == true
+
 - name: collect any backup files
   find:
     paths: '{{ role_path }}/backup'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_files
   connection: local
+
 - assert:
     that:
       - backup_files.files is defined
+
 - name: take configuration backup in custom filename and directory path
   become: true
   register: result
@@ -43,17 +51,21 @@
     backup_options:
       filename: backup.cfg
       dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+
 - assert:
     that:
       - result.changed == true
+
 - name: check if the backup file-1 exist
   find:
     paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg'
   register: backup_file
   connection: local
+
 - assert:
     that:
       - backup_file.files is defined
+
 - name: take configuration backup in custom filename
   become: true
   register: result
@@ -61,17 +73,21 @@
     backup: true
     backup_options:
       filename: backup.cfg
+
 - assert:
     that:
       - result.changed == true
+
 - name: check if the backup file-2 exist
   find:
     paths: '{{ role_path }}/backup/backup.cfg'
   register: backup_file
   connection: local
+
 - assert:
     that:
       - backup_file.files is defined
+
 - name: take configuration backup in custom path and default filename
   become: true
   register: result
@@ -79,16 +95,20 @@
     backup: true
     backup_options:
       dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+
 - assert:
     that:
       - result.changed == true
+
 - name: check if the backup file-3 exist
   find:
     paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_file
   connection: local
+
 - assert:
     that:
       - backup_file.files is defined
+
 - debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"

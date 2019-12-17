@@ -2,8 +2,11 @@
 - debug:
     msg: START Replaced ios_vlans state for integration tests on connection={{ ansible_connection
       }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Replaces device configuration of listed VLANs with provided configuration
       ios_vlans: &id001

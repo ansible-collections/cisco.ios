@@ -2,8 +2,11 @@
 - debug:
     msg: START Replaced ios_lldp_global state for integration tests on connection={{
       ansible_connection }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Replaces Global LLDP configuration with provided LLDP configuration
       ios_lldp_global: &id001

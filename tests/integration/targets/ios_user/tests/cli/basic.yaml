@@ -11,6 +11,7 @@
       - name: ansibletest6
     state: absent
     provider: '{{ cli }}'
+
 - name: Create user (SetUp)
   become: true
   ios_user:
@@ -20,11 +21,13 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == true
       - result.commands == ["username ansibletest1 view network-operator", "username
         ansibletest1 privilege 15"]
+
 - name: Collection of users (SetUp)
   become: true
   ios_user:
@@ -35,11 +38,13 @@
     state: present
     view: network-admin
   register: result
+
 - assert:
     that:
       - result.changed == true
       - result.commands == ["username ansibletest2 view network-admin", "username ansibletest3
         view network-admin"]
+
 - name: Add user again (Idempotent)
   become: true
   ios_user:
@@ -49,10 +54,12 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == false
       - result.commands | length == 0
+
 - name: Add collection of users again (Idempotent)
   become: true
   ios_user:
@@ -63,10 +70,12 @@
     state: present
     view: network-admin
   register: result
+
 - assert:
     that:
       - result.changed == false
       - result.commands | length == 0
+
 - name: Create user with password_type (password)
   become: true
   ios_user:
@@ -76,10 +85,12 @@
     provider: '{{ cli }}'
     state: present
   register: result
+
 - assert:
     that:
       - result.changed == true
       - '''username ansibleuser4 password'' in result.commands[0]'
+
 - name: Create user with password_type (secret)
   become: true
   ios_user:
@@ -89,10 +100,12 @@
     provider: '{{ cli }}'
     state: present
   register: result
+
 - assert:
     that:
       - result.changed == true
       - '''username ansibleuser5 secret'' in result.commands[0]'
+
 - name: Create user with hashed_password
   become: true
   ios_user:
@@ -103,10 +116,12 @@
     provider: '{{ cli }}'
     state: present
   register: result
+
 - assert:
     that:
       - result.changed == true
       - '''username ansibleuser6 secret'' in result.commands[0]'
+
 - name: tearDown
   become: true
   ios_user:
@@ -120,6 +135,7 @@
     state: absent
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == true

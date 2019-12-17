@@ -8,6 +8,7 @@ merged:
   after:
   - system:
       priority: 10
+
 replaced:
   before:
     system:
@@ -17,6 +18,7 @@ replaced:
   after:
     system:
       priority: 20
+
 deleted:
   before:
     system:

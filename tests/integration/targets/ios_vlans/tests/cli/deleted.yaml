@@ -2,8 +2,11 @@
 - debug:
     msg: Start Deleted integration state for ios_vlans  ansible_connection={{ ansible_connection
       }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Delete VLANs attributes for all configured VLANs
       ios_vlans: &id001

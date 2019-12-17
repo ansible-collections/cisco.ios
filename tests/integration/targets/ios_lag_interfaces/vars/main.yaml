@@ -17,6 +17,7 @@ merged:
       - member: GigabitEthernet0/2
         mode: passive
     name: Port-channel1
+
 replaced:
   before:
   - name: GigabitEthernet0/0
@@ -41,6 +42,7 @@ replaced:
       - member: GigabitEthernet0/2
         mode: active
     name: Port-channel40
+
 overridden:
   before:
   - name: GigabitEthernet0/0
@@ -62,6 +64,7 @@ overridden:
       - member: GigabitEthernet0/2
         mode: passive
     name: Port-channel10
+
 deleted:
   before:
   - name: GigabitEthernet0/0

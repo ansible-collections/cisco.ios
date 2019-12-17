@@ -4,6 +4,7 @@
     banner: motd
     state: absent
     provider: '{{ cli }}'
+
 - name: Set motd
   ios_banner:
     banner: motd
@@ -17,8 +18,10 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - debug:
     msg: '{{ result }}'
+
 - assert:
     that:
       - result.changed == true
@@ -31,6 +34,7 @@
       string
 
       @'' in result.commands'
+
 - name: Set motd again (idempotent)
   ios_banner:
     banner: motd
@@ -44,6 +48,7 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == false

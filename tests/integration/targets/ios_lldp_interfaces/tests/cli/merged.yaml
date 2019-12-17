@@ -2,8 +2,11 @@
 - debug:
     msg: START Merged ios_lldp_interfaces state for integration tests on connection={{
       ansible_connection }}
+
 - include_tasks: _enable_lldp.yaml
+
 - include_tasks: _remove_config.yaml
+
 - block:
     - name: Merge the provided configuration with the exisiting running configuration
       ios_lldp_interfaces: &id001

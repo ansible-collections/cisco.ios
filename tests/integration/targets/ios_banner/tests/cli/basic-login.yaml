@@ -4,6 +4,7 @@
     banner: login
     state: absent
     provider: '{{ cli }}'
+
 - name: Set login
   ios_banner:
     banner: login
@@ -17,8 +18,10 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - debug:
     msg: '{{ result }}'
+
 - assert:
     that:
       - result.changed == true
@@ -31,6 +34,7 @@
       string
 
       @'' in result.commands'
+
 - name: Set login again (idempotent)
   ios_banner:
     banner: login
@@ -44,6 +48,7 @@
     state: present
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == false
