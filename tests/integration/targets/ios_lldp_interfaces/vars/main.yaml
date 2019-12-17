@@ -29,6 +29,7 @@ merged:
   - name: GigabitEthernet0/2
     receive: true
     transmit: false
+
 replaced:
   before:
   - name: GigabitEthernet0/0
@@ -55,6 +56,7 @@ replaced:
   - name: GigabitEthernet0/2
     receive: true
     transmit: false
+
 overridden:
   before:
   - name: GigabitEthernet0/0
@@ -82,6 +84,7 @@ overridden:
   - name: GigabitEthernet0/2
     receive: true
     transmit: false
+
 deleted:
   before:
   - name: GigabitEthernet0/0

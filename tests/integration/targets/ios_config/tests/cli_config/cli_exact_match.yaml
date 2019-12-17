@@ -1,28 +1,35 @@
 ---
 - debug: msg="START cli_config/cli_exact_match.yaml on connection={{ ansible_connection
     }}"
+
 - name: setup - remove configuration
   ansible.netcommon.cli_config:
     config: '{{ lookup(''template'', ''basic/setupexact.j2'') }}'
     diff_match: none
+
 - name: configure using exact match
   register: result
   ansible.netcommon.cli_config:
     config: '{{ lookup(''template'', ''basic/configexact1.j2'') }}'
     diff_match: exact
+
 - assert:
     that:
       - result.changed == true
+
 - name: check using exact match
   register: result
   ansible.netcommon.cli_config:
     config: '{{ lookup(''template'', ''basic/configexact2.j2'') }}'
+
 - assert:
     that:
       - result.changed == false
+
 - name: teardown
   ansible.netcommon.cli_config:
     config: no ip access-list extended test
     diff_match: none
+
 - debug: msg="END cli_config/cli_exact_match.yaml on connection={{ ansible_connection
     }}"

@@ -1,9 +1,11 @@
 ---
 - debug: msg="START ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"
+
 - name: Clear existing BGP config
   ios_bgp:
     operation: delete
   ignore_errors: true
+
 - block:
     - name: Add fake config with 'bgp' string
       ios_config:
@@ -122,6 +124,10 @@
               remote_as: 64511
               description: EBGP_NBR_1
               local_as: 64497
+            - neighbor: 10.10.20.20
+              remote_as: 65012
+              description: BGP_NBR_2
+              ebgp_multihop: 100
       register: result
     - assert:
         that:
@@ -129,6 +135,8 @@
           - '''neighbor 203.0.113.10 remote-as 64511'' in result.commands'
           - '''neighbor 203.0.113.10 description EBGP_NBR_1'' in result.commands'
           - '''neighbor 203.0.113.10 local-as 64497'' in result.commands'
+          - '''neighbor 10.10.20.20 remote-as 65012'' in result.commands'
+          - '''neighbor 10.10.20.20 description BGP_NBR_2'' in result.commands'
           - '''no neighbor 192.0.2.10'' in result.commands'
     - name: Configure BGP neighbors with operation replace (idempotent)
       ios_bgp: *id003
@@ -201,6 +209,10 @@
                 - neighbor: 192.0.2.15
                   activate: true
                   route_reflector_client: true
+                - neighbor: 10.10.20.20
+                  activate: true
+                  prefix_list_in: incoming-prefixes
+                  prefix_list_out: outgoing-prefixes
       register: result
     - assert:
         that:
@@ -212,6 +224,9 @@
           - '''neighbor 203.0.113.10 advertisement-interval 120'' in result.commands'
           - '''neighbor 192.0.2.15 activate'' in result.commands'
           - '''neighbor 192.0.2.15 route-reflector-client'' in result.commands'
+          - '''neighbor 10.10.20.20 activate'' in result.commands'
+          - '''neighbor 10.10.20.20 prefix-list incoming-prefixes in'' in result.commands'
+          - '''neighbor 10.10.20.20 prefix-list outgoing-prefixes out'' in result.commands'
     - name: Configure BGP neighbors under address family mode (idempotent)
       ios_bgp: *id006
       register: result
@@ -413,4 +428,5 @@
     - assert:
         that:
           - result.changed == false
+
 - debug: msg="END ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"

@@ -1,5 +1,6 @@
 ---
 - debug: msg="START cli/save.yaml on connection={{ ansible_connection }}"
+
 - name: setup
   ios_config:
     commands:
@@ -9,13 +10,16 @@
       - interface Loopback999
     match: none
     save_when: modified
+
 - name: save should always run
   ios_config:
     save_when: always
   register: result
+
 - assert:
     that:
       - result.changed == true
+
 - name: delete config (setup)
   ios_config:
     replace: line
@@ -23,6 +27,7 @@
       - no ip http server
     save_when: modified
   register: result
+
 - name: save should run when changed
   ios_config:
     replace: line
@@ -30,12 +35,15 @@
       - ip http server
     save_when: modified
   register: result
+
 - assert:
     that:
       - result.changed == true
+
 - name: teardown
   ios_config:
     lines:
       - no ip http server
   register: result
+
 - debug: msg="END cli/save.yaml on connection={{ ansible_connection }}"

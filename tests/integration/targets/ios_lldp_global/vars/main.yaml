@@ -11,6 +11,7 @@ merged:
     holdtime: 10
     reinit: 3
     enabled: true
+
 replaced:
   before:
     timer: 100
@@ -25,6 +26,7 @@ replaced:
   after:
     holdtime: 10
     reinit: 3
+
 deleted:
   before:
     timer: 100

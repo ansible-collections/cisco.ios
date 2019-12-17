@@ -24,6 +24,7 @@ merged:
     port_priority: 30
   - name: GigabitEthernet0/2
     port_priority: 20
+
 replaced:
   before:
   - fast_switchover: true
@@ -53,6 +54,7 @@ replaced:
     port_priority: 10
   - name: GigabitEthernet0/2
     port_priority: 20
+
 overridden:
   before:
   - fast_switchover: true
@@ -85,6 +87,7 @@ overridden:
   - name: GigabitEthernet0/1
   - name: GigabitEthernet0/2
     port_priority: 40
+
 deleted:
   before:
   - fast_switchover: true

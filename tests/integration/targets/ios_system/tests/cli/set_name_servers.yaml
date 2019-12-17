@@ -1,12 +1,14 @@
 ---
 - debug: msg="START cli/set_name_servers.yaml on connection={{ ansible_connection
     }}"
+
 - name: setup
   ios_config:
     lines:
       - no ip name-server
     match: none
     provider: '{{ cli }}'
+
 - name: configure name_servers
   ios_system:
     name_servers:
@@ -15,6 +17,7 @@
       - 192.0.2.3
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == true
@@ -22,6 +25,7 @@
       - '''ip name-server 192.0.2.1'' in result.commands'
       - '''ip name-server 192.0.2.2'' in result.commands'
       - '''ip name-server 192.0.2.3'' in result.commands'
+
 - name: verify name_servers
   ios_system:
     name_servers:
@@ -30,9 +34,11 @@
       - 192.0.2.3
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == false
+
 - name: remove one
   ios_system:
     name_servers:
@@ -40,15 +46,18 @@
       - 192.0.2.2
     provider: '{{ cli }}'
   register: result
+
 - assert:
     that:
       - result.changed == true
       - result.commands|length == 1
       - '''no ip name-server 192.0.2.3'' in result.commands'
+
 - name: teardown
   ios_config:
     lines:
       - no ip name-server
     match: none
     provider: '{{ cli }}'
+
 - debug: msg="END cli/set_name_servers.yaml on connection={{ ansible_connection }}"

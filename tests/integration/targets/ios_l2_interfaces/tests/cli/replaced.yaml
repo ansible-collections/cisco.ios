@@ -2,8 +2,11 @@
 - debug:
     msg: START Replaced ios_l2_interfaces state for integration tests on connection={{
       ansible_connection }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Replaces device L2 configuration from listed interfaces with provided configuration
       ios_l2_interfaces: &id001

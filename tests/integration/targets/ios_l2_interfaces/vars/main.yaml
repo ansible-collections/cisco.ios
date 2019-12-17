@@ -27,6 +27,7 @@ merged:
       pruning_vlans:
         - '10'
         - '20'
+
 replaced:
   before:
   - name: GigabitEthernet0/0
@@ -62,6 +63,7 @@ replaced:
       pruning_vlans:
         - 10-20
         - '30'
+
 overridden:
   before:
   - name: GigabitEthernet0/0
@@ -96,6 +98,7 @@ overridden:
         - '40'
       encapsulation: isl
       native_vlan: 30
+
 deleted:
   before:
   - name: GigabitEthernet0/0

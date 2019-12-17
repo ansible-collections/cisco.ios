@@ -2,8 +2,11 @@
 - debug:
     msg: START Overridden ios_vlans state for integration tests on connection={{ ansible_connection
       }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Override device configuration of all VLANs with provided configuration
       ios_vlans: &id001

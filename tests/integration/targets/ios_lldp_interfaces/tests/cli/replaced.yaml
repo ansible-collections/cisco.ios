@@ -2,9 +2,13 @@
 - debug:
     msg: START Replaced ios_lldp_interfaces state for integration tests on connection={{
       ansible_connection }}
+
 - include_tasks: _enable_lldp.yaml
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Replaces device configuration of listed lldp_interfaces with provided configuration
       ios_lldp_interfaces: &id001

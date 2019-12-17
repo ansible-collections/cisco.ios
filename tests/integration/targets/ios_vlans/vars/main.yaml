@@ -83,6 +83,7 @@ merged:
     shutdown: enabled
     state: active
     vlan_id: 1005
+
 replaced:
   before:
   - mtu: 1500
@@ -173,6 +174,7 @@ replaced:
     shutdown: enabled
     state: active
     vlan_id: 1005
+
 overridden:
   before:
   - mtu: 1500
@@ -260,6 +262,7 @@ overridden:
     shutdown: enabled
     state: active
     vlan_id: 1005
+
 deleted:
   before:
   - mtu: 1500

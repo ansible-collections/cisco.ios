@@ -49,6 +49,7 @@ merged:
     mtu: 2800
     name: GigabitEthernet0/2
     speed: '100'
+
 replaced:
   before:
   - enabled: true
@@ -101,6 +102,7 @@ replaced:
     enabled: true
     name: GigabitEthernet0/2
     speed: '10'
+
 overridden:
   before:
   - enabled: true
@@ -152,6 +154,7 @@ overridden:
     mtu: 2000
     name: GigabitEthernet0/2
     speed: auto
+
 deleted:
   before:
   - enabled: true

@@ -1,6 +1,8 @@
 ---
 - debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
+
 - set_fact: switch_type="{{ switch_type }}"
+
 - block:
     - name: setup - remove config used in test(part1)
       ios_config:
@@ -141,4 +143,5 @@
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
   when: switch_type == 'L2'
+
 - debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

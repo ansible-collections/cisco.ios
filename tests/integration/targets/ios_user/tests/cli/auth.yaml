@@ -37,6 +37,7 @@
       register: result
     - name: reset connection
       meta: reset_connection
+
 - block:
     - name: Ensure ssh key is not world readable
       file:

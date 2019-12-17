@@ -2,8 +2,11 @@
 - debug:
     msg: START Overridden ios_lag_interfaces state for integration tests on connection={{
       ansible_connection }}
+
 - include_tasks: _remove_config.yaml
+
 - include_tasks: _populate_config.yaml
+
 - block:
     - name: Override device configuration of all interfaces with provided configuration
       ios_lag_interfaces: &id001
