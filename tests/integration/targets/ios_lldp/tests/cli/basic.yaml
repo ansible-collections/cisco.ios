@@ -2,15 +2,15 @@
 - debug: msg="START ios_lldp cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Make sure LLDP is not running before tests
-  ios_config:
+  cisco.ios.ios_config:
     lines: no lldp run
     provider: '{{ cli }}'
 
 - name: Enable LLDP service
-  ios_lldp:
+  register: result
+  cisco.ios.ios_lldp:
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -18,20 +18,20 @@
       - '"lldp run" in result.commands'
 
 - name: Enable LLDP service again (idempotent)
-  ios_lldp:
+  register: result
+  cisco.ios.ios_lldp:
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: Disable LLDP service
-  ios_lldp:
+  register: result
+  cisco.ios.ios_lldp:
     state: absent
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -39,10 +39,10 @@
       - '"no lldp run" in result.commands'
 
 - name: Disable LLDP service (idempotent)
-  ios_lldp:
+  register: result
+  cisco.ios.ios_lldp:
     state: absent
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

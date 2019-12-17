@@ -9,12 +9,12 @@
 
 - block:
     - name: Replaces system LACP configuration provided LACP configuration
-      ios_lacp: &id001
+      register: result
+      cisco.ios.ios_lacp: &id001
         config:
           system:
             priority: 20
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -29,8 +29,8 @@
         that:
           - '{{ replaced[''before''] == result[''before''] }}'
     - name: Replaces system LACP configuration provided LACP configuration (IDEMPOTENT)
-      ios_lacp: *id001
       register: result
+      cisco.ios.ios_lacp: *id001
     - name: Assert that task was idempotent
       assert:
         that:

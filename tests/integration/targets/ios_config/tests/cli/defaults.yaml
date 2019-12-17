@@ -2,7 +2,7 @@
 - debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - shutdown
@@ -11,10 +11,10 @@
     match: none
 
 - name: configure device with defaults included
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
-  register: result
 
 - debug: var=result
 
@@ -23,10 +23,10 @@
       - result.changed == true
 
 - name: check device with defaults included
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
-  register: result
 
 - debug: var=result
 
@@ -36,16 +36,16 @@
       - result.updates is not defined
 
 - name: Check device is in proper prompt after error
-  ios_config:
+  ignore_errors: true
+  cisco.ios.ios_config:
     lines:
       - mac-address-table notification mac-move
-  ignore_errors: true
 
 - name: show interfaces brief to ensure deivce goes to valid prompt
-  ios_command:
+  register: result
+  cisco.ios.ios_command:
     commands:
       - show interfaces
-  register: result
 
 - assert:
     that:

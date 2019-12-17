@@ -9,9 +9,9 @@
 
 - block:
     - name: Delete attributes of all configured interfaces
-      ios_lag_interfaces: &id001
-        state: deleted
       register: result
+      cisco.ios.ios_lag_interfaces: &id001
+        state: deleted
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -28,8 +28,8 @@
           - '{{ deleted[''after''] | symmetric_difference(result[''after'']) | length
             == 0 }}'
     - name: Delete attributes of all configured interfaces (IDEMPOTENT)
-      ios_lag_interfaces: *id001
       register: result
+      cisco.ios.ios_lag_interfaces: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

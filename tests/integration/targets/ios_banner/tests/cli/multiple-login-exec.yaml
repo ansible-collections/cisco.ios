@@ -1,6 +1,9 @@
 ---
 - name: Setup - set login and exec
-  ios_banner:
+  loop:
+    - login
+    - exec
+  cisco.ios.ios_banner:
     banner: '{{ item }}'
     text: 'this is my login banner
 
@@ -11,12 +14,10 @@
       '
     state: present
     provider: '{{ cli }}'
-  loop:
-    - login
-    - exec
 
 - name: Set login
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: login
     text: 'this is my login banner
 
@@ -27,7 +28,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - debug:
     msg: '{{ result }}'
@@ -38,7 +38,8 @@
       - result.commands | length == 0
 
 - name: Set exec
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: exec
     text: 'this is my login banner
 
@@ -49,7 +50,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - debug:
     msg: '{{ result }}'

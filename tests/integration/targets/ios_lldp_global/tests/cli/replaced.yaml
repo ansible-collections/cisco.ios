@@ -9,12 +9,12 @@
 
 - block:
     - name: Replaces Global LLDP configuration with provided LLDP configuration
-      ios_lldp_global: &id001
+      register: result
+      cisco.ios.ios_lldp_global: &id001
         config:
           holdtime: 20
           reinit: 5
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -29,8 +29,8 @@
         that:
           - '{{ replaced[''before''] == result[''before''] }}'
     - name: Replaces Global LLDP configuration with provided LLDP configuration (IDEMPOTENT)
-      ios_lldp_global: *id001
       register: result
+      cisco.ios.ios_lldp_global: *id001
     - name: Assert that task was idempotent
       assert:
         that:

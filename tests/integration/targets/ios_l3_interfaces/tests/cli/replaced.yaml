@@ -9,7 +9,8 @@
 
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
-      ios_l3_interfaces: &id001
+      register: result
+      cisco.ios.ios_l3_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             ipv4:
@@ -20,7 +21,6 @@
                 secondary: true
               - address: 198.51.100.2/24
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -38,8 +38,8 @@
             == 0 }}'
     - name: Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
-      ios_l3_interfaces: *id001
       register: result
+      cisco.ios.ios_l3_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

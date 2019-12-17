@@ -7,7 +7,8 @@
 
 - block:
     - name: Merge provided configuration with device configuration
-      ios_l2_interfaces: &id001
+      register: result
+      cisco.ios.ios_l2_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             access:
@@ -19,7 +20,6 @@
               pruning_vlans: 10,20
               encapsulation: dot1q
         state: merged
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -36,8 +36,8 @@
           - '{{ merged[''after''] | symmetric_difference(result[''after'']) | length ==
             0 }}'
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
-      ios_l2_interfaces: *id001
       register: result
+      cisco.ios.ios_l2_interfaces: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

@@ -7,7 +7,8 @@
 
 - block:
     - name: Merge provided configuration with device configuration
-      ios_interfaces: &id001
+      register: result
+      cisco.ios.ios_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             description: Configured and Merged by Ansible-Network
@@ -21,7 +22,6 @@
             speed: 100
             duplex: full
         state: merged
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -38,8 +38,8 @@
           - '{{ merged[''after''] | symmetric_difference(result[''after'']) | length ==
             0 }}'
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
-      ios_interfaces: *id001
       register: result
+      cisco.ios.ios_interfaces: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

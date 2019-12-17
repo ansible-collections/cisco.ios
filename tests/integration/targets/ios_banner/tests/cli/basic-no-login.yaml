@@ -1,6 +1,6 @@
 ---
 - name: Setup
-  ios_banner:
+  cisco.ios.ios_banner:
     banner: login
     text: 'Junk login banner
 
@@ -11,11 +11,11 @@
     provider: '{{ cli }}'
 
 - name: remove login
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: login
     state: absent
     provider: '{{ cli }}'
-  register: result
 
 - debug:
     msg: '{{ result }}'
@@ -26,11 +26,11 @@
       - '''no banner login'' in result.commands'
 
 - name: remove login (idempotent)
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: login
     state: absent
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

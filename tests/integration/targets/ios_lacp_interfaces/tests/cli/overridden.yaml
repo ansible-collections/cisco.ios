@@ -9,7 +9,8 @@
 
 - block:
     - name: Override device configuration of all lacp_interfaces with provided configuration
-      ios_lacp_interfaces: &id001
+      register: result
+      cisco.ios.ios_lacp_interfaces: &id001
         config:
           - name: GigabitEthernet0/2
             port_priority: 40
@@ -17,7 +18,6 @@
             fast_switchover: true
             max_bundle: 2
         state: overridden
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -35,8 +35,8 @@
             == 0 }}'
     - name: Override device configuration of all lacp_interfaces with provided configuration
         (IDEMPOTENT)
-      ios_lacp_interfaces: *id001
       register: result
+      cisco.ios.ios_lacp_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

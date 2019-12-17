@@ -3,7 +3,7 @@
     }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
@@ -11,12 +11,12 @@
     provider: '{{ cli }}'
 
 - name: configure domain_search
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -25,23 +25,23 @@
       - '''ip domain list redhat.com'' in result.commands'
 
 - name: verify domain_search
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: remove one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -49,23 +49,23 @@
       - '''no ip domain list redhat.com'' in result.commands'
 
 - name: verify remove one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: add one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -73,24 +73,24 @@
       - '''ip domain list redhat.com'' in result.commands'
 
 - name: verify add one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: add and remove one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -100,19 +100,19 @@
       - result.commands|length == 2
 
 - name: verify add and remove one entry
-  ios_system:
+  register: result
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: teardown
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com

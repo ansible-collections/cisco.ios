@@ -7,7 +7,8 @@
 
 - block:
     - name: Merge provided configuration with device configuration
-      ios_lag_interfaces: &id001
+      register: result
+      cisco.ios.ios_lag_interfaces: &id001
         config:
           - name: Port-channel1
             members:
@@ -16,7 +17,6 @@
               - member: GigabitEthernet0/2
                 mode: passive
         state: merged
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -33,8 +33,8 @@
           - '{{ merged[''after''] | symmetric_difference(result[''after'']) | length ==
             0 }}'
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
-      ios_lag_interfaces: *id001
       register: result
+      cisco.ios.ios_lag_interfaces: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

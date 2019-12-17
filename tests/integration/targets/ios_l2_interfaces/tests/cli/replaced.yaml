@@ -9,7 +9,8 @@
 
 - block:
     - name: Replaces device L2 configuration from listed interfaces with provided configuration
-      ios_l2_interfaces: &id001
+      register: result
+      cisco.ios.ios_l2_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             access:
@@ -20,7 +21,6 @@
               pruning_vlans: 10-20,30
               encapsulation: dot1q
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -38,8 +38,8 @@
             == 0 }}'
     - name: Replaces device L2 configuration from listed interfaces with provided configuration
         (IDEMPOTENT)
-      ios_l2_interfaces: *id001
       register: result
+      cisco.ios.ios_l2_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

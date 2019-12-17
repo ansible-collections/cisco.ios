@@ -2,7 +2,8 @@
 - debug: msg="START cli/contains.yaml on connection={{ ansible_connection }}"
 
 - name: test contains operator
-  ios_command:
+  register: result
+  cisco.ios.ios_command:
     commands:
       - show version
       - show interface loopback 888
@@ -10,7 +11,6 @@
     wait_for:
       - result[0] contains Cisco
       - result[1] contains Loopback888
-  register: result
 
 - assert:
     that:

@@ -1,12 +1,13 @@
 ---
 - name: setup - remove login
-  ios_banner:
+  cisco.ios.ios_banner:
     banner: login
     state: absent
     provider: '{{ cli }}'
 
 - name: Set login
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: login
     text: 'this is my login banner
 
@@ -17,7 +18,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - debug:
     msg: '{{ result }}'
@@ -36,7 +36,8 @@
       @'' in result.commands'
 
 - name: Set login again (idempotent)
-  ios_banner:
+  register: result
+  cisco.ios.ios_banner:
     banner: login
     text: 'this is my login banner
 
@@ -47,7 +48,6 @@
       '
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

@@ -9,9 +9,9 @@
 
 - block:
     - name: Delete configured System LACP
-      ios_lacp: &id001
-        state: deleted
       register: result
+      cisco.ios.ios_lacp: &id001
+        state: deleted
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -26,8 +26,8 @@
         that:
           - '{{ deleted[''before''] == result[''before''] }}'
     - name: Delete configured System LACP (IDEMPOTENT)
-      ios_lacp: *id001
       register: result
+      cisco.ios.ios_lacp: *id001
     - name: Assert that the previous task was idempotent
       assert:
         that:

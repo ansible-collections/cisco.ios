@@ -9,7 +9,8 @@
 
 - block:
     - name: Override device L2 configuration from all interfaces with provided configuration
-      ios_l2_interfaces: &id001
+      register: result
+      cisco.ios.ios_l2_interfaces: &id001
         config:
           - name: GigabitEthernet0/2
             trunk:
@@ -17,7 +18,6 @@
               native_vlan: 30
               encapsulation: isl
         state: overridden
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -35,8 +35,8 @@
             == 0 }}'
     - name: Override device L2 configuration from all interfaces with provided configuration
         (IDEMPOTENT)
-      ios_l2_interfaces: *id001
       register: result
+      cisco.ios.ios_l2_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

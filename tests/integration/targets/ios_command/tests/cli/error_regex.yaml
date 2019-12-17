@@ -15,11 +15,11 @@
       ansible.netcommon.cli_command: &id002
         command: 'send log ''IPSEC-3-REPLAY_ERROR: test log_1'''
     - name: fetch logs without command specific error regex
-      ios_command:
-        commands:
-          - show logging
       register: result
       ignore_errors: true
+      cisco.ios.ios_command:
+        commands:
+          - show logging
     - name: ensure task fails due to mismatched regex
       assert:
         that:
@@ -34,14 +34,14 @@
       ignore_errors: true
       ansible.netcommon.cli_command: *id002
     - name: fetch logs with command specific error regex
-      ios_command:
-        commands:
-          - show logging
       register: result
       vars:
         ansible_terminal_stderr_re:
           - pattern: connection timed out
             flags: re.I
+      cisco.ios.ios_command:
+        commands:
+          - show logging
     - name: ensure task with modified error regex is success
       assert:
         that:

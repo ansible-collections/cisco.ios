@@ -5,29 +5,29 @@
 
 - block:
     - name: Merged with empty config should give appropriate error message
-      ios_vlans:
-        config:
-        state: merged
       register: result
       ignore_errors: true
+      cisco.ios.ios_vlans:
+        config:
+        state: merged
     - assert:
         that:
           - result.msg == 'value of config parameter must not be empty for state merged'
     - name: Replaced with empty config should give appropriate error message
-      ios_vlans:
-        config:
-        state: replaced
       register: result
       ignore_errors: true
+      cisco.ios.ios_vlans:
+        config:
+        state: replaced
     - assert:
         that:
           - result.msg == 'value of config parameter must not be empty for state replaced'
     - name: Overridden with empty config should give appropriate error message
-      ios_vlans:
-        config:
-        state: overridden
       register: result
       ignore_errors: true
+      cisco.ios.ios_vlans:
+        config:
+        state: overridden
     - assert:
         that:
           - result.msg == 'value of config parameter must not be empty for state overridden'

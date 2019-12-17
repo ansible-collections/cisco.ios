@@ -2,7 +2,7 @@
 - debug: msg="START cli/src_basic.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - no shutdown
@@ -11,9 +11,9 @@
     match: none
 
 - name: configure device with config
-  ios_config:
-    src: basic/config.j2
   register: result
+  cisco.ios.ios_config:
+    src: basic/config.j2
 
 - name: debug, remove me
   debug:
@@ -24,16 +24,18 @@
       - result.changed == true
 
 - name: check device with config
-  ios_config:
-    src: basic/config.j2
   register: result
+  cisco.ios.ios_config:
+    src: basic/config.j2
 
 - assert:
     that:
       - result.changed == false
 
 - name: check for empty diff
-  ios_config:
+  check_mode: true
+  register: result
+  cisco.ios.ios_config:
     running_config: 'service timestamps debug datetime msec
 
       service timestamps log datetime msec
@@ -42,15 +44,15 @@
     lines:
       - service timestamps debug datetime msec
       - service timestamps log datetime msec
-  check_mode: true
-  register: result
 
 - assert:
     that:
       - result.updates is undefined
 
 - name: check for diff with ignore lines for running config
-  ios_config:
+  check_mode: true
+  register: result
+  cisco.ios.ios_config:
     running_config: 'service timestamps debug datetime msec
 
       service timestamps log datetime msec
@@ -60,8 +62,6 @@
       - service timestamps debug datetime msec
       - service timestamps log datetime msec
     diff_ignore_lines: service timestamps log datetime msec
-  check_mode: true
-  register: result
 
 - assert:
     that:

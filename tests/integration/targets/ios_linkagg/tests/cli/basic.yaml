@@ -5,51 +5,51 @@
 
 - block:
     - name: setup - remove config used in test(part1)
-      ios_config:
+      ignore_errors: true
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
         provider: '{{ cli }}'
-      ignore_errors: true
     - name: setup - remove config used in test(part2)
-      ios_config:
+      ignore_errors: true
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: '{{ cli }}'
-      ignore_errors: true
     - name: setup - remove config used in test(part3)
-      ios_config:
+      loop:
+        - interface GigabitEthernet0/1
+        - interface GigabitEthernet0/2
+      cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         provider: '{{ cli }}'
         parents: '{{ item }}'
-      loop:
-        - interface GigabitEthernet0/1
-        - interface GigabitEthernet0/2
     - name: create linkagg
-      ios_linkagg: &id001
+      register: result
+      cisco.ios.ios_linkagg: &id001
         group: 20
         state: present
         provider: '{{ cli }}'
-      register: result
     - assert:
         that:
           - result.changed == true
           - '''interface port-channel 20'' in result.commands'
     - name: create linkagg(Idempotence)
-      ios_linkagg: *id001
       register: result
+      cisco.ios.ios_linkagg: *id001
     - assert:
         that:
           - result.changed == false
     - name: set link aggregation group to members
-      ios_linkagg: &id002
+      register: result
+      cisco.ios.ios_linkagg: &id002
         group: 20
         mode: active
         members:
           - GigabitEthernet0/1
           - GigabitEthernet0/2
         provider: '{{ cli }}'
-      register: result
     - assert:
         that:
           - result.changed == true
@@ -58,48 +58,49 @@
           - '''interface GigabitEthernet0/2'' in result.commands'
           - '''channel-group 20 mode active'' in result.commands'
     - name: set link aggregation group to members(Idempotence)
-      ios_linkagg: *id002
       register: result
+      cisco.ios.ios_linkagg: *id002
     - assert:
         that:
           - result.changed == false
     - name: remove link aggregation group from member
-      ios_linkagg: &id003
+      register: result
+      cisco.ios.ios_linkagg: &id003
         group: 20
         mode: active
         members:
           - GigabitEthernet0/2
         provider: '{{ cli }}'
-      register: result
     - assert:
         that:
           - result.changed == true
           - '''interface GigabitEthernet0/1'' in result.commands'
           - '''no channel-group 20 mode active'' in result.commands'
     - name: remove link aggregation group from member(Idempotence)
-      ios_linkagg: *id003
       register: result
+      cisco.ios.ios_linkagg: *id003
     - assert:
         that:
           - result.changed == false
     - name: remove linkagg
-      ios_linkagg: &id004
+      register: result
+      cisco.ios.ios_linkagg: &id004
         group: 20
         state: absent
         provider: '{{ cli }}'
-      register: result
     - assert:
         that:
           - result.changed == true
           - '''no interface port-channel 20'' in result.commands'
     - name: remove linkagg(Idempotence)
-      ios_linkagg: *id004
       register: result
+      cisco.ios.ios_linkagg: *id004
     - assert:
         that:
           - result.changed == false
     - name: create aggregate of linkagg definitions
-      ios_linkagg: &id005
+      register: result
+      cisco.ios.ios_linkagg: &id005
         aggregate:
           - group: 5
           - group: 20
@@ -107,7 +108,6 @@
             members:
               - GigabitEthernet0/1
         provider: '{{ cli }}'
-      register: result
     - assert:
         that:
           - result.changed == true
@@ -116,32 +116,32 @@
           - '''interface GigabitEthernet0/1'' in result.commands'
           - '''channel-group 20 mode active'' in result.commands'
     - name: create aggregate of linkagg definitions(Idempotence)
-      ios_linkagg: *id005
       register: result
+      cisco.ios.ios_linkagg: *id005
     - assert:
         that:
           - result.changed == false
     - name: teardown(part1)
-      ios_config:
+      ignore_errors: true
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
         provider: '{{ cli }}'
-      ignore_errors: true
     - name: teardown(part2)
-      ios_config:
+      ignore_errors: true
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: '{{ cli }}'
-      ignore_errors: true
     - name: teardown(part3)
-      ios_config:
+      loop:
+        - interface GigabitEthernet0/1
+        - interface GigabitEthernet0/2
+      cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         provider: '{{ cli }}'
         parents: '{{ item }}'
-      loop:
-        - interface GigabitEthernet0/1
-        - interface GigabitEthernet0/2
   when: switch_type == 'L2'
 
 - debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

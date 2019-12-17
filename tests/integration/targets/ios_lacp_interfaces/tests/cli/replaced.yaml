@@ -9,14 +9,14 @@
 
 - block:
     - name: Replaces device configuration of listed lacp_interfaces with provided configuration
-      ios_lacp_interfaces: &id001
+      register: result
+      cisco.ios.ios_lacp_interfaces: &id001
         config:
           - name: GigabitEthernet0/1
             port_priority: 10
           - name: Port-channel40
             fast_switchover: true
         state: replaced
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -34,8 +34,8 @@
             == 0 }}'
     - name: Replaces device configuration of listed lacp_interfaces with provided configuration
         (IDEMPOTENT)
-      ios_lacp_interfaces: *id001
       register: result
+      cisco.ios.ios_lacp_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

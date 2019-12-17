@@ -9,7 +9,8 @@
 
 - block:
     - name: Override device configuration of all interfaces with provided configuration
-      ios_interfaces: &id001
+      register: result
+      cisco.ios.ios_interfaces: &id001
         config:
           - name: GigabitEthernet0/2
             description: Configured and Overridden by Ansible-Network
@@ -17,7 +18,6 @@
             duplex: full
             mtu: 2000
         state: overridden
-      register: result
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -35,8 +35,8 @@
             == 0 }}'
     - name: Override device configuration of all interfaces with provided configuration
         (IDEMPOTENT)
-      ios_interfaces: *id001
       register: result
+      cisco.ios.ios_interfaces: *id001
     - name: Assert that task was idempotent
       assert:
         that:

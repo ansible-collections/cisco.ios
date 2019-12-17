@@ -2,16 +2,16 @@
 - debug: msg="START cli/toplevel.yaml on connection={{ ansible_connection }}"
 
 - name: setup
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - hostname {{ shorter_hostname }}
     match: none
 
 - name: configure top level command
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - hostname foo
-  register: result
 
 - assert:
     that:
@@ -19,17 +19,17 @@
       - '''hostname foo'' in result.updates'
 
 - name: configure top level command idempotent check
-  ios_config:
+  register: result
+  cisco.ios.ios_config:
     lines:
       - hostname foo
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: teardown
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       - hostname {{ shorter_hostname }}
     match: none

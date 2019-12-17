@@ -2,11 +2,11 @@
 - debug: msg="START cli/all_facts.yaml on connection={{ ansible_connection }}"
 
 - name: test getting all facts
-  ios_facts:
+  register: result
+  cisco.ios.ios_facts:
     gather_subset:
       - all
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
