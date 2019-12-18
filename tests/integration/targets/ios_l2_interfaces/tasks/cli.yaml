@@ -18,7 +18,8 @@
 - name: Run test case (connection=ansible.netcommon.network_cli)
   include: '{{ test_case_to_run }}'
   vars:
-    ansible_connection: cisco.netcommon.ansible.netcommon.network_cli
+    ansible_connection: ansible.netcommon.network_cli
   with_items: '{{ test_items }}'
   loop_control:
     loop_var: test_case_to_run
+  tags: connection_network_cli
