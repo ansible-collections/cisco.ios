@@ -10,12 +10,12 @@
     provider: '{{ cli }}'
 
 - name: configure domain_search using platform agnostic module
-  net_system:
+  register: result
+  ansible.netcommon.net_system:
     domain_search:
       - ansible.com
       - redhat.com
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:

@@ -3,7 +3,7 @@
     }}"
 
 - name: delete static route - setup
-  net_static_route: &id001
+  ansible.netcommon.net_static_route: &id001
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
@@ -11,14 +11,14 @@
     provider: '{{ cli }}'
 
 - name: create static route using platform agnostic module
-  net_static_route:
+  register: result
+  ansible.netcommon.net_static_route:
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     admin_distance: 1
     state: present
     provider: '{{ cli }}'
-  register: result
 
 - assert:
     that:
@@ -26,7 +26,7 @@
       - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8 1"]
 
 - name: delete static route - teardown
-  net_static_route: *id001
+  ansible.netcommon.net_static_route: *id001
 
 - debug: msg="END ios cli/net_static_route.yaml on connection={{ ansible_connection
     }}"
