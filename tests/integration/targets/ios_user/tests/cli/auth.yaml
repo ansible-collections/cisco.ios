@@ -58,7 +58,7 @@
         role: network-operator
         state: present
         provider: '{{ cli }}'
-        sshkey: '{{ lookup(''file'', ''files/test_rsa.pub'') }}'
+        sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
     - name: test sshkey login
       shell: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)

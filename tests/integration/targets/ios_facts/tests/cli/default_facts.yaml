@@ -9,11 +9,11 @@
 - assert:
     that:
       - result.changed == false
-      - '''hardware'' in result.ansible_facts.ansible_net_gather_subset'
-      - '''default'' in result.ansible_facts.ansible_net_gather_subset'
-      - '''interfaces'' in result.ansible_facts.ansible_net_gather_subset'
+      - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
+      - "'default' in result.ansible_facts.ansible_net_gather_subset"
+      - "'interfaces' in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_filesystems is defined
-      - '''config'' not in result.ansible_facts.ansible_net_gather_subset'
+      - "'config' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_filesystems is defined
       - result.ansible_facts.ansible_net_memtotal_mb > 10
       - result.ansible_facts.ansible_net_interfaces | length > 1
@@ -21,7 +21,7 @@
 
 - assert:
     that: '{{ item.value.spacetotal_kb }} > {{ item.value.spacefree_kb }}'
-  loop: '{{ lookup(''dict'', result.ansible_facts.ansible_net_filesystems_info,
-    wantlist=True) }}'
+  loop: "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True)\
+    \ }}"
 
 - debug: msg="END cli/default.yaml on connection={{ ansible_connection }}"

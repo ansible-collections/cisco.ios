@@ -11,7 +11,7 @@
     provider: '{{ cli }}'
     wait_for:
 
-      - 'result[0] contains ''Description: Foo'''
+      - "result[0] contains 'Description: Foo'"
 
 - assert:
     that:

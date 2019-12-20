@@ -1,24 +1,9 @@
 ---
 - name: Remove Config
   vars:
-    lines: 'interface loopback888
-      no description
-      no shutdown
-      interface loopback999
-      no description
-      no shutdown
-      interface GigabitEthernet 0/1
-      no description
-      no mtu
-      no duplex
-      no speed
-      no shutdown
-      interface GigabitEthernet 0/2
-      no description
-      no mtu
-      no duplex
-      no speed
-      no shutdown
-      '
+    lines: "interface loopback888\nno description\nno shutdown\ninterface loopback999\n\
+      no description\nno shutdown\ninterface GigabitEthernet 0/1\nno description\n\
+      no mtu\nno duplex\nno speed\nno shutdown\ninterface GigabitEthernet 0/2\n\
+      no description\nno mtu\nno duplex\nno speed\nno shutdown\n"
   ansible.netcommon.cli_config:
     config: '{{ lines }}'

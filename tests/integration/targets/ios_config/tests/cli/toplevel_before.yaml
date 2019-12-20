@@ -20,8 +20,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''hostname foo'' in result.updates'
-      - '''snmp-server contact bar'' in result.updates'
+      - "'hostname foo' in result.updates"
+      - "'snmp-server contact bar' in result.updates"
 
 - name: configure top level command with before idempotent check
   register: result

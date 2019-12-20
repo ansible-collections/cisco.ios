@@ -28,7 +28,7 @@
 
     - name: Set test interface 2 to GigabitEthernet0/2 as we are on Cisco IOS
       set_fact: test_interface2=GigabitEthernet0/2
-  when: '''Cisco IOS'' in result.stdout[0]'
+  when: "'Cisco IOS' in result.stdout[0]"
 
 - block:
 
@@ -51,4 +51,4 @@
           - no negotiation auto
         parents: int GigabitEthernet3
         authorize: true
-  when: '''Cisco IOS-XE'' in result.stdout[0]'
+  when: "'Cisco IOS-XE' in result.stdout[0]"
