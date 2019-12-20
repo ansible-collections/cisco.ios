@@ -10,11 +10,8 @@
   cisco.ios.ios_banner:
     banner: login
     text: 'this is my login banner
-
       that has a multiline
-
       string
-
       '
     state: present
     provider: '{{ cli }}'
@@ -26,25 +23,18 @@
     that:
       - result.changed == true
       - '''banner login @
-
-      this is my login banner
-
-      that has a multiline
-
-      string
-
-      @'' in result.commands'
+        this is my login banner
+        that has a multiline
+        string
+        @'' in result.commands'
 
 - name: Set login again (idempotent)
   register: result
   cisco.ios.ios_banner:
     banner: login
     text: 'this is my login banner
-
       that has a multiline
-
       string
-
       '
     state: present
     provider: '{{ cli }}'

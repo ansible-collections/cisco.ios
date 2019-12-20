@@ -120,4 +120,5 @@
     match: none
     provider: '{{ cli }}'
 
-- debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection }}"
+- debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection
+    }}"

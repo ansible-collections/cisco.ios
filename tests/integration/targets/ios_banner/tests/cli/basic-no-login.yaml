@@ -3,9 +3,7 @@
   cisco.ios.ios_banner:
     banner: login
     text: 'Junk login banner
-
       over multiple lines
-
       '
     state: present
     provider: '{{ cli }}'

@@ -91,8 +91,10 @@
   register: result
   cisco.ios.ios_logging:
     aggregate:
+
       - dest: console
         level: notifications
+
       - dest: buffered
         size: 9000
     provider: '{{ cli }}'
@@ -129,11 +131,14 @@
   register: result
   cisco.ios.ios_logging:
     aggregate:
+
       - dest: console
         level: notifications
+
       - dest: buffered
         size: 4096
         level: alerts
+
       - facility: uucp
     state: absent
     provider: '{{ cli }}'

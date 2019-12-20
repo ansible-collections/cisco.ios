@@ -110,9 +110,11 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: '{{ test_interface }}'
         mtu: 2000
         description: test-interface-1
+
       - name: '{{ test_interface2 }}'
         mtu: 2000
         description: test-interface-2
@@ -133,9 +135,11 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: '{{ test_interface }}'
         mtu: 2000
         description: test-interface-1
+
       - name: '{{ test_interface2 }}'
         mtu: 2000
         description: test-interface-2
@@ -151,7 +155,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: '{{ test_interface }}'
+
       - name: '{{ test_interface2 }}'
     enabled: false
     state: present
@@ -169,7 +175,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: '{{ test_interface }}'
+
       - name: '{{ test_interface2 }}'
     enabled: true
     state: present
@@ -186,7 +194,9 @@
 - name: loopback interface setup
   cisco.ios.ios_interface:
     aggregate:
+
       - name: Loopback9
+
       - name: Loopback10
     state: absent
     provider: '{{ cli }}'
@@ -195,7 +205,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: Loopback9
+
       - name: Loopback10
     state: present
     provider: '{{ cli }}'
@@ -210,7 +222,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: Loopback9
+
       - name: Loopback10
     state: absent
     provider: '{{ cli }}'
@@ -225,7 +239,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: Loopback9
+
       - name: Loopback10
     state: absent
     provider: '{{ cli }}'

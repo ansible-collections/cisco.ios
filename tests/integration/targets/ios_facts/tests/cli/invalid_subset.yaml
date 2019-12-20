@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/invalid_subset.yaml on connection={{ ansible_connection }}"
+- debug: msg="START cli/invalid_subset.yaml on connection={{ ansible_connection
+    }}"
 
 - name: test invalid subset (foobar)
   register: result

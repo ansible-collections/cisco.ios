@@ -8,6 +8,7 @@
 - include_tasks: _populate_config.yaml
 
 - block:
+
     - name: Replaces system LACP configuration provided LACP configuration
       register: result
       cisco.ios.ios_lacp: &id001
@@ -15,26 +16,32 @@
           system:
             priority: 20
         state: replaced
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - '{{ replaced[''commands''] | symmetric_difference(result[''commands'']) |
-            length == 0 }}'
+          - '{{ replaced[''commands''] | symmetric_difference(result[''commands''])
+            | length == 0 }}'
+
     - name: Assert that before dicts are correctly generated
       assert:
         that:
           - '{{ replaced[''before''] == result[''before''] }}'
+
     - name: Assert that after dict is correctly generated
       assert:
         that:
           - '{{ replaced[''before''] == result[''before''] }}'
+
     - name: Replaces system LACP configuration provided LACP configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_lacp: *id001
+
     - name: Assert that task was idempotent
       assert:
         that:
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
+
     - include_tasks: _remove_config.yaml

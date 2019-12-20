@@ -3,19 +3,23 @@
     msg: START cli/cli_command.yaml on connection={{ ansible_connection }}
 
 - block:
+
     - name: get output for single command
       register: result
       ansible.netcommon.cli_command:
         command: show version
+
     - assert:
         that:
           - result.changed == false
           - result.stdout is defined
+
     - name: send invalid command
       register: result
       ignore_errors: true
       ansible.netcommon.cli_command:
         command: show foo
+
     - assert:
         that:
           - result.failed == true
