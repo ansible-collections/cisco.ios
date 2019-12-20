@@ -1,5 +1,6 @@
 ---
 - block:
+
     - name: Create user with password
       cisco.ios.ios_user:
         name: auth_user
@@ -8,6 +9,7 @@
         state: present
         provider: '{{ cli }}'
         configured_password: pass123
+
     - name: test login
       expect:
         command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
@@ -15,6 +17,7 @@
           show version
         responses:
           (?i)password: pass123
+
     - name: test login with invalid password (should fail)
       expect:
         command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
@@ -24,25 +27,30 @@
           (?i)password: badpass
       ignore_errors: true
       register: results
+
     - name: check that attempt failed
       assert:
         that:
           - results.failed
   always:
+
     - name: delete user
       register: result
       cisco.ios.ios_user:
         name: auth_user
         state: absent
         provider: '{{ cli }}'
+
     - name: reset connection
       meta: reset_connection
 
 - block:
+
     - name: Ensure ssh key is not world readable
       file:
         path: '{{ role_path }}/files/test_rsa'
         mode: 384
+
     - name: Create user with sshkey
       cisco.ios.ios_user:
         name: ssh_user
@@ -51,11 +59,13 @@
         state: present
         provider: '{{ cli }}'
         sshkey: '{{ lookup(''file'', ''files/test_rsa.pub'') }}'
+
     - name: test sshkey login
       shell: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
         }} -o IdentityFile={{ role_path }}/files/test_rsa -o UserKnownHostsFile=/dev/null
-        -o StrictHostKeyChecking=no -o BatchMode=yes -o PubkeyAuthentication=yes show
-        version
+        -o StrictHostKeyChecking=no -o BatchMode=yes -o PubkeyAuthentication=yes
+        show version
+
     - name: test login without sshkey (should fail)
       expect:
         command: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
@@ -65,16 +75,19 @@
           (?i)password: badpass
       ignore_errors: true
       register: results
+
     - name: check that attempt failed
       assert:
         that:
           - results.failed
   always:
+
     - name: delete user
       register: result
       cisco.ios.ios_user:
         name: ssh_user
         state: absent
         provider: '{{ cli }}'
+
     - name: reset connection
       meta: reset_connection

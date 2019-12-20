@@ -10,6 +10,7 @@
       - show interfaces GigabitEthernet 0/0
     provider: '{{ cli }}'
     wait_for:
+
       - 'result[0] contains ''Description: Foo'''
 
 - assert:

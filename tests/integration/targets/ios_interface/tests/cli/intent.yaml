@@ -60,26 +60,32 @@
     provider: '{{ cli }}'
 
 - block:
+
     - name: Check neighbors intent arguments
       register: result
       cisco.ios.ios_interface:
         name: Gi0/0
         neighbors:
+
           - port: eth0
             host: netdev
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == false
+
     - name: Check neighbors intent arguments (failed condition)
       ignore_errors: true
       register: result
       cisco.ios.ios_interface:
         name: Gi0/0
         neighbors:
+
           - port: dummy_port
             host: dummy_host
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == true
@@ -92,6 +98,7 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+
       - name: '{{ test_interface }}'
         enabled: true
         state: up
@@ -102,31 +109,40 @@
       - result.failed == false
 
 - block:
+
     - name: Aggregate neighbors intent (pass)
       ignore_errors: true
       register: result
       cisco.ios.ios_interface:
         aggregate:
+
           - name: Gi0/0
             neighbors:
+
               - port: eth0
                 host: netdev
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == false
+
     - name: Aggregate neighbors intent (fail)
       ignore_errors: true
       register: result
       cisco.ios.ios_interface:
         aggregate:
+
           - name: Gi0/0
         neighbors:
+
           - port: eth0
             host: netdev
+
           - port: dummy_port
             host: dummy_host
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == true

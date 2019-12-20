@@ -62,4 +62,5 @@
     match: none
     provider: '{{ cli }}'
 
-- debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
+- debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection
+    }}"

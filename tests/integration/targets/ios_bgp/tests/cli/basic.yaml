@@ -7,6 +7,7 @@
     operation: delete
 
 - block:
+
     - name: Add fake config with 'bgp' string
       cisco.ios.ios_config:
         match: none
@@ -15,19 +16,23 @@
           - no ip access-list extended BGP_ACL
           - ip access-list extended BGP_ACL
           - permit tcp any any eq bgp
+
     - name: Try delete fake bgp config
       register: result
       cisco.ios.ios_bgp:
         operation: delete
+
     - assert:
         that:
           - result.changed == false
+
     - name: Clean fake config with 'bgp' string
       cisco.ios.ios_config:
         match: none
         replace: block
         lines:
           - no ip access-list extended BGP_ACL
+
     - name: Add fake bgp-like config
       cisco.ios.ios_config:
         match: none
@@ -42,19 +47,23 @@
           - remark neighbor 192.0.2.10 activate
           - remark exit-address-family
           - permit tcp any any eq bgp
+
     - name: Try delete fake bgp-like config
       register: result
       cisco.ios.ios_bgp:
         operation: delete
+
     - assert:
         that:
           - result.changed == false
+
     - name: Clean fake bgp-like config
       cisco.ios.ios_config:
         match: none
         replace: block
         lines:
           - no ip access-list extended BGP_ACL_2
+
     - name: Configure BGP with AS 64496 and a router-id
       register: result
       cisco.ios.ios_bgp: &id001
@@ -62,17 +71,21 @@
         config:
           bgp_as: 64496
           router_id: 192.0.2.2
+
     - assert:
         that:
           - result.changed == true
           - '''router bgp 64496'' in result.commands'
           - '''bgp router-id 192.0.2.2'' in result.commands'
+
     - name: Configure BGP with AS 64496 and a router-id (idempotent)
       register: result
       cisco.ios.ios_bgp: *id001
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure BGP neighbors
       register: result
       cisco.ios.ios_bgp: &id002
@@ -80,6 +93,7 @@
         config:
           bgp_as: 64496
           neighbors:
+
             - neighbor: 192.0.2.10
               remote_as: 64496
               password: ansible
@@ -89,10 +103,12 @@
                 keepalive: 300
                 holdtime: 360
                 min_neighbor_holdtime: 360
+
             - neighbor: 192.0.2.15
               remote_as: 64496
               description: IBGP_NBR_2
               ebgp_multihop: 150
+
     - assert:
         that:
           - result.changed == true
@@ -104,12 +120,15 @@
           - '''neighbor 192.0.2.15 remote-as 64496'' in result.commands'
           - '''neighbor 192.0.2.15 description IBGP_NBR_2'' in result.commands'
           - '''neighbor 192.0.2.15 ebgp-multihop 150'' in result.commands'
+
     - name: Configure BGP neighbors (idempotent)
       register: result
       cisco.ios.ios_bgp: *id002
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure BGP neighbors with operation replace
       register: result
       cisco.ios.ios_bgp: &id003
@@ -117,18 +136,22 @@
         config:
           bgp_as: 64496
           neighbors:
+
             - neighbor: 192.0.2.15
               remote_as: 64496
               description: IBGP_NBR_2
               ebgp_multihop: 150
+
             - neighbor: 203.0.113.10
               remote_as: 64511
               description: EBGP_NBR_1
               local_as: 64497
+
             - neighbor: 10.10.20.20
               remote_as: 65012
               description: BGP_NBR_2
               ebgp_multihop: 100
+
     - assert:
         that:
           - result.changed == true
@@ -138,12 +161,15 @@
           - '''neighbor 10.10.20.20 remote-as 65012'' in result.commands'
           - '''neighbor 10.10.20.20 description BGP_NBR_2'' in result.commands'
           - '''no neighbor 192.0.2.10'' in result.commands'
+
     - name: Configure BGP neighbors with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id003
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure root-level networks for BGP
       register: result
       cisco.ios.ios_bgp: &id004
@@ -151,24 +177,30 @@
         config:
           bgp_as: 64496
           networks:
+
             - prefix: 203.0.113.0
               masklen: 27
               route_map: RMAP_1
+
             - prefix: 203.0.113.32
               masklen: 27
               route_map: RMAP_2
+
     - assert:
         that:
           - result.changed == True
           - '''router bgp 64496'' in result.commands'
           - '''network 203.0.113.0 mask 255.255.255.224 route-map RMAP_1'' in result.commands'
           - '''network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2'' in result.commands'
+
     - name: Configure root-level networks for BGP (idempotent)
       register: result
       cisco.ios.ios_bgp: *id004
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure root-level networks for BGP with operation replace
       register: result
       cisco.ios.ios_bgp: &id005
@@ -176,23 +208,30 @@
         config:
           bgp_as: 64496
           networks:
+
             - prefix: 203.0.113.0
               masklen: 27
               route_map: RMAP_1
+
             - prefix: 198.51.100.16
               masklen: 28
+
     - assert:
         that:
           - result.changed == True
           - '''router bgp 64496'' in result.commands'
           - '''network 198.51.100.16 mask 255.255.255.240'' in result.commands'
-          - '''no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2'' in result.commands'
+          - '''no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2'' in
+            result.commands'
+
     - name: Configure root-level networks for BGP with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id005
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure BGP neighbors under address family mode
       register: result
       cisco.ios.ios_bgp: &id006
@@ -200,21 +239,26 @@
         config:
           bgp_as: 64496
           address_family:
+
             - afi: ipv4
               safi: unicast
               neighbors:
+
                 - neighbor: 203.0.113.10
                   activate: true
                   maximum_prefix: 250
                   advertisement_interval: 120
+
                 - neighbor: 192.0.2.15
                   activate: true
                   route_reflector_client: true
+
                 - neighbor: 10.10.20.20
                   activate: true
                   prefix_list_in: incoming-prefixes
                   prefix_list_out: outgoing-prefixes
-      - assert:
+
+    - assert:
         that:
           - result.changed == true
           - '''router bgp 64496'' in result.commands'
@@ -227,12 +271,15 @@
           - '''neighbor 10.10.20.20 activate'' in result.commands'
           - '''neighbor 10.10.20.20 prefix-list incoming-prefixes in'' in result.commands'
           - '''neighbor 10.10.20.20 prefix-list outgoing-prefixes out'' in result.commands'
+
     - name: Configure BGP neighbors under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id006
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure networks under address family
       register: result
       cisco.ios.ios_bgp: &id007
@@ -240,40 +287,52 @@
         config:
           bgp_as: 64496
           address_family:
+
             - afi: ipv4
               safi: multicast
               networks:
+
                 - prefix: 198.51.100.48
                   masklen: 28
                   route_map: RMAP_1
+
                 - prefix: 192.0.2.64
                   masklen: 27
+
                 - prefix: 203.0.113.160
                   masklen: 27
                   route_map: RMAP_2
+
             - afi: ipv4
               safi: unicast
               networks:
+
                 - prefix: 198.51.100.64
                   masklen: 28
-      - assert:
+
+    - assert:
         that:
           - result.changed == true
           - '''router bgp 64496'' in result.commands'
           - '''address-family ipv4 multicast'' in result.commands'
-          - '''network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1'' in result.commands'
+          - '''network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1'' in
+            result.commands'
           - '''network 192.0.2.64 mask 255.255.255.224'' in result.commands'
-          - '''network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2'' in result.commands'
+          - '''network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2'' in
+            result.commands'
           - '''exit-address-family'' in result.commands'
           - '''address-family ipv4'' in result.commands'
           - '''network 198.51.100.64 mask 255.255.255.240'' in result.commands'
           - '''exit-address-family'' in result.commands'
+
     - name: Configure networks under address family (idempotent)
       register: result
       cisco.ios.ios_bgp: *id007
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure networks under address family with operation replace
       register: result
       cisco.ios.ios_bgp: &id008
@@ -281,36 +340,48 @@
         config:
           bgp_as: 64496
           address_family:
+
             - afi: ipv4
               safi: multicast
               networks:
+
                 - prefix: 198.51.100.80
                   masklen: 28
+
                 - prefix: 192.0.2.64
                   masklen: 27
+
                 - prefix: 203.0.113.192
                   masklen: 27
+
             - afi: ipv4
               safi: unicast
               networks:
+
                 - prefix: 198.51.100.64
                   masklen: 28
-      - assert:
+
+    - assert:
         that:
           - result.changed == true
           - '"router bgp 64496" in result.commands'
           - '"address-family ipv4 multicast" in result.commands'
           - '"network 198.51.100.80 mask 255.255.255.240" in result.commands'
           - '"network 203.0.113.192 mask 255.255.255.224" in result.commands'
-          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in result.commands'
-          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in result.commands'
+          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in
+            result.commands'
+          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in
+            result.commands'
           - '"exit-address-family" in result.commands'
+
     - name: Configure networks under address family with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id008
+
     - assert:
         that:
           - result.changed == false
+
     - name: Configure redistribute information under address family mode
       register: result
       cisco.ios.ios_bgp: &id009
@@ -318,16 +389,20 @@
         config:
           bgp_as: 64496
           address_family:
+
             - afi: ipv4
               safi: multicast
               redistribute:
+
                 - protocol: ospf
                   id: 112
                   metric: 64
+
                 - protocol: eigrp
                   id: 233
                   metric: 256
-      - assert:
+
+    - assert:
         that:
           - result.changed == true
           - '''router bgp 64496'' in result.commands'
@@ -335,15 +410,19 @@
           - '''redistribute ospf 112 metric 64'' in result.commands'
           - '''redistribute eigrp 233 metric 256'' in result.commands'
           - '''exit-address-family'' in result.commands'
+
     - name: Configure redistribute information under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id009
+
     - assert:
         that:
           - result.changed == false
+
     - name: Get the IOS version
       cisco.ios.ios_facts:
         gather_subset: all
+
     - name: Configure redistribute information under address family mode with operation
         replace
       register: result
@@ -352,28 +431,34 @@
         config:
           bgp_as: 64496
           address_family:
+
             - afi: ipv4
               safi: multicast
               redistribute:
+
                 - protocol: ospf
                   id: 112
                   metric: 64
-      - assert:
+
+    - assert:
         that:
           - result.changed == true
           - '''router bgp 64496'' in result.commands'
           - '''address-family ipv4 multicast'' in result.commands'
           - '''no redistribute eigrp 233'' in result.commands'
           - '''exit-address-family'' in result.commands'
+
     - name: Configure redistribute information under address family mode with operation
         replace (idempotent)
       register: result
       when: ansible_net_version != "15.6(2)T"
       cisco.ios.ios_bgp: *id010
+
     - assert:
         that:
           - result.changed == false
       when: ansible_net_version != "15.6(2)T"
+
     - name: Override all the exisiting BGP config
       register: result
       cisco.ios.ios_bgp:
@@ -382,6 +467,7 @@
           bgp_as: 64497
           router_id: 192.0.2.10
           log_neighbor_changes: true
+
     - assert:
         that:
           - result.changed == true
@@ -389,6 +475,7 @@
           - '''router bgp 64497'' in result.commands'
           - '''bgp router-id 192.0.2.10'' in result.commands'
           - '''bgp log-neighbor-changes'' in result.commands'
+
     - name: Configure BGP neighbors with classful boundary
       register: result
       cisco.ios.ios_bgp: &id011
@@ -396,35 +483,44 @@
           bgp_as: 64497
           log_neighbor_changes: true
           networks:
+
             - prefix: 198.51.100.0
               masklen: 23
+
             - prefix: 201.0.113.32
               masklen: 24
         operation: merge
+
     - assert:
         that:
           - result.changed == true
           - '''router bgp 64497'' in result.commands'
           - '''network 198.51.100.0 mask 255.255.254.0'' in result.commands'
           - '''network 201.0.113.32'' in result.commands'
+
     - name: Configure BGP neighbors with classful boundary (idempotent)
       register: result
       cisco.ios.ios_bgp: *id011
+
     - assert:
         that:
           - result.changed == false
   always:
+
     - name: Teardown
       register: result
       cisco.ios.ios_bgp: &id012
         operation: delete
+
     - assert:
         that:
           - result.changed == true
           - '''no router bgp 64497'' in result.commands'
+
     - name: Teardown again (idempotent)
       register: result
       cisco.ios.ios_bgp: *id012
+
     - assert:
         that:
           - result.changed == false

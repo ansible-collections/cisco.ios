@@ -37,9 +37,7 @@
   register: result
   cisco.ios.ios_config:
     running_config: 'service timestamps debug datetime msec
-
       service timestamps log datetime msec
-
       '
     lines:
       - service timestamps debug datetime msec
@@ -54,9 +52,7 @@
   register: result
   cisco.ios.ios_config:
     running_config: 'service timestamps debug datetime msec
-
       service timestamps log datetime msec
-
       '
     lines:
       - service timestamps debug datetime msec

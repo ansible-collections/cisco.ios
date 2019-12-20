@@ -10,11 +10,8 @@
   cisco.ios.ios_banner:
     banner: motd
     text: 'this is my motd banner
-
       that has a multiline
-
       string
-
       '
     state: present
     provider: '{{ cli }}'
@@ -26,25 +23,18 @@
     that:
       - result.changed == true
       - '''banner motd @
-
-      this is my motd banner
-
-      that has a multiline
-
-      string
-
-      @'' in result.commands'
+        this is my motd banner
+        that has a multiline
+        string
+        @'' in result.commands'
 
 - name: Set motd again (idempotent)
   register: result
   cisco.ios.ios_banner:
     banner: motd
     text: 'this is my motd banner
-
       that has a multiline
-
       string
-
       '
     state: present
     provider: '{{ cli }}'

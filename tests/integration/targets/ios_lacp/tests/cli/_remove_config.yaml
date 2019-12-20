@@ -2,7 +2,6 @@
 - name: Remove Config
   vars:
     lines: 'no lacp system-priority
-
       '
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:

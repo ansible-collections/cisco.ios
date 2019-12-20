@@ -4,18 +4,21 @@
 - set_fact: switch_type="{{ switch_type }}"
 
 - block:
+
     - name: setup - remove config used in test(part1)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
         provider: '{{ cli }}'
+
     - name: setup - remove config used in test(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: '{{ cli }}'
+
     - name: setup - remove config used in test(part3)
       loop:
         - interface GigabitEthernet0/1
@@ -25,22 +28,27 @@
           - no channel-group 20 mode active
         provider: '{{ cli }}'
         parents: '{{ item }}'
+
     - name: create linkagg
       register: result
       cisco.ios.ios_linkagg: &id001
         group: 20
         state: present
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''interface port-channel 20'' in result.commands'
+
     - name: create linkagg(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id001
+
     - assert:
         that:
           - result.changed == false
+
     - name: set link aggregation group to members
       register: result
       cisco.ios.ios_linkagg: &id002
@@ -50,6 +58,7 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
@@ -57,12 +66,15 @@
           - '''channel-group 20 mode active'' in result.commands'
           - '''interface GigabitEthernet0/2'' in result.commands'
           - '''channel-group 20 mode active'' in result.commands'
+
     - name: set link aggregation group to members(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id002
+
     - assert:
         that:
           - result.changed == false
+
     - name: remove link aggregation group from member
       register: result
       cisco.ios.ios_linkagg: &id003
@@ -71,43 +83,54 @@
         members:
           - GigabitEthernet0/2
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''interface GigabitEthernet0/1'' in result.commands'
           - '''no channel-group 20 mode active'' in result.commands'
+
     - name: remove link aggregation group from member(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id003
+
     - assert:
         that:
           - result.changed == false
+
     - name: remove linkagg
       register: result
       cisco.ios.ios_linkagg: &id004
         group: 20
         state: absent
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''no interface port-channel 20'' in result.commands'
+
     - name: remove linkagg(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id004
+
     - assert:
         that:
           - result.changed == false
+
     - name: create aggregate of linkagg definitions
       register: result
       cisco.ios.ios_linkagg: &id005
         aggregate:
+
           - group: 5
+
           - group: 20
             mode: active
             members:
               - GigabitEthernet0/1
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
@@ -115,24 +138,29 @@
           - '''interface port-channel 20'' in result.commands'
           - '''interface GigabitEthernet0/1'' in result.commands'
           - '''channel-group 20 mode active'' in result.commands'
+
     - name: create aggregate of linkagg definitions(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id005
+
     - assert:
         that:
           - result.changed == false
+
     - name: teardown(part1)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
         provider: '{{ cli }}'
+
     - name: teardown(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: '{{ cli }}'
+
     - name: teardown(part3)
       loop:
         - interface GigabitEthernet0/1

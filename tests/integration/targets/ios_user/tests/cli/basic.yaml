@@ -3,11 +3,17 @@
   become: true
   cisco.ios.ios_user:
     aggregate:
+
       - name: ansibletest1
+
       - name: ansibletest2
+
       - name: ansibletest3
+
       - name: ansibletest4
+
       - name: ansibletest5
+
       - name: ansibletest6
     state: absent
     provider: '{{ cli }}'
@@ -33,7 +39,9 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
+
       - name: ansibletest2
+
       - name: ansibletest3
     provider: '{{ cli }}'
     state: present
@@ -42,8 +50,8 @@
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["username ansibletest2 view network-admin", "username ansibletest3
-        view network-admin"]
+      - result.commands == ["username ansibletest2 view network-admin", "username
+        ansibletest3 view network-admin"]
 
 - name: Add user again (Idempotent)
   become: true
@@ -65,7 +73,9 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
+
       - name: ansibletest2
+
       - name: ansibletest3
     provider: '{{ cli }}'
     state: present
@@ -127,11 +137,17 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
+
       - name: ansibletest1
+
       - name: ansibletest2
+
       - name: ansibletest3
+
       - name: ansibletest4
+
       - name: ansibletest5
+
       - name: ansibletest6
     state: absent
     provider: '{{ cli }}'

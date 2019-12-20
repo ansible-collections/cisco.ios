@@ -15,6 +15,7 @@
     provider: '{{ cli }}'
 
 - block:
+
     - name: configure NTP
       register: result
       cisco.ios.ios_ntp: &id001
@@ -22,15 +23,19 @@
         source_int: '{{ test_interface }}'
         state: present
         provider: '{{ cli }}'
+
     - assert: &id002
         that:
           - result.changed == true
+
     - name: idempotence check
       register: result
       cisco.ios.ios_ntp: *id001
+
     - assert: &id004
         that:
           - result.changed == false
+
     - name: load acl NTP_ACL into device
       register: result
       cisco.ios.ios_config:
@@ -38,7 +43,9 @@
           - 10 permit ip host 192.0.2.1 any log
         parents: ip access-list extended NTP_ACL
         provider: '{{ cli }}'
+
     - assert: *id002
+
     - name: configure NTP
       register: result
       cisco.ios.ios_ntp: &id003
@@ -46,11 +53,15 @@
         logging: true
         state: present
         provider: '{{ cli }}'
+
     - assert: *id002
+
     - name: idempotence check
       register: result
       cisco.ios.ios_ntp: *id003
+
     - assert: *id004
+
     - name: configure NTP with diffferen values
       register: result
       cisco.ios.ios_ntp: &id005
@@ -59,11 +70,15 @@
         auth: true
         state: present
         provider: '{{ cli }}'
+
     - assert: *id002
+
     - name: idempotence check
       register: result
       cisco.ios.ios_ntp: *id005
+
     - assert: *id004
+
     - name: remove part of config
       register: result
       cisco.ios.ios_ntp: &id006
@@ -71,14 +86,19 @@
         logging: true
         state: absent
         provider: '{{ cli }}'
+
     - assert: *id002
+
     - name: idempotence check
       register: result
       cisco.ios.ios_ntp: *id006
+
     - assert: *id004
   always:
+
     - name: Remove ntp config
       cisco.ios.ios_ntp: *id007
+
     - name: remove NTP_ACL from device
       cisco.ios.ios_config:
         lines:

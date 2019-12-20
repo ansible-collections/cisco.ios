@@ -2,6 +2,7 @@
 - debug: msg="START cli/error_regex.yaml on connection={{ ansible_connection }}"
 
 - block:
+
     - name: clear logs 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id001
@@ -10,38 +11,47 @@
           - Clear logging buffer
         answer:
           - "\r"
+
     - name: send log with error regex match 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id002
         command: 'send log ''IPSEC-3-REPLAY_ERROR: test log_1'''
+
     - name: fetch logs without command specific error regex
       register: result
       ignore_errors: true
       cisco.ios.ios_command:
         commands:
           - show logging
+
     - name: ensure task fails due to mismatched regex
       assert:
         that:
           - result.failed == true
+
     - name: pause to avoid rate limiting
       pause:
         seconds: 10
+
     - name: clear logs 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id001
+
     - name: send log with error regex match 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id002
+
     - name: fetch logs with command specific error regex
       register: result
       vars:
         ansible_terminal_stderr_re:
+
           - pattern: connection timed out
             flags: re.I
       cisco.ios.ios_command:
         commands:
           - show logging
+
     - name: ensure task with modified error regex is success
       assert:
         that:

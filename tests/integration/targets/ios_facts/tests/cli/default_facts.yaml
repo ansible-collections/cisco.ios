@@ -21,7 +21,7 @@
 
 - assert:
     that: '{{ item.value.spacetotal_kb }} > {{ item.value.spacefree_kb }}'
-  loop: '{{ lookup(''dict'', result.ansible_facts.ansible_net_filesystems_info, wantlist=True)
-    }}'
+  loop: '{{ lookup(''dict'', result.ansible_facts.ansible_net_filesystems_info,
+    wantlist=True) }}'
 
 - debug: msg="END cli/default.yaml on connection={{ ansible_connection }}"

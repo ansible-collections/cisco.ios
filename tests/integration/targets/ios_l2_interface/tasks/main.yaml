@@ -1,5 +1,6 @@
 ---
 - block:
+
     - include: cli.yaml
       tags:
         - cli

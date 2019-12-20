@@ -6,6 +6,7 @@
 - include_tasks: _remove_config.yaml
 
 - block:
+
     - name: Merge provided configuration system LACP
       register: result
       cisco.ios.ios_lacp: &id001
@@ -13,26 +14,32 @@
           system:
             priority: 10
         state: merged
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - '{{ merged[''commands''] | symmetric_difference(result[''commands'']) | length
-            == 0 }}'
+          - '{{ merged[''commands''] | symmetric_difference(result[''commands''])
+            | length == 0 }}'
+
     - name: Assert that before dicts are correctly generated
       assert:
         that:
           - '{{ merged[''before''] == result[''before''] }}'
+
     - name: Assert that after dict is correctly generated
       assert:
         that:
           - '{{ merged[''before''] == result[''before''] }}'
+
     - name: Merge provided configuration system LACP (IDEMPOTENT)
       register: result
       cisco.ios.ios_lacp: *id001
+
     - name: Assert that the previous task was idempotent
       assert:
         that:
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
+
     - include_tasks: _remove_config.yaml

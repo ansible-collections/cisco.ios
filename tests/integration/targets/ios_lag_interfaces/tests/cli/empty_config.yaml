@@ -4,31 +4,40 @@
       ansible_connection }}
 
 - block:
+
     - name: Merged with empty config should give appropriate error message
       register: result
       ignore_errors: true
       cisco.ios.ios_lag_interfaces:
         config:
         state: merged
+
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state merged'
+          - result.msg == 'value of config parameter must not be empty for state
+            merged'
+
     - name: Replaced with empty config should give appropriate error message
       register: result
       ignore_errors: true
       cisco.ios.ios_lag_interfaces:
         config:
         state: replaced
+
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state replaced'
+          - result.msg == 'value of config parameter must not be empty for state
+            replaced'
+
     - name: Overridden with empty config should give appropriate error message
       register: result
       ignore_errors: true
       cisco.ios.ios_lag_interfaces:
         config:
         state: overridden
+
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state overridden'
+          - result.msg == 'value of config parameter must not be empty for state
+            overridden'
   when: ansible_net_version != "15.6(2)T"

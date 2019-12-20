@@ -5,11 +5,8 @@
 - name: setup
   ansible.netcommon.cli_config: &id002
     config: 'interface loopback999
-
       no description
-
       shutdown
-
       '
     diff_match: none
 
@@ -46,4 +43,5 @@
 - name: teardown
   ansible.netcommon.cli_config: *id002
 
-- debug: msg="END cli_config/cli_basic.yaml on connection={{ ansible_connection }}"
+- debug: msg="END cli_config/cli_basic.yaml on connection={{ ansible_connection
+    }}"

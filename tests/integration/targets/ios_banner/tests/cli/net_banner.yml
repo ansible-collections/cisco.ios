@@ -1,5 +1,6 @@
 ---
-- debug: msg="START ios cli/net_banner.yaml on connection={{ ansible_connection }}"
+- debug: msg="START ios cli/net_banner.yaml on connection={{ ansible_connection
+    }}"
 
 - name: setup - remove login
   ansible.netcommon.net_banner:
@@ -19,10 +20,8 @@
     that:
       - result.changed == true
       - '''banner login @
-
-      this is my login banner confgiured by net_banner
-
-      @'' in result.commands'
+        this is my login banner confgiured by net_banner
+        @'' in result.commands'
 
 - name: teardown - remove login
   ansible.netcommon.net_banner:

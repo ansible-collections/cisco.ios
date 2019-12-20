@@ -4,6 +4,7 @@
 - set_fact: switch_type="{{ switch_type }}"
 
 - block:
+
     - name: setup - remove vlan used in test
       cisco.ios.ios_config:
         lines:
@@ -11,6 +12,7 @@
           - no vlan 200
           - no vlan 300
         provider: '{{ cli }}'
+
     - name: setup - remove switchport settings on interfaces used in test
       loop:
         - interface GigabitEthernet0/1
@@ -21,23 +23,28 @@
           - no switchport access vlan 100
         provider: '{{ cli }}'
         parents: '{{ item }}'
+
     - name: create vlan
       register: result
       cisco.ios.ios_vlan: &id001
         vlan_id: 100
         name: test-vlan
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''vlan 100'' in result.commands'
           - '''name test-vlan'' in result.commands'
+
     - name: create vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id001
+
     - assert:
         that:
           - result.changed == false
+
     - name: Add interfaces to vlan
       register: result
       cisco.ios.ios_vlan: &id002
@@ -46,6 +53,7 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
@@ -55,12 +63,15 @@
           - '''interface GigabitEthernet0/2'' in result.commands'
           - '''switchport mode access'' in result.commands'
           - '''switchport access vlan 100'' in result.commands'
+
     - name: Add interfaces to vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id002
+
     - assert:
         that:
           - result.changed == false
+
     - name: Check interface assigned to vrf (intent)
       register: result
       cisco.ios.ios_vlan:
@@ -69,9 +80,11 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == false
+
     - name: Check interface assigned to vrf (fail)
       ignore_errors: true
       register: result
@@ -80,9 +93,11 @@
         associated_interfaces:
           - test
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.failed == True
+
     - name: Remove interface from vlan
       register: result
       cisco.ios.ios_vlan: &id003
@@ -90,6 +105,7 @@
         interfaces:
           - GigabitEthernet0/1
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
@@ -97,59 +113,73 @@
           - '''interface GigabitEthernet0/2'' in result.commands'
           - '''switchport mode access'' in result.commands'
           - '''no switchport access vlan 100'' in result.commands'
+
     - name: Remove interface from vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id003
+
     - assert:
         that:
           - result.changed == false
+
     - name: Suspend vlan
       register: result
       cisco.ios.ios_vlan:
         vlan_id: 100
         state: suspend
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''vlan 100'' in result.commands'
           - '''state suspend'' in result.commands'
+
     - name: Unsuspend vlan
       register: result
       cisco.ios.ios_vlan:
         vlan_id: 100
         state: active
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''vlan 100'' in result.commands'
           - '''state active'' in result.commands'
+
     - name: delete vlan
       register: result
       cisco.ios.ios_vlan: &id004
         vlan_id: 100
         provider: '{{ cli }}'
         state: absent
+
     - assert:
         that:
           - result.changed == true
           - '''no vlan 100'' in result.commands'
+
     - name: delete vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id004
+
     - assert:
         that:
           - result.changed == false
+
     - name: create vlans using aggregate
       register: result
       cisco.ios.ios_vlan: &id005
         aggregate:
+
           - vlan_id: 200
             name: vlan-200
+
           - vlan_id: 300
             name: vlan-300
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
@@ -157,33 +187,42 @@
           - '''name vlan-200'' in result.commands'
           - '''vlan 300'' in result.commands'
           - '''name vlan-300'' in result.commands'
+
     - name: create vlans using aggregate(idempotence)
       register: result
       cisco.ios.ios_vlan: *id005
+
     - assert:
         that:
           - result.changed == false
+
     - name: delete vlans using aggregate
       register: result
       cisco.ios.ios_vlan: &id006
         aggregate:
+
           - vlan_id: 200
             name: vlan-200
+
           - vlan_id: 300
             name: vlan-300
         state: absent
         provider: '{{ cli }}'
+
     - assert:
         that:
           - result.changed == true
           - '''no vlan 200'' in result.commands'
           - '''no vlan 300'' in result.commands'
+
     - name: delete vlans using aggregate(idempotence)
       register: result
       cisco.ios.ios_vlan: *id006
+
     - assert:
         that:
           - result.changed == false
+
     - name: teardown(part1)
       cisco.ios.ios_config:
         lines:
@@ -191,6 +230,7 @@
           - no vlan 200
           - no vlan 300
         provider: '{{ cli }}'
+
     - name: teardown(part2)
       loop:
         - interface GigabitEthernet0/1
