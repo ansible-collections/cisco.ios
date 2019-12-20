@@ -36,9 +36,8 @@
   check_mode: true
   register: result
   cisco.ios.ios_config:
-    running_config: 'service timestamps debug datetime msec
-      service timestamps log datetime msec
-      '
+    running_config: "service timestamps debug datetime msec\nservice timestamps\
+      \ log datetime msec\n"
     lines:
       - service timestamps debug datetime msec
       - service timestamps log datetime msec
@@ -51,9 +50,8 @@
   check_mode: true
   register: result
   cisco.ios.ios_config:
-    running_config: 'service timestamps debug datetime msec
-      service timestamps log datetime msec
-      '
+    running_config: "service timestamps debug datetime msec\nservice timestamps\
+      \ log datetime msec\n"
     lines:
       - service timestamps debug datetime msec
       - service timestamps log datetime msec
@@ -61,6 +59,6 @@
 
 - assert:
     that:
-      - '''service timestamps log datetime msec'' in result.updates'
+      - "'service timestamps log datetime msec' in result.updates"
 
 - debug: msg="END cli/src_basic.yaml on connection={{ ansible_connection }}"

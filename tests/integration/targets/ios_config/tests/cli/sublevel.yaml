@@ -19,8 +19,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''ip access-list extended test'' in result.updates'
-      - '''permit ip any any log'' in result.updates'
+      - "'ip access-list extended test' in result.updates"
+      - "'permit ip any any log' in result.updates"
 
 - name: configure sub level command idempotent check
   register: result

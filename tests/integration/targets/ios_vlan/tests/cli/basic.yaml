@@ -34,8 +34,8 @@
     - assert:
         that:
           - result.changed == true
-          - '''vlan 100'' in result.commands'
-          - '''name test-vlan'' in result.commands'
+          - "'vlan 100' in result.commands"
+          - "'name test-vlan' in result.commands"
 
     - name: create vlan(idempotence)
       register: result
@@ -57,12 +57,12 @@
     - assert:
         that:
           - result.changed == true
-          - '''interface GigabitEthernet0/1'' in result.commands'
-          - '''switchport mode access'' in result.commands'
-          - '''switchport access vlan 100'' in result.commands'
-          - '''interface GigabitEthernet0/2'' in result.commands'
-          - '''switchport mode access'' in result.commands'
-          - '''switchport access vlan 100'' in result.commands'
+          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'switchport mode access' in result.commands"
+          - "'switchport access vlan 100' in result.commands"
+          - "'interface GigabitEthernet0/2' in result.commands"
+          - "'switchport mode access' in result.commands"
+          - "'switchport access vlan 100' in result.commands"
 
     - name: Add interfaces to vlan(idempotence)
       register: result
@@ -109,10 +109,10 @@
     - assert:
         that:
           - result.changed == true
-          - '''vlan 100'' in result.commands'
-          - '''interface GigabitEthernet0/2'' in result.commands'
-          - '''switchport mode access'' in result.commands'
-          - '''no switchport access vlan 100'' in result.commands'
+          - "'vlan 100' in result.commands"
+          - "'interface GigabitEthernet0/2' in result.commands"
+          - "'switchport mode access' in result.commands"
+          - "'no switchport access vlan 100' in result.commands"
 
     - name: Remove interface from vlan(idempotence)
       register: result
@@ -132,8 +132,8 @@
     - assert:
         that:
           - result.changed == true
-          - '''vlan 100'' in result.commands'
-          - '''state suspend'' in result.commands'
+          - "'vlan 100' in result.commands"
+          - "'state suspend' in result.commands"
 
     - name: Unsuspend vlan
       register: result
@@ -145,8 +145,8 @@
     - assert:
         that:
           - result.changed == true
-          - '''vlan 100'' in result.commands'
-          - '''state active'' in result.commands'
+          - "'vlan 100' in result.commands"
+          - "'state active' in result.commands"
 
     - name: delete vlan
       register: result
@@ -158,7 +158,7 @@
     - assert:
         that:
           - result.changed == true
-          - '''no vlan 100'' in result.commands'
+          - "'no vlan 100' in result.commands"
 
     - name: delete vlan(idempotence)
       register: result
@@ -183,10 +183,10 @@
     - assert:
         that:
           - result.changed == true
-          - '''vlan 200'' in result.commands'
-          - '''name vlan-200'' in result.commands'
-          - '''vlan 300'' in result.commands'
-          - '''name vlan-300'' in result.commands'
+          - "'vlan 200' in result.commands"
+          - "'name vlan-200' in result.commands"
+          - "'vlan 300' in result.commands"
+          - "'name vlan-300' in result.commands"
 
     - name: create vlans using aggregate(idempotence)
       register: result
@@ -212,8 +212,8 @@
     - assert:
         that:
           - result.changed == true
-          - '''no vlan 200'' in result.commands'
-          - '''no vlan 300'' in result.commands'
+          - "'no vlan 200' in result.commands"
+          - "'no vlan 300' in result.commands"
 
     - name: delete vlans using aggregate(idempotence)
       register: result

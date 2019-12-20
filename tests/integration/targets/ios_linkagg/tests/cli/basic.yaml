@@ -39,7 +39,7 @@
     - assert:
         that:
           - result.changed == true
-          - '''interface port-channel 20'' in result.commands'
+          - "'interface port-channel 20' in result.commands"
 
     - name: create linkagg(Idempotence)
       register: result
@@ -62,10 +62,10 @@
     - assert:
         that:
           - result.changed == true
-          - '''interface GigabitEthernet0/1'' in result.commands'
-          - '''channel-group 20 mode active'' in result.commands'
-          - '''interface GigabitEthernet0/2'' in result.commands'
-          - '''channel-group 20 mode active'' in result.commands'
+          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'channel-group 20 mode active' in result.commands"
+          - "'interface GigabitEthernet0/2' in result.commands"
+          - "'channel-group 20 mode active' in result.commands"
 
     - name: set link aggregation group to members(Idempotence)
       register: result
@@ -87,8 +87,8 @@
     - assert:
         that:
           - result.changed == true
-          - '''interface GigabitEthernet0/1'' in result.commands'
-          - '''no channel-group 20 mode active'' in result.commands'
+          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'no channel-group 20 mode active' in result.commands"
 
     - name: remove link aggregation group from member(Idempotence)
       register: result
@@ -108,7 +108,7 @@
     - assert:
         that:
           - result.changed == true
-          - '''no interface port-channel 20'' in result.commands'
+          - "'no interface port-channel 20' in result.commands"
 
     - name: remove linkagg(Idempotence)
       register: result
@@ -134,10 +134,10 @@
     - assert:
         that:
           - result.changed == true
-          - '''interface port-channel 5'' in result.commands'
-          - '''interface port-channel 20'' in result.commands'
-          - '''interface GigabitEthernet0/1'' in result.commands'
-          - '''channel-group 20 mode active'' in result.commands'
+          - "'interface port-channel 5' in result.commands"
+          - "'interface port-channel 20' in result.commands"
+          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'channel-group 20 mode active' in result.commands"
 
     - name: create aggregate of linkagg definitions(Idempotence)
       register: result

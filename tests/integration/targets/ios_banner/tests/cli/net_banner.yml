@@ -19,9 +19,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''banner login @
-        this is my login banner confgiured by net_banner
-        @'' in result.commands'
+      - "'banner login @\nthis is my login banner confgiured by net_banner\n@' in\
+        \ result.commands"
 
 - name: teardown - remove login
   ansible.netcommon.net_banner:

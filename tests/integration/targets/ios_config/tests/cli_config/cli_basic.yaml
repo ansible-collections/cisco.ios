@@ -4,16 +4,13 @@
 
 - name: setup
   ansible.netcommon.cli_config: &id002
-    config: 'interface loopback999
-      no description
-      shutdown
-      '
+    config: "interface loopback999\nno description\nshutdown\n"
     diff_match: none
 
 - name: configure device with config
   register: result
   ansible.netcommon.cli_config: &id001
-    config: '{{ lookup(''template'', ''basic/config.j2'') }}'
+    config: "{{ lookup('template', 'basic/config.j2') }}"
 
 - assert:
     that:
@@ -33,7 +30,7 @@
 - name: configure device with config
   register: result
   ansible.netcommon.cli_config:
-    config: '{{ lookup(''template'', ''basic/config.j2'') }}'
+    config: "{{ lookup('template', 'basic/config.j2') }}"
     defaults: true
 
 - assert:

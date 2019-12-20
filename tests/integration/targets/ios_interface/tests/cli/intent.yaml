@@ -24,7 +24,7 @@
 - assert:
     that:
       - result.failed == true
-      - '''state eq(down)'' in result.failed_conditions'
+      - "'state eq(down)' in result.failed_conditions"
 
 - name: Config + intent
   register: result
@@ -50,7 +50,7 @@
 - assert:
     that:
       - result.failed == true
-      - '''state eq(up)'' in result.failed_conditions'
+      - "'state eq(up)' in result.failed_conditions"
 
 - name: Register show neighbors detail
   register: show_lldp_neighbors_result
@@ -89,8 +89,8 @@
     - assert:
         that:
           - result.failed == true
-          - '''host dummy_host'' in result.failed_conditions'
-          - '''port dummy_port'' in result.failed_conditions'
+          - "'host dummy_host' in result.failed_conditions"
+          - "'port dummy_port' in result.failed_conditions"
   when: '"netdev" in show_lldp_neighbors_result.stdout[0]'
 
 - name: Aggregate config + intent (pass)
@@ -146,6 +146,6 @@
     - assert:
         that:
           - result.failed == true
-          - '''host dummy_host'' in result.failed_conditions'
-          - '''port dummy_port'' in result.failed_conditions'
-  when: '''netdev'' in show_lldp_neighbors_result.stdout[0]'
+          - "'host dummy_host' in result.failed_conditions"
+          - "'port dummy_port' in result.failed_conditions"
+  when: "'netdev' in show_lldp_neighbors_result.stdout[0]"

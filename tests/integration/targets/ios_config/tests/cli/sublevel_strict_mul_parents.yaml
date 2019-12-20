@@ -28,8 +28,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''set ip precedence 5'' in result.updates'
-      - '''police cir percent 10'' in result.updates'
+      - "'set ip precedence 5' in result.updates"
+      - "'police cir percent 10' in result.updates"
 
 - name: change sub level command order and config with strict match
   register: result
@@ -45,8 +45,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''set ip precedence 5'' in result.updates'
-      - '''police cir percent 10'' in result.updates'
+      - "'set ip precedence 5' in result.updates"
+      - "'police cir percent 10' in result.updates"
 
 - name: Config sub level command with strict match (Idempotency)
   register: result

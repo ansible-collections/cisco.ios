@@ -4,13 +4,13 @@
 
 - name: setup - remove configuration
   ansible.netcommon.cli_config:
-    config: '{{ lookup(''template'', ''basic/setupblock.j2'') }}'
+    config: "{{ lookup('template', 'basic/setupblock.j2') }}"
     diff_match: none
 
 - name: block replace
   register: result
   ansible.netcommon.cli_config: &id001
-    config: '{{ lookup(''template'', ''basic/configblock.j2'') }}'
+    config: "{{ lookup('template', 'basic/configblock.j2') }}"
     diff_replace: block
 
 - assert:

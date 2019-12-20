@@ -1,10 +1,6 @@
 ---
 - name: Remove Config
   vars:
-    lines: 'no lldp holdtime
-      no lldp run
-      no lldp timer
-      no lldp reinit
-      '
+    lines: "no lldp holdtime\nno lldp run\nno lldp timer\nno lldp reinit\n"
   ansible.netcommon.cli_config:
     config: '{{ lines }}'

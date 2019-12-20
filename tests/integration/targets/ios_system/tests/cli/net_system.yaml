@@ -21,8 +21,8 @@
 - assert:
     that:
       - result.changed == true
-      - '''ip domain list ansible.com'' in result.commands'
-      - '''ip domain list redhat.com'' in result.commands'
+      - "'ip domain list ansible.com' in result.commands"
+      - "'ip domain list redhat.com' in result.commands"
 
 - name: teardown
   cisco.ios.ios_config:

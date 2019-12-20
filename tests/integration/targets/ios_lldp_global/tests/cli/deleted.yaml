@@ -17,18 +17,18 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - '{{ deleted[''commands''] | symmetric_difference(result[''commands''])
-            | length == 0 }}'
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - '{{ deleted[''before''] == result[''before''] }}'
+          - "{{ deleted['before'] == result['before'] }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - '{{ deleted[''before''] == result[''before''] }}'
+          - "{{ deleted['before'] == result['before'] }}"
 
     - name: Delete configured Global LLDP (IDEMPOTENT)
       register: result

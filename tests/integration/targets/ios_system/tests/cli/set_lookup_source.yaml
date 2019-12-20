@@ -19,7 +19,7 @@
 - assert:
     that:
       - result.changed == true
-      - '''ip domain lookup source-interface Loopback888'' in result.commands'
+      - "'ip domain lookup source-interface Loopback888' in result.commands"
 
 - name: verify lookup_source
   register: result
@@ -40,7 +40,7 @@
 - assert:
     that:
       - result.changed == true
-      - '''no ip domain lookup'' in result.commands'
+      - "'no ip domain lookup' in result.commands"
 
 - name: Disable lookup_source
   register: result
@@ -51,7 +51,7 @@
 - assert:
     that:
       - result.changed == true
-      - '''ip domain lookup'' in result.commands'
+      - "'ip domain lookup' in result.commands"
 
 - name: teardown
   ignore_errors: true
