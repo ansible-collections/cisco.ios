@@ -118,7 +118,7 @@ class VlansFacts(object):
         config = deepcopy(spec)
 
         if vlan_info == "Name" and "Name" not in conf:
-            conf = filter(None, conf.split(" "))
+            conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
             if len(conf[2].split("/")) > 1:
@@ -134,7 +134,7 @@ class VlansFacts(object):
                     config["state"] = "active"
                 config["shutdown"] = "disabled"
         elif vlan_info == "Type" and "Type" not in conf:
-            conf = filter(None, conf.split(" "))
+            conf = list(filter(None, conf.split(" ")))
             config["mtu"] = int(conf[3])
         elif vlan_info == "Remote":
             if len(conf.split(",")) > 1 or conf.isdigit():
