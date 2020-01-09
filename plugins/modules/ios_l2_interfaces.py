@@ -133,9 +133,9 @@ EXAMPLES = """
           vlan: 10
       - name: GigabitEthernet0/2
         trunk:
-          allowed_vlan: 10-20, 40
+          allowed_vlans: 10-20,40
           native_vlan: 20
-          pruning_vlan: 10,20
+          pruning_vlans: 10,20
           encapsulation: dot1q
     state: merged
 
@@ -177,9 +177,9 @@ EXAMPLES = """
     config:
       - name: GigabitEthernet0/2
         trunk:
-        - allowed_vlan: 20-25,40
+        - allowed_vlans: 20-25,40
           native_vlan: 20
-          pruning_vlan: 10
+          pruning_vlans: 10
           encapsulation: isl
     state: replaced
 
