@@ -54,7 +54,11 @@ ios_provider_spec = {
     ),
     "timeout": dict(type="int"),
 }
-ios_argument_spec = {"provider": dict(type="dict", options=ios_provider_spec)}
+ios_argument_spec = {
+    "provider": dict(
+        type="dict", options=ios_provider_spec, removed_in_version=2.14
+    )
+}
 
 
 def get_provider_argspec():
