@@ -1,0 +1,64 @@
+---
+- debug: msg="START cli/cli_macro.yaml on connection={{ ansible_connection }}"
+
+- name: Check for macro support
+  register: supports_macro
+  ignore_errors: true
+  cisco.ios.ios_command:
+    commands:
+      - show parser macro brief
+
+- name: ios_config macro integration tests
+  when: supports_macro is succeeded
+  block:
+
+    - name: Define macro name
+      set_fact:
+        macro_name: MACRO_ANSIBLE_TEST
+
+    - name: setup - remove configuration
+      cisco.ios.ios_config:
+        lines:
+          - no macro name {{ macro_name }}
+          - do show clock
+        match: none
+
+    - name: configure macro
+      register: result
+      cisco.ios.ios_config:
+        parents: macro name {{ macro_name }}
+        multiline_delimiter: '@'
+        after: '@'
+        match: line
+        replace: block
+        lines: "{{ lookup('template', 'basic/macro.j2') }}"
+
+    - name: Check if macro has been added
+      assert:
+        that:
+          - result.changed == true
+
+    - name: configure macro again - idempotent check
+      register: result
+      cisco.ios.ios_config:
+        parents: macro name {{ macro_name }}
+        multiline_delimiter: '@'
+        after: '@'
+        match: line
+        replace: block
+        lines: "{{ lookup('template', 'basic/macro.j2') }}"
+
+    - name: macro already/correctly configured ?
+      assert:
+        that:
+          - result.changed == false
+  always:
+
+    - name: teardown
+      cisco.ios.ios_config:
+        lines:
+          - no macro name {{ macro_name }}
+          - do show clock
+        match: none
+
+- debug: msg="END cli/cli_macro.yaml on connection={{ ansible_connection }}"
