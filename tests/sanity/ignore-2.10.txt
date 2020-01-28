@@ -18,6 +18,7 @@ plugins/modules/ios_banner.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_banner.py validate-modules:doc-missing-type
 plugins/modules/ios_banner.py validate-modules:doc-required-mismatch
 plugins/modules/ios_bgp.py validate-modules:doc-missing-type
+plugins/modules/ios_bgp.py validate-modules:invalid-ansiblemodule-schema
 plugins/modules/ios_bgp.py validate-modules:nonexistent-parameter-documented
 plugins/modules/ios_bgp.py validate-modules:parameter-type-not-in-doc
 plugins/modules/ios_command.py future-import-boilerplate
@@ -37,6 +38,7 @@ plugins/modules/ios_facts.py metaclass-boilerplate
 plugins/modules/ios_facts.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_facts.py validate-modules:doc-required-mismatch
 plugins/modules/ios_facts.py validate-modules:parameter-type-not-in-doc
+plugins/modules/ios_l3_interfaces.py validate-modules:invalid-ansiblemodule-schema
 plugins/modules/ios_lag_interfaces.py validate-modules:doc-required-mismatch
 plugins/modules/ios_linkagg.py validate-modules:doc-choices-do-not-match-spec
 plugins/modules/ios_linkagg.py validate-modules:doc-default-does-not-match-spec
