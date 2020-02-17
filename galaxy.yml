@@ -5,4 +5,4 @@ license_file: LICENSE
 name: ios
 namespace: cisco
 readme: README.rst
-repository: https://github.com/ansible-network/ansible_collections.cisco.ios
+repository: https://github.com/ansible-collections/ios

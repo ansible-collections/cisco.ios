@@ -1,4 +1,4 @@
-ansible_collections.vyos.vyos
-=============================
+cisco.ios
+=========
 
-An Ansible collection for the VyOS network appliance.
+An Ansible collection for the Cisco IOS network appliance.
