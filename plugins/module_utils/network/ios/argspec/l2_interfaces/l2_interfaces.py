@@ -43,6 +43,10 @@ class L2_InterfacesArgs(object):
                     "type": "dict",
                     "options": {"vlan": {"type": "int"}},
                 },
+                "voice": {
+                    "type": "dict",
+                    "options": {"vlan": {"type": "int"}},
+                },
                 "trunk": {
                     "type": "dict",
                     "options": {
