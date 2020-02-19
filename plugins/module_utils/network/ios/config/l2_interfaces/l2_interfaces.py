@@ -46,6 +46,7 @@ class L2_Interfaces(ConfigBase):
     gather_network_resources = ["l2_interfaces"]
 
     access_cmds = {"access_vlan": "switchport access vlan"}
+    voice_cmds = {"voice_vlan": "switchport voice vlan"}
     trunk_cmds = {
         "encapsulation": "switchport trunk encapsulation",
         "pruning_vlans": "switchport trunk pruning vlan",
@@ -278,6 +279,12 @@ class L2_Interfaces(ConfigBase):
                 )
                 add_command_to_config_list(interface, cmd, commands)
 
+            if diff.get("voice"):
+                cmd = "switchport voice vlan {0}".format(
+                    diff.get("voice")[0][1]
+                )
+                add_command_to_config_list(interface, cmd, commands)
+
             if want_trunk:
                 if diff.get("trunk"):
                     diff = dict(diff.get("trunk"))
@@ -333,6 +340,16 @@ class L2_Interfaces(ConfigBase):
                     interface,
                     L2_Interfaces.access_cmds["access_vlan"],
                     commands,
+                )
+
+        if have.get("voice") and want.get("voice") is None:
+            remove_command_from_config_list(
+                interface, L2_Interfaces.voice_cmds["voice_vlan"], commands
+            )
+        elif have.get("voice") and want.get("voice"):
+            if have.get("voice").get("vlan") != want.get("voice").get("vlan"):
+                remove_command_from_config_list(
+                    interface, L2_Interfaces.voice_cmds["voice_vlan"], commands
                 )
 
         if have.get("trunk") and want.get("trunk") is None:

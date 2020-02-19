@@ -7,6 +7,7 @@ merged:
   commands:
     - interface GigabitEthernet0/1
     - switchport access vlan 30
+    - switchport voice vlan 40
     - interface GigabitEthernet0/2
     - switchport trunk encapsulation dot1q
     - switchport trunk native vlan 20
@@ -16,6 +17,8 @@ merged:
     - name: GigabitEthernet0/0
     - access:
         vlan: 30
+      voice:
+        vlan: 40
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
@@ -32,6 +35,8 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
+      voice:
+        vlan: 40
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
@@ -46,6 +51,7 @@ replaced:
   commands:
     - interface GigabitEthernet0/1
     - switchport access vlan 40
+    - switchport voice vlan 20
     - interface GigabitEthernet0/2
     - no switchport trunk allowed vlan
     - switchport trunk native vlan 20
@@ -54,6 +60,8 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 40
+      voice:
+        vlan: 20
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
@@ -67,6 +75,8 @@ overridden:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
+      voice:
+        vlan: 40
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
@@ -81,6 +91,7 @@ overridden:
   commands:
     - interface GigabitEthernet0/1
     - no switchport access vlan
+    - no switchport voice vlan
     - interface GigabitEthernet0/2
     - no switchport trunk pruning vlan
     - switchport trunk encapsulation isl
@@ -101,6 +112,8 @@ deleted:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
+      voice:
+        vlan: 40
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
@@ -115,6 +128,7 @@ deleted:
   commands:
     - interface GigabitEthernet0/1
     - no switchport access vlan
+    - no switch voice vlan
     - interface GigabitEthernet0/2
     - no switchport trunk encapsulation
     - no switchport trunk native vlan
