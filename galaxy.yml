@@ -1,6 +1,8 @@
 ---
 authors:
   - Ansible Network Community (ansible-network)
+dependencies:
+  "ansible.netcommon": "*"
 license_file: LICENSE
 name: ios
 namespace: cisco
