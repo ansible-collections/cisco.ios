@@ -272,11 +272,12 @@ class L2_Interfaces(ConfigBase):
 
         if diff:
             diff = dict(diff)
+            mode = diff.get("mode")
+            access = diff.get("access")
+            trunk = diff.get("trunk")
 
-            if diff.get("access"):
-                cmd = "switchport access vlan {0}".format(
-                    diff.get("access")[0][1]
-                )
+            if access:
+                cmd = "switchport access vlan {0}".format(access[0][1])
                 add_command_to_config_list(interface, cmd, commands)
 
             if diff.get("voice"):
@@ -286,8 +287,8 @@ class L2_Interfaces(ConfigBase):
                 add_command_to_config_list(interface, cmd, commands)
 
             if want_trunk:
-                if diff.get("trunk"):
-                    diff = dict(diff.get("trunk"))
+                if trunk:
+                    diff = dict(trunk)
                 if diff.get("encapsulation"):
                     cmd = self.trunk_cmds["encapsulation"] + " {0}".format(
                         diff.get("encapsulation")
@@ -318,6 +319,10 @@ class L2_Interfaces(ConfigBase):
                     )
                     add_command_to_config_list(interface, cmd, commands)
 
+            if mode:
+                cmd = "switchport mode {0}".format(mode)
+                add_command_to_config_list(interface, cmd, commands)
+
         return commands
 
     def _clear_config(self, want, have):
@@ -327,6 +332,11 @@ class L2_Interfaces(ConfigBase):
             interface = "interface " + want["name"]
         else:
             interface = "interface " + have["name"]
+
+        if have.get("mode") or want.get("mode"):
+            remove_command_from_config_list(
+                interface, "switchport mode", commands
+            )
 
         if have.get("access") and want.get("access") is None:
             remove_command_from_config_list(
