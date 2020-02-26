@@ -13,6 +13,7 @@ merged:
     - switchport trunk native vlan 20
     - switchport trunk allowed vlan 15-20,40
     - switchport trunk pruning vlan 10,20
+    - switchport mode trunk
   after:
     - name: GigabitEthernet0/0
     - access:
@@ -20,7 +21,8 @@ merged:
       voice:
         vlan: 40
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - mode: trunk
+      name: GigabitEthernet0/2
       trunk:
         allowed_vlans:
           - 15-20
@@ -38,7 +40,8 @@ replaced:
       voice:
         vlan: 40
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - mode: trunk
+      name: GigabitEthernet0/2
       trunk:
         allowed_vlans:
           - 10-20
@@ -53,6 +56,7 @@ replaced:
     - switchport access vlan 40
     - switchport voice vlan 20
     - interface GigabitEthernet0/2
+    - no switchport mode
     - no switchport trunk allowed vlan
     - switchport trunk native vlan 20
     - switchport trunk pruning vlan 10-20,30
@@ -78,7 +82,8 @@ overridden:
       voice:
         vlan: 40
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - mode: trunk
+      name: GigabitEthernet0/2
       trunk:
         allowed_vlans:
           - 10-20
@@ -93,6 +98,7 @@ overridden:
     - no switchport access vlan
     - no switchport voice vlan
     - interface GigabitEthernet0/2
+    - no switchport mode
     - no switchport trunk pruning vlan
     - switchport trunk encapsulation isl
     - switchport trunk native vlan 30
@@ -115,7 +121,8 @@ deleted:
       voice:
         vlan: 40
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - mode: trunk
+      name: GigabitEthernet0/2
       trunk:
         allowed_vlans:
           - 10-20
@@ -130,6 +137,7 @@ deleted:
     - no switchport access vlan
     - no switch voice vlan
     - interface GigabitEthernet0/2
+    - no switchport mode
     - no switchport trunk encapsulation
     - no switchport trunk native vlan
     - no switchport trunk allowed vlan

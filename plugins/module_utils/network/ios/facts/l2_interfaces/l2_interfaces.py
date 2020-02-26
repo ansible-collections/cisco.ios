@@ -105,7 +105,9 @@ class L2_InterfacesFacts(object):
         ):
             # populate the facts from the configuration
             config["name"] = normalize_interface(intf)
-
+            has_mode = utils.parse_conf_arg(conf, "switchport mode")
+            if has_mode:
+                config["mode"] = has_mode
             has_access = utils.parse_conf_arg(conf, "switchport access vlan")
             if has_access:
                 config["access"] = {"vlan": int(has_access)}
