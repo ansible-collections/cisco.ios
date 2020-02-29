@@ -1,0 +1,9 @@
+---
+- name: Populate Config
+  vars:
+    lines: "interface GigabitEthernet 0/1\nip access-group 110 in\nip access-group\
+      \ 123 out\nipv6 traffic-filter temp_v6 in\nipv6 traffic-filter test_v6 out\n\
+      interface GigabitEthernet 0/2\nip access-group 110 in\nip access-group 123\
+      \ out\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

@@ -54,7 +54,7 @@ options:
       also be used with an initial C(M(!)) to specify that a specific subset should
       not be collected. Valid subsets are 'all', 'interfaces', 'l2_interfaces', 'vlans',
       'lag_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global', 'lldp_interfaces',
-      'l3_interfaces'.
+      'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'.
 """
 
 EXAMPLES = """

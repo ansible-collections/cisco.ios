@@ -44,6 +44,15 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces import (
     L3_InterfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
+    Acl_InterfacesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
+    Static_RoutesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+    AclsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -66,6 +75,9 @@ FACT_RESOURCE_SUBSETS = dict(
     lldp_global=Lldp_globalFacts,
     lldp_interfaces=Lldp_InterfacesFacts,
     l3_interfaces=L3_InterfacesFacts,
+    acl_interfaces=Acl_InterfacesFacts,
+    static_routes=Static_RoutesFacts,
+    acls=AclsFacts,
 )
 
 

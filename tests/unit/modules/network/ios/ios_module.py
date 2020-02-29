@@ -61,7 +61,6 @@ class TestIosModule(ModuleTestCase):
         sort=True,
         defaults=False,
     ):
-
         self.load_fixtures(commands)
 
         if failed:
