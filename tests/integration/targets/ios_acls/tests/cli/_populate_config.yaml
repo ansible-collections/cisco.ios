@@ -1,0 +1,12 @@
+---
+- name: Populate Config
+  vars:
+    lines: "ip access-list extended test_acl\ndeny tcp 192.0.2.0 0.0.0.255 192.0.3.0\
+      \ 0.0.0.255 eq www fin option traceroute ttl eq 10\nip access-list extended\
+      \ 110\ndeny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl\
+      \ eq 10\nip access-list extended 123\ndeny tcp 198.51.100.0 0.0.0.255 198.51.101.0\
+      \ 0.0.0.255 eq telnet ack tos 12\ndeny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255\
+      \ eq www ack dscp ef ttl lt 20\nipv6 access-list R1_TRAFFIC\ndeny tcp any\
+      \ eq www any eq telnet ack dscp af11\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
