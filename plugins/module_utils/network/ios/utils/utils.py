@@ -39,8 +39,10 @@ def reverify_diff_py35(want, have):
     :param config: want and have set config
     :returns: True/False post checking if there's any actual diff b/w want and have sets
     """
-    for each in sorted(want):
-        if not (each in sorted(have) or tuple(sorted(each)) in sorted(have)):
+    if not have:
+        return True
+    for each in sorted(map(str, want)):
+        if not (each in sorted(map(str, have)) or tuple(sorted(each)) in sorted(map(str, have))):
             return True
     return False
 
