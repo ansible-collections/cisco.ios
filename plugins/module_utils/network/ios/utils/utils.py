@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import socket
+import sys
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     is_masklen,
@@ -31,6 +32,18 @@ def add_command_to_config_list(interface, cmd, commands):
     if interface not in commands:
         commands.insert(0, interface)
     commands.append(cmd)
+
+
+def reverify_diff_py35(want, have):
+    """ Function to re-verify the set diff for py35 as it doesn't maintains dict order which results
+        into unexpected set diff
+    :param config: want and have set config
+    :returns: True/False post checking if there's any actual diff b/w want and have sets
+    """
+    for each in sorted(want):
+        if not (each in sorted(have) or tuple(sorted(each)) in sorted(have)):
+            return True
+    return False
 
 
 def check_n_return_valid_ipv6_addr(module, input_list, filtered_ipv6_list):
