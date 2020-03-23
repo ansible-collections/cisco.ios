@@ -755,6 +755,7 @@ class Acls(ConfigBase):
                 cmd = cmd + " {0}".format(grant)
             if po and isinstance(po, dict):
                 po_key = list(po)[0]
+                po_val = dict()
                 if protocol and protocol != po_key:
                     self._module.fail_json(
                         msg="Protocol value cannot be different from Protocol option protocol value!"
@@ -773,7 +774,8 @@ class Acls(ConfigBase):
             if destination:
                 cmd = self.source_dest_config(destination, cmd, po)
             if po:
-                cmd = cmd + " {0}".format(list(po_val)[0])
+                if po_val:
+                    cmd = cmd + " {0}".format(list(po_val)[0])
             if dscp:
                 cmd = cmd + " dscp {0}".format(dscp)
             if fragments:
