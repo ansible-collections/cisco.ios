@@ -400,8 +400,12 @@ class L3_Interfaces(ConfigBase):
             if ipv6:
                 for each in ipv6:
                     ipv6_dict = dict(each)
-                    validate_ipv6(ipv6_dict.get("address"), module)
-                    cmd = "ipv6 address {0}".format(ipv6_dict.get("address"))
+                    if ipv6_dict.get("address") != "dhcp":
+                        validate_ipv6(ipv6_dict.get("address"), module)
+                        cmd = "ipv6 address {0}".format(ipv6_dict.get("address"))
+                    elif ipv6_dict.get("address") == "dhcp":
+                        cmd = "ipv6 address dhcp"
+
                     add_command_to_config_list(interface, cmd, commands)
 
         return commands
