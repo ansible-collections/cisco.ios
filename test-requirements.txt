@@ -1,3 +1,5 @@
 black==19.3b0
 flake8
 yamllint
+pytest-xdist
+mock
