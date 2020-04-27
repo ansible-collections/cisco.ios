@@ -8,3 +8,4 @@ name: ios
 namespace: cisco
 readme: README.rst
 repository: https://github.com/ansible-collections/ios
+tags: [cisco, ios, iosxe, networking]
