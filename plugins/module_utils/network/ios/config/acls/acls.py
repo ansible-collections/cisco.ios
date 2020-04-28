@@ -30,7 +30,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    new_dict_to_set, reverify_diff_py35
+    new_dict_to_set,
+    reverify_diff_py35,
 )
 
 
@@ -707,7 +708,7 @@ class Acls(ConfigBase):
         diff = want_set - have_set
 
         # Check Py Version and if its py35, verify the diff again
-        if diff and sys.version[0:3] == '3.5':
+        if diff and sys.version[0:3] == "3.5":
             if not reverify_diff_py35(want_set, have_set):
                 diff = set()
 

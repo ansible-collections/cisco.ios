@@ -45,7 +45,8 @@ def reverify_diff_py35(want, have):
         diff = True
         for each_have in have:
             if each_have == sorted(each_want) or sorted(each_have) == sorted(
-                    each_want):
+                each_want
+            ):
                 diff = False
         if diff:
             return True
@@ -85,8 +86,10 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 if v is not None:
                     test_dict.update({k: v})
                 try:
-                    if (tuple(iteritems(test_dict)) not in test_set
-                            and count == input_dict_len):
+                    if (
+                        tuple(iteritems(test_dict)) not in test_set
+                        and count == input_dict_len
+                    ):
                         test_set.add(tuple(iteritems(test_dict)))
                         count = 0
                 except TypeError:
@@ -153,8 +156,10 @@ def filter_dict_having_none_value(want, have):
                 if value is None:
                     dict_val = have.get(k).get(key)
                     test_key_dict.update({key: dict_val})
-                elif (k == "ipv6"
-                      and value.lower() != have.get(k)[0].get(key).lower()):
+                elif (
+                    k == "ipv6"
+                    and value.lower() != have.get(k)[0].get(key).lower()
+                ):
                     # as multiple IPV6 address can be configured on same
                     # interface, for replace state in place update will
                     # actually create new entry, which isn't as expected
@@ -171,8 +176,10 @@ def filter_dict_having_none_value(want, have):
                 if value is None:
                     dict_val = have.get(k).get(key)
                     test_key_dict.update({key: dict_val})
-                elif (k == "ipv6"
-                      and value.lower() != have.get(k)[0].get(key).lower()):
+                elif (
+                    k == "ipv6"
+                    and value.lower() != have.get(k)[0].get(key).lower()
+                ):
                     dict_val = have.get(k)[0].get(key)
                     test_key_dict.update({key: dict_val})
                 if test_key_dict:
@@ -185,8 +192,11 @@ def filter_dict_having_none_value(want, have):
                 if each.get("secondary"):
                     want_ip = each.get("address").split("/")
                     have_ip = have.get("ipv4")
-                    if (len(want_ip) > 1 and have_ip
-                            and have_ip[0].get("secondary")):
+                    if (
+                        len(want_ip) > 1
+                        and have_ip
+                        and have_ip[0].get("secondary")
+                    ):
                         have_ip = have_ip[0]["address"].split(" ")[0]
                         if have_ip != want_ip[0]:
                             diff_ip = True
@@ -217,14 +227,17 @@ def validate_ipv4(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg=
-                "address format is <ipv4 address>/<mask>, got invalid format {0}"
-                .format(value))
+                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(
+                    value
+                )
+            )
 
         if not is_masklen(address[1]):
             module.fail_json(
-                msg="invalid value for mask: {0}, mask should be in range 0-32"
-                .format(address[1]))
+                msg="invalid value for mask: {0}, mask should be in range 0-32".format(
+                    address[1]
+                )
+            )
 
 
 def validate_ipv6(value, module):
@@ -232,15 +245,17 @@ def validate_ipv6(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg=
-                "address format is <ipv6 address>/<mask>, got invalid format {0}"
-                .format(value))
+                msg="address format is <ipv6 address>/<mask>, got invalid format {0}".format(
+                    value
+                )
+            )
         else:
             if not 0 <= int(address[1]) <= 128:
                 module.fail_json(
-                    msg=
-                    "invalid value for mask: {0}, mask should be in range 0-128"
-                    .format(address[1]))
+                    msg="invalid value for mask: {0}, mask should be in range 0-128".format(
+                        address[1]
+                    )
+                )
 
 
 def validate_n_expand_ipv4(module, want):
