@@ -1,6 +1,6 @@
 import re
 from copy import deepcopy
-from ansible.module_utils.network.common.utils import dict_merge, Template
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import dict_merge, Template
 import q
 
 class RmModuleParse(object):
@@ -35,11 +35,8 @@ class RmModuleParse(object):
         """
         result = {}
         shared = {}
-        # for e in self._lines:
-        #     q(e)
         for line in self._lines:
             for parser in self._tmplt.PARSERS:
-                #q(parser['getval'], line)
                 cap = re.match(parser['getval'], line)
                 if cap:
                     capdict = cap.groupdict()

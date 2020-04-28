@@ -1,40 +1,467 @@
 import re
+from ansible.module_utils.six import iteritems
+import q
 
 def _tmplt_ospf_vrf_cmd(process):
-    command = "router ospf {id}".format(**process)
+    q(process)
+    command = "router ospf {process_id}".format(**process)
     if 'vrf' in process:
         command += ' vrf {vrf}'.format(**process)
     return command
 
+def _tmplt_ospf_adjacency_cmd(config_data):
+    if 'adjacency' in config_data:
+        command = "adjacency stagger "
+        if 'none' in config_data['adjacency']:
+            command += ' none'
+        else:
+            command += ' {min_adjacency}'.format(**config_data['adjacency'])
+        if 'max_adjacency' in config_data['adjacency']:
+            command += ' {min_adjacency}'.format(**config_data['adjacency'])
+        return command
+
+def _tmplt_ospf_address_family_cmd(config_data):
+    if 'address_family' in config_data:
+        command = ["address-family ipv4 multicast", "exit-address-family"]
+        if config_data['address_family'].get('topology'):
+            if 'base' in config_data['address_family'].get('topology'):
+                command.insert(1, "topology base")
+            elif 'name' in config_data['address_family'].get('topology'):
+                cmd = "topology {name}".format(**config_data['address_family'].get('topology'))
+                if 'tid' in config_data['address_family'].get('topology'):
+                    cmd += " tid {tid}".format(**config_data['address_family'].get('topology'))
+                command.insert(1, cmd)
+        return command
+
+def _tmplt_ospf_area_authentication(config_data):
+    if 'authentication' in config_data:
+        command = 'area {area_id} authentication'.format(**config_data)
+        if config_data['authentication'].get('message_digest'):
+            command += ' message-digest'
+        return command
+
+def _tmplt_ospf_area_filter(config_data):
+    q("FILTER: ", config_data)
+    if 'filter_list' in config_data:
+        command = []
+        for key, value in iteritems(config_data.get('filter_list')):
+            cmd = 'area {area_id}'.format(**config_data)
+            if value.get('name') and value.get('direction'):
+                cmd += ' filter-list prefix {name} {direction}'.format(**value)
+            command.append(cmd)
+        return command
+
+def _tmplt_ospf_area_nssa(config_data):
+    if 'nssa' in config_data:
+        command = 'area {area_id} nssa'.format(**config_data)
+        if 'default_information_originate' in config_data['nssa']:
+            command += ' default-information-originate'
+            if 'metric' in config_data['nssa']['default_information_originate']:
+                command += ' metric {metric}'.format(**config_data['nssa']['default_information_originate'])
+            if 'metric_type' in config_data['nssa']['default_information_originate']:
+                command += ' metric-type {metric_type}'.format(**config_data['nssa']['default_information_originate'])
+            if 'nssa_only' in config_data['nssa']['default_information_originate']:
+                command += ' nssa-only'
+        if config_data['nssa'].get('no_ext_capability'):
+            command += ' no-ext-capability'
+        if config_data['nssa'].get('no_redistribution'):
+            command += ' no-redistribution'
+        if config_data['nssa'].get('no_summary'):
+            command += ' no-summary'
+        return command
+
+def _tmplt_ospf_area_nssa_translate(config_data):
+    if 'nssa' in config_data:
+        command = 'area {area_id} nssa'.format(**config_data)
+        if 'translate' in config_data['nssa']:
+            command += ' translate type7 {translate}'.format(**config_data['nssa'])
+        return command
+
+def _tmplt_ospf_area_ranges(config_data):
+    q(config_data)
+    if 'ranges' in config_data:
+        commands = []
+        for k, v in iteritems(config_data['ranges']):
+            cmd = 'area {area_id} range'.format(**config_data)
+            temp_cmd = ' {address} {netmask}'.format(**v)
+            if 'advertise' in v:
+                temp_cmd += ' advertise'
+            elif 'not_advertise' in v:
+                temp_cmd += ' not-advertise'
+            if 'cost' in v:
+                temp_cmd += ' cost {cost}'.format(**v)
+            cmd += temp_cmd
+            commands.append(cmd)
+        q(commands)
+        return commands
+
+def _tmplt_ospf_area_sham_link(config_data):
+    if 'sham_link' in config_data:
+        command = 'area {area_id} sham-link'.format(**config_data)
+        if 'source' in config_data['sham_link']:
+            command += ' {source} {destination}'.format(**config_data['sham_link'])
+        if 'cost' in config_data['sham_link']:
+            command += ' cost {cost}'.format(**config_data['sham_link'])
+        if 'ttl_security' in config_data['sham_link']:
+            command += ' ttl-security hops {ttl_security}'.format(**config_data['sham_link'])
+        return command
+
+def _tmplt_ospf_area_stub_link(config_data):
+    if 'stub' in config_data:
+        command = 'area {area_id} stub'.format(**config_data)
+        if 'no_ext_capability' in config_data['stub']:
+            command += ' no-ext-capability'
+        if 'no_summary' in config_data['stub']:
+            command += ' no-summary'
+        return command
+
+def _tmplt_ospf_auto_cost(config_data):
+    if 'auto_cost' in config_data:
+        command = 'auto-cost'
+        if 'reference_bandwidth' in config_data['auto_cost']:
+            command += ' reference-bandwidth {reference_bandwidth}'.format(**config_data['auto_cost'])
+        return command
+
+def _tmplt_ospf_capability(config_data):
+    if 'capability' in config_data:
+        if 'lls' in config_data['capability']:
+            command = 'capability lls'
+        elif 'opaque' in config_data['capability']:
+            command = 'capability opaque'
+        elif 'transit' in config_data['capability']:
+            command = 'capability transit'
+        elif 'vrf_lite' in config_data['capability']:
+            command = 'capability vrf_lite'
+        return command
+
+def _tmplt_ospf_compatible(config_data):
+    if 'compatible' in config_data:
+        if 'rfc1583' in config_data['compatible']:
+            command = 'compatible rfc1583'
+        elif 'rfc1587' in config_data['compatible']:
+            command = 'compatible rfc1587'
+        elif 'rfc5243' in config_data['compatible']:
+            command = 'compatible rfc5243'
+        return command
+
+def _tmplt_ospf_default_information(config_data):
+    if 'default_information' in config_data:
+        command = 'default-information'
+        if 'originate' in config_data['default_information']:
+            command += ' originate'
+        if 'always' in config_data['default_information']:
+            command += ' always'
+        if 'metric' in config_data['default_information']:
+            command += ' metric {metric}'.format(**config_data['default_information'])
+        if 'metric_type' in config_data['default_information']:
+            command += ' metric-type {metric_type}'.format(**config_data['default_information'])
+        if 'metric' in config_data['default_information']:
+            command += ' route-map {route_map}'.format(**config_data['default_information'])
+        return command
+
+def _tmplt_ospf_discard_route(config_data):
+    if 'discard_route' in config_data:
+        command = 'discard-route'
+        if 'external' in config_data['discard_route']:
+            command += ' external {external}'.format(**config_data['discard_route'])
+        if 'internal' in config_data['discard_route']:
+            command += ' internal {internal}'.format(**config_data['discard_route'])
+        return command
+
+def _tmplt_ospf_distance_admin_distance(config_data):
+    if 'admin_distance' in config_data['distance']:
+        command = 'distance {distance}'.format(**config_data['distance']['admin_distance'])
+        if 'address' in config_data['distance']['admin_distance']:
+            command += ' {address} {wildcard_bits}'.format(**config_data['distance']['admin_distance'])
+        if 'acl' in config_data['distance']['admin_distance']:
+            command += ' {acl}'.format(**config_data['distance']['admin_distance'])
+        return command
+
+def _tmplt_ospf_distance_ospf(config_data):
+    if 'ospf' in config_data['distance']:
+        command = 'distance ospf'
+        if 'inter_area' in config_data['distance']['ospf']:
+            command += ' inter-area {inter_area}'.format(**config_data['distance']['ospf'])
+        if config_data['distance'].get('ospf').get('intra_area'):
+            command += ' intra-area {intra_area}'.format(**config_data['distance']['ospf'])
+        if config_data['distance'].get('ospf').get('external'):
+            command += ' external {external}'.format(**config_data['distance']['ospf'])
+        return command
+
+def _tmplt_ospf_distribute_list_acls(config_data):
+    if 'acls' in config_data.get('distribute_list'):
+        command = []
+        for k, v in iteritems(config_data['distribute_list']['acls']):
+            cmd = 'distribute-list {name} {direction}'.format(**v)
+            if 'interface' in v:
+                cmd += ' {interface}'.format(**v)
+            if 'protocol' in v:
+                cmd += ' {protocol}'.format(**v)
+            command.append(cmd)
+        return command
+
+def _tmplt_ospf_distribute_list_prefix(config_data):
+    if 'prefix' in config_data.get('distribute_list'):
+        command = 'distribute-list prefix {name}'.format(**config_data['distribute_list']['prefix'])
+        if 'gateway_name' in config_data['distribute_list']['prefix']:
+            command += ' gateway {gateway_name}'.format(**config_data['distribute_list']['prefix'])
+        if 'direction' in config_data['distribute_list']['prefix']:
+            command += ' {direction}'.format(**config_data['distribute_list']['prefix'])
+        if 'interface' in config_data['distribute_list']['prefix']:
+            command += ' {interface}'.format(**config_data['distribute_list']['prefix'])
+        if 'protocol' in config_data['distribute_list']['prefix']:
+            command += ' {protocol}'.format(**config_data['distribute_list']['prefix'])
+        return command
+
+def _tmplt_ospf_domain_id(config_data):
+    if 'domain_id' in config_data:
+        command = 'domain-id'
+        if 'ip_address' in config_data['domain_id']:
+            if 'address' in config_data['domain_id']['ip_address']:
+                command += ' {address}'.format(**config_data['domain_id']['ip_address'])
+                if 'secondary' in config_data['domain_id']['ip_address']:
+                    command += ' {secondary}'.format(**config_data['domain_id']['ip_address'])
+        elif 'null' in config_data['domain_id']:
+            command += ' null'
+        return command
+
+def _tmplt_ospf_event_log(config_data):
+    if 'event_log' in config_data:
+        command = 'event-log'
+        if 'one_shot' in config_data['event_log']:
+            command += ' one-shot'
+        if 'pause' in config_data['event_log']:
+            command += ' pause'
+        if 'size' in config_data['event_log']:
+            command += ' size {size}'.format(**config_data['event_log'])
+        return command
+
+def _tmplt_ospf_limit(config_data):
+    if 'limit' in config_data:
+        command = 'limit retransmissions'
+        if 'dc' in config_data['limit']:
+            if 'number' in config_data['limit']['dc']:
+                command += ' dc {number}'.format(**config_data['limit']['dc'])
+            if 'disable' in config_data['limit']['dc']:
+                command += ' dc disable'
+        if 'non_dc' in config_data['limit']:
+            if 'number' in config_data['limit']['non_dc']:
+                command += ' non-dc {number}'.format(**config_data['limit']['non_dc'])
+            if 'disable' in config_data['limit']['dc']:
+                command += ' non-dc disable'
+        return command
+
+def _tmplt_ospf_vrf_local_rib_criteria(config_data):
+    if 'local_rib_criteria' in config_data:
+        command = 'local-rib-criteria'
+        if 'forwarding_address' in config_data['local_rib_criteria']:
+            command += ' forwarding-address'
+        if 'inter_area_summary' in config_data['local_rib_criteria']:
+            command += ' inter-area-summary'
+        if 'nssa_translation' in config_data['local_rib_criteria']:
+            command += ' nssa-translation'
+        return command
+
+def _tmplt_ospf_log_adjacency_changes(config_data):
+    if 'log_adjacency_changes' in config_data:
+        command = 'log-adjacency-changes'
+        if 'detail' in config_data['log_adjacency_changes']:
+            command += ' detail'
+        return command
+
+def _tmplt_ospf_max_lsa(config_data):
+    if 'max_lsa' in config_data:
+        command = 'max-lsa {number}'.format(**config_data['max_lsa'])
+        if 'threshold_value' in config_data['max_lsa']:
+            command += ' {threshold_value}'.format(**config_data['max_lsa'])
+        if 'ignore_count' in config_data['max_lsa']:
+            command += ' ignore-count {ignore_count}'.format(**config_data['max_lsa'])
+        if 'ignore_time' in config_data['max_lsa']:
+            command += ' ignore-time {ignore_time}'.format(**config_data['max_lsa'])
+        if 'reset_time' in config_data['max_lsa']:
+            command += ' reset-time {reset_time}'.format(**config_data['max_lsa'])
+        if 'warning_only':
+            command += ' warning-only'
+        return command
+
+def _tmplt_ospf_max_metric(config_data):
+    if 'max_metric' in config_data:
+        command = 'max-metric'
+        if 'router_lsa' in config_data['max_metric']:
+            command += ' router-lsa'
+        if 'external_lsa' in config_data['max_metric']:
+            command += ' external-lsa {external_lsa}'.format(**config_data['max_metric'])
+        if 'include_stub' in config_data['max_metric']:
+            command += ' include-stub'
+        if 'on_startup' in config_data['max_metric']:
+            if 'time' in config_data['max_metric']['on_startup']:
+                command += ' on-startup {time}'.format(**config_data['max_metric']['on_startup'])
+            elif 'wait_for_bgp' in config_data['max_metric']['on_startup']:
+                command += ' on-startup wait-for-bgp'
+        if 'summary_lsa' in config_data['max_metric']:
+            command += ' summary-lsa {summary_lsa}'.format(**config_data['max_metric'])
+        return command
+
+
+def _tmplt_ospf_mpls_ldp(config_data):
+    if 'ldp' in config_data['mpls']:
+        command = 'mpls ldp'
+        if 'autoconfig' in config_data['mpls']['ldp']:
+            command += ' autoconfig'
+            if 'area' in config_data['mpls']['ldp']['autoconfig']:
+                command += ' area {area}'.format(**config_data['mpls']['ldp']['autoconfig'])
+        elif 'sync' in config_data['mpls']['ldp']:
+            command += ' sync'
+    return command
+
+def _tmplt_ospf_mpls_traffic_eng(config_data):
+    if 'traffic_eng' in config_data['mpls']:
+        command = 'mpls traffic-eng'
+        if 'area' in config_data['mpls']['traffic_eng']:
+            command += ' area {area}'.format(**config_data['mpls']['traffic_eng'])
+        elif 'autoroute_exclude' in config_data['mpls']['traffic_eng']:
+            command += ' autoroute-exclude prefix-list {autoroute_exclude}'.format(**config_data['mpls']['traffic_eng'])
+        elif 'interface' in config_data['mpls']['traffic_eng']:
+            command += ' interface {int_type}'.format(**config_data['mpls']['traffic_eng']['interface'])
+            if 'area' in config_data['mpls']['traffic_eng']['interface']:
+                command += ' area {area}'.format(**config_data['mpls']['traffic_eng']['interface'])
+        elif 'mesh_group' in config_data['mpls']['traffic_eng']:
+            command += ' mesh-group {id} {interface}'.format(**config_data['mpls']['traffic_eng']['mesh_group'])
+            if 'area' in config_data['mpls']['traffic_eng']['mesh_group']:
+                command += ' area {area}'.format(**config_data['mpls']['traffic_eng']['mesh_group'])
+        elif 'multicast_intact' in config_data['mpls']['traffic_eng']:
+            command += ' multicast-intact'
+        elif 'router_id_interface' in config_data['mpls']['traffic_eng']:
+            command += ' router-id {router_id_interface}'.format(**config_data['mpls']['traffic_eng'])
+        return command
+
+def _tmplt_ospf_neighbor(config_data):
+    if 'neighbor' in config_data:
+        command = 'neighbor'
+        if 'address' in config_data['neighbor']:
+            command += ' {address}'.format(**config_data['neighbor'])
+        if 'cost' in config_data['neighbor']:
+            command += ' cost {cost}'.format(**config_data['neighbor'])
+        if 'database_filter' in config_data['neighbor']:
+            command += ' database-filter all out'
+        if 'poll_interval' in config_data['neighbor']:
+            command += ' poll-interval {poll_interval}'.format(**config_data['neighbor'])
+        if 'priority' in config_data['neighbor']:
+            command += ' priority {priority}'.format(**config_data['neighbor'])
+        return command
+
+def _tmplt_ospf_network(config_data):
+    if 'network' in config_data:
+        command = 'network'
+        if 'address' in config_data['network']:
+            command += ' {address} {wildcard_bits}'.format(**config_data['network'])
+        if 'area' in config_data['network']:
+            command += ' area {area}'.format(**config_data['network'])
+        return command
+
+def _tmplt_ospf_nsf_cisco(config_data):
+    if 'cisco' in config_data['nsf']:
+        command = 'nsf cisco helper'
+        if 'disable' in config_data['nsf']['cisco']:
+            command += ' disable'
+        return command
+
+def _tmplt_ospf_nsf_ietf(config_data):
+    if 'ietf' in config_data['nsf']:
+        command = 'nsf ietf helper'
+        if 'disable' in config_data['nsf']['ietf']:
+            command += ' disable'
+        elif 'strict_lsa_checking' in config_data['nsf']['ietf']:
+            command += ' strict-lsa-checking'
+        return command
+
+def _tmplt_ospf_queue_depth_hello(config_data):
+    if 'hello' in config_data['queue_depth']:
+        command = 'queue-depth hello'
+        if 'max_packets' in config_data['queue_depth']['hello']:
+            command += ' {max_packets}'.format(**config_data['queue_depth']['hello'])
+        elif 'unlimited' in config_data['queue_depth']['hello']:
+            command += ' unlimited'
+        return command
+
+def _tmplt_ospf_queue_depth_update(config_data):
+    if 'update' in config_data['queue_depth']:
+        command = 'queue-depth update'
+        if 'max_packets' in config_data['queue_depth']['update']:
+            command += ' {max_packets}'.format(**config_data['queue_depth']['update'])
+        elif 'unlimited' in config_data['queue_depth']['update']:
+            command += ' unlimited'
+        return command
+
+def _tmplt_ospf_summary_address(config_data):
+    if 'summary_address' in config_data:
+        command = 'summary-address {address} {mask}'.format(**config_data['summary_address'])
+        if 'not_advertise' in config_data['summary_address']:
+            command += ' not-advertise'
+        elif 'nssa_only' in config_data['summary_address']:
+            command += ' nssa-only'
+            if 'tag' in config_data['summary_address']:
+                command += ' tag {tag}'.format(**config_data['summary_address'])
+        return command
+
+def _tmplt_ospf_timers_pacing(config_data):
+    if 'pacing' in config_data['timers']:
+        command = 'timers pacing'
+        if 'flood' in config_data['timers']['pacing']:
+            command += ' flood {flood}'.format(**config_data['timers']['pacing'])
+        elif 'lsa_group' in config_data['timers']['pacing']:
+            command += ' lsa-group {lsa_group}'.format(**config_data['timers']['pacing'])
+        elif 'retransmission' in config_data['timers']['pacing']:
+            command += ' retransmission {retransmission}'.format(**config_data['timers']['pacing'])
+        return command
+
+def _tmplt_ospf_ttl_security(config_data):
+    if 'ttl_security' in config_data:
+        command = 'ttl-security all-interfaces'
+        if 'hops' in config_data['ttl_security']:
+            command += ' hops {hops}'.format(**config_data['ttl_security'])
+        return command
 
 class Ospfv2Template(object):
     PARSERS = [
         {
-            'name': 'vrf',
+            'name': 'pid',
             'getval': re.compile(r'''
-                    ospf
-                    *\s(?P<id>\S+)
-                    \svrf
-                    \s(?P<vrf>\S+)$''', re.VERBOSE),
+                        ^router\s
+                        ospf*
+                        \s(?P<pid>\S+)
+                        \svrf
+                        \s(?P<vrf>\S+)
+                        $''', re.VERBOSE),
             'setval': _tmplt_ospf_vrf_cmd,
             'result': {
-                'id': '{{ id|int }}',
-                'vrf': '{{ vrf }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'process_id': '{{ pid|int }}',
+                        'vrf': '{{ vrf }}'
+                    }
+                }
             },
             'shared': True
         },
         {
-            'name': 'id',
+            'name': 'pid',
             'getval': re.compile(r'''
-                    ospf
-                    *\s
-                    (?P<id>\S+)''', re.VERBOSE),
+                        ^router\s
+                        ospf*
+                        \s(?P<pid>\S+)
+                        $''', re.VERBOSE),
             'setval': _tmplt_ospf_vrf_cmd,
             'result': {
-                'id': '{{ id|int }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'process_id': '{{ pid|int }}',
+                    }
+                }
             },
             'shared': True
         },
+
         {
             'name': 'adjacency',
             'getval': re.compile(
@@ -43,48 +470,38 @@ class Ospfv2Template(object):
                     \s*((?P<min>\d+)|(?P<none_adj>none))*
                     \s*(?P<max>\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_adjacency_cmd,
             'result': {
-                'adjacency': {
-                    'min_adjacency': '{{ min|int }}',
-                    'max_adjacency': '{{ max|int }}',
-                    'none': '{{ True if none_adj is defined else None }}'
-                }
-            }
-        },
-        {
-            'name': 'address_family.snmp_context',
-            'getval': re.compile(
-                r'''\s+snmp
-                    \scontext
-                    \s(?P<name>\S+)
-                    *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
-            'result': {
-                'address_family': {
-                    'topology': {
-                        'base': '{{ True if base is defined }}',
-                        'name': '{{ name }}',
-                        'tid': '{{ tid.split(' ')[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'adjacency': {
+                            'min_adjacency': '{{ min|int }}',
+                            'max_adjacency': '{{ max|int }}',
+                            'none': '{{ True if none_adj is defined else None }}'
+                        }
                     }
                 }
             }
         },
         {
-            'name': 'address_family.topology',
+            'name': 'address_family',
             'getval': re.compile(
                 r'''\s+topology
                     \s(?P<base>base)*
                     \s*(?P<name>\S+)*
                     \s*(?P<tid>tid\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_address_family_cmd,
             'result': {
-                'address_family': {
-                    'topology': {
-                        'base': '{{ True if base is defined }}',
-                        'name': '{{ name }}',
-                        'tid': '{{ tid.split(' ')[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'address_family': {
+                            'topology': {
+                                'base': '{{ True if base is defined }}',
+                                'name': '{{ name }}',
+                                'tid': '{{ tid.split(' ')[1] }}'
+                            }
+                        }
                     }
                 }
             }
@@ -97,33 +514,43 @@ class Ospfv2Template(object):
                     \s*(?P<auth>authentication)*
                     \s*(?P<md>message-digest)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_authentication,
+            'compval': 'authentication',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'authentication': {
-                            'enable': '{{ True if auth is defined and md is undefined }}',
-                            'message_digest': '{{ not not md }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'authentication': {
+                                    'enable': '{{ True if auth is defined and md is undefined }}',
+                                    'message_digest': '{{ not not md }}'
+                                }
+                            }
                         }
                     }
                 }
             }
         },
         {
-            'name': 'area.capapbility',
+            'name': 'area.capability',
             'getval': re.compile(
                 r'''\s+area
                     \s(?P<area_id>\S+)*
                     \s*(?P<capability>capability)*
                     \s*(?P<df>default-exclusion)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'area {{ area_id }} capability default-exclusion',
+            'compval': 'capability',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'capability': '{{ not not capability }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'capability': '{{ not not capability }}'
+                            }
+                        }
                     }
                 }
             }
@@ -136,12 +563,17 @@ class Ospfv2Template(object):
                     \sdefault-cost*
                     \s*(?P<default_cost>\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'area {{ area_id }} default-cost {{ default_cost }}',
+            'compval': 'default_cost',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'default_cost': '{{ default_cost|int }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'default_cost': '{{ default_cost|int }}'
+                            }
+                        }
                     }
                 }
             }
@@ -155,17 +587,22 @@ class Ospfv2Template(object):
                     \s*(?P<name>\S+)*
                     \s*(?P<dir>\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_filter,
+            'compval': 'filter_list',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'filter_list': [
-                            {
-                                'name': '{{ name }}',
-                                'direction': '{{ dir }}',
-                            },
-                        ]
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'filter_list': [
+                                    {
+                                        'name': '{{ name }}',
+                                        'direction': '{{ dir }}',
+                                    },
+                                ]
+                            }
+                        }
                     }
                 }
             }
@@ -181,22 +618,27 @@ class Ospfv2Template(object):
                     \s*(?P<metric_type>metric-type\s\d+)*
                     \s*(?P<no_summary>no-summary)*
                     \s*(?P<no_ext>no-ext-capability)*$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_nssa_translate,
+            'compval': 'nssa',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'nssa': {
-                            'set': '{{ True if nssa is defined and def_origin is undefined and no_ext is undefined and no_redis is undefined and nssa_only is undefined }}',
-                            'default_information_originate': {
-                                'set': '{{ True if def_origin is defined and metric is undefined and metric_type is undefined and nssa_only is undefined }}',
-                                'metric': '{{ metric.split(' ')[1]|int }}',
-                                'metric_type': '{{ metric_type.split(' ')[1]|int }}',
-                                'nssa_only': '{{ True if nssa_only is defined }}'
-                            },
-                            'no_ext_capability': '{{ True if no_ext is defined }}',
-                            'no_redistribution': '{{ True if no_redis is defined }}',
-                            'no_summary': '{{ True if no_summary is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'nssa': {
+                                    'set': '{{ True if nssa is defined and def_origin is undefined and no_ext is undefined and no_redis is undefined and nssa_only is undefined }}',
+                                    'default_information_originate': {
+                                        'set': '{{ True if def_origin is defined and metric is undefined and metric_type is undefined and nssa_only is undefined }}',
+                                        'metric': '{{ metric.split(' ')[1]|int }}',
+                                        'metric_type': '{{ metric_type.split(' ')[1]|int }}',
+                                        'nssa_only': '{{ True if nssa_only is defined }}'
+                                    },
+                                    'no_ext_capability': '{{ True if no_ext is defined }}',
+                                    'no_redistribution': '{{ True if no_redis is defined }}',
+                                    'no_summary': '{{ True if no_summary is defined }}'
+                                }
+                            }
                         }
                     }
                 }
@@ -205,26 +647,32 @@ class Ospfv2Template(object):
         {
             'name': 'area.nssa.translate',
             'getval': re.compile(
-                r'''\s+area\s(?P<area_id>\S+) 
-                    \s(?P<nssa>nssa)*
+                r'''\s+area*
+                    \s*(?P<area_id>\S+)*
+                    \s*(?P<nssa>nssa)*
                     \stranslate\stype7*
-                    \s((?P<translate_always>always)|(?P<translate_supress>suppress-fa))
+                    \s(?P<translate_always>always)*
+                    \s* (?P<translate_supress>suppress-fa)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_nssa,
+            'compval': 'nssa.translate',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'nssa': {
-                            'set': '{{ True if nssa is defined and translate is undefined }}',
-                            'translate': '{{ translate_always if translate_always is defined else translate_supress if translate_supress is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'nssa': {
+                                    'translate': '{{ translate_always if translate_always is defined else translate_supress if translate_supress is defined }}'
+                                }
+                            }
                         }
                     }
                 }
             }
         },
         {
-            'name': 'area.range',
+            'name': 'area.ranges',
             'getval': re.compile(
                 r'''\s+area\s(?P<area_id>\S+)
                     \srange
@@ -233,17 +681,22 @@ class Ospfv2Template(object):
                     \s*((?P<advertise>advertise)|(?P<not_advertise>not-advertise))*
                     \s*(?P<cost>cost\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_ranges,
+            'compval': 'ranges',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'range': {
-                            'address': '{{ address }}',
-                            'netmask': '{{ netmask }}',
-                            'advertise': '{{ True if advertise is defined }}',
-                            'cost': '{{ cost.split(' ')[1]|int }}',
-                            'not_advertise': '{{ True if not_advertise is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'ranges': [{
+                                    'address': '{{ address }}',
+                                    'netmask': '{{ netmask }}',
+                                    'advertise': '{{ True if advertise is defined }}',
+                                    'cost': '{{ cost.split(' ')[1]|int }}',
+                                    'not_advertise': '{{ True if not_advertise is defined }}'
+                                }]
+                            }
                         }
                     }
                 }
@@ -259,16 +712,21 @@ class Ospfv2Template(object):
                     \s*(?P<cost>cost\s\d+)*
                     \s*(?P<ttl_security>ttl-security\shops\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_sham_link,
+            'compval': 'sham_link',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'sham_link': {
-                            'source': '{{ source }}',
-                            'destination': '{{ destination }}',
-                            'cost': '{{ cost.split(' ')[1]|int }}',
-                            'ttl_security': '{{ ttl_security.split("hops ")[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'sham_link': {
+                                    'source': '{{ source }}',
+                                    'destination': '{{ destination }}',
+                                    'cost': '{{ cost.split(' ')[1]|int }}',
+                                    'ttl_security': '{{ ttl_security.split("hops ")[1] }}'
+                                }
+                            }
                         }
                     }
                 }
@@ -282,15 +740,20 @@ class Ospfv2Template(object):
                     \s*(?P<no_ext>no-ext-capability)*
                     \s*(?P<no_sum>no-summary)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_area_stub_link,
+            'compval': 'stub',
             'result': {
-                'areas': {
-                    '{{ area_id }}': {
-                        'area_id': '{{ area_id }}',
-                        'stub': {
-                            'set': '{{ True if stub is defined and no_ext is undefined and no_sum is undefined }}',
-                            'no_ext_capability': '{{ True if no_ext is defined }}',
-                            'no_summary': '{{ True if no_sum is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'areas': {
+                            '{{ area_id }}': {
+                                'area_id': '{{ area_id }}',
+                                'stub': {
+                                    'set': '{{ True if stub is defined and no_ext is undefined and no_sum is undefined }}',
+                                    'no_ext_capability': '{{ True if no_ext is defined }}',
+                                    'no_summary': '{{ True if no_sum is defined }}',
+                                }
+                            }
                         }
                     }
                 }
@@ -302,11 +765,15 @@ class Ospfv2Template(object):
                 r'''\s+(?P<auto_cost>auto-cost)*
                     \s*(?P<ref_band>reference-bandwidth\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_auto_cost,
             'result': {
-                'auto_cost': {
-                    'set': '{{ True if auto_cost is defined and ref_band is undefined }}',
-                    'reference_bandwidth': '{{ ref_band.split(" ")[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'auto_cost': {
+                            'set': '{{ True if auto_cost is defined and ref_band is undefined }}',
+                            'reference_bandwidth': '{{ ref_band.split(" ")[1] }}'
+                        }
+                    }
                 }
             }
         },
@@ -316,9 +783,13 @@ class Ospfv2Template(object):
                 r'''\s+bfd*
                     \s*(?P<bfd>all-interfaces)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'bfd all-interfaces',
             'result': {
-                'bfd': '{{ True if bfd is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'bfd': '{{ True if bfd is defined }}'
+                    }
+                }
             }
         },
         {
@@ -327,13 +798,17 @@ class Ospfv2Template(object):
                 r'''\s+capability*
                     \s*((?P<lls>lls)|(?P<opaque>opaque)|(?P<transit>transit)|(?P<vrf_lite>vrf-lite))
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_capability,
             'result': {
-                'capability': {
-                    'lls': '{{ True if lls is defined }}',
-                    'opaque': '{{ True if opaque is defined }}',
-                    'transit': '{{ True if transit is defined }}',
-                    'vrf_lite': '{{ True if vrf_lite is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'capability': {
+                            'lls': '{{ True if lls is defined }}',
+                            'opaque': '{{ True if opaque is defined }}',
+                            'transit': '{{ True if transit is defined }}',
+                            'vrf_lite': '{{ True if vrf_lite is defined }}',
+                        }
+                    }
                 }
             }
         },
@@ -343,12 +818,16 @@ class Ospfv2Template(object):
                 r'''\s+compatible*
                     \s*((?P<rfc1583>rfc1583)|(?P<rfc1587>rfc1587)|(?P<rfc5243>rfc5243))
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_compatible,
             'result': {
-                'compatible': {
-                    'rfc1583': '{{ True if rfc1583 is defined }}',
-                    'rfc1587': '{{ True if rfc1587 is defined }}',
-                    'rfc5243': '{{ True if rfc5243 is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'compatible': {
+                            'rfc1583': '{{ True if rfc1583 is defined }}',
+                            'rfc1587': '{{ True if rfc1587 is defined }}',
+                            'rfc5243': '{{ True if rfc5243 is defined }}',
+                        }
+                    }
                 }
             }
         },
@@ -362,14 +841,18 @@ class Ospfv2Template(object):
                     \s*(?P<metric_type>metric-type\s\d+)*
                     \s*(?P<route_map>route-map\s\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_default_information,
             'result': {
-                'default_information': {
-                    'originate': '{{ True if originate is defined }}',
-                    'always': '{{ True if always is defined }}',
-                    'metric': '{{ metric.split(' ')[1]|int }}',
-                    'metric_type': '{{ metric_type.split(' ')[1]|int }}',
-                    'route_map': '{{ route_map.split(' ')[1] }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'default_information': {
+                            'originate': '{{ True if originate is defined }}',
+                            'always': '{{ True if always is defined }}',
+                            'metric': '{{ metric.split(' ')[1]|int }}',
+                            'metric_type': '{{ metric_type.split(' ')[1]|int }}',
+                            'route_map': '{{ route_map.split(' ')[1] }}',
+                        }
+                    }
                 }
             }
         },
@@ -378,9 +861,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+default-metric(?P<default_metric>\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'default-metric {{ default_metric }}',
             'result': {
-                'default_metric': '{{ default_metric| int}}'
+                'processes': {
+                    '{{ pid }}': {
+                        'default_metric': '{{ default_metric| int}}'
+                    }
+                }
             }
         },
         {
@@ -390,12 +877,16 @@ class Ospfv2Template(object):
                     \s*(?P<external>external\s\d+)*
                     \s*(?P<internal>internal\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_discard_route,
             'result': {
-                'discard_route': {
-                    'set': '{{ True if discard_route is defined and external is undefined and internal is undefined }}',
-                    'external': '{{ external.split(' ')[1]|int }}',
-                    'internal': '{{ internal.split(' ')[1]|int }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'discard_route': {
+                            'set': '{{ True if discard_route is defined and external is undefined and internal is undefined }}',
+                            'external': '{{ external.split(' ')[1]|int }}',
+                            'internal': '{{ internal.split(' ')[1]|int }}',
+                        }
+                    }
                 }
             }
         },
@@ -408,14 +899,19 @@ class Ospfv2Template(object):
                     \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
                     \s*(?P<acl>\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_distance_admin_distance,
+            'compval': 'admin_distance',
             'result': {
-                'distance': {
-                    'admin_distance': {
-                        'distance': '{{ admin_dist }}',
-                        'address': '{{ source }}',
-                        'wildcard_bits': '{{ wildcard }}',
-                        'acl': '{{ acl }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'distance': {
+                            'admin_distance': {
+                                'distance': '{{ admin_dist }}',
+                                'address': '{{ source }}',
+                                'wildcard_bits': '{{ wildcard }}',
+                                'acl': '{{ acl }}',
+                            }
+                        }
                     }
                 }
             }
@@ -429,39 +925,47 @@ class Ospfv2Template(object):
                     \s*(?P<inter>inter-area\s\d+)*
                     \s*(?P<external>external\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_distance_ospf,
+            'compval': 'ospf',
             'result': {
-                'distance': {
-                    'ospf': {
-                        'inter_area': '{{ inter.split(' ')[1]|int }}',
-                        'intra_area': '{{ intra.split(' ')[1]|int }}',
-                        'external': '{{ external.split(' ')[1]|int }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'distance': {
+                            'ospf': {
+                                'inter_area': '{{ inter.split(' ')[1]|int }}',
+                                'intra_area': '{{ intra.split(' ')[1]|int }}',
+                                'external': '{{ external.split(' ')[1]|int }}',
+                            }
+                        }
                     }
                 }
             }
         },
         {
-            'name': 'distribute_list.acl',
+            'name': 'distribute_list.acls',
             'getval': re.compile(
                 r'''\s+distribute-list
                     \s(?P<name>\S+)*
                     \s*(?P<dir>\S+)*
                     \s*(?P<int_pro>\S+\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_distribute_list_acls,
+            'compval': 'distribute_list.acls',
             'result': {
-                'distribute_list': [
-                    {
-                        'acl': [
-                            {
-                                'name': '{{ name }}',
-                                'direction': '{{ dir }}',
-                                'interface': '{{ int_pro if dir == "in" }}',
-                                'protocol': '{{ int_pro if dir == "out" }}',
-                            },
-                        ]
+                'processes': {
+                    '{{ pid }}': {
+                        'distribute_list':{
+                            'acls': [
+                                {
+                                    'name': '{{ name }}',
+                                    'direction': '{{ dir }}',
+                                    'interface': '{{ int_pro if dir == "in" }}',
+                                    'protocol': '{{ int_pro if dir == "out" }}',
+                                },
+                            ]
+                        }
                     }
-                ]
+                }
             }
         },
         {
@@ -473,21 +977,22 @@ class Ospfv2Template(object):
                     \s*(?P<dir>\S+)*
                     \s*(?P<int_pro>\S+\s\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_distribute_list_prefix,
+            'compval': 'distribute_list.prefix',
             'result': {
-                'distribute_list': [
-                    {
-                        'prefix': [
-                            {
+                'processes': {
+                    '{{ pid }}': {
+                        'distribute_list': {
+                            'prefix': {
                                 'name': '{{ prefix.split(' ')[1] }}',
                                 'gateway_name': '{{ gateway.split(' ')[1] if prefix is defined }}',
                                 'direction': '{{ dir if gateway is undefined }}',
                                 'interface': '{{ int_pro if dir == "in" }}',
                                 'protocol': '{{ int_pro if dir == "out" }}',
                             },
-                        ],
+                        }
                     }
-                ]
+                }
             }
         },
         {
@@ -497,16 +1002,18 @@ class Ospfv2Template(object):
                     \s(?P<route_map>route-map\s\S+)*
                     \s*(?P<dir>\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'distribute-list route-map {{ distribute_list.route_map.name }} in',
+            'compval': 'distribute_list.route_map',
             'result': {
-                'distribute_list': [
-                    {
-                        'route_map': {
-                                'name': '{{ route_map.split(' ')[1] }}',
-                                'direction': '{{ dir }}',
-                        },
+                'processes': {
+                    '{{ pid }}': {
+                        'distribute_list': {
+                            'route_map': {
+                                    'name': '{{ route_map.split(' ')[1] }}',
+                            },
+                        }
                     }
-                ]
+                }
             }
         },
         {
@@ -517,14 +1024,18 @@ class Ospfv2Template(object):
                     \s*(?P<secondary>secondary)*
                     \s*(?P<null>null)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_domain_id,
             'result': {
-                'domain_id': {
-                    'ip_address': {
-                        'address': '{{ address }}',
-                        'secondary': '{{ True if secondary is defined }}'
-                    },
-                    'null': '{{ True if null is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'domain_id': {
+                            'ip_address': {
+                                'address': '{{ address }}',
+                                'secondary': '{{ True if secondary is defined }}'
+                            },
+                            'null': '{{ True if null is defined }}'
+                        }
+                    }
                 }
             }
         },
@@ -534,9 +1045,13 @@ class Ospfv2Template(object):
                 r'''\s+domain-tag
                     \s(?P<tag>\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'domain-tag {{ domain_tag }}',
             'result': {
-                'domain_tag': '{{ tag|int }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'domain_tag': '{{ tag|int }}'
+                    }
+                }
             }
         },
         {
@@ -547,13 +1062,17 @@ class Ospfv2Template(object):
                     \s*(?P<pause>pause)*
                     \s*(?P<size>size\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_event_log,
             'result': {
-                'event_log': {
-                    'enable': '{{ True if event_log is defined and one_shot is undefined and pause is undefined and size is undefined }}',
-                    'one_shot': '{{ True if one_shot is defined }}',
-                    'pause': '{{ True if pause is defined }}',
-                    'size': '{{ size.split(' ')[1]|int }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'event_log': {
+                            'enable': '{{ True if event_log is defined and one_shot is undefined and pause is undefined and size is undefined }}',
+                            'one_shot': '{{ True if one_shot is defined }}',
+                            'pause': '{{ True if pause is defined }}',
+                            'size': '{{ size.split(' ')[1]|int }}'
+                        }
+                    }
                 }
             }
         },
@@ -562,9 +1081,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<help>help)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'help',
             'result': {
-                'help': '{{ True if help is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'help': '{{ True if help is defined }}'
+                    }
+                }
             }
         },
         {
@@ -572,9 +1095,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<ignore>ignore)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'ignore lsa mospf',
             'result': {
-                'ignore': '{{ True if ignore is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'ignore': '{{ True if ignore is defined }}'
+                    }
+                }
             }
         },
         {
@@ -582,9 +1109,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<interface_id>interface-id\ssnmp-if-index)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'interface-id snmp-if-index',
             'result': {
-                'interface_id': '{{ True if interface_id is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'interface_id': '{{ True if interface_id is defined }}'
+                    }
+                }
             }
         },
         {
@@ -592,9 +1123,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<ispf>ispf)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'ispf',
             'result': {
-                'ispf': '{{ True if ispf is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'ispf': '{{ True if ispf is defined }}'
+                    }
+                }
             }
         },
         {
@@ -604,16 +1139,20 @@ class Ospfv2Template(object):
                     \s((?P<dc_num>dc\s\d+)|(?P<dc_disable>dc\sdisable))*
                     \s*((?P<non_dc_num>non-dc\s\d+)|(?P<non_dc_disable>non-dc\sdisable))
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_limit,
             'result': {
-                'limit': {
-                    'dc': {
-                        'number': '{{ dc_num.split(' ')[1]|int }}',
-                        'disable': '{{ True if dc_disable is defined }}'
-                    },
-                    'non_dc': {
-                        'number': '{{ non_dc_num.split(' ')[1]|int }}',
-                        'disable': '{{ True if dc_disable is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'limit': {
+                            'dc': {
+                                'number': '{{ dc_num.split(' ')[1]|int }}',
+                                'disable': '{{ True if dc_disable is defined }}'
+                            },
+                            'non_dc': {
+                                'number': '{{ non_dc_num.split(' ')[1]|int }}',
+                                'disable': '{{ True if dc_disable is defined }}'
+                            }
+                        }
                     }
                 }
             }
@@ -626,13 +1165,17 @@ class Ospfv2Template(object):
                     \s*(?P<inter>inter-area-summary)*
                     \s*(?P<nssa>nssa-translation)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_vrf_local_rib_criteria,
             'result': {
-                'local_rib_criteria': {
-                    'enable': '{{ True if local is defined and forward is undefined and inter is undefined and nssa is undefined }}',
-                    'forwarding_address': '{{ True if forward is defined }}',
-                    'inter_area_summary': '{{ True if inter is defined }}',
-                    'nssa_translation': '{{ True if nssa is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'local_rib_criteria': {
+                            'enable': '{{ True if local is defined and forward is undefined and inter is undefined and nssa is undefined }}',
+                            'forwarding_address': '{{ True if forward is defined }}',
+                            'inter_area_summary': '{{ True if inter is defined }}',
+                            'nssa_translation': '{{ True if nssa is defined }}',
+                        }
+                    }
                 }
             }
         },
@@ -642,11 +1185,15 @@ class Ospfv2Template(object):
                 r'''\s+(?P<log>log-adjacency-changes)*
                     \s*(?P<detail>detail)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_log_adjacency_changes,
             'result': {
-                'log_adjacency_changes': {
-                    'set': '{{ True if log is defined and detail is undefined }}',
-                    'detail': '{{ True if detail is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'log_adjacency_changes': {
+                            'set': '{{ True if log is defined and detail is undefined }}',
+                            'detail': '{{ True if detail is defined }}',
+                        }
+                    }
                 }
             }
         },
@@ -660,15 +1207,63 @@ class Ospfv2Template(object):
                     \s*(?P<ignore_time>ignore-time\s\d+)*
                     \s*(?P<reset_time>reset-time\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_max_lsa,
             'result': {
-                'max_lsa': {
-                    'number': '{{ number }}',
-                    'threshold_value': '{{ threshold }}',
-                    'ignore_count': '{{ ignore_count.split(' ')[1] }}',
-                    'ignore_time': '{{ ignore_time.split(' ')[1] }}',
-                    'reset_time': '{{ reset_time.split(' ')[1] }}',
-                    'warning_only': '{{ True if warning is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'max_lsa': {
+                            'number': '{{ number }}',
+                            'threshold_value': '{{ threshold }}',
+                            'ignore_count': '{{ ignore_count.split(' ')[1] }}',
+                            'ignore_time': '{{ ignore_time.split(' ')[1] }}',
+                            'reset_time': '{{ reset_time.split(' ')[1] }}',
+                            'warning_only': '{{ True if warning is defined }}',
+                        }
+                    }
+                }
+            }
+        },
+        {
+            'name': 'max_metric',
+            'getval': re.compile(
+                r'''\s+max-metric*
+                    \s*(?P<router_lsa>router-lsa)*
+                    \s*(?P<include_stub>include-stub)*
+                    \s*(?P<external_lsa>external-lsa\s\d+)*
+                    \s*(?P<startup_time>on-startup\s\d+)*
+                    \s*(?P<startup_wait>on-startup\s\S+)*
+                    \s*(?P<summary_lsa>summary-lsa\s\d+)
+                    *$''', re.VERBOSE),
+            'setval': _tmplt_ospf_max_metric,
+            'result': {
+                'processes': {
+                    '{{ pid }}': {
+                        'max_metric': {
+                            'router_lsa': '{{ True if router_lsa is defined }}',
+                            'external_lsa': '{{ external_lsa.split(' ')[1] }}',
+                            'include_stub': '{{ ignore_count.split(' ')[1] }}',
+                            'on_startup': {
+                                'time': '{{ startup_time.split(' ')[1] }}',
+                                'wait_for_bgp': '{{ True if startup_wait is defined }}',
+                            },
+                            'summary_lsa': '{{ summary_lsa.split(' ')[1] }}',
+                        }
+                    }
+                }
+            }
+        },
+        {
+            'name': 'maximum_paths',
+            'getval': re.compile(
+                r'''\s+maximum-paths*
+                    \s+(?P<paths>\d+)
+                    *$''', re.VERBOSE),
+            'setval': 'maximum-paths {{ maximum_paths }}',
+            'result': {
+                'processes': {
+                    '{{ pid }}': {
+                        'maximum_paths': '{{ paths }}'
+                    }
                 }
             }
         },
@@ -680,16 +1275,21 @@ class Ospfv2Template(object):
                     \s*(?P<autoconfig>autoconfig*\s*(?P<area>area\s\S+))*
                     \s*(?P<sync>sync)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_mpls_ldp,
+            'compval': 'ldp',
             'result': {
-                'mpls': {
-                    'ldp': {
-                        'autoconfig': {
-                            'set': '{{ True if autoconfig is defined and area is undefined }}',
-                            'area': '{{ area.split(' ')[1] }}'
-                        },
-                        'sync': '{{ True if sync is defined }}'
-                    },
+                'processes': {
+                    '{{ pid }}': {
+                        'mpls': {
+                            'ldp': {
+                                'autoconfig': {
+                                    'set': '{{ True if autoconfig is defined and area is undefined }}',
+                                    'area': '{{ area.split(' ')[1] }}'
+                                },
+                                'sync': '{{ True if sync is defined }}'
+                            },
+                        }
+                    }
                 }
             }
         },
@@ -705,23 +1305,28 @@ class Ospfv2Template(object):
                     \s*(?P<multicast>multicast-intact)*
                     \s*(?P<router>router-id\s(?P<router_int>\S+\s\S+))
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_mpls_traffic_eng,
+            'compval': 'traffic_eng',
             'result': {
-                'mpls': {
-                    'traffic_eng': {
-                        'area': '{{ area.split(' ')[1] }}',
-                        'autoroute_exclude': '{{ autoroute.split(' ')[2] }}',
-                        'interface': {
-                            'interface_type': '{{ int_type }}',
-                            'area': '{{ int_area.split(' ')[1] }}'
-                        },
-                        'mesh_group': {
-                            'id': '{{ mesh.split(' ')[1] }}',
-                            'interface': '{{ mest_int }}',
-                            'area': '{{ mesh_area.split(' ')[1] }}',
-                        },
-                        'multicast_intact': '{{ True if multicast is defined }}',
-                        'router_id_interface': '{{ router_int }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'mpls': {
+                            'traffic_eng': {
+                                'area': '{{ area.split(' ')[1] }}',
+                                'autoroute_exclude': '{{ autoroute.split(' ')[2] }}',
+                                'interface': {
+                                    'interface_type': '{{ int_type }}',
+                                    'area': '{{ int_area.split(' ')[1] }}'
+                                },
+                                'mesh_group': {
+                                    'id': '{{ mesh.split(' ')[1] }}',
+                                    'interface': '{{ mest_int }}',
+                                    'area': '{{ mesh_area.split(' ')[1] }}',
+                                },
+                                'multicast_intact': '{{ True if multicast is defined }}',
+                                'router_id_interface': '{{ router_int }}'
+                            }
+                        }
                     }
                 }
             }
@@ -736,14 +1341,18 @@ class Ospfv2Template(object):
                     \s*(?P<poll>poll-interval\s\d+)*
                     \s*(?P<priority>priority\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_neighbor,
             'result': {
-                'neighbor': {
-                    'address': '{{ address }}',
-                    'cost': '{{ cost.split(' ')[1] }}',
-                    'database_filter': '{{ True if db_filter is defined }}',
-                    'poll_interval': '{{ poll.split(' ')[1] }}',
-                    'priority': '{{ priority.split(' ')[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'neighbor': {
+                            'address': '{{ address }}',
+                            'cost': '{{ cost.split(' ')[1] }}',
+                            'database_filter': '{{ True if db_filter is defined }}',
+                            'poll_interval': '{{ poll.split(' ')[1] }}',
+                            'priority': '{{ priority.split(' ')[1] }}'
+                        }
+                    }
                 }
             }
         },
@@ -755,12 +1364,16 @@ class Ospfv2Template(object):
                     \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
                     \s*(?P<area>area\s\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_network,
             'result': {
-                'network': {
-                    'address': '{{ address }}',
-                    'wildcard_bits': '{{ wildcard }}',
-                    'area': '{{ area.split(' ')[1] }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'network': {
+                            'address': '{{ address }}',
+                            'wildcard_bits': '{{ wildcard }}',
+                            'area': '{{ area.split(' ')[1] }}',
+                        }
+                    }
                 }
             }
         },
@@ -772,12 +1385,17 @@ class Ospfv2Template(object):
                     \s*(?P<helper>helper)*
                     \s*(?P<disable>disable)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_nsf_cisco,
+            'compval': 'cisco',
             'result': {
-                'nsf': {
-                    'cisco': {
-                        'helper': '{{ True if helper is defined }}',
-                        'disable': '{{ True if disable is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'nsf': {
+                            'cisco': {
+                                'helper': '{{ True if helper is defined }}',
+                                'disable': '{{ True if disable is defined }}',
+                            }
+                        }
                     }
                 }
             }
@@ -791,13 +1409,18 @@ class Ospfv2Template(object):
                     \s*(?P<disable>disable)*
                     \s*(?P<strict>strict-lsa-checking)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_nsf_ietf,
+            'compval': 'ietf',
             'result': {
-                'nsf': {
-                    'ietf': {
-                        'helper': '{{ True if helper is defined }}',
-                        'disable': '{{ True if disable is defined }}',
-                        'strict_lsa_checking': '{{ True if strict is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'nsf': {
+                            'ietf': {
+                                'helper': '{{ True if helper is defined }}',
+                                'disable': '{{ True if disable is defined }}',
+                                'strict_lsa_checking': '{{ True if strict is defined }}'
+                            }
+                        }
                     }
                 }
             }
@@ -808,9 +1431,13 @@ class Ospfv2Template(object):
                 r'''\s+passive-interface
                     \s(?P<interface>\S+\s\S+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'passive-interface {{ passive_interface }}',
             'result': {
-                'passive_interface': '{{ interface }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'passive_interface': '{{ interface }}',
+                    }
+                }
             }
         },
         {
@@ -818,9 +1445,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<prefix_sup>prefix-suppression)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'prefix-suppression',
             'result': {
-                'prefix_suppression': '{{ True if prefix_sup is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'prefix_suppression': '{{ True if prefix_sup is defined }}',
+                    }
+                }
             }
         },
         {
@@ -829,9 +1460,13 @@ class Ospfv2Template(object):
                 r'''\s+priority
                     \s(?P<priority>\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'priority {{ priority }}',
             'result': {
-                'priority': '{{ priority }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'priority': '{{ priority }}',
+                    }
+                }
             }
         },
         {
@@ -842,12 +1477,17 @@ class Ospfv2Template(object):
                     \s*(?P<max_packets>\d+)*
                     \s*(?P<unlimited>unlimited)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_queue_depth_hello,
+            'compval': 'hello',
             'result': {
-                'queue_depth': {
-                    'hello': {
-                        'max_packets': '{{ max_packets }}',
-                        'unlimited': '{{ True if unlimited is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'queue_depth': {
+                            'hello': {
+                                'max_packets': '{{ max_packets }}',
+                                'unlimited': '{{ True if unlimited is defined }}',
+                            }
+                        }
                     }
                 }
             }
@@ -860,12 +1500,17 @@ class Ospfv2Template(object):
                     \s*(?P<max_packets>\d+)*
                     \s*(?P<unlimited>unlimited)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_queue_depth_update,
+            'compval': 'update',
             'result': {
-                'queue_depth': {
-                    'update': {
-                        'max_packets': '{{ max_packets }}',
-                        'unlimited': '{{ True if unlimited is defined }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'queue_depth': {
+                            'update': {
+                                'max_packets': '{{ max_packets }}',
+                                'unlimited': '{{ True if unlimited is defined }}',
+                            }
+                        }
                     }
                 }
             }
@@ -876,9 +1521,13 @@ class Ospfv2Template(object):
                 r'''\s+router-id
                     \s(?P<id>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'router-id {{ router_id }}',
             'result': {
-                'router_id': '{{ id }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'router_id': '{{ id }}'
+                    }
+                }
             }
         },
         {
@@ -886,9 +1535,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<shutdown>shutdown)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'shutdown',
             'result': {
-                'shutdown': '{{ True if shutdown is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'shutdown': '{{ True if shutdown is defined }}'
+                    }
+                }
             }
         },
         {
@@ -901,14 +1554,18 @@ class Ospfv2Template(object):
                     \s*(?P<nssa>nssa-only)*
                     \s*(?P<tag>tag\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_summary_address,
             'result': {
-                'summary_address': {
-                    'address': '{{ address }}',
-                    'mask': '{{ mask }}',
-                    'not_advertise': '{{ True if not_adv is defined }}',
-                    'nssa_only': '{{ True if nssa is defined }}',
-                    'tag': '{{ tag.split(' ')[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'summary_address': {
+                            'address': '{{ address }}',
+                            'mask': '{{ mask }}',
+                            'not_advertise': '{{ True if not_adv is defined }}',
+                            'nssa_only': '{{ True if nssa is defined }}',
+                            'tag': '{{ tag.split(' ')[1] }}'
+                        }
+                    }
                 }
             }
         },
@@ -920,10 +1577,15 @@ class Ospfv2Template(object):
                     \sarrival
                     \s(?P<lsa>\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'timers lsa arrival {{ timers.lsa }}',
+            'compval': 'lsa',
             'result': {
-                'timers': {
-                    'lsa': '{{ lsa }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'timers': {
+                            'lsa': '{{ lsa }}'
+                        }
+                    }
                 }
             }
         },
@@ -936,13 +1598,18 @@ class Ospfv2Template(object):
                     \s*(?P<lsa_group>lsa-group\s\d+)*
                     \s*(?P<retransmission>retransmission\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_timers_pacing,
+            'compval': 'pacing',
             'result': {
-                'timers': {
-                    'pacing': {
-                        'flood': '{{ flood.split(' ')[1] }}',
-                        'lsa_group': '{{ lsa_group.split(' ')[1] }}',
-                        'retransmission': '{{ retransmission.split(' ')[1] }}',
+                'processes': {
+                    '{{ pid }}': {
+                        'timers': {
+                            'pacing': {
+                                'flood': '{{ flood.split(' ')[1] }}',
+                                'lsa_group': '{{ lsa_group.split(' ')[1] }}',
+                                'retransmission': '{{ retransmission.split(' ')[1] }}',
+                            }
+                        }
                     }
                 }
             }
@@ -957,15 +1624,20 @@ class Ospfv2Template(object):
                     \s*(?P<min_delay>\d+)*
                     \s*(?P<max_delay>\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}',
+            'compval': 'throttle.lsa',
             'result': {
-                'timers': {
-                    'throttle': {
-                        'lsa': {
-                            'first_delay': '{{ first_delay }}',
-                            'min_delay': '{{ min_delay }}',
-                            'max_delay': '{{ max_delay }}',
-                        },
+                'processes': {
+                    '{{ pid }}': {
+                        'timers': {
+                            'throttle': {
+                                'lsa': {
+                                    'first_delay': '{{ first_delay }}',
+                                    'min_delay': '{{ min_delay }}',
+                                    'max_delay': '{{ max_delay }}',
+                                },
+                            }
+                        }
                     }
                 }
             }
@@ -980,15 +1652,20 @@ class Ospfv2Template(object):
                     \s*(?P<min_delay>\d+)*
                     \s*(?P<max_delay>\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}',
+            'compval': 'throttle.spf',
             'result': {
-                'timers': {
-                    'throttle': {
-                        'spf': {
-                            'receive_delay': '{{ first_delay }}',
-                            'between_delay': '{{ min_delay }}',
-                            'max_delay': '{{ max_delay }}',
-                        },
+                'processes': {
+                    '{{ pid }}': {
+                        'timers': {
+                            'throttle': {
+                                'spf': {
+                                    'receive_delay': '{{ first_delay }}',
+                                    'between_delay': '{{ min_delay }}',
+                                    'max_delay': '{{ max_delay }}',
+                                },
+                            }
+                        }
                     }
                 }
             }
@@ -998,9 +1675,13 @@ class Ospfv2Template(object):
             'getval': re.compile(
                 r'''\s+(?P<traffic>traffic-share\smin\sacross-interfaces)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': 'traffic-share min across-interfaces',
             'result': {
-                'traffic_share': '{{ True if traffic is defined }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'traffic_share': '{{ True if traffic is defined }}'
+                    }
+                }
             }
         },
         {
@@ -1010,11 +1691,15 @@ class Ospfv2Template(object):
                     \s(?P<interfaces>all-interfaces)*
                     \s*(?P<hops>hops\s\d+)
                     *$''', re.VERBOSE),
-            'setval': _tmplt_ospf_vrf_cmd,
+            'setval': _tmplt_ospf_ttl_security,
             'result': {
-                'ttl_security': {
-                    'set': '{{ True if interfaces is defined and hops is undefined }}',
-                    'hops': '{{ hops.split(' ')[1] }}'
+                'processes': {
+                    '{{ pid }}': {
+                        'ttl_security': {
+                            'set': '{{ True if interfaces is defined and hops is undefined }}',
+                            'hops': '{{ hops.split(' ')[1] }}'
+                        }
+                    }
                 }
             }
         },

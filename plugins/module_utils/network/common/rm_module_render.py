@@ -1,5 +1,5 @@
-from ansible.module_utils.network.common.utils import Template
-
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import Template
+import q
 
 class RmModuleRender(object):
     """ RmModuleRender
@@ -11,6 +11,7 @@ class RmModuleRender(object):
     def get_parser(self, name):
         """ get_parsers
         """
+        q(name)
         res = [p for p in self._tmplt.PARSERS if p['name'] == name]
         return res[0]
 
@@ -24,6 +25,11 @@ class RmModuleRender(object):
         except KeyError:
             return None
         if res and negate:
+            if isinstance(res, list):
+                command = []
+                for each in res:
+                    command.append('no ' + each)
+                return command
             return 'no ' + res
         return res
 

@@ -2,8 +2,9 @@
 from copy import deepcopy
 from ansible.module_utils.connection import Connection
 from ansible.module_utils.network.common.utils import remove_empties, to_list
-from ansible.module_utils.network.common.rm_module_render import RmModuleRender
-from ansible.module_utils.network.common.rm_utils import get_from_dict
+from ansible_collections.cisco.ios.plugins.module_utils.network.common.rm_module_render import RmModuleRender
+from ansible_collections.cisco.ios.plugins.module_utils.network.common.rm_utils import get_from_dict
+import q
 
 class RmModule(RmModuleRender):
     """ rm
@@ -15,10 +16,8 @@ class RmModule(RmModuleRender):
         self._module = kwargs.get('module', None)
         self._resource = kwargs.get('resource', None)
         self._tmplt = kwargs.get('tmplt', None)
-
         self._connection = None
         self.state = self._module.params['state']
-
         self.before = self.gather_current()
         self.changed = False
         self.commands = []
@@ -54,14 +53,23 @@ class RmModule(RmModuleRender):
                   'commands': self.commands,
                   'before': before,
                   'warnings': self.warnings}
+        if self.state == 'gathered':
+            result = {'gathered': before,
+                      'changed': self.changed,
+                      'warnings': self.warnings
+                      }
         return result
 
     def addcmd(self, data, tmplt, negate=False):
         """ addcmd
         """
+        q(data, tmplt, negate)
         command = self.render(data, tmplt, negate)
         if command:
-            self.commands.append(command)
+            if isinstance(command, list):
+                self.commands.extend(command)
+            else:
+                self.commands.append(command)
 
     def addcmd_first_found(self, data, tmplts, negate=False):
         """ addcmd first found
@@ -105,6 +113,7 @@ class RmModule(RmModuleRender):
             want = self.want
         if have is None:
             have = self.have
+        q(want, have)
         for parser in to_list(parsers):
             compval = self.get_parser(parser).get('compval')
             if not compval:
@@ -126,8 +135,10 @@ class RmModule(RmModuleRender):
         """ run_commands
         """
         if self.commands:
-            if not self._module.check_mode:
-                if self.state != 'rendered':
-                    response = self._connection.edit_config(self.commands)
-                    self.warnings.extend([r for r in response['response'] if r])
-                    self.changed = True
+            for e in self.commands:
+                q(e)
+            # if not self._module.check_mode:
+            #     if self.state != 'rendered':
+            #         response = self._connection.edit_config(self.commands)
+            #         self.warnings.extend([r for r in response['response'] if r])
+            #         self.changed = True

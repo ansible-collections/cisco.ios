@@ -60,20 +60,34 @@ class Ospfv2Facts(object):
         data = self.get_ospfv2_data(connection)
         q(data)
         ipv4 = {'processes': []}
-        for section in data.split('router '):
-            rmmod = RmModuleParse(lines=section.splitlines(),
-                                  tmplt=Ospfv2Template())
-            current = rmmod.parse()
-            if current:
-                if current.get('areas'):
-                    current['areas'] = list(current['areas'].values())
+        rmmod = RmModuleParse(lines=data.splitlines(), tmplt=Ospfv2Template())
+        current = rmmod.parse()
+        q(current)
+        # convert some of the dicts to lists
+        for key, sortv in [('processes', 'process_id')]:
+            if key in current and current[key]:
+                current[key] = current[key].values()
+                current[key] = sorted(current[key],
+                                      key=lambda k, sk=sortv: k[sk])
 
-                ipv4['processes'].append(current)
+        for process in current.get('processes', []):
+            if 'areas' in process:
+                process['areas'] = list(process['areas'].values())
+                process['areas'] = sorted(process['areas'],
+                                          key=lambda k, sk='area_id': k[sk])
+                for area in process['areas']:
+                    # if 'ranges' in area:
+                    #     area['ranges'] = sorted(area['ranges'],
+                    #                             key=lambda k, s='ranges': k[s])
+                    if 'filters' in area:
+                        area['filters'].sort()
+            ipv4['processes'].append(process)
+
         ansible_facts['ansible_network_resources'].pop('ospfv2', None)
         facts = {}
         if current:
             params = utils.validate_config(self.argument_spec,
-                                           {'config': [ipv4]})
+                                           {'config': ipv4})
             params = utils.remove_empties(params)
 
             facts['ospfv2'] = params['config']
