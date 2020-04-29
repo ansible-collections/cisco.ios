@@ -33,6 +33,26 @@ def add_command_to_config_list(interface, cmd, commands):
     commands.append(cmd)
 
 
+def reverify_diff_py35(want, have):
+    """ Function to re-verify the set diff for py35 as it doesn't maintains dict order which results
+        into unexpected set diff
+    :param config: want and have set config
+    :returns: True/False post checking if there's any actual diff b/w want and have sets
+    """
+    if not have:
+        return True
+    for each_want in want:
+        diff = True
+        for each_have in have:
+            if each_have == sorted(each_want) or sorted(each_have) == sorted(
+                each_want
+            ):
+                diff = False
+        if diff:
+            return True
+    return False
+
+
 def check_n_return_valid_ipv6_addr(module, input_list, filtered_ipv6_list):
     # To verify the valid ipv6 address
     try:
