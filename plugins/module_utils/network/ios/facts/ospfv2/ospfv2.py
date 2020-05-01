@@ -9,7 +9,7 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
-import re
+
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
@@ -21,16 +21,16 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
     Ospfv2Template,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.common.rm_module_parse import (
-    RmModuleParse,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+    NetworkTemplate,
 )
-import q
+
 
 class Ospfv2Facts(object):
     """ The ios ospfv2 fact class
     """
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Ospfv2Args.argument_spec
         spec = deepcopy(self.argument_spec)
@@ -45,9 +45,7 @@ class Ospfv2Facts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_ospfv2_data(self, connection):
-        return connection.get(
-            "sh running-config | section ^router ospf"
-        )
+        return connection.get("sh running-config | section ^router ospf")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for ospfv2
@@ -57,40 +55,46 @@ class Ospfv2Facts(object):
         :rtype: dictionary
         :returns: facts
         """
-        data = self.get_ospfv2_data(connection)
-        q(data)
-        ipv4 = {'processes': []}
-        rmmod = RmModuleParse(lines=data.splitlines(), tmplt=Ospfv2Template())
+        if not data:
+            data = self.get_ospfv2_data(connection)
+
+        ipv4 = {"processes": []}
+        rmmod = NetworkTemplate(
+            lines=data.splitlines(), tmplt=Ospfv2Template()
+        )
         current = rmmod.parse()
-        q(current)
+
         # convert some of the dicts to lists
-        for key, sortv in [('processes', 'process_id')]:
+        for key, sortv in [("processes", "process_id")]:
             if key in current and current[key]:
                 current[key] = current[key].values()
-                current[key] = sorted(current[key],
-                                      key=lambda k, sk=sortv: k[sk])
+                current[key] = sorted(
+                    current[key], key=lambda k, sk=sortv: k[sk]
+                )
 
-        for process in current.get('processes', []):
-            if 'areas' in process:
-                process['areas'] = list(process['areas'].values())
-                process['areas'] = sorted(process['areas'],
-                                          key=lambda k, sk='area_id': k[sk])
-                for area in process['areas']:
+        for process in current.get("processes", []):
+            if "areas" in process:
+                process["areas"] = list(process["areas"].values())
+                process["areas"] = sorted(
+                    process["areas"], key=lambda k, sk="area_id": k[sk]
+                )
+                for area in process["areas"]:
                     # if 'ranges' in area:
                     #     area['ranges'] = sorted(area['ranges'],
                     #                             key=lambda k, s='ranges': k[s])
-                    if 'filters' in area:
-                        area['filters'].sort()
-            ipv4['processes'].append(process)
+                    if "filters" in area:
+                        area["filters"].sort()
+            ipv4["processes"].append(process)
 
-        ansible_facts['ansible_network_resources'].pop('ospfv2', None)
+        ansible_facts["ansible_network_resources"].pop("ospfv2", None)
         facts = {}
         if current:
-            params = utils.validate_config(self.argument_spec,
-                                           {'config': ipv4})
+            params = utils.validate_config(
+                self.argument_spec, {"config": ipv4}
+            )
             params = utils.remove_empties(params)
 
-            facts['ospfv2'] = params['config']
+            facts["ospfv2"] = params["config"]
 
-            ansible_facts['ansible_network_resources'].update(facts)
+            ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts

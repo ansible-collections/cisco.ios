@@ -1,0 +1,4 @@
+---
+- name: Remove Config
+  cisco.ios.ios_ospfv2:
+    state: deleted
