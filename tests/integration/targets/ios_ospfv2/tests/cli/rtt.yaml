@@ -63,7 +63,7 @@
                     direction: in
         state: merged
 
-    - name: Gather acl interfaces facts
+    - name: Gather OSPFV2 facts
       cisco.ios.ios_facts:
         gather_subset:
           - '!all'
