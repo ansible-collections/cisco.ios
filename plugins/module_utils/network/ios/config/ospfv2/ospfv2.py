@@ -179,11 +179,6 @@ class Ospfv2(ResourceModule):
             self.addcmd(want or have, "pid", False)
             self.compare(parsers, want, have)
             self._areas_compare(want, have)
-            # In case where key set value is set to False, want and have dict would differ
-            # resulting to addcmd of calling the ospf router cmd which isn't expected so making
-            # command list empty again
-            # if len(self.commands) == 1 and self.commands[0].index('router') == 0:
-            #     self.commands = []
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
