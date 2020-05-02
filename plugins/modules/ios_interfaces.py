@@ -22,6 +22,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_interfaces
 short_description: Interfaces resource module
@@ -71,17 +72,29 @@ options:
         - full
         - half
         - auto
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the VyOS device by executing
+        the command B(show configuration commands | grep interfaces).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
     description:
     - The state of the configuration after module completion
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 
