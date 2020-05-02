@@ -21,12 +21,13 @@ The module file for ios_l2_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_l2_interfaces
-short_description: L2 interfaces resource module
-description: This module provides declarative management of Layer-2 interface on Cisco
-  IOS devices.
+short_description: Layer-2 interface resource module
+description: This module provides declarative management of Layer-2 interface on Cisco IOS devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
@@ -100,12 +101,23 @@ options:
         choices:
         - access
         - trunk
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the VyOS device by executing
+        the command B(show configuration commands | grep interfaces).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
     description:
     - The state of the configuration after module completion
