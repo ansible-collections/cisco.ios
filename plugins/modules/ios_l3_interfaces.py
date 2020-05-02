@@ -21,10 +21,12 @@ The module file for ios_l3_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_l3_interfaces
-short_description: L3 interfaces resource module
+short_description: Layer-3 resource module
 description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
@@ -79,17 +81,29 @@ options:
             description:
             - Configures the IPv6 address for Interface.
             type: str
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the VyOS device by executing
+        the command B(show configuration commands | grep interfaces).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
     description:
     - The state of the configuration after module completion
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 #
@@ -374,6 +388,7 @@ EXAMPLES = """
 # interface GigabitEthernet0/3.100
 #  encapsulation dot1Q 20
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.
@@ -391,6 +406,7 @@ commands:
   type: list
   sample: ['interface GigabitEthernet0/1', 'ip address 192.168.0.2 255.255.255.0']
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
     L3_InterfacesArgs,

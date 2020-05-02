@@ -49,13 +49,13 @@ class L3_Interfaces(ConfigBase):
 
     gather_network_resources = ["l3_interfaces"]
 
-    def get_l3_interfaces_facts(self):
+    def get_l3_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         l3_interfaces_facts = facts["ansible_network_resources"].get(
             "l3_interfaces"
@@ -74,19 +74,40 @@ class L3_Interfaces(ConfigBase):
         commands = list()
         warnings = list()
 
-        existing_l3_interfaces_facts = self.get_l3_interfaces_facts()
-        commands.extend(self.set_config(existing_l3_interfaces_facts))
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_l3_interfaces_facts = self.get_l3_interfaces_facts()
+        else:
+            existing_l3_interfaces_facts = []
+
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_l3_interfaces_facts))
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self._connection.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        changed_l3_interfaces_facts = self.get_l3_interfaces_facts()
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_l3_interfaces_facts = self.get_l3_interfaces_facts()
+        elif self.state == "rendered":
+            result["rendered"] = commands
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_l3_interfaces_facts(data=running_config)
+        else:
+            changed_l3_interfaces_facts = []
 
-        result["before"] = existing_l3_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_l3_interfaces_facts
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_l3_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_l3_interfaces_facts
+        elif self.state == "gathered":
+            result["gathered"] = changed_l3_interfaces_facts
 
         result["warnings"] = warnings
         return result
@@ -118,21 +139,20 @@ class L3_Interfaces(ConfigBase):
         """
         commands = []
 
-        state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced") and not want:
+        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    self.state
                 )
             )
 
-        if state == "overridden":
+        if self.state == "overridden":
             commands = self._state_overridden(want, have, self._module)
-        elif state == "deleted":
+        elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif state == "merged":
+        elif self.state == "merged":
             commands = self._state_merged(want, have, self._module)
-        elif state == "replaced":
+        elif self.state == "replaced":
             commands = self._state_replaced(want, have, self._module)
 
         return commands
