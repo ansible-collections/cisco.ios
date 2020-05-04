@@ -151,7 +151,7 @@ class Interfaces(ConfigBase):
             commands = self._state_overridden(want, have)
         elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif self.state == "merged":
+        elif self.state == "merged" or self.state == "rendered":
             commands = self._state_merged(want, have)
         elif self.state == "replaced":
             commands = self._state_replaced(want, have)

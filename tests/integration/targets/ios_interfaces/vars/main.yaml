@@ -201,3 +201,43 @@ deleted:
       enabled: true
       name: GigabitEthernet0/2
       speed: auto
+gathered:
+  config:
+    - description: this is interface1
+      duplex: half
+      enabled: True
+      mtu: 65
+      name: GigabitEthernet0/1
+      speed: "10"
+    - description: this is interface2
+      duplex: auto
+      enabled: False
+      mtu: 110
+      name: GigabitEthernet0/2
+      speed: "100"
+parsed:
+  config:
+    - description: interfaces 0/1
+      duplex: half
+      enabled: true
+      mtu: 110
+      name: GigabitEthernet0/1
+    - description: interfaces 0/2
+      duplex: full
+      enabled: true
+      mtu: 2800
+      name: GigabitEthernet0/2
+      speed: "100"
+rendered:
+  commands:
+    - interface GigabitEthernet0/1
+    - description Configured by Ansible-Network
+    - mtu 110
+    - duplex half
+    - no shutdown
+    - interface GigabitEthernet0/2
+    - description Configured by Ansible-Network
+    - mtu 2800
+    - speed 100
+    - duplex full
+    - shutdown
