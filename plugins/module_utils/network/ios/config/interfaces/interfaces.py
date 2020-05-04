@@ -140,7 +140,10 @@ class Interfaces(ConfigBase):
         """
         commands = []
 
-        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     self.state

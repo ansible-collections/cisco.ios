@@ -217,6 +217,14 @@ gathered:
       speed: "100"
 parsed:
   config:
+    - enabled: true
+      name: loopback888
+    - enabled: true
+      name: loopback999
+    - duplex: auto
+      enabled: true
+      name: GigabitEthernet0/0
+      speed: autos
     - description: interfaces 0/1
       duplex: half
       enabled: true
