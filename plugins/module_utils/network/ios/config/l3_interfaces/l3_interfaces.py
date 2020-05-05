@@ -98,7 +98,9 @@ class L3_Interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed"
                 )
-            result["parsed"] = self.get_l3_interfaces_facts(data=running_config)
+            result["parsed"] = self.get_l3_interfaces_facts(
+                data=running_config
+            )
         else:
             changed_l3_interfaces_facts = []
 
@@ -139,7 +141,10 @@ class L3_Interfaces(ConfigBase):
         """
         commands = []
 
-        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     self.state
@@ -223,9 +228,7 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                commands.extend(
-                    self._set_config(interface, dict(), module)
-                )
+                commands.extend(self._set_config(interface, dict(), module))
                 continue
             commands.extend(self._set_config(interface, each, module))
 
