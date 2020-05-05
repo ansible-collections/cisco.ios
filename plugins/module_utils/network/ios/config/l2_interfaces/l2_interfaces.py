@@ -62,13 +62,13 @@ class L2_Interfaces(ConfigBase):
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        interfaces_facts = facts["ansible_network_resources"].get(
+        l2_interfaces_facts = facts["ansible_network_resources"].get(
             "l2_interfaces"
         )
-        if not interfaces_facts:
+        if not l2_interfaces_facts:
             return []
 
-        return interfaces_facts
+        return l2_interfaces_facts
 
     def execute_module(self):
         """ Execute the module
@@ -102,7 +102,7 @@ class L2_Interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed"
                 )
-            result["parsed"] = self.get_interfaces_facts(data=running_config)
+            result["parsed"] = self.get_l2_interfaces_facts(data=running_config)
         else:
             changed_l2_interfaces_facts = []
 
@@ -151,7 +151,7 @@ class L2_Interfaces(ConfigBase):
             commands = self._state_overridden(want, have, self._module)
         elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif self.state == "merged":
+        elif self.state == "merged" or self.state == "rendered":
             commands = self._state_merged(want, have, self._module)
         elif self.state == "replaced":
             commands = self._state_replaced(want, have, self._module)
@@ -227,6 +227,8 @@ class L2_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
+                # configuring non-existing interface
+                commands.extend(self._set_config(interface, dict(), module))
                 continue
             commands.extend(self._set_config(interface, each, module))
 

@@ -35,3 +35,26 @@
 - assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state overridden'
+
+- name: Rendered with empty config should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_acl_interfaces:
+    config:
+    state: rendered
+
+- assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state rendered'
+
+- name: Parsed with empty config should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_acl_interfaces:
+    running_config:
+    state: parsed
+
+- assert:
+    that:
+      - result.msg == 'value of running_config parameter must not be empty for state
+        parsed'

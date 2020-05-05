@@ -123,6 +123,7 @@ options:
     - The state of the configuration after module completion
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -344,6 +345,145 @@ EXAMPLES = """
 #  description This is test
 #  media-type rj45
 #  negotiation auto
+<<<<<<< HEAD
+=======
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  switchport access vlan 10
+# interface GigabitEthernet0/2
+#  switchport trunk allowed vlan 10-20,40
+#  switchport trunk encapsulation dot1q
+#  switchport trunk native vlan 10
+#  switchport trunk pruning vlan 10,20
+#  switchport mode trunk
+
+- name: Gather listed l2 interfaces with provided configurations
+  cisco.ios.ios_l2_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "name": "GigabitEthernet0/0"
+#         },
+#         {
+#             "access": {
+#                 "vlan": 10
+#             },
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "mode": "trunk",
+#             "name": "GigabitEthernet0/2",
+#             "trunk": {
+#                 "allowed_vlans": [
+#                     "10-20",
+#                     "40"
+#                 ],
+#                 "encapsulation": "dot1q",
+#                 "native_vlan": 10,
+#                 "pruning_vlans": [
+#                     "10",
+#                     "20"
+#                 ]
+#             }
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  switchport access vlan 10
+# interface GigabitEthernet0/2
+#  switchport trunk allowed vlan 10-20,40
+#  switchport trunk encapsulation dot1q
+#  switchport trunk native vlan 10
+#  switchport trunk pruning vlan 10,20
+#  switchport mode trunk
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_l2_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        access:
+          vlan: 30
+      - name: GigabitEthernet0/2
+        trunk:
+          allowed_vlans: 10-20,40
+          native_vlan: 20
+          pruning_vlans: 10,20
+          encapsulation: dot1q
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "switchport access vlan 30",
+#         "interface GigabitEthernet0/2",
+#         "switchport trunk encapsulation dot1q",
+#         "switchport trunk native vlan 20",
+#         "switchport trunk allowed vlan 10-20,40",
+#         "switchport trunk pruning vlan 10,20"
+#     ]
+
+# Using Parsed
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_l2_interfaces:
+    running_config:
+      "interface GigabitEthernet0/1
+       switchport mode access
+       switchport access vlan 30
+       interface GigabitEthernet0/2
+       switchport trunk allowed vlan 15-20,40
+       switchport trunk encapsulation dot1q
+       switchport trunk native vlan 20
+       switchport trunk pruning vlan 10,20"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "access": {
+#                 "vlan": 30
+#             },
+#             "mode": "access",
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "name": "GigabitEthernet0/2",
+#             "trunk": {
+#                 "allowed_vlans": [
+#                     "15-20",
+#                     "40"
+#                 ],
+#                 "encapsulation": "dot1q",
+#                 "native_vlan": 20,
+#                 "pruning_vlans": [
+#                     "10",
+#                     "20"
+#                 ]
+#             }
+#         }
+#     ]
+
 """
 RETURN = """
 before:
