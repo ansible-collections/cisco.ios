@@ -150,7 +150,7 @@ class L3_Interfaces(ConfigBase):
             commands = self._state_overridden(want, have, self._module)
         elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif self.state == "merged":
+        elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have, self._module)
         elif self.state == "replaced":
             commands = self._state_replaced(want, have, self._module)
@@ -223,10 +223,9 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                if "." in interface["name"]:
-                    commands.extend(
-                        self._set_config(interface, dict(), module)
-                    )
+                commands.extend(
+                    self._set_config(interface, dict(), module)
+                )
                 continue
             commands.extend(self._set_config(interface, each, module))
 

@@ -26,7 +26,7 @@ ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_l3_interfaces
-short_description: Layer-3 resource module
+short_description: Layer-3 interface resource module
 description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
@@ -387,6 +387,144 @@ EXAMPLES = """
 #  speed 10
 # interface GigabitEthernet0/3.100
 #  encapsulation dot1Q 20
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  ip address 203.0.113.27 255.255.255.0
+# interface GigabitEthernet0/2
+#  ip address 192.0.2.1 255.255.255.0 secondary
+#  ip address 192.0.2.2 255.255.255.0
+#  ipv6 address 2001:DB8:0:3::/64
+
+- name: Gather listed l3 interfaces with provided configurations
+  cisco.ios.ios_l3_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "ipv4": [
+#                 {
+#                     "address": "203.0.113.27 255.255.255.0"
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "ipv4": [
+#                 {
+#                     "address": "192.0.2.1 255.255.255.0",
+#                     "secondary": true
+#                 },
+#                 {
+#                     "address": "192.0.2.2 255.255.255.0"
+#                 }
+#             ],
+#             "ipv6": [
+#                 {
+#                     "address": "2001:db8:0:3::/64"
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/2"
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  ip address 203.0.113.27 255.255.255.0
+# interface GigabitEthernet0/2
+#  ip address 192.0.2.1 255.255.255.0 secondary
+#  ip address 192.0.2.2 255.255.255.0
+#  ipv6 address 2001:DB8:0:3::/64s
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_l3_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        ipv4:
+          - address: dhcp
+            dhcp_client: 0
+            dhcp_hostname: test.com
+      - name: GigabitEthernet0/2
+        ipv4:
+          - address: 198.51.100.1/24
+            secondary: true
+          - address: 198.51.100.2/24
+        ipv6:
+          - address: 2001:db8:0:3::/64
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "ip address dhcp client-id GigabitEthernet 0/0 hostname test.com",
+#         "interface GigabitEthernet0/2",
+#         "ip address 198.51.100.1 255.255.255.0 secondary",
+#         "ip address 198.51.100.2 255.255.255.0",
+#         "ipv6 address 2001:db8:0:3::/64"
+#     ]
+
+# Using Parsed
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_l3_interfaces:
+    running_config:
+      "interface GigabitEthernet0/1
+       ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
+       interface GigabitEthernet0/2
+       ip address 198.51.100.1 255.255.255.0 secondary
+       ip address 198.51.100.2 255.255.255.0
+       ipv6 address 2001:db8:0:3::/64"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "ipv4": [
+#                 {
+#                     "address": "dhcp",
+#                     "dhcp_client": 0,
+#                     "dhcp_hostname": "test.com"
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "ipv4": [
+#                 {
+#                     "address": "198.51.100.1 255.255.255.0",
+#                     "secondary": true
+#                 },
+#                 {
+#                     "address": "198.51.100.2 255.255.255.0"
+#                 }
+#             ],
+#             "ipv6": [
+#                 {
+#                     "address": "2001:db8:0:3::/64"
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/2"
+#         }
+#     ]
+
 """
 
 RETURN = """
@@ -425,10 +563,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=L3_InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = L3_Interfaces(module).execute_module()
