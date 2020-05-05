@@ -18,6 +18,7 @@
         that:
           - gathered['config'] | symmetric_difference(result.gathered) == []
           - result['changed'] == false
+  when: ansible_net_version != "15.6(2)T"
   always:
 
     - include_tasks: _remove_config.yaml
