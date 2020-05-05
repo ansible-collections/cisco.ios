@@ -212,13 +212,14 @@ gathered:
       name: GigabitEthernet0/0
       speed: auto
     - description: this is interface1
-      enabled: True
+      duplex: auto
+      enabled: true
       mtu: 65
       name: GigabitEthernet0/1
       speed: "10"
     - description: this is interface2
       duplex: auto
-      enabled: False
+      enabled: false
       mtu: 110
       name: GigabitEthernet0/2
       speed: "100"
