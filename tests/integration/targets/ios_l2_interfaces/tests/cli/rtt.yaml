@@ -23,7 +23,7 @@
               encapsulation: dot1q
         state: merged
 
-    - name: Gather acl interfaces facts
+    - name: Gather L2 interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
           - '!all'
