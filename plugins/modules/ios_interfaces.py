@@ -358,6 +358,141 @@ EXAMPLES = """
 #  no ip address
 #  duplex auto
 #  speed auto
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  description this is interface1
+#  mtu 65
+#  duplex auto
+#  speed 10
+# interface GigabitEthernet0/2
+#  description this is interface2
+#  mtu 110
+#  shutdown
+#  duplex auto
+#  speed 100
+
+- name: Gather listed interfaces with provided configurations
+  cisco.ios.ios_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "description": "this is interface1",
+#             "duplex": "auto",
+#             "enabled": true,
+#             "mtu": 65,
+#             "name": "GigabitEthernet0/1",
+#             "speed": "10"
+#         },
+#         {
+#             "description": "this is interface2",
+#             "duplex": "auto",
+#             "enabled": false,
+#             "mtu": 110,
+#             "name": "GigabitEthernet0/2",
+#             "speed": "100"
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  description this is interface1
+#  mtu 65
+#  duplex auto
+#  speed 10
+# interface GigabitEthernet0/2
+#  description this is interface2
+#  mtu 110
+#  shutdown
+#  duplex auto
+#  speed 100
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        description: Configured by Ansible-Network
+        mtu: 110
+        enabled: true
+        duplex: half
+      - name: GigabitEthernet0/2
+        description: Configured by Ansible-Network
+        mtu: 2800
+        enabled: false
+        speed: 100
+        duplex: full
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "description Configured by Ansible-Network",
+#         "mtu 110",
+#         "duplex half",
+#         "no shutdown",
+#         "interface GigabitEthernet0/2",
+#         "description Configured by Ansible-Network",
+#         "mtu 2800",
+#         "speed 100",
+#         "duplex full",
+#         "shutdown"
+
+# Using Parsed
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_interfaces:
+    running_config:
+      "interface GigabitEthernet0/1
+       description interfaces 0/1
+       mtu 110
+       duplex half
+       no shutdown
+       interface GigabitEthernet0/2
+       description interfaces 0/2
+       mtu 2800
+       speed 100
+       duplex full
+       shutdown"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "description": "interfaces 0/1",
+#             "duplex": "half",
+#             "enabled": true,
+#             "mtu": 110,
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "description": "interfaces 0/2",
+#             "duplex": "full",
+#             "enabled": true,
+#             "mtu": 2800,
+#             "name": "GigabitEthernet0/2",
+#             "speed": "100"
+#         }
+#     ]
+
 """
 RETURN = """
 before:
@@ -395,10 +530,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Interfaces(module).execute_module()

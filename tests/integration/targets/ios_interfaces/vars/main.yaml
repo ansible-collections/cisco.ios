@@ -203,20 +203,6 @@ deleted:
       speed: auto
 gathered:
   config:
-    - description: this is interface1
-      duplex: half
-      enabled: True
-      mtu: 65
-      name: GigabitEthernet0/1
-      speed: "10"
-    - description: this is interface2
-      duplex: auto
-      enabled: False
-      mtu: 110
-      name: GigabitEthernet0/2
-      speed: "100"
-parsed:
-  config:
     - enabled: true
       name: loopback888
     - enabled: true
@@ -224,7 +210,17 @@ parsed:
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0
-      speed: autos
+      speed: auto
+    - description: this is interface1
+      enabled: True
+      mtu: 65
+      name: GigabitEthernet0/1
+    - description: this is interface2
+      enabled: False
+      mtu: 110
+      name: GigabitEthernet0/2
+parsed:
+  config:
     - description: interfaces 0/1
       duplex: half
       enabled: true
