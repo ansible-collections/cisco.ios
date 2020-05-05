@@ -39,7 +39,7 @@
 - name: Rendered with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_acl_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     state: rendered
 
@@ -50,7 +50,7 @@
 - name: Parsed with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_acl_interfaces:
+  cisco.ios.ios_l2_interfaces:
     running_config:
     state: parsed
 
