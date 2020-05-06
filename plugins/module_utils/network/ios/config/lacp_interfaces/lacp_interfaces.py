@@ -101,7 +101,9 @@ class Lacp_Interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed"
                 )
-            result["parsed"] = self.get_lacp_interfaces_facts(data=running_config)
+            result["parsed"] = self.get_lacp_interfaces_facts(
+                data=running_config
+            )
         else:
             changed_lacp_interfaces_facts = []
 
@@ -142,8 +144,8 @@ class Lacp_Interfaces(ConfigBase):
         commands = []
 
         if (
-                self.state in ("overridden", "merged", "replaced", "rendered")
-                and not want
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
         ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
