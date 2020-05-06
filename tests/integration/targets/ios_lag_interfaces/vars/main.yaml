@@ -80,3 +80,32 @@ deleted:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
+gathered:
+  config:
+    - name: GigabitEthernet0/0
+    - members:
+      - member: GigabitEthernet0/1
+        mode: active
+      - member: GigabitEthernet0/2
+        mode: passive
+      name: Port-channel1
+parsed:
+  config:
+    - members:
+      - member: GigabitEthernet0/1
+        mode: active
+      - member: GigabitEthernet0/2
+        mode: passive
+      name: Port-channel1
+rtt:
+  commands:
+    - interface Port-channel10
+    - lacp max-bundle 2
+    - lacp fast-switchover
+    - interface Port-channel40
+    - no lacp max-bundle
+    - no lacp fast-switchover
+    - interface GigabitEthernet0/1
+    - lacp port-priority 30
+    - interface GigabitEthernet0/2
+    - lacp port-priority 20
