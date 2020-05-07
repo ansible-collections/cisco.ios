@@ -113,3 +113,35 @@ deleted:
     - name: GigabitEthernet0/2
       receive: false
       transmit: false
+
+gathered:
+  config:
+    - name: GigabitEthernet0/0
+      receive: true
+      transmit: true
+    - name: GigabitEthernet0/1
+      receive: true
+      transmit: true
+    - name: GigabitEthernet0/2
+      receive: true
+      transmit: true
+
+parsed:
+  config:
+    - name: GigabitEthernet0/0
+      receive: false
+      transmit: true
+    - name: GigabitEthernet0/1
+      receive: true
+      transmit: true
+    - name: GigabitEthernet0/2
+      receive: true
+      transmit: false
+
+rtt:
+  commands:
+    - interface GigabitEthernet0/1
+    - lldp receive
+    - lldp transmit
+    - interface GigabitEthernet0/2
+    - lldp transmit
