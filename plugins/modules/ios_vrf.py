@@ -15,13 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """module: ios_vrf
 author: Peter Sprygada (@privateip)
 short_description: Manage the collection of VRF definitions on Cisco IOS devices
@@ -29,6 +23,7 @@ description:
 - This module provides declarative management of VRF definitions on Cisco IOS devices.  It
   allows playbooks to manage individual or the entire VRF collection.  It also supports
   purging VRF definitions from the configuration that are not explicitly defined.
+version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
@@ -117,103 +112,106 @@ options:
   route_import_ipv6:
     description:
     - Adds an import list of extended route target communities in address-family configuration
-      submode to the VRF.
-"""
-EXAMPLES = """
-- name: configure a vrf named management
-  ios_vrf:
+      submode to the VRF."""
+EXAMPLES = """- name: configure a vrf named management
+  cisco.ios.ios_vrf:
     name: management
     description: oob mgmt vrf
     interfaces:
-      - Management1
+    - Management1
 
 - name: remove a vrf named test
-  ios_vrf:
+  cisco.ios.ios_vrf:
     name: test
     state: absent
 
 - name: configure set of VRFs and purge any others
-  ios_vrf:
+  cisco.ios.ios_vrf:
     vrfs:
-      - red
-      - blue
-      - green
+    - red
+    - blue
+    - green
     purge: yes
 
 - name: Creates a list of import RTs for the VRF with the same parameters
-  ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_import
     rd: 1:100
     route_import:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of import RTs in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of import RTs in address-family configuration submode for the
+    VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_import_ipv4
     rd: 1:100
     route_import_ipv4:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of import RTs in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of import RTs in address-family configuration submode for the
+    VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_import_ipv6
     rd: 1:100
     route_import_ipv6:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
 - name: Creates a list of export RTs for the VRF with the same parameters
-  ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_export
     rd: 1:100
     route_export:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of export RTs in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of export RTs in address-family configuration submode for the
+    VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_export_ipv4
     rd: 1:100
     route_export_ipv4:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of export RTs in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of export RTs in address-family configuration submode for the
+    VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_export_ipv6
     rd: 1:100
     route_export_ipv6:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of import and export route targets for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of import and export route targets for the VRF with the same
+    parameters
+  cisco.ios.ios_vrf:
     name: test_both
     rd: 1:100
     route_both:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of import and export route targets in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of import and export route targets in address-family configuration
+    submode for the VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_both_ipv4
     rd: 1:100
     route_both_ipv4:
-      - 1:100
-      - 3:100
+    - 1:100
+    - 3:100
 
-- name: Creates a list of import and export route targets in address-family configuration submode for the VRF with the same parameters
-  ios_vrf:
+- name: Creates a list of import and export route targets in address-family configuration
+    submode for the VRF with the same parameters
+  cisco.ios.ios_vrf:
     name: test_both_ipv6
     rd: 1:100
     route_both_ipv6:
-      - 1:100
-      - 3:100
-
+    - 1:100
+    - 3:100
 """
-
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
@@ -237,12 +235,11 @@ delta:
   description: The time elapsed to perform all operations
   returned: always
   type: str
-  sample: "0:00:10.469466"
+  sample: "0:00:10.469466\"
 """
 import re
 import time
 from functools import partial
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import exec_command
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -259,7 +256,6 @@ from ansible.module_utils.six import iteritems
 
 
 def get_interface_type(interface):
-
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):
@@ -286,7 +282,6 @@ def add_command_to_vrf(name, cmd, commands):
 
 def map_obj_to_commands(updates, module):
     commands = list()
-
     for update in updates:
         want, have = update
 
@@ -294,15 +289,14 @@ def map_obj_to_commands(updates, module):
             if isinstance(want.get(x), list) and isinstance(have.get(x), list):
                 return (
                     want.get(x)
-                    and (want.get(x) != have.get(x))
+                    and want.get(x) != have.get(x)
                     and not all(elem in have.get(x) for elem in want.get(x))
                 )
-            return want.get(x) and (want.get(x) != have.get(x))
+            return want.get(x) and want.get(x) != have.get(x)
 
         if want["state"] == "absent":
             commands.append("no vrf definition %s" % want["name"])
             continue
-
         if not have.get("state"):
             commands.extend(["vrf definition %s" % want["name"]])
             ipv6 = (
@@ -329,25 +323,20 @@ def map_obj_to_commands(updates, module):
                 commands.extend(["address-family ipv4", "exit"])
             if ipv6:
                 commands.extend(["address-family ipv6", "exit"])
-
         if needs_update(want, have, "description"):
             cmd = "description %s" % want["description"]
             add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "rd"):
             cmd = "rd %s" % want["rd"]
             add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_import"):
             for route in want["route_import"]:
                 cmd = "route-target import %s" % route
                 add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_export"):
             for route in want["route_export"]:
                 cmd = "route-target export %s" % route
                 add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_import_ipv4"):
             cmd = "address-family ipv4"
             add_command_to_vrf(want["name"], cmd, commands)
@@ -356,7 +345,6 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_export_ipv4"):
             cmd = "address-family ipv4"
             add_command_to_vrf(want["name"], cmd, commands)
@@ -365,7 +353,6 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_import_ipv6"):
             cmd = "address-family ipv6"
             add_command_to_vrf(want["name"], cmd, commands)
@@ -374,7 +361,6 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
-
         if needs_update(want, have, "route_export_ipv6"):
             cmd = "address-family ipv6"
             add_command_to_vrf(want["name"], cmd, commands)
@@ -383,9 +369,7 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
-
         if want["interfaces"] is not None:
-            # handle the deletes
             for intf in set(have.get("interfaces", [])).difference(
                 want["interfaces"]
             ):
@@ -395,8 +379,6 @@ def map_obj_to_commands(updates, module):
                         "no vrf forwarding %s" % want["name"],
                     ]
                 )
-
-            # handle the adds
             for intf in set(want["interfaces"]).difference(
                 have.get("interfaces", [])
             ):
@@ -404,22 +386,19 @@ def map_obj_to_commands(updates, module):
                 configobj = NetworkConfig(indent=1, contents=cfg)
                 children = configobj["interface %s" % intf].children
                 intf_config = "\n".join(children)
-
                 commands.extend(
                     ["interface %s" % intf, "vrf forwarding %s" % want["name"]]
                 )
-
                 match = re.search("ip address .+", intf_config, re.M)
                 if match:
                     commands.append(match.group())
-
     return commands
 
 
 def parse_description(configobj, name):
     cfg = configobj["vrf definition %s" % name]
     cfg = "\n".join(cfg.children)
-    match = re.search(r"description (.+)$", cfg, re.M)
+    match = re.search("description (.+)$", cfg, re.M)
     if match:
         return match.group(1)
 
@@ -427,7 +406,7 @@ def parse_description(configobj, name):
 def parse_rd(configobj, name):
     cfg = configobj["vrf definition %s" % name]
     cfg = "\n".join(cfg.children)
-    match = re.search(r"rd (.+)$", cfg, re.M)
+    match = re.search("rd (.+)$", cfg, re.M)
     if match:
         return match.group(1)
 
@@ -448,14 +427,14 @@ def parse_interfaces(configobj):
 def parse_import(configobj, name):
     cfg = configobj["vrf definition %s" % name]
     cfg = "\n".join(cfg.children)
-    matches = re.findall(r"route-target\s+import\s+(.+)", cfg, re.M)
+    matches = re.findall("route-target\\s+import\\s+(.+)", cfg, re.M)
     return matches
 
 
 def parse_export(configobj, name):
     cfg = configobj["vrf definition %s" % name]
     cfg = "\n".join(cfg.children)
-    matches = re.findall(r"route-target\s+export\s+(.+)", cfg, re.M)
+    matches = re.findall("route-target\\s+export\\s+(.+)", cfg, re.M)
     return matches
 
 
@@ -491,7 +470,7 @@ def parse_import_ipv4(configobj, name):
     try:
         subcfg = cfg["address-family ipv4"]
         subcfg = "\n".join(subcfg.children)
-        matches = re.findall(r"route-target\s+import\s+(.+)", subcfg, re.M)
+        matches = re.findall("route-target\\s+import\\s+(.+)", subcfg, re.M)
         return matches
     except KeyError:
         pass
@@ -502,7 +481,7 @@ def parse_export_ipv4(configobj, name):
     try:
         subcfg = cfg["address-family ipv4"]
         subcfg = "\n".join(subcfg.children)
-        matches = re.findall(r"route-target\s+export\s+(.+)", subcfg, re.M)
+        matches = re.findall("route-target\\s+export\\s+(.+)", subcfg, re.M)
         return matches
     except KeyError:
         pass
@@ -513,7 +492,7 @@ def parse_import_ipv6(configobj, name):
     try:
         subcfg = cfg["address-family ipv6"]
         subcfg = "\n".join(subcfg.children)
-        matches = re.findall(r"route-target\s+import\s+(.+)", subcfg, re.M)
+        matches = re.findall("route-target\\s+import\\s+(.+)", subcfg, re.M)
         return matches
     except KeyError:
         pass
@@ -524,7 +503,7 @@ def parse_export_ipv6(configobj, name):
     try:
         subcfg = cfg["address-family ipv6"]
         subcfg = "\n".join(subcfg.children)
-        matches = re.findall(r"route-target\s+export\s+(.+)", subcfg, re.M)
+        matches = re.findall("route-target\\s+export\\s+(.+)", subcfg, re.M)
         return matches
     except KeyError:
         pass
@@ -533,14 +512,11 @@ def parse_export_ipv6(configobj, name):
 def map_config_to_obj(module):
     config = get_config(module)
     configobj = NetworkConfig(indent=1, contents=config)
-    match = re.findall(r"^vrf definition (\S+)", config, re.M)
+    match = re.findall("^vrf definition (\\S+)", config, re.M)
     if not match:
         return list()
-
     instances = list()
-
     interfaces = parse_interfaces(configobj)
-
     for item in set(match):
         obj = {
             "name": item,
@@ -567,22 +543,16 @@ def map_config_to_obj(module):
 
 
 def get_param_value(key, item, module):
-    # if key doesn't exist in the item, get it from module.params
     if not item.get(key):
         value = module.params[key]
-
-    # if key does exist, do a type check on it to validate it
     else:
         value_type = module.argument_spec[key].get("type", "str")
         type_checker = module._CHECK_ARGUMENT_TYPES_DISPATCHER[value_type]
         type_checker(item[key])
         value = item[key]
-
-    # validate the param value (if validator func exists)
     validator = globals().get("validate_%s" % key)
     if validator:
         validator(value, module)
-
     return value
 
 
@@ -603,7 +573,6 @@ def map_params_to_obj(module):
                 module.fail_json(msg="name is required")
             else:
                 collection.append(item)
-
     objects = list()
     for item in collection:
         get_value = partial(get_param_value, item=item, module=module)
@@ -635,7 +604,6 @@ def map_params_to_obj(module):
                 )
         item["associated_interfaces"] = get_value("associated_interfaces")
         objects.append(item)
-
     return objects
 
 
@@ -663,23 +631,18 @@ def update_objects(want, have):
 
 def check_declarative_intent_params(want, module, result):
     if module.params["associated_interfaces"]:
-
         if result["changed"]:
             time.sleep(module.params["delay"])
-
         name = module.params["name"]
         rc, out, err = exec_command(
             module, "show vrf | include {0}".format(name)
         )
-
         if rc == 0:
             data = out.strip().split()
-            # data will be empty if the vrf was just added
             if not data:
                 return
             vrf = data[0]
             interface = data[-1]
-
             for w in want:
                 if w["name"] == vrf:
                     if w.get("associated_interfaces") is None:
@@ -717,25 +680,19 @@ def main():
         purge=dict(type="bool", default=False),
         state=dict(default="present", choices=["present", "absent"]),
     )
-
     argument_spec.update(ios_argument_spec)
-
     mutually_exclusive = [("name", "vrfs")]
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-
     result = {"changed": False}
-
     warnings = list()
     result["warnings"] = warnings
-
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
     commands = map_obj_to_commands(update_objects(want, have), module)
-
     if module.params["purge"]:
         want_vrfs = [x["name"] for x in want]
         have_vrfs = [x["name"] for x in have]
@@ -743,16 +700,12 @@ def main():
             cmd = "no vrf definition %s" % item
             if cmd not in commands:
                 commands.append(cmd)
-
     result["commands"] = commands
-
     if commands:
         if not module.check_mode:
             load_config(module, commands)
         result["changed"] = True
-
     check_declarative_intent_params(want, module, result)
-
     module.exit_json(**result)
 
 

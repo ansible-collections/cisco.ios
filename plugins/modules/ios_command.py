@@ -15,14 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """module: ios_command
 author: Peter Sprygada (@privateip)
 short_description: Run commands on remote devices running Cisco IOS
@@ -32,6 +25,7 @@ description:
   condition before returning or timing out if the condition is not met.
 - This module does not support running commands in configuration mode. Please use
   M(ios_config) to configure IOS devices.
+version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
@@ -44,7 +38,7 @@ options:
       is provided, the module is not returned until the condition is satisfied or
       the number of retries has expired. If a command sent to the device requires
       answering a prompt, it is possible to pass a dict containing I(command), I(answer)
-      and I(prompt). Common answers are 'y' or "\r" (carriage return, must be double
+      and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
       quotes). See examples.
     required: true
   wait_for:
@@ -75,46 +69,40 @@ options:
     - Configures the interval in seconds to wait between retries of the command. If
       the command does not pass the specified conditions, the interval indicates how
       long to wait before trying the command again.
-    default: 1
-"""
+    default: 1"""
+EXAMPLES = """- name: run show version on remote devices
+  cisco.ios.ios_command:
+    commands: show version
 
-EXAMPLES = r"""
-tasks:
-  - name: run show version on remote devices
-    ios_command:
-      commands: show version
+- name: run show version and check to see if output contains IOS
+  cisco.ios.ios_command:
+    commands: show version
+    wait_for: result[0] contains IOS
 
-  - name: run show version and check to see if output contains IOS
-    ios_command:
-      commands: show version
-      wait_for: result[0] contains IOS
+- name: run multiple commands on remote nodes
+  cisco.ios.ios_command:
+    commands:
+    - show version
+    - show interfaces
 
-  - name: run multiple commands on remote nodes
-    ios_command:
-      commands:
-        - show version
-        - show interfaces
+- name: run multiple commands and evaluate the output
+  cisco.ios.ios_command:
+    commands:
+    - show version
+    - show interfaces
+    wait_for:
+    - result[0] contains IOS
+    - result[1] contains Loopback0
 
-  - name: run multiple commands and evaluate the output
-    ios_command:
-      commands:
-        - show version
-        - show interfaces
-      wait_for:
-        - result[0] contains IOS
-        - result[1] contains Loopback0
-
-  - name: run commands that require answering a prompt
-    ios_command:
-      commands:
-        - command: 'clear counters GigabitEthernet0/1'
-          prompt: 'Clear "show interface" counters on this interface \[confirm\]'
-          answer: 'y'
-        - command: 'clear counters GigabitEthernet0/2'
-          prompt: '[confirm]'
-          answer: "\r"
-"""
-
+- name: run commands that require answering a prompt
+  cisco.ios.ios_command:
+    commands:
+    - command: clear counters GigabitEthernet0/1
+      prompt: Clear "show interface" counters on this interface \\[confirm\\]
+      answer: y
+    - command: clear counters GigabitEthernet0/2
+      prompt: '[confirm]'
+      answer: "\\r\""""
 RETURN = """
 stdout:
   description: The set of responses from the commands
@@ -133,7 +121,6 @@ failed_conditions:
   sample: ['...', '...']
 """
 import time
-
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
@@ -153,16 +140,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 def parse_commands(module, warnings):
     commands = transform_commands(module)
-
     if module.check_mode:
         for item in list(commands):
             if not item["command"].startswith("show"):
                 warnings.append(
-                    "Only show commands are supported when using check mode, not "
-                    "executing %s" % item["command"]
+                    "Only show commands are supported when using check mode, not executing %s"
+                    % item["command"]
                 )
                 commands.remove(item)
-
     return commands
 
 
@@ -176,52 +161,40 @@ def main():
         retries=dict(default=10, type="int"),
         interval=dict(default=1, type="int"),
     )
-
     argument_spec.update(ios_argument_spec)
-
     module = AnsibleModule(
         argument_spec=argument_spec, supports_check_mode=True
     )
-
     warnings = list()
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
     wait_for = module.params["wait_for"] or list()
-
     try:
         conditionals = [Conditional(c) for c in wait_for]
     except AttributeError as exc:
         module.fail_json(msg=to_text(exc))
-
     retries = module.params["retries"]
     interval = module.params["interval"]
     match = module.params["match"]
-
     while retries > 0:
         responses = run_commands(module, commands)
-
         for item in list(conditionals):
             if item(responses):
                 if match == "any":
                     conditionals = list()
                     break
                 conditionals.remove(item)
-
         if not conditionals:
             break
-
         time.sleep(interval)
         retries -= 1
-
     if conditionals:
         failed_conditions = [item.raw for item in conditionals]
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
-
     result.update(
         {"stdout": responses, "stdout_lines": list(to_lines(responses))}
     )
-
     module.exit_json(**result)
 
 

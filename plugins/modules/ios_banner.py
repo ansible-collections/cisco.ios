@@ -15,20 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """module: ios_banner
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
 short_description: Manage multiline banners on Cisco IOS devices
 description:
 - This will configure both login and motd banners on remote devices running Cisco
   IOS.  It allows playbooks to add or remote banner text from the active running configuration.
+version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
@@ -56,12 +50,9 @@ options:
     default: present
     choices:
     - present
-    - absent
-"""
-
-EXAMPLES = """
-- name: configure the login banner
-  ios_banner:
+    - absent"""
+EXAMPLES = """- name: configure the login banner
+  cisco.ios.ios_banner:
     banner: login
     text: |
       this is my login banner
@@ -70,18 +61,16 @@ EXAMPLES = """
     state: present
 
 - name: remove the motd banner
-  ios_banner:
+  cisco.ios.ios_banner:
     banner: motd
     state: absent
 
 - name: Configure banner from file
-  ios_banner:
-    banner:  motd
+  cisco.ios.ios_banner:
+    banner: motd
     text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
     state: present
-
 """
-
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
@@ -108,18 +97,15 @@ def map_obj_to_commands(updates, module):
     commands = list()
     want, have = updates
     state = module.params["state"]
-
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
-
     elif state == "present":
-        if want["text"] and (want["text"] != have.get("text")):
+        if want["text"] and want["text"] != have.get("text"):
             banner_cmd = "banner %s" % module.params["banner"]
             banner_cmd += " @\n"
             banner_cmd += want["text"].strip("\n")
             banner_cmd += "\n@"
             commands.append(banner_cmd)
-
     return commands
 
 
@@ -136,7 +122,7 @@ def map_config_to_obj(module):
     if out:
         regex = "banner " + module.params["banner"] + " ^C\n"
         if search("banner " + module.params["banner"], out, M):
-            output = str((out.split(regex))[1].split("^C\n")[0])
+            output = str(out.split(regex)[1].split("^C\n")[0])
         else:
             output = None
     else:
@@ -168,34 +154,25 @@ def main():
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
-
     argument_spec.update(ios_argument_spec)
-
     required_if = [("state", "present", ("text",))]
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_if=required_if,
         supports_check_mode=True,
     )
-
     warnings = list()
-
     result = {"changed": False}
     if warnings:
         result["warnings"] = warnings
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
-
     commands = map_obj_to_commands((want, have), module)
     result["commands"] = commands
-
     if commands:
         if not module.check_mode:
             load_config(module, commands)
-
         result["changed"] = True
-
     module.exit_json(**result)
 
 
