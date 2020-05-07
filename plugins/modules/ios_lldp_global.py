@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """module: ios_lldp_global
-short_description: LLDP resource module
+short_description: LLDP global resource module
 description: This module configures and manages the Link Layer Discovery Protocol(LLDP)
   attributes on IOS platforms.
 version_added: 1.0.0

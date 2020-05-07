@@ -533,8 +533,12 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acl_interfaces:
-    running_config: interface GigabitEthernet0/1 ip access-group 110 in ip access-group
-      123 out ipv6 traffic-filter temp_v6 in ipv6 traffic-filter test_v6 out
+    running_config:
+      "interface GigabitEthernet0/1
+       ip access-group 110 in
+       ip access-group 123 out
+       ipv6 traffic-filter temp_v6 in
+       ipv6 traffic-filter test_v6 out"
     state: parsed
 
 # Module Execution Result:
