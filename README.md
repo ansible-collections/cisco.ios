@@ -41,15 +41,15 @@ The following example task replaces configuration changes in the existing config
 ```yaml
 ---
   - name: Replace device configuration of specified L2 interfaces with provided configuration.
-  cisco.ios.ios_l2_interfaces:
-    config:
-      - name: GigabitEthernet0/2
-        trunk:
-        - allowed_vlans: 20-25,40
-          native_vlan: 20
-          pruning_vlans: 10
-          encapsulation: isl
-    state: replaced
+    cisco.ios.ios_l2_interfaces:
+      config:
+        - name: GigabitEthernet0/2
+          trunk:
+          - allowed_vlans: 20-25,40
+            native_vlan: 20
+            pruning_vlans: 10
+            encapsulation: isl
+      state: replaced
 
 ```
 
@@ -65,42 +65,16 @@ Alternately, you can call modules by their short name if you list the `cisco.ios
     - cisco.ios
 
   tasks:
-    - name: Delete provided configuration from the device configuration
-      ios_static_routes:
+    - name: Override device configuration of all interfaces with provided configuration
+      ios_l3_interfaces:
         config:
-          - vrf: ansible_temp_vrf
-            address_families:
-            - afi: ipv4
-              routes:
-              - dest: 192.0.2.0/24
-                next_hops:
-                - forward_router_address: 192.0.2.1
-                  name: test_vrf
-                  tag: 50
-                  track: 150
-          - address_families:
-            - afi: ipv4
-              routes:
-              - dest: 198.51.100.0/24
-                next_hops:
-                - forward_router_address: 198.51.101.1
-                  name: route_1
-                  distance_metric: 110
-                  tag: 40
-                  multicast: True
-                - forward_router_address: 198.51.101.2
-                  name: route_2
-                  distance_metric: 30
-                - forward_router_address: 198.51.101.3
-                  name: route_3
-            - afi: ipv6
-              routes:
-              - dest: 2001:DB8:0:3::/64
-                next_hops:
-                - forward_router_address: 2001:DB8:0:3::2
-                  name: test_v6
-                  tag: 105
-        state: deleted
+          - name: GigabitEthernet0/2
+            ipv4:
+            - address: 192.168.0.1/24
+          - name: GigabitEthernet0/3.100
+            ipv6:
+            - address: autoconfig
+        state: overridden
 ```
 
 
