@@ -41,7 +41,7 @@ options:
       router_id:
         description:
         - Configures the BGP routing process router-id value.
-        default:
+        default: null
       log_neighbor_changes:
         description:
         - Enable/disable logging neighbor up/down and reset reason.
@@ -269,7 +269,8 @@ options:
     - replace
     - override
     - delete"""
-EXAMPLES = """- name: configure global bgp as 64496
+EXAMPLES = """
+- name: configure global bgp as 64496
   cisco.ios.ios_bgp:
     config:
       bgp_as: 64496

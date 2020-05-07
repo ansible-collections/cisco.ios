@@ -38,7 +38,7 @@ options:
       is provided, the module is not returned until the condition is satisfied or
       the number of retries has expired. If a command sent to the device requires
       answering a prompt, it is possible to pass a dict containing I(command), I(answer)
-      and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
+      and I(prompt). Common answers are 'y' or "\r" (carriage return, must be double
       quotes). See examples.
     required: true
   wait_for:
@@ -70,7 +70,8 @@ options:
       the command does not pass the specified conditions, the interval indicates how
       long to wait before trying the command again.
     default: 1"""
-EXAMPLES = """- name: run show version on remote devices
+EXAMPLES = """
+- name: run show version on remote devices
   cisco.ios.ios_command:
     commands: show version
 

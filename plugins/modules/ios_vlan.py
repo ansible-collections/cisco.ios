@@ -71,7 +71,8 @@ options:
     - suspend
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: Create vlan
+EXAMPLES = """
+- name: Create vlan
   cisco.ios.ios_vlan:
     vlan_id: 100
     name: test-vlan
@@ -251,7 +252,7 @@ def parse_to_logical_rows(out):
             """Line starting with a number."""
             if started_yielding:
                 yield cur_row
-                cur_row = []
+                cur_row = []  # Reset it to hold a next chunk
             started_yielding = True
         cur_row.append(l)
     yield cur_row
@@ -330,6 +331,7 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["vlan_id"] = dict(required=True)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec),

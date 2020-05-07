@@ -58,7 +58,8 @@ notes:
 - For a general purpose network module, see the M(net_ping) module.
 - For Windows targets, use the M(win_ping) module instead.
 - For targets running Python, use the M(ping) module instead."""
-EXAMPLES = """- name: Test reachability to 10.10.10.10 using default vrf
+EXAMPLES = """
+- name: Test reachability to 10.10.10.10 using default vrf
   cisco.ios.ios_ping:
     dest: 10.10.10.10
 
@@ -149,6 +150,7 @@ def main():
     results["packet_loss"] = str(loss) + "%"
     results["packets_rx"] = int(rx)
     results["packets_tx"] = int(tx)
+    # Convert rtt values to int
     for k, v in rtt.items():
         if rtt[k] is not None:
             rtt[k] = int(v)

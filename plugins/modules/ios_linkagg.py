@@ -60,7 +60,8 @@ options:
     type: bool
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: create link aggregation group
+EXAMPLES = """
+- name: create link aggregation group
   cisco.ios.ios_linkagg:
     group: 10
     state: present
@@ -282,6 +283,7 @@ def main():
     required_one_of = [["group", "aggregate"]]
     required_together = [["members", "mode"]]
     mutually_exclusive = [["group", "aggregate"]]
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(

@@ -60,7 +60,8 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: Remove GigabitEthernet0/3 IPv4 and IPv6 address
+EXAMPLES = """
+- name: Remove GigabitEthernet0/3 IPv4 and IPv6 address
   cisco.ios.ios_l3_interface:
     name: GigabitEthernet0/3
     state: absent
@@ -161,6 +162,7 @@ def validate_param_values(module, obj, param=None):
     if param is None:
         param = module.params
     for key in obj:
+        # validate the param value (if validator func exists)
         validator = globals().get("validate_%s" % key)
         if callable(validator):
             validator(param.get(key), module)
@@ -302,6 +304,7 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["name"] = dict(required=True)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec)

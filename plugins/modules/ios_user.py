@@ -116,7 +116,8 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: create a new user
+EXAMPLES = """
+- name: create a new user
   cisco.ios.ios_user:
     name: ansible
     nopassword: true
@@ -236,15 +237,20 @@ def user_del_cmd(username):
 
 
 def sshkey_fingerprint(sshkey):
+    # IOS will accept a MD5 fingerprint of the public key
+    # and is easier to configure in a single line
+    # we calculate this fingerprint here
     if not sshkey:
         return None
     if " " in sshkey:
+        # ssh-rsa AAA...== comment
         keyparts = sshkey.split(" ")
         keyparts[1] = (
             hashlib.md5(base64.b64decode(keyparts[1])).hexdigest().upper()
         )
         return " ".join(keyparts)
     else:
+        # just the key, assume rsa type
         return (
             "ssh-rsa %s"
             % hashlib.md5(base64.b64decode(sshkey)).hexdigest().upper()
@@ -372,13 +378,16 @@ def map_config_to_obj(module):
 
 
 def get_param_value(key, item, module):
+    # if key doesn't exist in the item, get it from module.params
     if not item.get(key):
         value = module.params[key]
+    # if key does exist, do a type check on it to validate it
     else:
         value_type = module.argument_spec[key].get("type", "str")
         type_checker = module._CHECK_ARGUMENT_TYPES_DISPATCHER[value_type]
         type_checker(item[key])
         value = item[key]
+    # validate the param value (if validator func exists)
     validator = globals().get("validate_%s" % key)
     if all((value, validator)):
         validator(value, module)
@@ -463,6 +472,7 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["name"] = dict(required=True)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(

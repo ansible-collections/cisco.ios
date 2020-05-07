@@ -39,7 +39,8 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: Enable LLDP service
+EXAMPLES = """
+- name: Enable LLDP service
   cisco.ios.ios_lldp:
     state: present
 

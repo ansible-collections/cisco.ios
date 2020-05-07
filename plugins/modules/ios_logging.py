@@ -70,7 +70,8 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: configure host logging
+EXAMPLES = """
+- name: configure host logging
   ios.ios_logging:
     dest: host
     name: 172.16.0.1
@@ -415,6 +416,7 @@ def main():
         state=dict(default="present", choices=["present", "absent"]),
     )
     aggregate_spec = deepcopy(element_spec)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec)

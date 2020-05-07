@@ -50,7 +50,8 @@ options:
       not be collected. Valid subsets are 'all', 'interfaces', 'l2_interfaces', 'vlans',
       'lag_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global', 'lldp_interfaces',
       'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'."""
-EXAMPLES = """- name: Gather all legacy facts
+EXAMPLES = """
+- name: Gather all legacy facts
   cisco.ios.ios_facts:
     gather_subset: all
 

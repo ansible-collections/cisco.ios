@@ -198,6 +198,7 @@ def validate_param_values(module, obj, param=None):
     if param is None:
         param = module.params
     for key in obj:
+        # validate the param value (if validator func exists)
         validator = globals().get("validate_%s" % key)
         if callable(validator):
             validator(param.get(key), module)
@@ -388,6 +389,8 @@ def check_declarative_intent_params(module, want, result):
         if want_neighbors:
             have_host = []
             have_port = []
+
+            # Process LLDP neighbors
             if have_neighbors_lldp is None:
                 rc, have_neighbors_lldp, err = exec_command(
                     module, "show lldp neighbors detail"
@@ -408,6 +411,7 @@ def check_declarative_intent_params(module, want, result):
                                 have_host.append(item.split(":")[1].strip())
                             if item.startswith("Port Description:"):
                                 have_port.append(item.split(":")[1].strip())
+            # Process CDP neighbors
             if have_neighbors_cdp is None:
                 rc, have_neighbors_cdp, err = exec_command(
                     module, "show cdp neighbors detail"
@@ -461,6 +465,8 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["name"] = dict(required=True)
+
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec)

@@ -113,7 +113,8 @@ options:
     description:
     - Adds an import list of extended route target communities in address-family configuration
       submode to the VRF."""
-EXAMPLES = """- name: configure a vrf named management
+EXAMPLES = """
+- name: configure a vrf named management
   cisco.ios.ios_vrf:
     name: management
     description: oob mgmt vrf
@@ -543,13 +544,16 @@ def map_config_to_obj(module):
 
 
 def get_param_value(key, item, module):
+    # if key doesn't exist in the item, get it from module.params
     if not item.get(key):
         value = module.params[key]
+    # if key does exist, do a type check on it to validate it
     else:
         value_type = module.argument_spec[key].get("type", "str")
         type_checker = module._CHECK_ARGUMENT_TYPES_DISPATCHER[value_type]
         type_checker(item[key])
         value = item[key]
+    # validate the param value (if validator func exists)
     validator = globals().get("validate_%s" % key)
     if validator:
         validator(value, module)

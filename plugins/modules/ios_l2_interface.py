@@ -73,7 +73,8 @@ options:
     - present
     - absent
     - unconfigured"""
-EXAMPLES = """- name: Ensure GigabitEthernet0/5 is in its default l2 interface state
+EXAMPLES = """
+- name: Ensure GigabitEthernet0/5 is in its default l2 interface state
   ios.ios_l2_interface:
     name: GigabitEthernet0/5
     state: unconfigured
@@ -212,6 +213,12 @@ def remove_switchport_config_commands(name, existing, proposed, module):
             )
             commands.append(command)
     elif mode == "trunk":
+        # Supported Remove Scenarios for trunk_vlans_list
+        # 1) Existing: 1,2,3 Proposed: 1,2,3 - Remove all
+        # 2) Existing: 1,2,3 Proposed: 1,2   - Remove 1,2 Leave 3
+        # 3) Existing: 1,2,3 Proposed: 2,3   - Remove 2,3 Leave 1
+        # 4) Existing: 1,2,3 Proposed: 4,5,6 - None removed.
+        # 5) Existing: None  Proposed: 1,2,3 - None removed.
         existing_vlans = existing.get("trunk_vlans_list")
         proposed_vlans = proposed.get("trunk_vlans_list")
         vlans_to_remove = set(proposed_vlans).intersection(existing_vlans)
@@ -397,6 +404,7 @@ def main():
         ),
     )
     aggregate_spec = deepcopy(element_spec)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec)
@@ -454,7 +462,10 @@ the ios_interface module for this."""
 port because it is in a portchannel. 
 You should update the portchannel config."""
             )
+        # existing will never be null for Eth intfs as there is always a default
         existing = get_switchport(name, module)
+        # Safeguard check
+        # If there isn't an existing, something is wrong per previous comment
         if not existing:
             module.fail_json(
                 msg="Make sure you are using the FULL interface name"

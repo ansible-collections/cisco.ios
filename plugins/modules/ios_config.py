@@ -187,7 +187,8 @@ options:
           in C(filename) within I(backup) directory.
         type: path
     type: dict"""
-EXAMPLES = """- name: configure top level configuration
+EXAMPLES = """
+- name: configure top level configuration
   cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
 
@@ -310,7 +311,7 @@ time:
   description: The time extracted from the backup file name
   returned: when backup is yes
   type: str
-  sample: "22:28:34\"
+  sample: "22:28:34"
 """
 import json
 from ansible.module_utils._text import to_text
@@ -342,6 +343,8 @@ def check_args(module, warnings):
 
 
 def edit_config_or_macro(connection, commands):
+    # only catch the macro configuration command,
+    # not negated 'no' variation.
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
@@ -466,6 +469,9 @@ def main():
             result["commands"] = commands
             result["updates"] = commands
             result["banners"] = banner_diff
+
+            # send the configuration commands to the device and merge
+            # them with the current running config
             if not module.check_mode:
                 if commands:
                     edit_config_or_macro(connection, commands)
@@ -501,6 +507,8 @@ def main():
             contents = output[0]
         else:
             contents = running_config
+
+        # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(
             indent=1, contents=contents, ignore_lines=diff_ignore_lines
         )

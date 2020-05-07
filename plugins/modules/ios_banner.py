@@ -51,7 +51,8 @@ options:
     choices:
     - present
     - absent"""
-EXAMPLES = """- name: configure the login banner
+EXAMPLES = """
+- name: configure the login banner
   cisco.ios.ios_banner:
     banner: login
     text: |
@@ -100,7 +101,7 @@ def map_obj_to_commands(updates, module):
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
-        if want["text"] and want["text"] != have.get("text"):
+        if want["text"] and (want["text"] != have.get("text")):
             banner_cmd = "banner %s" % module.params["banner"]
             banner_cmd += " @\n"
             banner_cmd += want["text"].strip("\n")
@@ -122,7 +123,7 @@ def map_config_to_obj(module):
     if out:
         regex = "banner " + module.params["banner"] + " ^C\n"
         if search("banner " + module.params["banner"], out, M):
-            output = str(out.split(regex)[1].split("^C\n")[0])
+            output = str((out.split(regex))[1].split("^C\n")[0])
         else:
             output = None
     else:

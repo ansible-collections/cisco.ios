@@ -66,7 +66,8 @@ options:
     choices:
     - present
     - absent"""
-EXAMPLES = """- name: configure hostname and domain name
+EXAMPLES = """
+- name: configure hostname and domain name
   ios.ios_system:
     hostname: ios01
     domain_name: test.example.com

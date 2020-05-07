@@ -66,7 +66,8 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.ios.ios"""
-EXAMPLES = """- name: configure static route
+EXAMPLES = """
+- name: configure static route
   cisco.ios.ios_static_route:
     prefix: 192.168.2.0
     mask: 255.255.255.0
@@ -136,18 +137,22 @@ def map_obj_to_commands(want, have):
     for w in want:
         state = w["state"]
         del w["state"]
+        # Try to match an existing config with the desired config
         for h in have:
+            # Try to match an existing config with the desired config
             if not w.get("admin_distance") and h.get("admin_distance"):
                 del h["admin_distance"]
             diff = list(set(w.items()) ^ set(h.items()))
             if not diff:
                 break
+            # Try to match an existing config with the desired config
             elif (
                 len(diff) == 2
                 and diff[0][0] == diff[1][0] == "name"
                 and (not w["name"] or h["name"].startswith(w["name"]))
             ):
                 break
+        # If no matches found, clear `h`
         else:
             h = None
         command = "ip route"
@@ -184,13 +189,14 @@ def map_config_to_obj(module):
     obj = []
     out = get_config(module, flags="| include ip route")
     for line in out.splitlines():
+        # Split by whitespace but do not split quotes, needed for name parameter
         splitted_line = findall('[^"\\s]\\S*|".+?"', line)
         if splitted_line[2] == "vrf":
             route = {"vrf": splitted_line[3]}
-            del splitted_line[:4]
+            del splitted_line[:4]  # Removes the words ip route vrf vrf_name
         else:
             route = {}
-            del splitted_line[:2]
+            del splitted_line[:2]  # Removes the words ip route
         prefix = splitted_line[0]
         mask = splitted_line[1]
         route.update({"prefix": prefix, "mask": mask, "admin_distance": "1"})
@@ -262,6 +268,7 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["prefix"] = dict(required=True)
+    # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(type="list", elements="dict", options=aggregate_spec)

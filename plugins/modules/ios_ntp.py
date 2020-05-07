@@ -58,7 +58,8 @@ options:
     choices:
     - present
     - absent"""
-EXAMPLES = """# Set new NTP server and source interface
+EXAMPLES = """
+# Set new NTP server and source interface
 - cisco.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
