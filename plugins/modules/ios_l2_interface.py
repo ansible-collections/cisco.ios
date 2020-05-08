@@ -458,8 +458,8 @@ the ios_interface module for this."""
             )
         if interface_is_portchannel(name, module):
             module.fail_json(
-                msg="""Cannot change L2 config on physical 
-port because it is in a portchannel. 
+                msg="""Cannot change L2 config on physical
+port because it is in a portchannel.
 You should update the portchannel config."""
             )
         # existing will never be null for Eth intfs as there is always a default
