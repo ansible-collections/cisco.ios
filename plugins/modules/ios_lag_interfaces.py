@@ -261,8 +261,7 @@ EXAMPLES = """
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface\
-    \ itself)"
+- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lag_interfaces:
     config:
     - name: 10
@@ -310,8 +309,7 @@ EXAMPLES = """
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete\
-    \ the interface itself)"
+- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lag_interfaces:
     state: deleted
 

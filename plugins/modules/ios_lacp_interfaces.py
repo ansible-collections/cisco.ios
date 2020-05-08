@@ -232,8 +232,7 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface\
-    \ itself)"
+- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
@@ -277,8 +276,7 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete\
-    \ the interface itself)"
+- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lacp_interfaces:
     state: deleted
 

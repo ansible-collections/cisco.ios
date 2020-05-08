@@ -294,8 +294,7 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.2 255.255.255.0
 
-- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface\
-    \ itself)"
+- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface itself)"
   cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -351,8 +350,7 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.2 255.255.255.0
 
-- name: "Delete L3 attributes of ALL interfaces together (NOTE: This won't delete\
-    \ the interface itself)"
+- name: "Delete L3 attributes of ALL interfaces together (NOTE: This won't delete the interface itself)"
   cisco.ios.ios_l3_interfaces:
     state: deleted
 

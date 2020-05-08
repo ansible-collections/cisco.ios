@@ -957,8 +957,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given acls (Note: This won't delete the interface\
-    \         itself)"
+- name: "Delete module attributes of given acls (Note: This won't delete the interface itself)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1011,8 +1010,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete\
-    \         the interface itself)"
+- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete the interface itself)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1054,8 +1052,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of all acls (Note: This won't delete the interface\
-    \         itself)"
+- name: "Delete module attributes of all acls (Note: This won't delete the interface itself)"
   cisco.ios.ios_acls:
     state: deleted
 

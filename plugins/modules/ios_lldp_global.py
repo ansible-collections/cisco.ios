@@ -184,7 +184,7 @@ EXAMPLES = """
 #  lldp run
 
 
-- name: "Delete LLDP attributes (Note: This won't delete the interface itself)"
+- name: "Delete LLDP attributes"
   cisco.ios.ios_lldp_global:
     state: deleted
 
