@@ -534,7 +534,7 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acl_interfaces:
-    running_config: 
+    running_config:
       "interface GigabitEthernet0/1
        ip access-group 110 in
        ip access-group 123 out
