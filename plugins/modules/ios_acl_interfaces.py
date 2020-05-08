@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_acl_interfaces
+DOCUMENTATION = """
+module: ios_acl_interfaces
 short_description: ACL interfaces resource module
 description: This module configures and manages the access-control (ACL) attributes
   of interfaces on IOS platforms.
@@ -533,7 +534,7 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acl_interfaces:
-    running_config:
+    running_config: 
       "interface GigabitEthernet0/1
        ip access-group 110 in
        ip access-group 123 out

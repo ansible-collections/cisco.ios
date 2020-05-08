@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_vlans
+DOCUMENTATION = """
+module: ios_vlans
 short_description: VLANs resource module
 description: This module provides declarative management of VLANs on Cisco IOS network
   devices.
@@ -82,7 +83,8 @@ options:
     - deleted
     default: merged
 """
-EXAMPLES = """# Using merged
+EXAMPLES = """
+# Using merged
 
 # Before state:
 # -------------

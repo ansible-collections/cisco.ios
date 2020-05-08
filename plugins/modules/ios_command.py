@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_command
+DOCUMENTATION = """
+module: ios_command
 author: Peter Sprygada (@privateip)
 short_description: Run commands on remote devices running Cisco IOS
 description:
@@ -69,7 +70,8 @@ options:
     - Configures the interval in seconds to wait between retries of the command. If
       the command does not pass the specified conditions, the interval indicates how
       long to wait before trying the command again.
-    default: 1"""
+    default: 1
+"""
 EXAMPLES = """
 - name: run show version on remote devices
   cisco.ios.ios_command:
@@ -99,11 +101,12 @@ EXAMPLES = """
   cisco.ios.ios_command:
     commands:
     - command: clear counters GigabitEthernet0/1
-      prompt: Clear "show interface" counters on this interface \\[confirm\\]
+      prompt: Clear "show interface" counters on this interface \[confirm\]
       answer: y
     - command: clear counters GigabitEthernet0/2
       prompt: '[confirm]'
-      answer: "\\r\""""
+      answer: "\r"
+"""
 RETURN = """
 stdout:
   description: The set of responses from the commands

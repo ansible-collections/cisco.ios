@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_ntp
+DOCUMENTATION = """
+module: ios_ntp
 extends_documentation_fragment:
 - cisco.ios.ios
 short_description: Manages core NTP configuration.
@@ -57,7 +58,8 @@ options:
     default: present
     choices:
     - present
-    - absent"""
+    - absent
+"""
 EXAMPLES = """
 # Set new NTP server and source interface
 - cisco.ios.ios_ntp:
@@ -88,7 +90,8 @@ EXAMPLES = """
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
-    state: present"""
+    state: present
+"""
 RETURN = """
 commands:
     description: command sent to the device

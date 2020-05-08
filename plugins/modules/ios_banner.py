@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_banner
+DOCUMENTATION = """
+module: ios_banner
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
 short_description: Manage multiline banners on Cisco IOS devices
 description:
@@ -50,7 +51,8 @@ options:
     default: present
     choices:
     - present
-    - absent"""
+    - absent
+"""
 EXAMPLES = """
 - name: configure the login banner
   cisco.ios.ios_banner:

@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_lag_interfaces
+DOCUMENTATION = """
+module: ios_lag_interfaces
 short_description: LAG interfaces resource module
 description: This module manages properties of Link Aggregation Group on Cisco IOS
   devices.
@@ -79,7 +80,8 @@ options:
     - deleted
     default: merged
 """
-EXAMPLES = """# Using merged
+EXAMPLES = """
+# Using merged
 #
 # Before state:
 # -------------
@@ -259,8 +261,8 @@ EXAMPLES = """# Using merged
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface\
+    \ itself)"
   cisco.ios.ios_lag_interfaces:
     config:
     - name: 10
@@ -308,8 +310,8 @@ EXAMPLES = """# Using merged
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete\\
-    \\ the interface itself)"
+- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete\
+    \ the interface itself)"
   cisco.ios.ios_lag_interfaces:
     state: deleted
 
@@ -327,7 +329,8 @@ EXAMPLES = """# Using merged
 # interface GigabitEthernet0/3
 #  shutdown
 # interface GigabitEthernet0/4
-#  shutdown"""
+#  shutdown
+"""
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.

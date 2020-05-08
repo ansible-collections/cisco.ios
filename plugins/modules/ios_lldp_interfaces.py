@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_lldp_interfaces
+DOCUMENTATION = """
+module: ios_lldp_interfaces
 short_description: LLDP interfaces resource module
 description: This module manages link layer discovery protocol (LLDP) attributes of
   interfaces on Cisco IOS devices.
@@ -330,8 +331,8 @@ EXAMPLES = """
 #    Rx state: WAIT FOR FRAME
 #
 
-- name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface\
+    \ itself)"
   cisco.ios.ios_lldp_interfaces:
     config:
     - name: GigabitEthernet0/1
@@ -398,8 +399,8 @@ EXAMPLES = """
 #    Rx state: WAIT FOR FRAME
 #
 
-- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete\\
-    \\ the interface itself)"
+- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete\
+    \ the interface itself)"
   cisco.ios.ios_lldp_interfaces:
     state: deleted
 

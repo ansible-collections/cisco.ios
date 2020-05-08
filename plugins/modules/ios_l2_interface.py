@@ -19,10 +19,11 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_l2_interface
+DOCUMENTATION = """
+module: ios_l2_interface
 extends_documentation_fragment:
 - cisco.ios.ios
-short_description: Manage Layer-2 interface on Cisco IOS devices.
+short_description: (deprecated) Manage Layer-2 interface on Cisco IOS devices.
 description:
 - This module provides declarative management of Layer-2 interfaces on Cisco IOS devices.
 version_added: 1.0.0
@@ -72,7 +73,9 @@ options:
     choices:
     - present
     - absent
-    - unconfigured"""
+    - unconfigured
+
+"""
 EXAMPLES = """
 - name: Ensure GigabitEthernet0/5 is in its default l2 interface state
   ios.ios_l2_interface:
@@ -101,7 +104,8 @@ EXAMPLES = """
     name: GigabitEthernet0/5
     mode: trunk
     trunk_vlans: 51-4094
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

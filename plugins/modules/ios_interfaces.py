@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_interfaces
+DOCUMENTATION = """
+module: ios_interfaces
 short_description: Interfaces resource module
 description: This module manages the interface attributes of Cisco IOS network devices.
 version_added: 1.0.0
@@ -274,8 +275,8 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of given interfaces (Note: This won't delete the\\
-    \\ interface itself)"
+- name: "Delete module attributes of given interfaces (Note: This won't delete the\
+    \ interface itself)"
   cisco.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -325,8 +326,8 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of all interfaces (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete module attributes of all interfaces (Note: This won't delete the interface\
+    \ itself)"
   cisco.ios.ios_interfaces:
     state: deleted
 

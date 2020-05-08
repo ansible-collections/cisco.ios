@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_l2_interfaces
+DOCUMENTATION = """
+module: ios_l2_interfaces
 short_description: L2 interfaces resource module
 description: This module provides declarative management of Layer-2 interface on Cisco
   IOS devices.

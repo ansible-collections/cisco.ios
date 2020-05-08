@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_vrf
+DOCUMENTATION = """
+module: ios_vrf
 author: Peter Sprygada (@privateip)
 short_description: Manage the collection of VRF definitions on Cisco IOS devices
 description:
@@ -112,7 +113,8 @@ options:
   route_import_ipv6:
     description:
     - Adds an import list of extended route target communities in address-family configuration
-      submode to the VRF."""
+      submode to the VRF.
+"""
 EXAMPLES = """
 - name: configure a vrf named management
   cisco.ios.ios_vrf:

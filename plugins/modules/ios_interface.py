@@ -19,9 +19,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_interface
+DOCUMENTATION = """
+module: ios_interface
 author: Ganesh Nalawade (@ganeshrn)
-short_description: Manage Interface on Cisco IOS network devices
+short_description: (deprecated) Manage Interface on Cisco IOS network devices
 description:
 - This module provides declarative management of Interfaces on Cisco IOS network devices.
 version_added: 1.0.0
@@ -97,8 +98,11 @@ options:
     - up
     - down
 extends_documentation_fragment:
-- cisco.ios.ios"""
-EXAMPLES = """- name: configure interface
+- cisco.ios.ios
+
+"""
+EXAMPLES = """
+- name: configure interface
   cisco.ios.ios_interface:
     name: GigabitEthernet0/2
     description: test-interface
@@ -155,7 +159,8 @@ EXAMPLES = """- name: configure interface
     aggregate:
     - name: Loopback9
     - name: Loopback10
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device.

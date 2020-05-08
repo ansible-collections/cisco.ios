@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_acls
+DOCUMENTATION = """
+module: ios_acls
 short_description: ACLs resource module
 description: This module configures and manages the named or numbered ACLs on IOS
   platforms.
@@ -596,7 +597,8 @@ options:
     - The state of the configuration after module completion
     type: str
 """
-EXAMPLES = """# Using merged
+EXAMPLES = """
+# Using merged
 
 # Before state:
 # -------------
@@ -955,8 +957,8 @@ EXAMPLES = """# Using merged
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given acls (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete module attributes of given acls (Note: This won't delete the interface\
+    \         itself)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1009,8 +1011,8 @@ EXAMPLES = """# Using merged
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete\\
-    \\ the interface itself)"
+- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete\
+    \         the interface itself)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1052,8 +1054,8 @@ EXAMPLES = """# Using merged
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of all acls (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete module attributes of all acls (Note: This won't delete the interface\
+    \         itself)"
   cisco.ios.ios_acls:
     state: deleted
 
@@ -1350,7 +1352,8 @@ EXAMPLES = """# Using merged
 #             ],
 #             "afi": "ipv6"
 #         }
-#     ]"""
+#     ]
+"""
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.

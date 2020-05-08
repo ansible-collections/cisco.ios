@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_user
+DOCUMENTATION = """
+module: ios_user
 author: Trishna Guha (@trishnaguha)
 short_description: Manage the aggregate of local users on Cisco IOS device
 description:
@@ -115,7 +116,8 @@ options:
     - present
     - absent
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+"""
 EXAMPLES = """
 - name: create a new user
   cisco.ios.ios_user:
@@ -191,7 +193,8 @@ EXAMPLES = """
     - name: ansibletest1
     - name: ansibletest2
     - name: ansibletest3
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

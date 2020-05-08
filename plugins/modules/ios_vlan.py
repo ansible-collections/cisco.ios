@@ -19,9 +19,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_vlan
+DOCUMENTATION = """
+module: ios_vlan
 author: Trishna Guha (@trishnaguha)
-short_description: Manage VLANs on IOS network devices
+short_description: (deprecated) Manage VLANs on IOS network devices
 description:
 - This module provides declarative management of VLANs on Cisco IOS network devices.
 version_added: 1.0.0
@@ -70,7 +71,9 @@ options:
     - active
     - suspend
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+
+"""
 EXAMPLES = """
 - name: Create vlan
   cisco.ios.ios_vlan:
@@ -109,7 +112,8 @@ EXAMPLES = """
     vlan_id: 102
     interfaces:
     - GigabitEthernet0/0
-    - GigabitEthernet0/1"""
+    - GigabitEthernet0/1
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

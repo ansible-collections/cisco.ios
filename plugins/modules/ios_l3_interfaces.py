@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_l3_interfaces
+DOCUMENTATION = """
+module: ios_l3_interfaces
 short_description: L3 interfaces resource module
 description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
@@ -89,7 +90,8 @@ options:
     - The state of the configuration after module completion
     type: str
 """
-EXAMPLES = """# Using merged
+EXAMPLES = """
+# Using merged
 #
 # Before state:
 # -------------
@@ -292,8 +294,8 @@ EXAMPLES = """# Using merged
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.2 255.255.255.0
 
-- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface\
+    \ itself)"
   cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -349,8 +351,8 @@ EXAMPLES = """# Using merged
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.2 255.255.255.0
 
-- name: "Delete L3 attributes of ALL interfaces together (NOTE: This won't delete\\
-    \\ the interface itself)"
+- name: "Delete L3 attributes of ALL interfaces together (NOTE: This won't delete\
+    \ the interface itself)"
   cisco.ios.ios_l3_interfaces:
     state: deleted
 

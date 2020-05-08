@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_lacp_interfaces
+DOCUMENTATION = """
+module: ios_lacp_interfaces
 short_description: LACP interfaces resource module
 description: This module provides declarative management of LACP on Cisco IOS network
   devices lacp_interfaces.
@@ -231,8 +232,8 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface\\
-    \\ itself)"
+- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface\
+    \ itself)"
   cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
@@ -276,8 +277,8 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete\\
-    \\ the interface itself)"
+- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete\
+    \ the interface itself)"
   cisco.ios.ios_lacp_interfaces:
     state: deleted
 

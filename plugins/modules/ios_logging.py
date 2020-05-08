@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_logging
+DOCUMENTATION = """
+module: ios_logging
 author: Trishna Guha (@trishnaguha)
 short_description: Manage logging on network devices
 description:
@@ -69,7 +70,8 @@ options:
     - present
     - absent
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+"""
 EXAMPLES = """
 - name: configure host logging
   ios.ios_logging:
@@ -110,7 +112,8 @@ EXAMPLES = """
     aggregate:
     - {dest: console, level: notifications}
     - {dest: buffered, size: 9000}
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

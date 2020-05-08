@@ -19,7 +19,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_bgp
+DOCUMENTATION = """
+module: ios_bgp
 author: Nilashish Chakraborty (@NilashishC)
 short_description: Configure global BGP protocol settings on Cisco IOS.
 description:
@@ -41,7 +42,7 @@ options:
       router_id:
         description:
         - Configures the BGP routing process router-id value.
-        default: null
+        default:
       log_neighbor_changes:
         description:
         - Enable/disable logging neighbor up/down and reset reason.
@@ -268,7 +269,8 @@ options:
     - merge
     - replace
     - override
-    - delete"""
+    - delete
+"""
 EXAMPLES = """
 - name: configure global bgp as 64496
   cisco.ios.ios_bgp:
@@ -353,7 +355,8 @@ EXAMPLES = """
   cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
-    operation: delete"""
+    operation: delete
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

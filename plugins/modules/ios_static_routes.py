@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_static_routes
+DOCUMENTATION = """
+module: ios_static_routes
 short_description: Static routes resource module
 description: This module configures and manages the static routes on IOS platforms.
 version_added: 1.0.0

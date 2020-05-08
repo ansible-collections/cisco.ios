@@ -19,7 +19,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_lldp
+DOCUMENTATION = """
+module: ios_lldp
 author: Ganesh Nalawade (@ganeshrn)
 short_description: Manage LLDP configuration on Cisco IOS network devices.
 description:
@@ -38,7 +39,8 @@ options:
     - present
     - absent
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+"""
 EXAMPLES = """
 - name: Enable LLDP service
   cisco.ios.ios_lldp:
@@ -46,7 +48,8 @@ EXAMPLES = """
 
 - name: Disable LLDP service
   cisco.ios.ios_lldp:
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

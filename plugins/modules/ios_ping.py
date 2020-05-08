@@ -19,7 +19,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_ping
+DOCUMENTATION = """
+module: ios_ping
 short_description: Tests reachability using ping from Cisco IOS network devices
 description:
 - Tests reachability using ping from switch to a remote destination.
@@ -57,7 +58,8 @@ options:
 notes:
 - For a general purpose network module, see the M(net_ping) module.
 - For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead."""
+- For targets running Python, use the M(ping) module instead.
+"""
 EXAMPLES = """
 - name: Test reachability to 10.10.10.10 using default vrf
   cisco.ios.ios_ping:
@@ -78,7 +80,8 @@ EXAMPLES = """
     dest: 10.40.40.40
     source: loopback0
     vrf: prod
-    count: 20"""
+    count: 20
+"""
 RETURN = """
 commands:
   description: Show the command sent.

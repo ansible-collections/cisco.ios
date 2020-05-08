@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_config
+DOCUMENTATION = """
+module: ios_config
 author: Peter Sprygada (@privateip)
 short_description: Manage Cisco IOS configuration sections
 description:
@@ -186,7 +187,8 @@ options:
           in the current working directory and backup configuration will be copied
           in C(filename) within I(backup) directory.
         type: path
-    type: dict"""
+    type: dict
+"""
 EXAMPLES = """
 - name: configure top level configuration
   cisco.ios.ios_config:
@@ -275,7 +277,8 @@ EXAMPLES = """
     backup: yes
     backup_options:
       filename: backup.cfg
-      dir_path: /home/user"""
+      dir_path: /home/user
+"""
 RETURN = """
 updates:
   description: The set of commands that will be pushed to the remote device

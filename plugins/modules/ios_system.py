@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_system
+DOCUMENTATION = """
+module: ios_system
 author: Peter Sprygada (@privateip)
 short_description: Manage the system attributes on Cisco IOS devices
 description:
@@ -65,7 +66,8 @@ options:
     default: present
     choices:
     - present
-    - absent"""
+    - absent
+"""
 EXAMPLES = """
 - name: configure hostname and domain name
   ios.ios_system:
@@ -89,7 +91,8 @@ EXAMPLES = """
   ios.ios_system:
     name_servers:
     - 8.8.8.8
-    - 8.8.4.4"""
+    - 8.8.4.4
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

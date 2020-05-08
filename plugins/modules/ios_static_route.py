@@ -16,9 +16,10 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_static_route
+DOCUMENTATION = """
+module: ios_static_route
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
-short_description: Manage static IP routes on Cisco IOS network devices
+short_description: (deprecated) Manage static IP routes on Cisco IOS network devices
 description:
 - This module provides declarative management of static IP routes on Cisco IOS network
   devices.
@@ -65,7 +66,8 @@ options:
     - present
     - absent
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+"""
 EXAMPLES = """
 - name: configure static route
   cisco.ios.ios_static_route:
@@ -107,7 +109,8 @@ EXAMPLES = """
     aggregate:
     - {prefix: 172.16.32.0, mask: 255.255.255.0, next_hop: 10.0.0.8}
     - {prefix: 172.16.33.0, mask: 255.255.255.0, next_hop: 10.0.0.8}
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

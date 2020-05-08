@@ -22,7 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_lacp
+DOCUMENTATION = """
+module: ios_lacp
 short_description: LACP resource module
 description: This module provides declarative management of Global LACP on Cisco IOS
   network devices.

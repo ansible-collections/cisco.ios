@@ -16,7 +16,8 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_facts
+DOCUMENTATION = """
+module: ios_facts
 author:
 - Peter Sprygada (@privateip)
 - Sumit Jaiswal (@justjais)
@@ -49,7 +50,8 @@ options:
       also be used with an initial C(M(!)) to specify that a specific subset should
       not be collected. Valid subsets are 'all', 'interfaces', 'l2_interfaces', 'vlans',
       'lag_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global', 'lldp_interfaces',
-      'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'."""
+      'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'.
+"""
 EXAMPLES = """
 - name: Gather all legacy facts
   cisco.ios.ios_facts:

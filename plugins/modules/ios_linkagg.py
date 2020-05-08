@@ -19,7 +19,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_linkagg
+DOCUMENTATION = """
+module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
 short_description: Manage link aggregation groups on Cisco IOS network devices
 description:
@@ -59,7 +60,8 @@ options:
     default: false
     type: bool
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+"""
 EXAMPLES = """
 - name: create link aggregation group
   cisco.ios.ios_linkagg:
@@ -90,7 +92,8 @@ EXAMPLES = """
   cisco.ios.ios_linkagg:
     aggregate:
     - {group: 3, mode: on, members: [GigabitEthernet0/1]}
-    - {group: 100, mode: passive, members: [GigabitEthernet0/2]}"""
+    - {group: 100, mode: passive, members: [GigabitEthernet0/2]}
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

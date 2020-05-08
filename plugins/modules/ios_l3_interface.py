@@ -19,9 +19,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
-DOCUMENTATION = """module: ios_l3_interface
+DOCUMENTATION = """
+module: ios_l3_interface
 author: Ganesh Nalawade (@ganeshrn)
-short_description: Manage Layer-3 interfaces on Cisco IOS network devices.
+short_description: (deprecated) Manage Layer-3 interfaces on Cisco IOS network devices.
 description:
 - This module provides declarative management of Layer-3 interfaces on IOS network
   devices.
@@ -59,7 +60,9 @@ options:
     - present
     - absent
 extends_documentation_fragment:
-- cisco.ios.ios"""
+- cisco.ios.ios
+
+"""
 EXAMPLES = """
 - name: Remove GigabitEthernet0/3 IPv4 and IPv6 address
   cisco.ios.ios_l3_interface:
@@ -92,7 +95,8 @@ EXAMPLES = """
     aggregate:
     - {name: GigabitEthernet0/3, ipv4: 192.168.2.10/24}
     - {name: GigabitEthernet0/3, ipv4: 192.168.3.10/24, ipv6: fd5d:12c9:2201:1::1/64}
-    state: absent"""
+    state: absent
+"""
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
