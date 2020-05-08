@@ -15,21 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: ios_config
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+DOCUMENTATION = """
+module: ios_config
 author: Peter Sprygada (@privateip)
 short_description: Manage Cisco IOS configuration sections
 description:
 - Cisco IOS configurations use a simple block indent file syntax for segmenting configuration
   into sections.  This module provides an implementation for working with IOS configuration
   sections in a deterministic way.
+version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
@@ -106,7 +101,7 @@ options:
       playbook root directory or role root directory, if playbook is part of an ansible
       role. If the directory does not exist, it is created.
     type: bool
-    default: 'no'
+    default: no
   running_config:
     description:
     - The module, by default, will connect to the remote device and retrieve the current
@@ -122,7 +117,7 @@ options:
       the remote device running config.  When enabled, the module will get the current
       config by issuing the command C(show running-config all).
     type: bool
-    default: 'no'
+    default: no
   save_when:
     description:
     - When changes are made to the device running-configuration, the changes are not
@@ -194,99 +189,96 @@ options:
         type: path
     type: dict
 """
-
 EXAMPLES = """
 - name: configure top level configuration
-  ios_config:
+  cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
 
 - name: configure interface settings
-  ios_config:
+  cisco.ios.ios_config:
     lines:
-      - description test interface
-      - ip address 172.31.1.1 255.255.255.0
+    - description test interface
+    - ip address 172.31.1.1 255.255.255.0
     parents: interface Ethernet1
 
 - name: configure ip helpers on multiple interfaces
-  ios_config:
+  cisco.ios.ios_config:
     lines:
-      - ip helper-address 172.26.1.10
-      - ip helper-address 172.26.3.8
-    parents: "{{ item }}"
+    - ip helper-address 172.26.1.10
+    - ip helper-address 172.26.3.8
+    parents: '{{ item }}'
   with_items:
-    - interface Ethernet1
-    - interface Ethernet2
-    - interface GigabitEthernet1
+  - interface Ethernet1
+  - interface Ethernet2
+  - interface GigabitEthernet1
 
 - name: configure policer in Scavenger class
-  ios_config:
+  cisco.ios.ios_config:
     lines:
-      - conform-action transmit
-      - exceed-action drop
+    - conform-action transmit
+    - exceed-action drop
     parents:
-      - policy-map Foo
-      - class Scavenger
-      - police cir 64000
+    - policy-map Foo
+    - class Scavenger
+    - police cir 64000
 
 - name: load new acl into device
-  ios_config:
+  cisco.ios.ios_config:
     lines:
-      - 10 permit ip host 192.0.2.1 any log
-      - 20 permit ip host 192.0.2.2 any log
-      - 30 permit ip host 192.0.2.3 any log
-      - 40 permit ip host 192.0.2.4 any log
-      - 50 permit ip host 192.0.2.5 any log
+    - 10 permit ip host 192.0.2.1 any log
+    - 20 permit ip host 192.0.2.2 any log
+    - 30 permit ip host 192.0.2.3 any log
+    - 40 permit ip host 192.0.2.4 any log
+    - 50 permit ip host 192.0.2.5 any log
     parents: ip access-list extended test
     before: no ip access-list extended test
     match: exact
 
 - name: check the running-config against master config
-  ios_config:
+  cisco.ios.ios_config:
     diff_against: intended
     intended_config: "{{ lookup('file', 'master.cfg') }}"
 
 - name: check the startup-config against the running-config
-  ios_config:
+  cisco.ios.ios_config:
     diff_against: startup
     diff_ignore_lines:
-      - ntp clock .*
+    - ntp clock .*
 
 - name: save running to startup when modified
-  ios_config:
+  cisco.ios.ios_config:
     save_when: modified
 
 - name: for idempotency, use full-form commands
-  ios_config:
+  cisco.ios.ios_config:
     lines:
       # - shut
-      - shutdown
+    - shutdown
     # parents: int gig1/0/11
     parents: interface GigabitEthernet1/0/11
 
 # Set boot image based on comparison to a group_var (version) and the version
 # that is returned from the `ios_facts` module
 - name: SETTING BOOT IMAGE
-  ios_config:
+  cisco.ios.ios_config:
     lines:
-      - no boot system
-      - boot system flash bootflash:{{new_image}}
-    host: "{{ inventory_hostname }}"
+    - no boot system
+    - boot system flash bootflash:{{new_image}}
+    host: '{{ inventory_hostname }}'
   when: ansible_net_version != version
-
 - name: render a Jinja2 template onto an IOS device
-  ios_config:
+  cisco.ios.ios_config:
     backup: yes
     src: ios_template.j2
 
 - name: configurable backup path
-  ios_config:
+  cisco.ios.ios_config:
     src: ios_template.j2
     backup: yes
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
 """
-
 RETURN = """
 updates:
   description: The set of commands that will be pushed to the remote device
@@ -325,7 +317,6 @@ time:
   sample: "22:28:34"
 """
 import json
-
 from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import ConnectionError
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -350,8 +341,7 @@ def check_args(module, warnings):
     if module.params["multiline_delimiter"]:
         if len(module.params["multiline_delimiter"]) != 1:
             module.fail_json(
-                msg="multiline_delimiter value can only be a "
-                "single character"
+                msg="multiline_delimiter value can only be a single character"
             )
 
 
@@ -368,13 +358,11 @@ def get_candidate_config(module):
     candidate = ""
     if module.params["src"]:
         candidate = module.params["src"]
-
     elif module.params["lines"]:
         candidate_obj = NetworkConfig(indent=1)
         parents = module.params["parents"] or list()
         candidate_obj.add(module.params["lines"], parents=parents)
         candidate = dumps(candidate_obj, "raw")
-
     return candidate
 
 
@@ -385,7 +373,6 @@ def get_running_config(module, current_config=None, flags=None):
             running = current_config
         else:
             running = get_config(module, flags=flags)
-
     return running
 
 
@@ -395,9 +382,7 @@ def save_config(module, result):
         run_commands(module, "copy running-config startup-config\r")
     else:
         module.warn(
-            "Skipping command `copy running-config startup-config` "
-            "due to check_mode.  Configuration not copied to "
-            "non-volatile storage"
+            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage"
         )
 
 
@@ -427,50 +412,42 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list"),
     )
-
     argument_spec.update(ios_argument_spec)
-
     mutually_exclusive = [("lines", "src"), ("parents", "src")]
-
     required_if = [
         ("match", "strict", ["lines"]),
         ("match", "exact", ["lines"]),
         ("replace", "block", ["lines"]),
         ("diff_against", "intended", ["intended_config"]),
     ]
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=mutually_exclusive,
         required_if=required_if,
         supports_check_mode=True,
     )
-
     result = {"changed": False}
-
     warnings = list()
     check_args(module, warnings)
     result["warnings"] = warnings
-
     diff_ignore_lines = module.params["diff_ignore_lines"]
     config = None
     contents = None
     flags = get_defaults_flag(module) if module.params["defaults"] else []
     connection = get_connection(module)
-
-    if module.params["backup"] or (
-        module._diff and module.params["diff_against"] == "running"
+    if (
+        module.params["backup"]
+        or module._diff
+        and module.params["diff_against"] == "running"
     ):
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=1, contents=contents)
         if module.params["backup"]:
             result["__backup__"] = contents
-
     if any((module.params["lines"], module.params["src"])):
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]
-
         candidate = get_candidate_config(module)
         running = get_running_config(module, contents, flags=flags)
         try:
@@ -484,19 +461,14 @@ def main():
             )
         except ConnectionError as exc:
             module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
-
         config_diff = response["config_diff"]
         banner_diff = response["banner_diff"]
-
         if config_diff or banner_diff:
             commands = config_diff.split("\n")
-
             if module.params["before"]:
                 commands[:0] = module.params["before"]
-
             if module.params["after"]:
                 commands.extend(module.params["after"])
-
             result["commands"] = commands
             result["updates"] = commands
             result["banners"] = banner_diff
@@ -513,31 +485,25 @@ def main():
                             "multiline_delimiter"
                         ],
                     )
-
             result["changed"] = True
-
     running_config = module.params["running_config"]
     startup_config = None
-
     if module.params["save_when"] == "always":
         save_config(module, result)
     elif module.params["save_when"] == "modified":
         output = run_commands(
             module, ["show running-config", "show startup-config"]
         )
-
         running_config = NetworkConfig(
             indent=1, contents=output[0], ignore_lines=diff_ignore_lines
         )
         startup_config = NetworkConfig(
             indent=1, contents=output[1], ignore_lines=diff_ignore_lines
         )
-
         if running_config.sha1 != startup_config.sha1:
             save_config(module, result)
     elif module.params["save_when"] == "changed" and result["changed"]:
         save_config(module, result)
-
     if module._diff:
         if not running_config:
             output = run_commands(module, "show running-config")
@@ -549,7 +515,6 @@ def main():
         running_config = NetworkConfig(
             indent=1, contents=contents, ignore_lines=diff_ignore_lines
         )
-
         if module.params["diff_against"] == "running":
             if module.check_mode:
                 module.warn(
@@ -558,22 +523,18 @@ def main():
                 contents = None
             else:
                 contents = config.config_text
-
         elif module.params["diff_against"] == "startup":
             if not startup_config:
                 output = run_commands(module, "show startup-config")
                 contents = output[0]
             else:
                 contents = startup_config.config_text
-
         elif module.params["diff_against"] == "intended":
             contents = module.params["intended_config"]
-
         if contents is not None:
             base_config = NetworkConfig(
                 indent=1, contents=contents, ignore_lines=diff_ignore_lines
             )
-
             if running_config.sha1 != base_config.sha1:
                 if module.params["diff_against"] == "intended":
                     before = running_config
@@ -581,14 +542,12 @@ def main():
                 elif module.params["diff_against"] in ("startup", "running"):
                     before = base_config
                     after = running_config
-
                 result.update(
                     {
                         "changed": True,
                         "diff": {"before": str(before), "after": str(after)},
                     }
                 )
-
     module.exit_json(**result)
 
 

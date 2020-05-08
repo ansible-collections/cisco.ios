@@ -1,9 +1,6 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-# (c) 2017, Ansible by Red Hat, inc
 #
-# This file is part of Ansible by Red Hat
+# This file is part of Ansible
 #
 # Ansible is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,14 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-DOCUMENTATION = """module: ios_user
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+DOCUMENTATION = """
+module: ios_user
 author: Trishna Guha (@trishnaguha)
 short_description: Manage the aggregate of local users on Cisco IOS device
 description:
@@ -33,6 +25,7 @@ description:
   network devices. It allows playbooks to manage either individual usernames or the
   aggregate of usernames in the current running config. It also supports purging usernames
   from the configuration that are not explicitly defined.
+version_added: 1.0.0
 notes:
 - Tested against IOS 15.6
 options:
@@ -125,85 +118,83 @@ options:
 extends_documentation_fragment:
 - cisco.ios.ios
 """
-
 EXAMPLES = """
 - name: create a new user
-  ios_user:
+  cisco.ios.ios_user:
     name: ansible
-    nopassword: True
+    nopassword: true
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
 - name: create a new user with multiple keys
-  ios_user:
+  cisco.ios.ios_user:
     name: ansible
     sshkey:
-      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-      - "{{ lookup('file', '~/path/to/public_key') }}"
+    - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    - "{{ lookup('file', '~/path/to/public_key') }}"
     state: present
 
 - name: remove all users except admin
-  ios_user:
+  cisco.ios.ios_user:
     purge: yes
 
 - name: remove all users except admin and these listed users
-  ios_user:
+  cisco.ios.ios_user:
     aggregate:
-      - name: testuser1
-      - name: testuser2
-      - name: testuser3
+    - name: testuser1
+    - name: testuser2
+    - name: testuser3
     purge: yes
 
 - name: set multiple users to privilege level 15
-  ios_user:
+  cisco.ios.ios_user:
     aggregate:
-      - name: netop
-      - name: netend
+    - name: netop
+    - name: netend
     privilege: 15
     state: present
 
 - name: set user view/role
-  ios_user:
+  cisco.ios.ios_user:
     name: netop
     view: network-operator
     state: present
 
 - name: Change Password for User netop
-  ios_user:
+  cisco.ios.ios_user:
     name: netop
-    configured_password: "{{ new_password }}"
+    configured_password: '{{ new_password }}'
     update_password: always
     state: present
 
 - name: Aggregate of users
-  ios_user:
+  cisco.ios.ios_user:
     aggregate:
-      - name: ansibletest2
-      - name: ansibletest3
+    - name: ansibletest2
+    - name: ansibletest3
     view: network-admin
 
 - name: Add a user specifying password type
-  ios_user:
+  cisco.ios.ios_user:
     name: ansibletest4
-    configured_password: "{{ new_password }}"
+    configured_password: '{{ new_password }}'
     password_type: password
 
 - name: Add a user with MD5 hashed password
-  ios_user:
+  cisco.ios.ios_user:
     name: ansibletest5
     hashed_password:
       type: 5
       value: $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
 
 - name: Delete users with aggregate
-  ios_user:
+  cisco.ios.ios_user:
     aggregate:
-      - name: ansibletest1
-      - name: ansibletest2
-      - name: ansibletest3
+    - name: ansibletest1
+    - name: ansibletest2
+    - name: ansibletest3
     state: absent
 """
-
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
@@ -218,7 +209,6 @@ import hashlib
 import re
 from copy import deepcopy
 from functools import partial
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
@@ -276,7 +266,7 @@ def map_obj_to_commands(updates, module):
     password_type = module.params["password_type"]
 
     def needs_update(want, have, x):
-        return want.get(x) and (want.get(x) != have.get(x))
+        return want.get(x) and want.get(x) != have.get(x)
 
     def add(command, want, x):
         command.append("username %s %s" % (want["name"], x))
@@ -300,22 +290,17 @@ def map_obj_to_commands(updates, module):
 
     for update in updates:
         want, have = update
-
         if want["state"] == "absent":
             if have["sshkey"]:
                 add_ssh(commands, want)
             else:
                 commands.append(user_del_cmd(want["name"]))
-
         if needs_update(want, have, "view"):
             add(commands, want, "view %s" % want["view"])
-
         if needs_update(want, have, "privilege"):
             add(commands, want, "privilege %s" % want["privilege"])
-
         if needs_update(want, have, "sshkey"):
             add_ssh(commands, want, want["sshkey"])
-
         if needs_update(want, have, "configured_password"):
             if update_password == "always" or not have:
                 if have and password_type != have["password_type"]:
@@ -328,32 +313,29 @@ def map_obj_to_commands(updates, module):
                     want,
                     "%s %s" % (password_type, want["configured_password"]),
                 )
-
         if needs_update(want, have, "hashed_password"):
             add_hashed_password(commands, want, want["hashed_password"])
-
         if needs_update(want, have, "nopassword"):
             if want["nopassword"]:
                 add(commands, want, "nopassword")
             else:
                 add(commands, want, user_del_cmd(want["name"]))
-
     return commands
 
 
 def parse_view(data):
-    match = re.search(r"view (\S+)", data, re.M)
+    match = re.search("view (\\S+)", data, re.M)
     if match:
         return match.group(1)
 
 
 def parse_sshkey(data, user):
-    sshregex = r"username %s(\n\s+key-hash .+$)+" % user
+    sshregex = "username %s(\\n\\s+key-hash .+$)+" % user
     sshcfg = re.search(sshregex, data, re.M)
     key_list = []
     if sshcfg:
         match = re.findall(
-            r"key-hash (\S+ \S+(?: .+)?)$", sshcfg.group(), re.M
+            "key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M
         )
         if match:
             key_list = match
@@ -361,7 +343,7 @@ def parse_sshkey(data, user):
 
 
 def parse_privilege(data):
-    match = re.search(r"privilege (\S+)", data, re.M)
+    match = re.search("privilege (\\S+)", data, re.M)
     if match:
         return int(match.group(1))
 
@@ -375,15 +357,12 @@ def parse_password_type(data):
 
 def map_config_to_obj(module):
     data = get_config(module, flags=["| section username"])
-
-    match = re.findall(r"(?:^(?:u|\s{2}u))sername (\S+)", data, re.M)
+    match = re.findall("(?:^(?:u|\\s{2}u))sername (\\S+)", data, re.M)
     if not match:
         return list()
-
     instances = list()
-
     for user in set(match):
-        regex = r"username %s .+$" % user
+        regex = "username %s .+$" % user
         cfg = re.findall(regex, data, re.M)
         cfg = "\n".join(cfg)
         obj = {
@@ -398,7 +377,6 @@ def map_config_to_obj(module):
             "view": parse_view(cfg),
         }
         instances.append(obj)
-
     return instances
 
 
@@ -406,19 +384,16 @@ def get_param_value(key, item, module):
     # if key doesn't exist in the item, get it from module.params
     if not item.get(key):
         value = module.params[key]
-
     # if key does exist, do a type check on it to validate it
     else:
         value_type = module.argument_spec[key].get("type", "str")
         type_checker = module._CHECK_ARGUMENT_TYPES_DISPATCHER[value_type]
         type_checker(item[key])
         value = item[key]
-
     # validate the param value (if validator func exists)
     validator = globals().get("validate_%s" % key)
     if all((value, validator)):
         validator(value, module)
-
     return value
 
 
@@ -440,9 +415,7 @@ def map_params_to_obj(module):
                 module.fail_json(msg="name is required")
             else:
                 aggregate.append(item)
-
     objects = list()
-
     for item in aggregate:
         get_value = partial(get_param_value, item=item, module=module)
         item["configured_password"] = get_value("configured_password")
@@ -453,7 +426,6 @@ def map_params_to_obj(module):
         item["sshkey"] = render_key_list(get_value("sshkey"))
         item["state"] = get_value("state")
         objects.append(item)
-
     return objects
 
 
@@ -485,7 +457,6 @@ def main():
         type=dict(type="int", required=True),
         value=dict(no_log=True, required=True),
     )
-
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
@@ -504,10 +475,8 @@ def main():
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["name"] = dict(required=True)
-
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
-
     argument_spec = dict(
         aggregate=dict(
             type="list",
@@ -517,43 +486,33 @@ def main():
         ),
         purge=dict(type="bool", default=False),
     )
-
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)
-
     mutually_exclusive = [
         ("name", "aggregate"),
         ("nopassword", "hashed_password", "configured_password"),
     ]
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-
     warnings = list()
     result = {"changed": False, "warnings": warnings}
-
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
-
     commands = map_obj_to_commands(update_objects(want, have), module)
-
     if module.params["purge"]:
         want_users = [x["name"] for x in want]
         have_users = [x["name"] for x in have]
         for item in set(have_users).difference(want_users):
             if item != "admin":
                 commands.append(user_del_cmd(item))
-
     result["commands"] = commands
-
     if commands:
         if not module.check_mode:
             load_config(module, commands)
         result["changed"] = True
-
     module.exit_json(**result)
 
 

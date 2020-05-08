@@ -1,28 +1,32 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
-# (c) 2019, Ansible by Red Hat, inc
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# This file is part of Ansible
 #
-
+# Ansible is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Ansible is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
+#
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-
-
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: ios_bgp
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+DOCUMENTATION = """
+module: ios_bgp
 author: Nilashish Chakraborty (@NilashishC)
 short_description: Configure global BGP protocol settings on Cisco IOS.
 description:
 - This module provides configuration management of global BGP parameters on devices
   running Cisco IOS
+version_added: 1.0.0
 notes:
 - Tested against Cisco IOS Version 15.6(3)M2
 options:
@@ -38,7 +42,7 @@ options:
       router_id:
         description:
         - Configures the BGP routing process router-id value.
-        default: null
+        default:
       log_neighbor_changes:
         description:
         - Enable/disable logging neighbor up/down and reset reason.
@@ -267,94 +271,92 @@ options:
     - override
     - delete
 """
-
 EXAMPLES = """
 - name: configure global bgp as 64496
-  ios_bgp:
+  cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
       router_id: 192.0.2.1
-      log_neighbor_changes: True
+      log_neighbor_changes: true
       neighbors:
-        - neighbor: 203.0.113.5
-          remote_as: 64511
-          timers:
-            keepalive: 300
-            holdtime: 360
-            min_neighbor_holdtime: 360
-        - neighbor: 198.51.100.2
-          remote_as: 64498
+      - neighbor: 203.0.113.5
+        remote_as: 64511
+        timers:
+          keepalive: 300
+          holdtime: 360
+          min_neighbor_holdtime: 360
+      - neighbor: 198.51.100.2
+        remote_as: 64498
       networks:
-        - prefix: 198.51.100.0
-          route_map: RMAP_1
-        - prefix: 192.0.2.0
-          masklen: 23
+      - prefix: 198.51.100.0
+        route_map: RMAP_1
+      - prefix: 192.0.2.0
+        masklen: 23
       address_family:
-        - afi: ipv4
-          safi: unicast
-          redistribute:
-            - protocol: ospf
-              id: 223
-              metric: 10
+      - afi: ipv4
+        safi: unicast
+        redistribute:
+        - protocol: ospf
+          id: 223
+          metric: 10
     operation: merge
 
 - name: Configure BGP neighbors
-  ios_bgp:
+  cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
       neighbors:
-        - neighbor: 192.0.2.10
-          remote_as: 64496
-          password: ansible
-          description: IBGP_NBR_1
-          ebgp_multihop: 100
-          timers:
-            keepalive: 300
-            holdtime: 360
-            min_neighbor_holdtime: 360
-        - neighbor: 192.0.2.15
-          remote_as: 64496
-          description: IBGP_NBR_2
-          ebgp_multihop: 150
+      - neighbor: 192.0.2.10
+        remote_as: 64496
+        password: ansible
+        description: IBGP_NBR_1
+        ebgp_multihop: 100
+        timers:
+          keepalive: 300
+          holdtime: 360
+          min_neighbor_holdtime: 360
+      - neighbor: 192.0.2.15
+        remote_as: 64496
+        description: IBGP_NBR_2
+        ebgp_multihop: 150
     operation: merge
 
 - name: Configure root-level networks for BGP
-  ios_bgp:
+  cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
       networks:
-        - prefix: 203.0.113.0
-          masklen: 27
-          route_map: RMAP_1
-        - prefix: 203.0.113.32
-          masklen: 27
-          route_map: RMAP_2
+      - prefix: 203.0.113.0
+        masklen: 27
+        route_map: RMAP_1
+      - prefix: 203.0.113.32
+        masklen: 27
+        route_map: RMAP_2
     operation: merge
 
 - name: Configure BGP neighbors under address family mode
-  ios_bgp:
+  cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
       address_family:
-        - afi: ipv4
-          safi: unicast
-          neighbors:
-            - neighbor: 203.0.113.10
-              activate: yes
-              maximum_prefix: 250
-              advertisement_interval: 120
-            - neighbor: 192.0.2.15
-              activate: yes
-              route_reflector_client: True
+      - afi: ipv4
+        safi: unicast
+        neighbors:
+        - neighbor: 203.0.113.10
+          activate: yes
+          maximum_prefix: 250
+          advertisement_interval: 120
+        - neighbor: 192.0.2.15
+          activate: yes
+          route_reflector_client: true
     operation: merge
 
 - name: remove bgp as 64496 from config
-  ios_bgp:
+  cisco.ios.ios_bgp:
     config:
       bgp_as: 64496
     operation: delete
 """
-
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
@@ -390,20 +392,17 @@ def main():
         "masklen": dict(type="int"),
         "route_map": dict(),
     }
-
     redistribute_spec = {
         "protocol": dict(choices=REDISTRIBUTE_PROTOCOLS, required=True),
         "id": dict(),
         "metric": dict(type="int"),
         "route_map": dict(),
     }
-
     timer_spec = {
         "keepalive": dict(type="int", required=True),
         "holdtime": dict(type="int", required=True),
         "min_neighbor_holdtime": dict(type="int"),
     }
-
     neighbor_spec = {
         "neighbor": dict(required=True),
         "remote_as": dict(type="int", required=True),
@@ -416,7 +415,6 @@ def main():
         "timers": dict(type="dict", options=timer_spec),
         "peer_group": dict(),
     }
-
     af_neighbor_spec = {
         "neighbor": dict(required=True),
         "activate": dict(type="bool"),
@@ -429,7 +427,6 @@ def main():
         "prefix_list_in": dict(),
         "prefix_list_out": dict(),
     }
-
     address_family_spec = {
         "afi": dict(choices=["ipv4", "ipv6"], required=True),
         "safi": dict(
@@ -446,7 +443,6 @@ def main():
             type="list", elements="dict", options=af_neighbor_spec
         ),
     }
-
     config_spec = {
         "bgp_as": dict(type="int", required=True),
         "router_id": dict(),
@@ -457,23 +453,19 @@ def main():
         ),
         "networks": dict(type="list", elements="dict", options=network_spec),
     }
-
     argument_spec = {
         "config": dict(type="dict", options=config_spec),
         "operation": dict(
             default="merge", choices=["merge", "replace", "override", "delete"]
         ),
     }
-
     module = NetworkModule(
         argument_spec=argument_spec, supports_check_mode=True
     )
-
     try:
         result = module.edit_config(config_filter="| section ^router bgp")
     except Exception as exc:
         module.fail_json(msg=to_text(exc))
-
     module.exit_json(**result)
 
 
