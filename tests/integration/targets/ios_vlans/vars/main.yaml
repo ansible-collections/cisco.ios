@@ -332,3 +332,87 @@ deleted:
       shutdown: enabled
       state: active
       vlan_id: 1005
+gathered:
+  config:
+    - mtu: 1500
+      name: default
+      shutdown: disabled
+      state: active
+      vlan_id: 1
+    - mtu: 1500
+      name: VLAN0010
+      shutdown: disabled
+      state: active
+      vlan_id: 10
+    - mtu: 1500
+      name: VLAN0020
+      shutdown: disabled
+      state: active
+      vlan_id: 20
+    - mtu: 1500
+      name: VLAN0030
+      shutdown: disabled
+      state: active
+      vlan_id: 30
+    - mtu: 1500
+      name: fddi-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1002
+    - mtu: 1500
+      name: token-ring-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1003
+    - mtu: 1500
+      name: fddinet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1004
+    - mtu: 1500
+      name: trnet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1005
+parsed:
+  config:
+    - mtu: 1500
+      name: default
+      shutdown: disabled
+      state: active
+      vlan_id: 1
+    - mtu: 1500
+      name: vlan_10
+      shutdown: disabled
+      state: active
+      vlan_id: 10
+    - mtu: 1500
+      name: vlan_20
+      shutdown: enabled
+      state: active
+      vlan_id: 20
+    - mtu: 1500
+      name: vlan_30
+      shutdown: enabled
+      state: suspend
+      vlan_id: 30
+    - mtu: 1500
+      name: fddi-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1002
+    - mtu: 1500
+      name: token-ring-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1003
+    - mtu: 1500
+      name: fddinet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1004
+    - mtu: 1500
+      name: trnet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1005

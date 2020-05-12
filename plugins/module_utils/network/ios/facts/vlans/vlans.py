@@ -42,6 +42,9 @@ class VlansFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_vlans_data(self, connection):
+        return connection.get("show vlan")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for vlans
         :param connection: the device connection
@@ -50,15 +53,13 @@ class VlansFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        if connection:
-            pass
 
         objs = []
         mtu_objs = []
         remote_objs = []
         final_objs = []
         if not data:
-            data = connection.get("show vlan")
+            data = self.get_vlans_data(connection)
         # operate on a collection of resource x
         config = data.split("\n")
         # Get individual vlan configs separately
