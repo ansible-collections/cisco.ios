@@ -109,6 +109,14 @@ options:
             description:
             - System Name TLV
             type: bool
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the VyOS device by executing
+        the command B(show running-config | section ^lldp).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -117,6 +125,9 @@ options:
     - merged
     - replaced
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
 
 """
@@ -192,7 +203,85 @@ EXAMPLES = """
 # -------------
 # vios#sh running-config | section ^lldp
 # vios1#
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^lldp
+#  lldp timer 10
+#  lldp holdtime 10
+#  lldp reinit 3
+#  lldp run
+
+- name: Gather listed interfaces with provided configurations
+  cisco.ios.ios_lldp_global:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": {
+#         "enabled": true,
+#         "holdtime": 10,
+#         "reinit": 3,
+#         "timer": 10
+#     }
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^lldp
+#  lldp timer 10
+#  lldp holdtime 10
+#  lldp reinit 3
+#  lldp run
+
+# Using Rendered
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_lldp_global:
+    config:
+      holdtime: 10
+      enabled: true
+      reinit: 3
+      timer: 10
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "lldp holdtime 10",
+#         "lldp run",
+#         "lldp timer 10",
+#         "lldp reinit 3"
+#     ]
+
+# Using Parsed
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_lldp_global:
+    running_config:
+      "lldp timer 10
+       lldp holdtime 10
+       lldp reinit 3
+       lldp run"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": {
+#         "enabled": true,
+#         "holdtime": 10,
+#         "reinit": 3,
+#         "timer": 10
+#     }
+
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.
@@ -210,6 +299,7 @@ commands:
   type: list
   sample: ['lldp holdtime 10', 'lldp run', 'lldp timer 10']
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
@@ -228,10 +318,15 @@ def main():
     required_if = [
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lldp_globalArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Lldp_global(module).execute_module()

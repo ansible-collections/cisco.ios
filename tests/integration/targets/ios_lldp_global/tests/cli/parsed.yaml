@@ -1,0 +1,16 @@
+---
+- debug:
+    msg: START ios_lldp_global parsed integration tests on connection={{ ansible_connection
+      }}
+
+- name: Parse the commands for provided configuration
+  become: true
+  register: result
+  cisco.ios.ios_lldp_global:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- assert:
+    that:
+      - result.changed == false
+      - "{{ result['parsed'] == parsed['config'] }}"

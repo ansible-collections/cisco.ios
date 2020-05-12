@@ -37,3 +37,15 @@ deleted:
     - no lldp timer
     - no lldp reinit
   after: {}
+gathered:
+  config:
+    enabled: true
+    holdtime: 10
+    reinit: 3
+    timer: 100
+parsed:
+  config:
+    enabled: true
+    holdtime: 10
+    reinit: 3
+    timer: 10
