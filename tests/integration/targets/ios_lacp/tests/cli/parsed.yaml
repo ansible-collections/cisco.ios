@@ -14,5 +14,5 @@
     - assert:
         that:
           - result.changed == false
-          - parsed['config']|symmetric_difference(result.parsed) == []
+          - "{{result['parsed'] == parsed['config'] }}"
   when: ansible_net_version != "15.6(2)T"

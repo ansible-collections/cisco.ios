@@ -16,7 +16,7 @@
     - name: Assert
       assert:
         that:
-          - gathered['config'] | symmetric_difference(result.gathered) == []
+          - "{{result['gathered'] == gathered['config'] }}"
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
