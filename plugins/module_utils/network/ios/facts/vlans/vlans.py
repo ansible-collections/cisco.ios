@@ -70,6 +70,8 @@ class VlansFacts(object):
                 vlan_info = "Type"
             elif "Remote" in conf:
                 vlan_info = "Remote"
+            elif "AREHops" in conf or "STEHops" in conf:
+                vlan_info = "Hops"
             if conf and " " not in filter(None, conf.split("-")):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
@@ -135,12 +137,7 @@ class VlansFacts(object):
                 config["shutdown"] = "disabled"
         elif vlan_info == "Type" and "Type" not in conf:
             conf = list(filter(None, conf.split(" ")))
-            try:
-                config["mtu"] = int(conf[3])
-            except ValueError:
-                # check added to skip mtu parsing for vtp version 2
-                # as otherwise it starts to convert str to int resulting into exception
-                pass
+            config["mtu"] = int(conf[3])
         elif vlan_info == "Remote":
             if len(conf.split(",")) > 1 or conf.isdigit():
                 remote_span_vlan = []
