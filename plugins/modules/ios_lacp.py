@@ -66,6 +66,9 @@ options:
     - merged
     - replaced
     - deleted
+    - rendered
+    - parsed
+    - gathered
     default: merged
 """
 EXAMPLES = """
