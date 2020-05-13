@@ -138,9 +138,9 @@ class Vlans(ConfigBase):
             )
 
         if self.state == "overridden":
-            commands = self._state_overridden(want, have, state)
+            commands = self._state_overridden(want, have)
         elif self.state == "deleted":
-            commands = self._state_deleted(want, have, state)
+            commands = self._state_deleted(want, have)
         elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have)
         elif self.state == "replaced":
@@ -171,7 +171,7 @@ class Vlans(ConfigBase):
 
         return commands
 
-    def _state_overridden(self, want, have, state):
+    def _state_overridden(self, want, have):
         """ The command generator when state is overridden
 
         :rtype: A list
@@ -190,7 +190,7 @@ class Vlans(ConfigBase):
             else:
                 # We didn't find a matching desired state, which means we can
                 # pretend we received an empty desired state.
-                commands.extend(self._clear_config(every, each, state))
+                commands.extend(self._clear_config(every, each))
                 continue
             commands.extend(self._set_config(every, each))
             # as the pre-existing VLAN are now configured by
@@ -229,7 +229,7 @@ class Vlans(ConfigBase):
 
         return commands
 
-    def _state_deleted(self, want, have, state):
+    def _state_deleted(self, want, have):
         """ The command generator when state is deleted
 
         :rtype: A list
@@ -249,10 +249,10 @@ class Vlans(ConfigBase):
                         check = False
                         continue
                 if check:
-                    commands.extend(self._clear_config(each, every, state))
+                    commands.extend(self._clear_config(each, every))
         else:
             for each in have:
-                commands.extend(self._clear_config(dict(), each, state))
+                commands.extend(self._clear_config(dict(), each))
 
         return commands
 
@@ -305,7 +305,7 @@ class Vlans(ConfigBase):
 
         return commands
 
-    def _clear_config(self, want, have, state):
+    def _clear_config(self, want, have):
         # Delete the interface config based on the want and have config
         commands = []
         vlan = "vlan {0}".format(have.get("vlan_id"))
@@ -315,7 +315,7 @@ class Vlans(ConfigBase):
             and "default" not in have.get("name")
             and (
                 have.get("vlan_id") != want.get("vlan_id")
-                or state == "deleted"
+                or self.state == "deleted"
             )
         ):
             self.remove_command_from_config_list(vlan, "vlan", commands)
