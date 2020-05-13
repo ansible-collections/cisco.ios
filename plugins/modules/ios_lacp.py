@@ -27,7 +27,6 @@ ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_lacp
 short_description: LACP resource module
-  IOS devices.
 description: This module provides declarative management of Global LACP on Cisco IOS
   network devices.
 version_added: 1.0.0
@@ -53,7 +52,7 @@ options:
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the VyOS device by executing
+      - The value of this option should be the output received from the IOS device by executing
         the command B(show lacp sys-id).
       - The state I(parsed) reads the configuration from C(running_config) option and transforms
         it into Ansible structured data as per the resource module's argspec and the value is then
@@ -71,6 +70,7 @@ options:
     - gathered
     default: merged
 """
+
 EXAMPLES = """
 # Using merged
 #
@@ -194,6 +194,7 @@ EXAMPLES = """
 #     }
 
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.

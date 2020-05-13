@@ -53,7 +53,7 @@ class Lacp(ConfigBase):
         )
         lacp_facts = facts["ansible_network_resources"].get("lacp")
         if not lacp_facts:
-            return []
+            return dict()
 
         return lacp_facts
 
@@ -70,7 +70,7 @@ class Lacp(ConfigBase):
         if self.state in self.ACTION_STATES:
             existing_lacp_facts = self.get_lacp_facts()
         else:
-            existing_lacp_facts = []
+            existing_lacp_facts = dict()
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_lacp_facts))
@@ -93,7 +93,7 @@ class Lacp(ConfigBase):
                 )
             result["parsed"] = self.get_lacp_facts(data=running_config)
         else:
-            changed_lacp_facts = []
+            changed_lacp_facts = dict()
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_lacp_facts
@@ -129,7 +129,7 @@ class Lacp(ConfigBase):
                   to the desired configuration
         """
         if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
+            self.state in ("merged", "replaced", "rendered")
             and not want
         ):
             self._module.fail_json(
