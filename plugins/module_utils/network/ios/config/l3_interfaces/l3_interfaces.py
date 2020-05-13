@@ -141,7 +141,7 @@ class L3_Interfaces(ConfigBase):
 
         for interface in want:
             for each in have:
-                if each["name"] == interface["name"]:
+                if each["name"].lower() == interface["name"].lower():
                     break
             else:
                 if "." in interface["name"]:
@@ -167,7 +167,7 @@ class L3_Interfaces(ConfigBase):
 
         for each in have:
             for interface in want:
-                if each["name"] == interface["name"]:
+                if each["name"].lower() == interface["name"].lower():
                     break
             else:
                 # We didn't find a matching desired state, which means we can
@@ -194,7 +194,7 @@ class L3_Interfaces(ConfigBase):
 
         for interface in want:
             for each in have:
-                if each["name"] == interface["name"]:
+                if each["name"].lower() == interface["name"].lower():
                     break
             else:
                 if "." in interface["name"]:
@@ -217,7 +217,7 @@ class L3_Interfaces(ConfigBase):
         if want:
             for interface in want:
                 for each in have:
-                    if each["name"] == interface["name"]:
+                    if each["name"].lower() == interface["name"].lower():
                         break
                     elif interface["name"] in each["name"]:
                         break
