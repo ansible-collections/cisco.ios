@@ -104,7 +104,7 @@ options:
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the VyOS device by executing
+      - The value of this option should be the output received from the IOS device by executing
         the command B(show running-config | section ^interface).
       - The state I(parsed) reads the configuration from C(running_config) option and transforms
         it into Ansible structured data as per the resource module's argspec and the value is then
@@ -345,8 +345,6 @@ EXAMPLES = """
 #  description This is test
 #  media-type rj45
 #  negotiation auto
-<<<<<<< HEAD
-=======
 
 # Using Gathered
 
