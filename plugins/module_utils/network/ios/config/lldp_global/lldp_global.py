@@ -86,7 +86,7 @@ class Lldp_global(ConfigBase):
         if self.state in self.ACTION_STATES:
             existing_lldp_global_facts = self.get_lldp_global_facts()
         else:
-            existing_lldp_global_facts = []
+            existing_lldp_global_facts = dict()
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_lldp_global_facts))
@@ -109,7 +109,7 @@ class Lldp_global(ConfigBase):
                 )
             result["parsed"] = self.get_lldp_global_facts(data=running_config)
         else:
-            changed_lldp_global_facts = []
+            changed_lldp_global_facts = dict()
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_lldp_global_facts
@@ -145,7 +145,7 @@ class Lldp_global(ConfigBase):
         """
         commands = []
         if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
+            self.state in ("merged", "replaced", "rendered")
             and not want
         ):
             self._module.fail_json(

@@ -63,7 +63,6 @@ class Lldp_globalArgs(object):
             "choices": [
                 "merged",
                 "replaced",
-                "overridden",
                 "deleted",
                 "rendered",
                 "parsed",
