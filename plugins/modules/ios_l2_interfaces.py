@@ -21,12 +21,13 @@ The module file for ios_l2_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_l2_interfaces
-short_description: L2 interfaces resource module
-description: This module provides declarative management of Layer-2 interface on Cisco
-  IOS devices.
+short_description: Layer-2 interface resource module
+description: This module provides declarative management of Layer-2 interface on Cisco IOS devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
@@ -100,17 +101,29 @@ options:
         choices:
         - access
         - trunk
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS device by executing
+        the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
     description:
     - The state of the configuration after module completion
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -332,6 +345,143 @@ EXAMPLES = """
 #  description This is test
 #  media-type rj45
 #  negotiation auto
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  switchport access vlan 10
+# interface GigabitEthernet0/2
+#  switchport trunk allowed vlan 10-20,40
+#  switchport trunk encapsulation dot1q
+#  switchport trunk native vlan 10
+#  switchport trunk pruning vlan 10,20
+#  switchport mode trunk
+
+- name: Gather listed l2 interfaces with provided configurations
+  cisco.ios.ios_l2_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "name": "GigabitEthernet0/0"
+#         },
+#         {
+#             "access": {
+#                 "vlan": 10
+#             },
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "mode": "trunk",
+#             "name": "GigabitEthernet0/2",
+#             "trunk": {
+#                 "allowed_vlans": [
+#                     "10-20",
+#                     "40"
+#                 ],
+#                 "encapsulation": "dot1q",
+#                 "native_vlan": 10,
+#                 "pruning_vlans": [
+#                     "10",
+#                     "20"
+#                 ]
+#             }
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  switchport access vlan 10
+# interface GigabitEthernet0/2
+#  switchport trunk allowed vlan 10-20,40
+#  switchport trunk encapsulation dot1q
+#  switchport trunk native vlan 10
+#  switchport trunk pruning vlan 10,20
+#  switchport mode trunk
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_l2_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        access:
+          vlan: 30
+      - name: GigabitEthernet0/2
+        trunk:
+          allowed_vlans: 10-20,40
+          native_vlan: 20
+          pruning_vlans: 10,20
+          encapsulation: dot1q
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "switchport access vlan 30",
+#         "interface GigabitEthernet0/2",
+#         "switchport trunk encapsulation dot1q",
+#         "switchport trunk native vlan 20",
+#         "switchport trunk allowed vlan 10-20,40",
+#         "switchport trunk pruning vlan 10,20"
+#     ]
+
+# Using Parsed
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_l2_interfaces:
+    running_config:
+      "interface GigabitEthernet0/1
+       switchport mode access
+       switchport access vlan 30
+       interface GigabitEthernet0/2
+       switchport trunk allowed vlan 15-20,40
+       switchport trunk encapsulation dot1q
+       switchport trunk native vlan 20
+       switchport trunk pruning vlan 10,20"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "access": {
+#                 "vlan": 30
+#             },
+#             "mode": "access",
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "name": "GigabitEthernet0/2",
+#             "trunk": {
+#                 "allowed_vlans": [
+#                     "15-20",
+#                     "40"
+#                 ],
+#                 "encapsulation": "dot1q",
+#                 "native_vlan": 20,
+#                 "pruning_vlans": [
+#                     "10",
+#                     "20"
+#                 ]
+#             }
+#         }
+#     ]
+
 """
 RETURN = """
 before:
@@ -369,10 +519,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=L2_InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = L2_Interfaces(module).execute_module()

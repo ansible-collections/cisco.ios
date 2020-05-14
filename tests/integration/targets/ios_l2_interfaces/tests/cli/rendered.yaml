@@ -1,0 +1,30 @@
+---
+- debug:
+    msg: Start ios_l2_interfaces rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_l2_interfaces:
+        config:
+
+          - name: GigabitEthernet0/1
+            access:
+              vlan: 30
+
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 10-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered.commands) == []
+  when: ansible_net_version != "15.6(2)T"

@@ -15,7 +15,8 @@
           - name: GigabitEthernet0/1
             access:
               vlan: 30
-
+            voice:
+              vlan: 40
           - name: GigabitEthernet0/2
             trunk:
               allowed_vlans: 15-20,40

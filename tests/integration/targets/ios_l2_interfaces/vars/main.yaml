@@ -37,8 +37,6 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      voice:
-        vlan: 40
       name: GigabitEthernet0/1
     - mode: trunk
       name: GigabitEthernet0/2
@@ -64,9 +62,9 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 40
+      name: GigabitEthernet0/1
       voice:
         vlan: 20
-      name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
       trunk:
         encapsulation: dot1q
@@ -79,8 +77,6 @@ overridden:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      voice:
-        vlan: 40
       name: GigabitEthernet0/1
     - mode: trunk
       name: GigabitEthernet0/2
@@ -96,7 +92,6 @@ overridden:
   commands:
     - interface GigabitEthernet0/1
     - no switchport access vlan
-    - no switchport voice vlan
     - interface GigabitEthernet0/2
     - no switchport mode
     - no switchport trunk pruning vlan
@@ -118,8 +113,6 @@ deleted:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      voice:
-        vlan: 40
       name: GigabitEthernet0/1
     - mode: trunk
       name: GigabitEthernet0/2
@@ -135,7 +128,6 @@ deleted:
   commands:
     - interface GigabitEthernet0/1
     - no switchport access vlan
-    - no switch voice vlan
     - interface GigabitEthernet0/2
     - no switchport mode
     - no switchport trunk encapsulation
@@ -146,3 +138,53 @@ deleted:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
+gathered:
+  config:
+    - access:
+        vlan: 30
+      name: GigabitEthernet0/1
+    - mode: trunk
+      name: GigabitEthernet0/2
+      trunk:
+        allowed_vlans:
+          - "10-20"
+          - "40"
+        encapsulation: dot1q
+        native_vlan: 10
+        pruning_vlans:
+          - "10"
+          - "20"
+parsed:
+  config:
+    - access:
+        vlan: 30
+      mode: access
+      name: GigabitEthernet0/1
+    - name: GigabitEthernet0/2
+      trunk:
+        allowed_vlans:
+          - "15-20"
+          - "40"
+        encapsulation: dot1q
+        native_vlan: 20
+        pruning_vlans:
+          - "10"
+          - "20"
+rendered:
+  commands:
+    - interface GigabitEthernet0/1
+    - switchport access vlan 30
+    - interface GigabitEthernet0/2
+    - switchport trunk encapsulation dot1q
+    - switchport trunk native vlan 20
+    - switchport trunk allowed vlan 10-20,40
+    - switchport trunk pruning vlan 10,20
+rtt:
+  commands:
+    - interface GigabitEthernet0/1
+    - switchport access vlan 30
+    - interface GigabitEthernet0/2
+    - switchport trunk encapsulation dot1q
+    - switchport trunk native vlan 20
+    - switchport trunk allowed vlan 15-20,40
+    - switchport trunk pruning vlan 10,20
