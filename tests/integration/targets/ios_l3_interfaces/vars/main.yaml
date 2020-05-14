@@ -20,7 +20,7 @@ merged:
   after:
     - name: loopback888
     - ipv4:
-        - address: 192.0.2.1 255.255.255.
+        - address: 192.0.2.1 255.255.255.0
       name: loopback999
     - ipv4:
         - address: dhcp
