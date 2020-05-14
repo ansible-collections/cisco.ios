@@ -8,39 +8,39 @@
 - include_tasks: _populate_config.yaml
 
 - block:
+    #### Uncomment the tests if enabling granular delete based on AFI ####
+    # - name: Delete module attributes of given Interface based on AFI
+    #   register: result
+    #   cisco.ios.ios_acl_interfaces:
+    #     config:
 
-    - name: Delete module attributes of given Interface based on AFI
-      register: result
-      cisco.ios.ios_acl_interfaces:
-        config:
+    #       - name: GigabitEthernet0/1
+    #         access_groups:
 
-          - name: GigabitEthernet0/1
-            access_groups:
+    #           - afi: ipv6
+    #     state: deleted
 
-              - afi: ipv6
-        state: deleted
+    # - assert:
+    #     that:
+    #       - result.commands|length == 3
+    #       - result.changed == true
+    #       - "'no ipv6 traffic-filter temp_v6 in' in result.commands"
+    #       - "'no ipv6 traffic-filter test_v6 out' in result.commands"
 
-    - assert:
-        that:
-          - result.commands|length == 3
-          - result.changed == true
-          - "'no ipv6 traffic-filter temp_v6 in' in result.commands"
-          - "'no ipv6 traffic-filter test_v6 out' in result.commands"
+    # - name: Delete module attributes of given Interface based on AFI (IDEMPOTENT)
+    #   register: result
+    #   cisco.ios.ios_acl_interfaces:
+    #     config:
 
-    - name: Delete module attributes of given Interface based on AFI (IDEMPOTENT)
-      register: result
-      cisco.ios.ios_acl_interfaces:
-        config:
+    #       - name: GigabitEthernet0/1
+    #         access_groups:
 
-          - name: GigabitEthernet0/1
-            access_groups:
+    #           - afi: ipv6
+    #     state: deleted
 
-              - afi: ipv6
-        state: deleted
-
-    - assert:
-        that:
-          - result.changed == false
+    # - assert:
+    #     that:
+    #       - result.changed == false
 
     - name: Delete module attributes of given Interface.
       register: result
