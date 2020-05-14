@@ -1,7 +1,7 @@
 ---
 - name: Remove Config
   vars:
-    lines: "interface GigabitEthernet 0/1\nno ip address\nno ipv6 address\ninterface\
+    lines: "interface Loopback 999\nno ip address\ninterface GigabitEthernet 0/1\nno ip address\nno ipv6 address\ninterface\
       \ GigabitEthernet 0/2\nno ip address\nno ipv6 address\n"
   ansible.netcommon.cli_config:
     config: '{{ lines }}'

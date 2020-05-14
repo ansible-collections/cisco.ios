@@ -9,6 +9,8 @@ merged:
     - name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
   commands:
+    - interface Loopback999
+    - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
     - ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
     - interface GigabitEthernet0/2
@@ -17,7 +19,9 @@ merged:
     - ipv6 address 2001:db8:0:3::/64
   after:
     - name: loopback888
-    - name: loopback999
+    - ipv4:
+        - address: 192.0.2.1 255.255.255.
+      name: loopback999
     - ipv4:
         - address: dhcp
       name: GigabitEthernet0/0
