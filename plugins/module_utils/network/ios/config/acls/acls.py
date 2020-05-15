@@ -409,17 +409,16 @@ class Acls(ConfigBase):
                 if config_want.get("acls"):
                     for acls_want in config_want.get("acls"):
                         if acls_want.get("aces"):
-                            for ace_want in acls_want.get("aces"):
-                                for config_have in have:
-                                    for acls_have in config_have.get("acls"):
-                                        if acls_want.get(
-                                            "name"
-                                        ) == acls_have.get("name"):
-                                            commands.extend(
-                                                self._clear_config(
-                                                    acls_want, config_want
-                                                )
+                            for config_have in have:
+                                for acls_have in config_have.get("acls"):
+                                    if acls_want.get("name") == acls_have.get(
+                                        "name"
+                                    ):
+                                        commands.extend(
+                                            self._clear_config(
+                                                acls_want, config_want
                                             )
+                                        )
                         else:
                             for config_have in have:
                                 for acls_have in config_have.get("acls"):
@@ -805,7 +804,7 @@ class Acls(ConfigBase):
 
         return commands, change
 
-    def _clear_config(self, acls, config):
+    def _clear_config(self, acls, config, sequence=""):
         """ Function that deletes the acls config based on the want and have config
         :param acls: acls config
         :param config: config
@@ -818,22 +817,37 @@ class Acls(ConfigBase):
         if afi == "ipv4" and name:
             try:
                 name = int(name)
-                if name <= 99:
+                if name <= 99 and not sequence:
                     cmd = "no ip access-list standard {0}".format(name)
-                elif name >= 100:
+                elif name >= 100 and not sequence:
                     cmd = "no ip access-list extended {0}".format(name)
+                elif sequence and self.state in ("replaced", "overridden"):
+                    if name <= 99:
+                        cmd = "ip access-list standard {0} ".format(name)
+                    elif name >= 100:
+                        cmd = "ip access-list extended {0} ".format(name)
+                    cmd += "no {0}".format(sequence)
             except ValueError:
                 acl_type = acls.get("acl_type")
-                if acl_type == "extended":
+                if acl_type == "extended" and not sequence:
                     cmd = "no ip access-list extended {0}".format(name)
-                elif acl_type == "standard":
+                elif acl_type == "standard" and not sequence:
                     cmd = "no ip access-list standard {0}".format(name)
+                elif sequence and self.state in ("replaced", "overridden"):
+                    if acl_type == "extended":
+                        cmd = "ip access-list extended {0} ".format(name)
+                    elif acl_type == "standard":
+                        cmd = "ip access-list standard {0}".format(name)
+                    cmd += "no {0}".format(sequence)
                 else:
                     self._module.fail_json(
                         msg="ACL type value is required for Named ACL!"
                     )
         elif afi == "ipv6" and name:
-            cmd = "no ipv6 access-list {0}".format(name)
+            if sequence and self.state in ("replaced", "overridden"):
+                cmd = "no sequence {0}".format(sequence)
+            else:
+                cmd = "no ipv6 access-list {0}".format(name)
         commands.append(cmd)
 
         return commands
