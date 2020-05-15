@@ -50,7 +50,7 @@ class FactsBase(object):
 
 class Default(FactsBase):
 
-    COMMANDS = ["show version"]
+    COMMANDS = ["show version", "show virtual switch"]
 
     def populate(self):
         super(Default, self).populate()
@@ -60,6 +60,10 @@ class Default(FactsBase):
             self.facts["iostype"] = self.parse_iostype(data)
             self.facts["serialnum"] = self.parse_serialnum(data)
             self.parse_stacks(data)
+        data = self.responses[1]
+        vss_errs = ['Invalid input', 'Switch Mode : Standalone']
+        if data and not any(err in data for err in vss_errs):
+            self.parse_virtual_switch(data)
 
     def parse_iostype(self, data):
         match = re.search(r"\S+(X86_64_LINUX_IOSD-UNIVERSALK9-M)(\S+)", data)
@@ -83,6 +87,15 @@ class Default(FactsBase):
         )
         if match:
             self.facts["stacked_serialnums"] = match
+
+        if len(self.facts["stacked_models"]) > 1:
+            self.facts['virtual_switch'] = "STACK"
+
+    def parse_virtual_switch(self, data):
+        match = re.search(r'^Virtual switch domain number : ([0-9]+)', data, re.M)
+        if match:
+            self.facts['virtual_switch'] = "VSS"
+            self.facts['virtual_switch_domain'] = match.group(1)
 
     def platform_facts(self):
         platform_facts = {}
