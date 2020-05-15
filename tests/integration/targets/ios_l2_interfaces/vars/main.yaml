@@ -32,6 +32,29 @@ merged:
         pruning_vlans:
           - '10'
           - '20'
+merged_again:
+  commands:
+    - interface GigabitEthernet0/2
+    - switchport trunk allowed vlan 200,15-20,40
+    - switchport trunk pruning vlan 40-60,10,20
+  after:
+    - name: GigabitEthernet0/0
+    - access:
+        vlan: 30
+      name: GigabitEthernet0/1
+    - mode: trunk
+      name: GigabitEthernet0/2
+      trunk:
+        allowed_vlans:
+          - 15-20
+          - '40'
+          - '200'
+        encapsulation: dot1q
+        native_vlan: 20
+        pruning_vlans:
+          - '10'
+          - '20'
+          - 40-60
 replaced:
   before:
     - name: GigabitEthernet0/0
