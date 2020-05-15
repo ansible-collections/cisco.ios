@@ -18,12 +18,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
+    remove_empties
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
+    normalize_interface
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
@@ -97,7 +99,12 @@ class L3_Interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        want = self._module.params["config"]
+        config = self._module.params.get("config")
+        want = []
+        if config:
+            for each in config:
+                each.update({"name": normalize_interface(each["name"])})
+                want.append(remove_empties(each))
         have = existing_l3_interfaces_facts
         resp = self.set_state(want, have)
         return to_list(resp)
@@ -141,7 +148,7 @@ class L3_Interfaces(ConfigBase):
 
         for interface in want:
             for each in have:
-                if each["name"].lower() == interface["name"].lower():
+                if each["name"] == interface["name"]:
                     break
             else:
                 if "." in interface["name"]:
@@ -167,7 +174,7 @@ class L3_Interfaces(ConfigBase):
 
         for each in have:
             for interface in want:
-                if each["name"].lower() == interface["name"].lower():
+                if each["name"] == interface["name"]:
                     break
             else:
                 # We didn't find a matching desired state, which means we can
@@ -194,7 +201,7 @@ class L3_Interfaces(ConfigBase):
 
         for interface in want:
             for each in have:
-                if each["name"].lower() == interface["name"].lower():
+                if each["name"] == interface["name"]:
                     break
             else:
                 if "." in interface["name"]:
@@ -217,7 +224,7 @@ class L3_Interfaces(ConfigBase):
         if want:
             for interface in want:
                 for each in have:
-                    if each["name"].lower() == interface["name"].lower():
+                    if each["name"] == interface["name"]:
                         break
                     elif interface["name"] in each["name"]:
                         break
