@@ -26,3 +26,13 @@ deleted:
   after:
     system:
       priority: 32768
+
+gathered:
+  config:
+    system:
+      priority: 500
+
+parsed:
+  config:
+    system:
+      priority: 123
