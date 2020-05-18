@@ -104,7 +104,7 @@ class L3_Interfaces(ConfigBase):
         if config:
             for each in config:
                 each.update({"name": normalize_interface(each["name"])})
-                want.append(remove_empties(each))
+                want.append(each)
         have = existing_l3_interfaces_facts
         resp = self.set_state(want, have)
         return to_list(resp)
