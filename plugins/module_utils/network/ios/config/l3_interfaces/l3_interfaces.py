@@ -18,14 +18,13 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
-    remove_empties
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
-    normalize_interface
+    normalize_interface,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
