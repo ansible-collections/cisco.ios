@@ -232,8 +232,10 @@ class L3_Interfaces(ConfigBase):
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
-                if self.state == 'rendered':
-                    commands.extend(self._set_config(interface, dict(), module))
+                if self.state == "rendered":
+                    commands.extend(
+                        self._set_config(interface, dict(), module)
+                    )
                 continue
             commands.extend(self._set_config(interface, each, module))
 
