@@ -11,23 +11,20 @@
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
-
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
           - name: GigabitEthernet0/1
             ipv4:
-
               - address: dhcp
                 dhcp_client: 0
                 dhcp_hostname: test.com
-
           - name: GigabitEthernet0/2
             ipv4:
-
               - address: 198.51.100.1/24
                 secondary: true
-
               - address: 198.51.100.2/24
             ipv6:
-
               - address: 2001:db8:0:3::/64
         state: merged
 
