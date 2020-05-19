@@ -1,0 +1,22 @@
+---
+- debug:
+    msg: Start ios_lldp_global rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_lldp_global:
+        config:
+          holdtime: 10
+          enabled: true
+          reinit: 3
+          timer: 20
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(merged.commands) == []

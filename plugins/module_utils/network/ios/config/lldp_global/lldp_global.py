@@ -56,14 +56,14 @@ class Lldp_global(ConfigBase):
     def __init__(self, module):
         super(Lldp_global, self).__init__(module)
 
-    def get_lldp_global_facts(self):
+    def get_lldp_global_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         lldp_global_facts = facts["ansible_network_resources"].get(
             "lldp_global"
@@ -83,20 +83,40 @@ class Lldp_global(ConfigBase):
         commands = list()
         warnings = list()
 
-        existing_lldp_global_facts = self.get_lldp_global_facts()
-        commands.extend(self.set_config(existing_lldp_global_facts))
+        if self.state in self.ACTION_STATES:
+            existing_lldp_global_facts = self.get_lldp_global_facts()
+        else:
+            existing_lldp_global_facts = dict()
 
-        if commands:
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_lldp_global_facts))
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self._connection.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        changed_lldp_global_facts = self.get_lldp_global_facts()
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_lldp_global_facts = self.get_lldp_global_facts()
+        elif self.state == "rendered":
+            result["rendered"] = commands
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_lldp_global_facts(data=running_config)
+        else:
+            changed_lldp_global_facts = dict()
 
-        result["before"] = existing_lldp_global_facts
-        if result["changed"]:
-            result["after"] = changed_lldp_global_facts
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_lldp_global_facts
+            if result["changed"]:
+                result["after"] = changed_lldp_global_facts
+        elif self.state == "gathered":
+            result["gathered"] = changed_lldp_global_facts
         result["warnings"] = warnings
 
         return result
@@ -124,21 +144,20 @@ class Lldp_global(ConfigBase):
                   to the deisred configuration
         """
         commands = []
-        state = self._module.params["state"]
-        if state in ("merged", "replaced") and not want:
+        if self.state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    self.state
                 )
             )
 
-        if state == "overridden":
+        if self.state == "overridden":
             commands = self._state_overridden(want, have)
-        elif state == "deleted":
+        elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif state == "merged":
+        elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have)
-        elif state == "replaced":
+        elif self.state == "replaced":
             commands = self._state_replaced(want, have)
 
         return commands
@@ -148,7 +167,6 @@ class Lldp_global(ConfigBase):
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
-        :param interface_type: interface type
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the deisred configuration
@@ -181,7 +199,6 @@ class Lldp_global(ConfigBase):
 
         :param want: the objects from which the configuration should be removed
         :param obj_in_have: the current configuration as a dictionary
-        :param interface_type: interface type
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
                   of the provided objects
@@ -201,7 +218,7 @@ class Lldp_global(ConfigBase):
             commands.append(cmd)
 
     def _set_config(self, want, have):
-        # Set the interface config based on the want and have config
+        # Set the lldp global config based on the want and have config
         commands = []
 
         # Get the diff b/w want and have
@@ -239,7 +256,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _clear_config(self, have):
-        # Delete the interface config based on the want and have config
+        # Delete the lldp global config based on the want and have config
         commands = []
 
         if have.get("holdtime"):
