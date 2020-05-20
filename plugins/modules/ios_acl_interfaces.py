@@ -313,49 +313,6 @@ EXAMPLES = """
 #  ip access-group 110 in
 #  ip access-group 123 out
 
-# Before state:
-# -------------
-#
-# vios#sh running-config | include interface|ip access-group|ipv6 traffic-filter
-# interface Loopback888
-# interface GigabitEthernet0/0
-# interface GigabitEthernet0/1
-#  ip access-group 110 in
-#  ip access-group 123 out
-#  ipv6 traffic-filter test_v6 out
-#  ipv6 traffic-filter temp_v6 in
-# interface GigabitEthernet0/2
-#  ip access-group 110 in
-#  ip access-group 123 out
-
-- name: Delete module attributes of given Interface based on AFI
-  cisco.ios.ios_acl_interfaces:
-    config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-    state: deleted
-
-# Commands Fired:
-# ---------------
-#
-# interface GigabitEthernet0/1
-# no ip access-group 110 in
-# no ip access-group 123 out
-
-# After state:
-# -------------
-#
-# vios#sh running-config | include interface|ip access-group|ipv6 traffic-filter
-# interface Loopback888
-# interface GigabitEthernet0/0
-# interface GigabitEthernet0/1
-#  ipv6 traffic-filter test_v6 out
-#  ipv6 traffic-filter temp_v6 in
-# interface GigabitEthernet0/2
-#  ip access-group 110 in
-#  ip access-group 123 out
-
 # Using DELETED without any config passed
 #"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
 
