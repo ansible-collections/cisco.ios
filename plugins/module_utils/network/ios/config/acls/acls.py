@@ -409,28 +409,16 @@ class Acls(ConfigBase):
                 if config_want.get("acls"):
                     for acls_want in config_want.get("acls"):
                         if acls_want.get("aces"):
-                            for ace_want in acls_want.get("aces"):
-                                for config_have in have:
-                                    for acls_have in config_have.get("acls"):
-                                        if acls_want.get(
-                                            "name"
-                                        ) == acls_have.get("name"):
-                                            if ace_want.get("sequence"):
-                                                commands.extend(
-                                                    self._clear_config(
-                                                        acls_want,
-                                                        config_want,
-                                                        ace_want.get(
-                                                            "sequence"
-                                                        ),
-                                                    )
-                                                )
-                                            else:
-                                                commands.extend(
-                                                    self._clear_config(
-                                                        acls_want, config_want
-                                                    )
-                                                )
+                            for config_have in have:
+                                for acls_have in config_have.get("acls"):
+                                    if acls_want.get("name") == acls_have.get(
+                                        "name"
+                                    ):
+                                        commands.extend(
+                                            self._clear_config(
+                                                acls_want, config_want
+                                            )
+                                        )
                         else:
                             for config_have in have:
                                 for acls_have in config_have.get("acls"):
@@ -833,7 +821,7 @@ class Acls(ConfigBase):
                     cmd = "no ip access-list standard {0}".format(name)
                 elif name >= 100 and not sequence:
                     cmd = "no ip access-list extended {0}".format(name)
-                elif sequence:
+                elif sequence and self.state in ("replaced", "overridden"):
                     if name <= 99:
                         cmd = "ip access-list standard {0} ".format(name)
                     elif name >= 100:
@@ -845,7 +833,7 @@ class Acls(ConfigBase):
                     cmd = "no ip access-list extended {0}".format(name)
                 elif acl_type == "standard" and not sequence:
                     cmd = "no ip access-list standard {0}".format(name)
-                elif sequence:
+                elif sequence and self.state in ("replaced", "overridden"):
                     if acl_type == "extended":
                         cmd = "ip access-list extended {0} ".format(name)
                     elif acl_type == "standard":
@@ -856,7 +844,7 @@ class Acls(ConfigBase):
                         msg="ACL type value is required for Named ACL!"
                     )
         elif afi == "ipv6" and name:
-            if sequence:
+            if sequence and self.state in ("replaced", "overridden"):
                 cmd = "no sequence {0}".format(sequence)
             else:
                 cmd = "no ipv6 access-list {0}".format(name)

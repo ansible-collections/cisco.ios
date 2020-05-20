@@ -2,8 +2,7 @@
 deleted:
   commands:
     - no ip access-list extended test_acl
-    - ip access-list extended 110
-    - no 10
+    - no ip access-list extended 110
     - no ip access-list extended 123
     - no ipv6 access-list R1_TRAFFIC
 deleted_afi:

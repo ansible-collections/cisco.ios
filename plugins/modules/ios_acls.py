@@ -957,7 +957,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given acls (Note: This won't delete the interface itself)"
+- name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -965,9 +965,6 @@ EXAMPLES = """
       - name: test
         acl_type: extended
       - name: 110
-      - name: 123
-        aces:
-        - sequence: 10
     - afi: ipv6
       acls:
       - name: R1_TRAFFIC
@@ -978,8 +975,6 @@ EXAMPLES = """
 #
 # - no ip access-list extended test
 # - no ip access-list extended 110
-# - ip access-list extended 123
-# - no 10
 # - no ipv6 access-list R1_TRAFFIC
 
 # After state:
@@ -990,6 +985,7 @@ EXAMPLES = """
 #    10 deny   192.168.1.200
 #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 123
+#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
 #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 
 # Before state:
@@ -1010,7 +1006,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete the interface itself)"
+- name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1032,7 +1028,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
+#"(NOTE: This will delete all of configured ACLs)"
 
 # Before state:
 # -------------
@@ -1052,7 +1048,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of all acls (Note: This won't delete the interface itself)"
+- name: "Delete ALL of configured ACLs (Note: This WILL delete the all configured ACLs)"
   cisco.ios.ios_acls:
     state: deleted
 
