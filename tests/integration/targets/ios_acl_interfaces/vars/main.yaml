@@ -31,10 +31,10 @@ overridden:
     - no ip access-group 123 out
 deleted:
   commands:
-    - interface GigabitEthernet0/1 
-    - no ip access-group 110 in 
-    - no ip access-group 123 out 
-    - no ipv6 traffic-filter temp_v6 in 
+    - interface GigabitEthernet0/1
+    - no ip access-group 110 in
+    - no ip access-group 123 out
+    - no ipv6 traffic-filter temp_v6 in
     - no ipv6 traffic-filter test_v6 out
 gathered:
   config:
