@@ -3,6 +3,8 @@
     msg: START ios_lldp_interfaces round trip integration tests on connection={{
       ansible_connection }}
 
+- include_tasks: _enable_lldp.yaml
+
 - include_tasks: _remove_config.yaml
 
 - block:
