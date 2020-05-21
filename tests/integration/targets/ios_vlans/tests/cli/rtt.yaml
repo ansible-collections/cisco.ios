@@ -67,7 +67,6 @@
           - revert.commands|length == 14
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
-  
   when: ansible_net_version != "15.6(2)T"
   always:
     - include_tasks: _remove_config.yaml
