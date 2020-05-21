@@ -30,7 +30,7 @@
             ipv6:
               - address: 2001:db8:0:3::/64
         state: merged
-    
+
     - name: Gather L3 interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
@@ -38,7 +38,7 @@
           - '!min'
         gather_network_resources:
           - l3_interfaces
-    
+
     - name: Apply the provided configuration (config to be reverted)
       register: result
       cisco.ios.ios_l3_interfaces:
@@ -52,10 +52,10 @@
               - address: 198.51.100.2/24
                 secondary: true
         state: overridden
-    
+
     - assert:
         that:
-          - result.commands|length == 7
+          - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
@@ -67,10 +67,10 @@
 
     - assert:
         that:
-          - revert.commands|length == 8
+          - revert.commands|length == 11
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
-    
+
   always:
 
     - include_tasks: _remove_config.yaml
