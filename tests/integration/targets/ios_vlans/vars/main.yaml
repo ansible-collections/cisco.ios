@@ -416,3 +416,19 @@ parsed:
       shutdown: enabled
       state: active
       vlan_id: 1005
+rtt:
+  commands:
+    - vlan 10
+    - name Vlan_10
+    - mtu 1500
+    - no vlan 40
+    - vlan 20
+    - name Vlan_20
+    - state active
+    - mtu 610
+    - shutdown
+    - vlan 30
+    - name Vlan_30
+    - state suspend
+    - mtu 1500
+    - shutdown
