@@ -1,0 +1,6 @@
+---
+- name: Create and Setup VRF configuration
+  vars:
+    lines: "vrf definition ospf_vrf\naddress-family ipv4\nvrf definition blue\naddress-family ipv4\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
