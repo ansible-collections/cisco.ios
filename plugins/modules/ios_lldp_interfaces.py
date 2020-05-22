@@ -465,7 +465,7 @@ EXAMPLES = """
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
 
-- name: Gather listed LACP interfaces with provided configurations
+- name: Gather listed LLDP interfaces with provided configurations
   cisco.ios.ios_lldp_interfaces:
     config:
     state: gathered
@@ -619,10 +619,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lldp_InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Lldp_Interfaces(module).execute_module()
