@@ -1,0 +1,33 @@
+---
+- debug:
+    msg: Start ios_vlans rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_vlans:
+        config:
+          - name: Vlan_10
+            vlan_id: 10
+            state: active
+            shutdown: disabled
+            remote_span: true
+          - name: Vlan_20
+            vlan_id: 20
+            mtu: 610
+            state: active
+            shutdown: enabled
+          - name: Vlan_30
+            vlan_id: 30
+            state: suspend
+            shutdown: enabled
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(merged.commands) == []
+  when: ansible_net_version != "15.6(2)T"
