@@ -58,7 +58,7 @@
 
     - assert:
         that:
-          - result.commands|length == 9
+          - result.commands|length == 7
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
@@ -70,7 +70,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 11
+          - revert.commands|length == 9
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
 
