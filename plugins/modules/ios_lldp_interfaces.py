@@ -544,16 +544,29 @@ EXAMPLES = """
 
 # Using Parsed
 
+# parsed.cfg
+#
+# GigabitEthernet0/0:
+#   Tx: enabled
+#   Rx: disabled
+#   Tx state: IDLE
+#   Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/1:
+#   Tx: enabled
+#   Rx: enabled
+#   Tx state: IDLE
+#   Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/2:
+#   Tx: disabled
+#   Rx: enabled
+#   Tx state: IDLE
+#   Rx state: INIT
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lldp_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       lacp port-priority 10
-       interface GigabitEthernet0/2
-       lacp port-priority 20
-       interface Port-channel10
-       lacp max-bundle 2
-       slacp fast-switchover"
+    running_config: running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
