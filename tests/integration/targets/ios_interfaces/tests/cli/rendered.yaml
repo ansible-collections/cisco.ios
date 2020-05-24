@@ -1,0 +1,29 @@
+---
+- debug:
+    msg: Start ios_interfaces rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+            duplex: half
+          - name: GigabitEthernet0/2
+            description: Configured by Ansible-Network
+            mtu: 2800
+            enabled: false
+            speed: 100
+            duplex: full
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered.commands) == []
