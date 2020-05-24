@@ -162,8 +162,8 @@ class Vlans(ConfigBase):
                 if every["vlan_id"] == each["vlan_id"]:
                     check = True
                     break
-            else:
-                continue
+                else:
+                    continue
             if check:
                 commands.extend(self._set_config(each, every))
             else:

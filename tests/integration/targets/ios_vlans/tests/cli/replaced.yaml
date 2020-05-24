@@ -22,6 +22,10 @@
           - vlan_id: 30
             name: Test_VLAN30
             mtu: 1000
+
+          - vlan_id: 40
+            name: Test_new_VLAN40
+            state: suspend
         state: replaced
 
     - name: Assert that correct set of commands were generated

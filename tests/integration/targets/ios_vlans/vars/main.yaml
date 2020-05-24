@@ -132,6 +132,9 @@ replaced:
     - vlan 30
     - name Test_VLAN30
     - mtu 1000
+    - vlan 40
+    - name Test_new_VLAN40
+    - state suspend
   after:
     - mtu: 1500
       name: default
@@ -153,6 +156,11 @@ replaced:
       shutdown: disabled
       state: active
       vlan_id: 30
+    - mtu: 1500
+      name: Test_new_VLAN40
+      shutdown: disabled
+      state: suspend
+      vlan_id: 40
     - mtu: 1500
       name: fddi-default
       shutdown: enabled
