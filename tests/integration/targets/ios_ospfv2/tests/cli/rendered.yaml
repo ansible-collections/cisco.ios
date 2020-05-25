@@ -1,0 +1,66 @@
+---
+- debug:
+    msg: Start ios_ospfv2 rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+    - name: Render the commands for provided  configuration
+      register: result
+      cisco.ios.ios_ospfv2: &id001
+        config:
+          processes:
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              areas:
+                - area_id: "5"
+                  capability: true
+                  authentication:
+                    enable: true
+                - area_id: "10"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
+                  default_cost: 10
+                  filter_list:
+                    - name: test_prefix_in
+                      direction: in
+                    - name: test_prefix_out
+                      direction: out
+              network:
+                address: 198.51.100.0
+                wildcard_bits: 0.0.0.255
+                area: 5
+              default_information:
+                originate: true
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.3.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+              areas:
+                - area_id: "10"
+                  capability: true
+              distribute_list:
+                acls:
+                  - name: 10
+                    direction: out
+                  - name: 123
+                    direction: in
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(merged.commands) == []
