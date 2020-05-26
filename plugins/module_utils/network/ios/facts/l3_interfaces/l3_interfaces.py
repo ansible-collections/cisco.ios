@@ -108,13 +108,25 @@ class L3_InterfacesFacts(object):
             elif "dhcp" in each:
                 each_ipv4["address"] = "dhcp"
                 if "client-id" in each:
-                    each_ipv4["dhcp_client"] = int(
-                        each.split(" hostname ")[0].split("/")[-1]
-                    )
+                    try:
+                        each_ipv4["dhcp_client"] = int(
+                            each.split(" hostname ")[0].split("/")[-1]
+                        )
+                    except ValueError:
+                        obj = re.search("\d+", each)
+                        if obj:
+                            dhcp_client = obj.group()
+                        each_ipv4["dhcp_client"] = int(dhcp_client)
                 if "hostname" in each:
                     each_ipv4["dhcp_hostname"] = each.split(" hostname ")[-1]
                 if "client-id" in each and each_ipv4["dhcp_client"] is None:
-                    each_ipv4["dhcp_client"] = int(each.split("/")[-1])
+                    try:
+                        each_ipv4["dhcp_client"] = int(each.split("/")[-1])
+                    except ValueError:
+                        obj = re.search("\d+", each)
+                        if obj:
+                            dhcp_client = obj.group()
+                        each_ipv4["dhcp_client"] = int(dhcp_client)
                 if "hostname" in each and not each_ipv4["dhcp_hostname"]:
                     each_ipv4["dhcp_hostname"] = each.split(" hostname ")[-1]
             ipv4.append(each_ipv4)

@@ -358,18 +358,23 @@ class L3_Interfaces(ConfigBase):
                             cmd += " secondary"
                     elif ipv4_dict.get("address") == "dhcp":
                         cmd = "ip address dhcp"
+                        if "/" in interface:
+                            dhcp_interface = want["name"].split("/")[0] + "/"
+                        elif "gigabitethernet" in interface.lower():
+                            dhcp_interface = "GigabitEthernet"
                         if ipv4_dict.get(
                             "dhcp_client"
                         ) is not None and ipv4_dict.get("dhcp_hostname"):
-                            cmd = "ip address dhcp client-id GigabitEthernet 0/{0} hostname {1}".format(
+                            cmd = "ip address dhcp client-id {0}{1} hostname {2}".format(
+                                dhcp_interface,
                                 ipv4_dict.get("dhcp_client"),
                                 ipv4_dict.get("dhcp_hostname"),
                             )
                         elif ipv4_dict.get(
                             "dhcp_client"
                         ) and not ipv4_dict.get("dhcp_hostname"):
-                            cmd = "ip address dhcp client-id GigabitEthernet 0/{0}".format(
-                                ipv4_dict.get("dhcp_client")
+                            cmd = "ip address dhcp client-id {0}{1}".format(
+                                dhcp_interface, ipv4_dict.get("dhcp_client")
                             )
                         elif not ipv4_dict.get(
                             "dhcp_client"
