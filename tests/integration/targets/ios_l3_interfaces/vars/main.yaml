@@ -12,7 +12,7 @@ merged:
     - interface loopback999
     - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
-    - ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
+    - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
     - interface GigabitEthernet0/2
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
@@ -183,7 +183,7 @@ rtt:
     - interface loopback999
     - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
-    - ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
+    - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
     - interface GigabitEthernet0/2
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
