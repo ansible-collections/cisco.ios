@@ -21,7 +21,9 @@ The module file for ios_lldp_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_lldp_interfaces
 short_description: LLDP interfaces resource module
@@ -79,6 +81,14 @@ options:
             description:
             - IEEE 802.3 DTE Power via MDI TLV
             type: bool
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS device by executing
+        the command B(sh lldp interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -88,8 +98,12 @@ options:
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
 """
+
 EXAMPLES = """
 # Using merged
 #
@@ -192,7 +206,6 @@ EXAMPLES = """
 #    Rx: enabled
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
-#
 
 - name: Override device configuration of all lldp_interfaces with provided configuration
   cisco.ios.ios_lldp_interfaces:
@@ -329,7 +342,6 @@ EXAMPLES = """
 #    Rx: enabled
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
-#
 
 - name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lldp_interfaces:
@@ -396,9 +408,8 @@ EXAMPLES = """
 #    Rx: enabled
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
-#
 
-- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete sthe interface itself)"
+- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lldp_interfaces:
     state: deleted
 
@@ -429,7 +440,156 @@ EXAMPLES = """
 #    Rx: disabled
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
+
+# Using Gathered
+
+# Before state:
+# -------------
 #
+# vios#sh lldp interface
+# GigabitEthernet0/0:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/1:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/2:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+
+- name: Gather listed LLDP interfaces with provided configurations
+  cisco.ios.ios_lldp_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "name": "GigabitEthernet0/0",
+#             "receive": true,
+#             "transmit": true
+#         },
+#         {
+#             "name": "GigabitEthernet0/1",
+#             "receive": true,
+#             "transmit": true
+#         },
+#         {
+#             "name": "GigabitEthernet0/2",
+#             "receive": true,
+#             "transmit": true
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh lldp interface
+# GigabitEthernet0/0:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/1:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+
+# GigabitEthernet0/2:
+#    Tx: enabled
+#    Rx: enabled
+#    Tx state: IDLE
+#    Rx state: WAIT FOR FRAME
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_lldp_interfaces:
+    config:
+      - name: GigabitEthernet0/0
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/1
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/2
+        receive: true
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/0",
+#         "lldp receive",
+#         "lldp transmit",
+#         "interface GigabitEthernet0/1",
+#         "lldp receive",
+#         "lldp transmit",
+#         "interface GigabitEthernet0/2",
+#         "lldp receive"
+#     ]
+
+# Using Parsed
+
+# parsed.cfg
+#
+# GigabitEthernet0/0:
+#   Tx: enabled
+#   Rx: disabled
+#   Tx state: IDLE
+#   Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/1:
+#   Tx: enabled
+#   Rx: enabled
+#   Tx state: IDLE
+#   Rx state: WAIT FOR FRAME
+#
+# GigabitEthernet0/2:
+#   Tx: disabled
+#   Rx: enabled
+#   Tx state: IDLE
+#   Rx state: INIT
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_lldp_interfaces:
+    running_config: running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "name": "GigabitEthernet0/0",
+#             "receive": false,
+#             "transmit": true
+#         },
+#         {
+#             "name": "GigabitEthernet0/1",
+#             "receive": true,
+#             "transmit": true
+#         },
+#         {
+#             "name": "GigabitEthernet0/2",
+#             "receive": true,
+#             "transmit": false
+#         }
+#     ]
+
 """
 RETURN = """
 before:
@@ -452,6 +612,7 @@ commands:
   type: list
   sample: ['interface GigabitEthernet 0/1', 'lldp transmit', 'lldp receive']
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp_interfaces.lldp_interfaces import (
     Lldp_InterfacesArgs,
@@ -471,10 +632,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lldp_InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Lldp_Interfaces(module).execute_module()

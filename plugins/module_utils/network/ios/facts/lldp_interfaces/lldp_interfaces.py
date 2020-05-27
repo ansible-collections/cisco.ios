@@ -56,15 +56,12 @@ class Lldp_InterfacesFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        if connection:
-            pass
 
         objs = []
         if not data:
             data = connection.get("show lldp interface")
         # operate on a collection of resource x
         config = data.split("\n\n")
-
         for conf in config:
             if conf:
                 obj = self.render_config(self.generated_spec, conf)

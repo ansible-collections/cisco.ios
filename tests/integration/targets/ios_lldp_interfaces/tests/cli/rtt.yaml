@@ -1,0 +1,65 @@
+---
+- debug:
+    msg: START ios_lldp_interfaces round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _enable_lldp.yaml
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet0/0
+            receive: true
+            transmit: true
+          - name: GigabitEthernet0/1
+            receive: true
+            transmit: true
+          - name: GigabitEthernet0/2
+            receive: true
+            transmit: true
+        state: merged
+
+    - name: Gather LLDP interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - lldp_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet0/0
+            receive: true
+            transmit: true
+          - name: GigabitEthernet0/2
+            receive: true
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 5
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_lldp_interfaces:
+        config: "{{ ansible_facts['network_resources']['lldp_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 5
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  always:
+
+    - include_tasks: _remove_config.yaml
