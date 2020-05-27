@@ -180,8 +180,6 @@ parsed:
       name: GigabitEthernet0/2
 rtt:
   commands:
-    - interface loopback999
-    - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
     - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
     - interface GigabitEthernet0/2
