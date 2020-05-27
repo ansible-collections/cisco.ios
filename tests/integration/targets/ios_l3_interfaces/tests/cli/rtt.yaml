@@ -70,7 +70,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 9
+          - revert.commands|length == 6
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
 

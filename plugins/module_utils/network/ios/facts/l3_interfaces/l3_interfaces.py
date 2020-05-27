@@ -113,7 +113,7 @@ class L3_InterfacesFacts(object):
                             each.split(" hostname ")[0].split("/")[-1]
                         )
                     except ValueError:
-                        obj = re.search("\d+", each)
+                        obj = re.search("\\d+", each)
                         if obj:
                             dhcp_client = obj.group()
                         each_ipv4["dhcp_client"] = int(dhcp_client)
@@ -123,7 +123,7 @@ class L3_InterfacesFacts(object):
                     try:
                         each_ipv4["dhcp_client"] = int(each.split("/")[-1])
                     except ValueError:
-                        obj = re.search("\d+", each)
+                        obj = re.search("\\d+", each)
                         if obj:
                             dhcp_client = obj.group()
                         each_ipv4["dhcp_client"] = int(dhcp_client)
