@@ -176,12 +176,13 @@ def filter_dict_having_none_value(want, have):
                 if value is None:
                     dict_val = have.get(k).get(key)
                     test_key_dict.update({key: dict_val})
-                elif (
-                    k == "ipv6"
-                    and value.lower() != have.get(k)[0].get(key).lower()
-                ):
-                    dict_val = have.get(k)[0].get(key)
-                    test_key_dict.update({key: dict_val})
+                elif have.get(k):
+                    if (
+                        k == "ipv6"
+                        and value.lower() != have.get(k)[0].get(key).lower()
+                    ):
+                        dict_val = have.get(k)[0].get(key)
+                        test_key_dict.update({key: dict_val})
                 if test_key_dict:
                     test_dict.update({k: test_key_dict})
             # below conditions checks are added to check if
