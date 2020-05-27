@@ -1,8 +1,8 @@
 ---
 - include: cli.yaml
   tags:
-    - cli
+    - network_cli
 
 - include: cli_config.yaml
   tags:
-    - cli_config
+    - network_cli
