@@ -118,7 +118,7 @@ class L2_InterfacesFacts(object):
 
             trunk = dict()
             trunk["encapsulation"] = utils.parse_conf_arg(
-                conf, "encapsulation"
+                conf, "switchport trunk encapsulation"
             )
             native_vlan = utils.parse_conf_arg(conf, "native vlan")
             if native_vlan:
