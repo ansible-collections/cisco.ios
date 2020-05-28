@@ -21,7 +21,6 @@ The module file for ios_l3_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_lag_interfaces
 short_description: LAG interfaces resource module
@@ -261,7 +260,8 @@ EXAMPLES = """
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
+- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface\
+    \     itself)"
   cisco.ios.ios_lag_interfaces:
     config:
     - name: 10
@@ -309,7 +309,8 @@ EXAMPLES = """
 #  shutdown
 #  channel-group 30 mode active
 
-- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete the interface itself)"
+- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete\
+    \     the interface itself)"
   cisco.ios.ios_lag_interfaces:
     state: deleted
 

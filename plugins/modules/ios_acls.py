@@ -21,7 +21,6 @@ The module file for ios_acls
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_acls
 short_description: ACLs resource module
@@ -1048,7 +1047,8 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete ALL of configured ACLs (Note: This WILL delete the all configured ACLs)"
+- name: 'Delete ALL of configured ACLs (Note: This WILL delete the all configured
+    ACLs)'
   cisco.ios.ios_acls:
     state: deleted
 

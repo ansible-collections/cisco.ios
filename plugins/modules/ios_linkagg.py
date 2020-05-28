@@ -18,7 +18,6 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
@@ -164,9 +163,7 @@ def map_obj_to_commands(updates, module):
                             "channel-group {0} mode {1}".format(group, mode)
                         )
                 elif set(members) != set(obj_in_have["members"]):
-                    missing_members = list(
-                        set(members) - set(obj_in_have["members"])
-                    )
+                    missing_members = list(set(members) - set(obj_in_have["members"]))
                     for m in missing_members:
                         commands.extend(cmd)
                         commands.append("interface {0}".format(m))
@@ -186,9 +183,7 @@ def map_obj_to_commands(updates, module):
         for h in have:
             obj_in_want = search_obj_in_list(h["group"], want)
             if not obj_in_want:
-                commands.append(
-                    "no interface port-channel {0}".format(h["group"])
-                )
+                commands.append("no interface port-channel {0}".format(h["group"]))
     return commands
 
 
@@ -222,9 +217,7 @@ def parse_mode(module, config, group, member):
     body = netcfg.get_section(parents)
     match_int = re.findall("interface {0}\\n".format(member), body, re.M)
     if match_int:
-        match = re.search(
-            "channel-group {0} mode (\\S+)".format(group), body, re.M
-        )
+        match = re.search("channel-group {0} mode (\\S+)".format(group), body, re.M)
         if match:
             mode = match.group(1)
     return mode
@@ -235,9 +228,7 @@ def parse_members(module, config, group):
     for line in config.strip().split("!"):
         l = line.strip()
         if l.startswith("interface"):
-            match_group = re.findall(
-                "channel-group {0} mode".format(group), l, re.M
-            )
+            match_group = re.findall("channel-group {0} mode".format(group), l, re.M)
             if match_group:
                 match = re.search("interface (\\S+)", l, re.M)
                 if match:

@@ -22,7 +22,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_lacp
@@ -51,12 +50,12 @@ options:
             required: true
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing
-        the command B(show lacp sys-id).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the IOS device by
+      executing the command B(show lacp sys-id).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -180,8 +179,7 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lacp:
-    running_config:
-      "lacp system-priority 10"
+    running_config: lacp system-priority 10
     state: parsed
 
 # Module Execution Result:

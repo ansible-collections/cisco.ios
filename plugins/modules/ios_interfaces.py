@@ -21,7 +21,6 @@ The module file for ios_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_interfaces
@@ -74,12 +73,12 @@ options:
         - auto
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the IOS device by
+      executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
@@ -288,7 +287,8 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of given interfaces (Note: This won't delete the interface itself)"
+- name: "Delete module attributes of given interfaces (Note: This won't delete the\
+    \     interface itself)"
   cisco.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -338,7 +338,8 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of all interfaces (Note: This won't delete the interface itself)"
+- name: "Delete module attributes of all interfaces (Note: This won't delete the interface\
+    \     itself)"
   cisco.ios.ios_interfaces:
     state: deleted
 
@@ -425,17 +426,17 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_interfaces:
     config:
-      - name: GigabitEthernet0/1
-        description: Configured by Ansible-Network
-        mtu: 110
-        enabled: true
-        duplex: half
-      - name: GigabitEthernet0/2
-        description: Configured by Ansible-Network
-        mtu: 2800
-        enabled: false
-        speed: 100
-        duplex: full
+    - name: GigabitEthernet0/1
+      description: Configured by Ansible-Network
+      mtu: 110
+      enabled: true
+      duplex: half
+    - name: GigabitEthernet0/2
+      description: Configured by Ansible-Network
+      mtu: 2800
+      enabled: false
+      speed: 100
+      duplex: full
     state: rendered
 
 # Module Execution Result:
@@ -458,18 +459,9 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       description interfaces 0/1
-       mtu 110
-       duplex half
-       no shutdown
-       interface GigabitEthernet0/2
-       description interfaces 0/2
-       mtu 2800
-       speed 100
-       duplex full
-       shutdown"
+    running_config: interface GigabitEthernet0/1 description interfaces 0/1 mtu 110
+      duplex half no shutdown interface GigabitEthernet0/2 description interfaces
+      0/2 mtu 2800 speed 100 duplex full shutdown
     state: parsed
 
 # Module Execution Result:

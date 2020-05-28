@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_facts
 author:
@@ -212,9 +211,7 @@ def main():
     """
     argument_spec = FactsArgs.argument_spec
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = []
     if module.params["gather_subset"] == "!config":
         warnings.append(

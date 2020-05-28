@@ -18,7 +18,6 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_ping
 short_description: Tests reachability using ping from Cisco IOS network devices
@@ -126,9 +125,7 @@ def main():
         count=dict(type="int"),
         dest=dict(type="str", required=True),
         source=dict(type="str"),
-        state=dict(
-            type="str", choices=["absent", "present"], default="present"
-        ),
+        state=dict(type="str", choices=["absent", "present"], default="present"),
         vrf=dict(type="str"),
     )
     argument_spec.update(ios_argument_spec)

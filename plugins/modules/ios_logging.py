@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_logging
 author: Trishna Guha (@trishnaguha)
@@ -183,10 +182,7 @@ def map_obj_to_commands(updates, module, os_version):
             if facility:
                 present = False
                 for entry in have:
-                    if (
-                        entry["dest"] == "facility"
-                        and entry["facility"] == facility
-                    ):
+                    if entry["dest"] == "facility" and entry["facility"] == facility:
                         present = True
                 if not present:
                     commands.append("logging facility {0}".format(facility))
@@ -208,9 +204,7 @@ def map_obj_to_commands(updates, module, os_version):
                         present = True
                 if not present:
                     if level and level != "debugging":
-                        commands.append(
-                            "logging buffered {0} {1}".format(size, level)
-                        )
+                        commands.append("logging buffered {0} {1}".format(size, level))
                     else:
                         commands.append("logging buffered {0}".format(size))
             elif dest:
@@ -233,9 +227,7 @@ def parse_facility(line, dest):
 def parse_size(line, dest):
     size = None
     if dest == "buffered":
-        match = re.search(
-            "logging buffered(?: (\\d+))?(?: [a-z]+)?", line, re.M
-        )
+        match = re.search("logging buffered(?: (\\d+))?(?: [a-z]+)?", line, re.M)
         if match:
             if match.group(1) is not None:
                 size = match.group(1)
@@ -269,9 +261,7 @@ def parse_level(line, dest):
         level = "debugging"
     else:
         if dest == "buffered":
-            match = re.search(
-                "logging buffered(?: \\d+)?(?: ([a-z]+))?", line, re.M
-            )
+            match = re.search("logging buffered(?: \\d+)?(?: ([a-z]+))?", line, re.M)
         else:
             match = re.search("logging {0} (\\S+)".format(dest), line, re.M)
         if match and match.group(1) in level_group:
@@ -319,9 +309,7 @@ def map_config_to_obj(module):
                     }
                 )
             else:
-                ip_match = re.search(
-                    "\\d+\\.\\d+\\.\\d+\\.\\d+", match.group(1), re.M
-                )
+                ip_match = re.search("\\d+\\.\\d+\\.\\d+\\.\\d+", match.group(1), re.M)
                 if ip_match:
                     dest = "host"
                     obj.append(
@@ -428,9 +416,7 @@ def main():
     argument_spec.update(ios_argument_spec)
     required_if = [("dest", "host", ["name"])]
     module = AnsibleModule(
-        argument_spec=argument_spec,
-        required_if=required_if,
-        supports_check_mode=True,
+        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True,
     )
     device_info = get_capabilities(module)
     os_version = device_info["device_info"]["network_os_version"]

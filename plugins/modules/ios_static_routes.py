@@ -21,7 +21,6 @@ The module file for ios_static_routes
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_static_routes
 short_description: Static routes resource module

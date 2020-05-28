@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_config
 author: Peter Sprygada (@privateip)
@@ -396,9 +395,7 @@ def main():
         parents=dict(type="list"),
         before=dict(type="list"),
         after=dict(type="list"),
-        match=dict(
-            default="line", choices=["line", "strict", "exact", "none"]
-        ),
+        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
         replace=dict(default="line", choices=["line", "block"]),
         multiline_delimiter=dict(default="@"),
         running_config=dict(aliases=["config"]),
@@ -481,9 +478,7 @@ def main():
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
-                        multiline_delimiter=module.params[
-                            "multiline_delimiter"
-                        ],
+                        multiline_delimiter=module.params["multiline_delimiter"],
                     )
             result["changed"] = True
     running_config = module.params["running_config"]
@@ -491,9 +486,7 @@ def main():
     if module.params["save_when"] == "always":
         save_config(module, result)
     elif module.params["save_when"] == "modified":
-        output = run_commands(
-            module, ["show running-config", "show startup-config"]
-        )
+        output = run_commands(module, ["show running-config", "show startup-config"])
         running_config = NetworkConfig(
             indent=1, contents=output[0], ignore_lines=diff_ignore_lines
         )

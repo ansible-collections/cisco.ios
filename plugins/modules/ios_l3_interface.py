@@ -18,7 +18,6 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_l3_interface
 author: Ganesh Nalawade (@ganeshrn)
@@ -210,9 +209,7 @@ def map_obj_to_commands(updates, module):
                 if ipv4:
                     address = ipv4.split("/")
                     if len(address) == 2:
-                        ipv4 = "{0} {1}".format(
-                            address[0], to_netmask(address[1])
-                        )
+                        ipv4 = "{0} {1}".format(address[0], to_netmask(address[1]))
                     commands.append("no ip address {0}".format(ipv4))
                 else:
                     commands.append("no ip address")
@@ -232,9 +229,7 @@ def map_obj_to_commands(updates, module):
                 ):
                     address = ipv4.split("/")
                     if len(address) == 2:
-                        ipv4 = "{0} {1}".format(
-                            address[0], to_netmask(address[1])
-                        )
+                        ipv4 = "{0} {1}".format(address[0], to_netmask(address[1]))
                     commands.append("ip address {0}".format(ipv4))
             if ipv6:
                 if (
@@ -261,9 +256,7 @@ def map_config_to_obj(module):
         if ipv4:
             address = ipv4.strip().split(" ")
             if len(address) == 2 and is_netmask(address[1]):
-                ipv4 = "{0}/{1}".format(
-                    address[0], to_text(to_masklen(address[1]))
-                )
+                ipv4 = "{0}/{1}".format(address[0], to_text(to_masklen(address[1])))
         obj = {
             "name": item,
             "ipv4": ipv4,

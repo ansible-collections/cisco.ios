@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_banner
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
@@ -119,9 +118,7 @@ def map_config_to_obj(module):
     :param module:
     :return: banner config dict object.
     """
-    out = get_config(
-        module, flags="| begin banner %s" % module.params["banner"]
-    )
+    out = get_config(module, flags="| begin banner %s" % module.params["banner"])
     if out:
         regex = "banner " + module.params["banner"] + " ^C\n"
         if search("banner " + module.params["banner"], out, M):
@@ -151,8 +148,7 @@ def main():
     """
     argument_spec = dict(
         banner=dict(
-            required=True,
-            choices=["login", "motd", "exec", "incoming", "slip-ppp"],
+            required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"],
         ),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
@@ -160,9 +156,7 @@ def main():
     argument_spec.update(ios_argument_spec)
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
-        argument_spec=argument_spec,
-        required_if=required_if,
-        supports_check_mode=True,
+        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False}

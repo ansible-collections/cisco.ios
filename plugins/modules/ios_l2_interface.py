@@ -18,7 +18,6 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_l2_interface
 extends_documentation_fragment:
@@ -132,16 +131,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 def get_interface_type(interface):
     intf_type = "unknown"
-    if interface.upper()[:2] in (
-        "ET",
-        "GI",
-        "FA",
-        "TE",
-        "FO",
-        "HU",
-        "TWE",
-        "TW",
-    ):
+    if interface.upper()[:2] in ("ET", "GI", "FA", "TE", "FO", "HU", "TWE", "TW",):
         intf_type = "ethernet"
     elif interface.upper().startswith("VL"):
         intf_type = "svi"
@@ -159,9 +149,7 @@ def get_interface_type(interface):
 def is_switchport(name, module):
     intf_type = get_interface_type(name)
     if intf_type in ("ethernet", "portchannel"):
-        config = run_commands(
-            module, ["show interface {0} switchport".format(name)]
-        )[0]
+        config = run_commands(module, ["show interface {0} switchport".format(name)])[0]
         match = re.search("Switchport: Enabled", config)
         return bool(match)
     return False
@@ -169,18 +157,14 @@ def is_switchport(name, module):
 
 def interface_is_portchannel(name, module):
     if get_interface_type(name) == "ethernet":
-        config = run_commands(module, ["show run interface {0}".format(name)])[
-            0
-        ]
+        config = run_commands(module, ["show run interface {0}".format(name)])[0]
         if any(c in config for c in ["channel group", "channel-group"]):
             return True
     return False
 
 
 def get_switchport(name, module):
-    config = run_commands(
-        module, ["show interface {0} switchport".format(name)]
-    )[0]
+    config = run_commands(module, ["show interface {0} switchport".format(name)])[0]
     mode = re.search("Administrative Mode: (?:.* )?(\\w+)$", config, re.M)
     access = re.search("Access Mode VLAN: (\\d+)", config)
     native = re.search("Trunking Native Mode VLAN: (\\d+)", config)
@@ -235,9 +219,7 @@ def remove_switchport_config_commands(name, existing, proposed, module):
                 remove_trunk_allowed_vlans
             )
             commands.append(command)
-        native_check = existing.get("native_vlan") == proposed.get(
-            "native_vlan"
-        )
+        native_check = existing.get("native_vlan") == proposed.get("native_vlan")
         if native_check and proposed.get("native_vlan"):
             command = "no switchport trunk native vlan {0}".format(
                 existing.get("native_vlan")
@@ -263,18 +245,12 @@ def get_switchport_config_commands(name, existing, proposed, module):
     if command:
         commands.append(command)
     if proposed_mode == "access":
-        av_check = str(existing.get("access_vlan")) == str(
-            proposed.get("access_vlan")
-        )
+        av_check = str(existing.get("access_vlan")) == str(proposed.get("access_vlan"))
         if not av_check:
-            command = "switchport access vlan {0}".format(
-                proposed.get("access_vlan")
-            )
+            command = "switchport access vlan {0}".format(proposed.get("access_vlan"))
             commands.append(command)
     elif proposed_mode == "trunk":
-        tv_check = existing.get("trunk_vlans_list") == proposed.get(
-            "trunk_vlans_list"
-        )
+        tv_check = existing.get("trunk_vlans_list") == proposed.get("trunk_vlans_list")
         if not tv_check:
             if proposed.get("allowed"):
                 command = "switchport trunk allowed vlan {0}".format(
@@ -403,9 +379,7 @@ def main():
         native_vlan=dict(type="str"),
         trunk_vlans=dict(type="str"),
         trunk_allowed_vlans=dict(type="str"),
-        state=dict(
-            choices=["absent", "present", "unconfigured"], default="present"
-        ),
+        state=dict(choices=["absent", "present", "unconfigured"], default="present"),
     )
     aggregate_spec = deepcopy(element_spec)
     # remove default in aggregate spec, to handle common arguments
@@ -471,9 +445,7 @@ You should update the portchannel config."""
         # Safeguard check
         # If there isn't an existing, something is wrong per previous comment
         if not existing:
-            module.fail_json(
-                msg="Make sure you are using the FULL interface name"
-            )
+            module.fail_json(msg="Make sure you are using the FULL interface name")
         if trunk_vlans or trunk_allowed_vlans:
             if trunk_vlans:
                 trunk_vlans_list = vlan_range_to_list(trunk_vlans)

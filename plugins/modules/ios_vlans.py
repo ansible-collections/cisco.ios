@@ -21,7 +21,6 @@ The module file for ios_vlans
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_vlans
 short_description: VLANs resource module
@@ -74,12 +73,12 @@ options:
         - disabled
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the VyOS device by executing
-        the command B(show vlan).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the VyOS device
+      by executing the command B(show vlan).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -120,20 +119,20 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_vlans:
     config:
-      - name: Vlan_10
-        vlan_id: 10
-        state: active
-        shutdown: disabled
-        remote_span: 10
-      - name: Vlan_20
-        vlan_id: 20
-        mtu: 610
-        state: active
-        shutdown: enabled
-      - name: Vlan_30
-        vlan_id: 30
-        state: suspend
-        shutdown: enabled
+    - name: Vlan_10
+      vlan_id: 10
+      state: active
+      shutdown: disabled
+      remote_span: 10
+    - name: Vlan_20
+      vlan_id: 20
+      mtu: 610
+      state: active
+      shutdown: enabled
+    - name: Vlan_30
+      vlan_id: 30
+      state: suspend
+      shutdown: enabled
     state: merged
 
 # After state:
@@ -544,20 +543,20 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_vlans:
     config:
-      - name: Vlan_10
-        vlan_id: 10
-        state: active
-        shutdown: disabled
-        remote_span: 10
-      - name: Vlan_20
-        vlan_id: 20
-        mtu: 610
-        state: active
-        shutdown: enabled
-      - name: Vlan_30
-        vlan_id: 30
-        state: suspend
-        shutdown: enabled
+    - name: Vlan_10
+      vlan_id: 10
+      state: active
+      shutdown: disabled
+      remote_span: 10
+    - name: Vlan_20
+      vlan_id: 20
+      mtu: 610
+      state: active
+      shutdown: enabled
+    - name: Vlan_30
+      vlan_id: 30
+      state: suspend
+      shutdown: enabled
     state: rendered
 
 # Module Execution Result:

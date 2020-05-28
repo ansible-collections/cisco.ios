@@ -22,12 +22,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_lacp_interfaces
 short_description: LACP interfaces resource module
-description: This module provides declarative management of LACP on Cisco IOS network devices lacp_interfaces.
+description: This module provides declarative management of LACP on Cisco IOS network
+  devices lacp_interfaces.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
@@ -60,12 +60,12 @@ options:
         type: int
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the IOS device by
+      executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -245,7 +245,8 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface itself)"
+- name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface\
+    \     itself)"
   cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
@@ -289,7 +290,8 @@ EXAMPLES = """
 #  shutdown
 #  lacp port-priority 30
 
-- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete the interface itself)"
+- name: "Delete LACP attributes for all configured interfaces (Note: This won't delete\
+    \     the interface itself)"
   cisco.ios.ios_lacp_interfaces:
     state: deleted
 
@@ -375,13 +377,13 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_lacp_interfaces:
     config:
-      - name: GigabitEthernet0/1
-        port_priority: 10
-      - name: GigabitEthernet0/2
-        port_priority: 20
-      - name: Port-channel10
-        fast_switchover: True
-        max_bundle: 2
+    - name: GigabitEthernet0/1
+      port_priority: 10
+    - name: GigabitEthernet0/2
+      port_priority: 20
+    - name: Port-channel10
+      fast_switchover: true
+      max_bundle: 2
     state: rendered
 
 # Module Execution Result:
@@ -401,14 +403,8 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lacp_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       lacp port-priority 10
-       interface GigabitEthernet0/2
-       lacp port-priority 20
-       interface Port-channel10
-       lacp max-bundle 2
-       slacp fast-switchover"
+    running_config: interface GigabitEthernet0/1 lacp port-priority 10 interface GigabitEthernet0/2
+      lacp port-priority 20 interface Port-channel10 lacp max-bundle 2 slacp fast-switchover
     state: parsed
 
 # Module Execution Result:
