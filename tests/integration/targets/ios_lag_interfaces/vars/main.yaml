@@ -90,22 +90,22 @@ gathered:
   config:
     - name: GigabitEthernet0/0
     - members:
-      - member: GigabitEthernet0/1
-        mode: active
+        - member: GigabitEthernet0/1
+          mode: active
       name: Port-channel11
     - members:
-      - member: GigabitEthernet0/2
-        mode: active
+        - member: GigabitEthernet0/2
+          mode: active
       name: Port-channel22
 parsed:
   config:
     - members:
-      - member: GigabitEthernet0/1
-        mode: active
+        - member: GigabitEthernet0/1
+          mode: active
       name: Port-channel11
     - members:
-      - member: GigabitEthernet0/2
-        mode: passive
+        - member: GigabitEthernet0/2
+          mode: passive
       name: Port-channel22
 rtt:
   commands:
