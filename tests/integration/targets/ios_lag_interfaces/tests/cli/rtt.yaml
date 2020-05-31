@@ -3,6 +3,7 @@
     msg: START ios_lag_interfaces round trip integration tests on connection={{
       ansible_connection }}
 
+- include_tasks: _populate_port_channel.yaml
 - include_tasks: _remove_config.yaml
 
 - block:
@@ -11,12 +12,14 @@
       register: base_config
       cisco.ios.ios_lag_interfaces:
         config:
-          - name: Port-channel1
+          - name: Port-channel11
             members:
               - member: GigabitEthernet0/1
                 mode: active
+          - name: Port-channel22
+            members:
               - member: GigabitEthernet0/2
-                mode: passive
+                mode: active
         state: merged
 
     - name: Gather LAG interfaces facts
@@ -31,7 +34,7 @@
       register: result
       cisco.ios.ios_lag_interfaces:
         config:
-          - name: Port-channel10
+          - name: Port-channel22
             members:
               - member: GigabitEthernet0/2
                 mode: passive

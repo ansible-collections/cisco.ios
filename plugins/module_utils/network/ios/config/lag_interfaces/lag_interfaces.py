@@ -17,6 +17,7 @@ __metaclass__ = type
 
 
 import re
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -33,7 +34,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     dict_to_set,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    filter_dict_having_none_value,
     remove_duplicate_interface,
 )
 
@@ -139,8 +139,8 @@ class Lag_interfaces(ConfigBase):
         """
 
         if (
-                self.state in ("overridden", "merged", "replaced", "rendered")
-                and not want
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
         ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
@@ -180,7 +180,7 @@ class Lag_interfaces(ConfigBase):
                             else:
                                 continue
                         if match:
-                            have_dict = filter_dict_having_none_value(
+                            have_dict = self.filter_dict_having_none_value(
                                 interface, each
                             )
                             commands.extend(
@@ -190,7 +190,7 @@ class Lag_interfaces(ConfigBase):
                                 self._set_config(interface, each, module)
                             )
                     elif each.get("name") == each_interface["member"]:
-                        have_dict = filter_dict_having_none_value(
+                        have_dict = self.filter_dict_having_none_value(
                             interface, each
                         )
                         commands.extend(self._clear_config(dict(), have_dict))
@@ -213,21 +213,32 @@ class Lag_interfaces(ConfigBase):
         commands = []
 
         for interface in want:
-            for each_interface in interface.get("members"):
-                for each in have:
-                    if each.get("members"):
-                        for every in each.get("members"):
-                            match = False
-                            if every["member"] == each_interface["member"]:
-                                match = True
-                                break
-                            else:
-                                commands.extend(
-                                    self._clear_config(interface, each)
+            if interface.get("members"):
+                for each_interface in interface.get("members"):
+                    for each in have:
+                        if each.get("members"):
+                            for every in each.get("members"):
+                                match = False
+                                if every["member"] == each_interface["member"]:
+                                    match = True
+                                    break
+                                else:
+                                    commands.extend(
+                                        self._clear_config(interface, each)
+                                    )
+                                    continue
+                            if match:
+                                have_dict = self.filter_dict_having_none_value(
+                                    interface, each
                                 )
-                                continue
-                        if match:
-                            have_dict = filter_dict_having_none_value(
+                                commands.extend(
+                                    self._clear_config(dict(), have_dict)
+                                )
+                                commands.extend(
+                                    self._set_config(interface, each, module)
+                                )
+                        elif each.get("name") == each_interface["member"]:
+                            have_dict = self.filter_dict_having_none_value(
                                 interface, each
                             )
                             commands.extend(
@@ -236,15 +247,7 @@ class Lag_interfaces(ConfigBase):
                             commands.extend(
                                 self._set_config(interface, each, module)
                             )
-                    elif each.get("name") == each_interface["member"]:
-                        have_dict = filter_dict_having_none_value(
-                            interface, each
-                        )
-                        commands.extend(self._clear_config(dict(), have_dict))
-                        commands.extend(
-                            self._set_config(interface, each, module)
-                        )
-                        break
+                            break
         # Remove the duplicate interface call
         commands = remove_duplicate_interface(commands)
 
@@ -269,13 +272,12 @@ class Lag_interfaces(ConfigBase):
                     elif each.get("name") == each_interface["member"]:
                         break
                 else:
-                    if self.state == 'rendered':
-                        commands.extend(self._set_config(interface, dict(), module))
+                    if self.state == "rendered":
+                        commands.extend(
+                            self._set_config(interface, dict(), module)
+                        )
                     continue
                 commands.extend(self._set_config(interface, each, module))
-
-        if self.state == 'rendered':
-            commands = [each for n, each in enumerate(commands) if each not in commands[:n]]
 
         return commands
 
@@ -301,6 +303,23 @@ class Lag_interfaces(ConfigBase):
                 commands.extend(self._clear_config(dict(), each))
 
         return commands
+
+    def filter_dict_having_none_value(self, want, have):
+        # Generate dict with have dict value which is None in want dict
+        test_dict = dict()
+        test_key_dict = dict()
+        test_dict["name"] = want.get("name")
+        for k, v in iteritems(want):
+            if isinstance(v, dict):
+                for key, value in iteritems(v):
+                    if value is None:
+                        dict_val = have.get(k).get(key)
+                        test_key_dict.update({key: dict_val})
+                    test_dict.update({k: test_key_dict})
+            if v is None:
+                val = have.get(k)
+                test_dict.update({k: val})
+        return test_dict
 
     def remove_command_from_config_list(self, interface, cmd, commands):
         # To delete the passed config

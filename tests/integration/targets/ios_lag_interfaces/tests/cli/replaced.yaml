@@ -3,6 +3,7 @@
     msg: START Replaced ios_lag_interfaces state for integration tests on connection={{
       ansible_connection }}
 
+- include_tasks: _populate_port_channel.yaml
 - include_tasks: _remove_config.yaml
 
 - include_tasks: _populate_config.yaml
@@ -14,17 +15,11 @@
       cisco.ios.ios_lag_interfaces: &id001
         config:
 
-          - name: Port-channel2
+          - name: Port-channel11
             members:
 
               - member: GigabitEthernet0/1
-                mode: active
-
-          - name: Port-channel40
-            members:
-
-              - member: GigabitEthernet0/2
-                mode: active
+                mode: passive
         state: replaced
 
     - name: Assert that correct set of commands were generated

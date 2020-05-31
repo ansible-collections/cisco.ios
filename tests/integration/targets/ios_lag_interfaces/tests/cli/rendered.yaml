@@ -9,12 +9,14 @@
       register: result
       cisco.ios.ios_lag_interfaces:
         config:
-          - name: Port-channel1
+          - name: Port-channel11
             members:
-            - member: GigabitEthernet0/1
-              mode: active
-            - member: GigabitEthernet0/2
-              mode: passive
+              - member: GigabitEthernet0/1
+                mode: active
+          - name: Port-channel22
+            members:
+              - member: GigabitEthernet0/2
+                mode: passive
         state: rendered
 
     - assert:
