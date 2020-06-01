@@ -773,9 +773,8 @@ class Acls(ConfigBase):
                 cmd = self.source_dest_config(source, cmd, po)
             if destination:
                 cmd = self.source_dest_config(destination, cmd, po)
-            if po:
-                if po_val:
-                    cmd = cmd + " {0}".format(list(po_val)[0])
+            if po and po_val:
+                cmd = cmd + " {0}".format(list(po_val)[0])
             if dscp:
                 cmd = cmd + " dscp {0}".format(dscp)
             if fragments:
