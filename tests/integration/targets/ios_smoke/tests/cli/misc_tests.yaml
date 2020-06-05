@@ -22,9 +22,9 @@
 - name: run ios commands to test command_timeout
   cisco.ios.ios_command:
     commands:
-    - show running-config all
-    - show interfaces
-    - show running-config all
+      - show running-config all
+      - show interfaces
+      - show running-config all
   vars:
     ansible_command_timeout: 1
     ansible_buffer_read_timeout: 2

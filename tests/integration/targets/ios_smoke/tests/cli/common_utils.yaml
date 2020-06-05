@@ -56,11 +56,11 @@
     that:
       - 'result.failed == true'
 
-- name:  Change ipv4 and ipv6 address using aggregate
+- name: Change ipv4 and ipv6 address using aggregate
   cisco.ios.ios_l3_interface:
     aggregate:
-    - { name: "{{ test_interface }}", ipv4: 193.167.1.1/8, ipv6: "fd5a:12c9:2201:4::4/32" }
-    - { name: "{{ test_interface2 }}", ipv4: 192.169.2.2/24, ipv6: "fd5b:12c9:2201:5::5/90" }
+      - { name: "{{ test_interface }}", ipv4: 193.167.1.1/8, ipv6: "fd5a:12c9:2201:4::4/32" }
+      - { name: "{{ test_interface2 }}", ipv4: 192.169.2.2/24, ipv6: "fd5b:12c9:2201:5::5/90" }
     provider: "{{ cli }}"
   register: result
 
@@ -74,11 +74,11 @@
       - '"ip address 192.169.2.2 255.255.255.0" in result.commands'
       - '"ipv6 address fd5b:12c9:2201:5::5/90" in result.commands'
 
-- name:  Delete ipv4 and ipv6 address using aggregate
+- name: Delete ipv4 and ipv6 address using aggregate
   cisco.ios.ios_l3_interface:
     aggregate:
-    - { name: "{{ test_interface }}" }
-    - { name: "{{ test_interface2 }}" }
+      - { name: "{{ test_interface }}" }
+      - { name: "{{ test_interface2 }}" }
     state: absent
     provider: "{{ cli }}"
   register: result
