@@ -62,7 +62,7 @@ class Default(FactsBase):
             self.parse_stacks(data)
 
     def parse_iostype(self, data):
-        match = re.search(r"\S+(X86_64_LINUX_IOSD-UNIVERSALK9-M)(\S+)", data)
+        match = re.search(r"\sIOS-XE\s", data)
         if match:
             return "IOS-XE"
         else:
