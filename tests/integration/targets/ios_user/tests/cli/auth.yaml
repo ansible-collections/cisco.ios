@@ -61,7 +61,9 @@
         sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
     - name: test sshkey login
-      shell: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
+      shell: |
+        set timeout 100
+        ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
         }} -o IdentityFile={{ role_path }}/files/test_rsa -o UserKnownHostsFile=/dev/null
         -o StrictHostKeyChecking=no -o BatchMode=yes -o PubkeyAuthentication=yes
         show version
