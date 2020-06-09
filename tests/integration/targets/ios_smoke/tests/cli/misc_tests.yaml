@@ -15,7 +15,7 @@
 - name: configure device with defaults included
   cisco.ios.ios_config:
     src: defaults/config.j2
-    defaults: yes
+    defaults: true
     provider: "{{ cli }}"
   register: result
 
@@ -28,7 +28,7 @@
   vars:
     ansible_command_timeout: 1
     ansible_buffer_read_timeout: 2
-  ignore_errors: True
+  ignore_errors: true
   register: result
   when: ansible_connection == 'network_cli'
 

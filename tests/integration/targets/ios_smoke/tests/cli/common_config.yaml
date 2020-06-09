@@ -1,3 +1,4 @@
+---
 # ios_linkagg -> CustomNetworkConfig
 # cisco.ios.ios_config -> dumps, NetworkConfig
 
@@ -91,14 +92,14 @@
         lines:
           - no interface port-channel 20
         provider: "{{ cli }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: setup - remove config used in test(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: "{{ cli }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: setup - remove config used in test(part3)
       cisco.ios.ios_config:
@@ -188,14 +189,14 @@
         lines:
           - no interface port-channel 20
         provider: "{{ cli }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: teardown(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
         provider: "{{ cli }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: teardown(part3)
       cisco.ios.ios_config:

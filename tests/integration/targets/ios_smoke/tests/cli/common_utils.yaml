@@ -4,7 +4,7 @@
 # ios_logging -> validate_ip_address
 # ios_l3_interface -> is_netmask, is_masklen, to_subnet, to_netmask, to_masklen
 
-#ComplexList already covered
+# ComplexList already covered
 
 - debug: msg="START ios_smoke cli/common_utils.yaml on connection={{ ansible_connection }}"
 
@@ -48,7 +48,7 @@
     state: present
     provider: "{{ cli }}"
   register: result
-  ignore_errors: yes
+  ignore_errors: true
 
 - debug: var=result
 
@@ -115,7 +115,7 @@
     name: "{{ test_interface }}"
     state: down
     provider: "{{ cli }}"
-  ignore_errors: yes
+  ignore_errors: true
   register: result
 
 - assert:
@@ -126,7 +126,7 @@
 - name: Config + intent
   ios_interface:
     name: "{{ test_interface }}"
-    enabled: False
+    enabled: false
     state: down
     provider: "{{ cli }}"
   register: result
@@ -138,10 +138,10 @@
 - name: Config + intent (fail)
   ios_interface:
     name: "{{ test_interface }}"
-    enabled: False
+    enabled: false
     provider: "{{ cli }}"
     state: up
-  ignore_errors: yes
+  ignore_errors: true
   register: result
 
 - assert:
