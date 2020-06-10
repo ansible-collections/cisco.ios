@@ -27,7 +27,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_empties, dict_merge
+    remove_empties,
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     new_dict_to_set,
