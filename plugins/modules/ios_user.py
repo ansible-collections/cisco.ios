@@ -224,7 +224,9 @@ from ansible.module_utils.six import iteritems
 
 def validate_privilege(value, module):
     if value and not 1 <= value <= 15:
-        module.fail_json(msg="privilege must be between 1 and 15, got %s" % value)
+        module.fail_json(
+            msg="privilege must be between 1 and 15, got %s" % value
+        )
 
 
 def user_del_cmd(username):
@@ -245,11 +247,16 @@ def sshkey_fingerprint(sshkey):
     if " " in sshkey:
         # ssh-rsa AAA...== comment
         keyparts = sshkey.split(" ")
-        keyparts[1] = hashlib.md5(base64.b64decode(keyparts[1])).hexdigest().upper()
+        keyparts[1] = (
+            hashlib.md5(base64.b64decode(keyparts[1])).hexdigest().upper()
+        )
         return " ".join(keyparts)
     else:
         # just the key, assume rsa type
-        return "ssh-rsa %s" % hashlib.md5(base64.b64decode(sshkey)).hexdigest().upper()
+        return (
+            "ssh-rsa %s"
+            % hashlib.md5(base64.b64decode(sshkey)).hexdigest().upper()
+        )
 
 
 def map_obj_to_commands(updates, module):
@@ -265,7 +272,8 @@ def map_obj_to_commands(updates, module):
 
     def add_hashed_password(command, want, x):
         command.append(
-            "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value"))
+            "username %s secret %s %s"
+            % (want["name"], x.get("type"), x.get("value"))
         )
 
     def add_ssh(command, want, x=None):
@@ -325,7 +333,9 @@ def parse_sshkey(data, user):
     sshcfg = re.search(sshregex, data, re.M)
     key_list = []
     if sshcfg:
-        match = re.findall("key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M)
+        match = re.findall(
+            "key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M
+        )
         if match:
             key_list = match
     return key_list
@@ -443,14 +453,19 @@ def main():
     """ main entry point for module execution
     """
     hashed_password_spec = dict(
-        type=dict(type="int", required=True), value=dict(no_log=True, required=True),
+        type=dict(type="int", required=True),
+        value=dict(no_log=True, required=True),
     )
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
-        hashed_password=dict(no_log=True, type="dict", options=hashed_password_spec),
+        hashed_password=dict(
+            no_log=True, type="dict", options=hashed_password_spec
+        ),
         nopassword=dict(type="bool"),
-        update_password=dict(default="always", choices=["on_create", "always"]),
+        update_password=dict(
+            default="always", choices=["on_create", "always"]
+        ),
         password_type=dict(default="secret", choices=["secret", "password"]),
         privilege=dict(type="int"),
         view=dict(aliases=["role"]),

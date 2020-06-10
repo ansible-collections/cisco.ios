@@ -80,11 +80,14 @@ def main():
     """
     argument_spec = dict(
         state=dict(
-            default="present", choices=["present", "absent", "enabled", "disabled"],
+            default="present",
+            choices=["present", "absent", "enabled", "disabled"],
         )
     )
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     warnings = list()
     result = {"changed": False}
     if warnings:

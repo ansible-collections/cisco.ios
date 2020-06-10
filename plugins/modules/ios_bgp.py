@@ -435,8 +435,12 @@ def main():
         "auto_summary": dict(type="bool"),
         "synchronization": dict(type="bool"),
         "networks": dict(type="list", elements="dict", options=network_spec),
-        "redistribute": dict(type="list", elements="dict", options=redistribute_spec),
-        "neighbors": dict(type="list", elements="dict", options=af_neighbor_spec),
+        "redistribute": dict(
+            type="list", elements="dict", options=redistribute_spec
+        ),
+        "neighbors": dict(
+            type="list", elements="dict", options=af_neighbor_spec
+        ),
     }
     config_spec = {
         "bgp_as": dict(type="int", required=True),
@@ -454,7 +458,9 @@ def main():
             default="merge", choices=["merge", "replace", "override", "delete"]
         ),
     }
-    module = NetworkModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = NetworkModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     try:
         result = module.edit_config(config_filter="| section ^router bgp")
     except Exception as exc:

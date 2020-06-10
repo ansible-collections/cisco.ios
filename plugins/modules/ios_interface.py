@@ -21,14 +21,15 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_interface
 author: Ganesh Nalawade (@ganeshrn)
-short_description: (deprecated) Manage Interface on Cisco IOS network devices
+short_description: (deprecated, removed after 2022-06-01) Manage Interface on Cisco
+  IOS network devices
 description:
 - This module provides declarative management of Interfaces on Cisco IOS network devices.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: ios_interfaces
   why: Newer and updated modules released with more functionality in Ansible 2.9
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against IOS 15.6
 options:
@@ -98,6 +99,7 @@ options:
     - down
 extends_documentation_fragment:
 - cisco.ios.ios
+
 
 """
 EXAMPLES = """
@@ -249,7 +251,9 @@ def map_config_to_obj(module):
     for item in set(match):
         obj = {
             "name": item,
-            "description": parse_config_argument(configobj, item, "description"),
+            "description": parse_config_argument(
+                configobj, item, "description"
+            ),
             "speed": parse_config_argument(configobj, item, "speed"),
             "duplex": parse_config_argument(configobj, item, "duplex"),
             "mtu": parse_config_argument(configobj, item, "mtu"),
@@ -321,7 +325,9 @@ def map_obj_to_commands(updates):
                 if disable and not obj_in_have.get("disable", False):
                     add_command_to_interface(interface, "shutdown", commands)
                 elif not disable and obj_in_have.get("disable", False):
-                    add_command_to_interface(interface, "no shutdown", commands)
+                    add_command_to_interface(
+                        interface, "no shutdown", commands
+                    )
             else:
                 commands.append(interface)
                 for item in args:
@@ -364,7 +370,9 @@ def check_declarative_intent_params(module, want, result):
             have_state = None
             if match:
                 have_state = match.group(1)
-            if have_state is None or not conditional(want_state, have_state.strip()):
+            if have_state is None or not conditional(
+                want_state, have_state.strip()
+            ):
                 failed_conditions.append("state " + "eq(%s)" % want_state)
         if want_tx_rate:
             match = re.search("%s (\\d+)" % "output rate", out, re.M)
@@ -457,7 +465,9 @@ def main():
         rx_rate=dict(),
         neighbors=dict(type="list", elements="dict", options=neighbors_spec),
         delay=dict(default=10, type="int"),
-        state=dict(default="present", choices=["present", "absent", "up", "down"]),
+        state=dict(
+            default="present", choices=["present", "absent", "up", "down"]
+        ),
     )
     aggregate_spec = deepcopy(element_spec)
     aggregate_spec["name"] = dict(required=True)

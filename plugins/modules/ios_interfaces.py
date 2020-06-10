@@ -287,8 +287,7 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of given interfaces (Note: This won't delete the\
-    \     interface itself)"
+- name: "Delete module attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -338,8 +337,7 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of all interfaces (Note: This won't delete the interface\
-    \     itself)"
+- name: "Delete module attributes of all interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_interfaces:
     state: deleted
 

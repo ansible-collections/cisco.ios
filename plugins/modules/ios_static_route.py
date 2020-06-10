@@ -18,11 +18,16 @@
 DOCUMENTATION = """
 module: ios_static_route
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
-short_description: (deprecated) Manage static IP routes on Cisco IOS network devices
+short_description: (deprecated, removed after 2022-06-01) Manage static IP routes
+  on Cisco IOS network devices
 description:
 - This module provides declarative management of static IP routes on Cisco IOS network
   devices.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_static_routes
+  why: Newer and updated modules released with more functionality.
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against IOS 15.6
 options:

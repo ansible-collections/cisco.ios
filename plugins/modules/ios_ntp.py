@@ -111,7 +111,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 def parse_server(line, dest):
     if dest == "server":
-        match = re.search("(ntp server )(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M)
+        match = re.search(
+            "(ntp server )(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M
+        )
         if match:
             server = match.group(2)
             return server
@@ -127,7 +129,9 @@ def parse_source_int(line, dest):
 
 def parse_acl(line, dest):
     if dest == "access-group":
-        match = re.search("ntp access-group (?:peer|serve)(?:\\s+)(\\S+)", line, re.M)
+        match = re.search(
+            "ntp access-group (?:peer|serve)(?:\\s+)(\\S+)", line, re.M
+        )
         if match:
             acl = match.group(1)
             return acl
@@ -141,7 +145,9 @@ def parse_logging(line, dest):
 
 def parse_auth_key(line, dest):
     if dest == "authentication-key":
-        match = re.search("(ntp authentication-key \\d+ md5 )(\\w+)", line, re.M)
+        match = re.search(
+            "(ntp authentication-key \\d+ md5 )(\\w+)", line, re.M
+        )
         if match:
             auth_key = match.group(2)
             return auth_key
@@ -257,7 +263,11 @@ def map_obj_to_commands(want, have, module):
                 commands.append("ntp source {0}".format(source_int))
             if acl is not None and acl != acl_have:
                 commands.append("ntp access-group peer {0}".format(acl))
-            if logging is not None and logging != logging_have and logging is not False:
+            if (
+                logging is not None
+                and logging != logging_have
+                and logging is not False
+            ):
                 commands.append("ntp logging")
             if auth is not None and auth != auth_have and auth is not False:
                 commands.append("ntp authenticate")
@@ -266,7 +276,9 @@ def map_obj_to_commands(want, have, module):
             if auth_key is not None and auth_key != auth_key_have:
                 if key_id is not None:
                     commands.append(
-                        "ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key)
+                        "ntp authentication-key {0} md5 {1} 7".format(
+                            key_id, auth_key
+                        )
                     )
     return commands
 
@@ -283,7 +295,9 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     result = {"changed": False}
     warnings = list()
     if warnings:

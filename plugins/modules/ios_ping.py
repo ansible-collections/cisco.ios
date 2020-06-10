@@ -125,7 +125,9 @@ def main():
         count=dict(type="int"),
         dest=dict(type="str", required=True),
         source=dict(type="str"),
-        state=dict(type="str", choices=["absent", "present"], default="present"),
+        state=dict(
+            type="str", choices=["absent", "present"], default="present"
+        ),
         vrf=dict(type="str"),
     )
     argument_spec.update(ios_argument_spec)

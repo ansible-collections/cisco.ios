@@ -342,8 +342,7 @@ EXAMPLES = """
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
 
-- name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface\
-    \ itself)"
+- name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lldp_interfaces:
     config:
     - name: GigabitEthernet0/1
@@ -409,8 +408,7 @@ EXAMPLES = """
 #    Tx state: IDLE
 #    Rx state: WAIT FOR FRAME
 
-- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete\
-    \ the interface itself)"
+- name: "Delete LLDP attributes for all configured interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lldp_interfaces:
     state: deleted
 
