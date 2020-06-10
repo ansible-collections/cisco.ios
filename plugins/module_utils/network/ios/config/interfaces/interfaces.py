@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     dict_to_set,
+    normalize_interface,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
@@ -124,7 +125,12 @@ class Interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the deisred configuration
         """
-        want = self._module.params["config"]
+        config = self._module.params.get("config")
+        want = []
+        if config:
+            for each in config:
+                each.update({"name": normalize_interface(each["name"])})
+                want.append(each)
         have = existing_interfaces_facts
         resp = self.set_state(want, have)
         return to_list(resp)
