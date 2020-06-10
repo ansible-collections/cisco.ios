@@ -27,7 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_empties,
+    remove_empties, dict_merge
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     new_dict_to_set,
@@ -341,6 +341,7 @@ class Acls(ConfigBase):
                                     "sequence"
                                 ):
                                     ace_want = remove_empties(ace_want)
+                                    ace_want = dict_merge(ace_have, ace_want)
                                     cmd, change = self._set_config(
                                         ace_want,
                                         ace_have,
@@ -821,7 +822,7 @@ class Acls(ConfigBase):
                     cmd = "no ip access-list standard {0}".format(name)
                 elif name >= 100 and not sequence:
                     cmd = "no ip access-list extended {0}".format(name)
-                elif sequence and self.state in ("replaced", "overridden"):
+                elif sequence:
                     if name <= 99:
                         cmd = "ip access-list standard {0} ".format(name)
                     elif name >= 100:
@@ -833,7 +834,7 @@ class Acls(ConfigBase):
                     cmd = "no ip access-list extended {0}".format(name)
                 elif acl_type == "standard" and not sequence:
                     cmd = "no ip access-list standard {0}".format(name)
-                elif sequence and self.state in ("replaced", "overridden"):
+                elif sequence:
                     if acl_type == "extended":
                         cmd = "ip access-list extended {0} ".format(name)
                     elif acl_type == "standard":
@@ -844,7 +845,7 @@ class Acls(ConfigBase):
                         msg="ACL type value is required for Named ACL!"
                     )
         elif afi == "ipv6" and name:
-            if sequence and self.state in ("replaced", "overridden"):
+            if sequence:
                 cmd = "no sequence {0}".format(sequence)
             else:
                 cmd = "no ipv6 access-list {0}".format(name)

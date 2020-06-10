@@ -624,20 +624,10 @@ EXAMPLES = """
             wildcard_bits: 0.0.0.255
       - name: 110
         aces:
-        - grant: deny
-          sequence: 10
+        - sequence: 10
           protocol_options:
             icmp:
               traceroute: true
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-          dscp: ef
-          ttl:
-            eq: 10
         - grant: deny
           protocol_options:
             tcp:

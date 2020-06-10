@@ -15,7 +15,8 @@ merged:
     - ip access-list standard std_acl
     - deny 192.0.2.0 0.0.0.255
     - ip access-list extended test_acl
-    - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute
+    - no 10
+    - 10 deny tcp 192.0.4.0 0.0.0.255 192.0.5.0 0.0.0.255 eq www fin option traceroute
       ttl eq 10
     - ip access-list extended 110
     - 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
