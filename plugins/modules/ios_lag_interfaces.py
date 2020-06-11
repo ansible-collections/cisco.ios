@@ -413,7 +413,8 @@ EXAMPLES = """
 
 # Using Parsed
 
-# parsed.cfg
+#  File: parsed.cfg
+# ----------------
 #
 # interface GigabitEthernet0/1
 # channel-group 11 mode active
