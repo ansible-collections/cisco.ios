@@ -29,8 +29,7 @@ description: This module provides declarative management of VLANs on Cisco IOS n
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSl2 device with Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of VLANs options
@@ -581,8 +580,9 @@ EXAMPLES = """
 
 # Using Parsed
 
-# parsed.cfg
-
+# File: parsed.cfg
+# ----------------
+#
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
 # 1    default                          active    Gi0/1, Gi0/2

@@ -31,8 +31,7 @@ description: This module provides declarative management of Layer-2 interface on
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of Layer-2 interface options
@@ -442,12 +441,21 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# switchport mode access
+# switchport access vlan 30
+# interface GigabitEthernet0/2
+# switchport trunk allowed vlan 15-20,40
+# switchport trunk encapsulation dot1q
+# switchport trunk native vlan 20
+# switchport trunk pruning vlan 10,20
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l2_interfaces:
-    running_config: interface GigabitEthernet0/1 switchport mode access switchport
-      access vlan 30 interface GigabitEthernet0/2 switchport trunk allowed vlan 15-20,40
-      switchport trunk encapsulation dot1q switchport trunk native vlan 20 switchport
-      trunk pruning vlan 10,20
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

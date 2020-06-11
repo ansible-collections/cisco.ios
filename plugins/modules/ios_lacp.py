@@ -31,8 +31,7 @@ description: This module provides declarative management of Global LACP on Cisco
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: The provided configurations.
@@ -177,9 +176,14 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# lacp system-priority 123
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lacp:
-    running_config: lacp system-priority 10
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

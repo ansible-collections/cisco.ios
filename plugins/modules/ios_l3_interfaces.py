@@ -30,6 +30,8 @@ description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
+notes:
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of Layer-3 interface options
@@ -481,11 +483,20 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# ip address dhcp client-id
+# GigabitEthernet 0/0 hostname test.com
+# interface GigabitEthernet0/2
+# ip address 198.51.100.1 255.255.255.0
+# secondary ip address 198.51.100.2 255.255.255.0
+# ipv6 address 2001:db8:0:3::/64
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l3_interfaces:
-    running_config: interface GigabitEthernet0/1 ip address dhcp client-id GigabitEthernet
-      0/0 hostname test.com interface GigabitEthernet0/2 ip address 198.51.100.1 255.255.255.0
-      secondary ip address 198.51.100.2 255.255.255.0 ipv6 address 2001:db8:0:3::/64
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

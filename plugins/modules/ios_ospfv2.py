@@ -39,8 +39,7 @@ description: This module configures and manages the Open Shortest Path First (OS
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
   description: A dictionary of OSPF options.
@@ -1575,9 +1574,19 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# router ospf 100
+#  auto-cost reference-bandwidth 5
+#  domain-id 192.0.5.1
+#  area 5 authentication message-digest
+#  area 5 nssa translate type7 suppress-fa
+#  area 5 nssa default-information-originate metric 10
+
 - name: Parse the provided configuration with the exisiting running configuration
   cisco.ios.ios_ospfv2:
-    running_config: "{{ lookup('file', './parsed.cfg') }}"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
@@ -1612,17 +1621,6 @@ EXAMPLES = """
 #             }
 #         ]
 #     }
-
-# File: parsed.cfg
-# ----------------
-#
-# router ospf 100
-#  auto-cost reference-bandwidth 5
-#  domain-id 192.0.5.1
-#  area 5 authentication message-digest
-#  area 5 nssa translate type7 suppress-fa
-#  area 5 nssa default-information-originate metric 10
-
 
 """
 RETURN = """

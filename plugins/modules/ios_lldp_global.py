@@ -29,8 +29,7 @@ description: This module configures and manages the Link Layer Discovery Protoco
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of LLDP options
@@ -261,9 +260,17 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# lldp timer 10
+# lldp holdtime 10
+# lldp reinit 3
+# lldp run
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lldp_global:
-    running_config: lldp timer 10 lldp holdtime 10 lldp reinit 3 lldp run
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

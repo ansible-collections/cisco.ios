@@ -30,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of ACL options.
@@ -1304,10 +1303,15 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# ipv6 access-list R1_TRAFFIC
+# deny tcp any eq www any eq telnet ack dscp af11
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acls:
-    running_config: ipv6 access-list R1_TRAFFIC deny tcp any eq www any eq telnet
-      ack dscp af11
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

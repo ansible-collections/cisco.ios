@@ -104,7 +104,7 @@ EXAMPLES = """
       answer: y
     - command: clear counters GigabitEthernet0/2
       prompt: '[confirm]'
-      answer: '\\r'
+      answer: '\r'
 """
 RETURN = """
 stdout:

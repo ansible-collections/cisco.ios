@@ -30,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of interface options
@@ -455,11 +454,24 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# description interfaces 0/1
+# mtu 110
+# duplex half
+# no shutdown
+# interface GigabitEthernet0/2
+# description interfaces 0/2
+# mtu 2800
+# speed 100
+# duplex full
+# shutdown
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_interfaces:
-    running_config: interface GigabitEthernet0/1 description interfaces 0/1 mtu 110
-      duplex half no shutdown interface GigabitEthernet0/2 description interfaces
-      0/2 mtu 2800 speed 100 duplex full shutdown
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

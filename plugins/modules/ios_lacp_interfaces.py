@@ -32,7 +32,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL.
-- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of LACP lacp_interfaces option
@@ -399,10 +398,19 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# lacp port-priority 10
+# interface GigabitEthernet0/2
+# lacp port-priority 20
+# interface Port-channel10
+# lacp max-bundle 2 fast-switchover
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lacp_interfaces:
-    running_config: interface GigabitEthernet0/1 lacp port-priority 10 interface GigabitEthernet0/2
-      lacp port-priority 20 interface Port-channel10 lacp max-bundle 2 slacp fast-switchover
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
