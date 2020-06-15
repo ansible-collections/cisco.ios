@@ -1,3 +1,7 @@
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
@@ -372,7 +376,7 @@ def _tmplt_ospf_max_lsa(config_data):
             command += " reset-time {reset_time}".format(
                 **config_data["max_lsa"]
             )
-        if "warning_only":
+        if "warning_only" in config_data["max_lsa"]:
             command += " warning-only"
         return command
 
@@ -567,7 +571,7 @@ def _tmplt_ospf_ttl_security(config_data):
 
 
 class Ospfv2Template(NetworkTemplate):
-    def __init__(self, lines=[]):
+    def __init__(self, lines=None):
         super(Ospfv2Template, self).__init__(lines=lines, tmplt=self)
 
     PARSERS = [
@@ -789,9 +793,11 @@ class Ospfv2Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "nssa": {
-                                    "set": "{{ True if nssa is defined and def_origin is undefined and no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
+                                    "set": "{{ True if nssa is defined and def_origin is undefined and "
+                                           "no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
                                     "default_information_originate": {
-                                        "set": "{{ True if def_origin is defined and metric is undefined and metric_type is undefined and nssa_only is undefined }}",
+                                        "set": "{{ True if def_origin is defined and metric is undefined and "
+                                               "metric_type is undefined and nssa_only is undefined }}",
                                         "metric": "{{ metric.split("
                                         ")[1]|int }}",
                                         "metric_type": "{{ metric_type.split("
