@@ -14,12 +14,16 @@
 
     - name: increase log buffer size
       ansible.netcommon.cli_config:
-        config: logging buffered 640000
+        config: logging buffered 9600000
 
     - name: send log with error regex match 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id002
-        command: "send log 'IPSEC-3-REPLAY_ERROR: test log_1'"
+        command: "send log 'IPSEC-3-REPLAY_ERROR: test log_1'\n"
+
+    - name: pause to avoid rate limiting-1
+      pause:
+        seconds: 20
 
     - name: fetch logs without command specific error regex
       register: result
@@ -33,9 +37,9 @@
         that:
           - result.failed == true
 
-    - name: pause to avoid rate limiting
+    - name: pause to avoid rate limiting-2
       pause:
-        seconds: 10
+        seconds: 20
 
     - name: clear logs 2
       ignore_errors: true
