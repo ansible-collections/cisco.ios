@@ -1,4 +1,4 @@
-#
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
