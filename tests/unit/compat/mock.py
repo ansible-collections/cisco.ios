@@ -1,3 +1,4 @@
+# pylint: skip-file
 # (c) 2014, Toshio Kuratomi <tkuratomi@ansible.com>
 #
 # This file is part of Ansible

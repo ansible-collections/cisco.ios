@@ -794,10 +794,10 @@ class Ospfv2Template(NetworkTemplate):
                                 "area_id": "{{ area_id }}",
                                 "nssa": {
                                     "set": "{{ True if nssa is defined and def_origin is undefined and "
-                                           "no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
+                                    "no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
                                     "default_information_originate": {
                                         "set": "{{ True if def_origin is defined and metric is undefined and "
-                                               "metric_type is undefined and nssa_only is undefined }}",
+                                        "metric_type is undefined and nssa_only is undefined }}",
                                         "metric": "{{ metric.split("
                                         ")[1]|int }}",
                                         "metric_type": "{{ metric_type.split("
