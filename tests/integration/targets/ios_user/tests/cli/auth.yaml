@@ -70,7 +70,7 @@
       expect:
         command: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
           }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
-          show version
+          show version -o ConnectTimeout=200
         responses:
           (?i)password: badpass
       ignore_errors: true
