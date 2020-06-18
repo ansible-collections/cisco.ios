@@ -60,21 +60,29 @@
         provider: '{{ cli }}'
         sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
-    - name: test sshkey login
-      shell: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
-        }} -o IdentityFile={{ role_path }}/files/test_rsa -o UserKnownHostsFile=/dev/null
-        -o StrictHostKeyChecking=no -o BatchMode=yes -o PubkeyAuthentication=yes
-        show version -o ConnectTimeout=200
+    - name: reset connection with {{ ansible_user }
+      meta: reset_connection
 
-    - name: test login without sshkey (should fail)
-      expect:
-        command: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
-          }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
-          show version -o ConnectTimeout=200
-        responses:
-          (?i)password: badpass
+    - name: test sshkey login for {{ ansible_user }} user
+      cisco.ios.ios_command:
+        commands:
+          - show version
+      vars:
+        ansible_user: ssh_user
+        ansible_private_key_file: "{{ role_path }}/files/test_rsa"
+
+    - name: reset connection with {{ ansible_user }}
+      meta: reset_connection
+
+    - name: test with {{ ansible_user }} user without keys
+      cisco.ios.ios_command:
+        commands:
+          - show version
       ignore_errors: true
       register: results
+      vars:
+        ansible_user: ssh_user
+        ansible_private_key_file: ""
 
     - name: check that attempt failed
       assert:
