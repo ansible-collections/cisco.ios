@@ -1,2 +1,3 @@
 ansible
 paramiko
+ansible-pylibssh==0.0.1a2.dev0
