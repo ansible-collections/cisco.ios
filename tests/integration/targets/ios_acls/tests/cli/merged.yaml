@@ -6,28 +6,14 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
-    - name: Merge provided configuration with device configuration
-      register: result
-      cisco.ios.ios_acls: &id001
+    - name: Merge initial config with device configuration
+      cisco.ios.ios_acls:
         config:
-
           - afi: ipv4
             acls:
-
-              - name: std_acl
-                acl_type: standard
-                aces:
-
-                  - grant: deny
-                    source:
-                      address: 192.0.2.0
-                      wildcard_bits: 0.0.0.255
-
               - name: test_acl
                 acl_type: extended
                 aces:
-
                   - grant: deny
                     protocol_options:
                       tcp:
@@ -44,10 +30,33 @@
                       traceroute: true
                     ttl:
                       eq: 10
+        state: merged
 
+    - name: Merge new configuration with existing device configuration
+      register: result
+      cisco.ios.ios_acls: &id001
+        config:
+          - afi: ipv4
+            acls:
+              - name: std_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+              - name: test_acl
+                acl_type: extended
+                aces:
+                  - sequence: 10
+                    source:
+                      address: 192.0.4.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.5.0
+                      wildcard_bits: 0.0.0.255
               - name: 110
                 aces:
-
                   - grant: deny
                     sequence: 10
                     protocol_options:
@@ -62,10 +71,8 @@
                     dscp: ef
                     ttl:
                       eq: 10
-
               - name: 123
                 aces:
-
                   - grant: deny
                     protocol_options:
                       tcp:
@@ -80,7 +87,6 @@
                         eq: telnet
                     tos:
                       service_value: 12
-
                   - grant: deny
                     protocol_options:
                       tcp:
@@ -96,10 +102,8 @@
                     dscp: ef
                     ttl:
                       lt: 20
-
           - afi: ipv6
             acls:
-
               - name: R1_TRAFFIC
                 aces:
 
@@ -120,7 +124,7 @@
 
     - assert:
         that:
-          - result.commands|length == 11
+          - result.commands|length == 12
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
