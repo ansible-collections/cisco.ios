@@ -18,18 +18,18 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_interface
 author: Ganesh Nalawade (@ganeshrn)
-short_description: (deprecated) Manage Interface on Cisco IOS network devices
+short_description: (deprecated, removed after 2022-06-01) Manage Interface on Cisco
+  IOS network devices
 description:
 - This module provides declarative management of Interfaces on Cisco IOS network devices.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: ios_interfaces
   why: Newer and updated modules released with more functionality in Ansible 2.9
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against IOS 15.6
 options:
@@ -99,6 +99,7 @@ options:
     - down
 extends_documentation_fragment:
 - cisco.ios.ios
+
 
 """
 EXAMPLES = """

@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_logging
 author: Trishna Guha (@trishnaguha)
@@ -74,41 +73,41 @@ extends_documentation_fragment:
 """
 EXAMPLES = """
 - name: configure host logging
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: present
 
 - name: remove host logging configuration
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: absent
 
 - name: configure console logging level and facility
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: console
     facility: local7
     level: debugging
     state: present
 
 - name: enable logging to all
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: on
 
 - name: configure buffer size
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: buffered
     size: 5000
 
 - name: Configure logging using aggregate
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     aggregate:
     - {dest: console, level: notifications}
     - {dest: buffered, size: 9000}
 
 - name: remove logging using aggregate
-  ios.ios_logging:
+  cisco.ios.ios_logging:
     aggregate:
     - {dest: console, level: notifications}
     - {dest: buffered, size: 9000}

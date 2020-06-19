@@ -22,15 +22,16 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_l3_interfaces
-short_description: Layer-3 interface resource module
+short_description: L3 interfaces resource module
 description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
+notes:
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of Layer-3 interface options
@@ -83,12 +84,12 @@ options:
             type: str
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the VyOS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the VyOS device
+      by executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     choices:
     - merged
@@ -102,6 +103,7 @@ options:
     description:
     - The state of the configuration after module completion
     type: str
+
 """
 
 EXAMPLES = """
@@ -308,7 +310,7 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.2 255.255.255.0
 
-- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface itself)"
+- name: "Delete attributes of given interfaces (NOTE: This won't delete the interface sitself)"
   cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -453,18 +455,18 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_l3_interfaces:
     config:
-      - name: GigabitEthernet0/1
-        ipv4:
-          - address: dhcp
-            dhcp_client: 0
-            dhcp_hostname: test.com
-      - name: GigabitEthernet0/2
-        ipv4:
-          - address: 198.51.100.1/24
-            secondary: true
-          - address: 198.51.100.2/24
-        ipv6:
-          - address: 2001:db8:0:3::/64
+    - name: GigabitEthernet0/1
+      ipv4:
+      - address: dhcp
+        dhcp_client: 0
+        dhcp_hostname: test.com
+    - name: GigabitEthernet0/2
+      ipv4:
+      - address: 198.51.100.1/24
+        secondary: true
+      - address: 198.51.100.2/24
+      ipv6:
+      - address: 2001:db8:0:3::/64
     state: rendered
 
 # Module Execution Result:
@@ -481,15 +483,20 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# ip address dhcp client-id
+# GigabitEthernet 0/0 hostname test.com
+# interface GigabitEthernet0/2
+# ip address 198.51.100.1 255.255.255.0
+# secondary ip address 198.51.100.2 255.255.255.0
+# ipv6 address 2001:db8:0:3::/64
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l3_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
-       interface GigabitEthernet0/2
-       ip address 198.51.100.1 255.255.255.0 secondary
-       ip address 198.51.100.2 255.255.255.0
-       ipv6 address 2001:db8:0:3::/64"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

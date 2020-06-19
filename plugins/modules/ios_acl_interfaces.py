@@ -21,7 +21,6 @@ The module file for ios_acl_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_acl_interfaces
 short_description: ACL interfaces resource module
@@ -31,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of ACL interfaces options
@@ -489,14 +487,18 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# ip access-group 110 in
+# ip access-group 123 out
+# ipv6 traffic-filter temp_v6 in
+# ipv6 traffic-filter test_v6 out
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acl_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       ip access-group 110 in
-       ip access-group 123 out
-       ipv6 traffic-filter temp_v6 in
-       ipv6 traffic-filter test_v6 out"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

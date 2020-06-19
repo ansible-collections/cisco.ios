@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_command
 author: Peter Sprygada (@privateip)
@@ -100,12 +99,12 @@ EXAMPLES = """
 - name: run commands that require answering a prompt
   cisco.ios.ios_command:
     commands:
-    - command: 'clear counters GigabitEthernet0/1'
-      prompt: 'Clear "show interface" counters on this interface \\[confirm\\]'
-      answer: 'y'
-    - command: 'clear counters GigabitEthernet0/2'
+    - command: clear counters GigabitEthernet0/1
+      prompt: Clear "show interface" counters on this interface [confirm]
+      answer: y
+    - command: clear counters GigabitEthernet0/2
       prompt: '[confirm]'
-      answer: "\r"
+      answer: '\r'
 """
 RETURN = """
 stdout:

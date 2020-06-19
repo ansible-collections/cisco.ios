@@ -21,7 +21,6 @@ The module file for ios_static_routes
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_static_routes
 short_description: Static routes resource module
@@ -29,8 +28,7 @@ description: This module configures and manages the static routes on IOS platfor
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of static route options

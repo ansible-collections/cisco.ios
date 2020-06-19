@@ -31,23 +31,16 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
 DOCUMENTATION = """
----
 module: ios_ospfv2
-version_added: 2.9
-short_description: OSPF_v2 resource module.
-description: This module configures and manages the Open Shortest Path First (OSPF) version 2 on IOS platforms.
+short_description: OSPFv2 resource module
+description: This module configures and manages the Open Shortest Path First (OSPF)
+  version 2 on IOS platforms.
+version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
-  - This module works with connection C(network_cli).
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
   description: A dictionary of OSPF options.
@@ -56,7 +49,7 @@ options:
   suboptions:
     processes:
       description:
-        - List of OSPF instance configurations.
+      - List of OSPF instance configurations.
       type: list
       elements: dict
       suboptions:
@@ -76,8 +69,8 @@ options:
               type: bool
             snmp_context:
               description:
-                - Modify snmp parameters
-                - Configure SNMP context name
+              - Modify snmp parameters
+              - Configure SNMP context name
               type: str
             topology:
               description: Associate the routing protocol to a topology instance
@@ -91,8 +84,8 @@ options:
                   type: bool
                 tid:
                   description:
-                    - Configuring the routing protocol topology tid
-                    - Note, please refer vendor documentation for valid values
+                  - Configuring the routing protocol topology tid
+                  - Note, please refer vendor documentation for valid values
                   type: bool
         adjacency:
           description: To configure control adjacency formation
@@ -100,13 +93,13 @@ options:
           suboptions:
             min_adjacency:
               description:
-                - Initial number of adjacencies allowed to be forming in an area
-                - Please refer vendor documentation for valid values
+              - Initial number of adjacencies allowed to be forming in an area
+              - Please refer vendor documentation for valid values
               type: int limit or minimum adjacencies forming in area
             max_adjacency:
               description:
-                - Maximum number of adjacencies allowed to be forming
-                - Please refer vendor documentation for valid values
+              - Maximum number of adjacencies allowed to be forming
+              - Please refer vendor documentation for valid values
               type: int
             none:
               description: No initial
@@ -118,9 +111,9 @@ options:
           suboptions:
             area_id:
               description:
-                - OSPF area ID as a decimal value. Please refer vendor documentation
-                  of Valid values.
-                - OSPF area ID in IP address format(e.g. A.B.C.D)
+              - OSPF area ID as a decimal value. Please refer vendor documentation
+                of Valid values.
+              - OSPF area ID in IP address format(e.g. A.B.C.D)
               type: str
             authentication:
               description: Area authentication
@@ -134,14 +127,14 @@ options:
                   type: bool
             capability:
               description:
-                - Enable area specific capability
-                - Enable exclusion of links from base topology
+              - Enable area specific capability
+              - Enable exclusion of links from base topology
               type: bool
             default_cost:
               description:
-                - Set the summary default-cost of a NSSA/stub area
-                - Stub's advertised external route metric
-                - Note, please refer vendor documentation for respective valid values
+              - Set the summary default-cost of a NSSA/stub area
+              - Stub's advertised external route metric
+              - Note, please refer vendor documentation for respective valid values
               type: int
             filter_list:
               description: Filter networks between OSPF areas
@@ -152,10 +145,11 @@ options:
                   description: Name of an IP prefix-list
                   type: str
                 direction:
-                  description: The direction to apply on the filter networks sent to and from this area.
+                  description: The direction to apply on the filter networks sent
+                    to and from this area.
                   type: str
-                  choices: ['in', 'out']
-                  required: True
+                  choices: [in, out]
+                  required: true
             nssa:
               description: Specify a NSSA area
               type: dict
@@ -172,8 +166,8 @@ options:
                       type: int
                     metric_type:
                       description:
-                        - OSPF metric type for default routes
-                        - OSPF Link State type
+                      - OSPF metric type for default routes
+                      - OSPF Link State type
                       type: int
                       choices: [1, 2]
                     nssa_only:
@@ -190,13 +184,14 @@ options:
                   type: bool
                 translate:
                   description:
-                    - Translate LSA
-                    - Always translate LSAs on this ABR
-                    - Suppress forwarding address in translated LSAs
+                  - Translate LSA
+                  - Always translate LSAs on this ABR
+                  - Suppress forwarding address in translated LSAs
                   type: str
-                  choices: ['always', 'suppress-fa']
+                  choices: [always, suppress-fa]
             ranges:
-              description: Summarize routes matching address/mask (border routers only)
+              description: Summarize routes matching address/mask (border routers
+                only)
               type: list
               suboptions:
                 address:
@@ -207,10 +202,10 @@ options:
                   type: str
                 advertise:
                   description:
-                    - Advertise this range (default)
-                    - Since, advertise when enabled is not shown in running-config
-                      idempotency won't be maintained for the play in the second or
-                      next run of the play.
+                  - Advertise this range (default)
+                  - Since, advertise when enabled is not shown in running-config idempotency
+                    won't be maintained for the play in the second or next run of
+                    the play.
                   type: bool
                 cost:
                   description: User specified metric for this range
@@ -230,26 +225,27 @@ options:
                   type: str
                 cost:
                   description:
-                    - Associate a cost with the sham-link
-                    - Cost of the sham-link
-                    - Note, please refer vendor documentation for respective valid values
+                  - Associate a cost with the sham-link
+                  - Cost of the sham-link
+                  - Note, please refer vendor documentation for respective valid values
                   type: int
                 ttl_security:
                   description:
-                    - TTL security check
-                    - Maximum number of IP hops allowed
+                  - TTL security check
+                  - Maximum number of IP hops allowed
                   type: int
             stub:
               description:
-                - Specify a stub area
-                - Backbone can not be configured as stub area
+              - Specify a stub area
+              - Backbone can not be configured as stub area
               type: dict
               suboptions:
                 set:
                   description: Enable a stub area
                   type: bool
                 no_ext_capability:
-                  description: Do not send domain specific capabilities into stub area
+                  description: Do not send domain specific capabilities into stub
+                    area
                   type: bool
                 no_summary:
                   description: Do not send summary LSA into stub area
@@ -263,13 +259,13 @@ options:
               type: bool
             reference_bandwidth:
               description:
-                - Use reference bandwidth method to assign OSPF cost
-                - Note, refer vendor documentation for respective valid values
+              - Use reference bandwidth method to assign OSPF cost
+              - Note, refer vendor documentation for respective valid values
               type: int
         bfd:
           description:
-            - BFD configuration commands
-            - Enable BFD on all interfaces
+          - BFD configuration commands
+          - Enable BFD on all interfaces
           type: bool
         capability:
           description: Enable specific OSPF feature
@@ -312,13 +308,13 @@ options:
               type: bool
             metric:
               description:
-                - OSPF default metric
-                - Note, refer vendor documentation for respective valid values
+              - OSPF default metric
+              - Note, refer vendor documentation for respective valid values
               type: int
             metric_type:
               description:
-                - OSPF metric type for default routes
-                - Note, please refer vendor documentation for respective valid range
+              - OSPF metric type for default routes
+              - Note, please refer vendor documentation for respective valid range
               type: int
             route_map:
               description: Route-map reference name
@@ -335,15 +331,15 @@ options:
               type: bool
             external:
               description:
-                - Discard route for redistributed summarised routes
-                - Administrative distance for redistributed summarised routes
-                - Note, please refer vendor documentation for respective valid range
+              - Discard route for redistributed summarised routes
+              - Administrative distance for redistributed summarised routes
+              - Note, please refer vendor documentation for respective valid range
               type: int
             internal:
               description:
-                - Discard route for summarised internal routes
-                - Administrative distance for summarised internal routes
-                - Note, please refer vendor documentation for respective valid range
+              - Discard route for summarised internal routes
+              - Administrative distance for summarised internal routes
+              - Note, please refer vendor documentation for respective valid range
               type: int
         distance:
           description: Define an administrative distance
@@ -395,16 +391,16 @@ options:
                   description: Filter incoming and outgoing routing updates.
                   type: str
                   required: true
-                  choices: ['in', 'out']
+                  choices: [in, out]
                 interface:
                   description:
-                    - Interface configuration (GigabitEthernet A/B)
-                    - Valid with incoming traffic
+                  - Interface configuration (GigabitEthernet A/B)
+                  - Valid with incoming traffic
                   type: str
                 protocol:
                   description:
-                    - Protocol config (bgp 1).
-                    - Valid with outgoing traffic
+                  - Protocol config (bgp 1).
+                  - Valid with outgoing traffic
                   type: str
             prefix:
               description: Filter prefixes in routing updates
@@ -415,22 +411,23 @@ options:
                   type: str
                   required: true
                 gateway_name:
-                  description: Gateway name for filtering incoming updates based on gateway
+                  description: Gateway name for filtering incoming updates based on
+                    gateway
                   type: str
                 direction:
                   description: Filter incoming and outgoing routing updates.
                   type: str
                   required: true
-                  choices: ['in', 'out']
+                  choices: [in, out]
                 interface:
                   description:
-                    - Interface configuration (GigabitEthernet A/B)
-                    - Valid with incoming traffic
+                  - Interface configuration (GigabitEthernet A/B)
+                  - Valid with incoming traffic
                   type: str
                 protocol:
                   description:
-                    - Protocol config (bgp 1).
-                    - Valid with outgoing traffic
+                  - Protocol config (bgp 1).
+                  - Valid with outgoing traffic
                   type: str
             route_map:
               description: Filter prefixes in routing updates
@@ -459,8 +456,8 @@ options:
               type: bool
         domain_tag:
           description:
-            - OSPF domain-tag which is OSPF domain tag - 32-bit value
-            - Note, please refer vendor documentation for respective valid range
+          - OSPF domain-tag which is OSPF domain tag - 32-bit value
+          - Note, please refer vendor documentation for respective valid range
           type: int
         event_log:
           description: Event Logging
@@ -477,27 +474,29 @@ options:
               type: bool
             size:
               description:
-                - Maximum Number of Events Stored in the Event Log
-                - Note, refer vendor documentation for respective valid values
+              - Maximum Number of Events Stored in the Event Log
+              - Note, refer vendor documentation for respective valid values
               type: int
         help:
           description: Description of the interactive help system
           type: bool
         ignore:
           description:
-            - Do not complain about specific event
-            - Do not complain upon receiving LSA of the specified type, MOSPF Type 6 LSA
+          - Do not complain about specific event
+          - Do not complain upon receiving LSA of the specified type, MOSPF Type 6
+            LSA
           type: bool
         interface_id:
           description:
-            - Source of the interface ID
-            - SNMP MIB ifIndex
+          - Source of the interface ID
+          - SNMP MIB ifIndex
           type: bool
         ispf:
           description: Enable incremental SPF computation
           type: bool
         limit:
-          description: Limit a specific OSPF feature and LS update, DBD, and LS request retransmissions
+          description: Limit a specific OSPF feature and LS update, DBD, and LS request
+            retransmissions
           type: dict
           suboptions:
             dc:
@@ -552,28 +551,28 @@ options:
           suboptions:
             number:
               description:
-                - Maximum number of non self-generated LSAs to accept
-                - Note, refer vendor documentation for respective valid values
+              - Maximum number of non self-generated LSAs to accept
+              - Note, refer vendor documentation for respective valid values
               type: int
             threshold_value:
               description:
-                - Threshold value (%) at which to generate a warning msg
-                - Note, refer vendor documentation for respective valid values
+              - Threshold value (%) at which to generate a warning msg
+              - Note, refer vendor documentation for respective valid values
               type: int
             ignore_count:
               description:
-                - Maximum number of times adjacencies can be suppressed
-                - Note, refer vendor documentation for respective valid values
+              - Maximum number of times adjacencies can be suppressed
+              - Note, refer vendor documentation for respective valid values
               type: int
             ignore_time:
               description:
-                - Number of minutes during which all adjacencies are suppressed
-                - Note, refer vendor documentation for respective valid values
+              - Number of minutes during which all adjacencies are suppressed
+              - Note, refer vendor documentation for respective valid values
               type: int
             reset_time:
               description:
-                - Number of minutes after which ignore-count is reset to zero
-                - Note, refer vendor documentation for respective valid values
+              - Number of minutes after which ignore-count is reset to zero
+              - Note, refer vendor documentation for respective valid values
               type: int
             warning_only:
               description: Only give a warning message when limit is exceeded
@@ -588,9 +587,9 @@ options:
               required: true
             external_lsa:
               description:
-                - Override external-lsa metric with max-metric value
-                - Overriding metric in external-LSAs
-                - Note, refer vendor documentation for respective valid values
+              - Override external-lsa metric with max-metric value
+              - Overriding metric in external-LSAs
+              - Note, refer vendor documentation for respective valid values
               type: int
             include_stub:
               description: Set maximum metric for stub links in router-LSAs
@@ -601,21 +600,22 @@ options:
               suboptions:
                 time:
                   description:
-                    - Time, in seconds, router-LSAs are originated with max-metric
-                    - Note, please refer vendor documentation for respective valid range
+                  - Time, in seconds, router-LSAs are originated with max-metric
+                  - Note, please refer vendor documentation for respective valid range
                   type: int
                 wait_for_bgp:
-                  description: Let BGP decide when to originate router-LSA with normal metric
+                  description: Let BGP decide when to originate router-LSA with normal
+                    metric
                   type: bool
             summary_lsa:
               description:
-                - Override summary-lsa metric with max-metric value
-                - Note, please refer vendor documentation for respective valid range
+              - Override summary-lsa metric with max-metric value
+              - Note, please refer vendor documentation for respective valid range
               type: int
         maximum_paths:
           description:
-            - Forward packets over multiple paths
-            - Number of paths
+          - Forward packets over multiple paths
+          - Number of paths
           type: int
         mpls:
           description: Configure MPLS routing protocol parameters
@@ -630,7 +630,8 @@ options:
                   type: dict
                   suboptions:
                     set:
-                      description: Configure LDP automatic configuration and set the config
+                      description: Configure LDP automatic configuration and set the
+                        config
                       type: bool
                     area:
                       description: Configure an OSPF area to run MPLS LDP
@@ -639,18 +640,19 @@ options:
                   description: Configure LDP-IGP Synchronization
                   type: bool
             traffic_eng:
-              description: Let BGP decide when to originate router-LSA with normal metric
+              description: Let BGP decide when to originate router-LSA with normal
+                metric
               type: dict
               suboptions:
                 area:
                   description:
-                    - Configure an ospf area to run MPLS Traffic Engineering
-                    - OSPF area ID as a decimal value or in IP address format
+                  - Configure an ospf area to run MPLS Traffic Engineering
+                  - OSPF area ID as a decimal value or in IP address format
                   type: str
                 autoroute_exclude:
                   description:
-                    - MPLS TE autoroute exclude
-                    - Filter prefixes based on name of an IP prefix-list
+                  - MPLS TE autoroute exclude
+                  - Filter prefixes based on name of an IP prefix-list
                   type: str
                 interface:
                   description: MPLS TE interface configuration for this OSPF process
@@ -661,8 +663,8 @@ options:
                       type: str
                     area:
                       description:
-                        - Advertise MPLS TE information for this interface into area
-                        - OSPF area ID as a decimal value
+                      - Advertise MPLS TE information for this interface into area
+                      - OSPF area ID as a decimal value
                       type: int
                 mesh_group:
                   description: Traffic Engineering Mesh-Group advertisement
@@ -692,16 +694,18 @@ options:
               type: str
             cost:
               description:
-                - OSPF cost for point-to-multipoint neighbor metric
-                - Note, please refer vendor documentation for respective valid range
+              - OSPF cost for point-to-multipoint neighbor metric
+              - Note, please refer vendor documentation for respective valid range
               type: int
             database_filter:
               description:
-                - Filter OSPF LSA during synchronization and flooding for point-to-multipoint neighbor
-                - Filter all outgoing LSA
+              - Filter OSPF LSA during synchronization and flooding for point-to-multipoint
+                neighbor
+              - Filter all outgoing LSA
               type: bool
             poll_interval:
-              description: OSPF dead-router polling interval of non-broadcast neighbor in Seconds
+              description: OSPF dead-router polling interval of non-broadcast neighbor
+                in Seconds
               type: int
             priority:
               description: OSPF priority of non-broadcast neighbor priority
@@ -748,16 +752,16 @@ options:
                   type: bool
         passive_interface:
           description:
-            - Suppress routing updates on an interface (GigabitEthernet A/B)
-            - Interface name with respective interface number
+          - Suppress routing updates on an interface (GigabitEthernet A/B)
+          - Interface name with respective interface number
           type: str
         prefix_suppression:
           description: Enable prefix suppression
           type: bool
         priority:
           description:
-            - OSPF topology priority
-            - Note, refer vendor documentation for respective valid values
+          - OSPF topology priority
+          - Note, refer vendor documentation for respective valid values
           type: int
         queue_depth:
           description: Hello/Router process queue depth
@@ -785,8 +789,8 @@ options:
                   type: bool
         router_id:
           description:
-            - Router-id address for this OSPF process
-            - OSPF router-id in IP address format (A.B.C.D)
+          - Router-id address for this OSPF process
+          - OSPF router-id in IP address format (A.B.C.D)
           type: str
         shutdown:
           description: Shutdown the router process
@@ -816,9 +820,9 @@ options:
           suboptions:
             lsa:
               description:
-                - OSPF LSA timers, arrival timer
-                - The minimum interval in milliseconds between accepting the same LSA
-                - Note, refer vendor documentation for respective valid values
+              - OSPF LSA timers, arrival timer
+              - The minimum interval in milliseconds between accepting the same LSA
+              - Note, refer vendor documentation for respective valid values
               type: int
             pacing:
               description: OSPF pacing timers
@@ -826,21 +830,21 @@ options:
               suboptions:
                 flood:
                   description:
-                    - OSPF flood pacing timer
-                    - The minimum interval in msec to pace limit flooding on interface
-                    - Note, refer vendor documentation for respective valid values
+                  - OSPF flood pacing timer
+                  - The minimum interval in msec to pace limit flooding on interface
+                  - Note, refer vendor documentation for respective valid values
                   type: int
                 lsa_group:
                   description:
-                    - OSPF LSA group pacing timer
-                    - Interval in sec between group of LSA being refreshed or maxaged
-                    - Note, refer vendor documentation for respective valid values
+                  - OSPF LSA group pacing timer
+                  - Interval in sec between group of LSA being refreshed or maxaged
+                  - Note, refer vendor documentation for respective valid values
                   type: int
                 retransmission:
                   description:
-                    - OSPF retransmission pacing timer
-                    - The minimum interval in msec between neighbor retransmissions
-                    - Note, refer vendor documentation for respective valid values
+                  - OSPF retransmission pacing timer
+                  - The minimum interval in msec between neighbor retransmissions
+                  - Note, refer vendor documentation for respective valid values
                   type: int
             throttle:
               description: OSPF throttle timers
@@ -852,45 +856,45 @@ options:
                   suboptions:
                     first_delay:
                       description:
-                        - Delay to generate first occurrence of LSA in milliseconds
-                        - Note, refer vendor documentation for respective valid values
+                      - Delay to generate first occurrence of LSA in milliseconds
+                      - Note, refer vendor documentation for respective valid values
                       type: int
                     min_delay:
                       description:
-                        - Minimum delay between originating the same LSA in milliseconds
-                        - Note, refer vendor documentation for respective valid values
+                      - Minimum delay between originating the same LSA in milliseconds
+                      - Note, refer vendor documentation for respective valid values
                       type: int
                     max_delay:
                       description:
-                        - Maximum delay between originating the same LSA in milliseconds
-                        - Note, refer vendor documentation for respective valid values
+                      - Maximum delay between originating the same LSA in milliseconds
+                      - Note, refer vendor documentation for respective valid values
                       type: int
                 spf:
-                  description: OSPF SPF throttle timers
-                    - Delay between receiving a change to SPF calculation in milliseconds
-                    - Note, refer vendor documentation for respective valid values
+                  description: OSPF SPF throttle timers - Delay between receiving
+                    a change to SPF calculation in milliseconds - Note, refer vendor
+                    documentation for respective valid values
                   type: dict
                   suboptions:
                     receive_delay:
                       description:
-                        - Delay between receiving a change to SPF calculation in milliseconds
-                        - Note, refer vendor documentation for respective valid values
+                      - Delay between receiving a change to SPF calculation in milliseconds
+                      - Note, refer vendor documentation for respective valid values
                       type: int
                     between_delay:
                       description:
-                        - Delay between first and second SPF calculation in milliseconds
-                        - Note, refer vendor documentation for respective valid values
+                      - Delay between first and second SPF calculation in milliseconds
+                      - Note, refer vendor documentation for respective valid values
                       type: int
                     max_delay:
                       description:
-                        - Maximum wait time in milliseconds for SPF calculations
-                        - Note, refer vendor documentation for respective valid values
+                      - Maximum wait time in milliseconds for SPF calculations
+                      - Note, refer vendor documentation for respective valid values
                       type: int
         traffic_share:
           description:
-            - How to compute traffic share over alternate paths
-            - All traffic shared among min metric paths
-            - Use different interfaces for equal-cost paths
+          - How to compute traffic share over alternate paths
+          - All traffic shared among min metric paths
+          - Use different interfaces for equal-cost paths
           type: bool
         ttl_security:
           description: TTL security check
@@ -901,8 +905,8 @@ options:
               type: bool
             hops:
               description:
-                - Maximum number of IP hops allowed
-                - Note, refer vendor documentation for respective valid values
+              - Maximum number of IP hops allowed
+              - Note, refer vendor documentation for respective valid values
               type: int
   running_config:
     description:
@@ -927,6 +931,7 @@ options:
     - parsed
     - rendered
     default: merged
+
 """
 EXAMPLES = """
 
@@ -957,9 +962,9 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-        - process_id: 1
-        - process_id: 200
-          vrf: blue
+      - process_id: 1
+      - process_id: 200
+        vrf: blue
     state: deleted
 
 # Commands Fired:
@@ -1032,55 +1037,55 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-        - process_id: 1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 110
-          areas:
-            - area_id: "5"
-              capability: true
-              authentication:
-                enable: true
-            - area_id: "10"
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
-              default_cost: 10
-              filter_list:
-                - name: test_prefix_in
-                  direction: in
-                - name: test_prefix_out
-                  direction: out
-          network:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            area: 5
-          default_information:
-            originate: true
-        - process_id: 200
-          vrf: blue
-          domain_id:
-            ip_address:
-              address: 192.0.3.1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 100
-          auto_cost:
-            reference_bandwidth: 4
-          areas:
-            - area_id: "10"
-              capability: true
-          distribute_list:
-            acls:
-              - name: 10
-                direction: out
-              - name: 123
-                direction: in
+      - process_id: 1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 110
+        areas:
+        - area_id: '5'
+          capability: true
+          authentication:
+            enable: true
+        - area_id: '10'
+          authentication:
+            message_digest: true
+          nssa:
+            default_information_originate:
+              metric: 10
+            translate: suppress-fa
+          default_cost: 10
+          filter_list:
+          - name: test_prefix_in
+            direction: in
+          - name: test_prefix_out
+            direction: out
+        network:
+          address: 198.51.100.0
+          wildcard_bits: 0.0.0.255
+          area: 5
+        default_information:
+          originate: true
+      - process_id: 200
+        vrf: blue
+        domain_id:
+          ip_address:
+            address: 192.0.3.1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 100
+        auto_cost:
+          reference_bandwidth: 4
+        areas:
+        - area_id: '10'
+          capability: true
+        distribute_list:
+          acls:
+          - name: 10
+            direction: out
+          - name: 123
+            direction: in
     state: merged
 
 # Commands Fired:
@@ -1156,38 +1161,38 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-        - process_id: 200
-          vrf: blue
-          domain_id:
-            ip_address:
-              address: 192.0.4.1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 200
-          maximum_paths: 15
-          ttl_security:
-            hops: 7
-          areas:
-            - area_id: "10"
-              default_cost: 10
-              authentication:
-                message_digest: true
-        - process_id: 100
-          vrf: ospf_vrf
-          domain_id:
-            ip_address:
-              address: 192.0.5.1
-          auto_cost:
-            reference_bandwidth: 5
-          areas:
-            - area_id: "5"
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
+      - process_id: 200
+        vrf: blue
+        domain_id:
+          ip_address:
+            address: 192.0.4.1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 200
+        maximum_paths: 15
+        ttl_security:
+          hops: 7
+        areas:
+        - area_id: '10'
+          default_cost: 10
+          authentication:
+            message_digest: true
+      - process_id: 100
+        vrf: ospf_vrf
+        domain_id:
+          ip_address:
+            address: 192.0.5.1
+        auto_cost:
+          reference_bandwidth: 5
+        areas:
+        - area_id: '5'
+          authentication:
+            message_digest: true
+          nssa:
+            default_information_originate:
+              metric: 10
+            translate: suppress-fa
     state: overridden
 
 # Commands Fired:
@@ -1259,38 +1264,38 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-        - process_id: 200
-          vrf: blue
-          domain_id:
-            ip_address:
-              address: 192.0.4.1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 200
-          maximum_paths: 15
-          ttl_security:
-            hops: 7
-          areas:
-            - area_id: "10"
-              default_cost: 10
-              authentication:
-                message_digest: true
-        - process_id: 100
-          vrf: ospf_vrf
-          domain_id:
-            ip_address:
-              address: 192.0.5.1
-          auto_cost:
-            reference_bandwidth: 5
-          areas:
-            - area_id: "5"
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
+      - process_id: 200
+        vrf: blue
+        domain_id:
+          ip_address:
+            address: 192.0.4.1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 200
+        maximum_paths: 15
+        ttl_security:
+          hops: 7
+        areas:
+        - area_id: '10'
+          default_cost: 10
+          authentication:
+            message_digest: true
+      - process_id: 100
+        vrf: ospf_vrf
+        domain_id:
+          ip_address:
+            address: 192.0.5.1
+        auto_cost:
+          reference_bandwidth: 5
+        areas:
+        - area_id: '5'
+          authentication:
+            message_digest: true
+          nssa:
+            default_information_originate:
+              metric: 10
+            translate: suppress-fa
     state: replaced
 
 # Commands Fired:
@@ -1492,55 +1497,55 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-        - process_id: 1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 110
-          areas:
-            - area_id: "5"
-              capability: true
-              authentication:
-                enable: true
-            - area_id: "10"
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
-              default_cost: 10
-              filter_list:
-                - name: test_prefix_in
-                  direction: in
-                - name: test_prefix_out
-                  direction: out
-          network:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            area: 5
-          default_information:
-            originate: true
-        - process_id: 200
-          vrf: blue
-          domain_id:
-            ip_address:
-              address: 192.0.3.1
-          max_metric:
-            router_lsa: true
-            on_startup:
-              time: 100
-          auto_cost:
-            reference_bandwidth: 4
-          areas:
-            - area_id: "10"
-              capability: true
-          distribute_list:
-            acls:
-              - name: 10
-                direction: out
-              - name: 123
-                direction: in
+      - process_id: 1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 110
+        areas:
+        - area_id: '5'
+          capability: true
+          authentication:
+            enable: true
+        - area_id: '10'
+          authentication:
+            message_digest: true
+          nssa:
+            default_information_originate:
+              metric: 10
+            translate: suppress-fa
+          default_cost: 10
+          filter_list:
+          - name: test_prefix_in
+            direction: in
+          - name: test_prefix_out
+            direction: out
+        network:
+          address: 198.51.100.0
+          wildcard_bits: 0.0.0.255
+          area: 5
+        default_information:
+          originate: true
+      - process_id: 200
+        vrf: blue
+        domain_id:
+          ip_address:
+            address: 192.0.3.1
+        max_metric:
+          router_lsa: true
+          on_startup:
+            time: 100
+        auto_cost:
+          reference_bandwidth: 4
+        areas:
+        - area_id: '10'
+          capability: true
+        distribute_list:
+          acls:
+          - name: 10
+            direction: out
+          - name: 123
+            direction: in
     state: rendered
 
 # Module Execution Result:
@@ -1570,9 +1575,19 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# router ospf 100
+#  auto-cost reference-bandwidth 5
+#  domain-id 192.0.5.1
+#  area 5 authentication message-digest
+#  area 5 nssa translate type7 suppress-fa
+#  area 5 nssa default-information-originate metric 10
+
 - name: Parse the provided configuration with the exisiting running configuration
   cisco.ios.ios_ospfv2:
-    running_config: "{{ lookup('file', './parsed.cfg') }}"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
@@ -1607,17 +1622,6 @@ EXAMPLES = """
 #             }
 #         ]
 #     }
-
-# File: parsed.cfg
-# ----------------
-#
-# router ospf 100
-#  auto-cost reference-bandwidth 5
-#  domain-id 192.0.5.1
-#  area 5 authentication message-digest
-#  area 5 nssa translate type7 suppress-fa
-#  area 5 nssa default-information-originate metric 10
-
 
 """
 RETURN = """

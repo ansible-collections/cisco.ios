@@ -22,7 +22,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_lldp_interfaces
@@ -32,8 +31,7 @@ description: This module manages link layer discovery protocol (LLDP) attributes
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli), See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of LLDP options
@@ -83,12 +81,12 @@ options:
             type: bool
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing
-        the command B(sh lldp interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the IOS device by
+      executing the command B(sh lldp interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
   state:
     description:
     - The state of the configuration after module completion
@@ -518,14 +516,14 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_lldp_interfaces:
     config:
-      - name: GigabitEthernet0/0
-        receive: true
-        transmit: true
-      - name: GigabitEthernet0/1
-        receive: true
-        transmit: true
-      - name: GigabitEthernet0/2
-        receive: true
+    - name: GigabitEthernet0/0
+      receive: true
+      transmit: true
+    - name: GigabitEthernet0/1
+      receive: true
+      transmit: true
+    - name: GigabitEthernet0/2
+      receive: true
     state: rendered
 
 # Module Execution Result:
@@ -544,7 +542,8 @@ EXAMPLES = """
 
 # Using Parsed
 
-# parsed.cfg
+# File: parsed.cfg
+# ----------------
 #
 # GigabitEthernet0/0:
 #   Tx: enabled
@@ -566,7 +565,7 @@ EXAMPLES = """
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_lldp_interfaces:
-    running_config: running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
