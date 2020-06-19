@@ -124,18 +124,21 @@ class VlansFacts(object):
             conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
-            if len(conf[2].split("/")) > 1:
-                if conf[2].split("/")[0] == "sus":
-                    config["state"] = "suspend"
-                elif conf[2].split("/")[0] == "act":
-                    config["state"] = "active"
-                config["shutdown"] = "enabled"
-            else:
-                if conf[2] == "suspended":
-                    config["state"] = "suspend"
-                elif conf[2] == "active":
-                    config["state"] = "active"
-                config["shutdown"] = "disabled"
+            try:
+                if len(conf[2].split("/")) > 1:
+                    if conf[2].split("/")[0] == "sus":
+                        config["state"] = "suspend"
+                    elif conf[2].split("/")[0] == "act":
+                        config["state"] = "active"
+                    config["shutdown"] = "enabled"
+                else:
+                    if conf[2] == "suspended":
+                        config["state"] = "suspend"
+                    elif conf[2] == "active":
+                        config["state"] = "active"
+                    config["shutdown"] = "disabled"
+            except IndexError:
+                pass
         elif vlan_info == "Type" and "Type" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["mtu"] = int(conf[3])
