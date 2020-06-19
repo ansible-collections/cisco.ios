@@ -1,0 +1,18 @@
+---
+- debug:
+    msg: START ios_lag_interfaces parsed integration tests on connection={{ ansible_connection
+      }}
+
+- block:
+    - name: Parse the commands for provided configuration
+      become: true
+      register: result
+      cisco.ios.ios_lag_interfaces:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+
+    - assert:
+        that:
+          - result.changed == false
+          - parsed['config']|symmetric_difference(result.parsed) == []
+  when: ansible_net_version != "15.6(2)T"

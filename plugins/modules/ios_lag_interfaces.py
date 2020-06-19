@@ -326,6 +326,128 @@ EXAMPLES = """
 #  shutdown
 # interface GigabitEthernet0/4
 #  shutdown
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel11
+# interface Port-channel22
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 11 mode active
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 22 mode active
+
+- name: Gather listed LAG interfaces with provided configurations
+  cisco.ios.ios_lag_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/1",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel11"
+#     },
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/2",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel22"
+#     }
+# ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface Port-channel11
+# interface Port-channel22
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 11 mode active
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 22 mode active
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_lag_interfaces:
+    config:
+      - name: Port-channel11
+        members:
+          - member: GigabitEthernet0/1
+            mode: active
+      - name: Port-channel22
+        members:
+          - member: GigabitEthernet0/2
+            mode: passive
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "channel-group 11 mode active",
+#         "interface GigabitEthernet0/2",
+#         "channel-group 22 mode passive",
+#     ]
+
+# Using Parsed
+
+#  File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# channel-group 11 mode active
+# interface GigabitEthernet0/2
+# channel-group 22 mode passive
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_lag_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/1",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel11"
+#     },
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/2",
+#                 "mode": "passive"
+#             }
+#         ],
+#         "name": "Port-channel22"
+#     }
+# ]
+
 """
 RETURN = """
 before:
@@ -362,10 +484,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lag_interfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Lag_interfaces(module).execute_module()

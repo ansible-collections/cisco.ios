@@ -17,6 +17,7 @@ __metaclass__ = type
 
 
 import re
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -34,7 +35,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     normalize_interface,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    filter_dict_having_none_value,
     remove_duplicate_interface,
 )
 
@@ -51,14 +51,14 @@ class Lag_interfaces(ConfigBase):
     def __init__(self, module):
         super(Lag_interfaces, self).__init__(module)
 
-    def get_lag_interfaces_facts(self):
+    def get_lag_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         lag_interfaces_facts = facts["ansible_network_resources"].get(
             "lag_interfaces"
@@ -77,19 +77,41 @@ class Lag_interfaces(ConfigBase):
         commands = list()
         warnings = list()
 
-        existing_lag_interfaces_facts = self.get_lag_interfaces_facts()
-        commands.extend(self.set_config(existing_lag_interfaces_facts))
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_lag_interfaces_facts = self.get_lag_interfaces_facts()
+        else:
+            existing_lag_interfaces_facts = []
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_lag_interfaces_facts))
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self._connection.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        changed_lag_interfaces_facts = self.get_lag_interfaces_facts()
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_lag_interfaces_facts = self.get_lag_interfaces_facts()
+        elif self.state == "rendered":
+            result["rendered"] = commands
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_lag_interfaces_facts(
+                data=running_config
+            )
+        else:
+            changed_lag_interfaces_facts = []
 
-        result["before"] = existing_lag_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_lag_interfaces_facts
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_lag_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_lag_interfaces_facts
+        elif self.state == "gathered":
+            result["gathered"] = changed_lag_interfaces_facts
 
         result["warnings"] = warnings
         return result
@@ -122,22 +144,24 @@ class Lag_interfaces(ConfigBase):
                   to the desired configuration
         """
 
-        state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced") and not want:
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    self.state
                 )
             )
 
         module = self._module
-        if state == "overridden":
+        if self.state == "overridden":
             commands = self._state_overridden(want, have, module)
-        elif state == "deleted":
+        elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif state == "merged":
+        elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have, module)
-        elif state == "replaced":
+        elif self.state == "replaced":
             commands = self._state_replaced(want, have, module)
         return commands
 
@@ -162,7 +186,7 @@ class Lag_interfaces(ConfigBase):
                             else:
                                 continue
                         if match:
-                            have_dict = filter_dict_having_none_value(
+                            have_dict = self.filter_dict_having_none_value(
                                 interface, each
                             )
                             commands.extend(
@@ -172,7 +196,7 @@ class Lag_interfaces(ConfigBase):
                                 self._set_config(interface, each, module)
                             )
                     elif each.get("name") == each_interface["member"]:
-                        have_dict = filter_dict_having_none_value(
+                        have_dict = self.filter_dict_having_none_value(
                             interface, each
                         )
                         commands.extend(self._clear_config(dict(), have_dict))
@@ -195,21 +219,32 @@ class Lag_interfaces(ConfigBase):
         commands = []
 
         for interface in want:
-            for each_interface in interface.get("members"):
-                for each in have:
-                    if each.get("members"):
-                        for every in each.get("members"):
-                            match = False
-                            if every["member"] == each_interface["member"]:
-                                match = True
-                                break
-                            else:
-                                commands.extend(
-                                    self._clear_config(interface, each)
+            if interface.get("members"):
+                for each_interface in interface.get("members"):
+                    for each in have:
+                        if each.get("members"):
+                            for every in each.get("members"):
+                                match = False
+                                if every["member"] == each_interface["member"]:
+                                    match = True
+                                    break
+                                else:
+                                    commands.extend(
+                                        self._clear_config(interface, each)
+                                    )
+                                    continue
+                            if match:
+                                have_dict = self.filter_dict_having_none_value(
+                                    interface, each
                                 )
-                                continue
-                        if match:
-                            have_dict = filter_dict_having_none_value(
+                                commands.extend(
+                                    self._clear_config(dict(), have_dict)
+                                )
+                                commands.extend(
+                                    self._set_config(interface, each, module)
+                                )
+                        elif each.get("name") == each_interface["member"]:
+                            have_dict = self.filter_dict_having_none_value(
                                 interface, each
                             )
                             commands.extend(
@@ -218,15 +253,7 @@ class Lag_interfaces(ConfigBase):
                             commands.extend(
                                 self._set_config(interface, each, module)
                             )
-                    elif each.get("name") == each_interface["member"]:
-                        have_dict = filter_dict_having_none_value(
-                            interface, each
-                        )
-                        commands.extend(self._clear_config(dict(), have_dict))
-                        commands.extend(
-                            self._set_config(interface, each, module)
-                        )
-                        break
+                            break
         # Remove the duplicate interface call
         commands = remove_duplicate_interface(commands)
 
@@ -251,6 +278,10 @@ class Lag_interfaces(ConfigBase):
                     elif each.get("name") == each_interface["member"]:
                         break
                 else:
+                    if self.state == "rendered":
+                        commands.extend(
+                            self._set_config(interface, dict(), module)
+                        )
                     continue
                 commands.extend(self._set_config(interface, each, module))
 
@@ -278,6 +309,23 @@ class Lag_interfaces(ConfigBase):
                 commands.extend(self._clear_config(dict(), each))
 
         return commands
+
+    def filter_dict_having_none_value(self, want, have):
+        # Generate dict with have dict value which is None in want dict
+        test_dict = dict()
+        test_key_dict = dict()
+        test_dict["name"] = want.get("name")
+        for k, v in iteritems(want):
+            if isinstance(v, dict):
+                for key, value in iteritems(v):
+                    if value is None:
+                        dict_val = have.get(k).get(key)
+                        test_key_dict.update({key: dict_val})
+                    test_dict.update({k: test_key_dict})
+            if v is None:
+                val = have.get(k)
+                test_dict.update({k: val})
+        return test_dict
 
     def remove_command_from_config_list(self, interface, cmd, commands):
         # To delete the passed config
@@ -317,7 +365,7 @@ class Lag_interfaces(ConfigBase):
                 each_interface = "interface {0}".format(each.get("member"))
                 if have.get("name") == want["members"][0][
                     "member"
-                ] or have.get("name").lower().startswith("po"):
+                ] or want.get("name").lower().startswith("po"):
                     if each.get("mode"):
                         cmd = "channel-group {0} mode {1}".format(
                             channel_id, each.get("mode")
