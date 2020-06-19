@@ -94,7 +94,7 @@ options:
                 description:
                 - Initial number of adjacencies allowed to be forming in an area
                 - Please refer vendor documentation for valid values
-                type: int limit or minimum adjacencies forming in area
+                type: int
               max_adjacency:
                 description:
                 - Maximum number of adjacencies allowed to be forming
