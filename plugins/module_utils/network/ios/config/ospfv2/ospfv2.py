@@ -1,4 +1,4 @@
-#
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
@@ -10,6 +10,9 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
 created
 """
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (

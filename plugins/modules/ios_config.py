@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#
+# pylint: skip-file
 # This file is part of Ansible
 #
 # Ansible is free software: you can redistribute it and/or modify
@@ -29,7 +29,8 @@ extends_documentation_fragment:
 - cisco.ios.ios
 notes:
 - Tested against IOS 15.6
-- Abbreviated commands are NOT idempotent, see L(Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- Abbreviated commands are NOT idempotent, see L
+  (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 options:
   lines:
     description:

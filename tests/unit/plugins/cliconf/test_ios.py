@@ -1,4 +1,4 @@
-#
+# pylint: skip-file
 # (c) 2019 Red Hat Inc.
 #
 # This file is part of Ansible
