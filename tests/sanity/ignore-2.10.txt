@@ -146,6 +146,7 @@ plugins/modules/ios_vlan.py validate-modules:parameter-list-no-elements
 plugins/modules/ios_vlan.py validate-modules:parameter-type-not-in-doc
 plugins/modules/ios_vlan.py validate-modules:undocumented-parameter
 plugins/modules/ios_vlan.py validate-modules:invalid-documentation
+plugins/modules/ios_vlan.py validate-modules:missing-suboption-docs
 plugins/modules/ios_vrf.py future-import-boilerplate
 plugins/modules/ios_vrf.py metaclass-boilerplate
 plugins/modules/ios_vrf.py validate-modules:doc-default-does-not-match-spec

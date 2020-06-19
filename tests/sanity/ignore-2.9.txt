@@ -45,6 +45,7 @@ plugins/modules/ios_l2_interface.py validate-modules:doc-choices-do-not-match-sp
 plugins/modules/ios_l2_interface.py validate-modules:doc-missing-type
 plugins/modules/ios_l2_interface.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_l2_interface.py validate-modules:deprecation-mismatch
+plugins/modules/ios_l2_interface.py validate-modules:invalid-documentation
 plugins/modules/ios_l3_interface.py validate-modules:invalid-documentation
 plugins/modules/ios_l2_interface.py validate-modules:missing-suboption-docs
 plugins/modules/ios_l2_interface.py validate-modules:parameter-type-not-in-doc
@@ -86,6 +87,7 @@ plugins/modules/ios_static_route.py metaclass-boilerplate
 plugins/modules/ios_static_route.py validate-modules:doc-choices-do-not-match-spec
 plugins/modules/ios_static_route.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_static_route.py validate-modules:doc-missing-type
+plugins/modules/ios_static_route.py validate-modules:deprecation-mismatch
 plugins/modules/ios_static_route.py validate-modules:missing-suboption-docs
 plugins/modules/ios_static_route.py validate-modules:parameter-type-not-in-doc
 plugins/modules/ios_static_route.py validate-modules:invalid-documentation
@@ -108,6 +110,7 @@ plugins/modules/ios_vlan.py validate-modules:doc-choices-do-not-match-spec
 plugins/modules/ios_vlan.py validate-modules:invalid-documentation
 plugins/modules/ios_vlan.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_vlan.py validate-modules:doc-missing-type
+plugins/modules/ios_vlan.py validate-modules:missing-suboption-docs
 plugins/modules/ios_vlan.py validate-modules:parameter-type-not-in-doc
 plugins/modules/ios_vlan.py validate-modules:undocumented-parameter
 plugins/modules/ios_vrf.py future-import-boilerplate
