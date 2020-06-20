@@ -94,7 +94,7 @@ options:
                 description:
                   - Initial number of adjacencies allowed to be forming in an area
                   - Please refer vendor documentation for valid values
-                type: int limit or minimum adjacencies forming in area
+                type: int
               max_adjacency:
                 description:
                   - Maximum number of adjacencies allowed to be forming
@@ -896,16 +896,16 @@ options:
                   - Maximum number of IP hops allowed
                   - Note, refer vendor documentation for respective valid values
                 type: int
-    running_config:
-      description:
-      - The module, by default, will connect to the remote device and retrieve the current
-        running-config to use as a base for comparing against the contents of source.
-        There are times when it is not desirable to have the task get the current running-config
-        for every task in a playbook.  The I(running_config) argument allows the implementer
-        to pass in the configuration to use as the base config for comparison. This
-        value of this option should be the output received from device by executing
-        command.
-      type: str
+  running_config:
+    description:
+    - The module, by default, will connect to the remote device and retrieve the current
+      running-config to use as a base for comparing against the contents of source.
+      There are times when it is not desirable to have the task get the current running-config
+      for every task in a playbook.  The I(running_config) argument allows the implementer
+      to pass in the configuration to use as the base config for comparison. This
+      value of this option should be the output received from device by executing
+      command.
+    type: str
   state:
     description:
       - The state the configuration should be left in
