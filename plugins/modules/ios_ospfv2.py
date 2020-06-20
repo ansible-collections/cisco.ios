@@ -44,8 +44,7 @@ notes:
 options:
   config:
     description: A dictionary of OSPF options.
-    type: list
-    elements: dict
+    type: dict
     suboptions:
       processes:
         description:
@@ -148,7 +147,7 @@ options:
                     description: The direction to apply on the filter networks sent to and from this area.
                     type: str
                     choices: ['in', 'out']
-                    required: True
+                    required: true
               nssa:
                 description: Specify a NSSA area
                 type: dict
