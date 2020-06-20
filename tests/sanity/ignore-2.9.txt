@@ -79,7 +79,6 @@ plugins/modules/ios_ntp.py future-import-boilerplate
 plugins/modules/ios_ntp.py metaclass-boilerplate
 plugins/modules/ios_ntp.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_ntp.py validate-modules:doc-missing-type
-plugins/modules/ios_ospfv2.py validate-modules:doc-type-does-not-match-spec
 plugins/modules/ios_ping.py validate-modules:doc-default-does-not-match-spec
 plugins/modules/ios_ping.py validate-modules:parameter-type-not-in-doc
 plugins/modules/ios_static_route.py future-import-boilerplate
