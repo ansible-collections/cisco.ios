@@ -62,7 +62,7 @@ class Ospfv2Args(object):
                             "options": {
                                 "max_adjacency": {"type": "int"},
                                 "min_adjacency": {
-                                    "type": "int limit or minimum adjacencies forming in area"
+                                    "type": "int"
                                 },
                                 "none": {"type": "bool"},
                             },
