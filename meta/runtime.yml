@@ -90,6 +90,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     ntp:
       redirect: cisco.ios.ios
+    ios_ospfv2:
+      redirect: cisco.ios.ios
+    ospfv2:
+      redirect: cisco.ios.ios
     ios_ping:
       redirect: cisco.ios.ios
     ping:
@@ -140,34 +144,34 @@ plugin_routing:
     interface:
       redirect: cisco.ios.ios_interface
       deprecation:
-        warning_text: cisco.ios.interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     ios_interface:
       deprecation:
-        warning_text: cisco.ios.ios_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     interfaces:
       redirect: cisco.ios.ios_interfaces
     l2_interface:
       redirect: cisco.ios.ios_l2_interface
       deprecation:
-        warning_text: cisco.ios.l2_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     ios_l2_interface:
       deprecation:
-        warning_text: cisco.ios.ios_l2_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interface:
       redirect: cisco.ios.ios_l3_interface
       deprecation:
-        warning_text: cisco.ios.l3_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     ios_l3_interface:
       deprecation:
-        warning_text: cisco.ios.ios_l3_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     l3_interfaces:
       redirect: cisco.ios.ios_l3_interfaces
     lacp:
@@ -188,10 +192,19 @@ plugin_routing:
       redirect: cisco.ios.ios_logging
     ntp:
       redirect: cisco.ios.ios_ntp
+    ospfv2:
+      redirect: cisco.ios.ios_ospfv2
     ping:
       redirect: cisco.ios.ios_ping
     static_route:
       redirect: cisco.ios.ios_static_route
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    ios_static_route:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     static_routes:
       redirect: cisco.ios.ios_static_routes
     system:
@@ -201,12 +214,12 @@ plugin_routing:
     vlan:
       redirect: cisco.ios.ios_vlan
       deprecation:
-        warning_text: cisco.ios.vlan has been deprecated and will be removed in a
-          release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     ios_vlan:
       deprecation:
-        warning_text: cisco.ios.ios_vlan has been deprecated and will be removed in
-          a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     vlans:
       redirect: cisco.ios.ios_vlans
     vrf:
