@@ -29,6 +29,8 @@ merged:
         - address: dhcp
           dhcp_client: 0
           dhcp_hostname: test.com
+    - ipv6:
+        - address: autoconfig
       name: GigabitEthernet0/1
     - ipv4:
         - address: 198.51.100.1 255.255.255.0
@@ -36,6 +38,7 @@ merged:
         - address: 198.51.100.2 255.255.255.0
       ipv6:
         - address: 2001:db8:0:3::/64
+        - address: dhcp
       name: GigabitEthernet0/2
 replaced:
   before:
