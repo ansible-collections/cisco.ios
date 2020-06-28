@@ -406,7 +406,9 @@ class L3_Interfaces(ConfigBase):
                         cmd = "ipv6 address autoconfig"
                     else:
                         validate_ipv6(ipv6_dict.get("address"), module)
-                        cmd = "ipv6 address {0}".format(ipv6_dict.get("address"))
+                        cmd = "ipv6 address {0}".format(
+                            ipv6_dict.get("address")
+                        )
 
                     add_command_to_config_list(interface, cmd, commands)
 
