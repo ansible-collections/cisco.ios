@@ -37,8 +37,8 @@ merged:
           secondary: true
         - address: 198.51.100.2 255.255.255.0
       ipv6:
-        - address: 2001:db8:0:3::/64
         - address: dhcp
+        - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
 replaced:
   before:
