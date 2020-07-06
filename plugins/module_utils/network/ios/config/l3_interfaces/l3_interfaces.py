@@ -177,7 +177,7 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                if "." in interface["name"]:
+                if "." in interface["name"] or "loopback" in interface["name"]:
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
@@ -230,11 +230,13 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                if "." in interface["name"]:
+                if self.state == "rendered":
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
-                if self.state == "rendered":
+                elif (
+                    "." in interface["name"] or "loopback" in interface["name"]
+                ):
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
@@ -278,39 +280,51 @@ class L3_Interfaces(ConfigBase):
         :param have: have_dict IPV4
         :return: diff
         """
-        diff = False
+        diff = True
         for each in want:
             each_want = remove_empties(dict(each))
             for every in have:
                 every_have = dict(every)
                 if (
-                    each_want.get("address") != every_have.get("address")
+                    each_want.get("address") == every_have.get("address")
                     and each_want.get("secondary")
-                    != every_have.get("secondary")
+                    == every_have.get("secondary")
                     and len(each_want.keys()) == len(every_have.keys())
                 ):
-                    diff = True
+                    diff = False
                     break
                 if (
                     each_want.get("dhcp_client")
-                    != every_have.get("dhcp_client")
+                    == every_have.get("dhcp_client")
                     and each_want.get("dhcp_client") is not None
                 ):
-                    diff = True
+                    diff = False
                     break
                 if (
                     each_want.get("dhcp_hostname")
-                    != every_have.get("dhcp_hostname")
+                    == every_have.get("dhcp_hostname")
                     and each_want.get("dhcp_hostname") is not None
                 ):
-                    diff = True
+                    diff = False
                     break
                 if each_want.get("address") != every_have.get(
                     "address"
                 ) and len(each_want.keys()) == len(every_have.keys()):
-                    diff = True
+                    diff = False
                     break
-            if diff:
+                elif each_want.get("address") == every_have.get(
+                    "address"
+                ) and len(each_want.keys()) == len(every_have.keys()):
+                    diff = False
+                    break
+                elif each_want.get("address") != every_have.get(
+                    "address"
+                ) and each_want.get("secondary") == every_have.get(
+                    "secondary"
+                ):
+                    diff = False
+                    break
+            if not diff:
                 break
 
         return diff
@@ -401,8 +415,13 @@ class L3_Interfaces(ConfigBase):
             if ipv6:
                 for each in ipv6:
                     ipv6_dict = dict(each)
-                    validate_ipv6(ipv6_dict.get("address"), module)
-                    cmd = "ipv6 address {0}".format(ipv6_dict.get("address"))
+                    if ipv6_dict.get("address") == "autoconfig":
+                        cmd = "ipv6 address {0}".format("autoconfig")
+                    else:
+                        validate_ipv6(ipv6_dict.get("address"), module)
+                        cmd = "ipv6 address {0}".format(
+                            ipv6_dict.get("address")
+                        )
                     add_command_to_config_list(interface, cmd, commands)
 
         return commands
