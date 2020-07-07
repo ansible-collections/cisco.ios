@@ -26,42 +26,42 @@ The Cisco IOS collection supports ``network_cli``  connections.
 ### Cliconf plugins
 Name | Description
 --- | ---
-[cisco.ios.ios](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_cliconf.rst)|Use ios cliconf to run command on Cisco IOS platform
+[cisco.ios.ios](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_cliconf.rst)|Use ios cliconf to run command on Cisco IOS platform
 
 ### Modules
 Name | Description
 --- | ---
-[cisco.ios.ios_acl_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_acl_interfaces_module.rst)|ACL interfaces resource module
-[cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_acls_module.rst)|ACLs resource module
-[cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_banner_module.rst)|Manage multiline banners on Cisco IOS devices
-[cisco.ios.ios_bgp](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_bgp_module.rst)|Configure global BGP protocol settings on Cisco IOS.
-[cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_command_module.rst)|Run commands on remote devices running Cisco IOS
-[cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_config_module.rst)|Manage Cisco IOS configuration sections
-[cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_facts_module.rst)|Collect facts from remote devices running Cisco IOS
-[cisco.ios.ios_interface](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
-[cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_interfaces_module.rst)|Interfaces resource module
-[cisco.ios.ios_l2_interface](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
-[cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_l2_interfaces_module.rst)|L2 interfaces resource module
-[cisco.ios.ios_l3_interface](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_l3_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-3 interfaces on Cisco IOS network devices.
-[cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_l3_interfaces_module.rst)|L3 interfaces resource module
-[cisco.ios.ios_lacp](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lacp_module.rst)|LACP resource module
-[cisco.ios.ios_lacp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lacp_interfaces_module.rst)|LACP interfaces resource module
-[cisco.ios.ios_lag_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lag_interfaces_module.rst)|LAG interfaces resource module
-[cisco.ios.ios_linkagg](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_linkagg_module.rst)|Manage link aggregation groups on Cisco IOS network devices
-[cisco.ios.ios_lldp](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lldp_module.rst)|Manage LLDP configuration on Cisco IOS network devices.
-[cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lldp_global_module.rst)|LLDP resource module
-[cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_lldp_interfaces_module.rst)|LLDP interfaces resource module
-[cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_logging_module.rst)|Manage logging on network devices
-[cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_ntp_module.rst)|Manages core NTP configuration.
-[cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_ospfv2_module.rst)|OSPFv2 resource module
-[cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from Cisco IOS network devices
-[cisco.ios.ios_static_route](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_static_route_module.rst)|(deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
-[cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_static_routes_module.rst)|Static routes resource module
-[cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_system_module.rst)|Manage the system attributes on Cisco IOS devices
-[cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_user_module.rst)|Manage the aggregate of local users on Cisco IOS device
-[cisco.ios.ios_vlan](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_vlan_module.rst)|(deprecated, removed after 2022-06-01) Manage VLANs on IOS network devices
-[cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_vlans_module.rst)|VLANs resource module
-[cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/master/docs/cisco.ios.ios_vrf_module.rst)|Manage the collection of VRF definitions on Cisco IOS devices
+[cisco.ios.ios_acl_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acl_interfaces_module.rst)|ACL interfaces resource module
+[cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acls_module.rst)|ACLs resource module
+[cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_banner_module.rst)|Manage multiline banners on Cisco IOS devices
+[cisco.ios.ios_bgp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_module.rst)|Configure global BGP protocol settings on Cisco IOS.
+[cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Run commands on remote devices running Cisco IOS
+[cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Manage Cisco IOS configuration sections
+[cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Collect facts from remote devices running Cisco IOS
+[cisco.ios.ios_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
+[cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Interfaces resource module
+[cisco.ios.ios_l2_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
+[cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|L2 interfaces resource module
+[cisco.ios.ios_l3_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-3 interfaces on Cisco IOS network devices.
+[cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interfaces_module.rst)|L3 interfaces resource module
+[cisco.ios.ios_lacp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_module.rst)|LACP resource module
+[cisco.ios.ios_lacp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_interfaces_module.rst)|LACP interfaces resource module
+[cisco.ios.ios_lag_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lag_interfaces_module.rst)|LAG interfaces resource module
+[cisco.ios.ios_linkagg](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_linkagg_module.rst)|Manage link aggregation groups on Cisco IOS network devices
+[cisco.ios.ios_lldp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_module.rst)|Manage LLDP configuration on Cisco IOS network devices.
+[cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_global_module.rst)|LLDP resource module
+[cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_interfaces_module.rst)|LLDP interfaces resource module
+[cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|Manage logging on network devices
+[cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_module.rst)|Manages core NTP configuration.
+[cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv2_module.rst)|OSPFv2 resource module
+[cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from Cisco IOS network devices
+[cisco.ios.ios_static_route](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_route_module.rst)|(deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
+[cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Static routes resource module
+[cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Manage the system attributes on Cisco IOS devices
+[cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Manage the aggregate of local users on Cisco IOS device
+[cisco.ios.ios_vlan](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlan_module.rst)|(deprecated, removed after 2022-06-01) Manage VLANs on IOS network devices
+[cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|VLANs resource module
+[cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Manage the collection of VRF definitions on Cisco IOS devices
 
 <!--end collection content-->
 ## Installing this collection
