@@ -177,7 +177,7 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                if "." in interface["name"] or "loopback" in interface["name"]:
+                if "." in interface["name"]:
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
@@ -234,9 +234,7 @@ class L3_Interfaces(ConfigBase):
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
-                elif (
-                    "." in interface["name"] or "loopback" in interface["name"]
-                ):
+                elif "." in interface["name"]:
                     commands.extend(
                         self._set_config(interface, dict(), module)
                     )
