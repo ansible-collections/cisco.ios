@@ -1,0 +1,113 @@
+###
+# https://probot.github.io/apps/settings/
+#
+# Used by some over repos via https://github.com/ansible-collections/community.general/blob/master/.github/settings.yml
+
+repository:
+  # See https://developer.github.com/v3/repos/#edit for all available settings.
+  has_issues: true
+  has_wiki: false
+  has_pages: false
+  default_branch: devel
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: true
+
+labels:
+  # States
+  - name: ci_verified
+    color: b60205
+    description: Push fixes to PR branch to re-run CI.
+  - name: needs_ci
+    color: b60205
+    description: This PR requires CI testing to be performed. Please close and re-open this PR to trigger CI.
+  - name: merge_commit
+    color: d93f0b
+    description: This PR contains at least one merge commit. Please resolve!
+  - name: needs_rebase
+    color: d93f0b
+    description: https://docs.ansible.com/ansible/devel/dev_guide/developing_rebasing.html
+  - name: needs_info
+    color: d93f0b
+    description: This issue requires further information. Please answer any outstanding questions.
+  - name: needs_revision
+    color: d93f0b
+    description: This PR fails CI tests or a maintainer has requested a review/revision of the PR.
+  - name: needs_template
+    color: d93f0b
+    description: This issue/PR has an incomplete description. Please fill in the proposed template correctly.
+  - name: stale_ci
+    color: d93f0b
+  - name: waiting_on_contributor
+    color: d93f0b
+    description: Needs help. Feel free to engage to get things unblocked.
+  - name: new_inventory
+    color: c2e0c6
+  - name: new_plugin
+    color: c2e0c6
+  - name: new_module
+    color: c2e0c6
+  - name: new_module_directory
+    color: c2e0c6
+  - name: new_contributor
+    color: 8aea94
+  - name: bug
+    color: fbca04
+    description: This issue/PR relates to a bug.
+  - name: feature
+    color: 006b75
+    description: This issue/PR relates to a feature request.
+  - name: has_issue
+    color: ededed
+  - name: has_pr
+    color: ededed
+  - name: owner_pr
+    color: 0e8a16
+  - name: pr_day
+    color: 0e8a16
+    description: Has been reviewed during a PR review Day. https://github.com/ansible/community/issues/407
+# components
+  - name: action
+    color: 71bc1c
+  - name: become
+    color: 71bc1c
+  - name: cache
+    color: 71bc1c
+  - name: callback
+    color: 71bc1c
+  - name: cliconf
+    color: 71bc1c
+  - name: connection
+    color: 71bc1c
+  - name: docs_fragments
+    color: 71bc1c
+  - name: filter
+    color: 71bc1c
+  - name: httpapi
+    color: 71bc1c
+  - name: integration
+    color: 71bc1c
+  - name: inventory
+    color: 71bc1c
+  - name: lookup
+    color: 71bc1c
+  - name: plugin
+    color: 71bc1c
+  - name: module
+    color: 71bc1c
+  - name: module_utils
+    color: 71bc1c
+  - name: netconf
+    color: 71bc1c
+  - name: shell
+    color: 71bc1c
+  - name: strategy
+    color: 71bc1c
+  - name: terminal
+    color: 71bc1c
+  - name: tests
+    color: 71bc1c
+  - name: units
+    color: 71bc1c
+  - name: vars
+    color: 71bc1c
