@@ -1,3 +1,4 @@
+--extra-index-url https://ansible.github.io/pylibssh/simple/
 ansible
 paramiko
 ansible-pylibssh
