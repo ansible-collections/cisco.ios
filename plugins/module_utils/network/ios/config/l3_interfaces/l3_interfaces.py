@@ -230,14 +230,8 @@ class L3_Interfaces(ConfigBase):
                 if each["name"] == interface["name"]:
                     break
             else:
-                if self.state == "rendered":
-                    commands.extend(
-                        self._set_config(interface, dict(), module)
-                    )
-                elif "." in interface["name"]:
-                    commands.extend(
-                        self._set_config(interface, dict(), module)
-                    )
+                # configuring non-existing interface
+                commands.extend(self._set_config(interface, dict(), module))
                 continue
             commands.extend(self._set_config(interface, each, module))
 
@@ -315,10 +309,11 @@ class L3_Interfaces(ConfigBase):
                 ) and len(each_want.keys()) == len(every_have.keys()):
                     diff = False
                     break
-                elif each_want.get("address") != every_have.get(
-                    "address"
-                ) and each_want.get("secondary") == every_have.get(
-                    "secondary"
+                elif (
+                    each_want.get("address") != every_have.get("address")
+                    and each_want.get("secondary")
+                    == every_have.get("secondary")
+                    and each_want.get("secondary")
                 ):
                     diff = False
                     break

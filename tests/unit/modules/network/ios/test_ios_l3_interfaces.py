@@ -81,8 +81,12 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="loopback888", ipv4=[dict(address="192.0.3.1/24")]
                     ),
                     dict(
+                        name="loopback100", ipv4=[dict(address="192.0.1.1/24")]
+                    ),
+                    dict(
                         name="GigabitEthernet0/1",
                         ipv4=[dict(address="198.51.100.2/24", secondary=True)],
+                        ipv6=[dict(address="autoconfig")],
                     ),
                     dict(
                         name="GigabitEthernet0/2",
@@ -95,8 +99,11 @@ class TestIosL3InterfacesModule(TestIosModule):
         commands = [
             "interface loopback888",
             "ip address 192.0.3.1 255.255.255.0",
+            "interface loopback100",
+            "ip address 192.0.1.1 255.255.255.0",
             "interface GigabitEthernet0/1",
             "ip address 198.51.100.2 255.255.255.0 secondary",
+            "ipv6 address autoconfig",
             "interface GigabitEthernet0/2",
             "ipv6 address 2001:DB8:0:1::/64",
         ]
