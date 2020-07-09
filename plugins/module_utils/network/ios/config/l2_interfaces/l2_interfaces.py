@@ -342,6 +342,7 @@ class L2_Interfaces(ConfigBase):
                 if allowed_vlans and self._check_for_correct_vlan_range(
                     allowed_vlans, module
                 ):
+                    diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("allowed_vlans"):
@@ -357,7 +358,7 @@ class L2_Interfaces(ConfigBase):
                     if allowed_vlans:
                         trunk_cmd = (
                             self.trunk_cmds["allowed_vlans_add"]
-                            if self.state == "merged"
+                            if self.state == "merged" and diff
                             else self.trunk_cmds["allowed_vlans"]
                         )
                         cmd = trunk_cmd + " {0}".format(allowed_vlans)
@@ -365,6 +366,7 @@ class L2_Interfaces(ConfigBase):
                 if pruning_vlans and self._check_for_correct_vlan_range(
                     pruning_vlans, module
                 ):
+                    diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("pruning_vlans"):
@@ -380,7 +382,7 @@ class L2_Interfaces(ConfigBase):
                     if pruning_vlans:
                         trunk_cmd = (
                             self.trunk_cmds["pruning_vlans_add"]
-                            if self.state == "merged"
+                            if self.state == "merged" and diff
                             else self.trunk_cmds["pruning_vlans"]
                         )
                         cmd = trunk_cmd + " {0}".format(pruning_vlans)
