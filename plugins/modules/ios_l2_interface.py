@@ -18,19 +18,19 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_l2_interface
 extends_documentation_fragment:
 - cisco.ios.ios
-short_description: (deprecated) Manage Layer-2 interface on Cisco IOS devices.
+short_description: (deprecated, removed after 2022-06-01) Manage Layer-2 interface
+  on Cisco IOS devices.
 description:
 - This module provides declarative management of Layer-2 interfaces on Cisco IOS devices.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: ios_l2_interfaces
   why: Newer and updated modules released with more functionality in Ansible 2.9
+  removed_at_date: '2022-06-01'
 author:
 - Nathaniel Case (@Qalthos)
 options:
@@ -74,6 +74,7 @@ options:
     - present
     - absent
     - unconfigured
+
 
 """
 EXAMPLES = """

@@ -314,20 +314,14 @@ class TestIosAclInterfacesModule(TestIosModule):
         ]
         self.execute_module(changed=True, commands=commands)
 
-    def test_ios_acl_interfaces_deleted_afi(self):
+    def test_ios_acl_interfaces_deleted(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet0/1",
-                        access_groups=[dict(afi="ipv6")],
-                    )
-                ],
-                state="deleted",
-            )
+            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted")
         )
         commands = [
             "interface GigabitEthernet0/1",
+            "no ip access-group 110 in",
+            "no ip access-group 123 out",
             "no ipv6 traffic-filter test_v6 out",
             "no ipv6 traffic-filter temp_v6 in",
         ]

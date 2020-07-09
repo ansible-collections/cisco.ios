@@ -21,7 +21,6 @@ The module file for ios_acl_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_acl_interfaces
 short_description: ACL interfaces resource module
@@ -31,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of ACL interfaces options
@@ -77,17 +75,32 @@ options:
                 - out
   running_config:
     description:
-    - The module, by default, will connect to the remote device and retrieve the current
-      running-config to use as a base for comparing against the contents of source.
-      There are times when it is not desirable to have the task get the current running-config
-      for every task in a playbook.  The I(running_config) argument allows the implementer
-      to pass in the configuration to use as the base config for comparison. This
-      value of this option should be the output received from device by executing
-      command.
+      - The module, by default, will connect to the remote device and retrieve the current
+        running-config to use as a base for comparing against the contents of source.
+        There are times when it is not desirable to have the task get the current running-config
+        for every task in a playbook.  The I(running_config) argument allows the implementer
+        to pass in the configuration to use as the base config for comparison. This
+        value of this option should be the output received from device by executing
+        command.
     type: str
   state:
     description:
-    - The state the configuration should be left in
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(show running-config
+        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
     choices:
     - merged
@@ -313,49 +326,6 @@ EXAMPLES = """
 #  ip access-group 110 in
 #  ip access-group 123 out
 
-# Before state:
-# -------------
-#
-# vios#sh running-config | include interface|ip access-group|ipv6 traffic-filter
-# interface Loopback888
-# interface GigabitEthernet0/0
-# interface GigabitEthernet0/1
-#  ip access-group 110 in
-#  ip access-group 123 out
-#  ipv6 traffic-filter test_v6 out
-#  ipv6 traffic-filter temp_v6 in
-# interface GigabitEthernet0/2
-#  ip access-group 110 in
-#  ip access-group 123 out
-
-- name: Delete module attributes of given Interface based on AFI
-  cisco.ios.ios_acl_interfaces:
-    config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-    state: deleted
-
-# Commands Fired:
-# ---------------
-#
-# interface GigabitEthernet0/1
-# no ip access-group 110 in
-# no ip access-group 123 out
-
-# After state:
-# -------------
-#
-# vios#sh running-config | include interface|ip access-group|ipv6 traffic-filter
-# interface Loopback888
-# interface GigabitEthernet0/0
-# interface GigabitEthernet0/1
-#  ipv6 traffic-filter test_v6 out
-#  ipv6 traffic-filter temp_v6 in
-# interface GigabitEthernet0/2
-#  ip access-group 110 in
-#  ip access-group 123 out
-
 # Using DELETED without any config passed
 #"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
 
@@ -532,14 +502,18 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# ip access-group 110 in
+# ip access-group 123 out
+# ipv6 traffic-filter temp_v6 in
+# ipv6 traffic-filter test_v6 out
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acl_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       ip access-group 110 in
-       ip access-group 123 out
-       ipv6 traffic-filter temp_v6 in
-       ipv6 traffic-filter test_v6 out"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

@@ -44,3 +44,4 @@
   always:
 
     - include_tasks: _remove_config.yaml
+    - include_tasks: _remove_vlan_config.yaml

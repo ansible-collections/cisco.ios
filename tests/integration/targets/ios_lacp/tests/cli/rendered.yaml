@@ -1,0 +1,21 @@
+---
+- debug:
+    msg: Start ios_lacp rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_lacp:
+        config:
+          system:
+            priority: 10
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(merged.commands) == []
+  when: ansible_net_version != "15.6(2)T"

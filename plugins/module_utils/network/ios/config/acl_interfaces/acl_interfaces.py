@@ -381,15 +381,11 @@ class Acl_Interfaces(ConfigBase):
             interface = "interface " + have["name"]
 
         w_access_group = want.get("access_groups")
-        temp_want_afi = []
         temp_want_acl_name = []
         if w_access_group:
             # get the user input afi and acls
             for each in w_access_group:
-                want_afi = each.get("afi")
                 want_acls = each.get("acls")
-                if want_afi:
-                    temp_want_afi.append(want_afi)
                 if want_acls:
                     for each in want_acls:
                         temp_want_acl_name.append(each.get("name"))
@@ -398,40 +394,20 @@ class Acl_Interfaces(ConfigBase):
         if h_access_group:
             for access_grp in h_access_group:
                 for acl in access_grp.get("acls"):
-                    have_afi = access_grp.get("afi")
                     acl_name = acl.get("name")
                     acl_direction = acl.get("direction")
-                    if temp_want_afi and state not in [
-                        "replaced",
-                        "overridden",
-                    ]:
-                        # if user want to delete acls based on afi
-                        if "ipv4" in temp_want_afi and have_afi == "ipv4":
-                            if acl_name in temp_want_acl_name:
-                                continue
-                            cmd = "no ip access-group"
-                            cmd += " {0} {1}".format(acl_name, acl_direction)
-                            commands.append(cmd)
-                        if "ipv6" in temp_want_afi and have_afi == "ipv6":
-                            if acl_name in temp_want_acl_name:
-                                continue
-                            cmd = "no ipv6 traffic-filter"
-                            cmd += " {0} {1}".format(acl_name, acl_direction)
-                            commands.append(cmd)
-                    else:
-                        # if user want to delete acls based on interface
-                        if access_grp.get("afi") == "ipv4":
-                            if acl_name in temp_want_acl_name:
-                                continue
-                            cmd = "no ip access-group"
-                            cmd += " {0} {1}".format(acl_name, acl_direction)
-                            commands.append(cmd)
-                        elif access_grp.get("afi") == "ipv6":
-                            if acl_name in temp_want_acl_name:
-                                continue
-                            cmd = "no ipv6 traffic-filter"
-                            cmd += " {0} {1}".format(acl_name, acl_direction)
-                            commands.append(cmd)
+                    if access_grp.get("afi") == "ipv4":
+                        if acl_name in temp_want_acl_name:
+                            continue
+                        cmd = "no ip access-group"
+                        cmd += " {0} {1}".format(acl_name, acl_direction)
+                        commands.append(cmd)
+                    elif access_grp.get("afi") == "ipv6":
+                        if acl_name in temp_want_acl_name:
+                            continue
+                        cmd = "no ipv6 traffic-filter"
+                        cmd += " {0} {1}".format(acl_name, acl_direction)
+                        commands.append(cmd)
         if commands:
             # inserting the interface at first
             commands.insert(0, interface)

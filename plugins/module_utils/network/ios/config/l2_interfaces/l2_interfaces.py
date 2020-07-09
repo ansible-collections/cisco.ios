@@ -1,3 +1,4 @@
+#
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,6 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
+    normalize_interface,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
@@ -126,7 +128,12 @@ class L2_Interfaces(ConfigBase):
                   to the deisred configuration
         """
 
-        want = self._module.params["config"]
+        config = self._module.params.get("config")
+        want = []
+        if config:
+            for each in config:
+                each.update({"name": normalize_interface(each["name"])})
+                want.append(each)
         have = existing_facts
         resp = self.set_state(want, have)
 
@@ -333,20 +340,47 @@ class L2_Interfaces(ConfigBase):
                 if allowed_vlans and self._check_for_correct_vlan_range(
                     allowed_vlans, module
                 ):
+                    if self.state == "merged":
+                        have_trunk = have.get("trunk")
+                        if have_trunk and have_trunk.get("allowed_vlans"):
+                            have_allowed_vlans = have_trunk.get(
+                                "allowed_vlans"
+                            )
+                            allowed_vlans = list(allowed_vlans)
+                            if set(allowed_vlans).difference(
+                                set(have_allowed_vlans)
+                            ):
+                                allowed_vlans.extend(list(have_allowed_vlans))
+                            else:
+                                allowed_vlans = tuple()
                     allowed_vlans = ",".join(allowed_vlans)
-                    cmd = self.trunk_cmds["allowed_vlans"] + " {0}".format(
-                        allowed_vlans
-                    )
-                    add_command_to_config_list(interface, cmd, commands)
+                    if allowed_vlans:
+                        cmd = self.trunk_cmds["allowed_vlans"] + " {0}".format(
+                            allowed_vlans
+                        )
+                        add_command_to_config_list(interface, cmd, commands)
                 if pruning_vlans and self._check_for_correct_vlan_range(
                     pruning_vlans, module
                 ):
+                    if self.state == "merged":
+                        have_trunk = have.get("trunk")
+                        if have_trunk and have_trunk.get("pruning_vlans"):
+                            have_pruning_vlans = have_trunk.get(
+                                "pruning_vlans"
+                            )
+                            pruning_vlans = list(pruning_vlans)
+                            if set(pruning_vlans).difference(
+                                set(have_pruning_vlans)
+                            ):
+                                pruning_vlans.extend(list(have_pruning_vlans))
+                            else:
+                                pruning_vlans = tuple()
                     pruning_vlans = ",".join(pruning_vlans)
-                    cmd = self.trunk_cmds["pruning_vlans"] + " {0}".format(
-                        pruning_vlans
-                    )
-                    add_command_to_config_list(interface, cmd, commands)
-
+                    if pruning_vlans:
+                        cmd = self.trunk_cmds["pruning_vlans"] + " {0}".format(
+                            pruning_vlans
+                        )
+                        add_command_to_config_list(interface, cmd, commands)
             if mode:
                 cmd = "switchport mode {0}".format(mode)
                 add_command_to_config_list(interface, cmd, commands)

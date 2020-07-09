@@ -22,17 +22,16 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """
 module: ios_l2_interfaces
-short_description: Layer-2 interface resource module
-description: This module provides declarative management of Layer-2 interface on Cisco IOS devices.
+short_description: L2 interfaces resource module
+description: This module provides declarative management of Layer-2 interface on Cisco
+  IOS devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
+- Tested against Cisco IOSv Version 15.2 on VIRL.
 options:
   config:
     description: A dictionary of Layer-2 interface options
@@ -104,11 +103,12 @@ options:
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+      - The value of this option should be the output received from the IOS device by
+        executing the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
+    type: str
   state:
     choices:
     - merged
@@ -120,8 +120,24 @@ options:
     - parsed
     default: merged
     description:
-    - The state of the configuration after module completion
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(show running-config
+        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
+
 """
 
 EXAMPLES = """
@@ -415,15 +431,15 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_l2_interfaces:
     config:
-      - name: GigabitEthernet0/1
-        access:
-          vlan: 30
-      - name: GigabitEthernet0/2
-        trunk:
-          allowed_vlans: 10-20,40
-          native_vlan: 20
-          pruning_vlans: 10,20
-          encapsulation: dot1q
+    - name: GigabitEthernet0/1
+      access:
+        vlan: 30
+    - name: GigabitEthernet0/2
+      trunk:
+        allowed_vlans: 10-20,40
+        native_vlan: 20
+        pruning_vlans: 10,20
+        encapsulation: dot1q
     state: rendered
 
 # Module Execution Result:
@@ -441,17 +457,21 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# switchport mode access
+# switchport access vlan 30
+# interface GigabitEthernet0/2
+# switchport trunk allowed vlan 15-20,40
+# switchport trunk encapsulation dot1q
+# switchport trunk native vlan 20
+# switchport trunk pruning vlan 10,20
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l2_interfaces:
-    running_config:
-      "interface GigabitEthernet0/1
-       switchport mode access
-       switchport access vlan 30
-       interface GigabitEthernet0/2
-       switchport trunk allowed vlan 15-20,40
-       switchport trunk encapsulation dot1q
-       switchport trunk native vlan 20
-       switchport trunk pruning vlan 10,20"
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

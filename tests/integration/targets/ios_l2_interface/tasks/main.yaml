@@ -1,7 +1,6 @@
 ---
 - block:
-
     - include: cli.yaml
       tags:
-        - cli
+        - network_cli
   when: switch_type == "L2"

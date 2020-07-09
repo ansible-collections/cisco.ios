@@ -1,0 +1,23 @@
+---
+- debug:
+    msg: START ios_lldp_global gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Gather the provided configuration with the exisiting running configuration
+      register: result
+      cisco.ios.ios_lldp_global:
+        config:
+        state: gathered
+
+
+    - name: Assert
+      assert:
+        that:
+          - "{{ result['gathered'] == gathered['config'] }}"
+  always:
+
+    - include_tasks: _remove_config.yaml

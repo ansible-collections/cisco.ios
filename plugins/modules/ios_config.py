@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 DOCUMENTATION = """
 module: ios_config
 author: Peter Sprygada (@privateip)
@@ -29,7 +31,8 @@ extends_documentation_fragment:
 - cisco.ios.ios
 notes:
 - Tested against IOS 15.6
-- Abbreviated commands are NOT idempotent, see L(Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- Abbreviated commands are NOT idempotent, see L
+  (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 options:
   lines:
     description:

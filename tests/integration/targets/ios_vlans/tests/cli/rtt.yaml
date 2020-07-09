@@ -1,0 +1,72 @@
+---
+- debug:
+    msg: START ios_vlans round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_vlans:
+        config:
+          - name: Vlan_10
+            vlan_id: 10
+            state: active
+            shutdown: disabled
+            remote_span: true
+
+          - name: Vlan_20
+            vlan_id: 20
+            mtu: 610
+            state: active
+            shutdown: enabled
+
+          - name: Vlan_30
+            vlan_id: 30
+            state: suspend
+            shutdown: enabled
+        state: merged
+
+    - name: Gather VLANs interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - vlans
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_vlans:
+        config:
+          - name: VLAN_10
+            vlan_id: 10
+            mtu: 1000
+
+          - name: VLAN_40
+            vlan_id: 40
+            mtu: 850
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 8
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_vlans:
+        config: "{{ ansible_facts['network_resources']['vlans'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 14
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  when: ansible_net_version != "15.6(2)T"
+  always:
+    - include_tasks: _remove_config.yaml

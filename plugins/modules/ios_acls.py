@@ -21,7 +21,6 @@ The module file for ios_acls
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 DOCUMENTATION = """
 module: ios_acls
 short_description: ACLs resource module
@@ -31,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of ACL options.
@@ -577,11 +575,11 @@ options:
                         type: int
   running_config:
     description:
-    - The module, by default, will connect to the remote device and retrieve the current
-      running-config to use as a base for comparing against the contents of source.
-      There are times when it is not desirable to have the task get the current running-config
-      for every task in a playbook.  The I(running_config) argument allows the implementer
-      to pass in the configuration to use as the base config for comparison.
+      - The module, by default, will connect to the remote device and retrieve the current
+        running-config to use as a base for comparing against the contents of source.
+        There are times when it is not desirable to have the task get the current running-config
+        for every task in a playbook.  The I(running_config) argument allows the implementer
+        to pass in the configuration to use as the base config for comparison.
     type: str
   state:
     choices:
@@ -594,7 +592,22 @@ options:
     - parsed
     default: merged
     description:
-    - The state of the configuration after module completion
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(show running-config
+        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
 """
 EXAMPLES = """
@@ -624,20 +637,10 @@ EXAMPLES = """
             wildcard_bits: 0.0.0.255
       - name: 110
         aces:
-        - grant: deny
-          sequence: 10
+        - sequence: 10
           protocol_options:
             icmp:
               traceroute: true
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-          dscp: ef
-          ttl:
-            eq: 10
         - grant: deny
           protocol_options:
             tcp:
@@ -957,7 +960,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given acls (Note: This won't delete the interface itself)"
+- name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -965,9 +968,6 @@ EXAMPLES = """
       - name: test
         acl_type: extended
       - name: 110
-      - name: 123
-        aces:
-        - sequence: 10
     - afi: ipv6
       acls:
       - name: R1_TRAFFIC
@@ -978,8 +978,6 @@ EXAMPLES = """
 #
 # - no ip access-list extended test
 # - no ip access-list extended 110
-# - ip access-list extended 123
-# - no 10
 # - no ipv6 access-list R1_TRAFFIC
 
 # After state:
@@ -990,6 +988,7 @@ EXAMPLES = """
 #    10 deny   192.168.1.200
 #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 123
+#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
 #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 
 # Before state:
@@ -1010,7 +1009,7 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of given ACL based on AFI (Note: This won't delete the interface itself)"
+- name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
     - afi: ipv4
@@ -1032,7 +1031,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
+#"(NOTE: This will delete all of configured ACLs)"
 
 # Before state:
 # -------------
@@ -1052,7 +1051,8 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: "Delete module attributes of all acls (Note: This won't delete the interface itself)"
+- name: 'Delete ALL of configured ACLs (Note: This WILL delete the all configured
+    ACLs)'
   cisco.ios.ios_acls:
     state: deleted
 
@@ -1308,10 +1308,15 @@ EXAMPLES = """
 
 # Using Parsed
 
+# File: parsed.cfg
+# ----------------
+#
+# ipv6 access-list R1_TRAFFIC
+# deny tcp any eq www any eq telnet ack dscp af11
+
 - name: Parse the commands for provided configuration
   cisco.ios.ios_acls:
-    running_config: ipv6 access-list R1_TRAFFIC deny tcp any eq www any eq telnet
-      ack dscp af11
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:

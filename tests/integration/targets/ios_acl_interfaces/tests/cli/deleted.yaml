@@ -9,39 +9,6 @@
 
 - block:
 
-    - name: Delete module attributes of given Interface based on AFI
-      register: result
-      cisco.ios.ios_acl_interfaces:
-        config:
-
-          - name: GigabitEthernet0/1
-            access_groups:
-
-              - afi: ipv6
-        state: deleted
-
-    - assert:
-        that:
-          - result.commands|length == 3
-          - result.changed == true
-          - "'no ipv6 traffic-filter temp_v6 in' in result.commands"
-          - "'no ipv6 traffic-filter test_v6 out' in result.commands"
-
-    - name: Delete module attributes of given Interface based on AFI (IDEMPOTENT)
-      register: result
-      cisco.ios.ios_acl_interfaces:
-        config:
-
-          - name: GigabitEthernet0/1
-            access_groups:
-
-              - afi: ipv6
-        state: deleted
-
-    - assert:
-        that:
-          - result.changed == false
-
     - name: Delete module attributes of given Interface.
       register: result
       cisco.ios.ios_acl_interfaces:
@@ -52,10 +19,9 @@
 
     - assert:
         that:
-          - result.commands|length == 3
+          - result.commands|length == 5
           - result.changed == true
-          - "'no ip access-group 110 in' in result.commands"
-          - "'no ip access-group 123 out' in result.commands"
+          - result.commands|symmetric_difference(deleted.commands) == []
 
     - name: Delete module attributes of given Interface (IDEMPOTENT)
       register: result

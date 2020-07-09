@@ -42,6 +42,9 @@ class VlansFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_vlans_data(self, connection):
+        return connection.get("show vlan")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for vlans
         :param connection: the device connection
@@ -50,15 +53,13 @@ class VlansFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        if connection:
-            pass
 
         objs = []
         mtu_objs = []
         remote_objs = []
         final_objs = []
         if not data:
-            data = connection.get("show vlan")
+            data = self.get_vlans_data(connection)
         # operate on a collection of resource x
         config = data.split("\n")
         # Get individual vlan configs separately
@@ -123,18 +124,21 @@ class VlansFacts(object):
             conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
-            if len(conf[2].split("/")) > 1:
-                if conf[2].split("/")[0] == "sus":
-                    config["state"] = "suspend"
-                elif conf[2].split("/")[0] == "act":
-                    config["state"] = "active"
-                config["shutdown"] = "enabled"
-            else:
-                if conf[2] == "suspended":
-                    config["state"] = "suspend"
-                elif conf[2] == "active":
-                    config["state"] = "active"
-                config["shutdown"] = "disabled"
+            try:
+                if len(conf[2].split("/")) > 1:
+                    if conf[2].split("/")[0] == "sus":
+                        config["state"] = "suspend"
+                    elif conf[2].split("/")[0] == "act":
+                        config["state"] = "active"
+                    config["shutdown"] = "enabled"
+                else:
+                    if conf[2] == "suspended":
+                        config["state"] = "suspend"
+                    elif conf[2] == "active":
+                        config["state"] = "active"
+                    config["shutdown"] = "disabled"
+            except IndexError:
+                pass
         elif vlan_info == "Type" and "Type" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["mtu"] = int(conf[3])

@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
+    normalize_interface,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     remove_command_from_config_list,
@@ -50,14 +51,14 @@ class Lacp_Interfaces(ConfigBase):
     def __init__(self, module):
         super(Lacp_Interfaces, self).__init__(module)
 
-    def get_lacp_interfaces_facts(self):
+    def get_lacp_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         lacp_interfaces_facts = facts["ansible_network_resources"].get(
             "lacp_interfaces"
@@ -77,19 +78,42 @@ class Lacp_Interfaces(ConfigBase):
         commands = list()
         warnings = list()
 
-        existing_lacp_interfaces_facts = self.get_lacp_interfaces_facts()
-        commands.extend(self.set_config(existing_lacp_interfaces_facts))
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_lacp_interfaces_facts = self.get_lacp_interfaces_facts()
+        else:
+            existing_lacp_interfaces_facts = []
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_lacp_interfaces_facts))
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self._connection.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
 
-        changed_lacp_interfaces_facts = self.get_lacp_interfaces_facts()
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        result["before"] = existing_lacp_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_lacp_interfaces_facts
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_lacp_interfaces_facts = self.get_lacp_interfaces_facts()
+        elif self.state == "rendered":
+            result["rendered"] = commands
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_lacp_interfaces_facts(
+                data=running_config
+            )
+        else:
+            changed_lacp_interfaces_facts = []
+
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_lacp_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_lacp_interfaces_facts
+        elif self.state == "gathered":
+            result["gathered"] = changed_lacp_interfaces_facts
 
         result["warnings"] = warnings
 
@@ -103,7 +127,12 @@ class Lacp_Interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        want = self._module.params["config"]
+        config = self._module.params.get("config")
+        want = []
+        if config:
+            for each in config:
+                each.update({"name": normalize_interface(each["name"])})
+                want.append(each)
         have = existing_lacp_interfaces_facts
         resp = self.set_state(want, have)
 
@@ -120,21 +149,23 @@ class Lacp_Interfaces(ConfigBase):
         """
         commands = []
 
-        state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced") and not want:
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    self.state
                 )
             )
 
-        if state == "overridden":
+        if self.state == "overridden":
             commands = self._state_overridden(want, have)
-        elif state == "deleted":
+        elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif state == "merged":
+        elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have)
-        elif state == "replaced":
+        elif self.state == "replaced":
             commands = self._state_replaced(want, have)
 
         return commands
@@ -203,6 +234,7 @@ class Lacp_Interfaces(ConfigBase):
                 if interface["name"] == each["name"]:
                     break
             else:
+                commands.extend(self._set_config(interface, dict()))
                 continue
             commands.extend(self._set_config(interface, each))
 
@@ -235,7 +267,7 @@ class Lacp_Interfaces(ConfigBase):
     def _set_config(self, want, have):
         # Set the interface config based on the want and have config
         commands = []
-        interface = "interface " + have["name"]
+        interface = "interface " + want["name"]
 
         want_dict = dict_to_set(want)
         have_dict = dict_to_set(have)

@@ -1,0 +1,80 @@
+---
+- debug:
+    msg: START Overridden ios_ospfv2 state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_vrf_setup.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Override provided OSPF V2 configuration
+      register: result
+      cisco.ios.ios_ospfv2: &id001
+        config:
+          processes:
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.4.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              maximum_paths: 15
+              ttl_security:
+                hops: 7
+              areas:
+                - area_id: "10"
+                  default_cost: 10
+                  authentication:
+                    message_digest: true
+            - process_id: 100
+              vrf: ospf_vrf
+              domain_id:
+                ip_address:
+                  address: 192.0.5.1
+              auto_cost:
+                reference_bandwidth: 5
+              areas:
+                - area_id: "5"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
+        state: overridden
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
+            \ | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length\
+            \ == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) | length\
+            \ == 0 }}"
+
+    - name: Override provided OSPF V2 configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ospfv2: *id001
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml

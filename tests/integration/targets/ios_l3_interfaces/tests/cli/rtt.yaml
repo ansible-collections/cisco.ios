@@ -1,0 +1,79 @@
+---
+- debug:
+    msg: START ios_l3_interfaces round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: result
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet0/0
+            ipv4:
+              - address: dhcp
+          - name: GigabitEthernet0/1
+            ipv4:
+              - address: dhcp
+                dhcp_client: 0
+                dhcp_hostname: test.com
+          - name: GigabitEthernet0/2
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:0:3::/64
+        state: merged
+
+    - name: Gather L3 interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - l3_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet0/0
+            ipv4:
+              - address: dhcp
+          - name: GigabitEthernet0/2
+            ipv4:
+              - address: 198.51.100.1/24
+              - address: 198.51.100.2/24
+                secondary: true
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 7
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 6
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+
+  always:
+
+    - include_tasks: _remove_config.yaml

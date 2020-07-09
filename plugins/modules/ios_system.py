@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 DOCUMENTATION = """
 module: ios_system
 author: Peter Sprygada (@privateip)
@@ -70,7 +72,7 @@ options:
 """
 EXAMPLES = """
 - name: configure hostname and domain name
-  ios.ios_system:
+  cisco.ios.ios_system:
     hostname: ios01
     domain_name: test.example.com
     domain_search:
@@ -79,16 +81,16 @@ EXAMPLES = """
     - cisco.com
 
 - name: remove configuration
-  ios.ios_system:
+  cisco.ios.ios_system:
     state: absent
 
 - name: configure DNS lookup sources
-  ios.ios_system:
+  cisco.ios.ios_system:
     lookup_source: MgmtEth0/0/CPU0/0
     lookup_enabled: yes
 
 - name: configure name servers
-  ios.ios_system:
+  cisco.ios.ios_system:
     name_servers:
     - 8.8.8.8
     - 8.8.4.4

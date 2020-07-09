@@ -53,6 +53,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
     AclsFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2.ospfv2 import (
+    Ospfv2Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -78,6 +81,7 @@ FACT_RESOURCE_SUBSETS = dict(
     acl_interfaces=Acl_InterfacesFacts,
     static_routes=Static_RoutesFacts,
     acls=AclsFacts,
+    ospfv2=Ospfv2Facts,
 )
 
 

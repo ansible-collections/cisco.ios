@@ -28,6 +28,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_empties,
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     new_dict_to_set,
@@ -341,6 +342,7 @@ class Acls(ConfigBase):
                                     "sequence"
                                 ):
                                     ace_want = remove_empties(ace_want)
+                                    ace_want = dict_merge(ace_have, ace_want)
                                     cmd, change = self._set_config(
                                         ace_want,
                                         ace_have,
@@ -409,28 +411,16 @@ class Acls(ConfigBase):
                 if config_want.get("acls"):
                     for acls_want in config_want.get("acls"):
                         if acls_want.get("aces"):
-                            for ace_want in acls_want.get("aces"):
-                                for config_have in have:
-                                    for acls_have in config_have.get("acls"):
-                                        if acls_want.get(
-                                            "name"
-                                        ) == acls_have.get("name"):
-                                            if ace_want.get("sequence"):
-                                                commands.extend(
-                                                    self._clear_config(
-                                                        acls_want,
-                                                        config_want,
-                                                        ace_want.get(
-                                                            "sequence"
-                                                        ),
-                                                    )
-                                                )
-                                            else:
-                                                commands.extend(
-                                                    self._clear_config(
-                                                        acls_want, config_want
-                                                    )
-                                                )
+                            for config_have in have:
+                                for acls_have in config_have.get("acls"):
+                                    if acls_want.get("name") == acls_have.get(
+                                        "name"
+                                    ):
+                                        commands.extend(
+                                            self._clear_config(
+                                                acls_want, config_want
+                                            )
+                                        )
                         else:
                             for config_have in have:
                                 for acls_have in config_have.get("acls"):
@@ -762,6 +752,7 @@ class Acls(ConfigBase):
                 cmd = cmd + " {0}".format(grant)
             if po and isinstance(po, dict):
                 po_key = list(po)[0]
+                po_val = dict()
                 if protocol and protocol != po_key:
                     self._module.fail_json(
                         msg="Protocol value cannot be different from Protocol option protocol value!"
@@ -779,7 +770,7 @@ class Acls(ConfigBase):
                 cmd = self.source_dest_config(source, cmd, po)
             if destination:
                 cmd = self.source_dest_config(destination, cmd, po)
-            if po:
+            if po and po_val:
                 cmd = cmd + " {0}".format(list(po_val)[0])
             if dscp:
                 cmd = cmd + " dscp {0}".format(dscp)

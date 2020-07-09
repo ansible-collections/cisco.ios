@@ -1,0 +1,250 @@
+---
+merged:
+  before: {}
+
+  commands:
+    - router ospf 200 vrf blue
+    - auto-cost reference-bandwidth 4
+    - distribute-list 10 out
+    - distribute-list 123 in
+    - domain-id 192.0.3.1
+    - max-metric router-lsa on-startup 100
+    - area 10 capability default-exclusion
+    - router ospf 1
+    - default-information originate
+    - max-metric router-lsa on-startup 110
+    - network 198.51.100.0 0.0.0.255 area 5
+    - area 10 authentication message-digest
+    - area 10 default-cost 10
+    - area 10 nssa translate type7 suppress-fa
+    - area 10 nssa default-information-originate metric 10
+    - area 10 filter-list prefix test_prefix_out out
+    - area 10 filter-list prefix test_prefix_in in
+    - area 5 authentication
+    - area 5 capability default-exclusion
+
+  after:
+    processes:
+      - areas:
+          - area_id: "5"
+            authentication:
+              enable: true
+            capability: true
+          - area_id: "10"
+            authentication:
+              message_digest: true
+            default_cost: 10
+            filter_list:
+              - direction: in
+                name: test_prefix_in
+              - direction: out
+                name: test_prefix_out
+            nssa:
+              default_information_originate:
+                metric: 10
+              translate: suppress-fa
+        default_information:
+          originate: true
+        max_metric:
+          on_startup:
+            time: 110
+          router_lsa: true
+        network:
+          address: 198.51.100.0
+          area: "5"
+          wildcard_bits: 0.0.0.255
+        process_id: 1
+      - areas:
+          - area_id: "10"
+            capability: true
+        auto_cost:
+          reference_bandwidth: 4
+        distribute_list:
+          acls:
+            - direction: out
+              name: "10"
+            - direction: in
+              name: "123"
+        domain_id:
+          ip_address:
+            address: 192.0.3.1
+        max_metric:
+          on_startup:
+            time: 100
+          router_lsa: true
+        process_id: 200
+        vrf: blue
+
+replaced:
+  commands:
+    - router ospf 100 vrf ospf_vrf
+    - auto-cost reference-bandwidth 5
+    - domain-id 192.0.5.1
+    - area 5 authentication message-digest
+    - area 5 nssa translate type7 suppress-fa
+    - area 5 nssa default-information-originate metric 10
+    - router ospf 200 vrf blue
+    - no auto-cost reference-bandwidth 4
+    - no distribute-list 10 out
+    - no distribute-list 123 in
+    - domain-id 192.0.4.1
+    - max-metric router-lsa on-startup 200
+    - maximum-paths 15
+    - ttl-security all-interfaces hops 7
+    - area 10 authentication message-digest
+    - no area 10 capability default-exclusion
+    - area 10 default-cost 10
+
+  after:
+    processes:
+      - areas:
+          - area_id: "5"
+            authentication:
+              enable: true
+            capability: true
+          - area_id: "10"
+            authentication:
+              message_digest: true
+            default_cost: 10
+            filter_list:
+              - direction: in
+                name: test_prefix_in
+              - direction: out
+                name: test_prefix_out
+            nssa:
+              default_information_originate:
+                metric: 10
+              translate: suppress-fa
+        default_information:
+          originate: true
+        max_metric:
+          on_startup:
+            time: 110
+          router_lsa: true
+        network:
+          address: 198.51.100.0
+          area: "5"
+          wildcard_bits: 0.0.0.255
+        process_id: 1
+      - areas:
+          - area_id: "5"
+            authentication:
+              message_digest: true
+            nssa:
+              default_information_originate:
+                metric: 10
+              translate: suppress-fa
+        auto_cost:
+          reference_bandwidth: 5
+        domain_id:
+          ip_address:
+            address: 192.0.5.1
+        process_id: 100
+        vrf: ospf_vrf
+      - areas:
+          - area_id: "10"
+            authentication:
+              message_digest: true
+            default_cost: 10
+        domain_id:
+          ip_address:
+            address: 192.0.4.1
+        max_metric:
+          on_startup:
+            time: 200
+          router_lsa: true
+        maximum_paths: 15
+        process_id: 200
+        ttl_security:
+          hops: 7
+        vrf: blue
+
+overridden:
+  commands:
+    - no router ospf 1
+    - router ospf 100 vrf ospf_vrf
+    - auto-cost reference-bandwidth 5
+    - domain-id 192.0.5.1
+    - area 5 authentication message-digest
+    - area 5 nssa translate type7 suppress-fa
+    - area 5 nssa default-information-originate metric 10
+    - router ospf 200 vrf blue
+    - no auto-cost reference-bandwidth 4
+    - no distribute-list 10 out
+    - no distribute-list 123 in
+    - domain-id 192.0.4.1
+    - max-metric router-lsa on-startup 200
+    - maximum-paths 15
+    - ttl-security all-interfaces hops 7
+    - area 10 authentication message-digest
+    - no area 10 capability default-exclusion
+    - area 10 default-cost 10
+
+  after:
+    processes:
+      - areas:
+          - area_id: "5"
+            authentication:
+              message_digest: true
+            nssa:
+              default_information_originate:
+                metric: 10
+              translate: suppress-fa
+        auto_cost:
+          reference_bandwidth: 5
+        domain_id:
+          ip_address:
+            address: 192.0.5.1
+        process_id: 100
+        vrf: ospf_vrf
+      - areas:
+          - area_id: "10"
+            authentication:
+              message_digest: true
+            default_cost: 10
+        domain_id:
+          ip_address:
+            address: 192.0.4.1
+        max_metric:
+          on_startup:
+            time: 200
+          router_lsa: true
+        maximum_paths: 15
+        process_id: 200
+        ttl_security:
+          hops: 7
+        vrf: blue
+
+deleted:
+  commands:
+    - no router ospf 200 vrf blue
+    - no router ospf 1
+
+  after: {}
+
+rtt:
+  commands:
+    - no router ospf 100 vrf ospf_vrf
+    - router ospf 200 vrf blue
+    - auto-cost reference-bandwidth 4
+    - distribute-list 10 out
+    - distribute-list 123 in
+    - domain-id 192.0.3.1
+    - max-metric router-lsa on-startup 100
+    - no maximum-paths 15
+    - no ttl-security all-interfaces hops 7
+    - no area 10 authentication message-digest
+    - area 10 capability default-exclusion
+    - no area 10 default-cost 10
+    - router ospf 1
+    - default-information originate
+    - max-metric router-lsa on-startup 110
+    - network 198.51.100.0 0.0.0.255 area 5
+    - area 10 authentication message-digest
+    - area 10 default-cost 10
+    - area 10 nssa translate type7 suppress-fa
+    - area 10 nssa default-information-originate metric 10
+    - area 10 filter-list prefix test_prefix_out out
+    - area 10 filter-list prefix test_prefix_in in
+    - area 5 authentication
+    - area 5 capability default-exclusion

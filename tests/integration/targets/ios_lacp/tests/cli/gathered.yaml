@@ -1,0 +1,24 @@
+---
+- debug:
+    msg: START ios_lacp gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Gather the provided configuration with the exisiting running configuration
+      register: result
+      cisco.ios.ios_lacp:
+        config:
+        state: gathered
+
+    - name: Assert
+      assert:
+        that:
+          - "{{result['gathered'] == gathered['config'] }}"
+          - result['changed'] == false
+  when: ansible_net_version != "15.6(2)T"
+  always:
+
+    - include_tasks: _remove_config.yaml

@@ -1,0 +1,108 @@
+ancestor: null
+releases:
+  1.0.0:
+    modules:
+    - description: ACL interfaces resource module
+      name: ios_acl_interfaces
+      namespace: ''
+    - description: ACLs resource module
+      name: ios_acls
+      namespace: ''
+    - description: Manage multiline banners on Cisco IOS devices
+      name: ios_banner
+      namespace: ''
+    - description: Configure global BGP protocol settings on Cisco IOS.
+      name: ios_bgp
+      namespace: ''
+    - description: Run commands on remote devices running Cisco IOS
+      name: ios_command
+      namespace: ''
+    - description: Manage Cisco IOS configuration sections
+      name: ios_config
+      namespace: ''
+    - description: Collect facts from remote devices running Cisco IOS
+      name: ios_facts
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Interface on Cisco
+        IOS network devices
+      name: ios_interface
+      namespace: ''
+    - description: Interfaces resource module
+      name: ios_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Layer-2 interface
+        on Cisco IOS devices.
+      name: ios_l2_interface
+      namespace: ''
+    - description: L2 interfaces resource module
+      name: ios_l2_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
+        on Cisco IOS network devices.
+      name: ios_l3_interface
+      namespace: ''
+    - description: L3 interfaces resource module
+      name: ios_l3_interfaces
+      namespace: ''
+    - description: LACP resource module
+      name: ios_lacp
+      namespace: ''
+    - description: LACP interfaces resource module
+      name: ios_lacp_interfaces
+      namespace: ''
+    - description: LAG interfaces resource module
+      name: ios_lag_interfaces
+      namespace: ''
+    - description: Manage link aggregation groups on Cisco IOS network devices
+      name: ios_linkagg
+      namespace: ''
+    - description: Manage LLDP configuration on Cisco IOS network devices.
+      name: ios_lldp
+      namespace: ''
+    - description: LLDP resource module
+      name: ios_lldp_global
+      namespace: ''
+    - description: LLDP interfaces resource module
+      name: ios_lldp_interfaces
+      namespace: ''
+    - description: Manage logging on network devices
+      name: ios_logging
+      namespace: ''
+    - description: Manages core NTP configuration.
+      name: ios_ntp
+      namespace: ''
+    - description: OSPFv2 resource module
+      name: ios_ospfv2
+      namespace: ''
+    - description: Tests reachability using ping from Cisco IOS network devices
+      name: ios_ping
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage static IP routes
+        on Cisco IOS network devices
+      name: ios_static_route
+      namespace: ''
+    - description: Static routes resource module
+      name: ios_static_routes
+      namespace: ''
+    - description: Manage the system attributes on Cisco IOS devices
+      name: ios_system
+      namespace: ''
+    - description: Manage the aggregate of local users on Cisco IOS device
+      name: ios_user
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
+        devices
+      name: ios_vlan
+      namespace: ''
+    - description: VLANs resource module
+      name: ios_vlans
+      namespace: ''
+    - description: Manage the collection of VRF definitions on Cisco IOS devices
+      name: ios_vrf
+      namespace: ''
+    plugins:
+      cliconf:
+      - description: Use ios cliconf to run command on Cisco IOS platform
+        name: ios
+        namespace: null
+    release_date: '2020-06-23'

@@ -1,0 +1,63 @@
+---
+- debug:
+    msg: START ios_lag_interfaces round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _populate_port_channel.yaml
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_lag_interfaces:
+        config:
+          - name: Port-channel11
+            members:
+              - member: GigabitEthernet0/1
+                mode: active
+          - name: Port-channel22
+            members:
+              - member: GigabitEthernet0/2
+                mode: active
+        state: merged
+
+    - name: Gather LAG interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - lag_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_lag_interfaces:
+        config:
+          - name: Port-channel22
+            members:
+              - member: GigabitEthernet0/2
+                mode: passive
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 4
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_lag_interfaces:
+        config: "{{ ansible_facts['network_resources']['lag_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 4
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  when: ansible_net_version != "15.6(2)T"
+  always:
+
+    - include_tasks: _remove_config.yaml

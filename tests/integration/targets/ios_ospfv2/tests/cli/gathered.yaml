@@ -1,0 +1,27 @@
+---
+- debug:
+    msg: START ios_ospfv2 gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_vrf_setup.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Gather the provided configuration with the exisiting running configuration
+      register: result
+      cisco.ios.ios_ospfv2:
+        config:
+        state: gathered
+
+    - name: Assert
+      assert:
+        that:
+          - result.changed == false
+          - "{{ merged['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length\
+            \ == 0 }}"
+
+  always:
+
+    - include_tasks: _remove_config.yaml

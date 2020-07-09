@@ -6,6 +6,6 @@ dependencies:
 license_file: LICENSE
 name: ios
 namespace: cisco
-readme: README.rst
+readme: README.md
 repository: https://github.com/ansible-collections/cisco.ios
 tags: [cisco, ios, iosxe, networking]

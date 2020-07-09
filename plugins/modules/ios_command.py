@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 DOCUMENTATION = """
 module: ios_command
 author: Peter Sprygada (@privateip)
@@ -39,7 +41,7 @@ options:
       is provided, the module is not returned until the condition is satisfied or
       the number of retries has expired. If a command sent to the device requires
       answering a prompt, it is possible to pass a dict containing I(command), I(answer)
-      and I(prompt). Common answers are 'y' or "\r" (carriage return, must be double
+      and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
       quotes). See examples.
     required: true
   wait_for:
@@ -100,12 +102,12 @@ EXAMPLES = """
 - name: run commands that require answering a prompt
   cisco.ios.ios_command:
     commands:
-    - command: 'clear counters GigabitEthernet0/1'
-      prompt: 'Clear "show interface" counters on this interface \\[confirm\\]'
-      answer: 'y'
-    - command: 'clear counters GigabitEthernet0/2'
+    - command: clear counters GigabitEthernet0/1
+      prompt: Clear "show interface" counters on this interface [confirm]
+      answer: y
+    - command: clear counters GigabitEthernet0/2
       prompt: '[confirm]'
-      answer: "\r"
+      answer: '\r'
 """
 RETURN = """
 stdout:

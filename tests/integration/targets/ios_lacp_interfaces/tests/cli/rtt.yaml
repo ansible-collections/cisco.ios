@@ -1,0 +1,62 @@
+---
+- debug:
+    msg: START ios_lacp_interfaces round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_lacp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            port_priority: 30
+          - name: GigabitEthernet0/2
+            port_priority: 20
+          - name: Port-channel10
+            fast_switchover: true
+            max_bundle: 2
+        state: merged
+
+    - name: Gather lacp interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - lacp_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_lacp_interfaces:
+        config:
+          - name: GigabitEthernet0/2
+            port_priority: 40
+          - name: Port-channel40
+            fast_switchover: true
+            max_bundle: 2
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 10
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_lacp_interfaces:
+        config: "{{ ansible_facts['network_resources']['lacp_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 10
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  when: ansible_net_version != "15.6(2)T"
+  always:
+
+    - include_tasks: _remove_config.yaml

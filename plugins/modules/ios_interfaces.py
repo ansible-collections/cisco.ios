@@ -21,7 +21,7 @@ The module file for ios_interfaces
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
+
 DOCUMENTATION = """
 module: ios_interfaces
 short_description: Interfaces resource module
@@ -30,7 +30,6 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL
-- This module works with connection C(network_cli). See L(IOS Platform Options,../network/user_guide/platform_ios.html).
 options:
   config:
     description: A dictionary of interface options
@@ -71,17 +70,45 @@ options:
         - full
         - half
         - auto
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS device by
+        executing the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
+    type: str
   state:
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - rendered
+    - gathered
+    - parsed
     default: merged
     description:
-    - The state of the configuration after module completion
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(show running-config
+        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -345,6 +372,145 @@ EXAMPLES = """
 #  no ip address
 #  duplex auto
 #  speed auto
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  description this is interface1
+#  mtu 65
+#  duplex auto
+#  speed 10
+# interface GigabitEthernet0/2
+#  description this is interface2
+#  mtu 110
+#  shutdown
+#  duplex auto
+#  speed 100
+
+- name: Gather listed interfaces with provided configurations
+  cisco.ios.ios_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "description": "this is interface1",
+#             "duplex": "auto",
+#             "enabled": true,
+#             "mtu": 65,
+#             "name": "GigabitEthernet0/1",
+#             "speed": "10"
+#         },
+#         {
+#             "description": "this is interface2",
+#             "duplex": "auto",
+#             "enabled": false,
+#             "mtu": 110,
+#             "name": "GigabitEthernet0/2",
+#             "speed": "100"
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface GigabitEthernet0/1
+#  description this is interface1
+#  mtu 65
+#  duplex auto
+#  speed 10
+# interface GigabitEthernet0/2
+#  description this is interface2
+#  mtu 110
+#  shutdown
+#  duplex auto
+#  speed 100
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_interfaces:
+    config:
+    - name: GigabitEthernet0/1
+      description: Configured by Ansible-Network
+      mtu: 110
+      enabled: true
+      duplex: half
+    - name: GigabitEthernet0/2
+      description: Configured by Ansible-Network
+      mtu: 2800
+      enabled: false
+      speed: 100
+      duplex: full
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "description Configured by Ansible-Network",
+#         "mtu 110",
+#         "duplex half",
+#         "no shutdown",
+#         "interface GigabitEthernet0/2",
+#         "description Configured by Ansible-Network",
+#         "mtu 2800",
+#         "speed 100",
+#         "duplex full",
+#         "shutdown"
+
+# Using Parsed
+
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# description interfaces 0/1
+# mtu 110
+# duplex half
+# no shutdown
+# interface GigabitEthernet0/2
+# description interfaces 0/2
+# mtu 2800
+# speed 100
+# duplex full
+# shutdown
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "description": "interfaces 0/1",
+#             "duplex": "half",
+#             "enabled": true,
+#             "mtu": 110,
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "description": "interfaces 0/2",
+#             "duplex": "full",
+#             "enabled": true,
+#             "mtu": 2800,
+#             "name": "GigabitEthernet0/2",
+#             "speed": "100"
+#         }
+#     ]
+
 """
 RETURN = """
 before:
@@ -382,10 +548,15 @@ def main():
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
         ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
     ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=InterfacesArgs.argument_spec,
         required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
     result = Interfaces(module).execute_module()

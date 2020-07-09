@@ -6,71 +6,77 @@ merged:
     - name: GigabitEthernet0/2
   commands:
     - interface GigabitEthernet0/1
-    - channel-group 1 mode active
+    - channel-group 11 mode active
     - interface GigabitEthernet0/2
-    - channel-group 1 mode passive
+    - channel-group 22 mode passive
   after:
     - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
+      name: Port-channel11
+    - members:
         - member: GigabitEthernet0/2
           mode: passive
-      name: Port-channel1
+      name: Port-channel22
 replaced:
   before:
     - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
+      name: Port-channel11
+    - members:
         - member: GigabitEthernet0/2
-          mode: passive
-      name: Port-channel1
+          mode: active
+      name: Port-channel22
   commands:
     - interface GigabitEthernet0/1
-    - channel-group 2 mode active
-    - interface GigabitEthernet0/2
-    - channel-group 40 mode active
+    - channel-group 11 mode passive
   after:
     - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
-          mode: active
-      name: Port-channel2
+          mode: passive
+      name: Port-channel11
     - members:
         - member: GigabitEthernet0/2
           mode: active
-      name: Port-channel40
+      name: Port-channel22
 overridden:
   before:
     - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
+      name: Port-channel11
+    - members:
         - member: GigabitEthernet0/2
-          mode: passive
-      name: Port-channel1
+          mode: active
+      name: Port-channel22
   commands:
     - interface GigabitEthernet0/1
     - no channel-group
     - interface GigabitEthernet0/2
-    - channel-group 10 mode passive
+    - channel-group 22 mode passive
   after:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - members:
         - member: GigabitEthernet0/2
           mode: passive
-      name: Port-channel10
+      name: Port-channel22
 deleted:
   before:
     - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
+      name: Port-channel11
+    - members:
         - member: GigabitEthernet0/2
-          mode: passive
-      name: Port-channel1
+          mode: active
+      name: Port-channel22
   commands:
     - interface GigabitEthernet0/1
     - no channel-group
@@ -80,3 +86,30 @@ deleted:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
+gathered:
+  config:
+    - name: GigabitEthernet0/0
+    - members:
+        - member: GigabitEthernet0/1
+          mode: active
+      name: Port-channel11
+    - members:
+        - member: GigabitEthernet0/2
+          mode: active
+      name: Port-channel22
+parsed:
+  config:
+    - members:
+        - member: GigabitEthernet0/1
+          mode: active
+      name: Port-channel11
+    - members:
+        - member: GigabitEthernet0/2
+          mode: passive
+      name: Port-channel22
+rtt:
+  commands:
+    - interface GigabitEthernet0/1
+    - channel-group 11 mode active
+    - interface GigabitEthernet0/2
+    - channel-group 22 mode active

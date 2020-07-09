@@ -13,29 +13,20 @@
       register: result
       cisco.ios.ios_acls: &id001
         config:
-
           - afi: ipv4
             acls:
-
               - name: test_acl
                 acl_type: extended
-
               - name: 110
-                aces:
-
-                  - sequence: 10
-
               - name: 123
-
           - afi: ipv6
             acls:
-
               - name: R1_TRAFFIC
         state: deleted
 
     - assert:
         that:
-          - result.commands|length == 5
+          - result.commands|length == 4
           - result.changed == true
           - result.commands|symmetric_difference(deleted.commands) == []
 
