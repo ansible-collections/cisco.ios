@@ -62,7 +62,7 @@ class Default(FactsBase):
             self.facts["serialnum"] = self.parse_serialnum(data)
             self.parse_stacks(data)
         data = self.responses[1]
-        vss_errs = ['Invalid input', 'Switch Mode : Standalone']
+        vss_errs = ["Invalid input", "Switch Mode : Standalone"]
         if data and not any(err in data for err in vss_errs):
             self.parse_virtual_switch(data)
 
@@ -90,13 +90,15 @@ class Default(FactsBase):
             self.facts["stacked_serialnums"] = match
 
         if len(self.facts["stacked_models"]) > 1:
-            self.facts['virtual_switch'] = "STACK"
+            self.facts["virtual_switch"] = "STACK"
 
     def parse_virtual_switch(self, data):
-        match = re.search(r'^Virtual switch domain number : ([0-9]+)', data, re.M)
+        match = re.search(
+            r"^Virtual switch domain number : ([0-9]+)", data, re.M
+        )
         if match:
-            self.facts['virtual_switch'] = "VSS"
-            self.facts['virtual_switch_domain'] = match.group(1)
+            self.facts["virtual_switch"] = "VSS"
+            self.facts["virtual_switch_domain"] = match.group(1)
 
     def platform_facts(self):
         platform_facts = {}
