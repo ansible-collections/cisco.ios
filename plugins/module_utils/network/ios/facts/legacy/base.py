@@ -89,7 +89,7 @@ class Default(FactsBase):
         if match:
             self.facts["stacked_serialnums"] = match
 
-        if len(self.facts["stacked_models"]) > 1:
+        if "stacked_models" in self.facts:
             self.facts["virtual_switch"] = "STACK"
 
     def parse_virtual_switch(self, data):
