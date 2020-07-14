@@ -32,19 +32,6 @@
     that:
       - result.changed == false
 
-- name: Use src with module alias
-  register: result
-  cisco.ios.config:
-    src: basic/config.j2
-  when: ansible_version.minor > 9
-
-- assert:
-    that:
-      # make sure that the template content was read and not the path
-      - result.changed == false
-      - result.updates is not defined
-  when: ansible_version.minor > 9
-
 - name: check for empty diff
   check_mode: true
   register: result
