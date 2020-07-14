@@ -120,4 +120,30 @@
     that:
       - backup_file.files is defined
 
+- name: use module alias to take configuration backup
+  register: result
+  cisco.ios.config:
+    backup: true
+    backup_options:
+      filename: backup_with_alias.cfg
+      dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+  when: ansible_version.minor > 9
+
+- assert:
+    that:
+      - result.changed == true
+  when: ansible_version.minor > 9
+
+- name: check if the backup file-4 exist
+  find:
+    paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg'
+  register: backup_file
+  connection: local
+  when: ansible_version.minor > 9
+
+- assert:
+    that:
+      - backup_file.files is defined
+  when: ansible_version.minor > 9
+
 - debug: msg="END cli/cli_backup.yaml on connection={{ ansible_connection }}"
