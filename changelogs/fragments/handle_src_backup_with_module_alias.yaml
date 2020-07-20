@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Make `src`, `backup` and `backup_options` in ios_config work when module alias is used (https://github.com/ansible-collections/cisco.ios/pull/107).

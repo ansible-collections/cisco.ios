@@ -6,3 +6,6 @@
 - include: cli_config.yaml
   tags:
     - network_cli
+
+- include: redirection.yaml
+  when: ansible_version.full is version('2.10.0', '>=')
