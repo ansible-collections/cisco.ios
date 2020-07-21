@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_config - Enable --diff when --check is also specified
