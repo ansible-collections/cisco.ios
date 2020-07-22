@@ -183,8 +183,7 @@ class Lag_interfaces(ConfigBase):
                             if every["member"] == each_interface["member"]:
                                 match = True
                                 break
-                            else:
-                                continue
+                            continue
                         if match:
                             have_dict = self.filter_dict_having_none_value(
                                 interface, each
@@ -228,11 +227,10 @@ class Lag_interfaces(ConfigBase):
                                 if every["member"] == each_interface["member"]:
                                     match = True
                                     break
-                                else:
-                                    commands.extend(
-                                        self._clear_config(interface, each)
-                                    )
-                                    continue
+                                commands.extend(
+                                    self._clear_config(interface, each)
+                                )
+                                continue
                             if match:
                                 have_dict = self.filter_dict_having_none_value(
                                     interface, each

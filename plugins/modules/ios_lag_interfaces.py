@@ -55,6 +55,7 @@ options:
             description:
             - Etherchannel Mode of the interface for link aggregation.
             type: str
+            required: true
             choices:
             - auto
             - on
@@ -100,6 +101,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - rendered
+    - parsed
+    - gathered
     default: merged
 """
 EXAMPLES = """

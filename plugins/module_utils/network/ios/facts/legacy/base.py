@@ -314,7 +314,7 @@ class Interfaces(FactsBase):
         for line in data.split("\n"):
             if len(line) == 0:
                 continue
-            elif line[0] == " ":
+            if line[0] == " ":
                 parsed[key] += "\n%s" % line
             else:
                 match = re.match(r"^(\S+)", line)

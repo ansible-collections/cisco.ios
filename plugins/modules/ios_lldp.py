@@ -37,6 +37,9 @@ options:
     choices:
     - present
     - absent
+    - enabled
+    - disabled
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 """

@@ -18,7 +18,7 @@
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
-DOCUMENTATION = """
+DOCUMENTATION = r"""
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
 short_description: Manage link aggregation groups on Cisco IOS network devices
@@ -32,6 +32,7 @@ options:
   group:
     description:
     - Channel-group number for the port-channel Link aggregation group. Range 1-255.
+    type: int
   mode:
     description:
     - Mode of the link aggregation group.
@@ -41,11 +42,44 @@ options:
     - passive
     - auto
     - desirable
+    type: str
   members:
     description:
     - List of members of the link aggregation group.
+    type: list
+    elements: str
   aggregate:
     description: List of link aggregation definitions.
+    type: list
+    elements: dict
+    suboptions:
+      group:
+        description:
+        - Channel-group number for the port-channel Link aggregation group. Range 1-255.
+        type: str
+        required: true
+      mode:
+        description:
+        - Mode of the link aggregation group.
+        choices:
+        - active
+        - on
+        - passive
+        - auto
+        - desirable
+        type: str
+      members:
+        description:
+        - List of members of the link aggregation group.
+        type: list
+        elements: str
+      state:
+        description:
+        - State of the link aggregation group.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - State of the link aggregation group.
@@ -53,6 +87,7 @@ options:
     choices:
     - present
     - absent
+    type: str
   purge:
     description:
     - Purge links not defined in the I(aggregate) parameter.
@@ -277,7 +312,7 @@ def main():
     element_spec = dict(
         group=dict(type="int"),
         mode=dict(choices=["active", "on", "passive", "auto", "desirable"]),
-        members=dict(type="list"),
+        members=dict(type="list", elements="str"),
         state=dict(default="present", choices=["present", "absent"]),
     )
     aggregate_spec = deepcopy(element_spec)

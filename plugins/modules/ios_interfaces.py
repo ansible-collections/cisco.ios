@@ -34,6 +34,7 @@ options:
   config:
     description: A dictionary of interface options
     type: list
+    elements: dict
     suboptions:
       name:
         description:

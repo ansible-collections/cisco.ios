@@ -25,20 +25,18 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cl
 )
 from ansible.module_utils.common.network import to_netmask
 
-REDISTRIBUTE_PROTOCOLS = frozenset(
-    [
-        "ospf",
-        "ospfv3",
-        "eigrp",
-        "isis",
-        "static",
-        "connected",
-        "odr",
-        "lisp",
-        "mobile",
-        "rip",
-    ]
-)
+REDISTRIBUTE_PROTOCOLS = [
+    "ospf",
+    "ospfv3",
+    "eigrp",
+    "isis",
+    "static",
+    "connected",
+    "odr",
+    "lisp",
+    "mobile",
+    "rip",
+]
 
 
 @register_provider("ios", "ios_bgp")

@@ -38,17 +38,20 @@ options:
     - monitor
     - buffered
     - trap
+    type: str
   name:
     description:
     - The hostname or IP address of the destination.
     - Required when I(dest=host).
+    type: str
   size:
     description:
     - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
-    default: 4096
+    type: int
   facility:
     description:
     - Set logging facility.
+    type: str
   level:
     description:
     - Set logging severity levels.
@@ -62,8 +65,56 @@ options:
     - notifications
     - informational
     - debugging
+    type: str
   aggregate:
     description: List of logging definitions.
+    type: list
+    elements: dict
+    suboptions:
+      dest:
+        description:
+        - Destination of the logs.
+        choices:
+        - on
+        - host
+        - console
+        - monitor
+        - buffered
+        - trap
+        type: str
+      name:
+        description:
+        - The hostname or IP address of the destination.
+        - Required when I(dest=host).
+        type: str
+      size:
+        description:
+        - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
+        type: int
+      facility:
+        description:
+        - Set logging facility.
+        type: str
+      level:
+        description:
+        - Set logging severity levels.
+        type: str
+        choices:
+        - emergencies
+        - alerts
+        - critical
+        - errors
+        - warnings
+        - notifications
+        - informational
+        - debugging
+      state:
+        description:
+        - State of the logging configuration.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - State of the logging configuration.
@@ -71,6 +122,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 """

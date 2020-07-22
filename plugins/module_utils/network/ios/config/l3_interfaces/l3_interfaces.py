@@ -255,7 +255,7 @@ class L3_Interfaces(ConfigBase):
                 for each in have:
                     if each["name"] == interface["name"]:
                         break
-                    elif interface["name"] in each["name"]:
+                    if interface["name"] in each["name"]:
                         break
                 else:
                     continue
@@ -290,21 +290,21 @@ class L3_Interfaces(ConfigBase):
                 ):
                     diff = True
                     break
-                elif (
+                if (
                     each_want.get("dhcp_client")
                     != every_have.get("dhcp_client")
                     and each_want.get("dhcp_client") is not None
                 ):
                     diff = True
                     break
-                elif (
+                if (
                     each_want.get("dhcp_hostname")
                     != every_have.get("dhcp_hostname")
                     and each_want.get("dhcp_hostname") is not None
                 ):
                     diff = True
                     break
-                elif each_want.get("address") != every_have.get(
+                if each_want.get("address") != every_have.get(
                     "address"
                 ) and len(each_want.keys()) == len(every_have.keys()):
                     diff = True
