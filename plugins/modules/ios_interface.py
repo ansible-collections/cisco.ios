@@ -36,7 +36,6 @@ options:
   name:
     description:
     - Name of the Interface.
-    required: true
     type: str
   description:
     description:
@@ -543,7 +542,7 @@ def main():
     """
     neighbors_spec = dict(host=dict(), port=dict())
     element_spec = dict(
-        name=dict(required=True),
+        name=dict(),
         description=dict(),
         speed=dict(),
         mtu=dict(),

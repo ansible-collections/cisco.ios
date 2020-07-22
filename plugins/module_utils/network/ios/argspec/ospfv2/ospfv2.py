@@ -127,7 +127,7 @@ class Ospfv2Args(object):
                                         "not_advertise": {"type": "bool"},
                                     },
                                     "type": "list",
-                                    "elements": "dict"
+                                    "elements": "dict",
                                 },
                                 "sham_link": {
                                     "options": {

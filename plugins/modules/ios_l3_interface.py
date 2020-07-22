@@ -38,7 +38,6 @@ options:
     description:
     - Name of the Layer-3 interface to be configured eg. GigabitEthernet0/2
     type: str
-    required: true
   ipv4:
     description:
     - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -335,7 +334,7 @@ def main():
     """ main entry point for module execution
     """
     element_spec = dict(
-        name=dict(required=True),
+        name=dict(),
         ipv4=dict(),
         ipv6=dict(),
         state=dict(default="present", choices=["present", "absent"]),
