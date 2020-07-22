@@ -62,7 +62,7 @@ ios_argument_spec = {
         type="dict",
         options=ios_provider_spec,
         removed_at_date="2022-06-01",
-        removed_from_collection="cisco.nxos",
+        removed_from_collection="cisco.ios",
     )
 }
 
