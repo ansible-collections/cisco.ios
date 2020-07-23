@@ -42,14 +42,14 @@ options:
       should be in the dotted name form and will be appended to the C(hostname) to
       create a fully-qualified domain name.
     type: list
-    elements: str
+    elements: raw
   domain_search:
     description:
     - Provides the list of domain suffixes to append to the hostname for the purpose
       of doing name resolution. This argument accepts a list of names and will be
       reconciled with the current active configuration on the running node.
     type: list
-    elements: str
+    elements: raw
   lookup_source:
     description:
     - Provides one or more source interfaces to use for performing DNS lookups.  The
@@ -67,7 +67,7 @@ options:
     - List of DNS name servers by IP address to use to perform name resolution lookups.  This
       argument accepts either a list of DNS servers See examples.
     type: list
-    elements: str
+    elements: raw
   state:
     description:
     - State of the configuration values in the device's current active configuration.  When
@@ -353,9 +353,9 @@ def main():
     """
     argument_spec = dict(
         hostname=dict(),
-        domain_name=dict(type="list", elements="str"),
-        domain_search=dict(type="list", elements="str"),
-        name_servers=dict(type="list", elements="str"),
+        domain_name=dict(type="list", elements="raw"),
+        domain_search=dict(type="list", elements="raw"),
+        name_servers=dict(type="list", elements="raw"),
         lookup_source=dict(),
         lookup_enabled=dict(type="bool"),
         state=dict(choices=["present", "absent"], default="present"),

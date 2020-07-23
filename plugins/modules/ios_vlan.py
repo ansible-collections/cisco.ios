@@ -45,7 +45,6 @@ options:
   interfaces:
     description:
     - List of interfaces that should be associated to the VLAN.
-    required: true
     type: list
     elements: str
   associated_interfaces:
@@ -373,7 +372,7 @@ def main():
     element_spec = dict(
         vlan_id=dict(type="int", required=True),
         name=dict(),
-        interfaces=dict(type="list", elements="str", required=True),
+        interfaces=dict(type="list", elements="str"),
         associated_interfaces=dict(type="list", elements="str"),
         delay=dict(default=10, type="int"),
         state=dict(
