@@ -36,9 +36,11 @@ options:
   mode:
     description:
     - Mode of the link aggregation group.
+    - On mode has to be quoted as 'on' or else pyyaml will convert
+      to True before it gets to Ansible.
     choices:
     - active
-    - on
+    - 'on'
     - passive
     - auto
     - desirable
@@ -61,9 +63,11 @@ options:
       mode:
         description:
         - Mode of the link aggregation group.
+        - On mode has to be quoted as 'on' or else pyyaml will convert
+          to True before it gets to Ansible.
         choices:
         - active
-        - on
+        - 'on'
         - passive
         - auto
         - desirable

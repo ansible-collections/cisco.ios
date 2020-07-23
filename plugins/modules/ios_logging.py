@@ -31,8 +31,10 @@ options:
   dest:
     description:
     - Destination of the logs.
+    - On dest has to be quoted as 'on' or else pyyaml will convert
+      to True before it gets to Ansible.
     choices:
-    - on
+    - 'on'
     - host
     - console
     - monitor
@@ -74,8 +76,10 @@ options:
       dest:
         description:
         - Destination of the logs.
+        - On dest has to be quoted as 'on' or else pyyaml will convert
+          to True before it gets to Ansible.
         choices:
-        - on
+        - 'on'
         - host
         - console
         - monitor
