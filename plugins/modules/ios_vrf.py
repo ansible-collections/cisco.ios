@@ -38,7 +38,7 @@ options:
       list entries can either be the VRF name or a hash of VRF definitions and attributes.  This
       argument is mutually exclusive with the C(name) argument.
     type: list
-    elements: str
+    elements: raw
   name:
     description:
     - The name of the VRF definition to be managed on the remote IOS device.  The
@@ -698,7 +698,7 @@ def main():
     """ main entry point for module execution
     """
     argument_spec = dict(
-        vrfs=dict(type="list", elements="str"),
+        vrfs=dict(type="list", elements="raw"),
         name=dict(),
         description=dict(),
         rd=dict(),
