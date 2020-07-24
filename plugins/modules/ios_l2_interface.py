@@ -37,7 +37,6 @@ options:
   name:
     description:
     - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
-    required: true
     aliases:
     - interface
     type: str
@@ -448,7 +447,7 @@ def main():
     """ main entry point for module execution
     """
     element_spec = dict(
-        name=dict(type="str", aliases=["interface"], required=True),
+        name=dict(type="str", aliases=["interface"]),
         mode=dict(choices=["access", "trunk"]),
         access_vlan=dict(type="str"),
         native_vlan=dict(type="str"),

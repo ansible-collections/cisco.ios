@@ -40,7 +40,6 @@ options:
   vlan_id:
     description:
     - ID of the VLAN. Range 1-4094.
-    required: true
     type: int
   interfaces:
     description:
@@ -370,7 +369,7 @@ def main():
     """ main entry point for module execution
     """
     element_spec = dict(
-        vlan_id=dict(type="int", required=True),
+        vlan_id=dict(type="int"),
         name=dict(),
         interfaces=dict(type="list", elements="str"),
         associated_interfaces=dict(type="list", elements="str"),
