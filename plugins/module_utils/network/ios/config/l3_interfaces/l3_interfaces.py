@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
+    remove_empties
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -279,7 +280,7 @@ class L3_Interfaces(ConfigBase):
         """
         diff = False
         for each in want:
-            each_want = dict(each)
+            each_want = remove_empties(dict(each))
             for every in have:
                 every_have = dict(every)
                 if (
