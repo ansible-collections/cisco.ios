@@ -35,21 +35,27 @@ options:
   hostname:
     description:
     - Configure the device hostname parameter. This option takes an ASCII string value.
+    type: str
   domain_name:
     description:
     - Configure the IP domain name on the remote device to the provided value. Value
       should be in the dotted name form and will be appended to the C(hostname) to
       create a fully-qualified domain name.
+    type: list
+    elements: raw
   domain_search:
     description:
     - Provides the list of domain suffixes to append to the hostname for the purpose
       of doing name resolution. This argument accepts a list of names and will be
       reconciled with the current active configuration on the running node.
+    type: list
+    elements: raw
   lookup_source:
     description:
     - Provides one or more source interfaces to use for performing DNS lookups.  The
       interface provided in C(lookup_source) must be a valid interface configured
       on the device.
+    type: str
   lookup_enabled:
     description:
     - Administrative control for enabling or disabling DNS lookups.  When this argument
@@ -60,6 +66,8 @@ options:
     description:
     - List of DNS name servers by IP address to use to perform name resolution lookups.  This
       argument accepts either a list of DNS servers See examples.
+    type: list
+    elements: raw
   state:
     description:
     - State of the configuration values in the device's current active configuration.  When
@@ -69,6 +77,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 - name: configure hostname and domain name
@@ -344,9 +353,9 @@ def main():
     """
     argument_spec = dict(
         hostname=dict(),
-        domain_name=dict(type="list"),
-        domain_search=dict(type="list"),
-        name_servers=dict(type="list"),
+        domain_name=dict(type="list", elements="raw"),
+        domain_search=dict(type="list", elements="raw"),
+        name_servers=dict(type="list", elements="raw"),
         lookup_source=dict(),
         lookup_enabled=dict(type="bool"),
         state=dict(choices=["present", "absent"], default="present"),

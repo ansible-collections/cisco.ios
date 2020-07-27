@@ -37,36 +37,46 @@ options:
     - The set of VRF definition objects to be configured on the remote IOS device.  Ths
       list entries can either be the VRF name or a hash of VRF definitions and attributes.  This
       argument is mutually exclusive with the C(name) argument.
+    type: list
+    elements: raw
   name:
     description:
     - The name of the VRF definition to be managed on the remote IOS device.  The
       VRF definition name is an ASCII string name used to uniquely identify the VRF.  This
       argument is mutually exclusive with the C(vrfs) argument
+    type: str
   description:
     description:
     - Provides a short description of the VRF definition in the current active configuration.  The
       VRF definition value accepts alphanumeric characters used to provide additional
       information about the VRF.
+    type: str
   rd:
     description:
     - The router-distinguisher value uniquely identifies the VRF to routing processes
       on the remote IOS system.  The RD value takes the form of C(A:B) where C(A)
       and C(B) are both numeric values.
+    type: str
   interfaces:
     description:
     - Identifies the set of interfaces that should be configured in the VRF.  Interfaces
       must be routed interfaces in order to be placed into a VRF.
+    type: list
+    elements: str
   associated_interfaces:
     description:
     - This is a intent option and checks the operational state of the for given vrf
       C(name) for associated interfaces. If the value in the C(associated_interfaces)
       does not match with the operational state of vrf interfaces on device it will
       result in failure.
+    type: list
+    elements: str
   delay:
     description:
     - Time in seconds to wait before checking for the operational state on remote
       device.
     default: 10
+    type: int
   purge:
     description:
     - Instructs the module to consider the VRF definition absolute.  It will remove
@@ -83,39 +93,58 @@ options:
     choices:
     - present
     - absent
+    type: str
   route_both:
     description:
     - Adds an export and import list of extended route target communities to the VRF.
+    type: list
+    elements: str
   route_export:
     description:
     - Adds an export list of extended route target communities to the VRF.
+    type: list
+    elements: str
   route_import:
     description:
     - Adds an import list of extended route target communities to the VRF.
+    type: list
+    elements: str
   route_both_ipv4:
     description:
     - Adds an export and import list of extended route target communities in address-family
       configuration submode to the VRF.
+    type: list
+    elements: str
   route_export_ipv4:
     description:
     - Adds an export list of extended route target communities in address-family configuration
       submode to the VRF.
+    type: list
+    elements: str
   route_import_ipv4:
     description:
     - Adds an import list of extended route target communities in address-family configuration
       submode to the VRF.
+    type: list
+    elements: str
   route_both_ipv6:
     description:
     - Adds an export and import list of extended route target communities in address-family
       configuration submode to the VRF.
+    type: list
+    elements: str
   route_export_ipv6:
     description:
     - Adds an export list of extended route target communities in address-family configuration
       submode to the VRF.
+    type: list
+    elements: str
   route_import_ipv6:
     description:
     - Adds an import list of extended route target communities in address-family configuration
       submode to the VRF.
+    type: list
+    elements: str
 """
 EXAMPLES = """
 - name: configure a vrf named management
@@ -669,21 +698,21 @@ def main():
     """ main entry point for module execution
     """
     argument_spec = dict(
-        vrfs=dict(type="list"),
+        vrfs=dict(type="list", elements="raw"),
         name=dict(),
         description=dict(),
         rd=dict(),
-        route_export=dict(type="list"),
-        route_import=dict(type="list"),
-        route_both=dict(type="list"),
-        route_export_ipv4=dict(type="list"),
-        route_import_ipv4=dict(type="list"),
-        route_both_ipv4=dict(type="list"),
-        route_export_ipv6=dict(type="list"),
-        route_import_ipv6=dict(type="list"),
-        route_both_ipv6=dict(type="list"),
-        interfaces=dict(type="list"),
-        associated_interfaces=dict(type="list"),
+        route_export=dict(type="list", elements="str"),
+        route_import=dict(type="list", elements="str"),
+        route_both=dict(type="list", elements="str"),
+        route_export_ipv4=dict(type="list", elements="str"),
+        route_import_ipv4=dict(type="list", elements="str"),
+        route_both_ipv4=dict(type="list", elements="str"),
+        route_export_ipv6=dict(type="list", elements="str"),
+        route_import_ipv6=dict(type="list", elements="str"),
+        route_both_ipv6=dict(type="list", elements="str"),
+        interfaces=dict(type="list", elements="str"),
+        associated_interfaces=dict(type="list", elements="str"),
         delay=dict(default=10, type="int"),
         purge=dict(type="bool", default=False),
         state=dict(default="present", choices=["present", "absent"]),

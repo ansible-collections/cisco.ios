@@ -174,8 +174,9 @@ def filter_dict_having_none_value(want, have):
             for key, value in iteritems(v[0]):
                 test_key_dict = dict()
                 if value is None:
-                    dict_val = have.get(k).get(key)
-                    test_key_dict.update({key: dict_val})
+                    if have.get(k) and key in have.get(k):
+                        dict_val = have.get(k)[0].get(key)
+                        test_key_dict.update({key: dict_val})
                 elif have.get(k):
                     if (
                         k == "ipv6"

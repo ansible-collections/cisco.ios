@@ -37,34 +37,92 @@ options:
   prefix:
     description:
     - Network prefix of the static route.
+    type: str
   mask:
     description:
     - Network prefix mask of the static route.
+    type: str
   next_hop:
     description:
     - Next hop IP of the static route.
+    type: str
   vrf:
     description:
     - VRF of the static route.
+    type: str
   interface:
     description:
     - Interface of the static route.
+    type: str
   name:
     description:
     - Name of the static route
+    type: str
     aliases:
     - description
   admin_distance:
     description:
     - Admin distance of the static route.
+    type: str
   tag:
     description:
     - Set tag of the static route.
+    type: str
   track:
     description:
     - Tracked item to depend on for the static route.
+    type: str
   aggregate:
     description: List of static route definitions.
+    type: list
+    elements: dict
+    suboptions:
+      prefix:
+        description:
+        - Network prefix of the static route.
+        type: str
+        required: true
+      mask:
+        description:
+        - Network prefix mask of the static route.
+        type: str
+      next_hop:
+        description:
+        - Next hop IP of the static route.
+        type: str
+      vrf:
+        description:
+        - VRF of the static route.
+        type: str
+      interface:
+        description:
+        - Interface of the static route.
+        type: str
+      name:
+        description:
+        - Name of the static route
+        aliases:
+        - description
+        type: str
+      admin_distance:
+        description:
+        - Admin distance of the static route.
+        type: str
+      tag:
+        description:
+        - Set tag of the static route.
+        type: str
+      track:
+        description:
+        - Tracked item to depend on for the static route.
+        type: str
+      state:
+        description:
+        - State of the static route configuration.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - State of the static route configuration.
@@ -72,6 +130,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 """
@@ -156,7 +215,7 @@ def map_obj_to_commands(want, have):
             if not diff:
                 break
             # Try to match an existing config with the desired config
-            elif (
+            if (
                 len(diff) == 2
                 and diff[0][0] == diff[1][0] == "name"
                 and (not w["name"] or h["name"].startswith(w["name"]))

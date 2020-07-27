@@ -40,6 +40,8 @@ options:
       must be the exact same commands as found in the device running-config.  Be sure
       to note the configuration command syntax as some commands are automatically
       modified by the device config parser.
+    type: list
+    elements: str
     aliases:
     - commands
   parents:
@@ -47,23 +49,30 @@ options:
     - The ordered set of parents that uniquely identify the section or hierarchy the
       commands should be checked against.  If the parents argument is omitted, the
       commands are checked against the set of top level or global commands.
+    type: list
+    elements: str
   src:
     description:
     - Specifies the source path to the file that contains the configuration or configuration
       template to load.  The path to the source file can either be the full path on
       the Ansible control host or a relative path from the playbook or role root directory.  This
       argument is mutually exclusive with I(lines), I(parents).
+    type: str
   before:
     description:
     - The ordered set of commands to push on to the command stack if a change needs
       to be made.  This allows the playbook designer the opportunity to perform configuration
       commands prior to pushing any changes without affecting how the set of commands
       are matched against the system.
+    type: list
+    elements: str
   after:
     description:
     - The ordered set of commands to append to the end of the command stack if a change
       needs to be made.  Just like with I(before) this allows the playbook designer
       to append a set of commands to be executed after the command set.
+    type: list
+    elements: str
   match:
     description:
     - Instructs the module on the way to perform the matching of the set of commands
@@ -78,6 +87,7 @@ options:
     - strict
     - exact
     - none
+    type: str
     default: line
   replace:
     description:
@@ -90,12 +100,14 @@ options:
     choices:
     - line
     - block
+    type: str
   multiline_delimiter:
     description:
     - This argument is used when pushing a multiline configuration element to the
       IOS device.  It specifies the character to use as the delimiting character.  This
       only applies to the configuration action.
     default: '@'
+    type: str
   backup:
     description:
     - This argument will cause the module to create a full backup of the current C(running-config)
@@ -112,6 +124,7 @@ options:
       There are times when it is not desirable to have the task get the current running-config
       for every task in a playbook.  The I(running_config) argument allows the implementer
       to pass in the configuration to use as the base config for comparison.
+    type: str
     aliases:
     - config
   defaults:
@@ -139,6 +152,7 @@ options:
     - never
     - modified
     - changed
+    type: str
   diff_against:
     description:
     - When using the C(ansible-playbook --diff) command line argument the module can
@@ -151,6 +165,7 @@ options:
     - When this option is configured as I(running), the module will return the before
       and after diff of the running-config with respect to any changes made to the
       device configuration.
+    type: str
     choices:
     - running
     - startup
@@ -161,6 +176,8 @@ options:
       the diff.  This is used for lines in the configuration that are automatically
       updated by the system.  This argument takes a list of regular expressions or
       exact line matches.
+    type: list
+    elements: str
   intended_config:
     description:
     - The C(intended_config) provides the master configuration that the node should
@@ -169,6 +186,7 @@ options:
       the compliance of the current device's configuration against.  When specifying
       this argument, the task should also modify the C(diff_against) value and set
       it to I(intended).
+    type: str
   backup_options:
     description:
     - This is a dict object containing configurable options related to backup file
@@ -180,6 +198,7 @@ options:
         - The filename to be used to store the backup configuration. If the filename
           is not given it will be generated based on the hostname, current time and
           date in format defined by <hostname>_config.<current-date>@<current-time>
+        type: str
       dir_path:
         description:
         - This option provides the path ending with directory name in which the backup
@@ -394,11 +413,11 @@ def main():
     """
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
     argument_spec = dict(
-        src=dict(type="path"),
-        lines=dict(aliases=["commands"], type="list"),
-        parents=dict(type="list"),
-        before=dict(type="list"),
-        after=dict(type="list"),
+        src=dict(type="str"),
+        lines=dict(aliases=["commands"], type="list", elements="str"),
+        parents=dict(type="list", elements="str"),
+        before=dict(type="list", elements="str"),
+        after=dict(type="list", elements="str"),
         match=dict(
             default="line", choices=["line", "strict", "exact", "none"]
         ),
@@ -413,7 +432,7 @@ def main():
             choices=["always", "never", "modified", "changed"], default="never"
         ),
         diff_against=dict(choices=["startup", "intended", "running"]),
-        diff_ignore_lines=dict(type="list"),
+        diff_ignore_lines=dict(type="list", elements="str"),
     )
     argument_spec.update(ios_argument_spec)
     mutually_exclusive = [("lines", "src"), ("parents", "src")]

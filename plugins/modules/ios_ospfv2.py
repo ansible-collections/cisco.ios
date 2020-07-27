@@ -190,6 +190,7 @@ options:
               ranges:
                 description: Summarize routes matching address/mask (border routers only)
                 type: list
+                elements: dict
                 suboptions:
                   address:
                     description: IP address to match

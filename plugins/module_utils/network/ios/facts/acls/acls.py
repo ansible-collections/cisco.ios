@@ -1,4 +1,4 @@
-#
+# pylint: skip-file
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
@@ -391,7 +391,7 @@ class AclsFacts(object):
             if "Extended" in each:
                 acls["acl_type"] = "extended"
                 continue
-            elif "Standard" in each:
+            if "Standard" in each:
                 acls["acl_type"] = "standard"
                 continue
             ace_options = {}

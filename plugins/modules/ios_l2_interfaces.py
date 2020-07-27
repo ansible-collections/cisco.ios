@@ -73,6 +73,7 @@ options:
             - List of allowed VLANs in a given trunk port. These are the only VLANs
               that will be configured on the trunk.
             type: list
+            elements: str
           native_vlan:
             description:
             - Native VLAN to be configured in trunk port. It's used as the trunk native
@@ -91,6 +92,7 @@ options:
             - Pruning VLAN to be configured in trunk port. It's used as the trunk
               pruning VLAN ID.
             type: list
+            elements: str
       mode:
         description:
         - Mode in which interface needs to be configured.

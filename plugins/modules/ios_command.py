@@ -44,6 +44,8 @@ options:
       and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
       quotes). See examples.
     required: true
+    type: list
+    elements: str
   wait_for:
     description:
     - List of conditions to evaluate against the output of the command. The task will
@@ -51,6 +53,8 @@ options:
       is not true within the configured number of retries, the task fails. See examples.
     aliases:
     - waitfor
+    type: list
+    elements: str
   match:
     description:
     - The I(match) argument is used in conjunction with the I(wait_for) argument to
@@ -58,6 +62,7 @@ options:
       is set to C(all) then all conditionals in the wait_for must be satisfied.  If
       the value is set to C(any) then only one of the values must be satisfied.
     default: all
+    type: str
     choices:
     - any
     - all
@@ -67,12 +72,14 @@ options:
       failed. The command is run on the target device every retry and evaluated against
       the I(wait_for) conditions.
     default: 10
+    type: int
   interval:
     description:
     - Configures the interval in seconds to wait between retries of the command. If
       the command does not pass the specified conditions, the interval indicates how
       long to wait before trying the command again.
     default: 1
+    type: int
 """
 EXAMPLES = """
 - name: run show version on remote devices
@@ -161,8 +168,8 @@ def main():
     """main entry point for module execution
     """
     argument_spec = dict(
-        commands=dict(type="list", required=True),
-        wait_for=dict(type="list", aliases=["waitfor"]),
+        commands=dict(type="list", elements="str", required=True),
+        wait_for=dict(type="list", elements="str", aliases=["waitfor"]),
         match=dict(default="all", choices=["all", "any"]),
         retries=dict(default=10, type="int"),
         interval=dict(default=1, type="int"),
