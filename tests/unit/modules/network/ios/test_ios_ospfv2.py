@@ -109,7 +109,7 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_merged_idempotent(self):
         set_module_args(
@@ -171,7 +171,7 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     #
     def test_ios_ospfv2_replaced_idempotent(self):
