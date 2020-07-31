@@ -103,8 +103,8 @@ class TestIosOspfV2Module(TestIosModule):
         commands = [
             "router ospf 100 vrf blue",
             "auto-cost reference-bandwidth 4",
-            "distribute-list 10 out",
             "distribute-list 123 in",
+            "distribute-list 10 out",
             "domain-id 192.0.3.1",
             "max-metric router-lsa on-startup 100",
         ]
@@ -165,8 +165,8 @@ class TestIosOspfV2Module(TestIosModule):
         )
         commands = [
             "router ospf 200 vrf blue",
-            "no distribute-list 10 out",
             "no distribute-list 123 in",
+            "no distribute-list 10 out",
             "domain-id 192.0.1.1",
             "max-metric router-lsa on-startup 200",
         ]
