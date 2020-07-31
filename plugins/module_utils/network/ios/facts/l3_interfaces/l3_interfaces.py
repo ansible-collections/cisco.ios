@@ -64,7 +64,7 @@ class L3_InterfacesFacts(object):
         for conf in config:
             if conf:
                 obj = self.render_config(self.generated_spec, conf)
-                if obj:
+                if obj and len(obj.keys()) > 1:
                     objs.append(obj)
         facts = {}
 
