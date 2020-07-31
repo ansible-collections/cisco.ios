@@ -39,8 +39,8 @@ Parameters
                     <b>aggregate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -48,18 +48,19 @@ Parameters
                                             <div>List of logging definitions.</div>
                                                         </td>
             </tr>
-                                <tr>
-                                                                <td colspan="2">
+                                                            <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>dest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
                                                                                                                             <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                                                                                                    <li>yes</li>
+                                                                                                                                                                <li>on</li>
                                                                                                                                                                                                 <li>host</li>
                                                                                                                                                                                                 <li>console</li>
                                                                                                                                                                                                 <li>monitor</li>
@@ -69,6 +70,127 @@ Parameters
                                                                             </td>
                                                                 <td>
                                             <div>Destination of the logs.</div>
+                                            <div>On dest has to be quoted as &#x27;on&#x27; or else pyyaml will convert to True before it gets to Ansible.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>facility</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                                                            </td>
+                                                                <td>
+                                            <div>Set logging facility.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>level</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>emergencies</li>
+                                                                                                                                                                                                <li>alerts</li>
+                                                                                                                                                                                                <li>critical</li>
+                                                                                                                                                                                                <li>errors</li>
+                                                                                                                                                                                                <li>warnings</li>
+                                                                                                                                                                                                <li>notifications</li>
+                                                                                                                                                                                                <li>informational</li>
+                                                                                                                                                                                                <li>debugging</li>
+                                                                                    </ul>
+                                                                            </td>
+                                                                <td>
+                                            <div>Set logging severity levels.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                                                            </td>
+                                                                <td>
+                                            <div>The hostname or IP address of the destination.</div>
+                                            <div>Required when <em>dest=host</em>.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>size</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                                                            </td>
+                                                                <td>
+                                            <div>Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>present</li>
+                                                                                                                                                                                                <li>absent</li>
+                                                                                    </ul>
+                                                                            </td>
+                                                                <td>
+                                            <div>State of the logging configuration.</div>
+                                                        </td>
+            </tr>
+                    
+                                                <tr>
+                                                                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>dest</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>on</li>
+                                                                                                                                                                                                <li>host</li>
+                                                                                                                                                                                                <li>console</li>
+                                                                                                                                                                                                <li>monitor</li>
+                                                                                                                                                                                                <li>buffered</li>
+                                                                                                                                                                                                <li>trap</li>
+                                                                                    </ul>
+                                                                            </td>
+                                                                <td>
+                                            <div>Destination of the logs.</div>
+                                            <div>On dest has to be quoted as &#x27;on&#x27; or else pyyaml will convert to True before it gets to Ansible.</div>
                                                         </td>
             </tr>
                                 <tr>
@@ -77,7 +199,7 @@ Parameters
                     <b>facility</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -92,7 +214,7 @@ Parameters
                     <b>level</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -117,7 +239,7 @@ Parameters
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -190,7 +312,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                                                                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -225,8 +347,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">22</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the port to use when building the connection to the remote device.</div>
                                                         </td>
@@ -258,8 +379,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">10</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error.</div>
                                                         </td>
@@ -287,12 +407,11 @@ Parameters
                     <b>size</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">4096</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.</div>
                                                         </td>
@@ -303,7 +422,7 @@ Parameters
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>

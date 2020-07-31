@@ -39,8 +39,8 @@ Parameters
                     <b>aggregate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -48,13 +48,90 @@ Parameters
                                             <div>List of link aggregation definitions.</div>
                                                         </td>
             </tr>
+                                                            <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                 / <span style="color: red">required</span>                    </div>
+                                    </td>
+                                <td>
+                                                                                                                                                            </td>
+                                                                <td>
+                                            <div>Channel-group number for the port-channel Link aggregation group. Range 1-255.</div>
+                                                        </td>
+            </tr>
                                 <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>members</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>                                            </div>
+                                    </td>
+                                <td>
+                                                                                                                                                            </td>
+                                                                <td>
+                                            <div>List of members of the link aggregation group.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>active</li>
+                                                                                                                                                                                                <li>on</li>
+                                                                                                                                                                                                <li>passive</li>
+                                                                                                                                                                                                <li>auto</li>
+                                                                                                                                                                                                <li>desirable</li>
+                                                                                    </ul>
+                                                                            </td>
+                                                                <td>
+                                            <div>Mode of the link aggregation group.</div>
+                                            <div>On mode has to be quoted as &#x27;on&#x27; or else pyyaml will convert to True before it gets to Ansible.</div>
+                                                        </td>
+            </tr>
+                                <tr>
+                                                    <td class="elbow-placeholder"></td>
+                                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                                                                    </div>
+                                    </td>
+                                <td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>present</li>
+                                                                                                                                                                                                <li>absent</li>
+                                                                                    </ul>
+                                                                            </td>
+                                                                <td>
+                                            <div>State of the link aggregation group.</div>
+                                                        </td>
+            </tr>
+                    
+                                                <tr>
                                                                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>group</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -69,8 +146,8 @@ Parameters
                     <b>members</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -84,13 +161,13 @@ Parameters
                     <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
                                                                                                                             <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                                 <li>active</li>
-                                                                                                                                                                                                                                                                    <li>yes</li>
+                                                                                                                                                                                                <li>on</li>
                                                                                                                                                                                                 <li>passive</li>
                                                                                                                                                                                                 <li>auto</li>
                                                                                                                                                                                                 <li>desirable</li>
@@ -98,6 +175,7 @@ Parameters
                                                                             </td>
                                                                 <td>
                                             <div>Mode of the link aggregation group.</div>
+                                            <div>On mode has to be quoted as &#x27;on&#x27; or else pyyaml will convert to True before it gets to Ansible.</div>
                                                         </td>
             </tr>
                                 <tr>
@@ -163,7 +241,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                                                                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -198,8 +276,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">22</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the port to use when building the connection to the remote device.</div>
                                                         </td>
@@ -231,8 +308,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">10</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error.</div>
                                                         </td>
@@ -279,7 +355,7 @@ Parameters
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>

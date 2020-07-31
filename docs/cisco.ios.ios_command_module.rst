@@ -40,8 +40,8 @@ Parameters
                     <b>commands</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>                         / <span style="color: red">required</span>                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -55,7 +55,7 @@ Parameters
                     <b>interval</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -71,7 +71,7 @@ Parameters
                     <b>match</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -147,7 +147,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                                                                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -182,8 +182,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">22</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the port to use when building the connection to the remote device.</div>
                                                         </td>
@@ -215,8 +214,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">10</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error.</div>
                                                         </td>
@@ -244,7 +242,7 @@ Parameters
                     <b>retries</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -260,8 +258,8 @@ Parameters
                     <b>wait_for</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
