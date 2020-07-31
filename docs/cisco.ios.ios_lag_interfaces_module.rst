@@ -56,7 +56,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
-                                                                    </div>
+                         / <span style="color: purple">elements=dictionary</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -109,12 +109,12 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                                    </div>
+                                                 / <span style="color: red">required</span>                    </div>
                                     </td>
                                 <td>
                                                                                                                             <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                                                                                                                                                 <li>auto</li>
-                                                                                                                                                                                                                                                                    <li>yes</li>
+                                                                                                                                                                                                <li>on</li>
                                                                                                                                                                                                 <li>desirable</li>
                                                                                                                                                                                                 <li>active</li>
                                                                                                                                                                                                 <li>passive</li>
@@ -122,6 +122,7 @@ Parameters
                                                                             </td>
                                                                 <td>
                                             <div>Etherchannel Mode of the interface for link aggregation.</div>
+                                            <div>On mode has to be quoted as &#x27;on&#x27; or else pyyaml will convert to True before it gets to Ansible.</div>
                                                         </td>
             </tr>
                     
@@ -175,6 +176,9 @@ Parameters
                                                                                                                                                                                                 <li>replaced</li>
                                                                                                                                                                                                 <li>overridden</li>
                                                                                                                                                                                                 <li>deleted</li>
+                                                                                                                                                                                                <li>rendered</li>
+                                                                                                                                                                                                <li>parsed</li>
+                                                                                                                                                                                                <li>gathered</li>
                                                                                     </ul>
                                                                             </td>
                                                                 <td>
