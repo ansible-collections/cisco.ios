@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
