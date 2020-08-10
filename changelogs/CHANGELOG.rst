@@ -10,7 +10,7 @@ v1.0.2
 Release Summary
 ---------------
 
-- Re-releasing 1.0.2 with updated changelog.
+- Re-releasing 1.0.1 with updated changelog.
 
 v1.0.1
 ======
@@ -18,7 +18,6 @@ v1.0.1
 Minor Changes
 -------------
 
-- Add changelogs for 1.0.0 release (https://github.com/ansible-collections/cisco.ios/pull/90)
 - Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
 - Updated docs.
 
