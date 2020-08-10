@@ -106,3 +106,25 @@ releases:
         name: ios
         namespace: null
     release_date: '2020-06-23'
+  1.0.1:
+    changes:
+      bugfixes:
+      - Make `src`, `backup` and `backup_options` in ios_config work when module alias is used
+        (https://github.com/ansible-collections/cisco.ios/pull/107).
+      minor_changes:
+      - Removes IOS sanity ignores and sync for argspec and docstring
+        (https://github.com/ansible-collections/cisco.ios/pull/114).
+      - Updated docs.
+    fragments:
+    - 90-add-change-log-1.0.0.yaml
+    - 1.1.0_update_docs.yaml
+    - handle_src_backup_with_module_alias.yaml
+    - remove_ios_ignore.yaml
+    release_date: '2020-08-03'
+  1.0.2:
+    changes:
+      release_summary:
+      - Re-releasing 1.0.1 with updated changelog.
+    fragments:
+    - 1.0.2.yaml
+    release_date: '2020-08-07'

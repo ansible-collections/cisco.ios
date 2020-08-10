@@ -4,6 +4,28 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v1.0.2
+======
+
+Release Summary
+---------------
+
+- Re-releasing 1.0.1 with updated changelog.
+
+v1.0.1
+======
+
+Minor Changes
+-------------
+
+- Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
+- Updated docs.
+
+Bugfixes
+--------
+
+- Make `src`, `backup` and `backup_options` in ios_config work when module alias is used (https://github.com/ansible-collections/cisco.ios/pull/107).
+
 
 v1.0.0
 ======
