@@ -610,22 +610,16 @@ class AclsFacts(object):
                     tcp = {}
                     if temp_flag:
                         tcp[temp_flag] = True
-                    else:
-                        tcp["set"] = True
                     protocol_options[temp_option] = tcp
                 elif temp_option == "icmp":
                     icmp = dict()
                     if temp_flag:
                         icmp[temp_flag] = True
-                    else:
-                        icmp["set"] = True
                     protocol_options[temp_option] = icmp
                 elif temp_option == "igmp":
                     igmp = dict()
                     if temp_flag:
                         igmp[temp_flag] = True
-                    else:
-                        igmp["set"] = True
                     protocol_options[temp_option] = igmp
                 else:
                     protocol_options[temp_option] = True

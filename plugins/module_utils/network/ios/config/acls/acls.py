@@ -664,15 +664,11 @@ class Acls(ConfigBase):
         if any:
             cmd = cmd + " {0}".format("any")
         port_protocol = config.get("port_protocol")
-        if port_protocol and (
-            protocol_option.get("tcp") or protocol_option.get("udp")
-        ):
+        if port_protocol and ('tcp' in cmd or 'udp' in cmd):
             cmd = cmd + " {0} {1}".format(
                 list(port_protocol)[0], list(port_protocol.values())[0]
             )
-        elif port_protocol and not (
-            protocol_option.get("tcp") or protocol_option.get("udp")
-        ):
+        elif port_protocol and ('tcp' not in cmd or 'udp' not in cmd):
             self._module.fail_json(
                 msg="Port Protocol option is valid only with TCP/UDP Protocol option!"
             )

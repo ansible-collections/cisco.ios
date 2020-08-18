@@ -108,6 +108,28 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     ),
                     dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="in_to_out",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        protocol="tcp",
+                                        source=dict(
+                                            host="10.1.1.2",
+                                        ),
+                                        destination=dict(
+                                            host="172.16.1.1",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    dict(
                         afi="ipv6",
                         acls=[
                             dict(
@@ -140,6 +162,8 @@ class TestIosAclsModule(TestIosModule):
         commands = [
             "ip access-list standard std_acl",
             "deny 192.0.2.0 0.0.0.255",
+            "ip access-list extended in_to_out",
+            "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "ipv6 access-list merge_v6_acl",
             "deny tcp any eq www any eq telnet ack dscp af11",
         ]
