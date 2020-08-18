@@ -117,9 +117,7 @@ class TestIosAclsModule(TestIosModule):
                                     dict(
                                         grant="permit",
                                         protocol="tcp",
-                                        source=dict(
-                                            host="10.1.1.2",
-                                        ),
+                                        source=dict(host="10.1.1.2"),
                                         destination=dict(
                                             host="172.16.1.1",
                                             port_protocol=dict(eq="telnet"),
