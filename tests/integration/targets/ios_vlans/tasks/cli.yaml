@@ -19,9 +19,11 @@
   include: '{{ test_case_to_run }}'
   vars:
     ansible_connection: ansible.netcommon.network_cli
+    ansible_network_cli_ssh_type: paramiko
   with_items: '{{ test_items }}'
   loop_control:
     loop_var: test_case_to_run
+  tags: paramiko
 
 - name: Run test case (connection=ansible.netcommon.network_cli with libssh transport)
   include: '{{ test_case_to_run }}'
@@ -31,3 +33,4 @@
   with_items: '{{ test_items }}'
   loop_control:
     loop_var: test_case_to_run
+  tags: libssh
