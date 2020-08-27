@@ -126,8 +126,9 @@ This collection follows the Ansible project's
 [Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html).
 Please read and familiarize yourself with this document.
 
-## Changelogs
+## Release notes
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
+Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/changelogs/CHANGELOG.rst).
 
 ## Roadmap
 
