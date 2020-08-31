@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - To fix IOS l2 interfaces for traceback error and merge operation not working as expected(https://github.com/ansible-collections/cisco.ios/pull/103).
