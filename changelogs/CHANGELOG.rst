@@ -16,10 +16,7 @@ Bugfixes
 --------
 
 - To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
-- To fix the bug where description was being parsed incorrectly as Interface in all of interfaces resource modules
-  (https://github.com/ansible-collections/cisco.ios/pull/108).
 - To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
-- To fix issue of configuration over non-existing interfaces via ios_l3_interfaces (https://github.com/ansible-collections/cisco.ios/pull/99).
 
 v1.0.2
 ======
