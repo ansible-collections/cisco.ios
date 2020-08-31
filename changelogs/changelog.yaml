@@ -128,3 +128,8 @@ releases:
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
+  1.0.3:
+    changes:
+      release_summary:
+      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+    release_date: '2020-08-28'
