@@ -87,6 +87,18 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ]
                             ),
+                            network=[
+                                dict(
+                                    address="198.51.100.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
+                                dict(
+                                    address="192.0.2.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
+                            ],
                             domain_id=dict(
                                 ip_address=dict(address="192.0.3.1")
                             ),
@@ -105,6 +117,8 @@ class TestIosOspfV2Module(TestIosModule):
             "auto-cost reference-bandwidth 4",
             "distribute-list 123 in",
             "distribute-list 10 out",
+            "network 198.51.100.0 0.0.0.255 area 5",
+            "network 192.0.2.0 0.0.0.255 area 5",
             "domain-id 192.0.3.1",
             "max-metric router-lsa on-startup 100",
         ]

@@ -476,13 +476,14 @@ def _tmplt_ospf_neighbor(config_data):
 
 def _tmplt_ospf_network(config_data):
     if "network" in config_data:
-        command = "network"
-        if "address" in config_data["network"]:
-            command += " {address} {wildcard_bits}".format(
-                **config_data["network"]
-            )
-        if "area" in config_data["network"]:
-            command += " area {area}".format(**config_data["network"])
+        command = []
+        for each in config_data["network"]:
+            cmd = "network"
+            if "address" in each:
+                cmd += " {address} {wildcard_bits}".format(**each)
+            if "area" in each:
+                cmd += " area {area}".format(**each)
+            command.append(cmd)
         return command
 
 
@@ -1591,11 +1592,13 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "network": {
-                            "address": "{{ address }}",
-                            "wildcard_bits": "{{ wildcard }}",
-                            "area": "{{ area.split(" ")[1] }}",
-                        }
+                        "network": [
+                            {
+                                "address": "{{ address }}",
+                                "wildcard_bits": "{{ wildcard }}",
+                                "area": "{{ area.split(" ")[1] }}",
+                            }
+                        ]
                     }
                 }
             },
