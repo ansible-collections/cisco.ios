@@ -336,6 +336,8 @@ def normalize_interface(name):
         if_type = "TwentyFiveGigE"
     elif name.lower().startswith("hu"):
         if_type = "HundredGigE"
+    elif name.lower().startswith("virtual-te"):
+        if_type = "Virtual-Template"
     else:
         if_type = None
 
@@ -381,5 +383,7 @@ def get_interface_type(interface):
         return "TwentyFiveGigE"
     elif interface.upper().startswith("HU"):
         return "HundredGigE"
+    elif interface.upper().startswith("VIRTUAL-TE"):
+        return "Virtual-Template"
     else:
         return "unknown"
