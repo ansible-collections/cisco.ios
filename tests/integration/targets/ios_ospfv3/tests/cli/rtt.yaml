@@ -57,7 +57,7 @@
                 reference_bandwidth: 4
         state: merged
 
-    - name: Gather OSPFV2 facts
+    - name: Gather OSPFV3 facts
       cisco.ios.ios_facts:
         gather_subset:
           - '!all'
@@ -78,7 +78,6 @@
               address_family:
                 - afi: ipv4
                   unicast: true
-                  vrf: blue
                   adjacency:
                     min_adjacency: 50
                     max_adjacency: 50
@@ -93,24 +92,11 @@
                   nssa:
                     default_information_originate:
                       metric: 10
-            - process_id: 100
-              address_family:
-                - afi: ipv4
-                  unicast: true
-                  adjacency:
-                    min_adjacency: 100
-                    max_adjacency: 100
-              max_metric:
-                router_lsa: true
-                on_startup:
-                  time: 100
-              auto_cost:
-                reference_bandwidth: 4
         state: overridden
 
     - assert:
         that:
-          - result.commands|length == 18
+          - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
@@ -122,7 +108,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 24
+          - revert.commands|length == 14
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:

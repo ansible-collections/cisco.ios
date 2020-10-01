@@ -27,6 +27,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
+import q
 
 
 class Ospfv3(ResourceModule):
@@ -278,19 +279,27 @@ class Ospfv3(ResourceModule):
                                 af_want_areas.update(
                                     {each_area["area_id"]: each_area}
                                 )
-                            for each_area in each_have_af["areas"]:
-                                af_have_areas.update(
-                                    {each_area["area_id"]: each_area}
-                                )
+                            if each_have_af.get("areas"):
+                                for each_area in each_have_af["areas"]:
+                                    af_have_areas.update(
+                                        {each_area["area_id"]: each_area}
+                                    )
+
                             if "exit-address-family" in self.commands:
                                 del self.commands[
                                     self.commands.index("exit-address-family")
                                 ]
                                 delete_exit_family = True
-                            self._areas_compare(
-                                {"areas": af_want_areas},
-                                {"areas": af_have_areas},
-                            )
+
+                            if af_have_areas:
+                                self._areas_compare(
+                                    {"areas": af_want_areas},
+                                    {"areas": af_have_areas},
+                                )
+                            else:
+                                self._areas_compare(
+                                    {"areas": af_want_areas}, dict()
+                                )
                             if delete_exit_family:
                                 self.commands.append("exit-address-family")
                 else:

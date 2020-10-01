@@ -22,7 +22,6 @@
               address_family:
                 - afi: ipv4
                   unicast: true
-                  vrf: blue
                   adjacency:
                     min_adjacency: 50
                     max_adjacency: 50
@@ -37,19 +36,6 @@
                   nssa:
                     default_information_originate:
                       metric: 10
-            - process_id: 100
-              address_family:
-                - afi: ipv4
-                  unicast: true
-                  adjacency:
-                    min_adjacency: 100
-                    max_adjacency: 100
-              max_metric:
-                router_lsa: true
-                on_startup:
-                  time: 100
-              auto_cost:
-                reference_bandwidth: 4
         state: overridden
 
     - name: Assert that correct set of commands were generated
@@ -57,12 +43,6 @@
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
-
-    - name: Assert that before dicts are correctly generated
-      assert:
-        that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length\
-            \ == 0 }}"
 
     - name: Override provided OSPF V3 configuration
         (IDEMPOTENT)

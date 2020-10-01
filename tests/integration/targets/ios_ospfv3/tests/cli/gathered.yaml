@@ -19,7 +19,7 @@
       assert:
         that:
           - result.changed == false
-          - "{{ merged['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length\
+          - "{{ gathered['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length\
             \ == 0 }}"
 
   always:

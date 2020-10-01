@@ -1287,30 +1287,28 @@ EXAMPLES = """
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
-- name: Delete provided OSPF V2 processes
+- name: Delete provided OSPF V3 processes
   cisco.ios.ios_ospfv3:
     config:
       processes:
       - process_id: 1
-      - process_id: 200
     state: deleted
 
 # Commands Fired:
@@ -1322,37 +1320,36 @@ EXAMPLES = """
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
-# Using deleted without any config passed (NOTE: This will delete all OSPFV2 configuration from device)
+# Using deleted without any config passed (NOTE: This will delete all OSPFV3 configuration from device)
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
 - name: Delete all OSPF processes
   cisco.ios.ios_ospfv3:
@@ -1368,7 +1365,7 @@ EXAMPLES = """
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
+# router-ios#sh running-config | section ^router ospfv3
 # router-ios#
 
 # Using merged
@@ -1376,10 +1373,10 @@ EXAMPLES = """
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
+# router-ios#sh running-config | section ^router ospfv3
 # router-ios#
 
-- name: Merge provided OSPF V2 configuration
+- name: Merge provided OSPFV3 configuration
   cisco.ios.ios_ospfv3:
     config:
       processes:
@@ -1388,337 +1385,267 @@ EXAMPLES = """
           router_lsa: true
           on_startup:
             time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          address: 198.51.100.0
-          wildcard_bits: 0.0.0.255
-          area: 5
-        default_information:
-          originate: true
+        address_family:
+          - afi: ipv4
+            unicast: true
+            vrf: blue
+            adjacency:
+              min_adjacency: 50
+              max_adjacency: 50
+            areas:
+              - area_id: 25
+                nssa:
+                  default_information_originate:
+                    metric: 25
+                    nssa_only: true
+        areas:                
+          - area_id: "10"
+            nssa:
+              default_information_originate:
+                metric: 10
+        timers:
+          throttle:
+            lsa:
+              first_delay: 12
+              min_delay: 14
+              max_delay: 16
       - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
+        address_family:
+          - afi: ipv4
+            unicast: true
+            adjacency:
+              min_adjacency: 200
+              max_adjacency: 200
         max_metric:
           router_lsa: true
           on_startup:
             time: 100
         auto_cost:
           reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
     state: merged
 
 # Commands Fired:
 # ---------------
 #
 #  "commands": [
-#         "router ospf 200 vrf blue",
-#         "auto-cost reference-bandwidth 4",
-#         "distribute-list 10 out",
-#         "distribute-list 123 in",
-#         "domain-id 192.0.3.1",
-#         "max-metric router-lsa on-startup 100",
-#         "area 10 capability default-exclusion",
-#         "router ospf 1",
-#         "default-information originate",
+#         "router ospfv3 1",
 #         "max-metric router-lsa on-startup 110",
-#         "network 198.51.100.0 0.0.0.255 area 5",
-#         "area 10 authentication message-digest",
-#         "area 10 default-cost 10",
-#         "area 10 nssa translate type7 suppress-fa",
 #         "area 10 nssa default-information-originate metric 10",
-#         "area 10 filter-list prefix test_prefix_out out",
-#         "area 10 filter-list prefix test_prefix_in in",
-#         "area 5 authentication",
-#         "area 5 capability default-exclusion"
+#         "address-family ipv4 unicast vrf blue",
+#         "adjacency stagger 50 50",
+#         "area 25 nssa default-information-originate metric 25 nssa-only",
+#         "exit-address-family",
+#         "router ospfv3 200",
+#         "auto-cost reference-bandwidth 4",
+#         "max-metric router-lsa on-startup 100",
+#         "address-family ipv4 unicast",
+#         "adjacency stagger 200 200",
+#         "exit-address-family"
 #     ]
 
 # After state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
 # Using overridden
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
-- name: Override provided OSPF V2 configuration
+- name: Override provided OSPFV3 configuration
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+        - process_id: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 200
+                  nssa:
+                    default_information_originate:
+                      metric: 200
+                      nssa_only: true
+          areas:                
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
     state: overridden
 
 # Commands Fired:
 # ---------------
 #
 # "commands": [
-#         "no router ospf 1",
-#         "router ospf 100 vrf ospf_vrf",
-#         "auto-cost reference-bandwidth 5",
-#         "domain-id 192.0.5.1",
-#         "area 5 authentication message-digest",
-#         "area 5 nssa translate type7 suppress-fa",
-#         "area 5 nssa default-information-originate metric 10",
-#         "router ospf 200 vrf blue",
+#         "no router ospfv3 1",
+#         "router ospfv3 200",
 #         "no auto-cost reference-bandwidth 4",
-#         "no distribute-list 10 out",
-#         "no distribute-list 123 in",
-#         "domain-id 192.0.4.1",
 #         "max-metric router-lsa on-startup 200",
-#         "maximum-paths 15",
-#         "ttl-security all-interfaces hops 7",
-#         "area 10 authentication message-digest",
-#         "no area 10 capability default-exclusion",
-#         "area 10 default-cost 10"
+#         "area 10 nssa default-information-originate metric 10",
+#         "address-family ipv4 unicast",
+#         "adjacency stagger 50 50",
+#         "area 200 nssa default-information-originate metric 200 nssa-only",
+#         "exit-address-family"
 #     ]
 
 # After state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.4.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 200
 #  max-metric router-lsa on-startup 200
-#  ttl-security all-interfaces hops 7
-#  area 10 authentication message-digest
-#  area 10 default-cost 10
-#  maximum-paths 15
-# router ospf 100 vrf ospf_vrf
-#  domain-id 192.0.5.1
-#  auto-cost reference-bandwidth 5
-#  area 5 authentication message-digest
-#  area 5 nssa default-information-originate metric 10
-#  area 5 nssa translate type7 suppress-fa
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 50 50
+#   area 200 nssa default-information-originate metric 200 nssa-only
+#  exit-address-family
 
 # Using replaced
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
-- name: Replaced provided OSPF V2 configuration
+- name: Replaced provided OSPFV3 configuration
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+        - process_id: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 200
+                  nssa:
+                    default_information_originate:
+                      metric: 200
+                      nssa_only: true
+          areas:                
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
     state: replaced
 
 # Commands Fired:
 # ---------------
 # "commands": [
-#         "router ospf 100 vrf ospf_vrf",
-#         "auto-cost reference-bandwidth 5",
-#         "domain-id 192.0.5.1",
-#         "area 5 authentication message-digest",
-#         "area 5 nssa translate type7 suppress-fa",
-#         "area 5 nssa default-information-originate metric 10",
-#         "router ospf 200 vrf blue",
+#         "router ospfv3 200",
 #         "no auto-cost reference-bandwidth 4",
-#         "no distribute-list 10 out",
-#         "no distribute-list 123 in",
-#         "domain-id 192.0.4.1",
 #         "max-metric router-lsa on-startup 200",
-#         "maximum-paths 15",
-#         "ttl-security all-interfaces hops 7",
-#         "area 10 authentication message-digest",
-#         "no area 10 capability default-exclusion",
-#         "area 10 default-cost 10"
+#         "area 10 nssa default-information-originate metric 10",
+#         "address-family ipv4 unicast",
+#         "adjacency stagger 50 50",
+#         "area 200 nssa default-information-originate metric 200 nssa-only",
+#         "exit-address-family"
 #     ]
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.4.1
-#  max-metric router-lsa on-startup 200
-#  ttl-security all-interfaces hops 7
-#  area 10 authentication message-digest
-#  area 10 default-cost 10
-#  maximum-paths 15
-# router ospf 100 vrf ospf_vrf
-#  domain-id 192.0.5.1
-#  auto-cost reference-bandwidth 5
-#  area 5 authentication message-digest
-#  area 5 nssa default-information-originate metric 10
-#  area 5 nssa translate type7 suppress-fa
-# router ospf 1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
 #  max-metric router-lsa on-startup 110
-#  area 5 capability default-exclusion
-#  area 5 authentication
-#  area 10 authentication message-digest
 #  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_in in
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
+#  max-metric router-lsa on-startup 200
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 50 50
+#   area 200 nssa default-information-originate metric 200 nssa-only
+#  exit-address-family
 
 # Using Gathered
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
-- name: Gather OSPFV2 provided configurations
+- name: Gather OSPFV3 provided configurations
   cisco.ios.ios_ospfv3:
     config:
     state: gathered
@@ -1729,80 +1656,59 @@ EXAMPLES = """
 # "gathered": {
 #         "processes": [
 #             {
-#                 "areas": [
+#                 "address_family": [
 #                     {
-#                         "area_id": "5",
-#                         "authentication": {
-#                             "enable": true
+#                         "adjacency": {
+#                             "max_adjacency": 50,
+#                             "min_adjacency": 50
 #                         },
-#                         "capability": true
-#                     },
-#                     {
-#                         "area_id": "10",
-#                         "authentication": {
-#                             "message_digest": true
-#                         },
-#                         "default_cost": 10,
-#                         "filter_list": [
+#                         "afi": "ipv4",
+#                         "areas": [
 #                             {
-#                                 "direction": "in",
-#                                 "name": "test_prefix_in"
-#                             },
-#                             {
-#                                 "direction": "out",
-#                                 "name": "test_prefix_out"
+#                                 "area_id": "25",
+#                                 "nssa": {
+#                                     "default_information_originate": {
+#                                         "metric": 25,
+#                                         "nssa_only": true
+#                                     }
+#                                 }
 #                             }
 #                         ],
+#                         "unicast": true,
+#                         "vrf": "blue"
+#                     }
+#                 ],
+#                 "areas": [
+#                     {
+#                         "area_id": "10",
 #                         "nssa": {
 #                             "default_information_originate": {
 #                                 "metric": 10
-#                             },
-#                             "translate": "suppress-fa"
+#                             }
 #                         }
 #                     }
 #                 ],
-#                 "default_information": {
-#                     "originate": true
-#                 },
 #                 "max_metric": {
 #                     "on_startup": {
 #                         "time": 110
 #                     },
 #                     "router_lsa": true
 #                 },
-#                 "network": {
-#                     "address": "198.51.100.0",
-#                     "area": "5",
-#                     "wildcard_bits": "0.0.0.255"
-#                 },
 #                 "process_id": 1
 #             },
 #             {
-#                 "areas": [
+#                 "address_family": [
 #                     {
-#                         "area_id": "10",
-#                         "capability": true
+#                         "adjacency": {
+#                             "max_adjacency": 200,
+#                             "min_adjacency": 200
+#                         },
+#                         "afi": "ipv4",
+#                         "unicast": true
 #                     }
 #                 ],
 #                 "auto_cost": {
 #                     "reference_bandwidth": 4
-#                 },
-#                 "distribute_list": {
-#                     "acls": [
-#                         {
-#                             "direction": "out",
-#                             "name": "10"
-#                         },
-#                         {
-#                             "direction": "in",
-#                             "name": "123"
-#                         }
-#                     ]
-#                 },
-#                 "domain_id": {
-#                     "ip_address": {
-#                         "address": "192.0.3.1"
-#                     }
 #                 },
 #                 "max_metric": {
 #                     "on_startup": {
@@ -1810,32 +1716,30 @@ EXAMPLES = """
 #                     },
 #                     "router_lsa": true
 #                 },
-#                 "process_id": 200,
-#                 "vrf": "blue"
+#                 "process_id": 200
 #             }
 #         ]
-#      }
+#     }
 
 # After state:
 # ------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
+# router-ios#sh running-config | section ^router ospfv3
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
 #  max-metric router-lsa on-startup 100
 #  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
 # Using Rendered
 
@@ -1848,75 +1752,62 @@ EXAMPLES = """
           router_lsa: true
           on_startup:
             time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          address: 198.51.100.0
-          wildcard_bits: 0.0.0.255
-          area: 5
-        default_information:
-          originate: true
+        address_family:
+          - afi: ipv4
+            unicast: true
+            vrf: blue
+            adjacency:
+              min_adjacency: 50
+              max_adjacency: 50
+            areas:
+              - area_id: 25
+                nssa:
+                  default_information_originate:
+                    metric: 25
+                    nssa_only: true
+        areas:                
+          - area_id: "10"
+            nssa:
+              default_information_originate:
+                metric: 10
+        timers:
+          throttle:
+            lsa:
+              first_delay: 12
+              min_delay: 14
+              max_delay: 16
       - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
+        address_family:
+          - afi: ipv4
+            unicast: true
+            adjacency:
+              min_adjacency: 200
+              max_adjacency: 200
         max_metric:
           router_lsa: true
           on_startup:
             time: 100
         auto_cost:
           reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
     state: rendered
 
 # Module Execution Result:
 # ------------------------
 #
 # "rendered": [
-#         "router ospf 200 vrf blue",
-#         "auto-cost reference-bandwidth 4",
-#         "distribute-list 10 out",
-#         "distribute-list 123 in",
-#         "domain-id 192.0.3.1",
-#         "max-metric router-lsa on-startup 100",
-#         "area 10 capability default-exclusion",
-#         "router ospf 1",
-#         "default-information originate",
+#         "router ospfv3 1",
 #         "max-metric router-lsa on-startup 110",
-#         "network 198.51.100.0 0.0.0.255 area 5",
-#         "area 10 authentication message-digest",
-#         "area 10 default-cost 10",
-#         "area 10 nssa translate type7 suppress-fa",
 #         "area 10 nssa default-information-originate metric 10",
-#         "area 10 filter-list prefix test_prefix_out out",
-#         "area 10 filter-list prefix test_prefix_in in",
-#         "area 5 authentication",
-#         "area 5 capability default-exclusion"
+#         "address-family ipv4 unicast vrf blue",
+#         "adjacency stagger 50 50",
+#         "area 25 nssa default-information-originate metric 25 nssa-only",
+#         "exit-address-family",
+#         "router ospfv3 200",
+#         "auto-cost reference-bandwidth 4",
+#         "max-metric router-lsa on-startup 100",
+#         "address-family ipv4 unicast",
+#         "adjacency stagger 200 200",
+#         "exit-address-family"
 #     ]
 
 # Using Parsed
@@ -1924,12 +1815,21 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 #
-# router ospf 100
-#  auto-cost reference-bandwidth 5
-#  domain-id 192.0.5.1
-#  area 5 authentication message-digest
-#  area 5 nssa translate type7 suppress-fa
-#  area 5 nssa default-information-originate metric 10
+# router ospfv3 1
+#  max-metric router-lsa on-startup 110
+#  area 10 nssa default-information-originate metric 10
+#  !
+#  address-family ipv4 unicast vrf blue
+#   adjacency stagger 50 50
+#   area 25 nssa default-information-originate metric 25 nssa-only
+#  exit-address-family
+# router ospfv3 200
+#  max-metric router-lsa on-startup 100
+#  auto-cost reference-bandwidth 4
+#  !
+#  address-family ipv4 unicast
+#   adjacency stagger 200 200
+#  exit-address-family
 
 - name: Parse the provided configuration with the exisiting running configuration
   cisco.ios.ios_ospfv3:
@@ -1942,34 +1842,51 @@ EXAMPLES = """
 # "parsed": {
 #         "processes": [
 #             {
+#                 "address_family": [
+#                     {
+#                         "adjacency": {
+#                             "max_adjacency": 50,
+#                             "min_adjacency": 50
+#                         },
+#                         "afi": "ipv4",
+#                         "areas": [
+#                             {
+#                                 "area_id": "25",
+#                                 "nssa": {
+#                                     "default_information_originate": {
+#                                         "metric": 25,
+#                                         "nssa_only": true
+#                                     }
+#                                 }
+#                             }
+#                         ],
+#                         "unicast": true,
+#                         "vrf": "blue"
+#                     }
+#                 ],
 #                 "areas": [
 #                     {
-#                         "area_id": "5",
-#                         "authentication": {
-#                             "message_digest": true
-#                         },
+#                         "area_id": "10",
 #                         "nssa": {
 #                             "default_information_originate": {
 #                                 "metric": 10
-#                             },
-#                             "translate": "suppress-fa"
+#                             }
 #                         }
 #                     }
 #                 ],
-#                 "auto_cost": {
-#                     "reference_bandwidth": 5
+#                 "max_metric": {
+#                     "on_startup": {
+#                         "time": 110
+#                     },
+#                     "router_lsa": true
 #                 },
-#                 "domain_id": {
-#                     "ip_address": {
-#                         "address": "192.0.5.1"
-#                     }
-#                 },
-#                 "process_id": 100
+#                 "process_id": 1
 #             }
 #         ]
 #     }
 
 """
+
 RETURN = """
 before:
   description: The configuration prior to the model invocation.
@@ -1989,7 +1906,7 @@ commands:
   description: The set of commands pushed to the remote device.
   returned: always
   type: list
-  sample: ['router ospf 200 vrf blue', 'auto-cost reference-bandwidth 5', 'domain-id 192.0.4.1']
+  sample: ['router ospfv3 1', 'address-family ipv4 unicast vrf blue', 'adjacency stagger 50 50']
 """
 
 
