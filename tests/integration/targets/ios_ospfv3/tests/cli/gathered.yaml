@@ -21,7 +21,7 @@
           - result.changed == false
           - "{{ gathered['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length\
             \ == 0 }}"
-
+  when: ansible_net_version != "15.6(2)T"
   always:
 
     - include_tasks: _remove_config.yaml

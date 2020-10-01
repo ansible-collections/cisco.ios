@@ -51,3 +51,4 @@
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(merged.commands) == []
+  when: ansible_net_version != "15.6(2)T"

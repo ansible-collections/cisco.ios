@@ -40,3 +40,4 @@
           auto_cost:
             reference_bandwidth: 4
     state: merged
+  when: ansible_net_version != "15.6(2)T"
