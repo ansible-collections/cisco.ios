@@ -133,3 +133,17 @@ releases:
       release_summary:
       - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
     release_date: '2020-08-28'
+  1.1.0:
+    changes:
+      bugfixes:
+      - Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+      - Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+      - Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+      - To fix the incorrect command displayed under ios_l3_interfaces resource module docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+      minor_changes:
+      - Add ios_ospfv3 module.
+    modules:
+    - description: OSPFv3 resource module
+      name: ios_ospfv3
+      namespace: ''
+    release_date: '2020-10-01'

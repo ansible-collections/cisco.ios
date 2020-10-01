@@ -350,7 +350,7 @@ Examples
     # interface GigabitEthernet0/1
     #  description Configured by Ansible
     #  switchport access vlan 10
-    #  switchport access vlan 40
+    #  switchport voice vlan 40
     #  switchport mode access
     #  negotiation auto
     # interface GigabitEthernet0/2
@@ -384,7 +384,7 @@ Examples
         config:
         - name: GigabitEthernet0/2
           trunk:
-          - allowed_vlans: 20-25,40
+            allowed_vlans: 20-25,40
             native_vlan: 20
             pruning_vlans: 10
             encapsulation: isl
