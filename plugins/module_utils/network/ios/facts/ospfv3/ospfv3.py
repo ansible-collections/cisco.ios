@@ -29,6 +29,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     Template,
     dict_merge,
+    iteritems,
 )
 
 
@@ -58,7 +59,7 @@ class Ospfv3Facts(object):
                     capdict = cap.groupdict()
 
                     capdict = {
-                        k: v for k, v in capdict.items() if v is not None
+                        k: v for k, v in iteritems(capdict) if v is not None
                     }
                     if "address-family" in line:
                         capdict.update({"id": temp_pid})

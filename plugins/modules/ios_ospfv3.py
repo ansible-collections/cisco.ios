@@ -1398,7 +1398,7 @@ EXAMPLES = """
                   default_information_originate:
                     metric: 25
                     nssa_only: true
-        areas:                
+        areas:
           - area_id: "10"
             nssa:
               default_information_originate:
@@ -1505,7 +1505,7 @@ EXAMPLES = """
                     default_information_originate:
                       metric: 200
                       nssa_only: true
-          areas:                
+          areas:
             - area_id: "10"
               nssa:
                 default_information_originate:
@@ -1583,7 +1583,7 @@ EXAMPLES = """
                     default_information_originate:
                       metric: 200
                       nssa_only: true
-          areas:                
+          areas:
             - area_id: "10"
               nssa:
                 default_information_originate:
@@ -1765,7 +1765,7 @@ EXAMPLES = """
                   default_information_originate:
                     metric: 25
                     nssa_only: true
-        areas:                
+        areas:
           - area_id: "10"
             nssa:
               default_information_originate:
