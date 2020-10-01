@@ -79,21 +79,19 @@ class TestIosOspfV3Module(TestIosModule):
                 config=dict(
                     processes=[
                         dict(
-                            process_id="100",
+                            process_id="1",
                             auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
-                                ]
-                            ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1")
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100), router_lsa=True
-                            ),
-                            vrf="blue",
+                            areas=[dict(area_id=10, default_cost=10)],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=100, max_adjacency=100
+                                    ),
+                                )
+                            ],
                         )
                     ]
                 ),
@@ -101,12 +99,12 @@ class TestIosOspfV3Module(TestIosModule):
             )
         )
         commands = [
-            "router ospf 100 vrf blue",
+            "router ospfv3 1",
             "auto-cost reference-bandwidth 4",
-            "distribute-list 123 in",
-            "distribute-list 10 out",
-            "domain-id 192.0.3.1",
-            "max-metric router-lsa on-startup 100",
+            "area 10 default-cost 10",
+            "address-family ipv4 unicast vrf blue",
+            "adjacency stagger 100 100",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -117,22 +115,40 @@ class TestIosOspfV3Module(TestIosModule):
                 config=dict(
                     processes=[
                         dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
-                                ]
-                            ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1")
-                            ),
+                            process_id="1",
                             max_metric=dict(
-                                on_startup=dict(time=100), router_lsa=True
+                                router_lsa=True, on_startup=dict(time=110)
                             ),
-                            areas=[dict(area_id="10", capability=True)],
-                            vrf="blue",
+                            areas=[
+                                dict(
+                                    area_id=10,
+                                    nssa=dict(
+                                        default_information_originate=dict(
+                                            metric=10
+                                        )
+                                    ),
+                                )
+                            ],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=50, max_adjacency=50
+                                    ),
+                                    areas=[
+                                        dict(
+                                            area_id=25,
+                                            nssa=dict(
+                                                default_information_originate=dict(
+                                                    metric=25, nssa_only=True
+                                                )
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
                         )
                     ]
                 ),
@@ -141,199 +157,271 @@ class TestIosOspfV3Module(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    # def test_ios_ospfv3_replaced(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="200",
-    #                         auto_cost=dict(reference_bandwidth="4"),
-    #                         domain_id=dict(
-    #                             ip_address=dict(address="192.0.1.1")
-    #                         ),
-    #                         max_metric=dict(
-    #                             on_startup=dict(time=200), router_lsa=True
-    #                         ),
-    #                         areas=[dict(area_id="10", capability=True)],
-    #                         vrf="blue",
-    #                     )
-    #                 ]
-    #             ),
-    #             state="replaced",
-    #         )
-    #     )
-    #     commands = [
-    #         "router ospf 200 vrf blue",
-    #         "no distribute-list 123 in",
-    #         "no distribute-list 10 out",
-    #         "domain-id 192.0.1.1",
-    #         "max-metric router-lsa on-startup 200",
-    #     ]
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(sorted(result["commands"]), sorted(commands))
+    def test_ios_ospfv3_replaced(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="1",
+                            max_metric=dict(
+                                router_lsa=True, on_startup=dict(time=100)
+                            ),
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=100, max_adjacency=100
+                                    ),
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="replaced",
+            )
+        )
+        commands = [
+            "router ospfv3 1",
+            "max-metric router-lsa on-startup 100",
+            "no area 10 nssa default-information-originate metric 10",
+            "address-family ipv4 unicast vrf blue",
+            "adjacency stagger 100 100",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    # #
-    # def test_ios_ospfv3_replaced_idempotent(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="200",
-    #                         auto_cost=dict(reference_bandwidth="4"),
-    #                         distribute_list=dict(
-    #                             acls=[
-    #                                 dict(direction="out", name="10"),
-    #                                 dict(direction="in", name="123"),
-    #                             ]
-    #                         ),
-    #                         domain_id=dict(
-    #                             ip_address=dict(address="192.0.3.1")
-    #                         ),
-    #                         max_metric=dict(
-    #                             on_startup=dict(time=100), router_lsa=True
-    #                         ),
-    #                         areas=[dict(area_id="10", capability=True)],
-    #                         vrf="blue",
-    #                     )
-    #                 ]
-    #             ),
-    #             state="replaced",
-    #         )
-    #     )
-    #     self.execute_module(changed=False, commands=[])
+    #
+    def test_ios_ospfv3_replaced_idempotent(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="1",
+                            max_metric=dict(
+                                router_lsa=True, on_startup=dict(time=110)
+                            ),
+                            areas=[
+                                dict(
+                                    area_id=10,
+                                    nssa=dict(
+                                        default_information_originate=dict(
+                                            metric=10
+                                        )
+                                    ),
+                                )
+                            ],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=50, max_adjacency=50
+                                    ),
+                                    areas=[
+                                        dict(
+                                            area_id=25,
+                                            nssa=dict(
+                                                default_information_originate=dict(
+                                                    metric=25, nssa_only=True
+                                                )
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="replaced",
+            )
+        )
+        self.execute_module(changed=False, commands=[])
 
-    # def test_ios_ospfv3_overridden(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="200",
-    #                         auto_cost=dict(reference_bandwidth="4"),
-    #                         domain_id=dict(
-    #                             ip_address=dict(address="192.0.1.1")
-    #                         ),
-    #                         max_metric=dict(
-    #                             on_startup=dict(time=200), router_lsa=True
-    #                         ),
-    #                         areas=[dict(area_id="10", capability=True)],
-    #                         vrf="blue",
-    #                     )
-    #                 ]
-    #             ),
-    #             state="overridden",
-    #         )
-    #     )
+    def test_ios_ospfv3_overridden(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="200",
+                            max_metric=dict(
+                                router_lsa=True, on_startup=dict(time=200)
+                            ),
+                            areas=[
+                                dict(
+                                    area_id=10,
+                                    nssa=dict(
+                                        default_information_originate=dict(
+                                            metric=10
+                                        )
+                                    ),
+                                )
+                            ],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    adjacency=dict(
+                                        min_adjacency=50, max_adjacency=50
+                                    ),
+                                    areas=[
+                                        dict(
+                                            area_id=200,
+                                            nssa=dict(
+                                                default_information_originate=dict(
+                                                    metric=200, nssa_only=True
+                                                )
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="overridden",
+            )
+        )
 
-    #     commands = [
-    #         "router ospf 200 vrf blue",
-    #         "no distribute-list 10 out",
-    #         "no distribute-list 123 in",
-    #         "domain-id 192.0.1.1",
-    #         "max-metric router-lsa on-startup 200",
-    #     ]
-    #     self.execute_module(changed=True, commands=commands)
+        commands = [
+            "no router ospfv3 1",
+            "router ospfv3 200",
+            "max-metric router-lsa on-startup 200",
+            "area 10 nssa default-information-originate metric 10",
+            "address-family ipv4 unicast",
+            "adjacency stagger 50 50",
+            "area 200 nssa default-information-originate metric 200 nssa-only",
+            "exit-address-family",
+        ]
+        self.execute_module(changed=True, commands=commands)
 
-    # def test_ios_ospfv3_overridden_idempotent(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="200",
-    #                         auto_cost=dict(reference_bandwidth="4"),
-    #                         distribute_list=dict(
-    #                             acls=[
-    #                                 dict(direction="out", name="10"),
-    #                                 dict(direction="in", name="123"),
-    #                             ]
-    #                         ),
-    #                         domain_id=dict(
-    #                             ip_address=dict(address="192.0.3.1")
-    #                         ),
-    #                         max_metric=dict(
-    #                             on_startup=dict(time=100), router_lsa=True
-    #                         ),
-    #                         areas=[dict(area_id="10", capability=True)],
-    #                         vrf="blue",
-    #                     )
-    #                 ]
-    #             ),
-    #             state="overridden",
-    #         )
-    #     )
-    #     self.execute_module(changed=False, commands=[])
+    def test_ios_ospfv3_overridden_idempotent(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="1",
+                            max_metric=dict(
+                                router_lsa=True, on_startup=dict(time=110)
+                            ),
+                            areas=[
+                                dict(
+                                    area_id=10,
+                                    nssa=dict(
+                                        default_information_originate=dict(
+                                            metric=10
+                                        )
+                                    ),
+                                )
+                            ],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=50, max_adjacency=50
+                                    ),
+                                    areas=[
+                                        dict(
+                                            area_id=25,
+                                            nssa=dict(
+                                                default_information_originate=dict(
+                                                    metric=25, nssa_only=True
+                                                )
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="overridden",
+            )
+        )
+        self.execute_module(changed=False, commands=[])
 
-    # def test_ios_ospfv3_deleted(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(processes=[dict(process_id="200", vrf="blue")]),
-    #             state="deleted",
-    #         )
-    #     )
-    #     commands = ["no router ospf 200 vrf blue"]
-    #     self.execute_module(changed=True, commands=commands)
+    def test_ios_ospfv3_deleted(self):
+        set_module_args(
+            dict(
+                config=dict(processes=[dict(process_id="1")]), state="deleted"
+            )
+        )
+        commands = ["no router ospfv3 1"]
+        self.execute_module(changed=True, commands=commands)
 
-    # def test_ios_ospfv3_parsed(self):
-    #     set_module_args(
-    #         dict(
-    #             running_config="router ospf 1\n area 5 authentication\n area 5 capability default-exclusion",
-    #             state="parsed",
-    #         )
-    #     )
-    #     result = self.execute_module(changed=False)
-    #     parsed_list = {
-    #         "processes": [
-    #             {
-    #                 "areas": [
-    #                     {
-    #                         "area_id": "5",
-    #                         "authentication": {"enable": True},
-    #                         "capability": True,
-    #                     }
-    #                 ],
-    #                 "process_id": 1,
-    #             }
-    #         ]
-    #     }
-    #     self.assertEqual(parsed_list, result["parsed"])
+    def test_ios_ospfv3_parsed(self):
+        set_module_args(
+            dict(running_config="router ospfv3 1\n area 5", state="parsed")
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = {
+            "processes": [{"areas": [{"area_id": "5"}], "process_id": 1}]
+        }
+        self.assertEqual(parsed_list, result["parsed"])
 
-    # def test_ios_ospfv3_rendered(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="100",
-    #                         vrf="blue",
-    #                         auto_cost=dict(reference_bandwidth="4"),
-    #                         distribute_list=dict(
-    #                             acls=[
-    #                                 dict(direction="out", name="10"),
-    #                                 dict(direction="in", name="123"),
-    #                             ]
-    #                         ),
-    #                         domain_id=dict(
-    #                             ip_address=dict(address="192.0.3.1")
-    #                         ),
-    #                         max_metric=dict(
-    #                             on_startup=dict(time=100), router_lsa=True
-    #                         ),
-    #                     )
-    #                 ]
-    #             ),
-    #             state="rendered",
-    #         )
-    #     )
-    #     commands = [
-    #         "auto-cost reference-bandwidth 4",
-    #         "distribute-list 10 out",
-    #         "distribute-list 123 in",
-    #         "domain-id 192.0.3.1",
-    #         "max-metric router-lsa on-startup 100",
-    #         "router ospf 100 vrf blue",
-    #     ]
-    #     result = self.execute_module(changed=False)
-    #     self.assertEqual(sorted(result["rendered"]), commands)
+    def test_ios_ospfv3_rendered(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="1",
+                            max_metric=dict(
+                                router_lsa=True, on_startup=dict(time=110)
+                            ),
+                            areas=[
+                                dict(
+                                    area_id=10,
+                                    nssa=dict(
+                                        default_information_originate=dict(
+                                            metric=10
+                                        )
+                                    ),
+                                )
+                            ],
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    unicast=True,
+                                    vrf="blue",
+                                    adjacency=dict(
+                                        min_adjacency=50, max_adjacency=50
+                                    ),
+                                    areas=[
+                                        dict(
+                                            area_id=25,
+                                            nssa=dict(
+                                                default_information_originate=dict(
+                                                    metric=25, nssa_only=True
+                                                )
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="rendered",
+            )
+        )
+        commands = [
+            "address-family ipv4 unicast vrf blue",
+            "adjacency stagger 50 50",
+            "area 10 nssa default-information-originate metric 10",
+            "area 25 nssa default-information-originate metric 25 nssa-only",
+            "exit-address-family",
+            "max-metric router-lsa on-startup 110",
+            "router ospfv3 1",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), commands)

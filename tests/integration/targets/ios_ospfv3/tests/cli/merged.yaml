@@ -36,12 +36,6 @@
                   nssa:
                     default_information_originate:
                       metric: 10
-              timers:
-                throttle:
-                  lsa:
-                    first_delay: 12
-                    min_delay: 14
-                    max_delay: 16
             - process_id: 200
               address_family:
                 - afi: ipv4
