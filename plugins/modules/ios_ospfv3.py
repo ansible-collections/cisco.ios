@@ -1315,7 +1315,7 @@ EXAMPLES = """
 # ---------------
 #
 # "commands": [
-#        "no router ospf 1"
+#        "no router ospfv3 1"
 #    ]
 
 # After state:
@@ -1359,8 +1359,8 @@ EXAMPLES = """
 # ---------------
 #
 # "commands": [
-#        "no router ospf 200 vrf blue",
-#        "no router ospf 1"
+#        "no router ospfv3 200",
+#        "no router ospfv3 1"
 #    ]
 
 # After state:

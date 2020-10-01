@@ -39,16 +39,6 @@ class Ospfv3Facts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Ospfv3Args.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_ospfv3_data(self, connection):
         return connection.get("sh running-config | section ^router ospfv3")
