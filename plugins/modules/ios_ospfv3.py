@@ -1949,6 +1949,7 @@ def main():
     Main entry point for module execution
     :returns: the result form module invocation
     """
+    # DNM testing
     required_if = [
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
