@@ -418,6 +418,9 @@ options:
                   - helper support
                 type: dict
                 suboptions:
+                  enable:
+                    description: helper support enabled
+                    type: bool
                   disable:
                     description: disable helper support
                     type: bool
@@ -489,21 +492,38 @@ options:
                 type: dict
                 suboptions:
                   cache:
-                    description:
-                      - Specify MANET cache sizes
-                      - Maximum number of acknowledgements in cache
-                    type: int
+                    description: Specify MANET cache sizes
+                    type: dict
+                    suboptions:
+                      acknowledgement:
+                        description:
+                          - Specify MANET acknowledgement cache size
+                          - Maximum number of acknowledgements in cache
+                        type: int
+                      update:
+                        description:
+                          - Specify MANET LSA cache size
+                          - Maximum number of LSAs in cache
+                        type: int
                   hello:
-                    description:
-                      - Unicast Hellos rather than multicast
-                      - Unicast Hello requests and responses rather than multicast
-                    type: bool
+                    description: Unicast Hellos rather than multicast
+                    type: dict
+                    suboptions:
+                      multicast:
+                        description: Multicast Hello requests and responses rather than unicast
+                        type: bool
+                      unicast:
+                        description: Unicast Hello requests and responses rather than multicast
+                        type: bool
                   peering:
                     description: MANET OSPF Smart Peering
                     type: dict
                     suboptions:
                       set:
                         description: Enable selective peering
+                        type: bool
+                      disable:
+                        description: Disable selective peering
                         type: bool
                       per_interface:
                         description: Select peers per interface rather than per node
@@ -640,7 +660,7 @@ options:
                     type: bool
                   disable:
                     description: Disable Shutdown
-                    type: boo
+                    type: bool
               summary_prefix:
                 description: Configure IP address summaries
                 type: dict
@@ -1291,7 +1311,6 @@ EXAMPLES = """
       processes:
       - process_id: 1
       - process_id: 200
-        vrf: blue
     state: deleted
 
 # Commands Fired:
@@ -1976,10 +1995,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
-    Ospfv2Args,
+    Ospfv3Args,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv3.ospfv3 import (
-    Ospfv2,
+    Ospfv3,
 )
 
 
@@ -1999,13 +2018,13 @@ def main():
     mutually_exclusive = [("config", "running_config")]
 
     module = AnsibleModule(
-        argument_spec=Ospfv2Args.argument_spec,
+        argument_spec=Ospfv3Args.argument_spec,
         required_if=required_if,
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
 
-    result = Ospfv2(module).execute_module()
+    result = Ospfv3(module).execute_module()
     module.exit_json(**result)
 
 

@@ -19,7 +19,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
-    Ospfv2Template,
+    Ospfv3Template,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -29,7 +29,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-class Ospfv2(ResourceModule):
+class Ospfv3(ResourceModule):
     """
     The ios_ospfv3 class
     """
@@ -39,12 +39,12 @@ class Ospfv2(ResourceModule):
     gather_network_resources = ["ospfv3"]
 
     def __init__(self, module):
-        super(Ospfv2, self).__init__(
+        super(Ospfv3, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
             resource="ospfv3",
-            tmplt=Ospfv2Template(),
+            tmplt=Ospfv3Template(),
         )
 
     def execute_module(self):
@@ -131,56 +131,36 @@ class Ospfv2(ResourceModule):
     def _compare(self, want, have):
         parsers = [
             "adjacency",
-            "address_family",
             "auto_cost",
             "bfd",
-            "capability",
             "compatible",
-            "default_information",
-            "default_metric",
-            "discard_route",
-            "distance.admin_distance",
-            "distance.ospf",
-            "distribute_list.acls",
-            "distribute_list.prefix",
-            "distribute_list.route_map",
-            "domain_id",
-            "domain_tag",
             "event_log",
             "help",
-            "ignore",
             "interface_id",
-            "ispf",
             "limit",
             "local_rib_criteria",
             "log_adjacency_changes",
+            "manet",
             "max_lsa",
             "max_metric",
-            "maximum_paths",
-            "mpls.ldp",
-            "mpls.traffic_eng",
-            "neighbor",
-            "network",
-            "nsf.cisco",
-            "nsf.ietf",
             "passive_interface",
             "prefix_suppression",
-            "priority",
             "queue_depth.hello",
             "queue_depth.update",
             "router_id",
             "shutdown",
-            "summary_address",
             "timers.throttle.lsa",
             "timers.throttle.spf",
-            "traffic_share",
-            "ttl_security",
         ]
 
         if want != have:
             self.addcmd(want or have, "pid", False)
             self.compare(parsers, want, have)
             self._areas_compare(want, have)
+            self._address_family_compare(want, have)
+
+            if len(self.commands) == 1 and "router" in self.commands[0]:
+                del self.commands[0]
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -223,3 +203,117 @@ class Ospfv2(ResourceModule):
         for name, entry in iteritems(haved):
             if name == "filter_list":
                 self.addcmd(entry, "area.filter_list", True)
+
+    def _address_family_compare(self, want, have):
+        if want["process_id"] == have.get("process_id") or want["process_id"]:
+            af_parsers = [
+                "address_family.adjacency",
+                "address_family.auto_cost",
+                "address_family.bfd",
+                "address_family.capability",
+                "address_family.compatible",
+                "address_family.default_information",
+                "address_family.default_metric",
+                "address_family.distance.admin_distance",
+                "address_family.distance.ospf",
+                "address_family.distribute_list.acls",
+                "address_family.distribute_list.prefix",
+                "address_family.distribute_list.route_map",
+                "address_family.event_log",
+                "address_family.graceful_restart",
+                "address_family.interface_id",
+                "address_family.limit",
+                "address_family.local_rib_criteria",
+                "address_family.log_adjacency_changes",
+                "address_family.manet",
+                "address_family.max_lsa",
+                "address_family.max_metric",
+                "address_family.maximum_paths",
+                "address_family.passive_interface",
+                "address_family.prefix_suppression",
+                "address_family.queue_depth.hello",
+                "address_family.queue_depth.update",
+                "address_family.router_id",
+                "address_family.shutdown",
+                "address_family.summary_prefix",
+                "address_family.timers.throttle.lsa",
+                "address_family.timers.throttle.spf",
+            ]
+            delete_exit_family = False
+            for each_want_af in want["address_family"]:
+                if have.get("address_family"):
+                    for each_have_af in have["address_family"]:
+                        if each_have_af.get("vrf") == each_want_af.get(
+                            "vrf"
+                        ) and each_have_af.get("afi") == each_want_af.get(
+                            "afi"
+                        ):
+                            self.compare(
+                                parsers=["address_family"],
+                                want={"address_family": each_want_af},
+                                have={"address_family": each_have_af},
+                            )
+                            self.compare(
+                                parsers=af_parsers,
+                                want=each_want_af,
+                                have=each_have_af,
+                            )
+                        elif each_have_af.get("afi") == each_want_af.get(
+                            "afi"
+                        ):
+                            self.compare(
+                                parsers=["address_family"],
+                                want={"address_family": each_want_af},
+                                have={"address_family": each_have_af},
+                            )
+                            self.compare(
+                                parsers=af_parsers,
+                                want={"address_family": each_want_af},
+                                have={"address_family": each_have_af},
+                            )
+                        if each_want_af.get("areas"):
+                            af_want_areas = {}
+                            af_have_areas = {}
+                            for each_area in each_want_af["areas"]:
+                                af_want_areas.update(
+                                    {each_area["area_id"]: each_area}
+                                )
+                            for each_area in each_have_af["areas"]:
+                                af_have_areas.update(
+                                    {each_area["area_id"]: each_area}
+                                )
+                            if "exit-address-family" in self.commands:
+                                del self.commands[
+                                    self.commands.index("exit-address-family")
+                                ]
+                                delete_exit_family = True
+                            self._areas_compare(
+                                {"areas": af_want_areas},
+                                {"areas": af_have_areas},
+                            )
+                            if delete_exit_family:
+                                self.commands.append("exit-address-family")
+                else:
+                    self.compare(
+                        parsers=["address_family"],
+                        want={"address_family": each_want_af},
+                        have=dict(),
+                    )
+                    if self.commands[-1] == "exit-address-family":
+                        del self.commands[-1]
+                        delete_exit_family = True
+                    self.compare(
+                        parsers=af_parsers, want=each_want_af, have=dict()
+                    )
+                    if delete_exit_family:
+                        self.commands.append("exit-address-family")
+                    if each_want_af.get("areas"):
+                        af_areas = {}
+                        for each_area in each_want_af["areas"]:
+                            af_areas.update({each_area["area_id"]: each_area})
+                        q(self.commands)
+                        del self.commands[
+                            self.commands.index("exit-address-family")
+                        ]
+                        self._areas_compare({"areas": af_areas}, dict())
+                        self.commands.append("exit-address-family")
