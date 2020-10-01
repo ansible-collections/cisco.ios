@@ -89,6 +89,7 @@ class Ospfv3Facts(object):
         pid_addr_family_dict = {}
         temp_dict = {}
         temp_pid = None
+        temp = []
         if current.get("address_family"):
             for each in current.pop("address_family"):
                 each = utils.remove_empties(each)
