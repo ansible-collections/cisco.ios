@@ -4,6 +4,27 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v1.2.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_ospfv3 module.
+
+Bugfixes
+--------
+
+- Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+- Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+- Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+- To fix the incorrect command displayed under ios_l3_interfaces resource module docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+
+New Modules
+-----------
+
+- ios_ospfv3 - OSPFv3 resource module
+
 v1.0.3
 ======
 
