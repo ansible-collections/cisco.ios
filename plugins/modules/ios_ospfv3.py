@@ -36,8 +36,8 @@ DOCUMENTATION = """
 module: ios_ospfv3
 short_description: OSPFv3 resource module
 description: This module configures and manages the Open Shortest Path First (OSPF)
-  version 2 on IOS platforms.
-version_added: 1.0.0
+  version 3 on IOS platforms.
+version_added: 1.1.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSv Version 15.2 on VIRL.
