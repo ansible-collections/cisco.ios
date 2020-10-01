@@ -115,8 +115,8 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | section ^interface) executed on device. For state I(parsed) active
+        option should be the same format as the output of command
+        I(show running-config | section ^interface) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
 
