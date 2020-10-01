@@ -63,7 +63,7 @@ options:
               afi:
                 description: Enter Address Family command mode
                 type: str
-                choice:
+                choices:
                   - ipv4
                   - ipv6
               unicast:
@@ -110,7 +110,7 @@ options:
                       key_chain:
                         description: Use a key-chain for cryptographic authentication keys
                         type: str
-                      null:
+                      'null':
                         description: Use no authentication
                         type: bool
                   default_cost:
@@ -174,6 +174,7 @@ options:
                   ranges:
                     description: Summarize routes matching address/mask (border routers only)
                     type: list
+                    elements: dict
                     suboptions:
                       address:
                         description: IP address to match
@@ -211,7 +212,7 @@ options:
                           key_chain:
                             description: Use a key-chain for cryptographic authentication keys
                             type: str
-                          null:
+                          'null':
                             description: Use no authentication
                             type: bool
                       cost:
@@ -704,7 +705,7 @@ options:
                             description: Specify MANET acknowledgement cache size
                             type: int
                           redundancy:
-                            update: Specify MANET LSA cache size
+                            description: Specify MANET LSA cache size
                             type: int
                       hello:
                         description:
@@ -1026,10 +1027,15 @@ options:
             type: dict
             suboptions:
               cache:
-                description:
-                  - Specify MANET cache sizes
-                  - Maximum number of acknowledgements in cache
-                type: int
+                description: Specify MANET cache sizes
+                type: dict
+                suboptions:
+                  acknowledgement:
+                    description: Specify MANET acknowledgement cache size
+                    type: int
+                  redundancy:
+                    description: Specify MANET LSA cache size
+                    type: int
               hello:
                 description:
                   - Unicast Hellos rather than multicast
@@ -1169,7 +1175,7 @@ options:
                         description: Specify MANET acknowledgement cache size
                         type: int
                       redundancy:
-                        update: Specify MANET LSA cache size
+                        description: Specify MANET LSA cache size
                         type: int
                   hello:
                     description:
@@ -1268,6 +1274,25 @@ options:
     - The state I(parsed) reads the configuration from C(running_config) option and
       transforms it into Ansible structured data as per the resource module's argspec
       and the value is then returned in the I(parsed) key within the result.
+    type: str
+  state:
+    description:
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(show running-config
+        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        connection to remote host is not required.
     type: str
     choices:
     - merged

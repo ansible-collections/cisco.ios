@@ -12,8 +12,9 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
 from copy import deepcopy
-
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -25,11 +26,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    Template,
-    dict_merge,
-    iteritems,
 )
 
 
@@ -47,8 +43,6 @@ class Ospfv3Facts(object):
     def parse(self, net_template_obj):
         """ Overrided network template parse
         """
-        import re
-
         result = {}
         shared = {}
         temp_pid = None
@@ -83,7 +77,7 @@ class Ospfv3Facts(object):
                         res = net_template_obj._deepformat(
                             deepcopy(parser["result"]), vals
                         )
-                    except:
+                    except Exception:
                         continue
                     result = utils.dict_merge(result, res)
                     break
@@ -110,7 +104,7 @@ class Ospfv3Facts(object):
                         temp.append(temp_dict)
                         temp_dict = dict()
                 elif each.get("manet") and temp_dict.get("manet"):
-                    for k, v in utils.iteritems(each.get("manet")):
+                    for k, v in iteritems(each.get("manet")):
                         if k in temp_dict.get("manet"):
                             temp_dict.get("manet")[k].update(v)
                         else:
@@ -139,7 +133,7 @@ class Ospfv3Facts(object):
         current = self.parse(rmmod)
         address_family = self.parse_for_address_family(current)
         if address_family:
-            for k, v in utils.iteritems(current["processes"]):
+            for k, v in iteritems(current["processes"]):
                 temp = address_family.pop(k)
                 v.update({"address_family": temp})
         # convert some of the dicts to lists

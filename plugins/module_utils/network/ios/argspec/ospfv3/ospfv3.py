@@ -50,7 +50,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                             "type": "list",
                             "elements": "dict",
                             "options": {
-                                "afi": {"type": "str"},
+                                "afi": {"type": "str", "choices": ["ipv4", "ipv6"]},
                                 "unicast": {"type": "bool"},
                                 "vrf": {"type": "str"},
                                 "adjacency": {
@@ -122,6 +122,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                         },
                                         "ranges": {
                                             "type": "list",
+                                            "elements": "dict",
                                             "options": {
                                                 "address": {"type": "str"},
                                                 "netmask": {"type": "str"},
@@ -419,7 +420,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "enable": {"type": "bool"},
-                                        "disable": {"type": "boo"},
+                                        "disable": {"type": "bool"},
                                     },
                                 },
                                 "summary_prefix": {
