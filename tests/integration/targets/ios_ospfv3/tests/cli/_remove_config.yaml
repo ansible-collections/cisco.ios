@@ -1,0 +1,12 @@
+---
+- name: Remove OSPFv3 Config
+  cisco.ios.ios_ospfv3:
+    state: deleted
+  when: ansible_net_version != "15.6(2)T"
+
+- name: Delete and Clean VRF configuration
+  vars:
+    lines: "no vrf definition ospf_vrf\nno vrf definition blue\n"
+  when: ansible_net_version != "15.6(2)T"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
