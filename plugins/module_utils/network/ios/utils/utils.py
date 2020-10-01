@@ -338,6 +338,8 @@ def normalize_interface(name):
         if_type = "HundredGigE"
     elif name.lower().startswith("virtual-te"):
         if_type = "Virtual-Template"
+    elif name.lower().startswith("tu"):
+        if_type = "Tunnel"
     else:
         if_type = None
 
@@ -385,5 +387,7 @@ def get_interface_type(interface):
         return "HundredGigE"
     elif interface.upper().startswith("VIRTUAL-TE"):
         return "Virtual-Template"
+    elif interface.upper().startswith("TU"):
+        return "Tunnel"
     else:
         return "unknown"
