@@ -311,7 +311,6 @@ class Ospfv3(ResourceModule):
                         af_areas = {}
                         for each_area in each_want_af["areas"]:
                             af_areas.update({each_area["area_id"]: each_area})
-                        q(self.commands)
                         del self.commands[
                             self.commands.index("exit-address-family")
                         ]
