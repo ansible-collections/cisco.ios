@@ -302,25 +302,23 @@ class Ospfv3(ResourceModule):
                             if delete_exit_family:
                                 self.commands.append("exit-address-family")
                 else:
+                    temp_cmd_before = self.commands
+                    self.commands = []
                     self.compare(
                         parsers=["address_family"],
                         want={"address_family": each_want_af},
                         have=dict(),
                     )
-                    if self.commands[-1] == "exit-address-family":
-                        del self.commands[-1]
-                        delete_exit_family = True
                     self.compare(
                         parsers=af_parsers, want=each_want_af, have=dict()
                     )
-                    if delete_exit_family:
-                        self.commands.append("exit-address-family")
                     if each_want_af.get("areas"):
                         af_areas = {}
                         for each_area in each_want_af["areas"]:
                             af_areas.update({each_area["area_id"]: each_area})
-                        del self.commands[
-                            self.commands.index("exit-address-family")
-                        ]
                         self._areas_compare({"areas": af_areas}, dict())
-                        self.commands.append("exit-address-family")
+                    del self.commands[
+                        self.commands.index("exit-address-family")
+                    ]
+                    self.commands.append("exit-address-family")
+                    self.commands[0:0] = temp_cmd_before
