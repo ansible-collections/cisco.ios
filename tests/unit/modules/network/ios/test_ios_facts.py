@@ -150,12 +150,12 @@ class TestIosFactsModule(TestIosModule):
                 {
                     "platform": "cisco CSR1000V",
                     "host": "R2",
-                    "port": "GigabitEthernet2"
+                    "port": "GigabitEthernet2",
                 },
                 {
                     "platform": "cisco CSR1000V",
                     "host": "R3",
-                    "port": "GigabitEthernet3"
+                    "port": "GigabitEthernet3",
                 },
             ],
         )
