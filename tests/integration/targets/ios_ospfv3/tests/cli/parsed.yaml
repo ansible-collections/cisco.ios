@@ -15,4 +15,3 @@
           - result.changed == false
           - "{{ merged['after']['processes'] | symmetric_difference(result['parsed']['processes']) |length\
               \ == 0 }}"
-  when: ansible_net_version != "15.6(2)T"

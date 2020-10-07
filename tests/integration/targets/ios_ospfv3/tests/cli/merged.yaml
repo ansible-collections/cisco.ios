@@ -21,10 +21,10 @@
               address_family:
                 - afi: ipv4
                   unicast: true
-                  vrf: blue
+                  vrf: ospf_vrf
                   adjacency:
-                    min_adjacency: 50
-                    max_adjacency: 50
+                    min_adjacency: 25
+                    max_adjacency: 25
                   areas:
                     - area_id: 25
                       nssa:
@@ -70,7 +70,6 @@
       assert:
         that:
           - result['changed'] == false
-  when: ansible_net_version != "15.6(2)T"
   always:
 
     - include_tasks: _remove_config.yaml
