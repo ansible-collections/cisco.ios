@@ -701,7 +701,8 @@ options:
                 type: int
           network:
             description: Enable routing on an IP network
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               address:
                 description: Network number

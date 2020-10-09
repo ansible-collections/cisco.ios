@@ -416,7 +416,8 @@ class Ospfv2Args(object):
                                 "area": {"type": "str"},
                                 "wildcard_bits": {"type": "str"},
                             },
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                         },
                         "nsf": {
                             "options": {
