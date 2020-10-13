@@ -141,11 +141,32 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 afi="ipv4",
                                 routes=[
                                     dict(
+                                        dest="0.0.0.0/0",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="198.51.101.1",
+                                                name="test_vrf_1",
+                                                tag=100,
+                                                track=150,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    dict(
+                        vrf="ansible_vrf",
+                        address_families=[
+                            dict(
+                                afi="ipv4",
+                                routes=[
+                                    dict(
                                         dest="192.0.2.0/24",
                                         next_hops=[
                                             dict(
                                                 forward_router_address="192.0.2.1",
-                                                name="test_vrf",
+                                                name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
                                             )
@@ -250,11 +271,32 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 afi="ipv4",
                                 routes=[
                                     dict(
+                                        dest="0.0.0.0/0",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="198.51.101.1",
+                                                name="test_vrf_1",
+                                                tag=100,
+                                                track=150,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    dict(
+                        vrf="ansible_vrf",
+                        address_families=[
+                            dict(
+                                afi="ipv4",
+                                routes=[
+                                    dict(
                                         dest="192.0.2.0/24",
                                         next_hops=[
                                             dict(
                                                 forward_router_address="192.0.2.1",
-                                                name="test_vrf",
+                                                name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
                                             )
@@ -340,11 +382,32 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 afi="ipv4",
                                 routes=[
                                     dict(
+                                        dest="0.0.0.0/0",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="198.51.101.1",
+                                                name="test_vrf_1",
+                                                tag=100,
+                                                track=150,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ],
+                    ),
+                    dict(
+                        vrf="ansible_vrf",
+                        address_families=[
+                            dict(
+                                afi="ipv4",
+                                routes=[
+                                    dict(
                                         dest="192.0.2.0/24",
                                         next_hops=[
                                             dict(
                                                 forward_router_address="192.0.2.1",
-                                                name="test_vrf",
+                                                name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
                                             )
