@@ -11,7 +11,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import socket
-from netaddr import IPAddress
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     is_masklen,
@@ -276,7 +275,8 @@ def validate_n_expand_ipv4(module, want):
 
 
 def netmask_to_cidr(netmask):
-    return str(IPAddress(netmask).netmask_bits())
+    # convert netmask to cidr and returns the cidr notation
+    return str(sum([bin(int(x)).count("1") for x in netmask.split(".")]))
 
 
 def normalize_interface(name):
