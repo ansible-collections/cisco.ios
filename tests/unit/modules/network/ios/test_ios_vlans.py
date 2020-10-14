@@ -82,14 +82,14 @@ class TestIosVlansModule(TestIosModule):
                         name="RemoteIsInMyName",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=123 
+                        vlan_id=123,
                     ),
                     dict(
                         name="test_vlan_200",
                         state="active",
                         shutdown="disabled",
                         remote_span=True,
-                        vlan_id=200
+                        vlan_id=200,
                     ),
                 ],
                 state="merged",
@@ -119,7 +119,7 @@ class TestIosVlansModule(TestIosModule):
                         name="default",
                         shutdown="disabled",
                         state="active",
-                        vlan_id=1
+                        vlan_id=1,
                     ),
                     dict(
                         mtu=1500,
@@ -127,36 +127,36 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         shutdown="disabled",
                         state="active",
-                        vlan_id=150
+                        vlan_id=150,
                     ),
                     dict(
                         mtu=1500,
                         name="fddi-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1002
+                        vlan_id=1002,
                     ),
                     dict(
                         mtu=4472,
                         name="trcrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1003
+                        vlan_id=1003,
                     ),
                     dict(
                         mtu=1500,
                         name="fddinet-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1004
+                        vlan_id=1004,
                     ),
                     dict(
                         mtu=4472,
                         name="trbrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1005
-                    )
+                        vlan_id=1005,
+                    ),
                 ],
                 state="merged",
             )
@@ -172,8 +172,8 @@ class TestIosVlansModule(TestIosModule):
                         state="active",
                         shutdown="disabled",
                         remote_span=True,
-                        vlan_id=200
-                    ),
+                        vlan_id=200,
+                    )
                 ],
                 state="replaced",
             )
@@ -197,7 +197,7 @@ class TestIosVlansModule(TestIosModule):
                         name="default",
                         shutdown="disabled",
                         state="active",
-                        vlan_id=1
+                        vlan_id=1,
                     ),
                     dict(
                         mtu=1500,
@@ -205,36 +205,36 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         shutdown="disabled",
                         state="active",
-                        vlan_id=150
+                        vlan_id=150,
                     ),
                     dict(
                         mtu=1500,
                         name="fddi-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1002
+                        vlan_id=1002,
                     ),
                     dict(
                         mtu=4472,
                         name="trcrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1003
+                        vlan_id=1003,
                     ),
                     dict(
                         mtu=1500,
                         name="fddinet-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1004
+                        vlan_id=1004,
                     ),
                     dict(
                         mtu=4472,
                         name="trbrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1005
-                    )
+                        vlan_id=1005,
+                    ),
                 ],
                 state="replaced",
             )
@@ -250,8 +250,8 @@ class TestIosVlansModule(TestIosModule):
                         state="active",
                         shutdown="disabled",
                         remote_span=True,
-                        vlan_id=200
-                    ),
+                        vlan_id=200,
+                    )
                 ],
                 state="overridden",
             )
@@ -277,7 +277,7 @@ class TestIosVlansModule(TestIosModule):
                         name="default",
                         shutdown="disabled",
                         state="active",
-                        vlan_id=1
+                        vlan_id=1,
                     ),
                     dict(
                         mtu=1500,
@@ -285,36 +285,36 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         shutdown="disabled",
                         state="active",
-                        vlan_id=150
+                        vlan_id=150,
                     ),
                     dict(
                         mtu=1500,
                         name="fddi-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1002
+                        vlan_id=1002,
                     ),
                     dict(
                         mtu=4472,
                         name="trcrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1003
+                        vlan_id=1003,
                     ),
                     dict(
                         mtu=1500,
                         name="fddinet-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1004
+                        vlan_id=1004,
                     ),
                     dict(
                         mtu=4472,
                         name="trbrf-default",
                         shutdown="enabled",
                         state="active",
-                        vlan_id=1005
-                    )
+                        vlan_id=1005,
+                    ),
                 ],
                 state="overridden",
             )
@@ -322,22 +322,10 @@ class TestIosVlansModule(TestIosModule):
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_delete_vlans_config(self):
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vlan_id=150
-                    ),
-                ],
-                state="deleted",
-            )
-        )
+        set_module_args(dict(config=[dict(vlan_id=150)], state="deleted"))
         result = self.execute_module(changed=True)
-        commands = [
-            "no vlan 150",
-        ]
+        commands = ["no vlan 150"]
         self.assertEqual(result["commands"], commands)
-
 
     def test_vlans_rendered(self):
         set_module_args(
@@ -348,8 +336,8 @@ class TestIosVlansModule(TestIosModule):
                         state="active",
                         shutdown="disabled",
                         remote_span=True,
-                        vlan_id=200
-                    ),
+                        vlan_id=200,
+                    )
                 ],
                 state="rendered",
             )
