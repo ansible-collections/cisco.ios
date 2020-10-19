@@ -65,13 +65,13 @@ class VlansFacts(object):
         # Get individual vlan configs separately
         vlan_info = ""
         for conf in config:
-            if "Name" in conf:
+            if "VLAN Name" in conf:
                 vlan_info = "Name"
-            elif "Type" in conf:
+            elif "VLAN Type" in conf:
                 vlan_info = "Type"
-            elif "Remote" in conf:
+            elif "Remote SPAN" in conf:
                 vlan_info = "Remote"
-            elif "AREHops" in conf or "STEHops" in conf:
+            elif "VLAN AREHops" in conf or "STEHops" in conf:
                 vlan_info = "Hops"
             if conf and " " not in filter(None, conf.split("-")):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
@@ -120,7 +120,7 @@ class VlansFacts(object):
         """
         config = deepcopy(spec)
 
-        if vlan_info == "Name" and "Name" not in conf:
+        if vlan_info == "Name" and "VLAN Name" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
@@ -139,7 +139,7 @@ class VlansFacts(object):
                     config["shutdown"] = "disabled"
             except IndexError:
                 pass
-        elif vlan_info == "Type" and "Type" not in conf:
+        elif vlan_info == "Type" and "VLAN Type" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["mtu"] = int(conf[3])
         elif vlan_info == "Remote":
