@@ -78,30 +78,18 @@ class TestIosVlansModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        mtu=610,
-                        name="RemoteIsInMyName",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=123,
-                    ),
-                    dict(
                         name="test_vlan_200",
                         state="active",
                         shutdown="disabled",
                         remote_span=True,
                         vlan_id=200,
-                    ),
+                    )
                 ],
                 state="merged",
             )
         )
         result = self.execute_module(changed=True)
         commands = [
-            "vlan 123",
-            "name RemoteIsInMyName",
-            "state active",
-            "mtu 610",
-            "shutdown",
             "vlan 200",
             "name test_vlan_200",
             "state active",
@@ -120,6 +108,13 @@ class TestIosVlansModule(TestIosModule):
                         shutdown="disabled",
                         state="active",
                         vlan_id=1,
+                    ),
+                    dict(
+                        mtu=610,
+                        name="RemoteIsInMyName",
+                        shutdown="enabled",
+                        state="active",
+                        vlan_id=123,
                     ),
                     dict(
                         mtu=1500,
@@ -200,6 +195,13 @@ class TestIosVlansModule(TestIosModule):
                         vlan_id=1,
                     ),
                     dict(
+                        mtu=610,
+                        name="RemoteIsInMyName",
+                        shutdown="enabled",
+                        state="active",
+                        vlan_id=123,
+                    ),
+                    dict(
                         mtu=1500,
                         name="VLAN0150",
                         remote_span=True,
@@ -258,6 +260,7 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
+            "no vlan 123",
             "no vlan 150",
             "vlan 200",
             "name test_vlan_200",
@@ -278,6 +281,13 @@ class TestIosVlansModule(TestIosModule):
                         shutdown="disabled",
                         state="active",
                         vlan_id=1,
+                    ),
+                    dict(
+                        mtu=610,
+                        name="RemoteIsInMyName",
+                        shutdown="enabled",
+                        state="active",
+                        vlan_id=123,
                     ),
                     dict(
                         mtu=1500,
