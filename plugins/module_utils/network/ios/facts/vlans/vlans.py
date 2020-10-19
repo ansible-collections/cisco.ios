@@ -22,6 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
+import q
 
 
 class VlansFacts(object):
@@ -64,15 +65,31 @@ class VlansFacts(object):
         config = data.split("\n")
         # Get individual vlan configs separately
         vlan_info = ""
+        temp = ""
+        vlan_name = True
         for conf in config:
+            if (
+                len([each for each in conf.split(" ") if each != ""]) <= 2
+                and vlan_name
+            ):
+                temp = temp + conf
+                continue
+            if temp:
+                conf = temp
             if "Name" in conf:
                 vlan_info = "Name"
             elif "Type" in conf:
                 vlan_info = "Type"
+                vlan_name = False
             elif "Remote" in conf:
                 vlan_info = "Remote"
+                vlan_name = False
             elif "AREHops" in conf or "STEHops" in conf:
                 vlan_info = "Hops"
+                vlan_name = False
+            if temp:
+                conf = temp
+                temp = ""
             if conf and " " not in filter(None, conf.split("-")):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
@@ -94,7 +111,7 @@ class VlansFacts(object):
                         if each == every.get("vlan_id"):
                             every.update({"remote_span": True})
                             break
-
+        q(final_objs)
         facts = {}
         if final_objs:
             facts["vlans"] = []
@@ -105,7 +122,7 @@ class VlansFacts(object):
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
-
+        q(facts)
         return ansible_facts
 
     def render_config(self, spec, conf, vlan_info):
