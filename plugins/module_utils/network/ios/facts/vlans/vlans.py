@@ -72,7 +72,8 @@ class VlansFacts(object):
                 and vlan_name
             ):
                 temp = temp + conf
-                continue
+                if len([each for each in temp.split(" ") if each != ""]) <= 2:
+                    continue
             if "VLAN Name" in conf:
                 vlan_info = "Name"
             elif "VLAN Type" in conf:

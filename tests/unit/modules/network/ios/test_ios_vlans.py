@@ -126,6 +126,13 @@ class TestIosVlansModule(TestIosModule):
                     ),
                     dict(
                         mtu=1500,
+                        name="a_very_long_vlan_name_a_very_long_vlan_name",
+                        shutdown="disabled",
+                        state="active",
+                        vlan_id=888,
+                    ),
+                    dict(
+                        mtu=1500,
                         name="fddi-default",
                         shutdown="enabled",
                         state="active",
@@ -211,6 +218,13 @@ class TestIosVlansModule(TestIosModule):
                     ),
                     dict(
                         mtu=1500,
+                        name="a_very_long_vlan_name_a_very_long_vlan_name",
+                        shutdown="disabled",
+                        state="active",
+                        vlan_id=888,
+                    ),
+                    dict(
+                        mtu=1500,
                         name="fddi-default",
                         shutdown="enabled",
                         state="active",
@@ -262,6 +276,7 @@ class TestIosVlansModule(TestIosModule):
         commands = [
             "no vlan 123",
             "no vlan 150",
+            "no vlan 888",
             "vlan 200",
             "name test_vlan_200",
             "state active",
@@ -296,6 +311,13 @@ class TestIosVlansModule(TestIosModule):
                         shutdown="disabled",
                         state="active",
                         vlan_id=150,
+                    ),
+                    dict(
+                        mtu=1500,
+                        name="a_very_long_vlan_name_a_very_long_vlan_name",
+                        shutdown="disabled",
+                        state="active",
+                        vlan_id=888,
                     ),
                     dict(
                         mtu=1500,
