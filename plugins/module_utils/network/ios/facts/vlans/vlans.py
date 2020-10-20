@@ -67,12 +67,9 @@ class VlansFacts(object):
         temp = ""
         vlan_name = True
         for conf in config:
-            if (
-                len([each for each in conf.split(" ") if each != ""]) <= 2
-                and vlan_name
-            ):
+            if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
                 temp = temp + conf
-                if len([each for each in temp.split(" ") if each != ""]) <= 2:
+                if len(list(filter(None, temp.split(" ")))) <= 2:
                     continue
             if "VLAN Name" in conf:
                 vlan_info = "Name"
