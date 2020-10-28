@@ -75,7 +75,7 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "interface_cost": {"type": "int"},
-                                #"dynamic": {"type": "bool"},
+                                # "dynamic": {"type": "bool"},
                                 "dynamic_cost": {
                                     "type": "dict",
                                     "options": {

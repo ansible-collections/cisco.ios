@@ -47,8 +47,7 @@ class Ospf_Interfaces(ResourceModule):
             resource="ospf_interfaces",
             tmplt=Ospf_InterfacesTemplate(),
         )
-        self.parsers = [
-        ]
+        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -69,17 +68,11 @@ class Ospf_Interfaces(ResourceModule):
         wantd = {}
         haved = {}
         if self.want:
-            wantd = {
-                    (entry["name"]): entry
-                    for entry in self.want
-                }
+            wantd = {(entry["name"]): entry for entry in self.want}
         else:
             wantd = {}
         if self.have:
-            haved = {
-                (entry["name"]): entry
-                for entry in self.have
-            }
+            haved = {(entry["name"]): entry for entry in self.have}
         else:
             haved = {}
 
@@ -102,7 +95,6 @@ class Ospf_Interfaces(ResourceModule):
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
-
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -135,28 +127,36 @@ class Ospf_Interfaces(ResourceModule):
             "retransmit_interval",
             "shutdown",
             "transmit_delay",
-            "ttl_security"
+            "ttl_security",
         ]
-        if want != have and (want.get('address_family') or self.state == 'deleted'):
+        if want != have and (
+            want.get("address_family") or self.state == "deleted"
+        ):
             self.addcmd(want or have, "name", False)
 
-        if want.get('address_family'):
-            for each in want['address_family']:
-                if have.get('address_family'):
-                    have_elements = len(have.get('address_family'))
+        if want.get("address_family"):
+            for each in want["address_family"]:
+                if have.get("address_family"):
+                    have_elements = len(have.get("address_family"))
                     while have_elements:
-                        if have.get('address_family')[have_elements-1].get('afi') == each.get('afi'):
-                            h_each = have['address_family'].pop(have_elements-1)
-                            self.compare(parsers=parsers, want=each, have=h_each)
+                        if have.get("address_family")[have_elements - 1].get(
+                            "afi"
+                        ) == each.get("afi"):
+                            h_each = have["address_family"].pop(
+                                have_elements - 1
+                            )
+                            self.compare(
+                                parsers=parsers, want=each, have=h_each
+                            )
                         have_elements -= 1
                 else:
                     h_each = dict()
                     self.compare(parsers=parsers, want=each, have=h_each)
-            if self.state == 'overridden':
-                if have.get('address_family'):
-                    for each in have['address_family']:
+            if self.state == "overridden":
+                if have.get("address_family"):
+                    for each in have["address_family"]:
                         self.compare(parsers=parsers, want=dict(), have=each)
         else:
-            if have.get('address_family'):
-                for each in have['address_family']:
+            if have.get("address_family"):
+                for each in have["address_family"]:
                     self.compare(parsers=parsers, want=dict(), have=each)

@@ -32,7 +32,7 @@ class Ospf_InterfacesFacts(object):
     """ The cisco.ios ospf_interfaces facts class
     """
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Ospf_InterfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
@@ -45,7 +45,7 @@ class Ospf_InterfacesFacts(object):
             facts_argument_spec = spec
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
-    
+
     def get_ospfv2_data(self, connection):
         return connection.get("sh running-config | section ^interface")
 
@@ -66,28 +66,30 @@ class Ospf_InterfacesFacts(object):
             data = self.get_ospfv2_data(connection)
 
         # parse native config using the Ospf_interfaces template
-        ospf_interfaces_parser = Ospf_InterfacesTemplate(lines=data.splitlines())
+        ospf_interfaces_parser = Ospf_InterfacesTemplate(
+            lines=data.splitlines()
+        )
 
         objs = ospf_interfaces_parser.parse()
         final_objs = []
         for key, value in iteritems(objs):
             temp_af = []
-            if value['address_family'].get('ip'):
-                temp_af.append(value['address_family'].get('ip'))
-            if value['address_family'].get('ipv6'):
-                temp_af.append(value['address_family'].get('ipv6'))
+            if value["address_family"].get("ip"):
+                temp_af.append(value["address_family"].get("ip"))
+            if value["address_family"].get("ipv6"):
+                temp_af.append(value["address_family"].get("ipv6"))
             if temp_af:
-                value['address_family'] = temp_af
+                value["address_family"] = temp_af
             if value:
                 value = utils.remove_empties(value)
                 final_objs.append(value)
-        ansible_facts['ansible_network_resources'].pop('ospf_interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)
 
         params = utils.remove_empties(
             utils.validate_config(self.argument_spec, {"config": final_objs})
         )
 
-        facts['ospf_interfaces'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["ospf_interfaces"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
