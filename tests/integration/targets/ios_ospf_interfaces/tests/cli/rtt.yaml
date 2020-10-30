@@ -34,9 +34,6 @@
                 ttl_security:
                   hops: 50
               - afi: ipv6
-                process:
-                  id: 35
-                  area_id: 45
                 adjacency: true
                 database_filter: true
                 manet:
@@ -61,9 +58,6 @@
           - name: GigabitEthernet0/1
             address_family:
               - afi: ipv6
-                process:
-                  id: 55
-                  area_id: 105
                 adjacency: true
                 priority: 20
                 transmit_delay: 30
@@ -83,7 +77,7 @@
 
     - assert:
         that:
-          - result.commands|length == 23
+          - result.commands|length == 22
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
@@ -98,7 +92,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 23
+          - revert.commands|length == 22
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:

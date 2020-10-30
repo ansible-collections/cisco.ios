@@ -15,7 +15,6 @@ merged:
     - ip ospf resync-timeout 10
     - ip ospf shutdown
     - ip ospf ttl-security hops 50
-    - ipv6 ospf 35 area 45
     - ipv6 ospf adjacency stagger disable
     - ipv6 ospf database-filter all out
     - ipv6 ospf manet peering link-metrics 10
@@ -53,9 +52,6 @@ merged:
             link_metrics:
               cost_threshold: 10
           priority: 55
-          process:
-            area_id: "45"
-            id: 35
           transmit_delay: 45
       name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
@@ -63,7 +59,6 @@ merged:
 replaced:
   commands:
     - interface GigabitEthernet0/2
-    - ipv6 ospf 55 area 105
     - ipv6 ospf adjacency stagger disable
     - ipv6 ospf priority 20
     - ipv6 ospf transmit-delay 30
@@ -99,18 +94,12 @@ replaced:
             link_metrics:
               cost_threshold: 10
           priority: 55
-          process:
-            area_id: "45"
-            id: 35
           transmit_delay: 45
       name: GigabitEthernet0/1
     - address_family:
         - adjacency: true
           afi: ipv6
           priority: 20
-          process:
-            area_id: "105"
-            id: 55
           transmit_delay: 30
       name: GigabitEthernet0/2
 
@@ -123,7 +112,6 @@ overridden:
     - ip ospf priority 40
     - ip ospf ttl-security hops 50
     - interface GigabitEthernet0/1
-    - ipv6 ospf 55 area 105
     - no ipv6 ospf database-filter all out
     - no ipv6 ospf manet peering link-metrics 10
     - ipv6 ospf priority 20
@@ -148,9 +136,6 @@ overridden:
         - adjacency: true
           afi: ipv6
           priority: 20
-          process:
-            area_id: "105"
-            id: 55
           transmit_delay: 30
       name: GigabitEthernet0/1
     - address_family:
@@ -180,7 +165,6 @@ deleted:
     - no ip ospf resync-timeout 10
     - no ip ospf shutdown
     - no ip ospf ttl-security hops 50
-    - no ipv6 ospf 35 area 45
     - no ipv6 ospf adjacency stagger disable
     - no ipv6 ospf database-filter all out
     - no ipv6 ospf manet peering link-metrics 10
@@ -209,7 +193,6 @@ rtt:
     - ip ospf resync-timeout 10
     - ip ospf shutdown
     - ip ospf ttl-security hops 50
-    - ipv6 ospf 35 area 45
     - ipv6 ospf database-filter all out
     - ipv6 ospf manet peering link-metrics 10
     - ipv6 ospf priority 55

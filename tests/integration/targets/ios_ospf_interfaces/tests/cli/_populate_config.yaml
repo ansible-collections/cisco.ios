@@ -24,9 +24,6 @@
             ttl_security:
               hops: 50
           - afi: ipv6
-            process:
-              id: 35
-              area_id: 45
             adjacency: true
             database_filter: true
             manet:
