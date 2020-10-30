@@ -23,8 +23,9 @@ merged:
     - ipv6 ospf transmit-delay 45
 
   after:
-    - name: GigabitEthernet0/3
-    - name: GigabitEthernet0/2
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet0/0
     - address_family:
         - adjacency: true
           afi: ipv4
@@ -57,7 +58,7 @@ merged:
             id: 35
           transmit_delay: 45
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/0
+    - name: GigabitEthernet0/2
 
 replaced:
   commands:
@@ -68,16 +69,9 @@ replaced:
     - ipv6 ospf transmit-delay 30
 
   after:
-    - name: GigabitEthernet0/3
-    - address_family:
-        - adjacency: true
-          afi: ipv6
-          priority: 20
-          process:
-            area_id: "105"
-            id: 55
-          transmit_delay: 30
-      name: GigabitEthernet0/2
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet0/0
     - address_family:
         - adjacency: true
           afi: ipv4
@@ -110,7 +104,15 @@ replaced:
             id: 35
           transmit_delay: 45
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/0
+    - address_family:
+        - adjacency: true
+          afi: ipv6
+          priority: 20
+          process:
+            area_id: "105"
+            id: 55
+          transmit_delay: 30
+      name: GigabitEthernet0/2
 
 overridden:
   commands:
@@ -139,7 +141,18 @@ overridden:
     - no ip ospf ttl-security hops 50
 
   after:
-    - name: GigabitEthernet0/3
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet0/0
+    - address_family:
+        - adjacency: true
+          afi: ipv6
+          priority: 20
+          process:
+            area_id: "105"
+            id: 55
+          transmit_delay: 30
+      name: GigabitEthernet0/1
     - address_family:
         - adjacency: true
           afi: ipv4
@@ -152,16 +165,6 @@ overridden:
           ttl_security:
             hops: 50
       name: GigabitEthernet0/2
-    - address_family:
-        - adjacency: true
-          afi: ipv6
-          priority: 20
-          process:
-            area_id: "105"
-            id: 55
-          transmit_delay: 30
-      name: GigabitEthernet0/1
-    - name: GigabitEthernet0/0
 
 deleted:
   commands:
