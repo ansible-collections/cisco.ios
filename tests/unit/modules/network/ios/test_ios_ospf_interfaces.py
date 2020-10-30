@@ -133,7 +133,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf priority 50",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_merged_idempotent(self):
         set_module_args(
@@ -185,7 +185,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 ttl_security=dict(hops=150),
                             )
                         ],
-                    ),
+                    )
                 ],
                 state="replaced",
             )
@@ -198,7 +198,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_replaced_idempotent(self):
         set_module_args(
@@ -250,7 +250,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                             )
                         ],
                         name="GigabitEthernet0/3",
-                    ),
+                    )
                 ],
                 state="overridden",
             )
@@ -267,11 +267,10 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "no ipv6 ospf adjacency stagger disable",
             "ipv6 ospf manet peering cost percent 10",
             "ipv6 ospf priority 40",
-            "ipv6 ospf transmit-delay 50"
-            ""
+            "ipv6 ospf transmit-delay 50" "",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_overridden_idempotent(self):
         set_module_args(
@@ -320,7 +319,8 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "no ip ospf 10 area 20",
             "no ip ospf cost 30",
         ]
-        self.execute_module(changed=True, commands=commands)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_deleted_all(self):
         set_module_args(dict(config=[], state="deleted"))
@@ -338,7 +338,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "no ip ospf ttl-security hops 50",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_rendered(self):
         set_module_args(
@@ -400,4 +400,4 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf priority 50",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["rendered"], commands)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
