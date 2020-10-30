@@ -10,6 +10,28 @@ v1.2.0
 Minor Changes
 -------------
 
+- Add ios_ospf_interfaces module.
+
+Bugfixes
+--------
+
+- To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
+- To fix ios_static_routes where interface ip route-cache config was being parsed and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
+- To fix IOS static routes idempotency issue coz of netmask to cidr conversion (https://github.com/ansible-collections/cisco.ios/pull/177).
+- To fix ios_vlans traceback bug when the name had Remote in it and added unit TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
+- To fix the traceback issue for longer vlan name having more than 32 characters (https://github.com/ansible-collections/cisco.ios/pull/182).
+
+New Modules
+-----------
+
+- ios_ospf_interfaces - OSPF Interfaces resource module
+
+v1.2.0
+======
+
+Minor Changes
+-------------
+
 - Add ios_ospfv3 module.
 
 Bugfixes
