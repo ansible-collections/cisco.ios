@@ -43,7 +43,7 @@
         state: rendered
     - debug:
         msg:
-        - "{{ result.rendered|symmetric_difference(merged.commands) }}"
+          - "{{ result.rendered|symmetric_difference(merged.commands) }}"
     - assert:
         that:
           - result.changed == false

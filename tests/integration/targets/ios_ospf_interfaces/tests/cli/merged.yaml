@@ -58,8 +58,8 @@
 
     - debug:
         msg:
-        - "{{ merged['commands'] | symmetric_difference(result['commands']) }}"
-        - "{{ merged['after'] | symmetric_difference(result['after']) }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) }}"
+          - "{{ merged['after'] | symmetric_difference(result['after']) }}"
 
     - name: Assert that after dict is correctly generated
       assert:

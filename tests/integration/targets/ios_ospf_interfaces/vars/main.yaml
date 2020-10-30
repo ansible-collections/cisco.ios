@@ -57,7 +57,7 @@ merged:
             id: 35
           transmit_delay: 45
       name: GigabitEthernet0/1
-    - name: GigabitEthernet0/0    
+    - name: GigabitEthernet0/0
 
 replaced:
   commands:
@@ -211,5 +211,3 @@ rtt:
     - ipv6 ospf manet peering link-metrics 10
     - ipv6 ospf priority 55
     - ipv6 ospf transmit-delay 45
-
-

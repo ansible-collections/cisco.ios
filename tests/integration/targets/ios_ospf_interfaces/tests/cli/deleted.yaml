@@ -8,7 +8,7 @@
 
 - block:
 
-    - name: Delete provided OSPF Interfaces 
+    - name: Delete provided OSPF Interfaces
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
         config:

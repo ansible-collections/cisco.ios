@@ -69,9 +69,6 @@ def _tmplt_ip_ospf_cost(config_data):
                 command = "ipv6 ospf cost {interface_cost}".format(
                     **config_data["cost"]
                 )
-            # if 'dynamic' in config_data['cost'] and config_data['cost']['dynamic']:
-            #     cmd = 'ipv6 ospf cost dynamic'
-            #     command.append(cmd)
             if "dynamic_cost" in config_data["cost"]:
                 if "default" in config_data["cost"]["dynamic_cost"]:
                     command += " dynamic default {default}".format(
@@ -396,30 +393,6 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                 }
             },
         },
-        # {
-        #     "name": "cost_ipv6_dynamic",
-        #     "getval": re.compile(
-        #         r"""
-        #         \s+(?P<afi>ipv6)*
-        #         \s*ospf*
-        #         \s*(?P<cost>cost)*
-        #         \s*(?P<dynamic>dynamic)
-        #         $""", re.VERBOSE),
-        #     "compval": "cost.dynamic",
-        #     "setval": _tmplt_ip_ospf_cost,
-        #     "result": {
-        #         "{{ name }}": {
-        #             "address_family": {
-        #                 "{{ afi }}": {
-        #                     "afi": "{{ afi }}",
-        #                     "cost": {
-        #                         "dynamic": "{{ True if dynamic is defined }}",
-        #                     },
-        #                 },
-        #             },
-        #         },
-        #     },
-        # },
         {
             "name": "cost_ipv6_dynamic_cost",
             "getval": re.compile(

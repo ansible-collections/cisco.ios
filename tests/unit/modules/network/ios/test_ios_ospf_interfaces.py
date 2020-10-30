@@ -40,7 +40,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
         )
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts."
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module."
             "get_resource_connection"
         )
         self.get_resource_connection_facts = (
@@ -115,6 +115,11 @@ class TestIosOspfInterfacesModule(TestIosModule):
             )
         )
         commands = [
+            "interface GigabitEthernet0/3",
+            "ip ospf bfd",
+            "ip ospf cost 50",
+            "ip ospf priority 50",
+            "ip ospf ttl-security hops 150",
             "interface GigabitEthernet0/2",
             "ip ospf bfd",
             "ip ospf cost 30",
@@ -126,11 +131,6 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf dead-interval 100",
             "ipv6 ospf network manet",
             "ipv6 ospf priority 50",
-            "interface GigabitEthernet0/3",
-            "ip ospf bfd",
-            "ip ospf cost 50",
-            "ip ospf priority 50",
-            "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -175,25 +175,27 @@ class TestIosOspfInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["20-25", "40"],
-                            encapsulation="isl",
-                            native_vlan=20,
-                            pruning_vlans=["10"],
-                        ),
-                    )
+                        name="GigabitEthernet0/3",
+                        address_family=[
+                            dict(
+                                afi="ipv4",
+                                bfd=True,
+                                cost=dict(interface_cost=50),
+                                priority=50,
+                                ttl_security=dict(hops=150),
+                            )
+                        ],
+                    ),
                 ],
                 state="replaced",
             )
         )
         commands = [
-            "interface GigabitEthernet0/2",
-            "no switchport mode",
-            "switchport trunk encapsulation isl",
-            "switchport trunk native vlan 20",
-            "switchport trunk allowed vlan 20-25,40",
-            "switchport trunk pruning vlan 10",
+            "interface GigabitEthernet0/3",
+            "ip ospf bfd",
+            "ip ospf cost 50",
+            "ip ospf priority 50",
+            "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -238,27 +240,35 @@ class TestIosOspfInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        access=dict(vlan=10),
-                        voice=dict(vlan=20),
-                        mode="access",
-                        name="GigabitEthernet0/2",
-                    )
+                        address_family=[
+                            dict(
+                                afi="ipv6",
+                                manet=dict(cost=dict(percent=10)),
+                                priority=40,
+                                process=dict(id=10, area_id="20"),
+                                transmit_delay=50,
+                            )
+                        ],
+                        name="GigabitEthernet0/3",
+                    ),
                 ],
                 state="overridden",
             )
         )
         commands = [
-            "interface GigabitEthernet0/1",
-            "no switchport mode",
-            "no switchport access vlan",
             "interface GigabitEthernet0/2",
-            "no switchport trunk encapsulation",
-            "no switchport trunk native vlan",
-            "no switchport trunk allowed vlan",
-            "no switchport trunk pruning vlan",
-            "switchport access vlan 10",
-            "switchport voice vlan 20",
-            "switchport mode access",
+            "no ip ospf 10 area 20",
+            "no ip ospf adjacency stagger disable",
+            "no ip ospf cost 30",
+            "no ip ospf priority 40",
+            "no ip ospf ttl-security hops 50",
+            "interface GigabitEthernet0/3",
+            "ipv6 ospf 10 area 20",
+            "no ipv6 ospf adjacency stagger disable",
+            "ipv6 ospf manet peering cost percent 10",
+            "ipv6 ospf priority 40",
+            "ipv6 ospf transmit-delay 50"
+            ""
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -303,7 +313,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             dict(config=[dict(name="GigabitEthernet0/2")], state="deleted")
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet0/2",
             "no ip ospf priority 40",
             "no ip ospf adjacency stagger disable",
             "no ip ospf ttl-security hops 50",
@@ -315,43 +325,20 @@ class TestIosOspfInterfacesModule(TestIosModule):
     def test_ios_ospf_interfaces_deleted_all(self):
         set_module_args(dict(config=[], state="deleted"))
         commands = [
-            "interface GigabitEthernet0/1",
-            "no ip ospf priority 40",
-            "no ip ospf adjacency stagger disable",
-            "no ip ospf ttl-security hops 50",
-            "no ip ospf 10 area 20",
-            "no ip ospf cost 30",
-            "interface GigabitEthernet0/2",
+            "interface GigabitEthernet0/3",
             "no ipv6 ospf 55 area 105",
+            "no ipv6 ospf adjacency stagger disable",
             "no ipv6 ospf priority 20",
             "no ipv6 ospf transmit-delay 30",
-            "no ipv6 ospf adjacency stagger disable",
+            "interface GigabitEthernet0/2",
+            "no ip ospf 10 area 20",
+            "no ip ospf adjacency stagger disable",
+            "no ip ospf cost 30",
+            "no ip ospf priority 40",
+            "no ip ospf ttl-security hops 50",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
-
-    def test_ios_ospf_interfaces_parsed(self):
-        set_module_args(
-            dict(
-                running_config="interface GigabitEthernet0/1\nip ospf priority 40\nip ospf adjacency stagger disable\nip ospf ttl-security hops 50\n",
-                state="parsed",
-            )
-        )
-        result = self.execute_module(changed=False)
-        parsed_list = [
-            {
-                "address_family": [
-                    {
-                        "adjacency": "true",
-                        "afi": "ipv4",
-                        "priority": 40,
-                        "ttl_security": {"hops": 50},
-                    }
-                ],
-                "name": "GigabitEthernet0/1",
-            }
-        ]
-        self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_ospf_interfaces_rendered(self):
         set_module_args(
