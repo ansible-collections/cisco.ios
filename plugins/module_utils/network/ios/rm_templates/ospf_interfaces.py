@@ -200,7 +200,7 @@ def _tmplt_ip_ospf_neighbor(config_data):
             **config_data["neighbor"]
         )
     if "cost" in config_data["neighbor"]:
-        command += " cost {cost}".format(config_data["neighbor"])
+        command += " cost {cost}".format(**config_data["neighbor"])
     if (
         "database_filter" in config_data["neighbor"]
         and config_data["neighbor"]["database_filter"]
