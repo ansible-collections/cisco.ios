@@ -125,9 +125,6 @@ options:
               interface_cost:
                 description: Interface cost or Route cost of this interface
                 type: int
-              # dynamic:
-              #   description: Specify dynamic cost
-              #   type: bool
               dynamic_cost:
                 description:
                   - Specify dynamic cost options
@@ -407,439 +404,396 @@ EXAMPLES = """
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ipv6 ospf 55 area 105
+#  ipv6 ospf priority 20
+#  ipv6 ospf transmit-delay 30
+#  ipv6 ospf adjacency stagger disable
+# interface GigabitEthernet0/2
+#  ip ospf priority 40
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf 10 area 20
+#  ip ospf cost 30
 
-- name: Delete provided OSPF Interfaces processes
+- name: Delete provided OSPF Interface config
   cisco.ios.ios_ospf_interfaces:
     config:
-      processes:
-      - process_id: 1
-      - process_id: 200
-        vrf: blue
+      - name: GigabitEthernet0/1
     state: deleted
 
-# Commands Fired:
-# ---------------
+#  Commands Fired:
+#  ---------------
 #
-# "commands": [
-#        "no router ospf 1"
-#    ]
+#  "commands": [
+#         "interface GigabitEthernet0/1",
+#         "no ipv6 ospf 55 area 105",
+#         "no ipv6 ospf adjacency stagger disable",
+#         "no ipv6 ospf priority 20",
+#         "no ipv6 ospf transmit-delay 30"
+#     ]
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+# interface GigabitEthernet0/2
+#  ip ospf priority 40
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf 10 area 20
+#  ip ospf cost 30
 
 # Using deleted without any config passed (NOTE: This will delete all OSPF Interfaces configuration from device)
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ipv6 ospf 55 area 105
+#  ipv6 ospf priority 20
+#  ipv6 ospf transmit-delay 30
+#  ipv6 ospf adjacency stagger disable
+# interface GigabitEthernet0/2
+#  ip ospf priority 40
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf 10 area 20
+#  ip ospf cost 30
 
-- name: Delete all OSPF processes
+- name: Delete all OSPF config from interfaces
   cisco.ios.ios_ospf_interfaces:
     state: deleted
 
 # Commands Fired:
 # ---------------
 #
-# "commands": [
-#        "no router ospf 200 vrf blue",
-#        "no router ospf 1"
-#    ]
+#  "commands": [
+#         "interface GigabitEthernet0/2",
+#         "no ip ospf 10 area 20",
+#         "no ip ospf adjacency stagger disable",
+#         "no ip ospf cost 30",
+#         "no ip ospf priority 40",
+#         "no ip ospf ttl-security hops 50",
+#         "interface GigabitEthernet0/1",
+#         "no ipv6 ospf 55 area 105",
+#         "no ipv6 ospf adjacency stagger disable",
+#         "no ipv6 ospf priority 20",
+#         "no ipv6 ospf transmit-delay 30"
+#     ]
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
-# router-ios#
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+# interface GigabitEthernet0/2
 
 # Using merged
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
+# router-ios#sh running-config | section ^interface
 # router-ios#
 
 - name: Merge provided OSPF Interfaces configuration
   cisco.ios.ios_ospf_interfaces:
     config:
-      processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          address: 198.51.100.0
-          wildcard_bits: 0.0.0.255
-          area: 5
-        default_information:
-          originate: true
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
+      - name: GigabitEthernet0/1
+        address_family:
+          - afi: ipv4
+            process:
+              id: 10
+              area_id: 30
+            adjacency: true
+            bfd: true
+            cost:
+              interface_cost: 5
+            dead_interval:
+              time: 5
+            demand_circuit:
+              ignore: true
+            network:
+              broadcast: true
+            priority: 25
+            resync_timeout: 10
+            shutdown: true
+            ttl_security:
+              hops: 50
+          - afi: ipv6
+            process:
+              id: 35
+              area_id: 45
+            adjacency: true
+            database_filter: true
+            manet:
+              link_metrics:
+                cost_threshold: 10
+            priority: 55
+            transmit_delay: 45
     state: merged
 
-# Commands Fired:
-# ---------------
+#  Commands Fired:
+#  ---------------
 #
-#  "commands": [
-#         "router ospf 200 vrf blue",
-#         "auto-cost reference-bandwidth 4",
-#         "distribute-list 10 out",
-#         "distribute-list 123 in",
-#         "domain-id 192.0.3.1",
-#         "max-metric router-lsa on-startup 100",
-#         "area 10 capability default-exclusion",
-#         "router ospf 1",
-#         "default-information originate",
-#         "max-metric router-lsa on-startup 110",
-#         "network 198.51.100.0 0.0.0.255 area 5",
-#         "area 10 authentication message-digest",
-#         "area 10 default-cost 10",
-#         "area 10 nssa translate type7 suppress-fa",
-#         "area 10 nssa default-information-originate metric 10",
-#         "area 10 filter-list prefix test_prefix_out out",
-#         "area 10 filter-list prefix test_prefix_in in",
-#         "area 5 authentication",
-#         "area 5 capability default-exclusion"
+#   "commands": [
+#         "interface GigabitEthernet0/1",
+#         "ip ospf 10 area 30",
+#         "ip ospf adjacency stagger disable",
+#         "ip ospf bfd",
+#         "ip ospf cost 5",
+#         "ip ospf dead-interval 5",
+#         "ip ospf demand-circuit ignore",
+#         "ip ospf network broadcast",
+#         "ip ospf priority 25",
+#         "ip ospf resync-timeout 10",
+#         "ip ospf shutdown",
+#         "ip ospf ttl-security hops 50",
+#         "ipv6 ospf 35 area 45",
+#         "ipv6 ospf adjacency stagger disable",
+#         "ipv6 ospf database-filter all out",
+#         "ipv6 ospf manet peering link-metrics 10",
+#         "ipv6 ospf priority 55",
+#         "ipv6 ospf transmit-delay 45"
 #     ]
 
 # After state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
 
 # Using overridden
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
 
 - name: Override provided OSPF Interfaces configuration
   cisco.ios.ios_ospf_interfaces:
     config:
-      processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+      - name: GigabitEthernet0/1
+        address_family:
+          - afi: ipv6
+            process:
+              id: 55
+              area_id: 105
+            adjacency: true
+            priority: 20
+            transmit_delay: 30
+      - name: GigabitEthernet0/2
+        address_family:
+          - afi: ipv4
+            process:
+              id: 10
+              area_id: 20
+            adjacency: true
+            cost:
+              interface_cost: 30
+            priority: 40
+            ttl_security:
+              hops: 50
     state: overridden
 
 # Commands Fired:
 # ---------------
 #
-# "commands": [
-#         "no router ospf 1",
-#         "router ospf 100 vrf ospf_vrf",
-#         "auto-cost reference-bandwidth 5",
-#         "domain-id 192.0.5.1",
-#         "area 5 authentication message-digest",
-#         "area 5 nssa translate type7 suppress-fa",
-#         "area 5 nssa default-information-originate metric 10",
-#         "router ospf 200 vrf blue",
-#         "no auto-cost reference-bandwidth 4",
-#         "no distribute-list 10 out",
-#         "no distribute-list 123 in",
-#         "domain-id 192.0.4.1",
-#         "max-metric router-lsa on-startup 200",
-#         "maximum-paths 15",
-#         "ttl-security all-interfaces hops 7",
-#         "area 10 authentication message-digest",
-#         "no area 10 capability default-exclusion",
-#         "area 10 default-cost 10"
+#  "commands": [
+#         "interface GigabitEthernet0/2",
+#         "ip ospf 10 area 20",
+#         "ip ospf adjacency stagger disable",
+#         "ip ospf cost 30",
+#         "ip ospf priority 40",
+#         "ip ospf ttl-security hops 50",
+#         "interface GigabitEthernet0/1",
+#         "ipv6 ospf 55 area 105",
+#         "no ipv6 ospf database-filter all out",
+#         "no ipv6 ospf manet peering link-metrics 10",
+#         "ipv6 ospf priority 20",
+#         "ipv6 ospf transmit-delay 30",
+#         "no ip ospf 10 area 30",
+#         "no ip ospf adjacency stagger disable",
+#         "no ip ospf bfd",
+#         "no ip ospf cost 5",
+#         "no ip ospf dead-interval 5",
+#         "no ip ospf demand-circuit ignore",
+#         "no ip ospf network broadcast",
+#         "no ip ospf priority 25",
+#         "no ip ospf resync-timeout 10",
+#         "no ip ospf shutdown",
+#         "no ip ospf ttl-security hops 50"
 #     ]
 
 # After state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.4.1
-#  max-metric router-lsa on-startup 200
-#  ttl-security all-interfaces hops 7
-#  area 10 authentication message-digest
-#  area 10 default-cost 10
-#  maximum-paths 15
-# router ospf 100 vrf ospf_vrf
-#  domain-id 192.0.5.1
-#  auto-cost reference-bandwidth 5
-#  area 5 authentication message-digest
-#  area 5 nssa default-information-originate metric 10
-#  area 5 nssa translate type7 suppress-fa
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ipv6 ospf 55 area 105
+#  ipv6 ospf priority 20
+#  ipv6 ospf transmit-delay 30
+#  ipv6 ospf adjacency stagger disable
+# interface GigabitEthernet0/2
+#  ip ospf priority 40
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf 10 area 20
+#  ip ospf cost 30
 
 # Using replaced
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
 
 - name: Replaced provided OSPF Interfaces configuration
   cisco.ios.ios_ospf_interfaces:
     config:
-      processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+      - name: GigabitEthernet0/2
+        address_family:
+          - afi: ipv6
+            process:
+              id: 55
+              area_id: 105
+            adjacency: true
+            priority: 20
+            transmit_delay: 30
     state: replaced
 
 # Commands Fired:
 # ---------------
-# "commands": [
-#         "router ospf 100 vrf ospf_vrf",
-#         "auto-cost reference-bandwidth 5",
-#         "domain-id 192.0.5.1",
-#         "area 5 authentication message-digest",
-#         "area 5 nssa translate type7 suppress-fa",
-#         "area 5 nssa default-information-originate metric 10",
-#         "router ospf 200 vrf blue",
-#         "no auto-cost reference-bandwidth 4",
-#         "no distribute-list 10 out",
-#         "no distribute-list 123 in",
-#         "domain-id 192.0.4.1",
-#         "max-metric router-lsa on-startup 200",
-#         "maximum-paths 15",
-#         "ttl-security all-interfaces hops 7",
-#         "area 10 authentication message-digest",
-#         "no area 10 capability default-exclusion",
-#         "area 10 default-cost 10"
+#  "commands": [
+#         "interface GigabitEthernet0/2",
+#         "ipv6 ospf 55 area 105",
+#         "ipv6 ospf adjacency stagger disable",
+#         "ipv6 ospf priority 20",
+#         "ipv6 ospf transmit-delay 30"
 #     ]
 
 # After state:
 # -------------
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.4.1
-#  max-metric router-lsa on-startup 200
-#  ttl-security all-interfaces hops 7
-#  area 10 authentication message-digest
-#  area 10 default-cost 10
-#  maximum-paths 15
-# router ospf 100 vrf ospf_vrf
-#  domain-id 192.0.5.1
-#  auto-cost reference-bandwidth 5
-#  area 5 authentication message-digest
-#  area 5 nssa default-information-originate metric 10
-#  area 5 nssa translate type7 suppress-fa
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 5 capability default-exclusion
-#  area 5 authentication
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_in in
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
+#  ipv6 ospf 55 area 105
+#  ipv6 ospf priority 20
+#  ipv6 ospf transmit-delay 30
+#  ipv6 ospf adjacency stagger disable
 
 # Using Gathered
 
 # Before state:
 # -------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
 
-- name: Gather OSPF ßInterfaces provided configurations
+- name: Gather OSPF Interfaces provided configurations
   cisco.ios.ios_ospf_interfaces:
     config:
     state: gathered
@@ -847,197 +801,149 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
-# "gathered": {
-#         "processes": [
-#             {
-#                 "areas": [
-#                     {
-#                         "area_id": "5",
-#                         "authentication": {
-#                             "enable": true
-#                         },
-#                         "capability": true
+#  "gathered": [
+#         {
+#             "name": "GigabitEthernet0/2"
+#         },
+#         {
+#             "address_family": [
+#                 {
+#                     "adjacency": true,
+#                     "afi": "ipv4",
+#                     "bfd": true,
+#                     "cost": {
+#                         "interface_cost": 5
 #                     },
-#                     {
-#                         "area_id": "10",
-#                         "authentication": {
-#                             "message_digest": true
-#                         },
-#                         "default_cost": 10,
-#                         "filter_list": [
-#                             {
-#                                 "direction": "in",
-#                                 "name": "test_prefix_in"
-#                             },
-#                             {
-#                                 "direction": "out",
-#                                 "name": "test_prefix_out"
-#                             }
-#                         ],
-#                         "nssa": {
-#                             "default_information_originate": {
-#                                 "metric": 10
-#                             },
-#                             "translate": "suppress-fa"
+#                     "dead_interval": {
+#                         "time": 5
+#                     },
+#                     "demand_circuit": {
+#                         "ignore": true
+#                     },
+#                     "network": {
+#                         "broadcast": true
+#                     },
+#                     "priority": 25,
+#                     "process": {
+#                         "area_id": "30",
+#                         "id": 10
+#                     },
+#                     "resync_timeout": 10,
+#                     "shutdown": true,
+#                     "ttl_security": {
+#                         "hops": 50
+#                     }
+#                 },
+#                 {
+#                     "adjacency": true,
+#                     "afi": "ipv6",
+#                     "database_filter": true,
+#                     "manet": {
+#                         "link_metrics": {
+#                             "cost_threshold": 10
 #                         }
-#                     }
-#                 ],
-#                 "default_information": {
-#                     "originate": true
-#                 },
-#                 "max_metric": {
-#                     "on_startup": {
-#                         "time": 110
 #                     },
-#                     "router_lsa": true
-#                 },
-#                 "network": {
-#                     "address": "198.51.100.0",
-#                     "area": "5",
-#                     "wildcard_bits": "0.0.0.255"
-#                 },
-#                 "process_id": 1
-#             },
-#             {
-#                 "areas": [
-#                     {
-#                         "area_id": "10",
-#                         "capability": true
-#                     }
-#                 ],
-#                 "auto_cost": {
-#                     "reference_bandwidth": 4
-#                 },
-#                 "distribute_list": {
-#                     "acls": [
-#                         {
-#                             "direction": "out",
-#                             "name": "10"
-#                         },
-#                         {
-#                             "direction": "in",
-#                             "name": "123"
-#                         }
-#                     ]
-#                 },
-#                 "domain_id": {
-#                     "ip_address": {
-#                         "address": "192.0.3.1"
-#                     }
-#                 },
-#                 "max_metric": {
-#                     "on_startup": {
-#                         "time": 100
+#                     "priority": 55,
+#                     "process": {
+#                         "area_id": "45",
+#                         "id": 35
 #                     },
-#                     "router_lsa": true
-#                 },
-#                 "process_id": 200,
-#                 "vrf": "blue"
-#             }
-#         ]
-#      }
+#                     "transmit_delay": 45
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "name": "GigabitEthernet0/0"
+#         }
+#  ]
 
 # After state:
 # ------------
 #
-# router-ios#sh running-config | section ^router ospf
-# router ospf 200 vrf blue
-#  domain-id 192.0.3.1
-#  max-metric router-lsa on-startup 100
-#  auto-cost reference-bandwidth 4
-#  area 10 capability default-exclusion
-#  distribute-list 10 out
-#  distribute-list 123 in
-# router ospf 1
-#  max-metric router-lsa on-startup 110
-#  area 10 authentication message-digest
-#  area 10 nssa default-information-originate metric 10
-#  area 10 nssa translate type7 suppress-fa
-#  area 10 default-cost 10
-#  area 10 filter-list prefix test_prefix_out out
-#  network 198.51.100.0 0.0.0.255 area 5
-#  default-information originate
+# router-ios#sh running-config | section ^interface
+# interface GigabitEthernet0/0
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/2
 
 # Using Rendered
 
 - name: Render the commands for provided  configuration
   cisco.ios.ios_ospf_interfaces:
     config:
-      processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          address: 198.51.100.0
-          wildcard_bits: 0.0.0.255
-          area: 5
-        default_information:
-          originate: true
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
+      - name: GigabitEthernet0/1
+        address_family:
+          - afi: ipv4
+            process:
+              id: 10
+              area_id: 30
+            adjacency: true
+            bfd: true
+            cost:
+              interface_cost: 5
+            dead_interval:
+              time: 5
+            demand_circuit:
+              ignore: true
+            network:
+              broadcast: true
+            priority: 25
+            resync_timeout: 10
+            shutdown: true
+            ttl_security:
+              hops: 50
+          - afi: ipv6
+            process:
+              id: 35
+              area_id: 45
+            adjacency: true
+            database_filter: true
+            manet:
+              link_metrics:
+                cost_threshold: 10
+            priority: 55
+            transmit_delay: 45
     state: rendered
 
 # Module Execution Result:
 # ------------------------
 #
-# "rendered": [
-#         "router ospf 200 vrf blue",
-#         "auto-cost reference-bandwidth 4",
-#         "distribute-list 10 out",
-#         "distribute-list 123 in",
-#         "domain-id 192.0.3.1",
-#         "max-metric router-lsa on-startup 100",
-#         "area 10 capability default-exclusion",
-#         "router ospf 1",
-#         "default-information originate",
-#         "max-metric router-lsa on-startup 110",
-#         "network 198.51.100.0 0.0.0.255 area 5",
-#         "area 10 authentication message-digest",
-#         "area 10 default-cost 10",
-#         "area 10 nssa translate type7 suppress-fa",
-#         "area 10 nssa default-information-originate metric 10",
-#         "area 10 filter-list prefix test_prefix_out out",
-#         "area 10 filter-list prefix test_prefix_in in",
-#         "area 5 authentication",
-#         "area 5 capability default-exclusion"
+#  "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "ip ospf 10 area 30",
+#         "ip ospf adjacency stagger disable",
+#         "ip ospf bfd",
+#         "ip ospf cost 5",
+#         "ip ospf dead-interval 5",
+#         "ip ospf demand-circuit ignore",
+#         "ip ospf network broadcast",
+#         "ip ospf priority 25",
+#         "ip ospf resync-timeout 10",
+#         "ip ospf shutdown",
+#         "ip ospf ttl-security hops 50",
+#         "ipv6 ospf 35 area 45",
+#         "ipv6 ospf adjacency stagger disable",
+#         "ipv6 ospf database-filter all out",
+#         "ipv6 ospf manet peering link-metrics 10",
+#         "ipv6 ospf priority 55",
+#         "ipv6 ospf transmit-delay 45"
 #     ]
 
 # Using Parsed
@@ -1045,12 +951,26 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 #
-# router ospf 100
-#  auto-cost reference-bandwidth 5
-#  domain-id 192.0.5.1
-#  area 5 authentication message-digest
-#  area 5 nssa translate type7 suppress-fa
-#  area 5 nssa default-information-originate metric 10
+# interface GigabitEthernet0/2
+# interface GigabitEthernet0/1
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  ip ospf priority 25
+#  ip ospf demand-circuit ignore
+#  ip ospf bfd
+#  ip ospf adjacency stagger disable
+#  ip ospf ttl-security hops 50
+#  ip ospf shutdown
+#  ip ospf 10 area 30
+#  ip ospf cost 5
+#  ipv6 ospf 35 area 45
+#  ipv6 ospf priority 55
+#  ipv6 ospf transmit-delay 45
+#  ipv6 ospf database-filter all out
+#  ipv6 ospf adjacency stagger disable
+#  ipv6 ospf manet peering link-metrics 10
+# interface GigabitEthernet0/0
 
 - name: Parse the provided configuration with the exisiting running configuration
   cisco.ios.ios_ospf_interfaces:
@@ -1060,35 +980,63 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
-# "parsed": {
-#         "processes": [
-#             {
-#                 "areas": [
-#                     {
-#                         "area_id": "5",
-#                         "authentication": {
-#                             "message_digest": true
-#                         },
-#                         "nssa": {
-#                             "default_information_originate": {
-#                                 "metric": 10
-#                             },
-#                             "translate": "suppress-fa"
+#  "parsed": [
+#         },
+#         {
+#             "name": "GigabitEthernet0/2"
+#         },
+#         {
+#             "address_family": [
+#                 {
+#                     "adjacency": true,
+#                     "afi": "ipv4",
+#                     "bfd": true,
+#                     "cost": {
+#                         "interface_cost": 5
+#                     },
+#                     "dead_interval": {
+#                         "time": 5
+#                     },
+#                     "demand_circuit": {
+#                         "ignore": true
+#                     },
+#                     "network": {
+#                         "broadcast": true
+#                     },
+#                     "priority": 25,
+#                     "process": {
+#                         "area_id": "30",
+#                         "id": 10
+#                     },
+#                     "resync_timeout": 10,
+#                     "shutdown": true,
+#                     "ttl_security": {
+#                         "hops": 50
+#                     }
+#                 },
+#                 {
+#                     "adjacency": true,
+#                     "afi": "ipv6",
+#                     "database_filter": true,
+#                     "manet": {
+#                         "link_metrics": {
+#                             "cost_threshold": 10
 #                         }
-#                     }
-#                 ],
-#                 "auto_cost": {
-#                     "reference_bandwidth": 5
-#                 },
-#                 "domain_id": {
-#                     "ip_address": {
-#                         "address": "192.0.5.1"
-#                     }
-#                 },
-#                 "process_id": 100
-#             }
-#         ]
-#     }
+#                     },
+#                     "priority": 55,
+#                     "process": {
+#                         "area_id": "45",
+#                         "id": 35
+#                     },
+#                     "transmit_delay": 45
+#                 }
+#             ],
+#             "name": "GigabitEthernet0/1"
+#         },
+#         {
+#             "name": "GigabitEthernet0/0"
+#         }
+#     ]
 
 """
 RETURN = """
@@ -1110,7 +1058,7 @@ commands:
   description: The set of commands pushed to the remote device.
   returned: always
   type: list
-  sample: ['router ospf 200 vrf blue', 'auto-cost reference-bandwidth 5', 'domain-id 192.0.4.1']
+  sample: ['interface GigabitEthernet0/1', 'ip ospf 10 area 30', 'ip ospf cost 5', 'ip ospf priority 25']
 """
 
 

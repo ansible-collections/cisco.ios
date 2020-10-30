@@ -46,7 +46,7 @@ class Ospf_InterfacesFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
-    def get_ospfv2_data(self, connection):
+    def get_ospf_interfaces_data(self, connection):
         return connection.get("sh running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -63,7 +63,7 @@ class Ospf_InterfacesFacts(object):
         objs = []
 
         if not data:
-            data = self.get_ospfv2_data(connection)
+            data = self.get_ospf_interfaces_data(connection)
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_InterfacesTemplate(

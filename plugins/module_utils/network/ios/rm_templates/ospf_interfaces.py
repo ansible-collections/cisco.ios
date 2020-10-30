@@ -8,9 +8,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The Ospf_interfaces parser templates file. This contains 
-a list of parser definitions and associated functions that 
-facilitates both facts gathering and native command generation for 
+The Ospf_interfaces parser templates file. This contains
+a list of parser definitions and associated functions that
+facilitates both facts gathering and native command generation for
 the given network resource.
 """
 
@@ -637,7 +637,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                     "threshold": "{{ cost.split(' ')[2] }}",
                                 },
                                 "link_metrics": {
-                                    "set": "{{ True if link_metrics is defined }}",
+                                    "set": "{{ True if link_metrics is not defined and link_metrics is defined  }}",
                                     "cost_threshold": "{{ link_metrics.split(' ')[1] }}",
                                 },
                             },
@@ -910,8 +910,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "ttl_security": {
-                                # "set": "{{ True if ttl_security is defined }}",
-                                "hops": "{{ hops.split(' ')[1] }}"
+                                "set": "{{ True if hops is not defined and ttl_security is defined }}",
+                                "hops": "{{ hops.split(' ')[1] }}",
                             },
                         }
                     }

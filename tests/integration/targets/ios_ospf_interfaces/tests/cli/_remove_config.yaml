@@ -1,0 +1,4 @@
+---
+- name: Remove OSPF Interfaces Config
+  cisco.ios.ios_ospf_interfaces:
+    state: deleted

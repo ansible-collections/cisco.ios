@@ -17,8 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -129,19 +127,25 @@ class Ospf_Interfaces(ResourceModule):
             "transmit_delay",
             "ttl_security",
         ]
-        if want != have and (
-            want.get("address_family") or self.state == "deleted"
-        ):
-            self.addcmd(want or have, "name", False)
+
+        if (
+            want != have
+        ):  # and (want.get('address_family') or self.state == 'deleted'):
+            if have.get("address_family"):
+                self.addcmd(have, "name", False)
+            elif want.get("address_family"):
+                self.addcmd(want, "name", False)
 
         if want.get("address_family"):
             for each in want["address_family"]:
+                set_want = True
                 if have.get("address_family"):
                     have_elements = len(have.get("address_family"))
                     while have_elements:
                         if have.get("address_family")[have_elements - 1].get(
                             "afi"
                         ) == each.get("afi"):
+                            set_want = False
                             h_each = have["address_family"].pop(
                                 have_elements - 1
                             )
@@ -152,11 +156,10 @@ class Ospf_Interfaces(ResourceModule):
                 else:
                     h_each = dict()
                     self.compare(parsers=parsers, want=each, have=h_each)
-            if self.state == "overridden":
-                if have.get("address_family"):
-                    for each in have["address_family"]:
-                        self.compare(parsers=parsers, want=dict(), have=each)
-        else:
+                    set_want = False
+                if set_want:
+                    self.compare(parsers=parsers, want=each, have=dict())
+        if self.state in ["overridden", "deleted"]:
             if have.get("address_family"):
                 for each in have["address_family"]:
                     self.compare(parsers=parsers, want=dict(), have=each)
