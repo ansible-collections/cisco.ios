@@ -4,6 +4,7 @@
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
+- include_tasks: _initial_ipv6_setup.yaml
 - include_tasks: _populate_config.yaml
 
 - block:

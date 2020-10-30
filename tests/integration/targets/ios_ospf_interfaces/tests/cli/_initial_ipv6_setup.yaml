@@ -1,0 +1,6 @@
+---
+- name: Create and Setup IPv6 configuration
+  vars:
+    lines: "interface GigabitEthernet 0/1\nipv6 address 2001:db8:0:1::/64\ninterface GigabitEthernet 0/2\nipv6 address 2001:db8:0:2::/64\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
