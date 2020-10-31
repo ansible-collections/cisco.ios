@@ -1,0 +1,70 @@
+---
+- debug:
+    msg: Start Deleted integration state for ios_ospf_interfaces ansible_connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_ipv6_setup.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Delete provided OSPF Interfaces
+      register: result
+      cisco.ios.ios_ospf_interfaces: &id001
+        config:
+          - name: GigabitEthernet0/1
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['before']) | length\
+            \ == 0 }}"
+
+    - name: Delete provided OSPF Interfaces (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ospf_interfaces: *id001
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result.changed == false
+
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete provided OSPF Interfaces without any config
+      register: result
+      cisco.ios.ios_ospf_interfaces: &id002
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['before']) | length\
+            \ == 0 }}"
+
+    - name: Delete provided OSPF Interfaces without any config (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ospf_interfaces: *id002
+
+    - name: Assert that the delete task was idempotent
+      assert:
+        that:
+          - result.changed == false
+
+  always:
+
+    - include_tasks: _remove_config.yaml
