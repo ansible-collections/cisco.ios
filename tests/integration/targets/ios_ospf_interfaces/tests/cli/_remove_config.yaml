@@ -1,0 +1,10 @@
+---
+- name: Remove OSPF Interfaces Config
+  cisco.ios.ios_ospf_interfaces:
+    state: deleted
+
+- name: Delete and Clean IPv6 configuration
+  vars:
+    lines: "interface GigabitEthernet 0/1\nno ipv6 address 2001:DB8:0:1::/64\ninterface GigabitEthernet 0/2\nno ipv6 address 2001:DB8:0:2::/64\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
