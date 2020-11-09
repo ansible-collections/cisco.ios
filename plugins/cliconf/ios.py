@@ -300,7 +300,7 @@ class Cliconf(CliconfBase):
 
             self._device_info = device_info
 
-        return device_info
+        return self._device_info
 
     def get_device_operations(self):
         return {
