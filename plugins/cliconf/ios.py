@@ -49,6 +49,10 @@ from ansible.plugins.cliconf import CliconfBase, enable_mode
 
 
 class Cliconf(CliconfBase):
+    def __init__(self, *args, **kwargs):
+        self._device_info = {}
+        super(Cliconf, self).__init__(*args, **kwargs)
+
     @enable_mode
     def get_config(self, source="running", flags=None, format=None):
         if source not in ("running", "startup"):
@@ -264,34 +268,37 @@ class Cliconf(CliconfBase):
         )
 
     def get_device_info(self):
-        device_info = {}
+        if not self._device_info:
+            device_info = {}
 
-        device_info["network_os"] = "ios"
-        reply = self.get(command="show version")
-        data = to_text(reply, errors="surrogate_or_strict").strip()
+            device_info["network_os"] = "ios"
+            reply = self.get(command="show version")
+            data = to_text(reply, errors="surrogate_or_strict").strip()
 
-        match = re.search(r"Version (\S+)", data)
-        if match:
-            device_info["network_os_version"] = match.group(1).strip(",")
-
-        model_search_strs = [
-            r"^[Cc]isco (.+) \(revision",
-            r"^[Cc]isco (\S+).+bytes of .*memory",
-        ]
-        for item in model_search_strs:
-            match = re.search(item, data, re.M)
+            match = re.search(r"Version (\S+)", data)
             if match:
-                version = match.group(1).split(" ")
-                device_info["network_os_model"] = version[0]
-                break
+                device_info["network_os_version"] = match.group(1).strip(",")
 
-        match = re.search(r"^(.+) uptime", data, re.M)
-        if match:
-            device_info["network_os_hostname"] = match.group(1)
+            model_search_strs = [
+                r"^[Cc]isco (.+) \(revision",
+                r"^[Cc]isco (\S+).+bytes of .*memory",
+            ]
+            for item in model_search_strs:
+                match = re.search(item, data, re.M)
+                if match:
+                    version = match.group(1).split(" ")
+                    device_info["network_os_model"] = version[0]
+                    break
 
-        match = re.search(r'image file is "(.+)"', data)
-        if match:
-            device_info["network_os_image"] = match.group(1)
+            match = re.search(r"^(.+) uptime", data, re.M)
+            if match:
+                device_info["network_os_hostname"] = match.group(1)
+
+            match = re.search(r'image file is "(.+)"', data)
+            if match:
+                device_info["network_os_image"] = match.group(1)
+
+            self._device_info = device_info
 
         return device_info
 
