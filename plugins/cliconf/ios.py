@@ -75,7 +75,7 @@ class Cliconf(CliconfBase):
         cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        return self.send_command(cmd)
+        return self._connection.send_command(cmd)
 
     def get_diff(
         self,
@@ -180,17 +180,17 @@ class Cliconf(CliconfBase):
         results = []
         requests = []
         if commit:
-            self.send_command("configure terminal")
+            self._connection.send_command("configure terminal")
             for line in to_list(candidate):
                 if not isinstance(line, Mapping):
                     line = {"command": line}
 
                 cmd = line["command"]
                 if cmd != "end" and cmd[0] != "!":
-                    results.append(self.send_command(**line))
+                    results.append(self._connection.send_command(**line))
                     requests.append(cmd)
 
-            self.send_command("end")
+            self._connection.send_command("end")
         else:
             raise ValueError("check mode is not supported")
 
@@ -219,7 +219,7 @@ class Cliconf(CliconfBase):
         requests = []
         if commit:
             commands = ""
-            self.send_command("config terminal")
+            self._connection.send_command("config terminal")
             time.sleep(0.1)
             # first item: macro command
             commands += candidate.pop(0) + "\n"
@@ -228,13 +228,13 @@ class Cliconf(CliconfBase):
                 commands += " " + line + "\n"
             commands += multiline_delimiter + "\n"
             obj = {"command": commands, "sendonly": True}
-            results.append(self.send_command(**obj))
+            results.append(self._connection.send_command(**obj))
             requests.append(commands)
 
             time.sleep(0.1)
-            self.send_command("end", sendonly=True)
+            self._connection.send_command("end", sendonly=True)
             time.sleep(0.1)
-            results.append(self.send_command("\n"))
+            results.append(self._connection.send_command("\n"))
             requests.append("\n")
 
         resp["request"] = requests
@@ -258,7 +258,7 @@ class Cliconf(CliconfBase):
                 "'output' value %s is not supported for get" % output
             )
 
-        return self.send_command(
+        return self._connection.send_command(
             command=command,
             prompt=prompt,
             answer=answer,
@@ -274,7 +274,6 @@ class Cliconf(CliconfBase):
             device_info["network_os"] = "ios"
             reply = self.get(command="show version")
             data = to_text(reply, errors="surrogate_or_strict").strip()
-
             match = re.search(r"Version (\S+)", data)
             if match:
                 device_info["network_os_version"] = match.group(1).strip(",")
@@ -358,15 +357,15 @@ class Cliconf(CliconfBase):
         if commit:
             for key, value in iteritems(banners_obj):
                 key += " %s" % multiline_delimiter
-                self.send_command("config terminal", sendonly=True)
+                self._connection.send_command("config terminal", sendonly=True)
                 for cmd in [key, value, multiline_delimiter]:
                     obj = {"command": cmd, "sendonly": True}
-                    results.append(self.send_command(**obj))
+                    results.append(self._connection.send_command(**obj))
                     requests.append(cmd)
 
-                self.send_command("end", sendonly=True)
+                self._connection.send_command("end", sendonly=True)
                 time.sleep(0.1)
-                results.append(self.send_command("\n"))
+                results.append(self._connection.send_command("\n"))
                 requests.append("\n")
 
         resp["request"] = requests
@@ -391,7 +390,7 @@ class Cliconf(CliconfBase):
                 )
 
             try:
-                out = self.send_command(**cmd)
+                out = self._connection.send_command(**cmd)
             except AnsibleConnectionFailure as e:
                 if check_rc:
                     raise
