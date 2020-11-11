@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Add version key to galaxy.yaml to work around ansible-galaxy bug
