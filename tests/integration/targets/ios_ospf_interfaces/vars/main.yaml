@@ -6,6 +6,7 @@ merged:
     - interface GigabitEthernet0/1
     - ip ospf 10 area 30
     - ip ospf adjacency stagger disable
+    - ip ospf authentication message-digest
     - ip ospf bfd
     - ip ospf cost 5
     - ip ospf dead-interval 5
@@ -28,6 +29,8 @@ merged:
     - address_family:
         - adjacency: true
           afi: ipv4
+          authentication:
+            message_digest: true
           bfd: true
           cost:
             interface_cost: 5

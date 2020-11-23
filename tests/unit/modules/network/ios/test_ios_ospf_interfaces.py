@@ -88,6 +88,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=60,
                                 resync_timeout=90,
                                 ttl_security=dict(hops=120),
+                                authentication=dict(key_chain="test_key"),
                             ),
                             dict(
                                 afi="ipv6",
@@ -121,6 +122,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf priority 50",
             "ip ospf ttl-security hops 150",
             "interface GigabitEthernet0/2",
+            "ip ospf authentication key-chain test_key",
             "ip ospf bfd",
             "ip ospf cost 30",
             "ip ospf network broadcast",

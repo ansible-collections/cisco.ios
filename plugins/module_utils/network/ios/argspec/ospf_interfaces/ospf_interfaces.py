@@ -66,8 +66,8 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "key_chain": {"type": "str"},
-                                "message_digest": {"type": "str"},
-                                "null": {"type": "str"},
+                                "message_digest": {"type": "bool"},
+                                "null": {"type": "bool"},
                             },
                         },
                         "bfd": {"type": "bool"},
@@ -75,7 +75,6 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "interface_cost": {"type": "int"},
-                                # "dynamic": {"type": "bool"},
                                 "dynamic_cost": {
                                     "type": "dict",
                                     "options": {
