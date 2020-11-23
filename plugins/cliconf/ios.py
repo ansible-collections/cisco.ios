@@ -28,6 +28,18 @@ description:
 - This ios plugin provides low level abstraction apis for sending and receiving CLI
   commands from Cisco IOS network devices.
 version_added: 1.0.0
+options:
+  config_commands:
+    description:
+    - Specifies a list of commands that can make configuration changes
+      to the target device.
+    - When `ansible_network_single_user_mode` is enabled, if a command sent
+      to the device is present in this list, the existing cache is invalidated.
+    version_added: 1.3.0
+    type: list
+    default: []
+    vars:
+    - name: ansible_ios_config_commands
 """
 
 import re
@@ -75,7 +87,7 @@ class Cliconf(CliconfBase):
         cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        return self._connection.send_command(cmd)
+        return self._connection.send_command(cmd, use_cache=True)
 
     def get_diff(
         self,
@@ -265,6 +277,7 @@ class Cliconf(CliconfBase):
             sendonly=sendonly,
             newline=newline,
             check_all=check_all,
+            use_cache=True,
         )
 
     def get_device_info(self):
@@ -388,6 +401,9 @@ class Cliconf(CliconfBase):
                     "'output' value %s is not supported for run_commands"
                     % output
                 )
+
+            if not cmd["prompt"]:
+                cmd["use_cache"] = True
 
             try:
                 out = self._connection.send_command(**cmd)
