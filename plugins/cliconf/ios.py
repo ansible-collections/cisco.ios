@@ -402,7 +402,7 @@ class Cliconf(CliconfBase):
                     % output
                 )
 
-            if not cmd["prompt"]:
+            if not cmd.get("prompt"):
                 cmd["use_cache"] = True
 
             try:
