@@ -162,6 +162,7 @@ deleted:
     - interface GigabitEthernet0/1
     - no ip ospf 10 area 30
     - no ip ospf adjacency stagger disable
+    - no ip ospf authentication message-digest
     - no ip ospf bfd
     - no ip ospf cost 5
     - no ip ospf dead-interval 5
