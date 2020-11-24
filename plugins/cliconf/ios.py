@@ -87,7 +87,7 @@ class Cliconf(CliconfBase):
         cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        return self._connection.send_command(cmd, use_cache=True)
+        return self.send_command(cmd)
 
     def get_diff(
         self,
@@ -130,7 +130,6 @@ class Cliconf(CliconfBase):
                    'config_diff': '',
                    'banner_diff': {}
                }
-
         """
         diff = {}
         device_operations = self.get_device_operations()
@@ -192,17 +191,17 @@ class Cliconf(CliconfBase):
         results = []
         requests = []
         if commit:
-            self._connection.send_command("configure terminal")
+            self.send_command("configure terminal")
             for line in to_list(candidate):
                 if not isinstance(line, Mapping):
                     line = {"command": line}
 
                 cmd = line["command"]
                 if cmd != "end" and cmd[0] != "!":
-                    results.append(self._connection.send_command(**line))
+                    results.append(self.send_command(**line))
                     requests.append(cmd)
 
-            self._connection.send_command("end")
+            self.send_command("end")
         else:
             raise ValueError("check mode is not supported")
 
@@ -231,7 +230,7 @@ class Cliconf(CliconfBase):
         requests = []
         if commit:
             commands = ""
-            self._connection.send_command("config terminal")
+            self.send_command("config terminal")
             time.sleep(0.1)
             # first item: macro command
             commands += candidate.pop(0) + "\n"
@@ -240,13 +239,13 @@ class Cliconf(CliconfBase):
                 commands += " " + line + "\n"
             commands += multiline_delimiter + "\n"
             obj = {"command": commands, "sendonly": True}
-            results.append(self._connection.send_command(**obj))
+            results.append(self.send_command(**obj))
             requests.append(commands)
 
             time.sleep(0.1)
-            self._connection.send_command("end", sendonly=True)
+            self.send_command("end", sendonly=True)
             time.sleep(0.1)
-            results.append(self._connection.send_command("\n"))
+            results.append(self.send_command("\n"))
             requests.append("\n")
 
         resp["request"] = requests
@@ -270,14 +269,13 @@ class Cliconf(CliconfBase):
                 "'output' value %s is not supported for get" % output
             )
 
-        return self._connection.send_command(
+        return self.send_command(
             command=command,
             prompt=prompt,
             answer=answer,
             sendonly=sendonly,
             newline=newline,
             check_all=check_all,
-            use_cache=True,
         )
 
     def get_device_info(self):
@@ -370,15 +368,15 @@ class Cliconf(CliconfBase):
         if commit:
             for key, value in iteritems(banners_obj):
                 key += " %s" % multiline_delimiter
-                self._connection.send_command("config terminal", sendonly=True)
+                self.send_command("config terminal", sendonly=True)
                 for cmd in [key, value, multiline_delimiter]:
                     obj = {"command": cmd, "sendonly": True}
-                    results.append(self._connection.send_command(**obj))
+                    results.append(self.send_command(**obj))
                     requests.append(cmd)
 
-                self._connection.send_command("end", sendonly=True)
+                self.send_command("end", sendonly=True)
                 time.sleep(0.1)
-                results.append(self._connection.send_command("\n"))
+                results.append(self.send_command("\n"))
                 requests.append("\n")
 
         resp["request"] = requests
@@ -402,11 +400,8 @@ class Cliconf(CliconfBase):
                     % output
                 )
 
-            if not cmd.get("prompt"):
-                cmd["use_cache"] = True
-
             try:
-                out = self._connection.send_command(**cmd)
+                out = self.send_command(**cmd)
             except AnsibleConnectionFailure as e:
                 if check_rc:
                     raise
