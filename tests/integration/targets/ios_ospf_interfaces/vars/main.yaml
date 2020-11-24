@@ -191,6 +191,7 @@ rtt:
     - interface GigabitEthernet0/1
     - ip ospf 10 area 30
     - ip ospf adjacency stagger disable
+    - ip ospf authentication message-digest
     - ip ospf bfd
     - ip ospf cost 5
     - ip ospf dead-interval 5
