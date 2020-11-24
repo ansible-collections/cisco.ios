@@ -45,7 +45,7 @@ def _connection_side_effect(*args, **kwargs):
             value = kwargs.get("command")
 
         fixture_path = path.abspath(
-            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(to_bytes(value).split(b" ")))
+            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
         )
         with open(fixture_path, "rb") as file_desc:
             return file_desc.read()
@@ -66,9 +66,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
 
     def setUp(self):
         self._mock_connection = MagicMock()
-        self._mock_connection.send_command.side_effect = (
-            _connection_side_effect
-        )
+        self._mock_connection.send.side_effect = _connection_side_effect
         self._cliconf = ios.Cliconf(self._mock_connection)
         self.maxDiff = None
 
