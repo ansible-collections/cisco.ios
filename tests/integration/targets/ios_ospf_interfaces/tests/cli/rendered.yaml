@@ -11,6 +11,8 @@
           - name: GigabitEthernet0/1
             address_family:
               - afi: ipv4
+                authentication:
+                  message_digest: true
                 process:
                   id: 10
                   area_id: 30
@@ -38,9 +40,7 @@
                 priority: 55
                 transmit_delay: 45
         state: rendered
-    - debug:
-        msg:
-          - "{{ result.rendered|symmetric_difference(merged.commands) }}"
+
     - assert:
         that:
           - result.changed == false

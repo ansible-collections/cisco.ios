@@ -15,6 +15,8 @@
           - name: GigabitEthernet0/1
             address_family:
               - afi: ipv4
+                authentication:
+                  message_digest: true
                 process:
                   id: 10
                   area_id: 30

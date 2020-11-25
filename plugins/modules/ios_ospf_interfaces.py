@@ -109,10 +109,10 @@ options:
                 type: str
               message_digest:
                 description: Use message-digest authentication
-                type: str
+                type: bool
               'null':
                 description: Use no authentication
-                type: str
+                type: bool
           bfd:
             description:
               - BFD configuration commands

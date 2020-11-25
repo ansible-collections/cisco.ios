@@ -15,6 +15,8 @@
           - name: GigabitEthernet0/1
             address_family:
               - afi: ipv4
+                authentication:
+                  message_digest: true
                 process:
                   id: 10
                   area_id: 30
@@ -77,12 +79,9 @@
 
     - assert:
         that:
-          - result.commands|length == 22
+          - result.commands|length == 23
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
-
-    - debug:
-        msg: "{{ ansible_facts['network_resources']['ospf_interfaces'] }}"
 
     - name: Revert back to base config using facts round trip
       register: revert
@@ -92,7 +91,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 22
+          - revert.commands|length == 23
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:

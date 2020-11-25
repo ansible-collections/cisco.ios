@@ -43,17 +43,17 @@ def _tmplt_ospf_interface_process(config_data):
 def _tmplt_ip_ospf_authentication(config_data):
     if "authentication" in config_data:
         if config_data.get("afi") == "ipv4":
-            command = "ip ospf authentication".format(**config_data["process"])
+            command = "ip ospf authentication"
         elif config_data.get("afi") == "ipv6":
-            command = "ipv6 ospf authentication".format(
-                **config_data["process"]
-            )
+            command = "ipv6 ospf authentication"
         if "key_chain" in config_data["authentication"]:
             command += " key-chain {key_chain}".format(
                 **config_data["authentication"]
             )
         elif "message_digest" in config_data["authentication"]:
             command += " message-digest"
+        elif "null" in config_data["authentication"]:
+            command += " null"
     return command
 
 
@@ -312,7 +312,6 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "adjacency": "{{ True if adjacency is defined }}",
-                            # "disable": "{{ True if disable is defined }}",
                         }
                     }
                 }
@@ -327,6 +326,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                 \s*authentication*
                 \s*(?P<key_chain>key-chain*\s*\S+)*
                 \s*(?P<message_digest>message-digest)*
+                \s*(?P<null>null)*
                 $""",
                 re.VERBOSE,
             ),
@@ -337,8 +337,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "authentication": {
-                                "key_chain": "{{ key_chain }}",
-                                "message_digest": "{{ message_digest }}",
+                                "key_chain": "{{ key_chain.split(' ')[1] }}",
+                                "message_digest": "{{ True if message_digest is defined }}",
+                                "null": "{{ True if null is defined }}",
                             },
                         }
                     }
