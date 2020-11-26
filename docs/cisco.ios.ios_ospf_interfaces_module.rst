@@ -153,10 +153,14 @@ Parameters
                     <b>message_digest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Use message-digest authentication</div>
@@ -171,10 +175,14 @@ Parameters
                     <b>null</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Use no authentication</div>
@@ -1493,7 +1501,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Using deleted
 

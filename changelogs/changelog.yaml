@@ -162,3 +162,12 @@ releases:
       name: ios_ospf_interfaces
       namespace: ''
     release_date: '2020-11-01'
+  1.2.1:
+    changes:
+      bugfixes:
+      - To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
+      - Add version key to galaxy.yaml to work around ansible-galaxy bug.
+      fragments:
+      - 209_fix_ios_ospf_interfaces_authentication_param.yaml
+      - galaxy-version.yaml
+    release_date: '2020-11-26'

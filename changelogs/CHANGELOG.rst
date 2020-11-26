@@ -4,6 +4,15 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v1.2.1
+======
+
+Bugfixes
+--------
+
+- To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
+- Add version key to galaxy.yaml to work around ansible-galaxy bug.
+
 v1.2.0
 ======
 
@@ -26,7 +35,7 @@ New Modules
 
 - ios_ospf_interfaces - OSPF Interfaces resource module
 
-v1.2.0
+v1.1.0
 ======
 
 Minor Changes

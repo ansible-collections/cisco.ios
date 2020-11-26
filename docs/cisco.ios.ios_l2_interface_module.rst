@@ -463,7 +463,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure GigabitEthernet0/5 is in its default l2 interface state
       ios.ios_l2_interface:
