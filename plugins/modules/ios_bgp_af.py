@@ -34,61 +34,238 @@ options:
     description: A list of configurations for bgp address family.
     type: dict
     suboptions:
-      afi:
-        description: Address Family
+      asn:
+        description: Autonomous system number.
         type: str
-        choices: ['ipv4', 'ipv6', 'l2vpn', 'nsap', 'rtfilter', 'vpnv4', 'vpnv6']
-      af_modifier:
-        description: Address Family modifier
-        type: str
-        choices: ['flowspec', 'mdt', 'multicast', 'mvpn', 'unicast']
-      vrf:
-        description: Specify parameters for a VPN Routing/Forwarding instance
-        type: str
-      aggregate_address:
-        description: Configure BGP aggregate entries
-        type: dict
+        required: true
+      address_family;
+        description: A list of configurations for bgp address family.
+        type: list
+        elements: dict
         suboptions:
-          address:
-            description: Aggregate address(A.B.C.D)
+          afi:
+            description: Address Family
             type: str
-          netmask:
-            description: Aggregate mask(A.B.C.D)
+            choices: ['ipv4', 'ipv6', 'l2vpn', 'nsap', 'rtfilter', 'vpnv4', 'vpnv6']
+          af_modifier:
+            description: Address Family modifier
             type: str
-          advertise_map:
-            description: Set condition to advertise attribute
+            choices: ['flowspec', 'mdt', 'multicast', 'mvpn', 'unicast']
+          vrf:
+            description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
-          as_confed_set:
-            description: Generate AS confed set path information
-            type: bool
-          as_set:
-            description: Generate AS set path information
-            type: bool
-          attribute_map:
-            description: Set attributes of aggregate
-            type: str
-          summary_only:
-            description: Filter more specific routes from updates
-            type: bool
-          suppress_map:
-            description: Conditionally filter more specific routes from updates
-            type: str
-        auto_summary:
-          description: Enable automatic network number summarization
-          type: bool
-        bgp:
-          description: Configure BGP aggregate entries
-          type: dict
-          suboptions:
-            additional_paths:
-              description: Additional paths in the BGP table
+          aggregate_address:
+            description: Configure BGP aggregate entries
+            type: dict
+            suboptions:
+              address:
+                description: Aggregate address(A.B.C.D)
+                type: str
+              netmask:
+                description: Aggregate mask(A.B.C.D)
+                type: str
+              advertise_map:
+                description: Set condition to advertise attribute
+                type: str
+              as_confed_set:
+                description: Generate AS confed set path information
+                type: bool
+              as_set:
+                description: Generate AS set path information
+                type: bool
+              attribute_map:
+                description: Set attributes of aggregate
+                type: str
+              summary_only:
+                description: Filter more specific routes from updates
+                type: bool
+              suppress_map:
+                description: Conditionally filter more specific routes from updates
+                type: str
+            auto_summary:
+              description: Enable automatic network number summarization
+              type: bool
+            bgp:
+              description: Configure BGP aggregate entries
               type: dict
               suboptions:
-                receive:
-                  description: Receive additional paths from neighbors
+                additional_paths:
+                  description: Additional paths in the BGP table
+                  type: dict
+                  suboptions:
+                    receive:
+                      description: Receive additional paths from neighbors
+                      type: bool
+                    select:
+                      description: Selection criteria to pick the paths
+                      type: dict
+                      suboptions:
+                        all:
+                          description: Select all available paths
+                          type: bool
+                        best:
+                          description: Select best N paths (2-3).
+                          type: int
+                        group_best:
+                          description: Select group-best path
+                          type: bool
+                    send:
+                      description: Send additional paths to neighbors
+                      type: bool
+                aggregate_timer:
+                  description:
+                    - Configure Aggregation Timer
+                    - Please refer vendor documentation for valid values
+                  type: int
+                dampening:
+                  description: Enable route-flap dampening
+                  type: dict
+                  suboptions:
+                    half_life:
+                      description: Half-life time for the penalty
+                      type: dict
+                      suboptions:
+                        value:
+                          description:
+                            - Half-life time value for the penalty
+                            - Please refer vendor documentation for valid values
+                          type: int
+                        reuse_route:
+                          description:
+                            - Value to start reusing a route
+                            - Please refer vendor documentation for valid values
+                          type: int
+                        suppress_route:
+                          description:
+                            - Value to start suppressing a route
+                            - Please refer vendor documentation for valid values
+                          type: int
+                    route_map:
+                      description: Route-map to specify criteria for dampening
+                      type: str
+                dmzlink_bw:
+                  description: Use DMZ Link Bandwidth as weight for BGP multipaths
                   type: bool
-                select:
-                  description: Selection criteria to pick the paths
+                nexthop:
+                  description: Nexthop tracking commands
+                  type: dict
+                  suboptions:
+                    route_map:
+                      description: Route map for valid nexthops
+                      type: str
+                    trigger:
+                      description: Nexthop triggering
+                      type: dict
+                      suboptions:
+                        delay:
+                          description:
+                            - Set the delay to tigger nexthop tracking
+                            - Please refer vendor documentation for valid values
+                          type: int
+                        enable:
+                          description: Enable nexthop tracking
+                          type: bool
+                redistribute_internal:
+                  description: Allow redistribution of iBGP into IGPs (dangerous)
+                  type: bool
+                route_map:
+                  description:
+                    - route-map control commands
+                    - Have route-map set commands take priority over BGP commands such as next-hop unchanged
+                  type: bool
+                scan_time:
+                  description:
+                    - Configure background scanner interval
+                    - Please refer vendor documentation for valid values
+                  type: int
+                slow_peer:
+                  description: Nexthop triggering
+                  type: dict
+                  suboptions:
+                    detection:
+                      description: Slow-peer detection
+                      type: dict
+                      suboptions:
+                        enable:
+                          description: Enable slow-peer detection
+                          type: bool
+                        threshold:
+                          description:
+                            - Set the slow-peer detection threshold
+                            - Threshold value (seconds)
+                            - Please refer vendor documentation for valid values
+                          type: int
+                    split_update_group:
+                      description: Configure slow-peer split-update-group
+                      type: dict
+                      suboptions:
+                        dynamic:
+                          description: Dynamically split the slow peer to slow-update group
+                          type: bool
+                        permanent:
+                          description: Keep the slow-peer permanently in slow-update group
+                          type: bool
+                soft_reconfig_backup:
+                  description: Use soft-reconfiguration inbound only when route-refresh is not negotiated
+                  type: bool
+                update_group:
+                  description:
+                    - Manage peers in bgp update groups
+                    - Split update groups based on Policy
+                    - Keep peers with as-override in different update groups
+                  type: bool
+            default:
+              description: Set a command to its defaults
+              type: bool
+            default_metric:
+              description: Set metric of redistributed routes
+              type: int
+            distance:
+              description: Define an administrative distance
+              type: dict
+              suboptions:
+                external:
+                  description: Distance for routes external to the AS
+                  type: int
+                internal:
+                  description: Distance for routes internal to the AS
+                  type: int
+                local:
+                  description: Distance for local routes
+                  type: int
+            neighbor:
+              description: Specify a neighbor router
+              type: dict
+              suboptions:
+                address:
+                  description: Neighbor address (A.B.C.D)
+                  type: str
+                tag:
+                  description: Neighbor tag
+                  type: str
+                ipv6_adddress:
+                  description: Neighbor ipv6 address (X:X:X:X::X)
+                  type: str
+                activate:
+                  description: Enable the Address Family for this Neighbor
+                  type: bool
+                additional_paths:
+                  description: Negotiate additional paths capabilities with this neighbor
+                  type: dict
+                  suboptions:
+                    disable:
+                      description: Disable additional paths for this neighbor
+                      type: bool
+                    receive:
+                      description: Receive additional paths from neighbors
+                      type: bool
+                    send:
+                      description: Send additional paths to this neighbor
+                      type: bool
+                advertise:
+                  description:
+                    - Advertise to this neighbor
+                    - Advertise additional paths
                   type: dict
                   suboptions:
                     all:
@@ -100,438 +277,270 @@ options:
                     group_best:
                       description: Select group-best path
                       type: bool
-                send:
-                  description: Send additional paths to neighbors
-                  type: bool
-            aggregate_timer:
-              description:
-                - Configure Aggregation Timer
-                - Please refer vendor documentation for valid values
-              type: int
-            dampening:
-              description: Enable route-flap dampening
-              type: dict
-              suboptions:
-                half_life:
-                  description: Half-life time for the penalty
+                advertise_map:
+                  description: specify route-map for conditional advertisement
                   type: dict
                   suboptions:
-                    value:
+                    name:
+                      description: advertise route-map name
+                      type: str
+                    exist_map:
                       description:
-                        - Half-life time value for the penalty
-                        - Please refer vendor documentation for valid values
-                      type: int
-                    reuse_route:
+                        - advertise prefix only if prefix is in the condition exists
+                        - condition route-map name
+                      type: str
+                    non_exist_map:
                       description:
-                        - Value to start reusing a route
-                        - Please refer vendor documentation for valid values
-                      type: int
-                    suppress_route:
-                      description:
-                        - Value to start suppressing a route
-                        - Please refer vendor documentation for valid values
-                      type: int
-                route_map:
-                  description: Route-map to specify criteria for dampening
-                  type: str
-            dmzlink_bw:
-              description: Use DMZ Link Bandwidth as weight for BGP multipaths
-              type: bool
-            nexthop:
-              description: Nexthop tracking commands
-              type: dict
-              suboptions:
-                route_map:
-                  description: Route map for valid nexthops
-                  type: str
-                trigger:
-                  description: Nexthop triggering
+                        - advertise prefix only if prefix in the condition does not exist
+                        - condition route-map name
+                      type: str
+                advertisement_interval:
+                  description: Minimum interval between sending BGP routing updates
+                  type: int
+                aigp:
+                  description: Enable a AIGP on neighbor
                   type: dict
                   suboptions:
-                    delay:
-                      description:
-                        - Set the delay to tigger nexthop tracking
-                        - Please refer vendor documentation for valid values
-                      type: int
                     enable:
-                      description: Enable nexthop tracking
+                      description: Enable a AIGP on neighbor
+                      type: str
+                    send:
+                      description: Cost community or MED carrying AIGP VALUE
+                      type: dict
+                      suboptions:
+                        cost_community:
+                          description: Cost extended community carrying AIGP Value
+                          type: int
+                        poi:
+                          description: Point of Insertion
+                          type: dict
+                          suboptions:
+                            igp_cost:
+                              description: Point of Insertion After IGP
+                              type: bool
+                            pre_bestpath:
+                              description: Point of Insertion At Beginning
+                              type: bool
+                            transitive:
+                              description: Cost community is Transitive
+                              type: bool
+                        med:
+                          description: Med carrying AIGP Value
+                          type: bool
+                allow_policy:
+                  description: Enable the policy support for this IBGP Neighbor
+                  type: bool
+                allowas_in:
+                  description:
+                    - Accept as-path with my AS present in it
+                    - Please refer vendor documentation for valid values
+                  type: int
+                as_override:
+                  description: Override matching AS-number while sending update
+                  type: dict
+                  suboptions:
+                    set:
+                      description: Enable AS override
                       type: bool
-            redistribute_internal:
-              description: Allow redistribution of iBGP into IGPs (dangerous)
-              type: bool
-            route_map:
-              description:
-                - route-map control commands
-                - Have route-map set commands take priority over BGP commands such as next-hop unchanged
-              type: bool
-            scan_time:
-              description:
-                - Configure background scanner interval
-                - Please refer vendor documentation for valid values
-              type: int
-            slow_peer:
-              description: Nexthop triggering
-              type: dict
-              suboptions:
-                detection:
-                  description: Slow-peer detection
+                    split_horizon:
+                      description: Maintain Split Horizon while sending update
+                      type: bool
+                capability:
+                  description:
+                    - Advertise capability to the peer
+                    - Advertise ORF capability to the peer
+                    - Advertise prefixlist ORF capability to this neighbor
+                  type: dict
+                  suboptions:
+                    both:
+                      description: Capability to SEND and RECEIVE the ORF to/from this neighbor
+                      type: bool
+                    receive:
+                      description: Capability to RECEIVE the ORF from this neighbor
+                      type: bool
+                    send:
+                      description: Capability to SEND the ORF to this neighbor
+                      type: bool
+                default_originate:
+                  description: Originate default route to this neighbor
+                  type: dict
+                  suboptions:
+                    set:
+                      description: Set default route to this neighbor
+                      type: bool
+                    route_map:
+                      description: Route-map to specify criteria to originate default
+                      type: str
+                distribute_list:
+                  description: Filter updates to/from this neighbor
+                  type: dict
+                  suboptions:
+                    acl:
+                      description: ACL id/name
+                      type: str
+                    in:
+                      description: Filter incoming updates
+                      type: bool
+                    out:
+                      description: Filter outgoing updates
+                      type: bool
+                dmzlink_bw:
+                  description: Propagate the DMZ link bandwidth
+                  type: bool
+                filter_list:
+                  description: Establish BGP filters
+                  type: dict
+                  suboptions:
+                    as_path_acl:
+                      description:
+                        - AS path access list
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    in:
+                      description: Filter incoming updates
+                      type: bool
+                    out:
+                      description: Filter outgoing updates
+                      type: bool
+                inherit:
+                  description:
+                    - Inherit a template
+                    - Inherit a peer-policy template
+                  type: str
+                maximum_prefix:
+                  description: Establish BGP filters
+                  type: dict
+                  suboptions:
+                    number:
+                      description:
+                        - maximum no. of prefix limit
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    threshold_value:
+                      description:
+                        - Threshold value (%) at which to generate a warning msg
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    restart:
+                      description: Restart bgp connection after limit is exceeded
+                      type: int
+                    warning_only:
+                      description: Only give warning message when limit is exceeded
+                      type: bool
+                next_hop_self:
+                  description: Disable the next hop calculation for this neighbor
+                  type: bool
+                next_hop_unchanged:
+                  description: Propagate next hop unchanged for iBGP paths to this neighbor
+                  type: bool
+                prefix_list:
+                  description: Filter updates to/from this neighbor
+                  type: dict
+                  suboptions:
+                    name:
+                      description: Name of a prefix list
+                      type: str
+                    in:
+                      description: Filter incoming updates
+                      type: bool
+                    out:
+                      description: Filter outgoing updates
+                      type: bool
+                remove_private_as:
+                  description: Remove private AS number from outbound updates
+                  type: dict
+                  suboptions:
+                    set:
+                      description: Remove private AS number from outbound updates
+                      type: bool
+                    all:
+                      description: Remove all private AS numbers
+                      type: bool
+                    replace_as:
+                      description: Replace all private AS numbers with local AS
+                      type: bool
+                route_map:
+                  description: Apply route map to neighbor
+                  type: dict
+                  suboptions:
+                    name:
+                      description: Name of route map
+                      type: str
+                    in:
+                      description: Apply map to incoming routes
+                      type: bool
+                    out:
+                      description: Apply map to outbound routes
+                      type: bool
+                route_reflector_client:
+                  description: Configure a neighbor as Route Reflector client
+                  type: bool
+                route_server_client:
+                  description: Configure a neighbor as Route Server client
+                  type: bool
+                send_community:
+                  description: Send Community attribute to this neighbor
+                  type: dict
+                  suboptions:
+                    both:
+                      description: Send Standard and Extended Community attributes
+                      type: bool
+                    extended:
+                      description: Send Extended Community attribute
+                      type: bool
+                    standard:
+                      description: Send Standard Community attribute
+                      type: bool
+                slow_peer:
+                  description: Configure slow-peer
                   type: dict
                   suboptions:
                     enable:
                       description: Enable slow-peer detection
                       type: bool
+                    disable:
+                      description: Disable slow-peer detection
+                      type: bool
                     threshold:
-                      description:
-                        - Set the slow-peer detection threshold
-                        - Threshold value (seconds)
-                        - Please refer vendor documentation for valid values
+                      description: Set the slow-peer detection threshold
                       type: int
-                split_update_group:
-                  description: Configure slow-peer split-update-group
-                  type: dict
-                  suboptions:
-                    dynamic:
-                      description: Dynamically split the slow peer to slow-update group
-                      type: bool
-                    permanent:
-                      description: Keep the slow-peer permanently in slow-update group
-                      type: bool
-            soft_reconfig_backup:
-              description: Use soft-reconfiguration inbound only when route-refresh is not negotiated
-              type: bool
-            update_group:
-              description:
-                - Manage peers in bgp update groups
-                - Split update groups based on Policy
-                - Keep peers with as-override in different update groups
-              type: bool
-        default:
-          description: Set a command to its defaults
-          type: bool
-        default_metric:
-          description: Set metric of redistributed routes
-          type: int
-        distance:
-          description: Define an administrative distance
-          type: dict
-          suboptions:
-            external:
-              description: Distance for routes external to the AS
-              type: int
-            internal:
-              description: Distance for routes internal to the AS
-              type: int
-            local:
-              description: Distance for local routes
-              type: int
-        neighbor:
-          description: Specify a neighbor router
-          type: dict
-          suboptions:
-            address:
-              description: Neighbor address (A.B.C.D)
-              type: str
-            tag:
-              description: Neighbor tag
-              type: str
-            ipv6_adddress:
-              description: Neighbor ipv6 address (X:X:X:X::X)
-              type: str
-            activate:
-              description: Enable the Address Family for this Neighbor
-              type: bool
-            additional_paths:
-              description: Negotiate additional paths capabilities with this neighbor
-              type: dict
-              suboptions:
-                disable:
-                  description: Disable additional paths for this neighbor
+                soft_reconfiguration:
+                  description:
+                    - Per neighbor soft reconfiguration
+                    - Allow inbound soft reconfiguration for this neighbor
                   type: bool
-                receive:
-                  description: Receive additional paths from neighbors
-                  type: bool
-                send:
-                  description: Send additional paths to this neighbor
-                  type: bool
-            advertise:
-              description:
-                - Advertise to this neighbor
-                - Advertise additional paths
-              type: dict
-              suboptions:
-                all:
-                  description: Select all available paths
-                  type: bool
-                best:
-                  description: Select best N paths (2-3).
+                unsuppress_map:
+                  description: Route-map to selectively unsuppress suppressed routes
+                  type: str
+                weight:
+                  description: Set default weight for routes from this neighbor
                   type: int
-                group_best:
-                  description: Select group-best path
-                  type: bool
-            advertise_map:
-              description: specify route-map for conditional advertisement
+            network:
+              description: Specify a network to announce via BGP
               type: dict
               suboptions:
-                name:
-                  description: advertise route-map name
+                address:
+                  description: Network number (A.B.C.D)
                   type: str
-                exist_map:
-                  description:
-                    - advertise prefix only if prefix is in the condition exists
-                    - condition route-map name
+                mask:
+                  description: Network mask (A.B.C.D)
                   type: str
-                non_exist_map:
-                  description:
-                    - advertise prefix only if prefix in the condition does not exist
-                    - condition route-map name
-                  type: str
-            advertisement_interval:
-              description: Minimum interval between sending BGP routing updates
-              type: int
-            aigp:
-              description: Enable a AIGP on neighbor
-              type: dict
-              suboptions:
-                enable:
-                  description: Enable a AIGP on neighbor
-                  type: str
-                send:
-                  description: Cost community or MED carrying AIGP VALUE
-                  type: dict
-                  suboptions:
-                    cost_community:
-                      description: Cost extended community carrying AIGP Value
-                      type: int
-                    poi:
-                      description: Point of Insertion
-                      type: dict
-                      suboptions:
-                        igp_cost:
-                          description: Point of Insertion After IGP
-                          type: bool
-                        pre_bestpath:
-                          description: Point of Insertion At Beginning
-                          type: bool
-                        transitive:
-                          description: Cost community is Transitive
-                          type: bool
-                    med:
-                      description: Med carrying AIGP Value
-                      type: bool
-            allow_policy:
-              description: Enable the policy support for this IBGP Neighbor
-              type: bool
-            allowas_in:
-              description:
-                - Accept as-path with my AS present in it
-                - Please refer vendor documentation for valid values
-              type: int
-            as_override:
-              description: Override matching AS-number while sending update
-              type: dict
-              suboptions:
-                set:
-                  description: Enable AS override
-                  type: bool
-                split_horizon:
-                  description: Maintain Split Horizon while sending update
-                  type: bool
-            capability:
-              description:
-                - Advertise capability to the peer
-                - Advertise ORF capability to the peer
-                - Advertise prefixlist ORF capability to this neighbor
-              type: dict
-              suboptions:
-                both:
-                  description: Capability to SEND and RECEIVE the ORF to/from this neighbor
-                  type: bool
-                receive:
-                  description: Capability to RECEIVE the ORF from this neighbor
-                  type: bool
-                send:
-                  description: Capability to SEND the ORF to this neighbor
-                  type: bool
-            default_originate:
-              description: Originate default route to this neighbor
-              type: dict
-              suboptions:
-                set:
-                  description: Set default route to this neighbor
+                backdoor:
+                  description: Specify a BGP backdoor route
                   type: bool
                 route_map:
-                  description: Route-map to specify criteria to originate default
+                  description: Route-map to modify the attributes
                   type: str
-            distribute_list:
-              description: Filter updates to/from this neighbor
-              type: dict
-              suboptions:
-                acl:
-                  description: ACL id/name
-                  type: str
-                in:
-                  description: Filter incoming updates
-                  type: bool
-                out:
-                  description: Filter outgoing updates
-                  type: bool
-            dmzlink_bw:
-              description: Propagate the DMZ link bandwidth
-              type: bool
-            filter_list:
-              description: Establish BGP filters
-              type: dict
-              suboptions:
-                as_path_acl:
-                  description:
-                    - AS path access list
-                    - Please refer vendor documentation for valid values
-                  type: int
-                in:
-                  description: Filter incoming updates
-                  type: bool
-                out:
-                  description: Filter outgoing updates
-                  type: bool
-            inherit:
-              description:
-                - Inherit a template
-                - Inherit a peer-policy template
-              type: str
-            maximum_prefix:
-              description: Establish BGP filters
-              type: dict
-              suboptions:
-                number:
-                  description:
-                    - maximum no. of prefix limit
-                    - Please refer vendor documentation for valid values
-                  type: int
-                threshold_value:
-                  description:
-                    - Threshold value (%) at which to generate a warning msg
-                    - Please refer vendor documentation for valid values
-                  type: int
-                restart:
-                  description: Restart bgp connection after limit is exceeded
-                  type: int
-                warning_only:
-                  description: Only give warning message when limit is exceeded
-                  type: bool
-            next_hop_self:
-              description: Disable the next hop calculation for this neighbor
-              type: bool
-            next_hop_unchanged:
-              description: Propagate next hop unchanged for iBGP paths to this neighbor
-              type: bool
-            prefix_list:
-              description: Filter updates to/from this neighbor
-              type: dict
-              suboptions:
-                name:
-                  description: Name of a prefix list
-                  type: str
-                in:
-                  description: Filter incoming updates
-                  type: bool
-                out:
-                  description: Filter outgoing updates
-                  type: bool
-            remove_private_as:
-              description: Remove private AS number from outbound updates
-              type: dict
-              suboptions:
-                set:
-                  description: Remove private AS number from outbound updates
-                  type: bool
-                all:
-                  description: Remove all private AS numbers
-                  type: bool
-                replace_as:
-                  description: Replace all private AS numbers with local AS
-                  type: bool
-            route_map:
-              description: Apply route map to neighbor
-              type: dict
-              suboptions:
-                name:
-                  description: Name of route map
-                  type: str
-                in:
-                  description: Apply map to incoming routes
-                  type: bool
-                out:
-                  description: Apply map to outbound routes
-                  type: bool
-            route_reflector_client:
-              description: Configure a neighbor as Route Reflector client
-              type: bool
-            route_server_client:
-              description: Configure a neighbor as Route Server client
-              type: bool
-            send_community:
-              description: Send Community attribute to this neighbor
-              type: dict
-              suboptions:
-                both:
-                  description: Send Standard and Extended Community attributes
-                  type: bool
-                extended:
-                  description: Send Extended Community attribute
-                  type: bool
-                standard:
-                  description: Send Standard Community attribute
-                  type: bool
-            slow_peer:
-              description: Configure slow-peer
-              type: dict
-              suboptions:
-                enable:
-                  description: Enable slow-peer detection
-                  type: bool
-                disable:
-                  description: Disable slow-peer detection
-                  type: bool
-                threshold:
-                  description: Set the slow-peer detection threshold
-                  type: int
-            soft_reconfiguration:
-              description:
-                - Per neighbor soft reconfiguration
-                - Allow inbound soft reconfiguration for this neighbor
-              type: bool
-            unsuppress_map:
-              description: Route-map to selectively unsuppress suppressed routes
-              type: str
-            weight:
-              description: Set default weight for routes from this neighbor
-              type: int
-        network:
-          description: Specify a network to announce via BGP
-          type: dict
-          suboptions:
-            address:
-              description: Network number (A.B.C.D)
-              type: str
-            mask:
-              description: Network mask (A.B.C.D)
-              type: str
-            backdoor:
-              description: Specify a BGP backdoor route
-              type: bool
-            route_map:
-              description: Route-map to modify the attributes
-              type: str
-            table_map:
-              description: Map external entry attributes into routing table
-              type: dict
-              suboptions:
-                name:
-                  description: route-map name
-                  type: str
-                filter:
-                  description: Selective route download
-                  type: str
+                table_map:
+                  description: Map external entry attributes into routing table
+                  type: dict
+                  suboptions:
+                    name:
+                      description: route-map name
+                      type: str
+                    filter:
+                      description: Selective route download
+                      type: str
   running_config:
     description:
       - The module, by default, will connect to the remote device and retrieve the current
