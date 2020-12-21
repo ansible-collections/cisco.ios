@@ -68,14 +68,34 @@ class Bgp_globalFacts(object):
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
         objs = bgp_global_parser.parse()
-        q(objs)
+
+        objs = utils.remove_empties(objs)
+        # q(objs)
+        if "neighbor" in objs:
+            temp_neighbor = []
+            temp = {}
+            temp["address"] = None
+            for each in objs["neighbor"]:
+                if temp["address"] != each["address"]:
+                    if temp["address"]:
+                        temp_neighbor.append(temp)
+                        temp = {}
+                    temp["address"] = each.pop("address")
+                    if each:
+                        temp.update(each)
+                else:
+                    each.pop("address")
+                    temp.update(each)
+            if temp:
+                temp_neighbor.append(temp)
+            objs["neighbor"] = temp_neighbor
         if objs:
             ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
             params = utils.remove_empties(
                 utils.validate_config(self.argument_spec, {"config": objs})
             )
-            q(params)
+            # q(params)
             facts["bgp_global"] = params["config"]
             ansible_facts["ansible_network_resources"].update(facts)
 

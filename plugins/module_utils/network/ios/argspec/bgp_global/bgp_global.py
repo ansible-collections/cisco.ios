@@ -27,7 +27,7 @@ The arg spec for the cisco.ios_bgp_global module
 """
 
 
-class Bgp_globalArgs(object):
+class Bgp_globalArgs(object):  # pylint: disable=R0903
     """The arg spec for the cisco.ios_bgp_global module
     """
 
@@ -42,14 +42,34 @@ class Bgp_globalArgs(object):
                 "bgp": {
                     "type": "dict",
                     "options": {
+                        "additional_paths": {
+                            "type": "dict",
+                            "options": {
+                                "install": {"type": "bool"},
+                                "receive": {"type": "bool"},
+                                "select": {
+                                    "type": "dict",
+                                    "options": {
+                                        "all": {"type": "bool"},
+                                        "best": {"type": "int"},
+                                        "best_external": {"type": "bool"},
+                                        "group_best": {"type": "bool"},
+                                    },
+                                },
+                                "send": {"type": "bool"},
+                            },
+                        },
+                        "advertise_best_external": {"type": "int"},
                         "always_compare_med": {"type": "bool"},
                         "asnotation": {"type": "bool"},
                         "bestpath": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "aigp": {"type": "bool"},
                                 "compare_routerid": {"type": "bool"},
                                 "cost_community": {"type": "bool"},
+                                "igp_metric": {"type": "bool"},
                                 "med": {
                                     "type": "dict",
                                     "options": {
@@ -91,6 +111,16 @@ class Bgp_globalArgs(object):
                                         "interval": {"type": "int"},
                                     },
                                 },
+                            },
+                        },
+                        "dampening": {
+                            "type": "dict",
+                            "options": {
+                                "penalty_half_time": {"type": "int"},
+                                "reuse_route_val": {"type": "int"},
+                                "suppress_route_val": {"type": "int"},
+                                "max_suppress": {"type": "int"},
+                                "route_map": {"type": "str"},
                             },
                         },
                         "deterministic_med": {"type": "bool"},
@@ -144,8 +174,22 @@ class Bgp_globalArgs(object):
                         "maxas_limit": {"type": "int"},
                         "maxcommunity_limit": {"type": "int"},
                         "maxextcommunity_limit": {"type": "int"},
-                        "nopeerup_delay": {
+                        "nexthop": {
                             "type": "dict",
+                            "options": {
+                                "route_map": {"type": "str"},
+                                "trigger": {
+                                    "type": "dict",
+                                    "options": {
+                                        "delay": {"type": "int"},
+                                        "enable": {"type": "bool"},
+                                    },
+                                },
+                            },
+                        },
+                        "nopeerup_delay": {
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "cold_boot": {"type": "int"},
                                 "nsf_switchover": {"type": "int"},
@@ -153,6 +197,8 @@ class Bgp_globalArgs(object):
                                 "user_initiated": {"type": "int"},
                             },
                         },
+                        "recursion": {"type": "bool"},
+                        "redistribute_internal": {"type": "bool"},
                         "refresh": {
                             "type": "dict",
                             "options": {
@@ -161,6 +207,7 @@ class Bgp_globalArgs(object):
                             },
                         },
                         "regexp": {"type": "bool"},
+                        "route_map": {"type": "bool"},
                         "router_id": {
                             "type": "dict",
                             "options": {
@@ -170,12 +217,40 @@ class Bgp_globalArgs(object):
                             },
                         },
                         "scan_time": {"type": "int"},
+                        "slow_peer": {
+                            "type": "dict",
+                            "options": {
+                                "detection": {
+                                    "type": "dict",
+                                    "options": {
+                                        "enable": {"type": "bool"},
+                                        "disable": {"type": "bool"},
+                                        "threshold": {"type": "int"},
+                                    },
+                                },
+                                "split_update_group": {
+                                    "type": "dict",
+                                    "options": {
+                                        "dynamic": {"type": "bool"},
+                                        "permanent": {"type": "int"},
+                                    },
+                                },
+                            },
+                        },
                         "snmp": {"type": "bool"},
                         "sso": {"type": "bool"},
+                        "soft_reconfig_backup": {"type": "bool"},
                         "suppress_inactive": {"type": "bool"},
                         "transport": {"type": "bool"},
-                        "update_delay": {"type": "bool"},
+                        "update_delay": {"type": "int"},
                         "update_group": {"type": "bool"},
+                        "upgrade_cli": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "af_mode": {"type": "bool"},
+                            },
+                        },
                     },
                 },
                 "bmp": {
@@ -192,12 +267,132 @@ class Bgp_globalArgs(object):
                         "server": {"type": "int"},
                     },
                 },
-                "neighbor": {
+                "default_information": {"type": "bool"},
+                "default_metric": {"type": "int"},
+                "distance": {
                     "type": "dict",
+                    "options": {
+                        "admin": {
+                            "type": "dict",
+                            "options": {
+                                "distance": {"type": "int"},
+                                "address": {"type": "str"},
+                                "wildcard_bit": {"type": "str"},
+                                "acl": {"type": "str"},
+                            },
+                        },
+                        "bgp": {
+                            "type": "dict",
+                            "options": {
+                                "routes_external": {"type": "int"},
+                                "routes_internal": {"type": "int"},
+                                "routes_local": {"type": "int"},
+                            },
+                        },
+                        "mbgp": {
+                            "type": "dict",
+                            "options": {
+                                "routes_external": {"type": "int"},
+                                "routes_internal": {"type": "int"},
+                                "routes_local": {"type": "int"},
+                            },
+                        },
+                    },
+                },
+                "maximum_paths": {
+                    "type": "dict",
+                    "options": {
+                        "paths": {"type": "int"},
+                        "eibgp": {"type": "int"},
+                        "ibgp": {"type": "int"},
+                    },
+                },
+                "maximum_secondary_paths": {
+                    "type": "dict",
+                    "options": {
+                        "paths": {"type": "int"},
+                        "eibgp": {"type": "int"},
+                        "ibgp": {"type": "int"},
+                    },
+                },
+                "neighbor": {
+                    "type": "list",
+                    "elements": "dict",
                     "options": {
                         "address": {"type": "str"},
                         "tag": {"type": "str"},
                         "ipv6_adddress": {"type": "str"},
+                        "activate": {"type": "bool"},
+                        "additional_paths": {
+                            "type": "dict",
+                            "options": {
+                                "disable": {"type": "bool"},
+                                "receive": {"type": "bool"},
+                                "send": {"type": "bool"},
+                            },
+                        },
+                        "advertise": {
+                            "type": "dict",
+                            "options": {
+                                "additional_paths": {
+                                    "type": "dict",
+                                    "options": {
+                                        "all": {"type": "bool"},
+                                        "best": {"type": "int"},
+                                        "group_best": {"type": "bool"},
+                                    },
+                                },
+                                "best_external": {"type": "bool"},
+                                "diverse_path": {
+                                    "type": "dict",
+                                    "options": {
+                                        "backup": {"type": "bool"},
+                                        "mpath": {"type": "bool"},
+                                    },
+                                },
+                            },
+                        },
+                        "advertise_map": {
+                            "type": "dict",
+                            "options": {
+                                "name": {"type": "str"},
+                                "exist_map": {"type": "str"},
+                                "non_exist_map": {"type": "str"},
+                            },
+                        },
+                        "advertisement_interval": {"type": "int"},
+                        "aigp": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "send": {
+                                    "type": "dict",
+                                    "options": {
+                                        "cost_community": {
+                                            "type": "dict",
+                                            "options": {
+                                                "id": {"type": "int"},
+                                                "poi": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "igp_cost": {
+                                                            "type": "bool"
+                                                        },
+                                                        "pre_bestpath": {
+                                                            "type": "bool"
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        "med": {"type": "bool"},
+                                    },
+                                },
+                            },
+                        },
+                        "allow_policy": {"type": "bool"},
+                        "allowas-in": {"type": "int"},
+                        "as_override": {"type": "bool"},
                         "bmp_activate": {
                             "type": "dict",
                             "options": {
@@ -205,9 +400,33 @@ class Bgp_globalArgs(object):
                                 "server": {"type": "int"},
                             },
                         },
+                        "capability": {
+                            "type": "dict",
+                            "options": {
+                                "both": {"type": "bool"},
+                                "receive": {"type": "bool"},
+                                "send": {"type": "bool"},
+                            },
+                        },
                         "cluster_id": {"type": "str"},
+                        "default_originate": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "route_map": {"type": "str"},
+                            },
+                        },
                         "description": {"type": "str"},
                         "disable_connected_check": {"type": "bool"},
+                        "distribute_list": {
+                            "type": "dict",
+                            "options": {
+                                "acl": {"type": "str"},
+                                "in": {"type": "bool"},
+                                "out": {"type": "bool"},
+                            },
+                        },
+                        "dmzlink_bw": {"type": "bool"},
                         "ebgp_multihop": {
                             "type": "dict",
                             "options": {
@@ -227,6 +446,14 @@ class Bgp_globalArgs(object):
                                     },
                                 },
                                 "route_map": {"type": "str"},
+                            },
+                        },
+                        "filter_list": {
+                            "type": "dict",
+                            "options": {
+                                "path_acl": {"type": "str"},
+                                "in": {"type": "bool"},
+                                "out": {"type": "bool"},
                             },
                         },
                         "ha_mode": {
@@ -251,6 +478,17 @@ class Bgp_globalArgs(object):
                                 "disable": {"type": "bool"},
                             },
                         },
+                        "maximum_prefix": {
+                            "type": "dict",
+                            "options": {
+                                "max_no": {"type": "int"},
+                                "threshold_val": {"type": "int"},
+                                "restart": {"type": "int"},
+                                "warning-only": {"type": "bool"},
+                            },
+                        },
+                        "next_hop_self": {"type": "bool"},
+                        "next_hop_unchanged": {"type": "bool"},
                         "password": {"type": "str"},
                         "path_attribute": {
                             "type": "dict",
@@ -287,6 +525,39 @@ class Bgp_globalArgs(object):
                         },
                         "peer_group": {"type": "str"},
                         "remote_as": {"type": "int"},
+                        "remove_private_as": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "all": {"type": "bool"},
+                                "replace_as": {"type": "bool"},
+                            },
+                        },
+                        "route_map": {
+                            "type": "dict",
+                            "options": {
+                                "name": {"type": "str"},
+                                "in": {"type": "bool"},
+                                "out": {"type": "bool"},
+                            },
+                        },
+                        "route_reflector_client": {"type": "bool"},
+                        "route_server_client": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "context": {"type": "str"},
+                            },
+                        },
+                        "send_community": {
+                            "type": "dict",
+                            "options": {
+                                "both": {"type": "bool"},
+                                "extended": {"type": "bool"},
+                                "standard": {"type": "bool"},
+                            },
+                        },
+                        "send_label": {"type": "bool"},
                         "shutdown": {
                             "type": "dict",
                             "options": {
@@ -294,12 +565,51 @@ class Bgp_globalArgs(object):
                                 "graceful": {"type": "int"},
                             },
                         },
+                        "slow_peer": {
+                            "type": "dict",
+                            "options": {
+                                "detection": {
+                                    "type": "dict",
+                                    "options": {
+                                        "disable": {"type": "bool"},
+                                        "threshold": {"type": "int"},
+                                    },
+                                },
+                                "split_update_group": {
+                                    "type": "dict",
+                                    "options": {
+                                        "dynamic": {
+                                            "type": "dict",
+                                            "options": {
+                                                "disable": {"type": "bool"},
+                                                "permanent": {"type": "bool"},
+                                            },
+                                        },
+                                        "static": {"type": "bool"},
+                                    },
+                                },
+                            },
+                        },
+                        "soft_reconfiguration": {"type": "bool"},
                         "timers": {
                             "type": "dict",
                             "options": {
                                 "interval": {"type": "int"},
                                 "holdtime": {"type": "int"},
                                 "min_holdtime": {"type": "int"},
+                            },
+                        },
+                        "translate-update": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "nlri": {
+                                    "type": "dict",
+                                    "options": {
+                                        "multicast": {"type": "bool"},
+                                        "unicast": {"type": "bool"},
+                                    },
+                                },
                             },
                         },
                         "transport": {
@@ -323,7 +633,9 @@ class Bgp_globalArgs(object):
                             },
                         },
                         "ttl_security": {"type": "int"},
+                        "unsuppress_map": {"type": "str"},
                         "version": {"type": "int"},
+                        "weight": {"type": "int"},
                     },
                 },
                 "route_server_context": {
@@ -354,6 +666,8 @@ class Bgp_globalArgs(object):
                         "vrf": {"type": "str"},
                     },
                 },
+                "synchronization": {"type": "bool"},
+                "table_map": {"type": "str"},
                 "template": {
                     "type": "dict",
                     "options": {
@@ -385,4 +699,4 @@ class Bgp_globalArgs(object):
             ],
             "default": "merged",
         },
-    }
+    }  # pylint: disable=C0301
