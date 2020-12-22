@@ -33,12 +33,14 @@ notes:
 - Tested against IOS 15.6
 - Abbreviated commands are NOT idempotent, see L
   (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- To ensure idempotency the configuration lines in C(src) or C(lines) option should be similar to how they appear if present
+  in the running configuration on device including the indentation.
 options:
   lines:
     description:
-    - The ordered set of commands that should be configured in the section.  The commands
-      must be the exact same commands as found in the device running-config.  Be sure
-      to note the configuration command syntax as some commands are automatically
+    - The ordered set of commands that should be configured in the section. The commands
+      must be the exact same commands as found in the device running-config to ensure
+      idempotency. Be sure to note the configuration command syntax as some commands are automatically
       modified by the device config parser.
     type: list
     elements: str
@@ -55,8 +57,10 @@ options:
     description:
     - Specifies the source path to the file that contains the configuration or configuration
       template to load.  The path to the source file can either be the full path on
-      the Ansible control host or a relative path from the playbook or role root directory.  This
-      argument is mutually exclusive with I(lines), I(parents).
+      the Ansible control host or a relative path from the playbook or role root directory. This
+      argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
+      source file should be similar to how it will appear if present in the running-configuration
+      of the device to ensure idempotency.
     type: str
   before:
     description:
@@ -467,6 +471,13 @@ def main():
         if module.params["backup"]:
             result["__backup__"] = contents
     if any((module.params["lines"], module.params["src"])):
+        msg = (
+            "To ensure idempotency the input configuration lines should be similar to how they appear if present in "
+            "the running configuration on device"
+        )
+        if module.params["src"]:
+            msg += " including the indentation"
+        warnings.append(msg)
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]
