@@ -38,7 +38,8 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "asn": {"type": "str", "required": True},
+                "as_number": {"type": "str", "required": True},
+                "address_family": {"type": "str"},
                 "bgp": {
                     "type": "dict",
                     "options": {

@@ -246,18 +246,29 @@ class Bgp_globalTemplate(NetworkTemplate):
 
     PARSERS = [
         {
-            "name": "asn",
+            "name": "as_number",
             "getval": re.compile(
                 r"""^router*
                     \s*bgp*
-                    \s*(?P<asn>\d+)*
+                    \s*(?P<as_number>\d+)*
                     $""",
                 re.VERBOSE,
             ),
-            "compval": "asn",
-            "setval": "router bgp {{ asn }}",
-            "result": {"asn": "{{ asn }}"},
+            "compval": "as_number",
+            "setval": "router bgp {{ as_number }}",
+            "result": {"as_number": "{{ as_number }}"},
             "shared": True,
+        },
+        {
+            "name": "address_family",
+            "getval": re.compile(
+                r"""\s*(?P<address_family>address-family)""",
+                re.VERBOSE,
+            ),
+            "compval": "address_family",
+            "result": {
+                "address_family": "{{ True if address_family is defined }}"
+            },
         },
         {
             "name": "bgp.additional_paths",
@@ -285,11 +296,11 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "install": "{{ True if install is defined }}",
                         "receive": "{{ True if receive is defined }}",
                         "select": {
-                            "all": "{{ True if all is defined }}",
-                            "backup": "{{ True if backup is defined }}",
-                            "best": "{{ best.split('best ')[1] if best is defined }}",
-                            "best_external": "{{ True if best_external is defined }}",
-                            "group_best": "{{ True if group_best is defined }}",
+                            "all": "{{ True if select_all is defined }}",
+                            "backup": "{{ True if select_backup is defined }}",
+                            "best": "{{ select_best.split('best ')[1] if select_best is defined }}",
+                            "best_external": "{{ True if select_best_external is defined }}",
+                            "group_best": "{{ True if select_group_best is defined }}",
                         },
                         "send": "{{ True if send is defined }}",
                     }

@@ -34,7 +34,7 @@ options:
     description: A list of configurations for global bgp.
     type: dict
     suboptions:
-      asn:
+      as_number:
         description: Autonomous system number.
         type: str
         required: true
