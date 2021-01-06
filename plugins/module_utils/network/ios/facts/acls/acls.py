@@ -16,12 +16,8 @@ __metaclass__ = type
 
 
 from copy import deepcopy
-import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    check_n_return_valid_ipv6_addr,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,

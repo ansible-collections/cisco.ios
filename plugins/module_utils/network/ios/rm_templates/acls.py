@@ -51,7 +51,7 @@ def _tmplt_access_list_entries(config_data):
             elif config_data[type].get("any"):
                 command += " any".format(**config_data[type])
             elif config_data[type].get("host"):
-                command += " {host}".format(**config_data[type])
+                command += " host {host}".format(**config_data[type])
             if config_data[type].get("port_protocol"):
                 port_proto_type = list(
                     config_data[type]["port_protocol"].keys()

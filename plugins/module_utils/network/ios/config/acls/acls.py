@@ -15,24 +15,12 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import copy
-import sys
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
-    ConfigBase,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_empties,
     dict_merge,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    new_dict_to_set,
-    reverify_diff_py35,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
