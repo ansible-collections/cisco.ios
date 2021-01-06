@@ -133,6 +133,7 @@
                     protocol_options:
                       tcp:
                         ack: true
+                    sequence: 10
                     source:
                       address: 198.51.100.0
                       wildcard_bits: 0.0.0.255

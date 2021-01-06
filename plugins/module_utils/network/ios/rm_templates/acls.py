@@ -13,7 +13,6 @@ a list of parser definitions and associated functions that
 facilitates both facts gathering and native command generation for
 the given network resource.
 """
-import q
 import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
@@ -21,130 +20,131 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 def _tmplt_access_list_name(config_data):
-    command = "access-list {acls_name} ".format(**config_data)
-    print(command)
+    try:
+        acl_id = int(config_data.get("name"))
+        if not config_data.get("acl_type"):
+            if acl_id >= 1 and acl_id <= 99:
+                config_data["acl_type"] = "standard"
+            if acl_id >= 100 and acl_id <= 199:
+                config_data["acl_type"] = "extended"
+    except ValueError:
+        pass
+    afi = config_data.get("afi")
+    if afi == "ipv4":
+        command = "ip access-list {acl_type} {name}".format(**config_data)
+    elif afi == "ipv6":
+        command = "ipv6 access-list {name}".format(**config_data)
     return command
 
+
 def _tmplt_access_list_entries(config_data):
-    if 'aces' in config_data:
+    if "aces" in config_data:
         command = []
+
         def source_destination_common_config(config_data, command, type):
-            if config_data['aces'][type].get('any'):
-                command += " any"
-            elif config_data['aces'][type].get('any4'):
-                command += " any4"
-            elif config_data['aces'][type].get('any6'):
-                command += " any6"
-            elif config_data['aces'][type].get('address'):
-                command += " {address}".format(**config_data['aces'][type])
-                if config_data['aces'][type].get('netmask'):
-                    command += " {netmask}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('host'):
-                command += " host {host}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('interface'):
-                command += " interface {interface}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('object_group'):
-                command += " object-group {object_group}".format(**config_data['aces'][type])
-            if config_data['aces'].get('protocol_options'):
-                protocol_option_key = list(config_data['aces']['protocol_options'])[0]
-                if isinstance(config_data['aces']['protocol_options'][protocol_option_key], dict) and type == 'destination':
-                    val = list(config_data['aces']['protocol_options'][protocol_option_key])[0]
-                    command += " {0}".format(val.replace('_', '-'))
-            if config_data['aces'][type].get('port_protocol'):
-                port_protocol = list(config_data['aces'][type]['port_protocol'])[0]
-                command += " " + port_protocol + " " + config_data['aces'][type]['port_protocol'][port_protocol]
+            if config_data[type].get("address"):
+                command += " {address}".format(**config_data[type])
+                if config_data[type].get("wildcard_bits"):
+                    command += " {wildcard_bits}".format(
+                        **config_data["source"]
+                    )
+            elif config_data[type].get("any"):
+                command += " any".format(**config_data[type])
+            elif config_data[type].get("host"):
+                command += " {host}".format(**config_data[type])
+            if config_data[type].get("port_protocol"):
+                port_proto_type = list(
+                    config_data[type]["port_protocol"].keys()
+                )[0]
+                command += " {0} {1}".format(
+                    port_proto_type,
+                    config_data[type]["port_protocol"][port_proto_type],
+                )
             return command
 
-        def ace_config_code(config_data):
-            command = "access-list {name} line {line}".format(**config_data['aces'])
-            if config_data['aces'].get('remark'):
-                command += " remark {remark}".format(**config_data['aces'])
-            elif config_data['aces'].get('acl_type') and config_data['aces'].get('acl_type') != 'standard':
-                command += " {acl_type}".format(**config_data['aces'])
-            if config_data['aces'].get('grant'):
-                command += " {grant}".format(**config_data['aces'])
-            if config_data['aces'].get('protocol_options'):
-                if 'protocol_number' in config_data['aces']['protocol_options']:
-                    command += " {protocol_number}".format(**config_data['aces']['protocol_options'])
+        command = ""
+        proto_option = None
+        if config_data.get("aces"):
+            aces = config_data["aces"]
+            if aces.get("sequence") and config_data.get("afi") == "ipv4":
+                command += "{sequence}".format(**aces)
+            if (
+                aces.get("grant")
+                and aces.get("sequence")
+                and config_data.get("afi") == "ipv4"
+            ):
+                command += " {grant}".format(**aces)
+            elif (
+                aces.get("grant")
+                and aces.get("sequence")
+                and config_data.get("afi") == "ipv6"
+            ):
+                command += "{grant}".format(**aces)
+            elif aces.get("grant"):
+                command += "{grant}".format(**aces)
+            if aces.get("protocol_options"):
+                if "protocol_number" in aces["protocol_options"]:
+                    command += " {protocol_number}".format(
+                        **aces["protocol_options"]
+                    )
                 else:
-                    command += " {0}".format(list(config_data['aces']['protocol_options'])[0])
-            elif config_data['aces'].get('protocol'):
-                command += " {protocol}".format(**config_data['aces'])
-            if config_data['aces'].get('source'):
-                command = source_destination_common_config(config_data, command, 'source')
-            if config_data['aces'].get('destination'):
-                command = source_destination_common_config(config_data, command, 'destination')
-            if config_data['aces'].get('log'):
-                command += " log {log}".format(**config_data['aces'])
-            if config_data['aces'].get('inactive'):
-                command += " inactive"
+                    command += " {0}".format(list(aces["protocol_options"])[0])
+                    proto_option = aces["protocol_options"].get(
+                        list(aces["protocol_options"])[0]
+                    )
+            elif aces.get("protocol"):
+                command += " {protocol}".format(**aces)
+            if aces.get("source"):
+                command = source_destination_common_config(
+                    aces, command, "source"
+                )
+            if aces.get("destination"):
+                command = source_destination_common_config(
+                    aces, command, "destination"
+                )
+            if proto_option:
+                command += " {0}".format(list(proto_option.keys())[0])
+            if aces.get("dscp"):
+                command += " dscp {dscp}".format(**aces)
+            if aces.get("sequence") and config_data.get("afi") == "ipv6":
+                command += " sequence {sequence}".format(**aces)
+            if aces.get("fragments"):
+                command += " fragments {fragments}".format(**aces)
+            if aces.get("log"):
+                command += " log {log}".format(**aces)
+            if aces.get("log_input"):
+                command += " log-input {log_input}".format(**aces)
+            if aces.get("option"):
+                option_val = list(aces.get("option").keys())[0]
+                command += " option {0}".format(option_val)
+            if aces.get("precedence"):
+                command += " precedence {precedence}".format(**aces)
+            if aces.get("time_range"):
+                command += " time-range {time_range}".format(**aces)
+            if aces.get("tos"):
+                command += " tos"
+                if aces["tos"].get("service_value"):
+                    command += " {service_value}".format(**aces["tos"])
+                elif aces["tos"].get("max_reliability"):
+                    command += " max-reliability"
+                elif aces["tos"].get("max_throughput"):
+                    command += " max-throughput"
+                elif aces["tos"].get("min_delay"):
+                    command += " min-delay"
+                elif aces["tos"].get("min_monetary_cost"):
+                    command += " min-monetary-cost"
+                elif aces["tos"].get("normal"):
+                    command += " normal"
+            if aces.get("ttl"):
+                command += " ttl {0}".format(list(aces["ttl"])[0])
+                proto_option = aces["ttl"].get(list(aces["ttl"])[0])
+                command += " {0}".format(proto_option)
             return command
-        if isinstance(config_data['aces'], list):
-            for each_config in config_data['aces']:
-                each_config.update({'acl_type': config_data['acl_type'], 'name': config_data['name']})
-                command.append(ace_config_code({'aces': each_config}))
-        else:
-            command = ace_config_code(config_data)
         return command
 
-    if 'aces' in config_data:
-        # q(config_data)
-        def source_destination_common_config(config_data, command, type):
-            if config_data['aces'][type].get('any'):
-                command += " any"
-            elif config_data['aces'][type].get('any4'):
-                command += " any4"
-            elif config_data['aces'][type].get('any6'):
-                command += " any6"
-            elif config_data['aces'][type].get('address'):
-                command += " {address}".format(**config_data['aces'][type])
-                if config_data['aces'][type].get('netmask'):
-                    command += " {netmask}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('host'):
-                command += " host {host}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('interface'):
-                command += " interface {interface}".format(**config_data['aces'][type])
-            elif config_data['aces'][type].get('object_group'):
-                command += " object-group {object_group}".format(**config_data['aces'][type])
-            if config_data['aces'].get('protocol_options'):
-                protocol_option_key = list(config_data['aces']['protocol_options'])[0]
-                if isinstance(config_data['aces']['protocol_options'][protocol_option_key],
-                              dict) and type == 'destination':
-                    val = list(config_data['aces']['protocol_options'][protocol_option_key])[0]
-                    command += " {0}".format(val.replace('_', '-'))
-            if config_data['aces'][type].get('port_protocol'):
-                port_protocol = list(config_data['aces'][type]['port_protocol'])[0]
-                command += " " + port_protocol + " " + config_data['aces'][type]['port_protocol'][port_protocol]
-            return command
-
-        command = "access-list {name} line {line}".format(**config_data['aces'])
-        if config_data['aces'].get('remark'):
-            command += " remark {remark}".format(**config_data['aces'])
-        elif config_data['aces'].get('acl_type') and config_data['aces'].get('acl_type') != 'standard':
-            command += " {acl_type}".format(**config_data['aces'])
-        if config_data['aces'].get('grant'):
-            command += " {grant}".format(**config_data['aces'])
-        if config_data['aces'].get('protocol_options'):
-            if 'protocol_number' in config_data['aces']['protocol_options']:
-                command += " {protocol_number}".format(**config_data['aces']['protocol_options'])
-            else:
-                command += " {0}".format(list(config_data['aces']['protocol_options'])[0])
-        elif config_data['aces'].get('protocol'):
-            command += " {protocol}".format(**config_data['aces'])
-        if config_data['aces'].get('source'):
-            command = source_destination_common_config(config_data, command, 'source')
-        if config_data['aces'].get('destination'):
-            command = source_destination_common_config(config_data, command, 'destination')
-        if config_data['aces'].get('log'):
-            command += " log {log}".format(**config_data['aces'])
-        if config_data['aces'].get('inactive'):
-            command += " inactive"
-
-        return command
 
 class AclsTemplate(NetworkTemplate):
     def __init__(self, lines=None):
-        q(lines)
         super(AclsTemplate, self).__init__(lines=lines, tmplt=self)
 
     PARSERS = [
@@ -166,18 +166,18 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name }}": {
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
-                        "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}"
+                        "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
                     }
                 }
             },
             "shared": True,
         },
         {
-            "name": "extended_aces",
+            "name": "aces",
             "getval": re.compile(
-                    r"""\s*(?P<sequence>\d+)*
+                r"""\s*(?P<sequence>\d+)*
                         \s*(?P<grant>deny|permit)*
-                        \s*(?P<std_source>any|(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3})*
+                        \s*(?P<std_source>any|(?:[0-9]{1,3}\.){3}[0-9]{1,3},\swildcard\sbits\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3})*
                         \s*(?P<evaluate>evaluate\s\S+)*
                         \s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ip|ipinip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp)*
                         \s*(?P<protocol_num>\d+\s)*
@@ -195,6 +195,7 @@ class AclsTemplate(NetworkTemplate):
                         \s*(?P<time_range>time-range\s\S+)*
                         \s*(?P<tos>tos\s\S+|tos\s\d+)*
                         \s*(?P<ttl>ttl\s\S+\s\d+|ttl\s\d+\s\d+)*
+                        \s*(?P<sequence_ipv6>sequence\s\d+)*
                     """,
                 re.VERBOSE,
             ),
@@ -204,10 +205,9 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name }}": {
                         "name": "{{ acl_name }}",
-
                         "aces": [
                             {
-                                "sequence": "{{ sequence.split(' ')[1] }}",
+                                "sequence": "{% if sequence is defined %}{{ sequence }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6.split('sequence ')[1] }}{% endif %}",
                                 "grant": "{{ grant }}",
                                 "remark": "{{ remark.split('remark ')[1] if remark is defined }}",
                                 "evaluate": "{{ evaluate.split(' ')[1] if evaluate is defined }}",
@@ -215,7 +215,8 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol_number": "{{ protocol_num if protocol_num is defined }}",
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol if icmp_igmp_tcp_protocol is defined }}",
                                 "std_source": {
-                                    "address": "{% if std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{ std_source }}{% endif %}",
+                                    "address": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{ std_source.split(',')[0] }}{% elif std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{ std_source }}{% endif %}",
+                                    "wildcard_bits": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{ std_source.split('wildcard bits ')[1] }}{% endif %}",
                                     "host": "{% if std_source is defined and 'host' in std_source %}{{ std_source.split(' ')[1] }}{% endif %}",
                                     "any": "{{ True if std_source is defined and std_source == 'any' }}",
                                 },
@@ -226,8 +227,8 @@ class AclsTemplate(NetworkTemplate):
                                     "host": "{{ source.split(' ')[1] if source is defined and 'host' in source }}",
                                     "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
                                     "port_protocol": {
-                                        "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{ source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}",
-                                    }
+                                        "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{ source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}"
+                                    },
                                 },
                                 "destination": {
                                     "address": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{ destination.split(' ')[0] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{ std_dest.split(' ')[0] }}{% elif destination is defined and '::' in destination %}{{ destination }}{% endif %}",
@@ -236,40 +237,36 @@ class AclsTemplate(NetworkTemplate):
                                     "host": "{{ destination.split(' ')[1] if destination is defined and 'host' in destination }}",
                                     "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
                                     "port_protocol": {
-                                        "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{ dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}",
-                                    }
+                                        "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{ dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}"
+                                    },
                                 },
                                 "dscp": "{{ dscp.split(' ')[1] if dscp is defined }}",
                                 "fragments": "{{ fragments.split(' ')[1] if fragments is defined }}",
                                 "log": "{{ log.split('log ')[1] if log is defined }}",
                                 "log_input": "{{ log_input.split(' ')[1] if log_input is defined }}",
                                 "option": {
-                                  "{% if option is defined %}{{ option.split(' ')[1] if option is defined }}{% endif %}": "{{ True if option is defined }}"
+                                    "{% if option is defined %}{{ option.split(' ')[1] if option is defined }}{% endif %}": "{{ True if option is defined }}"
                                 },
                                 "precedence": "{{ precedence.split(' ')[1] if precedence is defined }}",
                                 "time_range": "{{ time_range.split(' ')[1] if time_range is defined }}",
                                 "tos": {
-                                    "service_value": "{{ tos.split(' ')[1] if tos is defined and 'service-value' in tos }}",
                                     "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos }}",
                                     "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos }}",
                                     "min_delay": "{{ True if tos is defined and 'min-delay' in tos }}",
                                     "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos }}",
                                     "normal": "{{ True if tos is defined and 'normal' in tos }}",
+                                    "service_value": "{{ tos.split(' ')[1] if tos is defined }}",
                                 },
                                 "ttl": {
                                     "eq": "{{ ttl.split(' ')[2] if ttl is defined and 'eq' in ttl }}",
                                     "gt": "{{ ttl.split(' ')[2] if ttl is defined and 'gt' in ttl }}",
                                     "lt": "{{ ttl.split(' ')[2] if ttl is defined and 'lt' in ttl }}",
                                     "neq": "{{ ttl.split(' ')[2] if ttl is defined and 'neq' in ttl }}",
-                                    # "range":{
-                                    #     "start": "{% if ttl is defined and ttl|length > 3 in destination %}{{ ttl.split(' ')[1] }}{% endif %}",
-                                    #     "end": "{% if ttl is defined and ttl|length > 3 in destination %}{{ ttl.split(' ')[2] }}{% endif %}",
-                                    # }
                                 },
-                            },
+                            }
                         ],
-                    },
-                },
+                    }
+                }
             },
         },
     ]
