@@ -79,6 +79,8 @@ class AclsFacts(object):
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
                     temp_v6.append(v)
+            temp_v4 = sorted(temp_v4, key=lambda i: i["name"])
+            temp_v6 = sorted(temp_v6, key=lambda i: i["name"])
             for each in temp_v4:
                 for each_ace in each.get("aces"):
                     if each["acl_type"] == "standard":

@@ -121,7 +121,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             ),
                         ],
-                    ),
+                    )
                 ],
                 state="merged",
             )
