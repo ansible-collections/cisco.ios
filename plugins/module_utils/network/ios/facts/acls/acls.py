@@ -16,6 +16,7 @@ __metaclass__ = type
 
 
 from copy import deepcopy
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -71,7 +72,7 @@ class AclsFacts(object):
         temp_v4 = []
         temp_v6 = []
         if current.get("acls"):
-            for k, v in utils.iteritems(current.get("acls")):
+            for k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4":
                     del v["afi"]
                     temp_v4.append(v)

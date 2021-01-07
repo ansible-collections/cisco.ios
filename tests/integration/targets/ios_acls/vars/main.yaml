@@ -55,6 +55,24 @@ gathered:
     - acls:
         - aces:
             - destination:
+                address: 192.0.3.0
+                wildcard_bits: 0.0.0.255
+              dscp: ef
+              grant: deny
+              protocol: icmp
+              protocol_options:
+                icmp:
+                  echo: true
+              sequence: 10
+              source:
+                address: 192.0.2.0
+                wildcard_bits: 0.0.0.255
+              ttl:
+                eq: 10
+          acl_type: extended
+          name: '110'
+        - aces:
+            - destination:
                 address: 198.51.101.0
                 port_protocol:
                   eq: telnet
@@ -110,24 +128,6 @@ gathered:
                 eq: 10
           acl_type: extended
           name: test_acl
-        - aces:
-            - destination:
-                address: 192.0.3.0
-                wildcard_bits: 0.0.0.255
-              dscp: ef
-              grant: deny
-              protocol: icmp
-              protocol_options:
-                icmp:
-                  echo: true
-              sequence: 10
-              source:
-                address: 192.0.2.0
-                wildcard_bits: 0.0.0.255
-              ttl:
-                eq: 10
-          acl_type: extended
-          name: '110'
       afi: ipv4
     - acls:
         - aces:

@@ -122,31 +122,6 @@ class TestIosAclsModule(TestIosModule):
                             ),
                         ],
                     ),
-                    # dict(
-                    #     afi="ipv6",
-                    #     acls=[
-                    #         dict(
-                    #             name="merge_v6_acl",
-                    #             aces=[
-                    #                 dict(
-                    #                     grant="deny",
-                    #                     protocol_options=dict(
-                    #                         tcp=dict(ack="true")
-                    #                     ),
-                    #                     source=dict(
-                    #                         any="true",
-                    #                         port_protocol=dict(eq="www"),
-                    #                     ),
-                    #                     destination=dict(
-                    #                         any="true",
-                    #                         port_protocol=dict(eq="telnet"),
-                    #                     ),
-                    #                     dscp="af11",
-                    #                 )
-                    #             ],
-                    #         )
-                    #     ],
-                    # ),
                 ],
                 state="merged",
             )
@@ -157,8 +132,6 @@ class TestIosAclsModule(TestIosModule):
             "deny 192.0.2.0 0.0.0.255",
             "ip access-list extended in_to_out",
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
-            # "ipv6 access-list merge_v6_acl",
-            # "deny tcp any eq www any eq telnet ack dscp af11",
         ]
         self.assertEqual(result["commands"], commands)
 

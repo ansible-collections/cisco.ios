@@ -207,7 +207,8 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "sequence": "{% if sequence is defined %}{{ sequence }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6.split('sequence ')[1] }}{% endif %}",
+                                "sequence": "{% if sequence is defined %}{{ sequence \
+                                    }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6.split('sequence ')[1] }}{% endif %}",
                                 "grant": "{{ grant }}",
                                 "remark": "{{ remark.split('remark ')[1] if remark is defined }}",
                                 "evaluate": "{{ evaluate.split(' ')[1] if evaluate is defined }}",
@@ -215,29 +216,39 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol_number": "{{ protocol_num if protocol_num is defined }}",
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol if icmp_igmp_tcp_protocol is defined }}",
                                 "std_source": {
-                                    "address": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{ std_source.split(',')[0] }}{% elif std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{ std_source }}{% endif %}",
-                                    "wildcard_bits": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{ std_source.split('wildcard bits ')[1] }}{% endif %}",
+                                    "address": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{\
+                                        std_source.split(',')[0] }}{% elif std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{\
+                                             std_source }}{% endif %}",
+                                    "wildcard_bits": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{\
+                                        std_source.split('wildcard bits ')[1] }}{% endif %}",
                                     "host": "{% if std_source is defined and 'host' in std_source %}{{ std_source.split(' ')[1] }}{% endif %}",
                                     "any": "{{ True if std_source is defined and std_source == 'any' }}",
                                 },
                                 "source": {
-                                    "address": "{% if source is defined and '.' in source and 'host' not in source %}{{ source.split(' ')[0] }}{% elif source is defined and '::' in source %}{{ source }}{% endif %}",
+                                    "address": "{% if source is defined and '.' in source and 'host' not in source %}{{\
+                                        source.split(' ')[0] }}{% elif source is defined and '::' in source %}{{ source }}{% endif %}",
                                     "wildcard_bits": "{{ source.split(' ')[1] if source is defined and '.' in source and 'host' not in source }}",
                                     "any": "{{ True if source is defined and source == 'any' }}",
                                     "host": "{{ source.split(' ')[1] if source is defined and 'host' in source }}",
                                     "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
                                     "port_protocol": {
-                                        "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{ source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}"
+                                        "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
+                                            source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}"
                                     },
                                 },
                                 "destination": {
-                                    "address": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{ destination.split(' ')[0] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{ std_dest.split(' ')[0] }}{% elif destination is defined and '::' in destination %}{{ destination }}{% endif %}",
-                                    "wildcard_bits": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{ destination.split(' ')[1] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{ std_dest.split(' ')[1] }}{% endif %}",
+                                    "address": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
+                                        destination.split(' ')[0] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
+                                            std_dest.split(' ')[0] }}{% elif destination is defined and '::' in destination %}{{ destination }}{% endif %}",
+                                    "wildcard_bits": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
+                                        destination.split(' ')[1] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
+                                            std_dest.split(' ')[1] }}{% endif %}",
                                     "any": "{{ True if destination is defined and destination == 'any' else None }}",
                                     "host": "{{ destination.split(' ')[1] if destination is defined and 'host' in destination }}",
                                     "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
                                     "port_protocol": {
-                                        "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{ dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}"
+                                        "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{\
+                                            dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}"
                                     },
                                 },
                                 "dscp": "{{ dscp.split(' ')[1] if dscp is defined }}",
