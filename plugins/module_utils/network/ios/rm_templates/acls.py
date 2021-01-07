@@ -217,7 +217,8 @@ class AclsTemplate(NetworkTemplate):
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol if icmp_igmp_tcp_protocol is defined }}",
                                 "std_source": {
                                     "address": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{\
-                                        std_source.split(',')[0] }}{% elif std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{\
+                                        std_source.split(',')[0]\
+                                            }}{% elif std_source is defined and '.' in std_source and std_source.split(' ')|length == 1 %}{{\
                                              std_source }}{% endif %}",
                                     "wildcard_bits": "{% if std_source is defined and 'wildcard' in std_source and std_source.split(',')|length == 2 %}{{\
                                         std_source.split('wildcard bits ')[1] }}{% endif %}",
