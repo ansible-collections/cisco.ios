@@ -190,6 +190,7 @@ options:
               ranges:
                 description: Summarize routes matching address/mask (border routers only)
                 type: list
+                elements: dict
                 suboptions:
                   address:
                     description: IP address to match
@@ -700,7 +701,8 @@ options:
                 type: int
           network:
             description: Enable routing on an IP network
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               address:
                 description: Network number

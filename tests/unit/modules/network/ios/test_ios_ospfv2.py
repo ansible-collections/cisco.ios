@@ -87,6 +87,18 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ]
                             ),
+                            network=[
+                                dict(
+                                    address="198.51.100.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
+                                dict(
+                                    address="192.0.2.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
+                            ],
                             domain_id=dict(
                                 ip_address=dict(address="192.0.3.1")
                             ),
@@ -103,13 +115,15 @@ class TestIosOspfV2Module(TestIosModule):
         commands = [
             "router ospf 100 vrf blue",
             "auto-cost reference-bandwidth 4",
-            "distribute-list 10 out",
             "distribute-list 123 in",
+            "distribute-list 10 out",
+            "network 198.51.100.0 0.0.0.255 area 5",
+            "network 192.0.2.0 0.0.0.255 area 5",
             "domain-id 192.0.3.1",
             "max-metric router-lsa on-startup 100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_merged_idempotent(self):
         set_module_args(
@@ -165,13 +179,13 @@ class TestIosOspfV2Module(TestIosModule):
         )
         commands = [
             "router ospf 200 vrf blue",
-            "no distribute-list 10 out",
             "no distribute-list 123 in",
+            "no distribute-list 10 out",
             "domain-id 192.0.1.1",
             "max-metric router-lsa on-startup 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     #
     def test_ios_ospfv2_replaced_idempotent(self):

@@ -1,0 +1,11 @@
+---
+- name: Enable IPV6 routing configuration
+  vars:
+    lines: "ipv6 unicast-routing\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+- name: Create and Setup VRF configuration
+  vars:
+    lines: "vrf definition ospf_vrf\naddress-family ipv4\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

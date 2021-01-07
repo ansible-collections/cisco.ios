@@ -36,26 +36,70 @@ options:
   name:
     description:
     - Name of the VLAN.
+    type: str
   vlan_id:
     description:
     - ID of the VLAN. Range 1-4094.
-    required: true
+    type: int
   interfaces:
     description:
     - List of interfaces that should be associated to the VLAN.
-    required: true
+    type: list
+    elements: str
   associated_interfaces:
     description:
     - This is a intent option and checks the operational state of the for given vlan
       C(name) for associated interfaces. If the value in the C(associated_interfaces)
       does not match with the operational state of vlan interfaces on device it will
       result in failure.
+    type: list
+    elements: str
   delay:
     description:
     - Delay the play should wait to check for declarative intent params values.
     default: 10
+    type: int
   aggregate:
     description: List of VLANs definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of the VLAN.
+        type: str
+      vlan_id:
+        description:
+        - ID of the VLAN. Range 1-4094.
+        required: true
+        type: str
+      interfaces:
+        description:
+        - List of interfaces that should be associated to the VLAN.
+        required: true
+        type: list
+        elements: str
+      associated_interfaces:
+        description:
+        - This is a intent option and checks the operational state of the for given vlan
+          C(name) for associated interfaces. If the value in the C(associated_interfaces)
+          does not match with the operational state of vlan interfaces on device it will
+          result in failure.
+        type: list
+        elements: str
+      delay:
+        description:
+        - Delay the play should wait to check for declarative intent params values.
+        type: int
+      state:
+        description:
+        - State of the VLAN configuration.
+        type: str
+        choices:
+        - present
+        - absent
+        - active
+        - suspend
   purge:
     description:
     - Purge VLANs not defined in the I(aggregate) parameter.
@@ -70,6 +114,7 @@ options:
     - absent
     - active
     - suspend
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 
@@ -326,8 +371,8 @@ def main():
     element_spec = dict(
         vlan_id=dict(type="int"),
         name=dict(),
-        interfaces=dict(type="list"),
-        associated_interfaces=dict(type="list"),
+        interfaces=dict(type="list", elements="str"),
+        associated_interfaces=dict(type="list", elements="str"),
         delay=dict(default=10, type="int"),
         state=dict(
             default="present",

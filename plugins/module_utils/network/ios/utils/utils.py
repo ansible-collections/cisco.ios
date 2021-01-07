@@ -154,8 +154,9 @@ def filter_dict_having_none_value(want, have):
             for key, value in iteritems(v):
                 test_key_dict = dict()
                 if value is None:
-                    dict_val = have.get(k).get(key)
-                    test_key_dict.update({key: dict_val})
+                    if have.get(k):
+                        dict_val = have.get(k).get(key)
+                        test_key_dict.update({key: dict_val})
                 elif (
                     k == "ipv6"
                     and value.lower() != have.get(k)[0].get(key).lower()
@@ -174,8 +175,9 @@ def filter_dict_having_none_value(want, have):
             for key, value in iteritems(v[0]):
                 test_key_dict = dict()
                 if value is None:
-                    dict_val = have.get(k).get(key)
-                    test_key_dict.update({key: dict_val})
+                    if have.get(k) and key in have.get(k):
+                        dict_val = have.get(k)[0].get(key)
+                        test_key_dict.update({key: dict_val})
                 elif have.get(k):
                     if (
                         k == "ipv6"
@@ -273,28 +275,8 @@ def validate_n_expand_ipv4(module, want):
 
 
 def netmask_to_cidr(netmask):
-    bit_range = [128, 64, 32, 16, 8, 4, 2, 1]
-    count = 0
-    cidr = 0
-    netmask_list = netmask.split(".")
-    netmask_calc = [i for i in netmask_list if int(i) != 255 and int(i) != 0]
-    if netmask_calc:
-        netmask_calc_index = netmask_list.index(netmask_calc[0])
-    elif sum(list(map(int, netmask_list))) == 0:
-        return "32"
-    else:
-        return "24"
-    for each in bit_range:
-        if cidr == int(netmask.split(".")[2]):
-            if netmask_calc_index == 1:
-                return str(8 + count)
-            elif netmask_calc_index == 2:
-                return str(8 * 2 + count)
-            elif netmask_calc_index == 3:
-                return str(8 * 3 + count)
-            break
-        cidr += each
-        count += 1
+    # convert netmask to cidr and returns the cidr notation
+    return str(sum([bin(int(x)).count("1") for x in netmask.split(".")]))
 
 
 def normalize_interface(name):
@@ -334,6 +316,10 @@ def normalize_interface(name):
         if_type = "TwentyFiveGigE"
     elif name.lower().startswith("hu"):
         if_type = "HundredGigE"
+    elif name.lower().startswith("virtual-te"):
+        if_type = "Virtual-Template"
+    elif name.lower().startswith("tu"):
+        if_type = "Tunnel"
     else:
         if_type = None
 
@@ -379,5 +365,9 @@ def get_interface_type(interface):
         return "TwentyFiveGigE"
     elif interface.upper().startswith("HU"):
         return "HundredGigE"
+    elif interface.upper().startswith("VIRTUAL-TE"):
+        return "Virtual-Template"
+    elif interface.upper().startswith("TU"):
+        return "Tunnel"
     else:
         return "unknown"

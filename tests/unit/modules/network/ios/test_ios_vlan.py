@@ -21,8 +21,10 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible.modules.network.ios import _ios_vlan
-from ansible.modules.network.ios._ios_vlan import parse_vlan_brief
+from ansible_collections.cisco.ios.plugins.modules import ios_vlan
+from ansible_collections.cisco.ios.plugins.modules.ios_vlan import (
+    parse_vlan_brief,
+)
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
@@ -31,18 +33,18 @@ from .ios_module import TestIosModule, load_fixture
 
 class TestIosVlanModule(TestIosModule):
 
-    module = _ios_vlan
+    module = ios_vlan
 
     def setUp(self):
         super(TestIosVlanModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible.modules.network.ios._ios_vlan.run_commands"
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.run_commands"
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible.modules.network.ios._ios_vlan.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.load_config"
         )
         self.load_config = self.mock_load_config.start()
 

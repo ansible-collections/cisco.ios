@@ -127,6 +127,7 @@ class Ospfv2Args(object):
                                         "not_advertise": {"type": "bool"},
                                     },
                                     "type": "list",
+                                    "elements": "dict",
                                 },
                                 "sham_link": {
                                     "options": {
@@ -415,7 +416,8 @@ class Ospfv2Args(object):
                                 "area": {"type": "str"},
                                 "wildcard_bits": {"type": "str"},
                             },
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                         },
                         "nsf": {
                             "options": {

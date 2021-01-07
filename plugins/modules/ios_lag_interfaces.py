@@ -46,6 +46,7 @@ options:
         description:
         - Interface options for the link aggregation group.
         type: list
+        elements: dict
         suboptions:
           member:
             description:
@@ -54,10 +55,13 @@ options:
           mode:
             description:
             - Etherchannel Mode of the interface for link aggregation.
+            - On mode has to be quoted as 'on' or else pyyaml will convert
+              to True before it gets to Ansible.
             type: str
+            required: true
             choices:
             - auto
-            - on
+            - 'on'
             - desirable
             - active
             - passive
@@ -100,6 +104,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - rendered
+    - parsed
+    - gathered
     default: merged
 """
 EXAMPLES = """

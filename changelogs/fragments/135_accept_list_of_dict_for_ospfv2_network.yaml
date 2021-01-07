@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - To accept list of dict for OSPFv2 network param(https://github.com/ansible-collections/cisco.ios/issues/152)

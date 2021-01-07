@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
+    remove_empties,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -255,7 +256,7 @@ class L3_Interfaces(ConfigBase):
                 for each in have:
                     if each["name"] == interface["name"]:
                         break
-                    elif interface["name"] in each["name"]:
+                    if interface["name"] in each["name"]:
                         break
                 else:
                     continue
@@ -279,7 +280,7 @@ class L3_Interfaces(ConfigBase):
         """
         diff = False
         for each in want:
-            each_want = dict(each)
+            each_want = remove_empties(dict(each))
             for every in have:
                 every_have = dict(every)
                 if (
@@ -290,21 +291,21 @@ class L3_Interfaces(ConfigBase):
                 ):
                     diff = True
                     break
-                elif (
+                if (
                     each_want.get("dhcp_client")
                     != every_have.get("dhcp_client")
                     and each_want.get("dhcp_client") is not None
                 ):
                     diff = True
                     break
-                elif (
+                if (
                     each_want.get("dhcp_hostname")
                     != every_have.get("dhcp_hostname")
                     and each_want.get("dhcp_hostname") is not None
                 ):
                     diff = True
                     break
-                elif each_want.get("address") != every_have.get(
+                if each_want.get("address") != every_have.get(
                     "address"
                 ) and len(each_want.keys()) == len(every_have.keys()):
                     diff = True

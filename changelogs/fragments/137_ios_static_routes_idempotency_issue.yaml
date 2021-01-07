@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - To fix IOS static routes idempotency issue coz of netmask to cidr conversion(https://github.com/ansible-collections/cisco.ios/issues/137).

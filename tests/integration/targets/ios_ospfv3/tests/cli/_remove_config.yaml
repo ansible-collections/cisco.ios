@@ -1,0 +1,16 @@
+---
+- name: Remove OSPFv3 Config
+  cisco.ios.ios_ospfv3:
+    state: deleted
+
+- name: Delete and Clean IPv6 routings configuration
+  vars:
+    lines: "no ipv6 unicast-routing\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+
+- name: Delete and Clean VRF configuration
+  vars:
+    lines: "no vrf definition ospf_vrf\nno vrf definition blue\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

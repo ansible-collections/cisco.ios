@@ -183,7 +183,7 @@ class Interfaces(ConfigBase):
             for each in have:
                 if each["name"] == interface["name"]:
                     break
-                elif interface["name"] in each["name"]:
+                if interface["name"] in each["name"]:
                     break
             else:
                 # configuring non-existing interface
@@ -213,7 +213,7 @@ class Interfaces(ConfigBase):
                 count = 0
                 if each["name"] == interface["name"]:
                     break
-                elif interface["name"] in each["name"]:
+                if interface["name"] in each["name"]:
                     break
                 count += 1
             else:

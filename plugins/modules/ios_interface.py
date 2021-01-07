@@ -36,24 +36,28 @@ options:
   name:
     description:
     - Name of the Interface.
-    required: true
+    type: str
   description:
     description:
     - Description of Interface.
+    type: str
   enabled:
     description:
     - Interface link status.
+    default: True
     type: bool
   speed:
     description:
     - Interface link speed.
+    type: str
   mtu:
     description:
     - Maximum size of transmit packet.
+    type: str
   duplex:
     description:
     - Interface link status
-    default: auto
+    type: str
     choices:
     - full
     - half
@@ -63,30 +67,112 @@ options:
     - Transmit rate in bits per second (bps).
     - This is state check parameter only.
     - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    type: str
   rx_rate:
     description:
     - Receiver rate in bits per second (bps).
     - This is state check parameter only.
     - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    type: str
   neighbors:
     description:
     - Check the operational state of given interface C(name) for CDP/LLDP neighbor.
     - The following suboptions are available.
+    type: list
+    elements: dict
     suboptions:
       host:
         description:
         - CDP/LLDP neighbor host for given interface C(name).
+        type: str
       port:
         description:
         - CDP/LLDP neighbor port to which given interface C(name) is connected.
+        type: str
   aggregate:
     description: List of Interfaces definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of the Interface.
+        required: true
+        type: str
+      description:
+        description:
+        - Description of Interface.
+        type: str
+      enabled:
+        description:
+        - Interface link status.
+        type: bool
+      speed:
+        description:
+        - Interface link speed.
+        type: str
+      mtu:
+        description:
+        - Maximum size of transmit packet.
+        type: str
+      duplex:
+        description:
+        - Interface link status
+        choices:
+        - full
+        - half
+        - auto
+        type: str
+      tx_rate:
+        description:
+        - Transmit rate in bits per second (bps).
+        - This is state check parameter only.
+        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        type: str
+      rx_rate:
+        description:
+        - Receiver rate in bits per second (bps).
+        - This is state check parameter only.
+        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        type: str
+      neighbors:
+        description:
+        - Check the operational state of given interface C(name) for CDP/LLDP neighbor.
+        - The following suboptions are available.
+        type: list
+        elements: dict
+        suboptions:
+          host:
+            description:
+            - CDP/LLDP neighbor host for given interface C(name).
+            type: str
+          port:
+            description:
+            - CDP/LLDP neighbor port to which given interface C(name) is connected.
+            type: str
+      delay:
+        description:
+        - Time in seconds to wait before checking for the operational state on remote
+          device. This wait is applicable for operational state argument which are I(state)
+          with values C(up)/C(down), I(tx_rate) and I(rx_rate).
+        type: int
+      state:
+        description:
+        - State of the Interface configuration, C(up) means present and operationally
+          up and C(down) means present and operationally C(down)
+        choices:
+        - present
+        - absent
+        - up
+        - down
+        type: str
   delay:
     description:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state argument which are I(state)
       with values C(up)/C(down), I(tx_rate) and I(rx_rate).
     default: 10
+    type: int
   state:
     description:
     - State of the Interface configuration, C(up) means present and operationally
@@ -97,6 +183,7 @@ options:
     - absent
     - up
     - down
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 

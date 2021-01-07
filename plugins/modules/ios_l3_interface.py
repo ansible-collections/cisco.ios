@@ -37,20 +37,51 @@ options:
   name:
     description:
     - Name of the Layer-3 interface to be configured eg. GigabitEthernet0/2
+    type: str
   ipv4:
     description:
     - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
       The address format is <ipv4 address>/<mask>, the mask is number in range 0-32
       eg. 192.168.0.1/24
+    type: str
   ipv6:
     description:
     - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
       The address format is <ipv6 address>/<mask>, the mask is number in range 0-128
       eg. fd5d:12c9:2201:1::1/64
+    type: str
   aggregate:
     description:
     - List of Layer-3 interfaces definitions. Each of the entry in aggregate list
       should define name of interface C(name) and a optional C(ipv4) or C(ipv6) address.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of the Layer-3 interface to be configured eg. GigabitEthernet0/2
+        type: str
+        required: true
+      ipv4:
+        description:
+        - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
+          The address format is <ipv4 address>/<mask>, the mask is number in range 0-32
+          eg. 192.168.0.1/24
+        type: str
+      ipv6:
+        description:
+        - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
+          The address format is <ipv6 address>/<mask>, the mask is number in range 0-128
+          eg. fd5d:12c9:2201:1::1/64
+        type: str
+      state:
+        description:
+        - State of the Layer-3 interface configuration. It indicates if the configuration
+          should be present or absent on remote device.
+        type: str
+        choices:
+        - present
+        - absent
   state:
     description:
     - State of the Layer-3 interface configuration. It indicates if the configuration
@@ -59,6 +90,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 extends_documentation_fragment:
 - cisco.ios.ios
 

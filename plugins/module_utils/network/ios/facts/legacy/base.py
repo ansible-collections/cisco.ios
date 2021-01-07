@@ -51,7 +51,7 @@ class FactsBase(object):
 
 class Default(FactsBase):
 
-    COMMANDS = ["show version"]
+    COMMANDS = ["show version", "show virtual switch"]
 
     def populate(self):
         super(Default, self).populate()
@@ -61,9 +61,13 @@ class Default(FactsBase):
             self.facts["iostype"] = self.parse_iostype(data)
             self.facts["serialnum"] = self.parse_serialnum(data)
             self.parse_stacks(data)
+        data = self.responses[1]
+        vss_errs = ["Invalid input", "Switch Mode : Standalone"]
+        if data and not any(err in data for err in vss_errs):
+            self.parse_virtual_switch(data)
 
     def parse_iostype(self, data):
-        match = re.search(r"\S+(X86_64_LINUX_IOSD-UNIVERSALK9-M)(\S+)", data)
+        match = re.search(r"\sIOS-XE\s", data)
         if match:
             return "IOS-XE"
         else:
@@ -84,6 +88,17 @@ class Default(FactsBase):
         )
         if match:
             self.facts["stacked_serialnums"] = match
+
+        if "stacked_models" in self.facts:
+            self.facts["virtual_switch"] = "STACK"
+
+    def parse_virtual_switch(self, data):
+        match = re.search(
+            r"^Virtual switch domain number : ([0-9]+)", data, re.M
+        )
+        if match:
+            self.facts["virtual_switch"] = "VSS"
+            self.facts["virtual_switch_domain"] = match.group(1)
 
     def platform_facts(self):
         platform_facts = {}
@@ -304,6 +319,7 @@ class Interfaces(FactsBase):
                 facts[intf] = list()
             fact = dict()
             fact["host"] = self.parse_cdp_host(entry)
+            fact["platform"] = self.parse_cdp_platform(entry)
             fact["port"] = port
             facts[intf].append(fact)
         return facts
@@ -314,7 +330,7 @@ class Interfaces(FactsBase):
         for line in data.split("\n"):
             if len(line) == 0:
                 continue
-            elif line[0] == " ":
+            if line[0] == " ":
                 parsed[key] += "\n%s" % line
             else:
                 match = re.match(r"^(\S+)", line)
@@ -398,5 +414,10 @@ class Interfaces(FactsBase):
 
     def parse_cdp_host(self, data):
         match = re.search(r"^Device ID: (.+)$", data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_cdp_platform(self, data):
+        match = re.search(r"^Platform: (.+),", data, re.M)
         if match:
             return match.group(1)

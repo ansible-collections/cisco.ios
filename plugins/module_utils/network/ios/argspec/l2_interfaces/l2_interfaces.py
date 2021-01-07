@@ -51,13 +51,13 @@ class L2_InterfacesArgs(object):
                 "trunk": {
                     "type": "dict",
                     "options": {
-                        "allowed_vlans": {"type": "list"},
+                        "allowed_vlans": {"type": "list", "elements": "str"},
                         "encapsulation": {
                             "type": "str",
                             "choices": ["dot1q", "isl", "negotiate"],
                         },
                         "native_vlan": {"type": "int"},
-                        "pruning_vlans": {"type": "list"},
+                        "pruning_vlans": {"type": "list", "elements": "str"},
                     },
                 },
             },

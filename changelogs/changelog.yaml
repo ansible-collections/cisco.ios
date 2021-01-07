@@ -106,3 +106,68 @@ releases:
         name: ios
         namespace: null
     release_date: '2020-06-23'
+  1.0.1:
+    changes:
+      bugfixes:
+      - Make `src`, `backup` and `backup_options` in ios_config work when module alias is used
+        (https://github.com/ansible-collections/cisco.ios/pull/107).
+      minor_changes:
+      - Removes IOS sanity ignores and sync for argspec and docstring
+        (https://github.com/ansible-collections/cisco.ios/pull/114).
+      - Updated docs.
+    fragments:
+    - 90-add-change-log-1.0.0.yaml
+    - 1.1.0_update_docs.yaml
+    - handle_src_backup_with_module_alias.yaml
+    - remove_ios_ignore.yaml
+    release_date: '2020-08-03'
+  1.0.2:
+    changes:
+      release_summary:
+      - Re-releasing 1.0.1 with updated changelog.
+    fragments:
+    - 1.0.2.yaml
+    release_date: '2020-08-07'
+  1.0.3:
+    changes:
+      release_summary:
+      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+    release_date: '2020-08-28'
+  1.1.0:
+    changes:
+      bugfixes:
+      - Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+      - Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+      - Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+      - To fix the incorrect command displayed under ios_l3_interfaces resource module docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+      minor_changes:
+      - Add ios_ospfv3 module.
+    modules:
+    - description: OSPFv3 resource module
+      name: ios_ospfv3
+      namespace: ''
+    release_date: '2020-10-01'
+  1.2.0:
+    changes:
+      bugfixes:
+      - To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
+      - To fix ios_static_routes where interface ip route-cache config was being parsed and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
+      - To fix IOS static routes idempotency issue coz of netmask to cidr conversion (https://github.com/ansible-collections/cisco.ios/pull/177).
+      - To fix ios_vlans traceback bug when the name had Remote in it and added unit TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
+      - To fix the traceback issue for longer vlan name having more than 32 characters (https://github.com/ansible-collections/cisco.ios/pull/182).
+      minor_changes:
+      - Add ios_ospf_interfaces module.
+    modules:
+    - description: OSPF Interfaces resource module
+      name: ios_ospf_interfaces
+      namespace: ''
+    release_date: '2020-11-01'
+  1.2.1:
+    changes:
+      bugfixes:
+      - To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
+      - Add version key to galaxy.yaml to work around ansible-galaxy bug.
+      fragments:
+      - 209_fix_ios_ospf_interfaces_authentication_param.yaml
+      - galaxy-version.yaml
+    release_date: '2020-11-26'

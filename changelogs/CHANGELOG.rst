@@ -4,6 +4,94 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v1.2.1
+======
+
+Bugfixes
+--------
+
+- To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
+- Add version key to galaxy.yaml to work around ansible-galaxy bug.
+
+v1.2.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_ospf_interfaces module.
+
+Bugfixes
+--------
+
+- To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
+- To fix ios_static_routes where interface ip route-cache config was being parsed and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
+- To fix IOS static routes idempotency issue coz of netmask to cidr conversion (https://github.com/ansible-collections/cisco.ios/pull/177).
+- To fix ios_vlans traceback bug when the name had Remote in it and added unit TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
+- To fix the traceback issue for longer vlan name having more than 32 characters (https://github.com/ansible-collections/cisco.ios/pull/182).
+
+New Modules
+-----------
+
+- ios_ospf_interfaces - OSPF Interfaces resource module
+
+v1.1.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_ospfv3 module.
+
+Bugfixes
+--------
+
+- Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+- Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+- Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+- To fix the incorrect command displayed under ios_l3_interfaces resource module docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+
+New Modules
+-----------
+
+- ios_ospfv3 - OSPFv3 resource module
+
+v1.0.3
+======
+
+Release Summary
+---------------
+
+- Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+
+Bugfixes
+--------
+
+- To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
+- To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+
+v1.0.2
+======
+
+Release Summary
+---------------
+
+- Re-releasing 1.0.1 with updated changelog.
+
+v1.0.1
+======
+
+Minor Changes
+-------------
+
+- Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
+- Updated docs.
+
+Bugfixes
+--------
+
+- Make `src`, `backup` and `backup_options` in ios_config work when module alias is used (https://github.com/ansible-collections/cisco.ios/pull/107).
+
 
 v1.0.0
 ======

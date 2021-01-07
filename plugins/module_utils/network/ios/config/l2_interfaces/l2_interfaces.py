@@ -52,8 +52,10 @@ class L2_Interfaces(ConfigBase):
     trunk_cmds = {
         "encapsulation": "switchport trunk encapsulation",
         "pruning_vlans": "switchport trunk pruning vlan",
+        "pruning_vlans_add": "switchport trunk pruning vlan add",
         "native_vlan": "switchport trunk native vlan",
         "allowed_vlans": "switchport trunk allowed vlan",
+        "allowed_vlans_add": "switchport trunk allowed vlan add",
     }
 
     def get_l2_interfaces_facts(self, data=None):
@@ -340,6 +342,7 @@ class L2_Interfaces(ConfigBase):
                 if allowed_vlans and self._check_for_correct_vlan_range(
                     allowed_vlans, module
                 ):
+                    diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("allowed_vlans"):
@@ -347,21 +350,23 @@ class L2_Interfaces(ConfigBase):
                                 "allowed_vlans"
                             )
                             allowed_vlans = list(allowed_vlans)
-                            if set(allowed_vlans).difference(
+                            diff = set(allowed_vlans).difference(
                                 set(have_allowed_vlans)
-                            ):
-                                allowed_vlans.extend(list(have_allowed_vlans))
-                            else:
-                                allowed_vlans = tuple()
+                            )
+                            allowed_vlans = list(diff) if diff else tuple()
                     allowed_vlans = ",".join(allowed_vlans)
                     if allowed_vlans:
-                        cmd = self.trunk_cmds["allowed_vlans"] + " {0}".format(
-                            allowed_vlans
+                        trunk_cmd = (
+                            self.trunk_cmds["allowed_vlans_add"]
+                            if self.state == "merged" and diff
+                            else self.trunk_cmds["allowed_vlans"]
                         )
+                        cmd = trunk_cmd + " {0}".format(allowed_vlans)
                         add_command_to_config_list(interface, cmd, commands)
                 if pruning_vlans and self._check_for_correct_vlan_range(
                     pruning_vlans, module
                 ):
+                    diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("pruning_vlans"):
@@ -369,17 +374,18 @@ class L2_Interfaces(ConfigBase):
                                 "pruning_vlans"
                             )
                             pruning_vlans = list(pruning_vlans)
-                            if set(pruning_vlans).difference(
+                            diff = set(pruning_vlans).difference(
                                 set(have_pruning_vlans)
-                            ):
-                                pruning_vlans.extend(list(have_pruning_vlans))
-                            else:
-                                pruning_vlans = tuple()
+                            )
+                            pruning_vlans = list(diff) if diff else tuple()
                     pruning_vlans = ",".join(pruning_vlans)
                     if pruning_vlans:
-                        cmd = self.trunk_cmds["pruning_vlans"] + " {0}".format(
-                            pruning_vlans
+                        trunk_cmd = (
+                            self.trunk_cmds["pruning_vlans_add"]
+                            if self.state == "merged" and diff
+                            else self.trunk_cmds["pruning_vlans"]
                         )
+                        cmd = trunk_cmd + " {0}".format(pruning_vlans)
                         add_command_to_config_list(interface, cmd, commands)
             if mode:
                 cmd = "switchport mode {0}".format(mode)
