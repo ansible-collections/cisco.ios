@@ -62,7 +62,7 @@ class L2_InterfacesFacts(object):
             data = self.get_l2_interfaces_data(connection)
 
         # operate on a collection of resource x
-        config = re.split(r"\ninterface ", data)
+        config = ("\n" + data).split("\ninterface ")
         for conf in config:
             if conf:
                 obj = self.render_config(self.generated_spec, conf)

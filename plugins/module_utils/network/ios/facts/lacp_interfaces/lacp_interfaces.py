@@ -63,7 +63,7 @@ class Lacp_InterfacesFacts(object):
         if not data:
             data = connection.get("show running-config | section ^interface")
         # operate on a collection of resource x
-        config = re.split(r"\ninterface ", data)
+        config = ("\n" + data).split("\ninterface ")
 
         for conf in config:
             if conf:
