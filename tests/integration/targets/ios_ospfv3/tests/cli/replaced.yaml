@@ -1,0 +1,58 @@
+---
+- debug:
+    msg: START Replaced ios_ospfv3 state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_vrf_setup.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Replaced provided OSPF V3 configuration
+      register: result
+      cisco.ios.ios_ospfv3: &id001
+        config:
+          processes:
+            - process_id: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 50
+                    max_adjacency: 50
+                  areas:
+                    - area_id: 200
+                      nssa:
+                        default_information_originate:
+                          metric: 200
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ | length == 0 }}"
+
+    - name: Replaced provided OSPF V3 configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ospfv3: *id001
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml

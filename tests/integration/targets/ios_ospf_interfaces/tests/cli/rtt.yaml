@@ -1,0 +1,99 @@
+---
+- debug:
+    msg: START ios_ospf_interfaces round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_ipv6_setup.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_ospf_interfaces: &id001
+        config:
+          - name: GigabitEthernet0/1
+            address_family:
+              - afi: ipv4
+                authentication:
+                  message_digest: true
+                process:
+                  id: 10
+                  area_id: 30
+                adjacency: true
+                bfd: true
+                cost:
+                  interface_cost: 5
+                dead_interval:
+                  time: 5
+                demand_circuit:
+                  ignore: true
+                network:
+                  broadcast: true
+                priority: 25
+                resync_timeout: 10
+                shutdown: true
+                ttl_security:
+                  hops: 50
+              - afi: ipv6
+                adjacency: true
+                database_filter: true
+                manet:
+                  link_metrics:
+                    cost_threshold: 10
+                priority: 55
+                transmit_delay: 45
+        state: merged
+
+    - name: Gather OSPF Interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - ospf_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_ospf_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            address_family:
+              - afi: ipv6
+                adjacency: true
+                priority: 20
+                transmit_delay: 30
+          - name: GigabitEthernet0/2
+            address_family:
+              - afi: ipv4
+                process:
+                  id: 10
+                  area_id: 20
+                adjacency: true
+                cost:
+                  interface_cost: 30
+                priority: 40
+                ttl_security:
+                  hops: 50
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 23
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_ospf_interfaces:
+        config: "{{ ansible_facts['network_resources']['ospf_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 23
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  always:
+
+    - include_tasks: _remove_config.yaml

@@ -45,7 +45,7 @@ options:
       quotes). See examples.
     required: true
     type: list
-    elements: str
+    elements: raw
   wait_for:
     description:
     - List of conditions to evaluate against the output of the command. The task will
@@ -168,7 +168,7 @@ def main():
     """main entry point for module execution
     """
     argument_spec = dict(
-        commands=dict(type="list", elements="str", required=True),
+        commands=dict(type="list", elements="raw", required=True),
         wait_for=dict(type="list", elements="str", aliases=["waitfor"]),
         match=dict(default="all", choices=["all", "any"]),
         retries=dict(default=10, type="int"),

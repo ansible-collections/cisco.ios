@@ -238,7 +238,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Gather all legacy facts
       cisco.ios.ios_facts:

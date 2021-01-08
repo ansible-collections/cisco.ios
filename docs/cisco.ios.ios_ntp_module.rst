@@ -333,7 +333,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Set new NTP server and source interface
     - cisco.ios.ios_ntp:

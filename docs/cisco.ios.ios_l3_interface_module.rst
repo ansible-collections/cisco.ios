@@ -359,7 +359,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Remove GigabitEthernet0/3 IPv4 and IPv6 address
       cisco.ios.ios_l3_interface:

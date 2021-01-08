@@ -133,3 +133,41 @@ releases:
       release_summary:
       - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
     release_date: '2020-08-28'
+  1.1.0:
+    changes:
+      bugfixes:
+      - Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+      - Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+      - Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+      - To fix the incorrect command displayed under ios_l3_interfaces resource module docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+      minor_changes:
+      - Add ios_ospfv3 module.
+    modules:
+    - description: OSPFv3 resource module
+      name: ios_ospfv3
+      namespace: ''
+    release_date: '2020-10-01'
+  1.2.0:
+    changes:
+      bugfixes:
+      - To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
+      - To fix ios_static_routes where interface ip route-cache config was being parsed and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
+      - To fix IOS static routes idempotency issue coz of netmask to cidr conversion (https://github.com/ansible-collections/cisco.ios/pull/177).
+      - To fix ios_vlans traceback bug when the name had Remote in it and added unit TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
+      - To fix the traceback issue for longer vlan name having more than 32 characters (https://github.com/ansible-collections/cisco.ios/pull/182).
+      minor_changes:
+      - Add ios_ospf_interfaces module.
+    modules:
+    - description: OSPF Interfaces resource module
+      name: ios_ospf_interfaces
+      namespace: ''
+    release_date: '2020-11-01'
+  1.2.1:
+    changes:
+      bugfixes:
+      - To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
+      - Add version key to galaxy.yaml to work around ansible-galaxy bug.
+      fragments:
+      - 209_fix_ios_ospf_interfaces_authentication_param.yaml
+      - galaxy-version.yaml
+    release_date: '2020-11-26'

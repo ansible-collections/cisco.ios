@@ -64,15 +64,27 @@ class VlansFacts(object):
         config = data.split("\n")
         # Get individual vlan configs separately
         vlan_info = ""
+        temp = ""
+        vlan_name = True
         for conf in config:
-            if "Name" in conf:
+            if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
+                temp = temp + conf
+                if len(list(filter(None, temp.split(" ")))) <= 2:
+                    continue
+            if "VLAN Name" in conf:
                 vlan_info = "Name"
-            elif "Type" in conf:
+            elif "VLAN Type" in conf:
                 vlan_info = "Type"
-            elif "Remote" in conf:
+                vlan_name = False
+            elif "Remote SPAN" in conf:
                 vlan_info = "Remote"
-            elif "AREHops" in conf or "STEHops" in conf:
+                vlan_name = False
+            elif "VLAN AREHops" in conf or "STEHops" in conf:
                 vlan_info = "Hops"
+                vlan_name = False
+            if temp:
+                conf = temp
+                temp = ""
             if conf and " " not in filter(None, conf.split("-")):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
@@ -94,7 +106,6 @@ class VlansFacts(object):
                         if each == every.get("vlan_id"):
                             every.update({"remote_span": True})
                             break
-
         facts = {}
         if final_objs:
             facts["vlans"] = []
@@ -120,7 +131,7 @@ class VlansFacts(object):
         """
         config = deepcopy(spec)
 
-        if vlan_info == "Name" and "Name" not in conf:
+        if vlan_info == "Name" and "VLAN Name" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
@@ -139,7 +150,7 @@ class VlansFacts(object):
                     config["shutdown"] = "disabled"
             except IndexError:
                 pass
-        elif vlan_info == "Type" and "Type" not in conf:
+        elif vlan_info == "Type" and "VLAN Type" not in conf:
             conf = list(filter(None, conf.split(" ")))
             config["mtu"] = int(conf[3])
         elif vlan_info == "Remote":

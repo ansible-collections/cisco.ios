@@ -450,7 +450,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Create vlan
       cisco.ios.ios_vlan:

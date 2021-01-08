@@ -1,0 +1,116 @@
+---
+- debug:
+    msg: START ios_ospfv3 round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_vrf_setup.yaml
+
+- block:
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.ios.ios_ospfv3: &id001
+        config:
+          processes:
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  vrf: ospf_vrf
+                  adjacency:
+                    min_adjacency: 25
+                    max_adjacency: 25
+                  areas:
+                    - area_id: 25
+                      nssa:
+                        default_information_originate:
+                          metric: 25
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+              timers:
+                throttle:
+                  lsa:
+                    first_delay: 12
+                    min_delay: 14
+                    max_delay: 16
+            - process_id: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 200
+                    max_adjacency: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+        state: merged
+
+    - name: Gather OSPFV3 facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - ospfv3
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_ospfv3:
+        config:
+          processes:
+            - process_id: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 50
+                    max_adjacency: 50
+                  areas:
+                    - area_id: 200
+                      nssa:
+                        default_information_originate:
+                          metric: 200
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+        state: overridden
+
+    - assert:
+        that:
+          - result.commands|length == 9
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_ospfv3:
+        config: "{{ ansible_facts['network_resources']['ospfv3'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.commands|length == 14
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+  always:
+
+    - include_tasks: _remove_config.yaml

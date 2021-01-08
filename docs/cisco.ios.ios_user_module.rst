@@ -662,7 +662,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: create a new user
       cisco.ios.ios_user:

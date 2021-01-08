@@ -999,7 +999,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure global bgp as 64496
       cisco.ios.ios_bgp:

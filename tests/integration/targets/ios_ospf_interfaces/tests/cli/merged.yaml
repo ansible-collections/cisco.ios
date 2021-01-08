@@ -1,0 +1,75 @@
+---
+- debug:
+    msg: START Merged ios_ospf_interfaces state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _initial_ipv6_setup.yaml
+
+- block:
+
+    - name: Merge provided configuration with device configuration
+      register: result
+      cisco.ios.ios_ospf_interfaces: &id001
+        config:
+          - name: GigabitEthernet0/1
+            address_family:
+              - afi: ipv4
+                authentication:
+                  message_digest: true
+                process:
+                  id: 10
+                  area_id: 30
+                adjacency: true
+                bfd: true
+                cost:
+                  interface_cost: 5
+                dead_interval:
+                  time: 5
+                demand_circuit:
+                  ignore: true
+                network:
+                  broadcast: true
+                priority: 25
+                resync_timeout: 10
+                shutdown: true
+                ttl_security:
+                  hops: 50
+              - afi: ipv6
+                adjacency: true
+                database_filter: true
+                manet:
+                  link_metrics:
+                    cost_threshold: 10
+                priority: 55
+                transmit_delay: 45
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['before'] == {} }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length\
+            \ == 0 }}"
+
+    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ospf_interfaces: *id001
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml
