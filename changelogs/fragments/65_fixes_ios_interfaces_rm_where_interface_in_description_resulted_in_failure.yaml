@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - fixes ios interfaces rm where interface in description resulted in failure (https://github.com/ansible-collections/cisco.ios/issues/65).
