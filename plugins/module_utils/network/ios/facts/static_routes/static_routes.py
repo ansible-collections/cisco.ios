@@ -16,6 +16,7 @@ __metaclass__ = type
 
 
 from copy import deepcopy
+import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -24,6 +25,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    is_valid_ipv4,
+    is_valid_ipv6,
 )
 
 
@@ -159,12 +164,6 @@ class Static_RoutesFacts(object):
                         same_dest[dest].append(filter_non_vrf)
         return same_dest
 
-    def isIPv4(self, s):
-        try:
-            return str(int(s)) == s and 0 <= int(s) <= 255
-        except ValueError:
-            return False
-
     def render_config(self, spec, conf, conf_val):
         """
         Render config as dictionary structure and delete keys
@@ -198,27 +197,33 @@ class Static_RoutesFacts(object):
                     hops["forward_router_address"] = route[3]
                     afi["afi"] = "ipv6"
                 elif "." in conf:
-                    if all(self.isIPv4(i) for i in route[3].split(".")):
+                    if is_valid_ipv4(route[3]):
                         hops["forward_router_address"] = route[3]
                         afi["afi"] = "ipv4"
                     else:
                         hops["interface"] = route[3]
                         afi["afi"] = "ipv4"
-                        if all(self.isIPv4(i) for i in route[4].split(".")):
+                        if is_valid_ipv4(route[4]):
                             hops["forward_router_address"] = route[4]
             else:
 
                 if "::" in conf:
-                    hops["forward_router_address"] = route[1]
-                    afi["afi"] = "ipv6"
+                    if is_valid_ipv6(route[1]):
+                        hops["forward_router_address"] = route[1]
+                        afi["afi"] = "ipv6"
+                    else:
+                        hops["interface"] = route[1]
+                        afi["afi"] = "ipv6"
+                        if is_valid_ipv6(route[2]):
+                            hops["forward_router_address"] = route[2]
                 elif "." in conf:
-                    if all(self.isIPv4(i) for i in route[1].split(".")):
+                    if is_valid_ipv4(route[1]):
                         hops["forward_router_address"] = route[1]
                         afi["afi"] = "ipv4"
                     else:
                         hops["interface"] = route[1]
                         afi["afi"] = "ipv4"
-                        if all(self.isIPv4(i) for i in route[2].split(".")):
+                        if is_valid_ipv4(route[2]):
                             hops["forward_router_address"] = route[2]
             try:
                 temp_list = each.split(" ")

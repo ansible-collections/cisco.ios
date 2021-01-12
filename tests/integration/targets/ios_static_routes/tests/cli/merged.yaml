@@ -69,7 +69,7 @@
 
     - assert:
         that:
-          - result.commands|length == 5
+          - result.commands|length == 6
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 

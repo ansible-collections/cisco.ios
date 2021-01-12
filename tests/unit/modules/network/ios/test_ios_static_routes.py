@@ -218,6 +218,26 @@ class TestIosStaticRoutesModule(TestIosModule):
                             )
                         ]
                     ),
+                    dict(
+                        address_families=[
+                            dict(
+                                afi="ipv6",
+                                routes=[
+                                    dict(
+                                        dest="2001:DB8:0:3::/64",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="2001:DB8:0:3::2",
+                                                interface="GigabitEthernet0/2",
+                                                name="test_v6",
+                                                tag=105,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ]
+                    ),
                 ],
                 state="merged",
             )
@@ -369,6 +389,26 @@ class TestIosStaticRoutesModule(TestIosModule):
                             )
                         ]
                     ),
+                    dict(
+                        address_families=[
+                            dict(
+                                afi="ipv6",
+                                routes=[
+                                    dict(
+                                        dest="2001:DB8:0:3::/64",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="2001:DB8:0:3::2",
+                                                interface="GigabitEthernet0/2",
+                                                name="test_v6",
+                                                tag=105,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ]
+                    ),
                 ],
                 state="replaced",
             )
@@ -410,6 +450,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100",
             "no ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50",
             "no ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner",
+            "no ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 name test_v6 tag 105",
             "ip route 198.51.100.0 255.255.255.0 198.51.101.1 150 multicast name override_route_1 tag 50",
         ]
 
@@ -496,6 +537,26 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
+                                            )
+                                        ],
+                                    )
+                                ],
+                            )
+                        ]
+                    ),
+                    dict(
+                        address_families=[
+                            dict(
+                                afi="ipv6",
+                                routes=[
+                                    dict(
+                                        dest="2001:DB8:0:3::/64",
+                                        next_hops=[
+                                            dict(
+                                                forward_router_address="2001:DB8:0:3::2",
+                                                interface="GigabitEthernet0/2",
+                                                name="test_v6",
+                                                tag=105,
                                             )
                                         ],
                                     )
