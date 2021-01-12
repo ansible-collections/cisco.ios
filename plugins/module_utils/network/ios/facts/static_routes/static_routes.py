@@ -162,7 +162,7 @@ class Static_RoutesFacts(object):
     def isIPv4(self, s):
         try:
             return str(int(s)) == s and 0 <= int(s) <= 255
-        except:
+        except ValueError:
             return False
 
     def render_config(self, spec, conf, conf_val):

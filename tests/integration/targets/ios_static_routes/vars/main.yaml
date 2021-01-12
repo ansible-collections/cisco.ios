@@ -10,12 +10,9 @@ deleted:
     - no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
 merged:
   commands:
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name merged_vrf
-      track 150 tag 50
-    - ip route vrf ansible_temp_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10
-      name partner_vrf
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name merged_route_1
-      tag 40
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name merged_vrf track 150 tag 50
+    - ip route vrf ansible_temp_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner_vrf
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name merged_route_1 tag 40
     - ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name merged_route_2
     - ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
     - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name merged_v6 tag 105
