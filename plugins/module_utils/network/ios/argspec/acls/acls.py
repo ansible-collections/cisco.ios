@@ -64,6 +64,7 @@ class AclsArgs(object):
                                     "type": "str",
                                 },
                                 "sequence": {"type": "int"},
+                                "evaluate": {"type": "str"},
                                 "source": {
                                     "type": "dict",
                                     "mutually_exclusive": [

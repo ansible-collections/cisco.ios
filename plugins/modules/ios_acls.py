@@ -79,6 +79,9 @@ options:
                 - Sequence Number for the Access Control Entry(ACE).
                 - Refer to vendor documentation for valid values.
                 type: int
+              evaluate:
+                description: Evaluate an access list
+                type: str
               protocol:
                 description:
                 - Specify the protocol to match.

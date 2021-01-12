@@ -65,7 +65,7 @@ replaced:
       mtu: 65
       name: GigabitEthernet0/1
       speed: '10'
-    - description: this is interface2
+    - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
@@ -117,7 +117,7 @@ overridden:
       mtu: 65
       name: GigabitEthernet0/1
       speed: '10'
-    - description: this is interface2
+    - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
@@ -168,7 +168,7 @@ deleted:
       mtu: 65
       name: GigabitEthernet0/1
       speed: '10'
-    - description: this is interface2
+    - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
@@ -217,7 +217,7 @@ gathered:
       mtu: 65
       name: GigabitEthernet0/1
       speed: "10"
-    - description: this is interface2
+    - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
