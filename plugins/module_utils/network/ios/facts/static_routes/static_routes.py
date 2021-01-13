@@ -16,7 +16,6 @@ __metaclass__ = type
 
 
 from copy import deepcopy
-import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
