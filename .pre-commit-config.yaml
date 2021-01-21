@@ -1,0 +1,21 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.1.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: no-commit-to-branch
+        args: [--branch, main]
+      - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 19.3b0
+    hooks:
+      - id: black
+        args: [-l, "79"]
+  - repo: https://github.com/ansible-network/collection_prep
+    rev: master
+    hooks:
+      - id: update-docs
