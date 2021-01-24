@@ -183,7 +183,9 @@ def main():
     module.exit_json(**results)
 
 
-def build_ping(dest, count=None, source=None, vrf=None, size=None, df_bit=False):
+def build_ping(
+    dest, count=None, source=None, vrf=None, size=None, df_bit=False
+):
     """
     Function to build the command to send to the terminal for the switch
     to execute. All args come from the module's unique params.
