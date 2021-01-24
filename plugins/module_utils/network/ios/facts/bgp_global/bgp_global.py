@@ -26,7 +26,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
 )
-import q
 
 
 class Bgp_globalFacts(object):
@@ -70,7 +69,6 @@ class Bgp_globalFacts(object):
         objs = bgp_global_parser.parse()
 
         objs = utils.remove_empties(objs)
-        # q(objs)
         if "neighbor" in objs:
             temp_neighbor = []
             temp = {}
@@ -95,7 +93,6 @@ class Bgp_globalFacts(object):
             params = utils.remove_empties(
                 utils.validate_config(self.argument_spec, {"config": objs})
             )
-            # q(params)
             facts["bgp_global"] = params["config"]
             ansible_facts["ansible_network_resources"].update(facts)
 

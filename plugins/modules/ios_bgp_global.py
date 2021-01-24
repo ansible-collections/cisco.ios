@@ -38,6 +38,37 @@ options:
         description: Autonomous system number.
         type: str
         required: true
+      aggregate_address:
+        description: Configure BGP aggregate entries
+        type: dict
+        suboptions:
+          address:
+            description: Aggregate address
+            type: str
+          netmask:
+            description: Aggregate mask
+            type: str
+          advertise_map:
+            description: Set condition to advertise attribute
+            type: str
+          as_confed_set:
+            description: Generate AS confed set path information
+            type: bool
+          as_set:
+            description: Generate AS set path information
+            type: bool
+          attribute_map:
+            description: Set attributes of aggregate
+            type: str
+          summary_only:
+            description: Filter more specific routes from updates
+            type: bool
+          suppress_map:
+            description: Conditionally filter more specific routes from updates
+            type: str
+      auto_summary:
+        description: Enable automatic network number summarization
+        type: bool
       bgp:
         description: Enable address family and enter its config mode
         type: dict
@@ -74,7 +105,7 @@ options:
           advertise_best_external:
             description: Advertise best external path to internal peers
             type: bool
-          advertise_best_external:
+          aggregate_timer:
             description:
               - Configure Aggregation Timer
               - Please refer vendor documentation for valid values
@@ -119,17 +150,20 @@ options:
                     description: Treat missing MED as the least preferred one
                     type: bool
           client_to_client:
-            description:
-              - Configure client to client route reflection
-              - reflection of routes allowed
+            description: Configure client to client route reflection
             type: dict
             suboptions:
+              set:
+                description: set reflection of routes allowed
+                type: bool
               all:
                 description: inter-cluster and intra-cluster (default)
                 type: bool
               intra_cluster:
-                description: intra cluster reflection
-                type: bool
+                description:
+                  - intra cluster reflection
+                  - intra-cluster reflection for cluster-id
+                type: str
           cluster_id:
             description:
               - Configure Route-Reflector Cluster-id (peers may reset)
@@ -157,7 +191,7 @@ options:
                 description: Auto-Repair
                 type: dict
                 suboptions:
-                  enable:
+                  set:
                     description: Enable Auto-Repair
                     type: bool
                   interval:
@@ -169,7 +203,7 @@ options:
                 description: Log Error-Msg
                 type: dict
                 suboptions:
-                  enable:
+                  set:
                     description: Enable Error-Msg
                     type: bool
                   interval:
@@ -178,7 +212,7 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
           dampening:
-            description: Consistency-checker
+            description: Enable route-flap dampening
             type: dict
             suboptions:
               penalty_half_time:
@@ -243,6 +277,30 @@ options:
             description: Graceful shutdown capability parameters
             type: dict
             suboptions:
+              neighbors:
+                description: Gracefully shut down all neigbors
+                type: dict
+                suboptions:
+                  time:
+                    description:
+                      - time in seconds
+                      - Please refer vendor documentation for valid values
+                    type: int
+                  activate:
+                    description: Activate graceful shutdown of all neigbors
+                    type: bool
+              vrfs:
+                description: Gracefully shut down all vrf neigbors
+                type: dict
+                suboptions:
+                  time:
+                    description:
+                      - time in seconds
+                      - Please refer vendor documentation for valid values
+                    type: int
+                  activate:
+                    description: Activate graceful shutdown of all neigbors
+                    type: bool
               community:
                 description:
                   - Set Community for Gshut routes
@@ -279,10 +337,10 @@ options:
                 description: Subnet network range
                 type: dict
                 suboptions:
-                  v4address_with_subnet:
+                  ipv4_with_subnet:
                     description: IPv4 subnet range(A.B.C.D/nn)
                     type: str
-                  v6address_with_subnet:
+                  ipv6_with_subnet:
                     description: IPv6 subnet range(X:X:X:X::X/<0-128>)
                     type: str
                   peer_group:
@@ -397,7 +455,7 @@ options:
                 description:
                   - vrf-specific router id configuration
                   - Automatically assign per-vrf bgp router id
-                type: str
+                type: bool
           scan_time:
             description:
               - Configure background scanner interval
@@ -411,11 +469,8 @@ options:
                 description: Slow-peer detection
                 type: dict
                 suboptions:
-                  enable:
+                  set:
                     description: Slow-peer detection
-                    type: bool
-                  disable:
-                    description: Disable slow-peer detection
                     type: bool
                   threshold:
                     description:
@@ -469,7 +524,7 @@ options:
             description: Upgrade to hierarchical AFI mode
             type: dict
             suboptions:
-              enable:
+              set:
                 description: enable upgrade to hierarchical AFI mode
                 type: bool
               af_mode:
@@ -572,6 +627,22 @@ options:
                   - Distance for local routes
                   - Please refer vendor documentation for valid values
                 type: int
+      distribute_list:
+        description: Filter networks in routing updates
+        type: dict
+        suboptions:
+          acl:
+            description: IP access list number/name
+            type: str
+          in:
+            description: Filter incoming routing updates
+            type: bool
+          out:
+            description: Filter outgoing routing updates
+            type: bool
+          interface:
+            description: interface details
+            type: str
       maximum_paths:
         description: Forward packets over multiple paths
         type: dict
@@ -703,14 +774,13 @@ options:
                         type: dict
                         suboptions:
                           igp_cost:
-                            description:
-                              - Point of Insertion After IGP
-                              - Cost community is Transitive
+                            description:  Point of Insertion After IGP
                             type: bool
                           pre_bestpath:
-                            description:
-                              - Point of Insertion At Beginning
-                              - Cost community is Transitive
+                            description: Point of Insertion At Beginning
+                            type: bool
+                          transitive:
+                            description: Cost community is Transitive
                             type: bool
                   med:
                     description: Med carrying AIGP Value
@@ -718,7 +788,7 @@ options:
           allow_policy:
             description: Enable the policy support for this IBGP Neighbor
             type: bool
-          allowas-in:
+          allowas_in:
             description: Accept as-path with my AS present in it
             type: int
           as_override:
@@ -865,6 +935,19 @@ options:
                   - AS number used as local AS
                   - Please refer vendor documentation for valid values
                 type: int
+              dual_as:
+                description: Accept either real AS or local AS from the ebgp peer
+                type: bool
+              no_prepend:
+                description: Do not prepend local-as to updates from ebgp peers
+                type: dict
+                suboptions:
+                  set:
+                    description: Set prepend
+                    type: bool
+                  replace_as:
+                    description: Replace real AS with local AS in the EBGP updates
+                    type: bool
           log_neighbor_changes:
             description: Log neighbor up/down and reset reason
             type: dict
@@ -888,19 +971,31 @@ options:
               restart:
                 description: Restart bgp connection after limit is exceeded
                 type: int
-              warning-only:
+              warning_only:
                 description: Only give warning message when limit is exceeded
                 type: bool
           next_hop_self:
-            description:
-              - Disable the next hop calculation for this neighbor
-              - Enable next-hop-self for both eBGP and iBGP received paths
-            type: bool
+            description: Disable the next hop calculation for this neighbor
+            type: dict
+            suboptions:
+              set:
+                description: Enable next-hop-self
+                type: bool
+              all:
+                description: Enable next-hop-self for both eBGP and iBGP received paths
+                type: bool
           next_hop_unchanged:
             description:
               - Propagate next hop unchanged for iBGP paths to this neighbor
               - Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
-            type: bool
+            type: dict
+            suboptions:
+              set:
+                description: Enable next-hop-unchanged
+                type: bool
+              allpaths:
+                description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
+                type: bool
           password:
             description: Set a password
             type: str
@@ -1011,6 +1106,9 @@ options:
             description: Send Community attribute to this neighbor
             type: dict
             suboptions:
+              set:
+                description: Set send Community attribute to this neighbor
+                type: bool
               both:
                 description: Send Standard and Extended Community attributes
                 type: bool
@@ -1021,10 +1119,15 @@ options:
                 description: Send Standard Community attribute
                 type: bool
           send_label:
-            description:
-              - Send NLRI + MPLS Label to this peer
-              - Advertise Explicit Null label in place of Implicit Null
-            type: bool
+            description: Send NLRI + MPLS Label to this peer
+            type: dict
+            suboptions:
+              set:
+                description: Set send NLRI + MPLS Label to this peer
+                type: bool
+              explicit_null:
+                description: Advertise Explicit Null label in place of Implicit Null
+                type: bool
           shutdown:
             description: Administratively shut down this neighbor
             type: dict
@@ -1046,6 +1149,9 @@ options:
                 description: Configure slow-peer
                 type: dict
                 suboptions:
+                  enable:
+                    description: Enable slow-peer detection
+                    type: bool
                   disable:
                     description: Disable slow-peer detection
                     type: bool
@@ -1060,6 +1166,9 @@ options:
                     description: Dynamically split the slow peer to slow-update group
                     type: dict
                     suboptions:
+                      enable:
+                        description: Enable slow-peer detection
+                        type: bool
                       disable:
                         description: Disable slow-peer detection
                         type: bool
@@ -1087,7 +1196,7 @@ options:
               min_holdtime:
                 description: Minimum hold time from neighbor
                 type: int
-          translate-update:
+          translate_update:
             description: Translate Update to MBGP format
             type: dict
             suboptions:
@@ -1151,6 +1260,222 @@ options:
           weight:
             description: Set default weight for routes from this neighbor
             type: int
+      redistribute:
+        description: Redistribute information from another routing protocol
+        type: list
+        elements: dict
+        suboptions:
+          application:
+            description: Application
+            type: dict
+            suboptions:
+              name:
+                description: Application name
+                type: str
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          bgp:
+            description: Border Gateway Protocol (BGP)
+            type: dict
+            suboptions:
+              as_number:
+                description: Autonomous system number
+                type: str
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          connected:
+            description: Connected
+            type: dict
+            suboptions:
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          eigrp:
+            description: Enhanced Interior Gateway Routing Protocol (EIGRP)
+            type: dict
+            suboptions:
+              as_number:
+                description: Autonomous system number
+                type: str
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          isis:
+            description: ISO IS-IS
+            type: dict
+            suboptions:
+              area_tag:
+                description: ISO routing area tag
+                type: str
+              clns:
+                description: Redistribution of OSI dynamic routes
+                type: bool
+              ip:
+                description: Redistribution of IP dynamic routes
+                type: bool
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          iso_igrp:
+            description: IGRP for OSI networks
+            type: dict
+            suboptions:
+              area_tag:
+                description: ISO routing area tag
+                type: str
+              route_map:
+                description: Route map reference
+                type: str
+          lisp:
+            description: Locator ID Separation Protocol (LISP)
+            type: dict
+            suboptions:
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          mobile:
+            description: Mobile routes
+            type: dict
+            suboptions:
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          odr:
+            description: On Demand stub Routes
+            type: dict
+            suboptions:
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          ospf:
+            description: Open Shortest Path First (OSPF)
+            type: dict
+            suboptions:
+              process_id:
+                description: Process ID
+                type: int
+              match:
+                description: On Demand stub Routes
+                type: dict
+                suboptions:
+                  external:
+                    description: Redistribute OSPF external routes
+                    type: bool
+                  internal:
+                    description: Redistribute OSPF internal routes
+                    type: bool
+                  nssa_external:
+                    description: Redistribute OSPF NSSA external routes
+                    type: bool
+                  type_1:
+                    description: Redistribute NSSA external type 1 routes
+                    type: bool
+                  type_2:
+                    description: Redistribute NSSA external type 2 routes
+                    type: bool
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+              vrf:
+                description: VPN Routing/Forwarding Instance
+                type: str
+          ospfv3:
+            description: OSPFv3
+            type: dict
+            suboptions:
+              process_id:
+                description: Process ID
+                type: int
+              match:
+                description: On Demand stub Routes
+                type: dict
+                suboptions:
+                  external:
+                    description: Redistribute OSPF external routes
+                    type: bool
+                  internal:
+                    description: Redistribute OSPF internal routes
+                    type: bool
+                  nssa_external:
+                    description: Redistribute OSPF NSSA external routes
+                    type: bool
+                  type_1:
+                    description: Redistribute NSSA external type 1 routes
+                    type: bool
+                  type_2:
+                    description: Redistribute NSSA external type 2 routes
+                    type: bool
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          rip:
+            description: Routing Information Protocol (RIP)
+            type: dict
+            suboptions:
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          static:
+            description: Static routes
+            type: dict
+            suboptions:
+              clns:
+                description: Redistribution of OSI static routes
+                type: bool
+              ip:
+                description: Redistribution of IP static routes
+                type: bool
+              metric:
+                description: Metric for redistributed routes
+                type: int
+              route_map:
+                description: Route map reference
+                type: str
+          vrf:
+            description: Specify a source VRF
+            type: dict
+            suboptions:
+              name:
+                description: Source VRF name
+                type: str
+              global:
+                description: global VRF
+                type: bool
       route_server_context:
         description: Enter route server context command mode
         type: dict
@@ -1194,11 +1519,15 @@ options:
         description: Perform IGP synchronization
         type: bool
       table_map:
-        description:
-          - Map external entry attributes into routing table
-          - route-map name
-          - Selective route download
-        type: str
+        description: Map external entry attributes into routing table
+        type: dict
+        suboptions:
+          name:
+            description: route-map name
+            type: str
+          filter:
+            description: Selective route download
+            type: bool
       template:
         description: Enter template command mode
         type: dict
@@ -1272,17 +1601,69 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_bgp_global:
     config:
+      as_number: 65000
+        bgp:
+          advertise_best_external: true
+          bestpath:
+            - compare_routerid: true
+          nopeerup_delay:
+            - post_boot: 10
+          dampening:
+            penalty_half_time: 1
+            reuse_route_val: 1
+            suppress_route_val: 1
+            max_suppress: 1
+          graceful_shutdown:
+            neighbors:
+              time: 50
+            community: 100
+            local_preference: 100
+        neighbor:
+          - address: 198.51.100.1
+            description:  merge neighbor
+            remote_as: 100
+            aigp:
+              send:
+                cost_community:
+                  id: 100
+                  poi:
+                    igp_cost: true
+                    transitive: true
+            route_map:
+              name: test-route
+              out: true
     state: merged
 
 # Commands fired:
 # ---------------
 #
-#
+#  "commands": [
+#         "router bgp 65000",
+#         "bgp dampening 1 1 1 1",
+#         "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
+#         "bgp advertise-best-external",
+#         "bgp nopeerup-delay post-boot 10",
+#         "bgp bestpath compare-routerid",
+#         "neighbor 198.51.100.1 remote-as 100",
+#         "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+#         "neighbor 198.51.100.1 description merge neighbor",
+#         "neighbor 198.51.100.1 route-map test-route out"
+#     ]
 
 # After state:
 # ------------
 #
 # vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
 
 # Using replaced
@@ -1291,12 +1672,36 @@ EXAMPLES = """
 # -------------
 #
 # vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
 
 - name: Replaces device configuration of listed global BGP with provided configuration
   cisco.ios.ios_bgp_global:
     config:
-    
+      as_number: 65000
+        bgp:
+          advertise_best_external: true
+          bestpath:
+            - med:
+                confed: true
+          nopeerup_delay:
+            - post_boot: 10
+              cold_boot: 10
+        neighbor:
+          - address: 192.0.2.1
+            description:  replace neighbor
+            slow_peer:
+              detection:
+                disable: true
     state: replaced
 
 # Commands fired:
@@ -1310,73 +1715,50 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 
 
-# Using overridden
-
-# Before state:
-# -------------
-#
-# vios#sh running-config | section ^router bgp
-
-- name: Override device configuration of all global BGP with provided configuration
-  cisco.ios.ios_bgp_global:
-    config:
-    
-    state: overridden
-
-# Commands fired:
-# ---------------
-#
-
-# After state:
-# -------------
-#
-# vios#sh running-config | section ^router bgp
-
 # Using Deleted
 
 # Before state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
-- name: "Delete global BGP (Note: This won't delete the all configured global BGP)"
+- name: "Delete global BGP (Note: This won't delete the configured global BGP)"
   cisco.ios.ios_bgp_global:
     config:
-    
+      as_number: 65000
     state: deleted
 
 # Commands fired:
 # ---------------
-#
+#  "commands": [
+#         "router bgp 65000",
+#         "no bgp dampening 1 1 1 1",
+#         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
+#         "no bgp advertise-best-external",
+#         "no bgp bestpath compare-routerid",
+#         "no bgp nopeerup-delay post-boot 10",
+#         "no neighbor 198.51.100.1 remote-as 100",
+#         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+#         "no neighbor 198.51.100.1 description merge neighbor",
+#         "no neighbor 198.51.100.1 route-map test-route out"
+#     ]
 
 
 # After state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
-
-
-# Before state:
-# -------------
-#
-# vios#sh running-config | section ^router bgp
-
-
-- name: "Delete global BGP based on AFI (Note: This won't delete the all configured global BGP)"
-  cisco.ios.ios_bgp_global:
-    config:
-    
-    state: deleted
-
-# Commands fired:
-# ---------------
-#
-
-
-# After state:
-# -------------
-#
-# vios#sh running-config | section ^router bgp
+# router bgp 65000
 
 
 # Using Deleted without any config passed
@@ -1386,17 +1768,73 @@ EXAMPLES = """
 # -------------
 #
 # vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
 
-- name: 'Delete ALL of configured global BGP (Note: This WILL delete the all configured
-    global BGP)'
+- name: "Delete global BGP without config"
   cisco.ios.ios_bgp_global:
     state: deleted
 
 # Commands fired:
 # ---------------
-#
+#  "commands": [
+#         "router bgp 65000",
+#         "no bgp dampening 1 1 1 1",
+#         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
+#         "no bgp advertise-best-external",
+#         "no bgp bestpath compare-routerid",
+#         "no bgp nopeerup-delay post-boot 10",
+#         "no neighbor 198.51.100.1 remote-as 100",
+#         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+#         "no neighbor 198.51.100.1 description merge neighbor",
+#         "no neighbor 198.51.100.1 route-map test-route out"
+#     ]
 
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^router bgp
+# router bgp 65000
+
+# Using Purged
+#"(NOTE: This WILL delete the configured global BGP)"
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
+
+
+- name: 'Delete the configured global BGP (Note: This WILL delete the the configured
+    global BGP)'
+  cisco.ios.ios_bgp_global:
+    state: purged
+
+# Commands fired:
+# ---------------
+#  "commands": [
+#         "no router bgp 65000",
+#     ]
 
 # After state:
 # -------------
@@ -1409,6 +1847,16 @@ EXAMPLES = """
 # -------------
 #
 # vios#sh running-config | section ^router bgp
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
 
 - name: Gather listed global BGP with provided configurations
@@ -1419,26 +1867,127 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
+#  "gathered": {
+#         "as_number": "65000",
+#         "bgp": {
+#             "advertise_best_external": true,
+#             "bestpath": [
+#                 {
+#                     "compare_routerid": true
+#                 }
+#             ],
+#             "dampening": {
+#                 "max_suppress": 1,
+#                 "penalty_half_time": 1,
+#                 "reuse_route_val": 1,
+#                 "suppress_route_val": 1
+#             },
+#             "graceful_shutdown": {
+#                 "community": "100",
+#                 "local_preference": 100,
+#                 "neighbors": {
+#                     "time": 50
+#                 }
+#             },
+#             "nopeerup_delay": [
+#                 {
+#                     "post_boot": 10
+#                 }
+#             ]
+#         },
+#         "neighbor": [
+#             {
+#                 "address": "198.51.100.1",
+#                 "aigp": {
+#                     "send": {
+#                         "cost_community": {
+#                             "id": 100,
+#                             "poi": {
+#                                 "igp_cost": true,
+#                                 "transitive": true
+#                             }
+#                         }
+#                     }
+#                 },
+#                 "description": "merge neighbor",
+#                 "remote_as": 100,
+#                 "route_map": {
+#                     "name": "test-route",
+#                     "out": true
+#                 }
+#             }
+#         ]
+#     }
 
 # Using Rendered
 
 - name: Rendered the provided configuration with the exisiting running configuration
   cisco.ios.ios_bgp_global:
     config:
-    
+      as_number: 65000
+        bgp:
+          advertise_best_external: true
+          bestpath:
+            - compare_routerid: true
+          nopeerup_delay:
+            - post_boot: 10
+          dampening:
+            penalty_half_time: 1
+            reuse_route_val: 1
+            suppress_route_val: 1
+            max_suppress: 1
+          graceful_shutdown:
+            neighbors:
+              time: 50
+            community: 100
+            local_preference: 100
+        neighbor:
+          - address: 198.51.100.1
+            description:  merge neighbor
+            remote_as: 100
+            aigp:
+              send:
+                cost_community:
+                  id: 100
+                  poi:
+                    igp_cost: true
+                    transitive: true
+            route_map:
+              name: test-route
+              out: true
     state: rendered
 
 # Module Execution Result:
 # ------------------------
 #
 # "rendered": [
-#     ]
+#       "router bgp 65000",
+#       "bgp dampening 1 1 1 1",
+#       "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
+#       "bgp advertise-best-external",
+#       "bgp nopeerup-delay post-boot 10",
+#       "bgp bestpath compare-routerid",
+#       "neighbor 198.51.100.1 remote-as 100",
+#       "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+#       "neighbor 198.51.100.1 description merge neighbor",
+#       "neighbor 198.51.100.1 route-map test-route out"
+#  ]
 
 # Using Parsed
 
 # File: parsed.cfg
 # ----------------
 #
+# router bgp 65000
+#  bgp nopeerup-delay post-boot 10
+#  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+#  bgp bestpath compare-routerid
+#  bgp dampening 1 1 1 1
+#  bgp advertise-best-external
+#  neighbor 198.51.100.1 remote-as 100
+#  neighbor 198.51.100.1 description merge neighbor
+#  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+#  neighbor 198.51.100.1 route-map test-route out
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_bgp_global:
@@ -1448,8 +1997,58 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
-# "parsed": [
-#     ]
+#  "parsed": {
+#         "as_number": "65000",
+#         "bgp": {
+#             "advertise_best_external": true,
+#             "bestpath": [
+#                 {
+#                     "compare_routerid": true
+#                 }
+#             ],
+#             "dampening": {
+#                 "max_suppress": 1,
+#                 "penalty_half_time": 1,
+#                 "reuse_route_val": 1,
+#                 "suppress_route_val": 1
+#             },
+#             "graceful_shutdown": {
+#                 "community": "100",
+#                 "local_preference": 100,
+#                 "neighbors": {
+#                     "time": 50
+#                 }
+#             },
+#             "nopeerup_delay": [
+#                 {
+#                     "post_boot": 10
+#                 }
+#             ]
+#         },
+#         "neighbor": [
+#             {
+#                 "address": "198.51.100.1",
+#                 "aigp": {
+#                     "send": {
+#                         "cost_community": {
+#                             "id": 100,
+#                             "poi": {
+#                                 "igp_cost": true,
+#                                 "transitive": true
+#                             }
+#                         }
+#                     }
+#                 },
+#                 "description": "merge neighbor",
+#                 "remote_as": 100,
+#                 "route_map": {
+#                     "name": "test-route",
+#                     "out": true
+#                 }
+#             }
+#         ]
+#     }
+
 """
 
 RETURN = """
@@ -1467,7 +2066,7 @@ commands:
   description: The set of commands pushed to the remote device
   returned: always
   type: list
-  sample: []
+  sample: ["router bgp 65000", "bgp nopeerup-delay post-boot 10", "bgp advertise-best-external"]
 """
 
 from ansible.module_utils.basic import AnsibleModule
