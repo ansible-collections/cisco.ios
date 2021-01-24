@@ -76,3 +76,15 @@ class TestIosPingModule(TestIosModule):
         """ Test for unsuccessful pings when destination should be reachable - FAIL. """
         set_module_args(dict(count=2, dest="10.255.255.250"))
         self.execute_module(failed=True)
+
+    def test_ios_ping_with_size(self):
+        """ Test for successful pings using size option. """
+        set_module_args(dict(size=1400, dest="8.8.8.8"))
+        commands = ["ping 8.8.8.8 size 1400"]
+        self.execute_module(commands=commands)
+
+    def test_ios_ping_with_size_df_bit(self):
+        """ Test for successful pings using size and df-bit options. """
+        set_module_args(dict(size=1400, df_bit=True, dest="8.8.8.8"))
+        commands = ["ping 8.8.8.8 size 1400 df-bit"]
+        self.execute_module(commands=commands)
