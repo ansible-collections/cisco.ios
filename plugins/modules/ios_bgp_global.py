@@ -1692,32 +1692,59 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
-      bgp:
-        advertise_best_external: true
-        bestpath:
-          - med:
-              confed: true
-        nopeerup_delay:
-          - post_boot: 10
-            cold_boot: 10
-      neighbor:
-        - address: 192.0.2.1
-          description:  replace neighbor
-          slow_peer:
-            detection:
-              disable: true
+        bgp:
+          advertise_best_external: true
+          bestpath:
+            - med:
+                confed: true
+          log_neighbor_changes: true
+          nopeerup_delay:
+            - post_boot: 10
+              cold_boot: 20
+        neighbor:
+          - address: 192.0.2.1
+            description:  replace neighbor
+            remote_as: 100
+            slow_peer:
+              detection:
+                disable: true
     state: replaced
 
 # Commands fired:
 # ---------------
 #
+#  "commands": [
+#     "router bgp 65000"
+#     "no bgp dampening 1 1 1 1"
+#     "no timers bgp 100 200 150"
+#     "no bgp bestpath compare-routerid"
+#     "bgp bestpath med confed"
+#     "bgp nopeerup-delay cold-boot 20"
+#     "no neighbor 198.51.100.1 remote-as 100"
+#     "neighbor 192.0.2.1 remote-as 100"
+#     "no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
+#     "no neighbor 198.51.100.1 route-map test-route out"
+#     "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive"
+#     "no neighbor 198.51.100.1 description merge neighbor"
+#     "neighbor 192.0.2.1 slow-peer detection disable"
+#     "neighbor 192.0.2.1 description replace neighbor"
+# ]
 
 
 # After state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
-
+# router bgp 65000
+#  bgp log-neighbor-changes
+#  bgp nopeerup-delay cold-boot 20
+#  bgp nopeerup-delay post-boot 10
+#  bgp bestpath med confed
+#  bgp advertise-best-external
+#  redistribute connected metric 10
+#  neighbor 192.0.2.1 remote-as 100
+#  neighbor 192.0.2.1 description replace neighbor
+#  neighbor 192.0.2.1 slow-peer detection disable
 
 # Using Deleted
 
