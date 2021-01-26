@@ -1,0 +1,40 @@
+---
+- debug:
+    msg: Start Deleted integration state for ios_bgp_global ansible_connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Delete provided BGP Global
+      register: result
+      cisco.ios.ios_bgp_global: &id001
+        config:
+          as_number: 65000
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    - name: Assert that after dicts are correctly generated
+      assert:
+        that:
+          - deleted['after'] == result['after']
+
+    - name: Delete provided BGP Global (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_bgp_global: *id001
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result.changed == false
+
+  always:
+
+    - include_tasks: _remove_config.yaml

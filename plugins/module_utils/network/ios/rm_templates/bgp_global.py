@@ -8,9 +8,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The Bgp_global parser templates file. This contains 
-a list of parser definitions and associated functions that 
-facilitates both facts gathering and native command generation for 
+The Bgp_global parser templates file. This contains
+a list of parser definitions and associated functions that
+facilitates both facts gathering and native command generation for
 the given network resource.
 """
 
@@ -1105,9 +1105,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_additional_paths,
-            # "compval": "additional_paths",
             "result": {
-                # "{{ asn }}": {
                 "bgp": {
                     "additional_paths": {
                         "install": "{{ True if install is defined }}",
@@ -1121,8 +1119,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         },
                         "send": "{{ True if send is defined }}",
                     }
-                },
-                # },
+                }
             },
         },
         {
@@ -1138,7 +1135,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_bestpath,
-            # "compval": "bestpath",
             "result": {
                 "bgp": {
                     "bestpath": [
@@ -1178,7 +1174,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                     \s*(?P<log_neighbor_changes>log-neighbor-changes)*
                     \s*(?P<maxas_limit>maxas-limit\s\d+)*
                     \s*(?P<maxcommunity_limit>maxas-limit\s\d+)*
-                    \s*(?P<maxextcommunity_limit>maxextcommunity-limit\s\d+)*   
+                    \s*(?P<maxextcommunity_limit>maxextcommunity-limit\s\d+)*
                     \s*(?P<nexthop>nexthop\s(route-map\s\S+|trigger\s(delay\s\d+|enable)))*
                     \s*(?P<recursion>recursion\shost)*
                     \s*(?P<redistribute_internal>redistribute-internal)*
@@ -1210,7 +1206,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                     "client_to_client": {
                         "set": "{{ True if client_to_client is defined and client_to_client.split(' ')|length == 2 }}",
                         "all": "{{ True if client_to_client is defined and 'all' in client_to_client }}",
-                        "intra_cluster": "{{ client_to_client.split('cluster-id ')[1] if client_to_client is defined and 'intra-cluster' in client_to_client }}",
+                        "intra_cluster": "{{\
+                            client_to_client.split('cluster-id ')[1]\
+                                if client_to_client is defined and 'intra-cluster' in client_to_client }}",
                     },
                     "cluster_id": "{{ cluster_id.split('cluster-id ')[1] if cluster_id is defined }}",
                     "confederation": {
@@ -1219,12 +1217,21 @@ class Bgp_globalTemplate(NetworkTemplate):
                     },
                     "consistency_checker": {
                         "auto_repair": {
-                            "set": "{{ True if consistency_checker is defined and 'auto-repair' in consistency_checker and consistency_checker.split(' ')|length == 2 }}",
-                            "interval": "{{ consistency_checker.split('interval ')[1] if consistency_checker is defined and consistency_checker.split(' ')|length > 2 }}",
+                            "set": "{{\
+                                True if consistency_checker is defined and\
+                                    'auto-repair' in consistency_checker and\
+                                        consistency_checker.split(' ')|length == 2 }}",
+                            "interval": "{{\
+                                consistency_checker.split('interval ')[1] if consistency_checker is defined and\
+                                    consistency_checker.split(' ')|length > 2 }}",
                         },
                         "error_message": {
-                            "set": "{{ True if consistency_checker is defined and 'error-message' in consistency_checker and consistency_checker.split(' ')|length == 2 }}",
-                            "interval": "{{ consistency_checker.split('interval ')[1] if consistency_checker is defined and consistency_checker.split(' ')|length > 2 }}",
+                            "set": "{{\
+                                True if consistency_checker is defined and\
+                                    'error-message' in consistency_checker and consistency_checker.split(' ')|length == 2 }}",
+                            "interval": "{{\
+                                consistency_checker.split('interval ')[1] if consistency_checker is defined and\
+                                    consistency_checker.split(' ')|length > 2 }}",
                         },
                     },
                     "deterministic_med": "{{ True if deterministic_med is defined }}",
@@ -1235,8 +1242,12 @@ class Bgp_globalTemplate(NetworkTemplate):
                     "graceful_restart": {
                         "set": "{{ True if graceful_restart is defined and graceful_restart.split(' ')|length == 2 }}",
                         "extended": "{{ True if graceful_restart is defined and 'extended' in graceful_restart }}",
-                        "restart_time": "{{ graceful_restart.split('graceful-restart restart-time ')[1] if graceful_restart is defined and 'restart-time' in graceful_restart }}",
-                        "stalepath_time": "{{ graceful_restart.split('graceful-restart stalepath-time ')[1] if graceful_restart is defined and 'stalepath-time' in graceful_restart }}",
+                        "restart_time": "{{\
+                            graceful_restart.split('graceful-restart restart-time ')[1] if graceful_restart is defined and\
+                                'restart-time' in graceful_restart }}",
+                        "stalepath_time": "{{\
+                            graceful_restart.split('graceful-restart stalepath-time ')[1] if graceful_restart is defined and\
+                                'stalepath-time' in graceful_restart }}",
                     },
                     "inject_map": {
                         "name": "{{ inject_map.split(' ')[1] if inject_map is defined }}",
@@ -1314,7 +1325,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_dampening,
-            # "compval": "dampening",
             "result": {
                 "bgp": {
                     "dampening": {
@@ -1340,7 +1350,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_graceful_shutdown,
-            # "compval": "graceful_shutdown",
             "result": {
                 "bgp": {
                     "graceful_shutdown": {
@@ -1371,7 +1380,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_nopeerup_delay,
-            # "compval": "nopeerup_delay",
             "result": {
                 "bgp": {
                     "nopeerup_delay": [
@@ -1427,7 +1435,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                     \s*(?P<send_community>send-community\s(both|extended|standard)|send-community)*
                     #\s*(?P<send_label>send-label\sexplicit-null|send-label)*
                     \s*(?P<soft_reconfiguration>soft-reconfiguration\sinbound)*
-                    #\s*(?P<slow_peer>slow-peer\s((detection\sthreshold\s\d+|detection)|(split-update-group\sdynamic\spermanent|split-update-group\sdynamic)))*
+                    \s*(?P<slow_peer>slow-peer\s(detection.*|split-update-group.*))*
                     \s*(?P<timers>(timers\s\d+\s\d+\s\d+|timers\s\d+\s\d+))*
                     \s*(?P<transport>(transport\s(connection-mode\sactive|connection-mode\spassive)|transport\smulti-session|transport\s(path-mtu-discovery\sdisable|path-mtu-discovery)))*
                     \s*(?P<ttl_security>ttl-security\shops\s\d+)*
@@ -1454,7 +1462,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "advertise": {
                             "additional_paths": {
                                 "all": "{{ True if advertise is defined and 'additional-paths' in advertise and 'all' in advertise }}",
-                                "best": "{{ advertise.split('best ')[1].split(' ')[0] if advertise is defined and 'additional-paths' in advertise and 'best' in advertise }}",
+                                "best": "{{\
+                                    advertise.split('best ')[1].split(' ')[0] if advertise is defined and\
+                                        'additional-paths' in advertise and 'best' in advertise }}",
                                 "group_best": "{{ True if advertise is defined and 'additional-paths' in advertise and 'group-best' in advertise }}",
                             },
                             "best_external": "{{ True if advertise is defined and 'best-external' in advertise }}",
@@ -1509,7 +1519,8 @@ class Bgp_globalTemplate(NetworkTemplate):
                         },
                         "fall_over": {
                             "bfd": {
-                                "set": "{{ True if fall_over is defined and 'bfd' in fall_over and 'single-hop' not in fall_over and 'multi-hop' not in fall_over }}",
+                                "set": "{{ True if fall_over is defined and\
+                                    'bfd' in fall_over and 'single-hop' not in fall_over and 'multi-hop' not in fall_over }}",
                                 "multi_hop": "{{ True if fall_over is defined and 'bfd' in fall_over and 'multi-hop' in fall_over }}",
                                 "single_hop": "{{ True if fall_over is defined and 'bfd' in fall_over and 'single-hop' in fall_over }}",
                             },
@@ -1530,8 +1541,12 @@ class Bgp_globalTemplate(NetworkTemplate):
                             "number": "{{ local_as.split(' ')[1] if local_as is defined and local_as.split(' ')|length > 1 }}",
                             "dual_as": "{{ True if local_as is defined and local_as.split(' ')|length > 2 and 'dual-as' in local_as }}",
                             "no_prepend": {
-                                "set": "{{ True if local_as is defined and local_as.split(' ')|length > 2 and 'no-prepend' in local_as and 'replace-as' not in local_as }}",
-                                "replace_as": "{{ True if local_as is defined and local_as.split(' ')|length > 2 and 'no-prepend' in local_as and 'replace-as' in local_as }}",
+                                "set": "{{\
+                                    True if local_as is defined and\
+                                        local_as.split(' ')|length > 2 and 'no-prepend' in local_as and\
+                                            'replace-as' not in local_as }}",
+                                "replace_as": "{{ True if local_as is defined and\
+                                    local_as.split(' ')|length > 2 and 'no-prepend' in local_as and 'replace-as' in local_as }}",
                             },
                         },
                         "log_neighbor_changes": {
@@ -1540,7 +1555,8 @@ class Bgp_globalTemplate(NetworkTemplate):
                         },
                         "maximum_prefix": {
                             "max_no": "{{ maximum_prefix.split(' ')[1] if maximum_prefix is defined }}",
-                            "threshold_val": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
+                            "threshold_val": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and\
+                                maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
                             "restart": "{{ maximum_prefix.split('restart ')[1] if maximum_prefix is defined and 'restart' in maximum_prefix }}",
                             "warning_only": "{{ True if maximum_prefix is defined and 'warning-only' in maximum_prefix }}",
                         },
@@ -1555,20 +1571,28 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "password": "{{ password.split(' ')[1] if password is defined }}",
                         "path_attribute": {
                             "discard": {
-                                "type": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                "type": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                    path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
                                 "range": {
-                                    "start": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                    "end": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                    "start": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                    "end": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
                                 },
-                                "in": "{% if path_attribute is defined and 'discard range' in path_attribute and 'in' in path_attribute %}{{ True }}{% endif %}",
+                                "in": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                    'in' in path_attribute %}{{ True }}{% endif %}",
                             },
                             "treat_as_withdraw": {
-                                "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                    path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
                                 "range": {
-                                    "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                    "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                    "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                    "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
                                 },
-                                "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and 'in' in path_attribute %}{{ True }}{% endif %}",
+                                "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                    'in' in path_attribute %}{{ True }}{% endif %}",
                             },
                         },
                         "peer_group": "{{ listen.split('peer-group ')[1] if listen is defined and 'peer-group' in listen }}",
@@ -1576,7 +1600,8 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "remove_private_as": {
                             "set": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length == 1 }}",
                             "all": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and 'all' in remove_private_as }}",
-                            "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and 'replace-as' in remove_private_as }}",
+                            "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
+                                'replace-as' in remove_private_as }}",
                         },
                         "route_map": {
                             "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
@@ -1600,13 +1625,18 @@ class Bgp_globalTemplate(NetworkTemplate):
                         },
                         "slow_peer": {
                             "detection": {
-                                "enable": "{{ True if slow_peer is defined and 'detection' in slow_peer and detection_threshold is not defined }}",
-                                "disable": "{{ True if detection_disable is defined }}",
-                                "threshold": "{{ detection_threshold.split('threshold ')[1] if detection_threshold is defined }}",
+                                "enable": "{{ True if slow_peer is defined and 'disable' not in slow_peer and 'threshold' not in slow_peer }}",
+                                "disable": "{{ True if slow_peer is defined and 'disable' in slow_peer }}",
+                                "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
                             },
                             "split_update_group": {
-                                "dynamic": "{{ True if split_dynamic is defined and split_dynamic.split('dynamic ')[1] == 'disable' }}",
-                                "static": "{{ True if split_static is defined }}",
+                                "dynamic": {
+                                    "enable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                        'disable' not in slow_peer and 'threshold' not in slow_peer }}",
+                                    "disable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'disable' in slow_peer }}",
+                                    "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'permanent' in slow_peer }}",
+                                },
+                                "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
                             },
                         },
                         "soft_reconfiguration": "{{ True if soft_reconfiguration is defined }}",

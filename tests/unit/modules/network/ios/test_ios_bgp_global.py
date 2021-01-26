@@ -146,44 +146,44 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    # def test_ios_bgp_global_replaced(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 processes=[
-    #                     dict(
-    #                         process_id="1",
-    #                         max_metric=dict(
-    #                             router_lsa=True, on_startup=dict(time=100)
-    #                         ),
-    #                         address_family=[
-    #                             dict(
-    #                                 afi="ipv4",
-    #                                 unicast=True,
-    #                                 vrf="blue",
-    #                                 adjacency=dict(
-    #                                     min_adjacency=100, max_adjacency=100
-    #                                 ),
-    #                             )
-    #                         ],
-    #                     )
-    #                 ]
-    #             ),
-    #             state="replaced",
-    #         )
-    #     )
-    #     commands = [
-    #         "router ospfv3 1",
-    #         "max-metric router-lsa on-startup 100",
-    #         "no area 10 nssa default-information-originate metric 10",
-    #         "address-family ipv4 unicast vrf blue",
-    #         "adjacency stagger 100 100",
-    #         "exit-address-family",
-    #     ]
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(sorted(result["commands"]), sorted(commands))
+    def test_ios_bgp_global_replaced(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    bgp=dict(
+                        advertise_best_external=True,
+                        bestpath=[dict(compare_routerid=True)],
+                        log_neighbor_changes=True,
+                        nopeerup_delay=[
+                            dict(cold_boot=20),
+                            dict(post_boot=10),
+                        ],
+                    ),
+                    redistribute=[dict(connected=dict(metric=10))],
+                    neighbor=[
+                        dict(
+                            address="192.0.2.1",
+                            remote_as=200,
+                            description="replace neighbor",
+                        )
+                    ],
+                ),
+                state="replaced",
+            )
+        )
+        commands = [
+            "bgp nopeerup-delay cold-boot 20",
+            "neighbor 192.0.2.1 description replace neighbor",
+            "neighbor 192.0.2.1 remote-as 200",
+            "no neighbor 198.51.100.1 remote-as 100",
+            "no neighbor 198.51.100.1 route-map test-route out",
+            "no timers bgp 100 200 150",
+            "router bgp 65000",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    #
     def test_ios_bgp_global_replaced_idempotent(self):
         set_module_args(
             dict(
@@ -247,51 +247,3 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp": {"nopeerup_delay": [{"post_boot": 10}]},
         }
         self.assertEqual(parsed_list, result["parsed"])
-
-    def test_ios_bgp_global_rendered(self):
-        set_module_args(
-            dict(
-                config=dict(
-                    as_number="65000",
-                    bgp=dict(
-                        dampening=dict(
-                            penalty_half_time=1,
-                            reuse_route_val=1,
-                            suppress_route_val=1,
-                            max_suppress=1,
-                        ),
-                        graceful_shutdown=dict(
-                            neighbors=dict(time=50),
-                            community=100,
-                            local_preference=100,
-                        ),
-                    ),
-                    neighbor=[
-                        dict(
-                            address="198.51.100.1",
-                            description="merge neighbor",
-                            aigp=dict(
-                                send=dict(
-                                    cost_community=dict(
-                                        id=100,
-                                        poi=dict(
-                                            igp_cost=True, transitive=True
-                                        ),
-                                    )
-                                )
-                            ),
-                        )
-                    ],
-                ),
-                state="rendered",
-            )
-        )
-        commands = [
-            "router bgp 65000",
-            "bgp dampening 1 1 1 1",
-            "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
-            "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-            "neighbor 198.51.100.1 description merge neighbor",
-        ]
-        result = self.execute_module(changed=False)
-        self.assertEqual(result["rendered"], commands)

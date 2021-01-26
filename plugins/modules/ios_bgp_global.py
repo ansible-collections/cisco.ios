@@ -372,6 +372,7 @@ options:
                 description: Route map for valid nexthops
                 type: str
               trigger:
+                description: nexthop trackings
                 type: dict
                 suboptions:
                   delay:
@@ -1013,6 +1014,7 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
                   range:
+                    description: path attribute range
                     type: dict
                     suboptions:
                       start:
@@ -1038,6 +1040,7 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
                   range:
+                    description: path attribute range
                     type: dict
                     suboptions:
                       start:
@@ -1567,6 +1570,7 @@ options:
     - replaced
     - overridden
     - deleted
+    - purged
     - gathered
     - rendered
     - parsed
@@ -1602,36 +1606,36 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
-        bgp:
-          advertise_best_external: true
-          bestpath:
-            - compare_routerid: true
-          nopeerup_delay:
-            - post_boot: 10
-          dampening:
-            penalty_half_time: 1
-            reuse_route_val: 1
-            suppress_route_val: 1
-            max_suppress: 1
-          graceful_shutdown:
-            neighbors:
-              time: 50
-            community: 100
-            local_preference: 100
-        neighbor:
-          - address: 198.51.100.1
-            description:  merge neighbor
-            remote_as: 100
-            aigp:
-              send:
-                cost_community:
-                  id: 100
-                  poi:
-                    igp_cost: true
-                    transitive: true
-            route_map:
-              name: test-route
-              out: true
+      bgp:
+        advertise_best_external: true
+        bestpath:
+          - compare_routerid: true
+        nopeerup_delay:
+          - post_boot: 10
+        dampening:
+          penalty_half_time: 1
+          reuse_route_val: 1
+          suppress_route_val: 1
+          max_suppress: 1
+        graceful_shutdown:
+          neighbors:
+            time: 50
+          community: 100
+          local_preference: 100
+      neighbor:
+        - address: 198.51.100.1
+          description:  merge neighbor
+          remote_as: 100
+          aigp:
+            send:
+              cost_community:
+                id: 100
+                poi:
+                  igp_cost: true
+                  transitive: true
+          route_map:
+            name: test-route
+            out: true
     state: merged
 
 # Commands fired:
@@ -1688,20 +1692,20 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
-        bgp:
-          advertise_best_external: true
-          bestpath:
-            - med:
-                confed: true
-          nopeerup_delay:
-            - post_boot: 10
-              cold_boot: 10
-        neighbor:
-          - address: 192.0.2.1
-            description:  replace neighbor
-            slow_peer:
-              detection:
-                disable: true
+      bgp:
+        advertise_best_external: true
+        bestpath:
+          - med:
+              confed: true
+        nopeerup_delay:
+          - post_boot: 10
+            cold_boot: 10
+      neighbor:
+        - address: 192.0.2.1
+          description:  replace neighbor
+          slow_peer:
+            detection:
+              disable: true
     state: replaced
 
 # Commands fired:
@@ -1925,36 +1929,36 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
-        bgp:
-          advertise_best_external: true
-          bestpath:
-            - compare_routerid: true
-          nopeerup_delay:
-            - post_boot: 10
-          dampening:
-            penalty_half_time: 1
-            reuse_route_val: 1
-            suppress_route_val: 1
-            max_suppress: 1
-          graceful_shutdown:
-            neighbors:
-              time: 50
-            community: 100
-            local_preference: 100
-        neighbor:
-          - address: 198.51.100.1
-            description:  merge neighbor
-            remote_as: 100
-            aigp:
-              send:
-                cost_community:
-                  id: 100
-                  poi:
-                    igp_cost: true
-                    transitive: true
-            route_map:
-              name: test-route
-              out: true
+      bgp:
+        advertise_best_external: true
+        bestpath:
+          - compare_routerid: true
+        nopeerup_delay:
+          - post_boot: 10
+        dampening:
+          penalty_half_time: 1
+          reuse_route_val: 1
+          suppress_route_val: 1
+          max_suppress: 1
+        graceful_shutdown:
+          neighbors:
+            time: 50
+          community: 100
+          local_preference: 100
+      neighbor:
+        - address: 198.51.100.1
+          description:  merge neighbor
+          remote_as: 100
+          aigp:
+            send:
+              cost_community:
+                id: 100
+                poi:
+                  igp_cost: true
+                  transitive: true
+          route_map:
+            name: test-route
+            out: true
     state: rendered
 
 # Module Execution Result:

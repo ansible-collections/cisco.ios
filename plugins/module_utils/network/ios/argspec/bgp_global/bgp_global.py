@@ -73,7 +73,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "send": {"type": "bool"},
                             },
                         },
-                        "advertise_best_external": {"type": "int"},
+                        "advertise_best_external": {"type": "bool"},
                         "aggregate_timer": {"type": "int"},
                         "always_compare_med": {"type": "bool"},
                         "asnotation": {"type": "bool"},
@@ -635,6 +635,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "detection": {
                                     "type": "dict",
                                     "options": {
+                                        "enable": {"type": "bool"},
                                         "disable": {"type": "bool"},
                                         "threshold": {"type": "int"},
                                     },
@@ -645,6 +646,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         "dynamic": {
                                             "type": "dict",
                                             "options": {
+                                                "enable": {"type": "bool"},
                                                 "disable": {"type": "bool"},
                                                 "permanent": {"type": "bool"},
                                             },

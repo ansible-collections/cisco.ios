@@ -1,0 +1,117 @@
+---
+merged:
+  before: {}
+
+  commands:
+    - router bgp 65000
+    - bgp bestpath compare-routerid
+    - bgp nopeerup-delay post-boot 10
+    - bgp dampening 1 1 1 1
+    - timers bgp 100 200 150
+    - bgp advertise-best-external
+    - neighbor 198.51.100.1 remote-as 100
+    - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    - bgp log-neighbor-changes
+    - neighbor 198.51.100.1 route-map test-route out
+    - neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    - neighbor 198.51.100.1 description merge neighbor
+    - redistribute connected metric 10
+
+  after:
+    as_number: "65000"
+    bgp:
+      advertise_best_external: true
+      bestpath:
+        - compare_routerid: true
+      dampening:
+        max_suppress: 1
+        penalty_half_time: 1
+        reuse_route_val: 1
+        suppress_route_val: 1
+      graceful_shutdown:
+        community: "100"
+        local_preference: 100
+        neighbors:
+          time: 50
+      log_neighbor_changes: true
+      nopeerup_delay:
+        - post_boot: 10
+    neighbor:
+      - address: "198.51.100.1"
+        aigp:
+          send:
+            cost_community:
+              id: 100
+              poi:
+                igp_cost: true
+                transitive: true
+        description: merge neighbor
+        remote_as: 100
+        route_map:
+          name: test-route
+          out: true
+    redistribute:
+      - connected:
+          metric: 10
+    timers:
+      holdtime: 200
+      keepalive: 100
+      min_holdtime: 150
+
+replaced:
+  commands:
+    - router bgp 65000
+    - no bgp dampening 1 1 1 1
+    - no timers bgp 100 200 150
+    - no bgp bestpath compare-routerid
+    - bgp bestpath med confed
+    - bgp nopeerup-delay cold-boot 20
+    - no neighbor 198.51.100.1 remote-as 100
+    - neighbor 192.0.2.1 remote-as 100
+    - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    - no neighbor 198.51.100.1 route-map test-route out
+    - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    - no neighbor 198.51.100.1 description merge neighbor
+    - neighbor 192.0.2.1 slow-peer detection disable
+    - neighbor 192.0.2.1 description replace neighbor
+
+  after:
+    as_number: "65000"
+    bgp:
+      advertise_best_external: true
+      bestpath:
+        - med:
+            confed: true
+      log_neighbor_changes: true
+      nopeerup_delay:
+        - cold_boot: 20
+        - post_boot: 10
+    neighbor:
+      - address: "192.0.2.1"
+        description: "replace neighbor"
+        remote_as: 100
+        slow_peer:
+          detection:
+            disable: true
+    redistribute:
+      - connected:
+          metric: 10
+
+deleted:
+  commands:
+    - router bgp 65000
+    - no bgp bestpath compare-routerid
+    - no bgp nopeerup-delay post-boot 10
+    - no bgp dampening 1 1 1 1
+    - no timers bgp 100 200 150
+    - no bgp advertise-best-external
+    - no neighbor 198.51.100.1 remote-as 100
+    - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    - no bgp log-neighbor-changes
+    - no neighbor 198.51.100.1 route-map test-route out
+    - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    - no neighbor 198.51.100.1 description merge neighbor
+    - no redistribute connected metric 10
+
+  after:
+    as_number: "65000"
