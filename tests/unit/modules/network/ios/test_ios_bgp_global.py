@@ -221,18 +221,17 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no neighbor 198.51.100.1 remote-as 100",
             "no neighbor 198.51.100.1 route-map test-route out",
         ]
-        # self.execute_module(changed=True, commands=commands)
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    # def test_ios_bgp_global_purged(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(as_number=65000), state="deleted"
-    #         )
-    #     )
-    #     commands = ["no router bgp 65000"]
-    #     self.execute_module(changed=True, commands=commands)
+    def test_ios_bgp_global_purged(self):
+        set_module_args(
+            dict(
+                config=dict(as_number=65000), state="purged"
+            )
+        )
+        commands = ["no router bgp 65000"]
+        self.execute_module(changed=True, commands=commands)
 
     def test_ios_bgp_global_parsed(self):
         set_module_args(
