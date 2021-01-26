@@ -1,5 +1,5 @@
 ---
-requires_ansible: '>=2.9.10,<2.11'
+requires_ansible: '>=2.9.10'
 plugin_routing:
   action:
     ios_acl_interfaces:
