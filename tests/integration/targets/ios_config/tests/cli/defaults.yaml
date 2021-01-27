@@ -52,4 +52,16 @@
       - result.changed == false
       - result.stdout is defined
 
+- name: Validate Terminal Error Regex
+  ios_config:
+    lines:
+      - switchport private-vlan mapping 10 6000
+    parents: interface GigabitEthernet0/1
+  register: result
+  ignore_errors: true
+
+- assert:
+    that:
+      - result.failed == True
+
 - debug: msg="END cli/defaults.yaml on connection={{ ansible_connection }}"
