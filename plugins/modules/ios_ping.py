@@ -41,6 +41,15 @@ options:
     - The IP Address or hostname (resolvable by switch) of the remote node.
     required: true
     type: str
+  df_bit:
+    description:
+    - Set the DF bit.
+    default: false
+    type: bool
+  size:
+    description:
+    - Size of packets to send.
+    type: int
   source:
     description:
     - The source IP Address.
@@ -83,6 +92,12 @@ EXAMPLES = """
     source: loopback0
     vrf: prod
     count: 20
+
+- name: Test reachability to 10.50.50.50 using df-bit and size
+  cisco.ios.ios_ping:
+    dest: 10.50.50.50
+    df_bit: true
+    size: 1400
 """
 RETURN = """
 commands:
@@ -127,6 +142,8 @@ def main():
     argument_spec = dict(
         count=dict(type="int"),
         dest=dict(type="str", required=True),
+        df_bit=dict(type="bool", default=False),
+        size=dict(type="int"),
         source=dict(type="str"),
         state=dict(
             type="str", choices=["absent", "present"], default="present"
@@ -137,13 +154,15 @@ def main():
     module = AnsibleModule(argument_spec=argument_spec)
     count = module.params["count"]
     dest = module.params["dest"]
+    df_bit = module.params["df_bit"]
+    size = module.params["size"]
     source = module.params["source"]
     vrf = module.params["vrf"]
     warnings = list()
     results = {}
     if warnings:
         results["warnings"] = warnings
-    results["commands"] = [build_ping(dest, count, source, vrf)]
+    results["commands"] = [build_ping(dest, count, source, vrf, size, df_bit)]
     ping_results = run_commands(module, commands=results["commands"])
     ping_results_list = ping_results[0].split("\n")
     stats = ""
@@ -164,7 +183,9 @@ def main():
     module.exit_json(**results)
 
 
-def build_ping(dest, count=None, source=None, vrf=None):
+def build_ping(
+    dest, count=None, source=None, vrf=None, size=None, df_bit=False
+):
     """
     Function to build the command to send to the terminal for the switch
     to execute. All args come from the module's unique params.
@@ -175,6 +196,10 @@ def build_ping(dest, count=None, source=None, vrf=None):
         cmd = "ping {0}".format(dest)
     if count is not None:
         cmd += " repeat {0}".format(str(count))
+    if size is not None:
+        cmd += " size {0}".format(size)
+    if df_bit:
+        cmd += " df-bit"
     if source is not None:
         cmd += " source {0}".format(source)
     return cmd
