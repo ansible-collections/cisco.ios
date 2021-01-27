@@ -202,7 +202,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <code>intended_config</code> provides the master configuration that the node should conform to and is used to check the final running-config against. This argument will not modify any settings on the remote device and is strictly used to check the compliance of the current device&#x27;s configuration against.  When specifying this argument, the task should also modify the <code>diff_against</code> value and set it to <em>intended</em>.</div>
+                        <div>The <code>intended_config</code> provides the master configuration that the node should conform to and is used to check the final running-config against. This argument will not modify any settings on the remote device and is strictly used to check the compliance of the current device&#x27;s configuration against.  When specifying this argument, the task should also modify the <code>diff_against</code> value and set it to <em>intended</em>. The configuration lines for this value should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure correct diff.</div>
                 </td>
             </tr>
             <tr>
@@ -218,7 +218,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The ordered set of commands that should be configured in the section.  The commands must be the exact same commands as found in the device running-config.  Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser.</div>
+                        <div>The ordered set of commands that should be configured in the section. The commands must be the exact same commands as found in the device running-config to ensure idempotency and correct diff. Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: commands</div>
                 </td>
             </tr>
@@ -458,7 +458,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source. There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The <em>running_config</em> argument allows the implementer to pass in the configuration to use as the base config for comparison.</div>
+                        <div>The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source. There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The <em>running_config</em> argument allows the implementer to pass in the configuration to use as the base config for comparison. The configuration lines for this option should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: config</div>
                 </td>
             </tr>
@@ -495,7 +495,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory.  This argument is mutually exclusive with <em>lines</em>, <em>parents</em>.</div>
+                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
                 </td>
             </tr>
     </table>
@@ -508,6 +508,7 @@ Notes
 .. note::
    - Tested against IOS 15.6
    - Abbreviated commands are NOT idempotent, see L (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+   - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
