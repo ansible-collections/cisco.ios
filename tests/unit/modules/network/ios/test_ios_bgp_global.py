@@ -225,11 +225,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_purged(self):
-        set_module_args(
-            dict(
-                config=dict(as_number=65000), state="purged"
-            )
-        )
+        set_module_args(dict(config=dict(as_number=65000), state="purged"))
         commands = ["no router bgp 65000"]
         self.execute_module(changed=True, commands=commands)
 

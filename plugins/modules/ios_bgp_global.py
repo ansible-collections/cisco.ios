@@ -1692,22 +1692,22 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
-        bgp:
-          advertise_best_external: true
-          bestpath:
-            - med:
-                confed: true
-          log_neighbor_changes: true
-          nopeerup_delay:
-            - post_boot: 10
-              cold_boot: 20
-        neighbor:
-          - address: 192.0.2.1
-            description:  replace neighbor
-            remote_as: 100
-            slow_peer:
-              detection:
-                disable: true
+      bgp:
+        advertise_best_external: true
+        bestpath:
+          - med:
+              confed: true
+        log_neighbor_changes: true
+        nopeerup_delay:
+          - post_boot: 10
+            cold_boot: 20
+      neighbor:
+        - address: 192.0.2.1
+          description:  replace neighbor
+          remote_as: 100
+          slow_peer:
+            detection:
+              disable: true
     state: replaced
 
 # Commands fired:
