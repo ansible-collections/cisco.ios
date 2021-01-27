@@ -18,6 +18,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     bgp:
       redirect: cisco.ios.ios
+    ios_bgp_global:
+      redirect: cisco.ios.ios
+    bgp_global:
+      redirect: cisco.ios.ios
     ios_command:
       redirect: cisco.ios.ios
     command:
@@ -135,6 +139,8 @@ plugin_routing:
       redirect: cisco.ios.ios_banner
     bgp:
       redirect: cisco.ios.ios_bgp
+    bgp_global:
+      redirect: cisco.ios.ios_bgp_global
     command:
       redirect: cisco.ios.ios_command
     config:
