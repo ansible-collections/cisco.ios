@@ -1,0 +1,81 @@
+---
+- debug:
+    msg: START Merged ios_bgp_global state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: Merge provided configuration with device configuration
+      register: result
+      cisco.ios.ios_bgp_global: &id001
+        config:
+          as_number: 65000
+          bgp:
+            advertise_best_external: true
+            bestpath:
+              - compare_routerid: true
+            dampening:
+              penalty_half_time: 1
+              reuse_route_val: 1
+              suppress_route_val: 1
+              max_suppress: 1
+            graceful_shutdown:
+              neighbors:
+                time: 50
+              community: 100
+              local_preference: 100
+            log_neighbor_changes: true
+            nopeerup_delay:
+              - post_boot: 10
+          neighbor:
+            - address: 198.51.100.1
+              description: merge neighbor
+              remote_as: 100
+              aigp:
+                send:
+                  cost_community:
+                    id: 100
+                    poi:
+                      igp_cost: true
+                      transitive: true
+              route_map:
+                name: test-route
+                out: true
+          redistribute:
+            - connected:
+                metric: 10
+          timers:
+            keepalive: 100
+            holdtime: 200
+            min_holdtime: 150
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - merged['before'] == {}
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_bgp_global: *id001
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml

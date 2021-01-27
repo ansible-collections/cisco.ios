@@ -1,0 +1,25 @@
+---
+- debug:
+    msg: START ios_bgp_global gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Gather the provided configuration with the exisiting running configuration
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+        state: gathered
+
+    - name: Assert
+      assert:
+        that:
+          - result.changed == false
+          - merged['after'] == result['gathered']
+
+  always:
+
+    - include_tasks: _remove_config.yaml
