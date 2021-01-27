@@ -26,8 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.stat
     Static_RoutesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    is_valid_ipv4,
-    is_valid_ipv6,
+    is_valid_ip,
 )
 
 
@@ -196,33 +195,33 @@ class Static_RoutesFacts(object):
                     hops["forward_router_address"] = route[3]
                     afi["afi"] = "ipv6"
                 elif "." in conf:
-                    if is_valid_ipv4(route[3]):
+                    if is_valid_ip(route[3]):
                         hops["forward_router_address"] = route[3]
                         afi["afi"] = "ipv4"
                     else:
                         hops["interface"] = route[3]
                         afi["afi"] = "ipv4"
-                        if is_valid_ipv4(route[4]):
+                        if is_valid_ip(route[4]):
                             hops["forward_router_address"] = route[4]
             else:
 
                 if "::" in conf:
-                    if is_valid_ipv6(route[1]):
+                    if is_valid_ip(route[1]):
                         hops["forward_router_address"] = route[1]
                         afi["afi"] = "ipv6"
                     else:
                         hops["interface"] = route[1]
                         afi["afi"] = "ipv6"
-                        if is_valid_ipv6(route[2]):
+                        if is_valid_ip(route[2]):
                             hops["forward_router_address"] = route[2]
                 elif "." in conf:
-                    if is_valid_ipv4(route[1]):
+                    if is_valid_ip(route[1]):
                         hops["forward_router_address"] = route[1]
                         afi["afi"] = "ipv4"
                     else:
                         hops["interface"] = route[1]
                         afi["afi"] = "ipv4"
-                        if is_valid_ipv4(route[2]):
+                        if is_valid_ip(route[2]):
                             hops["forward_router_address"] = route[2]
             try:
                 temp_list = each.split(" ")
