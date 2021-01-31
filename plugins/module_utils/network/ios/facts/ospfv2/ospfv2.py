@@ -81,9 +81,6 @@ class Ospfv2Facts(object):
                     process["areas"], key=lambda k, sk="area_id": k[sk]
                 )
                 for area in process["areas"]:
-                    # if 'ranges' in area:
-                    #     area['ranges'] = sorted(area['ranges'],
-                    #                             key=lambda k, s='ranges': k[s])
                     if "filters" in area:
                         area["filters"].sort()
             ipv4["processes"].append(process)
