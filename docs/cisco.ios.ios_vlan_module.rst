@@ -98,7 +98,6 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
                          / <span style="color: purple">elements=string</span>
-                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
