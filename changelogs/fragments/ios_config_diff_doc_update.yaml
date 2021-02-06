@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Update docs to clarify the idemptonecy releated caveat and add it in the output warnings
+    (https://github.com/ansible-collections/ansible.netcommon/pull/189)

@@ -1,0 +1,59 @@
+---
+- debug:
+    msg: START Replaced ios_bgp_global state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Replaced provided BGP Global configuration
+      register: result
+      cisco.ios.ios_bgp_global: &id001
+        config:
+          as_number: 65000
+          bgp:
+            advertise_best_external: true
+            bestpath:
+              - med:
+                  confed: true
+            log_neighbor_changes: true
+            nopeerup_delay:
+              - post_boot: 10
+                cold_boot: 20
+          neighbor:
+            - address: 192.0.2.1
+              description: replace neighbor
+              remote_as: 100
+              slow_peer:
+                detection:
+                  disable: true
+          redistribute:
+            - connected:
+                metric: 10
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - replaced['after'] == result['after']
+
+    - name: Replaced provided BGP Global configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_bgp_global: *id001
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml

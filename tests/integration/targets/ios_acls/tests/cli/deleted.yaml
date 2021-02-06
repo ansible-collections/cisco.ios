@@ -16,9 +16,7 @@
           - afi: ipv4
             acls:
               - name: test_acl
-                acl_type: extended
               - name: 110
-              - name: 123
           - afi: ipv6
             acls:
               - name: R1_TRAFFIC
@@ -26,11 +24,11 @@
 
     - assert:
         that:
-          - result.commands|length == 4
+          - result.commands|length == 3
           - result.changed == true
           - result.commands|symmetric_difference(deleted.commands) == []
 
-    - name: Delete attributes of all configured interfaces (IDEMPOTENT)
+    - name: Delete configured ACLs (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id001
 
@@ -44,7 +42,7 @@
 
     - include_tasks: _populate_config.yaml
 
-    - name: Delete ACL attributes of provided configured interfaces based on AFI
+    - name: Delete ACL attributes based on AFI
       register: result
       cisco.ios.ios_acls: &id002
         config:
@@ -58,10 +56,36 @@
           - result.changed == true
           - result.commands|symmetric_difference(deleted_afi.commands) == []
 
-    - name: Delete ACL attributes of provided configured interfaces based on AFI
+    - name: Delete ACL attributes based on AFI
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id002
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result.commands|length == 0
+          - result.changed == false
+
+    - include_tasks: _remove_config.yaml
+
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete ALL configured ACLs
+      register: result
+      cisco.ios.ios_acls: &id003
+        state: deleted
+
+    - assert:
+        that:
+          - result.commands|length == 4
+          - result.changed == true
+          - result.commands|symmetric_difference(deleted_all.commands) == []
+
+    - name: Delete ALL configured ACLs
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_acls: *id003
 
     - name: Assert that the previous task was idempotent
       assert:

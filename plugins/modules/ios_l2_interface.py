@@ -76,7 +76,6 @@ options:
       name:
         description:
         - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
-        required: true
         aliases:
         - interface
         type: str
