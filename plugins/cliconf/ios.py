@@ -35,7 +35,7 @@ options:
       to the target device.
     - When `ansible_network_single_user_mode` is enabled, if a command sent
       to the device is present in this list, the existing cache is invalidated.
-    version_added: 1.3.0
+    version_added: 2.0.0
     type: list
     default: []
     vars:
