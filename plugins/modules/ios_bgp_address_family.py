@@ -16,13 +16,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-The module file for ios_bgp_af
+The module file for ios_bgp_address_family
 """
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 DOCUMENTATION = """
-module: ios_bgp_af
+module: ios_bgp_address_family
 short_description: BGP Address family resource module
 description: This module configures and manages the attributes of bgp address family on Cisco IOS.
 version_added: 1.2.0
@@ -34,11 +34,11 @@ options:
     description: A list of configurations for bgp address family.
     type: dict
     suboptions:
-      asn:
+      as_number:
         description: Autonomous system number.
         type: str
         required: true
-      address_family;
+      address_family:
         description: A list of configurations for bgp address family.
         type: list
         elements: dict
@@ -50,7 +50,7 @@ options:
           af_modifier:
             description: Address Family modifier
             type: str
-            choices: ['flowspec', 'mdt', 'multicast', 'mvpn', 'unicast']
+            choices: ['flowspec', 'mdt', 'multicast', 'mvpn', 'evpn', 'unicast']
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
@@ -121,25 +121,26 @@ options:
                   description: Enable route-flap dampening
                   type: dict
                   suboptions:
-                    half_life:
-                      description: Half-life time for the penalty
-                      type: dict
-                      suboptions:
-                        value:
-                          description:
-                            - Half-life time value for the penalty
-                            - Please refer vendor documentation for valid values
-                          type: int
-                        reuse_route:
-                          description:
-                            - Value to start reusing a route
-                            - Please refer vendor documentation for valid values
-                          type: int
-                        suppress_route:
-                          description:
-                            - Value to start suppressing a route
-                            - Please refer vendor documentation for valid values
-                          type: int
+                    penalty_half_time:
+                      description:
+                        - Half-life time for the penalty
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    reuse_route_val:
+                      description:
+                        - Value to start reusing a route
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    suppress_route_val:
+                      description:
+                        - Value to start suppressing a route
+                        - Please refer vendor documentation for valid values
+                      type: int
+                    max_suppress:
+                      description:
+                        - Maximum duration to suppress a stable route
+                        - Please refer vendor documentation for valid values
+                      type: int
                     route_map:
                       description: Route-map to specify criteria for dampening
                       type: str
@@ -495,15 +496,39 @@ options:
                   description: Configure slow-peer
                   type: dict
                   suboptions:
-                    enable:
-                      description: Enable slow-peer detection
-                      type: bool
-                    disable:
-                      description: Disable slow-peer detection
-                      type: bool
-                    threshold:
-                      description: Set the slow-peer detection threshold
-                      type: int
+                    detection:
+                      description: Configure slow-peer
+                      type: dict
+                      suboptions:
+                        enable:
+                          description: Enable slow-peer detection
+                          type: bool
+                        disable:
+                          description: Disable slow-peer detection
+                          type: bool
+                        threshold:
+                          description: Set the slow-peer detection threshold
+                          type: int
+                    split_update_group:
+                      description: Configure slow-peer
+                      type: dict
+                      suboptions:
+                        dynamic:
+                          description: Configure slow-peer
+                          type: dict
+                          suboptions:
+                            enable:
+                              description: Configure slow-peer
+                              type: bool
+                            disable:
+                              description: Configure slow-peer
+                              type: bool
+                            permanent:
+                              description: Configure slow-peer
+                              type: bool
+                        static:
+                          description: Configure slow-peer
+                          type: bool
                 soft_reconfiguration:
                   description:
                     - Per neighbor soft reconfiguration
@@ -531,23 +556,128 @@ options:
                 route_map:
                   description: Route-map to modify the attributes
                   type: str
-                table_map:
-                  description: Map external entry attributes into routing table
+            snmp:
+              description: Modify snmp parameters
+              type: list
+              elements: dict
+              suboptions:
+                context:
+                  description:
+                    - Configure a SNMP context
+                    - Context Name
+                  type: str
+                community:
+                  description: Configure a SNMP v2c Community string and access privs
+                  type: dict
+                  suboptions:
+                    snmp_community:
+                      description: SNMP community string
+                      type: str
+                    acl:
+                      description:
+                        - Standard IP accesslist allowing access with this community string
+                        - Expanded IP accesslist allowing access with this community string
+                        - Access-list name
+                      type: str
+                    ipv6:
+                      description:
+                        - Specify IPv6 Named Access-List
+                        - IPv6 Access-list name
+                      type: str
+                    ro:
+                      description: Read-only access with this community string
+                      type: bool
+                    rw:
+                      description: Read-write access with this community string
+                      type: bool
+                user:
+                  description: Configure a SNMP v3 user
                   type: dict
                   suboptions:
                     name:
-                      description: route-map name
+                      description: SNMP community string
                       type: str
-                    filter:
-                      description: Selective route download
+                    access:
+                      description: specify an access-list associated with this group
+                      type: dict
+                      suboptions:
+                        acl:
+                          description: SNMP community string
+                          type: str
+                        ipv6:
+                          description:
+                            - Specify IPv6 Named Access-List
+                            - IPv6 Access-list name
+                          type: str
+                    auth:
+                      description: specify an access-list associated with this group
+                      type: dict
+                      suboptions:
+                        md5:
+                          description:
+                            - Use HMAC MD5 algorithm for authentication
+                            - authentication password for user
+                          type: str
+                        sha:
+                          description:
+                            - Use HMAC SHA algorithm for authentication
+                            - authentication password for user
+                          type: str
+                        access:
+                          description: specify an access-list associated with this group
+                          type: dict
+                          suboptions:
+                            acl:
+                              description: SNMP community string
+                              type: str
+                            ipv6:
+                              description:
+                                - Specify IPv6 Named Access-List
+                                - IPv6 Access-list name
+                              type: str
+                        priv:
+                          description: encryption parameters for the user
+                          type: dict
+                          suboptions:
+                            3des:
+                              description: Use 168 bit 3DES algorithm for encryption
+                              type: str
+                            aes:
+                              description: Use AES algorithm for encryption
+                              type: dict
+                              suboptions:
+                                128:
+                                  description:
+                                    - Use 128 bit AES algorithm for encryption
+                                    - privacy password for user
+                                  type: str
+                                192:
+                                  description:
+                                    - Use 192 bit AES algorithm for encryption
+                                    - privacy password for user
+                                  type: str
+                                256:
+                                  description:
+                                    - Use 256 bit AES algorithm for encryption
+                                    - privacy password for user
+                            des:
+                              description: Use 56 bit DES algorithm for encryption
+                              type: str
+                    credential:
+                      description: If the user password is already configured and saved
                       type: str
+                    encrypted:
+                      description: specifying passwords as MD5 or SHA digests
+                      type: bool
   running_config:
     description:
-      - The module, by default, will connect to the remote device and retrieve the current
-        running-config to use as a base for comparing against the contents of source.
-        There are times when it is not desirable to have the task get the current running-config
-        for every task in a playbook.  The I(running_config) argument allows the implementer
-        to pass in the configuration to use as the base config for comparison.
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS
+        device by executing the command B(sh running-config | section ^router bgp).
+      - The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into Ansible structured data as per the
+        resource module's argspec and the value is then returned in the
+        I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -585,7 +715,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     state: merged
 # Commands fired:
@@ -602,7 +732,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: Replaces device configuration of listed global BGP with provided configuration
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     
     state: replaced
@@ -619,7 +749,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: Override device configuration of all global BGP with provided configuration
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     
     state: overridden
@@ -636,7 +766,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: "Delete global BGP (Note: This won't delete the all configured global BGP)"
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     
     state: deleted
@@ -652,7 +782,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: "Delete global BGP based on AFI (Note: This won't delete the all configured global BGP)"
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     
     state: deleted
@@ -671,7 +801,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 - name: 'Delete ALL of configured global BGP (Note: This WILL delete the all configured
     global BGP)'
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     state: deleted
 # Commands fired:
 # ---------------
@@ -686,7 +816,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 - name: Gather listed global BGP with provided configurations
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     state: gathered
 # Module Execution Result:
@@ -694,7 +824,7 @@ EXAMPLES = """
 #
 # Using Rendered
 - name: Rendered the provided configuration with the exisiting running configuration
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     config:
     
     state: rendered
@@ -708,7 +838,7 @@ EXAMPLES = """
 # ----------------
 #
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_bgp_af:
+  cisco.ios.ios_bgp_address_family:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 # Module Execution Result:
@@ -737,11 +867,11 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_af.bgp_af import (
-    Bgp_afArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
+    Bgp_AddressFamilyArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_af.bgp_af import (
-    Bgp_af,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
+    Bgp_AddressFamily,
 )
 
 
@@ -759,12 +889,12 @@ def main():
     ]
     mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
-        argument_spec=Bgp_afArgs.argument_spec,
+        argument_spec=Bgp_AddressFamilyArgs.argument_spec,
         required_if=required_if,
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-    result = Bgp_af(module).execute_module()
+    result = Bgp_AddressFamily(module).execute_module()
     module.exit_json(**result)
 
 

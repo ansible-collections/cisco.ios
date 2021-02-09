@@ -10,7 +10,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The cisco.ios_bgp_af config file.
+The cisco.ios_bgp_address_family config file.
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
@@ -29,23 +29,23 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.cisco.ios.plugins.module_utils.network.cisco.ios.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.cisco.ios.plugins.module_utils.network.cisco.ios.rm_templates.bgp_af import (
-    Bgp_afTemplate,
+from ansible_collections.ansible.cisco.ios.plugins.module_utils.network.cisco.ios.rm_templates.bgp_address_family import (
+    Bgp_AddressFamilyTemplate,
 )
 
 
-class Bgp_af(ResourceModule):
+class Bgp_AddressFamily(ResourceModule):
     """
-    The cisco.ios_bgp_af config class
+    The cisco.ios_bgp_address_family config class
     """
 
     def __init__(self, module):
-        super(Bgp_af, self).__init__(
+        super(Bgp_AddressFamily, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
-            resource="bgp_af",
-            tmplt=Bgp_afTemplate(),
+            resource="bgp_address_family",
+            tmplt=Bgp_AddressFamilyTemplate(),
         )
         self.parsers = [
         ]
@@ -92,6 +92,6 @@ class Bgp_af(ResourceModule):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
            the `want` and `have` data with the `parsers` defined
-           for the Bgp_af network resource.
+           for the Bgp_address_family network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
