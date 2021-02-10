@@ -280,7 +280,7 @@ class L2_Interfaces(ConfigBase):
         for each in vlan:
             vlan_range = each.split("-")
             if len(vlan_range) > 1:
-                if vlan_range[0] < vlan_range[1]:
+                if int(vlan_range[0]) < int(vlan_range[1]):
                     return True
                 else:
                     module.fail_json(
