@@ -174,7 +174,6 @@ releases:
   1.3.0:
     changes:
       bugfixes:
-      - To fix the detection of wrong vlan ranges pass to the module comparing string insted of integer (https://github.com/ansible-collections/cisco.ios/pull/249).
       - IOS resource modules minor doc updates (https://github.com/ansible-collections/cisco.ios/pull/233).
       - To fix ios_static_routes facts parsing in presence of interface (https://github.com/ansible-collections/cisco.ios/pull/225).
       - Add support size and df_bit options for ios_ping (https://github.com/ansible-collections/cisco.ios/pull/228).
