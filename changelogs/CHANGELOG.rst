@@ -14,13 +14,13 @@ Minor Changes
 
 Bugfixes
 --------
-- To fix the detection of wrong vlan ranges pass to the module comparing string insted of integer (https://github.com/ansible-collections/cisco.ios/pull/249).
 - IOS resource modules minor doc updates (https://github.com/ansible-collections/cisco.ios/pull/233).
 - To fix ios_static_routes facts parsing in presence of interface (https://github.com/ansible-collections/cisco.ios/pull/225).
 - Add support size and df_bit options for ios_ping (https://github.com/ansible-collections/cisco.ios/pull/228).
 - IOS_CONFIG, incorrectly claims success when Command Rejected (https://github.com/ansible-collections/cisco.ios/pull/215).
 - Update doc to clarify on input config pattern (https://github.com/ansible-collections/cisco.ios/pull/220).
 - Updating ios acls module to use newer CLI RM approach to resolve all of the ACL related bugs (https://github.com/ansible-collections/cisco.ios/pull/211).
+- To fix the detection of wrong vlan ranges pass to the module comparing string insted of integer (https://github.com/ansible-collections/cisco.ios/pull/249).
 
 New Modules
 -----------
