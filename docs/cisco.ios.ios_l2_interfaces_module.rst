@@ -337,7 +337,7 @@ Examples
         - name: GigabitEthernet0/2
           mode: trunk
           trunk:
-            allowed_vlans: 9-20,40
+            allowed_vlans: 10-20,40
             native_vlan: 20
             pruning_vlans: 10,20
             encapsulation: dot1q
@@ -355,7 +355,7 @@ Examples
     #  negotiation auto
     # interface GigabitEthernet0/2
     #  description This is test
-    #  switchport trunk allowed vlan 9-20,40
+    #  switchport trunk allowed vlan 10-20,40
     #  switchport trunk encapsulation dot1q
     #  switchport trunk native vlan 20
     #  switchport trunk pruning vlan 10,20
