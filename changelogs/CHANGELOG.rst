@@ -51,6 +51,7 @@ Bugfixes
 - To fix IOS static routes idempotency issue coz of netmask to cidr conversion (https://github.com/ansible-collections/cisco.ios/pull/177).
 - To fix ios_vlans traceback bug when the name had Remote in it and added unit TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
 - To fix the traceback issue for longer vlan name having more than 32 characters (https://github.com/ansible-collections/cisco.ios/pull/182).
+- To fix the detection of wrong vlan ranges pass to the module comparing string insted of integer (https://github.com/ansible-collections/cisco.ios/pull/249).
 
 New Modules
 -----------
