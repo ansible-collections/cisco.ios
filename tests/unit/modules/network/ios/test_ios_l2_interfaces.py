@@ -90,7 +90,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                             allowed_vlans=["60"],
                             encapsulation="isl",
                             native_vlan=20,
-                            pruning_vlans=["12-15", "20"],
+                            pruning_vlans=["9-15", "20"],
                         ),
                     ),
                 ],
@@ -105,7 +105,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk encapsulation isl",
             "switchport trunk native vlan 20",
             "switchport trunk allowed vlan add 60",
-            "switchport trunk pruning vlan add 12-15",
+            "switchport trunk pruning vlan add 9-15",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
