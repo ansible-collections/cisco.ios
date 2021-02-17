@@ -55,7 +55,7 @@ class Bgp_AddressFamilyArgs(object):
                                 "vpnv6",
                             ],
                         },
-                        "af_modifier": {
+                        "safi": {
                             "type": "str",
                             "choices": [
                                 "flowspec",
@@ -128,7 +128,8 @@ class Bgp_AddressFamilyArgs(object):
                                 "route_map": {"type": "bool"},
                                 "scan_time": {"type": "int"},
                                 "slow_peer": {
-                                    "type": "dict",
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -151,6 +152,7 @@ class Bgp_AddressFamilyArgs(object):
                             },
                         },
                         "default": {"type": "bool"},
+                        "default_information": {"type": "bool"},
                         "default_metric": {"type": "int"},
                         "distance": {
                             "type": "dict",
@@ -200,18 +202,23 @@ class Bgp_AddressFamilyArgs(object):
                                         "send": {
                                             "type": "dict",
                                             "options": {
-                                                "cost_community": {"type": "int"},
-                                                "poi": {
+                                                "cost_community": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "igp_cost": {
-                                                            "type": "bool"
-                                                        },
-                                                        "pre_bestpath": {
-                                                            "type": "bool"
-                                                        },
-                                                        "transitive": {
-                                                            "type": "bool"
+                                                        "id": {"type": "int"},
+                                                        "poi": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "igp_cost": {
+                                                                    "type": "bool"
+                                                                },
+                                                                "pre_bestpath": {
+                                                                    "type": "bool"
+                                                                },
+                                                                "transitive": {
+                                                                    "type": "bool"
+                                                                },
+                                                            },
                                                         },
                                                     },
                                                 },
@@ -229,6 +236,13 @@ class Bgp_AddressFamilyArgs(object):
                                         "split_horizon": {"type": "bool"},
                                     },
                                 },
+                                "bmp_activate": {
+                                    "type": "dict",
+                                    "options": {
+                                        "all": {"type": "bool"},
+                                        "server": {"type": "int"},
+                                    },
+                                },
                                 "capability": {
                                     "type": "dict",
                                     "options": {
@@ -237,6 +251,7 @@ class Bgp_AddressFamilyArgs(object):
                                         "send": {"type": "bool"},
                                     },
                                 },
+                                "cluster_id": {"type": "str"},
                                 "default_originate": {
                                     "type": "dict",
                                     "options": {
@@ -244,6 +259,8 @@ class Bgp_AddressFamilyArgs(object):
                                         "route_map": {"type": "str"},
                                     },
                                 },
+                                "description": {"type": "str"},
+                                "disable_connected_check": {"type": "bool"},
                                 "distribute_list": {
                                     "type": "dict",
                                     "options": {
@@ -253,6 +270,27 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "dmzlink_bw": {"type": "bool"},
+                                "ebgp_multihop": {
+                                    "type": "dict",
+                                    "options": {
+                                        "enable": {"type": "bool"},
+                                        "hop_count": {"type": "int"},
+                                    },
+                                },
+                                "fall_over": {
+                                    "type": "dict",
+                                    "options": {
+                                        "bfd": {
+                                            "type": "dict",
+                                            "options": {
+                                                "set": {"type": "bool"},
+                                                "multi_hop": {"type": "bool"},
+                                                "single_hop": {"type": "bool"},
+                                            },
+                                        },
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
                                 "filter_list": {
                                     "type": "dict",
                                     "options": {
@@ -261,7 +299,37 @@ class Bgp_AddressFamilyArgs(object):
                                         "out": {"type": "bool"},
                                     },
                                 },
+                                "ha_mode": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "disable": {"type": "bool"},
+                                    },
+                                },
                                 "inherit": {"type": "str"},
+                                "internal_vpn_client": {"type": "bool"},
+                                "local_as": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "number": {"type": "int"},
+                                        "dual_as": {"type": "bool"},
+                                        "no_prepend": {
+                                            "type": "dict",
+                                            "options": {
+                                                "set": {"type": "bool"},
+                                                "replace_as": {"type": "bool"},
+                                            },
+                                        },
+                                    },
+                                },
+                                "log_neighbor_changes": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "disable": {"type": "bool"},
+                                    },
+                                },
                                 "maximum_prefix": {
                                     "type": "dict",
                                     "options": {
@@ -273,6 +341,45 @@ class Bgp_AddressFamilyArgs(object):
                                 },
                                 "next_hop_self": {"type": "bool"},
                                 "next_hop_unchanged": {"type": "bool"},
+                                "password": {"type": "str"},
+                                "path_attribute": {
+                                    "type": "dict",
+                                    "options": {
+                                        "discard": {
+                                            "type": "dict",
+                                            "options": {
+                                                "type": {"type": "int"},
+                                                "range": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "start": {
+                                                            "type": "int"
+                                                        },
+                                                        "end": {"type": "int"},
+                                                    },
+                                                },
+                                                "in": {"type": "bool"},
+                                            },
+                                        },
+                                        "treat_as_withdraw": {
+                                            "type": "dict",
+                                            "options": {
+                                                "type": {"type": "int"},
+                                                "range": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "start": {
+                                                            "type": "int"
+                                                        },
+                                                        "end": {"type": "int"},
+                                                    },
+                                                },
+                                                "in": {"type": "bool"},
+                                            },
+                                        },
+                                    },
+                                },
+                                "peer_group": {"type": "bool"},
                                 "prefix_list": {
                                     "type": "dict",
                                     "options": {
@@ -281,6 +388,7 @@ class Bgp_AddressFamilyArgs(object):
                                         "out": {"type": "bool"},
                                     },
                                 },
+                                "remote_as": {"type": "int"},
                                 "remove_private_as": {
                                     "type": "dict",
                                     "options": {
@@ -307,8 +415,16 @@ class Bgp_AddressFamilyArgs(object):
                                         "standard": {"type": "bool"},
                                     },
                                 },
-                                "slow_peer": {
+                                "shutdown": {
                                     "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "graceful": {"type": "int"},
+                                    },
+                                },
+                                "slow_peer": {
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -318,15 +434,21 @@ class Bgp_AddressFamilyArgs(object):
                                                 "threshold": {"type": "int"},
                                             },
                                         },
-                                        "split_update_group":{
+                                        "split_update_group": {
                                             "type": "dict",
                                             "options": {
                                                 "dynamic": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "enable": {"type": "bool"},
-                                                        "disable": {"type": "bool"},
-                                                        "permanent": {"type": "bool"},
+                                                        "enable": {
+                                                            "type": "bool"
+                                                        },
+                                                        "disable": {
+                                                            "type": "bool"
+                                                        },
+                                                        "permanent": {
+                                                            "type": "bool"
+                                                        },
                                                     },
                                                 },
                                                 "static": {"type": "bool"},
@@ -335,7 +457,38 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "soft_reconfiguration": {"type": "bool"},
+                                "soo": {"type": "str"},
+                                "timers": {
+                                    "type": "dict",
+                                    "options": {
+                                        "interval": {"type": "int"},
+                                        "holdtime": {"type": "int"},
+                                        "min_holdtime": {"type": "int"},
+                                    },
+                                },
+                                "transport": {
+                                    "type": "dict",
+                                    "options": {
+                                        "connection_mode": {
+                                            "type": "dict",
+                                            "options": {
+                                                "active": {"type": "bool"},
+                                                "passive": {"type": "bool"},
+                                            },
+                                        },
+                                        "multi_session": {"type": "bool"},
+                                        "path_mtu_discovery": {
+                                            "type": "dict",
+                                            "options": {
+                                                "set": {"type": "bool"},
+                                                "disable": {"type": "bool"},
+                                            },
+                                        },
+                                    },
+                                },
+                                "ttl_security": {"type": "int"},
                                 "unsuppress_map": {"type": "str"},
+                                "version": {"type": "int"},
                                 "weight": {"type": "int"},
                             },
                         },
@@ -349,67 +502,220 @@ class Bgp_AddressFamilyArgs(object):
                                 "route_map": {"type": "str"},
                             },
                         },
-                        "snmp": {
-                            "type": "dict",
-                            #"elements": "dict",
+                        "redistribute": {
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
-                                "context": {"type": "str"},
-                                "community": {
-                                    "type": "dict",
-                                    "options": {
-                                        "snmp_community": {"type": "str"},
-                                        "acl": {"type": "str"},
-                                        "ipv6": {"type": "str"},
-                                        "ro": {"type": "bool"},
-                                        "rw": {"type": "bool"},
-                                    },
-                                },
-                                "user": {
+                                "application": {
                                     "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
-                                        "access": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "bgp": {
+                                    "type": "dict",
+                                    "options": {
+                                        "as_number": {"type": "str"},
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "connected": {
+                                    "type": "dict",
+                                    "options": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "eigrp": {
+                                    "type": "dict",
+                                    "options": {
+                                        "as_number": {"type": "str"},
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "isis": {
+                                    "type": "dict",
+                                    "options": {
+                                        "area_tag": {"type": "str"},
+                                        "clns": {"type": "bool"},
+                                        "ip": {"type": "bool"},
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "iso_igrp": {
+                                    "type": "dict",
+                                    "options": {
+                                        "area_tag": {"type": "str"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "lisp": {
+                                    "type": "dict",
+                                    "options": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "mobile": {
+                                    "type": "dict",
+                                    "options": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "odr": {
+                                    "type": "dict",
+                                    "options": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "ospf": {
+                                    "type": "dict",
+                                    "options": {
+                                        "process_id": {"type": "int"},
+                                        "match": {
                                             "type": "dict",
                                             "options": {
-                                                "acl": {"type": "str"},
-                                                "ipv6": {"type": "str"},
+                                                "external": {"type": "bool"},
+                                                "internal": {"type": "bool"},
+                                                "nssa_external": {
+                                                    "type": "bool"
+                                                },
+                                                "type_1": {"type": "bool"},
+                                                "type_2": {"type": "bool"},
                                             },
                                         },
-                                        "auth": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                        "vrf": {"type": "str"},
+                                    },
+                                },
+                                "ospfv3": {
+                                    "type": "dict",
+                                    "options": {
+                                        "process_id": {"type": "int"},
+                                        "match": {
                                             "type": "dict",
                                             "options": {
-                                                "md5": {"type": "str"},
-                                                "sha": {"type": "str"},
+                                                "external": {"type": "bool"},
+                                                "internal": {"type": "bool"},
+                                                "nssa_external": {
+                                                    "type": "bool"
+                                                },
+                                                "type_1": {"type": "bool"},
+                                                "type_2": {"type": "bool"},
+                                            },
+                                        },
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "rip": {
+                                    "type": "dict",
+                                    "options": {
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "static": {
+                                    "type": "dict",
+                                    "options": {
+                                        "clns": {"type": "bool"},
+                                        "ip": {"type": "bool"},
+                                        "metric": {"type": "int"},
+                                        "route_map": {"type": "str"},
+                                    },
+                                },
+                                "vrf": {
+                                    "type": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "global": {"type": "bool"},
+                                    },
+                                },
+                            },
+                        },
+                        "snmp": {
+                            "type": "dict",
+                            "options": {
+                                "context": {
+                                    "type": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "community": {
+                                            "type": "dict",
+                                            "options": {
+                                                "snmp_community": {
+                                                    "type": "str"
+                                                },
+                                                "acl": {"type": "str"},
+                                                "ipv6": {"type": "str"},
+                                                "ro": {"type": "bool"},
+                                                "rw": {"type": "bool"},
+                                            },
+                                        },
+                                        "user": {
+                                            "type": "dict",
+                                            "options": {
+                                                "name": {"type": "str"},
                                                 "access": {
                                                     "type": "dict",
                                                     "options": {
                                                         "acl": {"type": "str"},
-                                                        "ipv6": {"type": "str"},
+                                                        "ipv6": {
+                                                            "type": "str"
+                                                        },
+                                                    },
+                                                },
+                                                "auth": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "md5": {"type": "str"},
+                                                        "sha": {"type": "str"},
                                                     },
                                                 },
                                                 "priv": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "3des": {"type": "str"},
+                                                        "3des": {
+                                                            "type": "str"
+                                                        },
                                                         "aes": {
                                                             "type": "dict",
                                                             "options": {
-                                                                128: {
+                                                                "128": {
                                                                     "type": "str"
                                                                 },
-                                                                192: {
+                                                                "192": {
                                                                     "type": "str"
                                                                 },
-                                                                256: {},
+                                                                "256": {
+                                                                    "type": "str"
+                                                                },
                                                             },
                                                         },
                                                         "des": {"type": "str"},
                                                     },
                                                 },
+                                                "credential": {"type": "bool"},
+                                                "encrypted": {"type": "bool"},
                                             },
                                         },
                                     },
-                                },
+                                }
+                            },
+                        },
+                        "table_map": {
+                            "type": "dict",
+                            "options": {
+                                "name": {"type": "str"},
+                                "filter": {"type": "bool"},
                             },
                         },
                     },

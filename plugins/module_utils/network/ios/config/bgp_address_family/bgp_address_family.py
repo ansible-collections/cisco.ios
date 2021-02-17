@@ -26,18 +26,31 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
-from ansible_collections.ansible.cisco.ios.plugins.module_utils.network.cisco.ios.facts.facts import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.cisco.ios.plugins.module_utils.network.cisco.ios.rm_templates.bgp_address_family import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_AddressFamilyTemplate,
 )
+import q
 
 
 class Bgp_AddressFamily(ResourceModule):
     """
     The cisco.ios_bgp_address_family config class
     """
+
+    gather_subset = ["!all", "!min"]
+
+    parsers = [
+        "as_number",
+        "afi",
+        "aggregate_address",
+        "default",
+        "default_metric",
+        "distance",
+        "table_map",
+    ]
 
     def __init__(self, module):
         super(Bgp_AddressFamily, self).__init__(
@@ -47,8 +60,7 @@ class Bgp_AddressFamily(ResourceModule):
             resource="bgp_address_family",
             tmplt=Bgp_AddressFamilyTemplate(),
         )
-        self.parsers = [
-        ]
+        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -65,33 +77,297 @@ class Bgp_AddressFamily(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        if self.want:
+            wantd = {self.want["as_number"]: self.want}
+        else:
+            wantd = dict()
+        if self.have:
+            haved = {self.have["as_number"]: self.have}
+        else:
+            haved = dict()
+
+        for each in wantd, haved:
+            self.list_to_dict(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
-
+            if len(wantd) > 1:
+                self._module.fail_json(
+                    msg="BGP is already running. Only one BGP instance is allowed per device."
+                )
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
-            wantd = {}
-
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
+            as_number = None
+            if wantd:
+                temp = dict()
+                for key, val in iteritems(haved):
+                    as_number = key
+                    if wantd.get(key):
+                        for k, v in iteritems(val.get("address_family")):
+                            w = wantd[key].get("address_family")
+                            if k in w:
+                                temp.update({k: v})
+                    val["address_family"] = temp
+            else:
+                as_number = list(haved)[0]
+                haved = {k: v for k, v in iteritems(haved) if not wantd}
+            wantd = dict()
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    self._compare(want=wantd, have=have, as_number=as_number)
+
+        # remove superfluous config for overridden
+        if self.state == "overridden":
+            for key, have in iteritems(haved):
+                if wantd.get(key):
+                    for k, v in iteritems(have.get("address_family")):
+                        w = wantd[key].get("address_family")
+                        if k not in w:
+                            self._compare(
+                                want=dict(),
+                                have={"address_family": {k: v}},
+                                as_number=key,
+                            )
 
         for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+            self._compare(want=want, have=haved.pop(k, dict()), as_number=k)
 
-    def _compare(self, want, have):
+    def _compare(self, want, have, as_number):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
            the `want` and `have` data with the `parsers` defined
            for the Bgp_address_family network resource.
         """
-        self.compare(parsers=self.parsers, want=want, have=have)
+        if want != have and self.state != "deleted":
+            self._compare_af(want, have)
+        elif self.state == "deleted":
+            self._delete_af(have)
+
+        if self.commands and "router bgp" not in self.commands[0]:
+            self.commands.insert(0, "router bgp {0}".format(as_number))
+
+    def _compare_af(self, want, have):
+        w = want.get("address_family", dict())
+        h = have.get("address_family", dict())
+
+        for key, val in iteritems(w):
+            cmd_len = len(self.commands)
+            if h.get(key):
+                h_key = h.get(key)
+            else:
+                h_key = dict()
+            if val != h_key:
+                self._bgp_af_config_compare(val, have=h_key)
+                self._compare_neighbor(val, have=h_key)
+                self._compare_network(val, have=h_key)
+                self._compare_snmp(val, have=h_key)
+                self.compare(
+                    parsers=self.parsers, want=val, have=h.pop(key, dict())
+                )
+            if cmd_len != len(self.commands):
+                af_cmd = "address-family {afi}".format(**val)
+                if val.get("safi"):
+                    af_cmd += " {safi}".format(**val)
+                if val.get("vrf"):
+                    af_cmd += " vrf {vrf}".format(**val)
+                self.commands.insert(cmd_len, af_cmd)
+        if not w and self.state == "overridden":
+            self._delete_af(have)
+
+    def _bgp_af_config_compare(self, want, have):
+        parsers = [
+            "bgp.additional_paths",
+            "bgp.dampening",
+            "bgp.config",
+            "bgp.slow_peer",
+        ]
+        w_bgp = want.get("bgp", dict())
+        if have:
+            h_bgp = have.get("bgp", dict())
+        else:
+            h_bgp = dict()
+        for key, val in iteritems(w_bgp):
+            if h_bgp and h_bgp.get(key):
+                self.compare(
+                    parsers=parsers,
+                    want={"bgp": {key: val}},
+                    have={"bgp": {key: h_bgp.pop(key)}},
+                )
+            else:
+                self.compare(
+                    parsers=parsers, want={"bgp": {key: val}}, have=dict()
+                )
+        if self.state == "replaced" or self.state == "overridden":
+            if h_bgp:
+                for key, val in iteritems(h_bgp):
+                    self.compare(
+                        parsers=parsers, want=dict(), have={"bgp": {key: val}}
+                    )
+            elif have.get("bgp"):
+                for key, val in iteritems(have.pop("bgp")):
+                    self.compare(
+                        parsers=parsers, want=dict(), have={"bgp": {key: val}}
+                    )
+
+    def _compare_neighbor(self, want, have):
+        parsers = ["neighbor", "neighbor.slow_peer"]
+        neighbor_key = ["address", "ipv6_address", "tag"]
+        w = want.get("neighbor", dict())
+        if have:
+            h = have.get("neighbor", dict())
+        else:
+            h = dict()
+        for key, val in iteritems(w):
+            if h and h.get(key):
+                neighbor_tag = [each for each in neighbor_key if each in val][
+                    0
+                ]
+                for k, v in iteritems(val):
+                    if h[key].get(k) and k not in neighbor_key:
+                        self.compare(
+                            parsers=parsers,
+                            want={
+                                "neighbor": {
+                                    neighbor_tag: val[neighbor_tag],
+                                    k: v,
+                                }
+                            },
+                            have={
+                                "neighbor": {
+                                    neighbor_tag: val[neighbor_tag],
+                                    k: h[key].pop(k, dict()),
+                                }
+                            },
+                        )
+                    elif k not in neighbor_key:
+                        self.compare(
+                            parsers=parsers,
+                            want={
+                                "neighbor": {
+                                    neighbor_tag: val[neighbor_tag],
+                                    k: v,
+                                }
+                            },
+                            have=dict(),
+                        )
+            else:
+                self.compare(
+                    parsers=parsers, want={"neighbor": val}, have=dict()
+                )
+        if self.state == "replaced" or self.state == "overridden":
+            for key, val in iteritems(h):
+                self.compare(
+                    parsers=parsers, want=dict(), have={"neighbor": val}
+                )
+
+    def _compare_network(self, want, have):
+        parsers = ["network"]
+        w = want.get("network", dict())
+        h = have.get("network", dict())
+        for key, val in iteritems(w):
+            if h and h.get(key):
+                h_network = h.pop(key)
+                if h_network != val:
+                    self.compare(
+                        parsers=parsers,
+                        want={"network": val},
+                        have={"network": val},
+                    )
+            else:
+                self.compare(
+                    parsers=parsers, want={"network": val}, have=dict()
+                )
+        if self.state == "replaced" or self.state == "overridden":
+            for key, val in iteritems(h):
+                self.compare(
+                    parsers=parsers, want=dict(), have={"network": val}
+                )
+
+    def _compare_snmp(self, want, have):
+        parsers = ["snmp"]
+        w = want.get("snmp", dict())
+        h = have.get("snmp", dict())
+        if w:
+            for key, val in iteritems(w["context"]):
+                if h:
+                    h_snmp_param = h["context"].pop(key)
+                    if h_snmp_param and key != "name":
+                        self.compare(
+                            parsers=parsers,
+                            want={
+                                "snmp": {
+                                    key: val,
+                                    "name": w["context"]["name"],
+                                }
+                            },
+                            have={
+                                "snmp": {
+                                    key: h_snmp_param,
+                                    "name": w["context"]["name"],
+                                }
+                            },
+                        )
+                elif key == "community" or key == "user":
+                    self.compare(
+                        parsers=parsers,
+                        want={
+                            "snmp": {key: val, "name": w["context"]["name"]}
+                        },
+                        have=dict(),
+                    )
+        elif h and self.state == "replaced" or self.state == "overridden":
+            for key, val in iteritems(h):
+                self.compare(
+                    parsers=parsers,
+                    want=dict(),
+                    have={"snmp": {key: val, "name": h["context"]["name"]}},
+                )
+
+    def _delete_af(self, have):
+        h = have.get("address_family", dict())
+        for key, val in iteritems(h):
+            if "safi" in val and "vrf" in val:
+                cmd = "no address-family {afi} {safi} vrf {vrf}".format(**val)
+            elif "safi" in val:
+                cmd = "no address-family {afi} {safi}".format(**val)
+            else:
+                cmd = "no address-family {afi}".format(**val)
+            self.commands.append(cmd)
+
+    def list_to_dict(self, param):
+        if param:
+            for key, val in iteritems(param):
+                if val.get("address_family"):
+                    val["address_family"] = {
+                        each["afi"]
+                        + "_"
+                        + each.get("safi", "")
+                        + "_"
+                        + each.get("vrf", ""): each
+                        for each in val.get("address_family", [])
+                    }
+                    self.list_to_dict(val["address_family"])
+                if "bgp" in val and "slow_peer" in val["bgp"]:
+                    val["bgp"]["slow_peer"] = {
+                        list(each)[0]: each[list(each)[0]]
+                        for each in val["bgp"]["slow_peer"]
+                    }
+                if "neighbor" in val:
+                    for each in val["neighbor"]:
+                        if each.get("slow_peer"):
+                            each["slow_peer"] = {
+                                list(every)[0]: every[list(every)[0]]
+                                for every in each["slow_peer"]
+                            }
+                    val["neighbor"] = {
+                        each.get("address")
+                        or each.get("ipv6_address")
+                        or each.get("tag"): each
+                        for each in val.get("neighbor", [])
+                    }
+                if "network" in val:
+                    val["network"] = {
+                        each["address"]: each
+                        for each in val.get("network", [])
+                    }

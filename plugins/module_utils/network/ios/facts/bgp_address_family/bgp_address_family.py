@@ -26,12 +26,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_AddressFamilyArgs,
 )
+import q
+
 
 class Bgp_AddressFamilyFacts(object):
     """ The cisco.ios_bgp_address_family facts class
     """
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bgp_AddressFamilyArgs.argument_spec
         spec = deepcopy(self.argument_spec)
@@ -44,7 +46,7 @@ class Bgp_AddressFamilyFacts(object):
             facts_argument_spec = spec
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
-    
+
     def get_bgp_address_family_data(self, connection):
         return connection.get("sh running-config | section ^router bgp")
 
@@ -69,30 +71,95 @@ class Bgp_AddressFamilyFacts(object):
         objs = bgp_af_parser.parse()
         objs = utils.remove_empties(objs)
         temp_af = []
-        for k, v in iteritems(objs['address_family']):
+        for k, v in iteritems(objs["address_family"]):
+            # q(k, v)
+            if k == "__":
+                continue
             temp_dict = {}
-            temp = [every for every in k.split('_') if every != '']
-            temp_dict['afi'] = temp.pop(0)
+            temp = [every for every in k.split("_") if every != ""]
+            # q(temp)
+            temp_dict["afi"] = temp.pop(0)
             if len(temp) > 1:
-                temp_dict['vrf'] = [each.split(' ')[1] for each in temp if 'vrf' in each][0]
-                temp_dict['af_modifier'] = [each for each in temp if 'vrf' not in each][0]
+                temp_dict["vrf"] = [
+                    each.split(" ")[1] for each in temp if "vrf" in each
+                ][0]
+                temp_dict["safi"] = [
+                    each for each in temp if "vrf" not in each
+                ][0]
             elif len(temp) == 1:
-                if 'vrf' in temp[0]:
-                    temp_dict['vrf'] = temp[0].split('vrf ')[1]
+                if "vrf" in temp[0]:
+                    temp_dict["vrf"] = temp[0].split("vrf ")[1]
                 else:
-                    temp_dict['af_modifier'] = temp[0]
+                    temp_dict["safi"] = temp[0]
+            neighbor = v.get("neighbor")
+            if neighbor:
+                # neighbor_list = []
+                # temp_slow_peer = []
+                # address = None
+                # for each in neighbor:
+                #     slow_peer_val = each.get('slow_peer')
+                #     if slow_peer_val:
+                #         temp_slow_peer.append(slow_peer_val[0])
+                #         address = each.get('address')
+                #     else:
+                #         neighbor_list.append(each)
+                # if address:
+                #     neighbor_list.append({'address': address, 'slow_peer': temp_slow_peer})
+                # v['neighbor'] = neighbor_list
+                neighbor_list = []
+                temp_slow_peer = []
+                temp = {}
+                neighbor_identifier = None
+                for each in neighbor:
+                    if (
+                        each.get("address")
+                        or each.get("ipv6_address")
+                        or each.get("tag")
+                    ) != neighbor_identifier:
+                        if temp:
+                            if temp_slow_peer:
+                                temp.update({"slow_peer": temp_slow_peer})
+                            neighbor_list.append(temp)
+                            temp = {}
+                        neighbor_identifier = (
+                            each.get("address")
+                            or each.get("ipv6_address")
+                            or each.get("tag")
+                        )
+                        if "address" in each:
+                            temp["address"] = neighbor_identifier
+                        elif "ipv6_address" in each:
+                            temp["ipv6_address"] = neighbor_identifier
+                        else:
+                            temp["tag"] = neighbor_identifier
+                    {
+                        each.pop(every)
+                        for every in ["address", "ipv6_address", "tag"]
+                        if every in each
+                    }
+                    temp.update(each)
+                    slow_peer_val = each.get("slow_peer")
+                    if slow_peer_val:
+                        temp_slow_peer.append(slow_peer_val[0])
+                if temp:
+                    temp.update({"slow_peer": temp_slow_peer})
+                    neighbor_list.append(temp)
+                    temp = {}
+                v["neighbor"] = neighbor_list
             v.update(temp_dict)
             temp_af.append(v)
 
-        objs['address_family'] = temp_af
+        objs["address_family"] = temp_af
 
-        ansible_facts['ansible_network_resources'].pop('bgp_address_family', None)
+        ansible_facts["ansible_network_resources"].pop(
+            "bgp_address_family", None
+        )
 
         params = utils.remove_empties(
             utils.validate_config(self.argument_spec, {"config": objs})
         )
 
-        facts['bgp_address_family'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["bgp_address_family"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
