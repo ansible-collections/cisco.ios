@@ -65,17 +65,15 @@ class Ospfv3(ResourceModule):
                   to the desired configuration
         """
         if self.want:
-            temp = {}
+            wantd = {}
             for entry in self.want.get("processes", []):
-                temp.update({(entry["process_id"], entry.get("vrf")): entry})
-            wantd = temp
+                wantd.update({(entry["process_id"], entry.get("vrf")): entry})
         else:
             wantd = {}
         if self.have:
-            temp = {}
+            haved = {}
             for entry in self.have.get("processes", []):
-                temp.update({(entry["process_id"], entry.get("vrf")): entry})
-            haved = temp
+                haved.update({(entry["process_id"], entry.get("vrf")): entry})
         else:
             haved = {}
 
@@ -89,23 +87,21 @@ class Ospfv3(ResourceModule):
                     }
                     if bool(ranges):
                         area["ranges"] = ranges
-                    filter_list = {
-                        entry["direction"]: entry
-                        for entry in area.get("filter_list", [])
-                    }
+                    filter_list = {}
+                    for entry in area.get("filter_list", []):
+                        filter_list.update({entry["direction"]: entry})
                     if bool(filter_list):
                         area["filter_list"] = filter_list
-                proc["areas"] = {
-                    entry["area_id"]: entry for entry in proc.get("areas", [])
-                }
+                proc["areas"] = {}
+                for entry in proc.get("areas", []):
+                    proc["areas"].update({entry["area_id"]: entry})
                 if proc.get("distribute_list"):
                     if "acls" in proc.get("distribute_list"):
-                        proc["distribute_list"]["acls"] = {
-                            entry["name"]: entry
-                            for entry in proc["distribute_list"].get(
-                                "acls", []
+                        proc["distribute_list"]["acls"] = {}
+                        for entry in proc["distribute_list"].get("acls", []):
+                            proc["distribute_list"]["acls"].update(
+                                {entry["name"]: entry}
                             )
-                        }
 
         # if state is merged, merge want onto have
         if self.state == "merged":

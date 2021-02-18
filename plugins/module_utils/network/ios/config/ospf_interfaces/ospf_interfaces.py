@@ -66,11 +66,13 @@ class Ospf_Interfaces(ResourceModule):
         wantd = {}
         haved = {}
         if self.want:
-            wantd = {(entry["name"]): entry for entry in self.want}
+            for entry in self.want:
+                wantd.update({(entry["name"]): entry})
         else:
             wantd = {}
         if self.have:
-            haved = {(entry["name"]): entry for entry in self.have}
+            for entry in self.have:
+                haved.update({(entry["name"]): entry})
         else:
             haved = {}
 
