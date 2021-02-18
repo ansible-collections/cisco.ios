@@ -26,7 +26,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_AddressFamilyArgs,
 )
-import q
 
 
 class Bgp_AddressFamilyFacts(object):
@@ -93,19 +92,6 @@ class Bgp_AddressFamilyFacts(object):
                     temp_dict["safi"] = temp[0]
             neighbor = v.get("neighbor")
             if neighbor:
-                # neighbor_list = []
-                # temp_slow_peer = []
-                # address = None
-                # for each in neighbor:
-                #     slow_peer_val = each.get('slow_peer')
-                #     if slow_peer_val:
-                #         temp_slow_peer.append(slow_peer_val[0])
-                #         address = each.get('address')
-                #     else:
-                #         neighbor_list.append(each)
-                # if address:
-                #     neighbor_list.append({'address': address, 'slow_peer': temp_slow_peer})
-                # v['neighbor'] = neighbor_list
                 neighbor_list = []
                 temp_slow_peer = []
                 temp = {}

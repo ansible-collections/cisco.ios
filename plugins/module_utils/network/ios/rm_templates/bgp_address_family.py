@@ -8,9 +8,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The Bgp_address_family parser templates file. This contains 
-a list of parser definitions and associated functions that 
-facilitates both facts gathering and native command generation for 
+The Bgp_address_family parser templates file. This contains
+a list of parser definitions and associated functions that
+facilitates both facts gathering and native command generation for
 the given network resource.
 """
 
@@ -603,7 +603,6 @@ def _tmplt_af_network(config_data):
 
 
 def _tmplt_af_snmp(config_data):
-    q(config_data)
     if "snmp" in config_data:
         cmd = "snmp context {name}".format(**config_data["snmp"])
         if config_data["snmp"].get("community"):
@@ -885,8 +884,10 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                         "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
                                     },
                                     "split_update_group": {
-                                        "dynamic": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'dynamic' in slow_peer }}",
-                                        "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'permanent' in slow_peer }}",
+                                        "dynamic": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                            'dynamic' in slow_peer }}",
+                                        "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                            'permanent' in slow_peer }}",
                                     },
                                 }
                             ]
@@ -984,18 +985,18 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                     \s*(?P<disable_connected_check>disable-connected-check)*
                     \s*(?P<distribute_list>distribute-list\s\d+\s(in|out))*
                     \s*(?P<dmzlink_bw>dmzlink-bw)*
-                    \s*(?P<ebgp_multihop>(ebgp-multihop\s\d+|ebgp-multihop))*	
+                    \s*(?P<ebgp_multihop>(ebgp-multihop\s\d+|ebgp-multihop))*
                     \s*(?P<fall_over>fall-over\s((bfd\s(single-hop|multi-hop)|bfd)|route-map\s\S+))*
                     \s*(?P<filter_list>filter-list\s\d+\s(in|out))*
                     \s*(?P<ha_mode>ha-mode\s(graceful-restart\sdisable|graceful-restart))*
                     \s*(?P<inherit>inherit\speer-session\s\S+)*
-                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as))*	
+                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as))*
                     \s*(?P<log_neighbor_changes>log-neighbor-changes\sdisable|log-neighbor-changes)*
                     \s*(?P<maximum_prefix>maximum-prefix\s(\d+\s\d+\s(restart\s\d+|warning-only)|\d+\s(restart\s\d+|warning-only)))*
                     \s*(?P<next_hop_self>next-hop-self\sall|next-hop-self)*
                     \s*(?P<next_hop_unchanged>next-hop-unchanged\sallpaths|next-hop-unchanged)*
-                    \s*(?P<password>password\s\S+)*	
-                    \s*(?P<path_attribute>path-attribute\s(discard\srange\s\d+\s\d+\sin|discard\s\d+\sin)|path-attribute\s(treat-as-withdraw\srange\s\d+\s\d+\sin|treat-as-withdraw\s\d+\sin))*	
+                    \s*(?P<password>password\s\S+)*
+                    \s*(?P<path_attribute>path-attribute\s(discard\srange\s\d+\s\d+\sin|discard\s\d+\sin)|path-attribute\s(treat-as-withdraw\srange\s\d+\s\d+\sin|treat-as-withdraw\s\d+\sin))*
                     \s*(?P<peer_group>peer-group\s\S+|peer-group)*
                     \s*(?P<prefix_list>prefix-list\s\S+\s(in|out))*
                     \s*(?P<remove_private_as>remove-private-as\sall\sreplace-as|remove-private-as\sall|remove-private-as)*
@@ -1006,7 +1007,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                     \s*(?P<send_community>send-community\s(both|extended|standard)|send-community)*
                     \s*(?P<soft_reconfiguration>soft-reconfiguration\sinbound)*
                     \s*(?P<timers>(timers\s\d+\s\d+\s\d+|timers\s\d+\s\d+))*
-                    \s*(?P<transport>(transport\s(connection-mode\sactive|connection-mode\spassive)|transport\smulti-session|transport\s(path-mtu-discovery\sdisable|path-mtu-discovery)))*	
+                    \s*(?P<transport>(transport\s(connection-mode\sactive|connection-mode\spassive)|transport\smulti-session|transport\s(path-mtu-discovery\sdisable|path-mtu-discovery)))*
                     \s*(?P<ttl_security>ttl-security\shops\s\d+)*
                     \s*(?P<unsuppress_map>unsuppress-map\s\S+)*
                     \s*(?P<version>version\s\d+)*
@@ -1033,8 +1034,10 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "advertise": {
                                     "additional_paths": {
                                         "all": "{{ True if advertise is defined and 'additional-paths' in advertise and 'all' in advertise }}",
-                                        "best": "{{ advertise.split('best ')[1].split(' ')[0] if advertise is defined and 'additional-paths' in advertise and 'best' in advertise }}",
-                                        "group_best": "{{ True if advertise is defined and 'additional-paths' in advertise and 'group-best' in advertise }}",
+                                        "best": "{{ advertise.split('best ')[1].split(' ')[0] if advertise is defined and\
+                                            'additional-paths' in advertise and 'best' in advertise }}",
+                                        "group_best": "{{ True if advertise is defined and 'additional-paths' in advertise and\
+                                            'group-best' in advertise }}",
                                     },
                                     "best_external": "{{ True if advertise is defined and 'best-external' in advertise }}",
                                     "diverse_path": {
@@ -1042,12 +1045,14 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                         "mpath": "{{ True if advertise is defined and 'diverse-path' in advertise and 'mpath' in advertise }}",
                                     },
                                 },
-                                "advertisement_interval": "{{ advertisement_interval.split('advertisement-interval ')[1] if advertisement_interval is defined }}",
+                                "advertisement_interval": "{{ advertisement_interval.split('advertisement-interval ')[1] if advertisement_interval is defined\
+                                    }}",
                                 "aigp": {
                                     "enable": "{{ True if aigp is defined and aigp.split(' ')|length == 1 }}",
                                     "send": {
                                         "cost_community": {
-                                            "id": "{{ aigp.split('send cost-community ')[1].split(' ')[0] if aigp is defined and 'send cost-community' in aigp }}",
+                                            "id": "{{ aigp.split('send cost-community ')[1].split(' ')[0] if aigp is defined and\
+                                                'send cost-community' in aigp }}",
                                             "poi": {
                                                 "igp_cost": "{{ True if aigp is defined and 'poi igp-cost' in aigp }}",
                                                 "pre_bestpath": "{{ True if aigp is defined and 'poi pre-bestpath' in aigp }}",
@@ -1115,7 +1120,8 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 },
                                 "maximum_prefix": {
                                     "number": "{{ maximum_prefix.split(' ')[1] if maximum_prefix is defined }}",
-                                    "threshold_value": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
+                                    "threshold_value": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and\
+                                        maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
                                     "restart": "{{ maximum_prefix.split('restart ')[1] if maximum_prefix is defined and 'restart' in maximum_prefix }}",
                                     "warning_only": "{{ True if maximum_prefix is defined and 'warning-only' in maximum_prefix }}",
                                 },
@@ -1135,18 +1141,25 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "password": "{{ password.split(' ')[1] if password is defined }}",
                                 "path_attribute": {
                                     "discard": {
-                                        "type": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                        "type": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{\
+                                            path_attribute.split(' ')[3] }}{% endif %}",
                                         "range": {
-                                            "start": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                            "start": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
+                                                path_attribute.split(' ')[3] }}{% endif %}",
+                                            "end": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
+                                                path_attribute.split(' ')[4] }}{% endif %}",
                                         },
-                                        "in": "{% if path_attribute is defined and 'discard range' in path_attribute and 'in' in path_attribute %}{{ True }}{% endif %}",
+                                        "in": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                            'in' in path_attribute %}{{ True }}{% endif %}",
                                     },
                                     "treat_as_withdraw": {
-                                        "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                        "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{\
+                                            path_attribute.split(' ')[3] }}{% endif %}",
                                         "range": {
-                                            "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                            "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
+                                                path_attribute.split(' ')[3] }}{% endif %}",
+                                            "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
+                                                path_attribute.split(' ')[4] }}{% endif %}",
                                         },
                                         "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and 'in' in path_attribute %}{{ True }}{% endif %}",
                                     },
@@ -1155,8 +1168,10 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "remote_as": "{{ remote_as.split('remote-as ')[1] if remote_as is defined }}",
                                 "remove_private_as": {
                                     "set": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length == 1 }}",
-                                    "all": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and 'all' in remove_private_as }}",
-                                    "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and 'replace-as' in remove_private_as }}",
+                                    "all": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
+                                        'all' in remove_private_as }}",
+                                    "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
+                                        'replace-as' in remove_private_as }}",
                                 },
                                 "route_map": {
                                     "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
@@ -1220,15 +1235,19 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "slow_peer": [
                                     {
                                         "detection": {
-                                            "enable": "{{ True if slow_peer is defined and 'detection' in slow_peer and 'disable' not in slow_peer and 'threshold' not in slow_peer }}",
+                                            "enable": "{{ True if slow_peer is defined and 'detection' in slow_peer and\
+                                                'disable' not in slow_peer and 'threshold' not in slow_peer }}",
                                             "disable": "{{ True if slow_peer is defined and 'disable' in slow_peer }}",
                                             "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
                                         },
                                         "split_update_group": {
                                             "dynamic": {
-                                                "enable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'disable' not in slow_peer and 'threshold' not in slow_peer }}",
-                                                "disable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'disable' in slow_peer }}",
-                                                "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'permanent' in slow_peer }}",
+                                                "enable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                                    'disable' not in slow_peer and 'threshold' not in slow_peer }}",
+                                                "disable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                                    'disable' in slow_peer }}",
+                                                "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                                    'permanent' in slow_peer }}",
                                             },
                                             "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
                                         },
@@ -1303,8 +1322,6 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 },
                                 "user": {
                                     "name": "{{ user.split('user ')[1] if user is defined }}",
-                                    "credential": "{{ credential.split('credential ')[1] if credential is defined }}",
-                                    "encrypted": "{{ True if encrypted is defined }}",
                                     "access": {
                                         "acl": "{{ access.split('access ')[1] if access is defined and 'ipv6' not in access }}",
                                         "ipv6": "{{ access.split('access ipv6 ')[1] if access is defined and 'ipv6' in access }}",
