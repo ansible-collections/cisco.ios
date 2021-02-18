@@ -91,16 +91,16 @@ class Ospfv2(ResourceModule):
                         filter_list.update({entry["direction"]: entry})
                     if bool(filter_list):
                         area["filter_list"] = filter_list
-                proc["areas"] = {}
+                temp = {}
                 for entry in proc.get("areas", []):
-                    proc["areas"].update({entry["area_id"]: entry})
+                    temp.update({entry["area_id"]: entry})
+                proc["areas"] = temp
                 if proc.get("distribute_list"):
                     if "acls" in proc.get("distribute_list"):
-                        proc["distribute_list"]["acls"] = {}
+                        temp = {}
                         for entry in proc["distribute_list"].get("acls", []):
-                            proc["distribute_list"]["acls"].update(
-                                {entry["name"]: entry}
-                            )
+                            temp.update({entry["name"]: entry})
+                        proc["distribute_list"]["acls"] = temp
 
         # if state is merged, merge want onto have
         if self.state == "merged":
@@ -109,9 +109,11 @@ class Ospfv2(ResourceModule):
         # if state is deleted, limit the have to anything in want
         # set want to nothing
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            temp = {}
+            for k, v in iteritems(haved):
+                if k in wantd or not wantd:
+                    temp.update({k: v})
+            haved = temp
             wantd = {}
 
         # delete processes first so we do run into "more than one" errors
