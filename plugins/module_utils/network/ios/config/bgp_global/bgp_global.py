@@ -287,18 +287,32 @@ class Bgp_global(ResourceModule):
                                                 have=val_have,
                                             )
                                     else:
-                                        # q(param_have, param_want)
-                                        temp_have = {
-                                            each: {i: param_have[each][i]}
-                                            for i in list(param_have[each])
-                                            if i not in param_want[each]
-                                        }
-                                        temp_want = {
-                                            each: {i: param_want[each][i]}
-                                            for i in list(param_want[each])
-                                            if i not in param_have[each]
-                                        }
-                                        # q(temp_have)
+                                        temp = {}
+                                        for i in list(param_have[each]):
+                                            if i not in param_want[each]:
+                                                temp.update(
+                                                    {
+                                                        each: {
+                                                            i: param_have[
+                                                                each
+                                                            ][i]
+                                                        }
+                                                    }
+                                                )
+                                        temp_have = temp
+                                        temp = {}
+                                        for i in list(param_want[each]):
+                                            if i not in param_have[each]:
+                                                temp.update(
+                                                    {
+                                                        each: {
+                                                            i: param_want[
+                                                                each
+                                                            ][i]
+                                                        }
+                                                    }
+                                                )
+                                        temp_want = temp
                                         if temp_have:
                                             self.compare(
                                                 parsers=[every + "." + each],
