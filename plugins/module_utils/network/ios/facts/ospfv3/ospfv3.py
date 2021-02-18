@@ -51,10 +51,11 @@ class Ospfv3Facts(object):
                 cap = re.match(parser["getval"], line)
                 if cap:
                     capdict = cap.groupdict()
-
-                    capdict = {
-                        k: v for k, v in iteritems(capdict) if v is not None
-                    }
+                    temp = {}
+                    for k, v in iteritems(capdict):
+                        if v is not None:
+                            temp.update({k: v})
+                    capdict = temp
                     if "address-family" in line:
                         capdict.update({"id": temp_pid})
                     if (

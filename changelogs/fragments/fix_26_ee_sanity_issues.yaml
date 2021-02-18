@@ -1,0 +1,3 @@
+---
+trivial:
+  - Allow sanity tests run in EE without python-2.6 failures.
