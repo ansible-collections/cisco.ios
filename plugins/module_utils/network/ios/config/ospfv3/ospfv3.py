@@ -65,17 +65,17 @@ class Ospfv3(ResourceModule):
                   to the desired configuration
         """
         if self.want:
-            wantd = {
-                (entry["process_id"], entry.get("vrf")): entry
-                for entry in self.want.get("processes", [])
-            }
+            temp = {}
+            for entry in self.want.get("processes", []):
+                temp.update({(entry["process_id"], entry.get("vrf")): entry})
+            wantd = temp
         else:
             wantd = {}
         if self.have:
-            haved = {
-                (entry["process_id"], entry.get("vrf")): entry
-                for entry in self.have.get("processes", [])
-            }
+            temp = {}
+            for entry in self.have.get("processes", []):
+                temp.update({(entry["process_id"], entry.get("vrf")): entry})
+            haved = temp
         else:
             haved = {}
 

@@ -83,10 +83,10 @@ class Ospfv2(ResourceModule):
         for thing in wantd, haved:
             for _pid, proc in iteritems(thing):
                 for area in proc.get("areas", []):
-                    ranges = {
-                        entry["address"]: entry
-                        for entry in area.get("ranges", [])
-                    }
+                    temp = {}
+                    for entry in area.get("ranges", []):
+                        temp.update({entry["address"]: entry})
+                    ranges = temp
                     if bool(ranges):
                         area["ranges"] = ranges
                     filter_list = {
