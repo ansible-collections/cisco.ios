@@ -28,6 +28,18 @@ description:
 - This ios plugin provides low level abstraction apis for sending and receiving CLI
   commands from Cisco IOS network devices.
 version_added: 1.0.0
+options:
+  config_commands:
+    description:
+    - Specifies a list of commands that can make configuration changes
+      to the target device.
+    - When `ansible_network_single_user_mode` is enabled, if a command sent
+      to the device is present in this list, the existing cache is invalidated.
+    version_added: 2.0.0
+    type: list
+    default: []
+    vars:
+    - name: ansible_ios_config_commands
 """
 
 import re
@@ -49,6 +61,10 @@ from ansible.plugins.cliconf import CliconfBase, enable_mode
 
 
 class Cliconf(CliconfBase):
+    def __init__(self, *args, **kwargs):
+        self._device_info = {}
+        super(Cliconf, self).__init__(*args, **kwargs)
+
     @enable_mode
     def get_config(self, source="running", flags=None, format=None):
         if source not in ("running", "startup"):
@@ -114,7 +130,6 @@ class Cliconf(CliconfBase):
                    'config_diff': '',
                    'banner_diff': {}
                }
-
         """
         diff = {}
         device_operations = self.get_device_operations()
@@ -264,36 +279,38 @@ class Cliconf(CliconfBase):
         )
 
     def get_device_info(self):
-        device_info = {}
+        if not self._device_info:
+            device_info = {}
 
-        device_info["network_os"] = "ios"
-        reply = self.get(command="show version")
-        data = to_text(reply, errors="surrogate_or_strict").strip()
-
-        match = re.search(r"Version (\S+)", data)
-        if match:
-            device_info["network_os_version"] = match.group(1).strip(",")
-
-        model_search_strs = [
-            r"^[Cc]isco (.+) \(revision",
-            r"^[Cc]isco (\S+).+bytes of .*memory",
-        ]
-        for item in model_search_strs:
-            match = re.search(item, data, re.M)
+            device_info["network_os"] = "ios"
+            reply = self.get(command="show version")
+            data = to_text(reply, errors="surrogate_or_strict").strip()
+            match = re.search(r"Version (\S+)", data)
             if match:
-                version = match.group(1).split(" ")
-                device_info["network_os_model"] = version[0]
-                break
+                device_info["network_os_version"] = match.group(1).strip(",")
 
-        match = re.search(r"^(.+) uptime", data, re.M)
-        if match:
-            device_info["network_os_hostname"] = match.group(1)
+            model_search_strs = [
+                r"^[Cc]isco (.+) \(revision",
+                r"^[Cc]isco (\S+).+bytes of .*memory",
+            ]
+            for item in model_search_strs:
+                match = re.search(item, data, re.M)
+                if match:
+                    version = match.group(1).split(" ")
+                    device_info["network_os_model"] = version[0]
+                    break
 
-        match = re.search(r'image file is "(.+)"', data)
-        if match:
-            device_info["network_os_image"] = match.group(1)
+            match = re.search(r"^(.+) uptime", data, re.M)
+            if match:
+                device_info["network_os_hostname"] = match.group(1)
 
-        return device_info
+            match = re.search(r'image file is "(.+)"', data)
+            if match:
+                device_info["network_os_image"] = match.group(1)
+
+            self._device_info = device_info
+
+        return self._device_info
 
     def get_device_operations(self):
         return {

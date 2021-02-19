@@ -55,6 +55,8 @@ class TerminalModule(TerminalBase):
         re.compile(br"Command Rejected: ?[\s]+", re.I),
     ]
 
+    terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
+
     def on_open_shell(self):
         try:
             self._exec_cli_command(b"terminal length 0")
