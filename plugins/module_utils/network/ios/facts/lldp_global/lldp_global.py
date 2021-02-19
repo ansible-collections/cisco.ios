@@ -22,6 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )
+from ansible.module_utils.connection import ConnectionError
 
 
 class Lldp_globalFacts(object):
@@ -43,7 +44,14 @@ class Lldp_globalFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_lldp_global_data(self, connection):
-        return connection.get("show running-config | section ^lldp")
+        try:
+            return connection.get("show running-config | section ^lldp")
+        except ConnectionError as e:
+            if "Invalid input detected at" in e.message:
+                data = connection.get("sh running-config | begin ^lldp")
+                return "\n".join(re.findall(r'^lldp [^!]*!$',data))
+            else:
+                raise
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for lldp_global

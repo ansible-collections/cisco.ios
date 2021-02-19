@@ -24,6 +24,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
 )
+from ansible.module_utils.connection import ConnectionError
 
 
 class Bgp_globalFacts(object):
@@ -45,7 +46,13 @@ class Bgp_globalFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_bgp_global_data(self, connection):
-        return connection.get("sh running-config | section ^router bgp")
+        try:
+            return connection.get("sh running-config | section ^router bgp")
+        if "Invalid input detected at" in e.message:
+            data = connection.get("sh running-config | begin ^router bgp")
+            return "\n".join(re.findall(r'router bgp [^!]*!', data))
+        else:
+            raise
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Bgp_global network resource
