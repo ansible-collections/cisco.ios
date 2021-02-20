@@ -66,11 +66,13 @@ class Ospf_Interfaces(ResourceModule):
         wantd = {}
         haved = {}
         if self.want:
-            wantd = {(entry["name"]): entry for entry in self.want}
+            for entry in self.want:
+                wantd.update({(entry["name"]): entry})
         else:
             wantd = {}
         if self.have:
-            haved = {(entry["name"]): entry for entry in self.have}
+            for entry in self.have:
+                haved.update({(entry["name"]): entry})
         else:
             haved = {}
 
@@ -80,9 +82,11 @@ class Ospf_Interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            temp = {}
+            for k, v in iteritems(haved):
+                if k in wantd or not wantd:
+                    temp.update({k: v})
+            haved = temp
             wantd = {}
 
         # remove superfluous config for overridden and deleted
