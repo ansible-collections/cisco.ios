@@ -1316,7 +1316,7 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 #
-# ipv6 access-list R1_TRAFFIC
+# IPv6 access-list R1_TRAFFIC
 # deny tcp any eq www any eq telnet ack dscp af11
 
 - name: Parse the commands for provided configuration
