@@ -585,11 +585,15 @@ def main():
     ):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
-            " similar to how they appear if present in the running configuration on device"
+            " similar to how they appear if present in"
+            " the running configuration on device"
         )
         if module.params["src"]:
             msg += " including the indentation"
-        warnings.append(msg)
+        if "warnings" in result:
+            result["warnings"].append(msg)
+        else:
+            result["warnings"] = msg
 
     module.exit_json(**result)
 
