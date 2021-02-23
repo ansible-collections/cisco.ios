@@ -71,12 +71,10 @@ class Bgp_AddressFamilyFacts(object):
         objs = utils.remove_empties(objs)
         temp_af = []
         for k, v in iteritems(objs["address_family"]):
-            # q(k, v)
             if k == "__":
                 continue
             temp_dict = {}
             temp = [every for every in k.split("_") if every != ""]
-            # q(temp)
             temp_dict["afi"] = temp.pop(0)
             if len(temp) > 1:
                 temp_dict["vrf"] = [

@@ -34,7 +34,7 @@ def _tmplt_af(config_data):
 
 def _tmplt_af_aggregate_address(config_data):
     if "aggregate_address" in config_data:
-        cmd = "aggregate_address {address} {netmask}".format(
+        cmd = "aggregate-address {address} {netmask}".format(
             **config_data["aggregate_address"]
         )
         if "advertise_map" in config_data["aggregate_address"]:
@@ -184,6 +184,14 @@ def _tmplt_bgp_af_slow_peer(config_data):
                                 "split_update_group"
                             ]
                         )
+        return cmd
+
+
+def _tmplt_af_distance(config_data):
+    if config_data.get("distance"):
+        cmd = "distance bgp {external} {internal} {local}".format(
+            **config_data["distance"]
+        )
         return cmd
 
 
@@ -743,7 +751,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_af_aggregate_address,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "aggregate_address": {
                             "address": "{{ address.split(' ')[0] }}",
                             "netmask": "{{ address.split(' ')[1] }}",
@@ -776,7 +784,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_bgp_af_additional_paths,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "bgp": {
                             "additional_paths": {
                                 "receive": "{{ True if receive is defined }}",
@@ -812,7 +820,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "compval": "bgp",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "bgp": {
                             "aggregate_timer": "{{ aggregate_timer.split('aggregate-timer ')[1] if aggregate_timer is defined }}",
                             "dmzlink_bw": "{{ True if dmzlink_bw is defined }}",
@@ -849,7 +857,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_bgp_af_dampening,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "bgp": {
                             "dampening": {
                                 "penalty_half_time": "{{ penalty_half_time if penalty_half_time is defined }}",
@@ -875,7 +883,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "compval": "bgp",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "bgp": {
                             "slow_peer": [
                                 {
@@ -906,7 +914,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": "default",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "default": "{{ True if default is defined }}"
                     }
                 }
@@ -922,7 +930,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": "default-information originate",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "default_information": "{{ True if default_information is defined }}"
                     }
                 }
@@ -938,7 +946,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": "default-metric {{ default_metric }}",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "default_metric": "{{ default_metric.split('default-metric ')[1] if default_metric is defined }}"
                     }
                 }
@@ -951,14 +959,14 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "distance bgp {{ external }} {{ internal }} {{ local }}",
+            "setval": _tmplt_af_distance,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "distance": {
-                            "external": "{{ distance.split(' ')[0] }}",
-                            "internal": "{{ distance.split(' ')[1] }}",
-                            "local": "{{ distance.split(' ')[2] }}",
+                            "external": "{{ distance.split(' ')[1] }}",
+                            "internal": "{{ distance.split(' ')[2] }}",
+                            "local": "{{ distance.split(' ')[3] }}",
                         }
                     }
                 }
@@ -1077,7 +1085,8 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "cluster_id": "{{ cluster_id.split('cluster-id ')[1] if bmp_activate is defined }}",
                                 "default_originate": {
                                     "set": "{{ True if default_originate is defined and default_originate.split(' ')|length == 1 }}",
-                                    "route_map": "{{ default_originate.split(' ')[1] if default_originate is defined and default_originate.split(' ')|length > 1 }}",
+                                    "route_map": "{{ default_originate.split(' ')[1] if default_originate is defined and\
+                                        default_originate.split(' ')|length > 1 }}",
                                 },
                                 "description": "{{ description.split('description ')[1] if description is defined }}",
                                 "distribute_list": {
@@ -1141,27 +1150,28 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                 "password": "{{ password.split(' ')[1] if password is defined }}",
                                 "path_attribute": {
                                     "discard": {
-                                        "type": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{\
-                                            path_attribute.split(' ')[3] }}{% endif %}",
+                                        "type": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                            path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
                                         "range": {
-                                            "start": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
-                                                path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard range' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
-                                                path_attribute.split(' ')[4] }}{% endif %}",
+                                            "start": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                            "end": "{% if path_attribute is defined and 'discard range' in path_attribute and\
+                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
                                         },
                                         "in": "{% if path_attribute is defined and 'discard range' in path_attribute and\
                                             'in' in path_attribute %}{{ True }}{% endif %}",
                                     },
                                     "treat_as_withdraw": {
-                                        "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length <= 5 %}{{\
-                                            path_attribute.split(' ')[3] }}{% endif %}",
+                                        "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                            path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
                                         "range": {
-                                            "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
-                                                path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and path_attribute.split(' ')|length > 5 %}{{\
-                                                path_attribute.split(' ')[4] }}{% endif %}",
+                                            "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                            "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
                                         },
-                                        "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and 'in' in path_attribute %}{{ True }}{% endif %}",
+                                        "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
+                                            'in' in path_attribute %}{{ True }}{% endif %}",
                                     },
                                 },
                                 "peer_group": "{{ True if peer_group is defined }}",
@@ -1226,7 +1236,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "compval": "neighbor",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
@@ -1273,7 +1283,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_af_network,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "network": [
                             {
                                 "address": "{{ address if address is defined }}",
@@ -1309,7 +1319,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_af_snmp,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "snmp": {
                             "context": {
                                 "name": "{{ context.split('context ')[1] if context is defined }}",
@@ -1360,7 +1370,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "setval": _tmplt_af_table_map,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "table_map": {
                             "name": "{{ name if name is defined }}",
                             "filter": "{{ True if filter is defined }}",

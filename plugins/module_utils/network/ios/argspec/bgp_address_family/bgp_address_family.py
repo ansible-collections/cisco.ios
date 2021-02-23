@@ -683,24 +683,7 @@ class Bgp_AddressFamilyArgs(object):
                                                 "priv": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "3des": {
-                                                            "type": "str"
-                                                        },
-                                                        "aes": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "128": {
-                                                                    "type": "str"
-                                                                },
-                                                                "192": {
-                                                                    "type": "str"
-                                                                },
-                                                                "256": {
-                                                                    "type": "str"
-                                                                },
-                                                            },
-                                                        },
-                                                        "des": {"type": "str"},
+                                                        "des": {"type": "str"}
                                                     },
                                                 },
                                                 "credential": {"type": "bool"},

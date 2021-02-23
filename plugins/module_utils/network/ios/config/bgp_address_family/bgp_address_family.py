@@ -57,7 +57,6 @@ class Bgp_AddressFamily(ResourceModule):
             resource="bgp_address_family",
             tmplt=Bgp_AddressFamilyTemplate(),
         )
-        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -169,6 +168,9 @@ class Bgp_AddressFamily(ResourceModule):
                 if val.get("vrf"):
                     af_cmd += " vrf {vrf}".format(**val)
                 self.commands.insert(cmd_len, af_cmd)
+                self.commands.insert(
+                    len(self.commands) + 1, "exit-address-family"
+                )
         if not w and self.state == "overridden":
             self._delete_af(have)
 
