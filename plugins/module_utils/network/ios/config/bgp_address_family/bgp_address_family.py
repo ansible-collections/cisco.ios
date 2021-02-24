@@ -81,7 +81,7 @@ class Bgp_AddressFamily(ResourceModule):
             haved = {self.have["as_number"]: self.have}
         else:
             haved = dict()
-        q(wantd, haved)
+
         for each in wantd, haved:
             self.list_to_dict(each)
 
