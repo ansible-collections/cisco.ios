@@ -39,18 +39,18 @@
       register: result
       cisco.ios.ios_bgp_address_family: &id002
         state: deleted
-    
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
           - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) |\
             \ length == 0 }}"
-    
+
     - name: Assert that after dicts are correctly generated
       assert:
         that:
           - deleted_all['after'] == result['after']
-    
+
     - name: Delete ALL provided BGP Address family (IDEMPOTENT)
       register: result
       cisco.ios.ios_bgp_address_family: *id002
