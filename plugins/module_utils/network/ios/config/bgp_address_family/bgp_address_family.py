@@ -107,7 +107,11 @@ class Bgp_AddressFamily(ResourceModule):
                     val["address_family"] = temp
             else:
                 as_number = list(haved)[0]
-                haved = {k: v for k, v in iteritems(haved) if not wantd}
+                temp = {}
+                for k, v in iteritems(haved):
+                    if not wantd:
+                        temp.update({k: v})
+                haved = temp
             wantd = dict()
             for k, have in iteritems(haved):
                 if k not in wantd:

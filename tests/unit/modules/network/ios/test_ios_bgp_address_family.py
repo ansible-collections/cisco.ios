@@ -80,34 +80,39 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
-                    bgp=dict(
-                        dampening=dict(
-                            penalty_half_time=1,
-                            reuse_route_val=1,
-                            suppress_route_val=1,
-                            max_suppress=1,
-                        ),
-                        graceful_shutdown=dict(
-                            neighbors=dict(time=50),
-                            community=100,
-                            local_preference=100,
-                        ),
-                    ),
-                    neighbor=[
+                    address_family=[
                         dict(
-                            address="198.51.100.1",
-                            description="merge neighbor",
-                            aigp=dict(
-                                send=dict(
-                                    cost_community=dict(
-                                        id=100,
-                                        poi=dict(
-                                            igp_cost=True, transitive=True
-                                        ),
-                                    )
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.3.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                dampening=dict(
+                                    penalty_half_time=10,
+                                    reuse_route_val=10,
+                                    suppress_route_val=10,
+                                    max_suppress=10,
                                 )
                             ),
-                        )
+                        ),
+                        dict(
+                            afi="nsap",
+                            bgp=dict(
+                                aggregate_timer=20,
+                                dmzlink_bw=True,
+                                scan_time=10,
+                            ),
+                            default_metric=10,
+                            network=[
+                                dict(
+                                    address="192.0.1.1", route_map="test_route"
+                                )
+                            ],
+                        ),
                     ],
                 ),
                 state="merged",
@@ -115,10 +120,15 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
         commands = [
             "router bgp 65000",
-            "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
-            "bgp dampening 1 1 1 1",
-            "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-            "neighbor 198.51.100.1 description merge neighbor",
+            "address-family ipv4 multicast vrf blue",
+            "bgp dampening 10 10 10 10",
+            "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+            "address-family nsap",
+            "bgp aggregate-timer 20",
+            "bgp dmzlink-bw",
+            "bgp scan-time 10",
+            "network 192.0.1.1 route-map test_route",
+            "default-metric 10",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -128,20 +138,95 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath=[dict(compare_routerid=True)],
-                        nopeerup_delay=[dict(post_boot=10)],
-                    ),
-                    redistribute=[dict(connected=dict(metric=10))],
-                    neighbor=[
+                    address_family=[
                         dict(
-                            address="198.51.100.1",
-                            remote_as=100,
-                            route_map=dict(name="test-route", out=True),
-                        )
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.2.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                aggregate_timer=10,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=1,
+                                    suppress_route_val=1,
+                                    max_suppress=1,
+                                ),
+                                slow_peer=[
+                                    dict(detection=dict(threshold=150))
+                                ],
+                            ),
+                            neighbor=[
+                                dict(
+                                    activate=True,
+                                    address="198.51.100.1",
+                                    aigp=dict(
+                                        send=dict(
+                                            cost_community=dict(
+                                                id=100,
+                                                poi=dict(
+                                                    igp_cost=True,
+                                                    transitive=True,
+                                                ),
+                                            )
+                                        )
+                                    ),
+                                    slow_peer=[
+                                        dict(detection=dict(threshold=150))
+                                    ],
+                                    remote_as=10,
+                                    route_map=dict(
+                                        name="test-route", out=True
+                                    ),
+                                    route_server_client=True,
+                                )
+                            ],
+                            network=[
+                                dict(
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
+                                )
+                            ],
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="mdt",
+                            bgp=dict(
+                                dmzlink_bw=True,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=10,
+                                    suppress_route_val=100,
+                                    max_suppress=5,
+                                ),
+                                soft_reconfig_backup=True,
+                            ),
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            aggregate_address=dict(
+                                address="192.0.3.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            default_metric=12,
+                            distance=dict(external=10, internal=10, local=100),
+                            network=[
+                                dict(
+                                    address="198.51.111.11",
+                                    mask="255.255.255.255",
+                                    route_map="test",
+                                )
+                            ],
+                            table_map=dict(name="test_tableMap", filter=True),
+                        ),
                     ],
-                    timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
                 ),
                 state="merged",
             )
@@ -153,21 +238,33 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath=[dict(compare_routerid=True)],
-                        log_neighbor_changes=True,
-                        nopeerup_delay=[
-                            dict(cold_boot=20),
-                            dict(post_boot=10),
-                        ],
-                    ),
-                    redistribute=[dict(connected=dict(metric=10))],
-                    neighbor=[
+                    address_family=[
                         dict(
-                            address="192.0.2.1",
-                            remote_as=200,
-                            description="replace neighbor",
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.2.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                aggregate_timer=10,
+                                slow_peer=[
+                                    dict(detection=dict(threshold=200))
+                                ],
+                            ),
+                            redistribute=[dict(connected=dict(metric=10))],
+                            neighbor=[
+                                dict(
+                                    address="198.51.110.1",
+                                    activate=True,
+                                    remote_as=200,
+                                    route_map=dict(
+                                        name="test-replaced-route", out=True
+                                    ),
+                                )
+                            ],
                         )
                     ],
                 ),
@@ -175,13 +272,20 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             )
         )
         commands = [
-            "bgp nopeerup-delay cold-boot 20",
-            "neighbor 192.0.2.1 description replace neighbor",
-            "neighbor 192.0.2.1 remote-as 200",
-            "no neighbor 198.51.100.1 remote-as 100",
-            "no neighbor 198.51.100.1 route-map test-route out",
-            "no timers bgp 100 200 150",
             "router bgp 65000",
+            "address-family ipv4 multicast vrf blue",
+            "no bgp dampening 1 1 1 1",
+            "bgp slow-peer detection threshold 200",
+            "no neighbor 198.51.100.1 activate",
+            "no neighbor 198.51.100.1 remote-as 10",
+            "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+            "no neighbor 198.51.100.1 route-server-client",
+            "no neighbor 198.51.100.1 slow-peer detection threshold 150",
+            "no neighbor 198.51.100.1 route-map test-route out",
+            "neighbor 198.51.110.1 activate",
+            "neighbor 198.51.110.1 remote-as 200",
+            "neighbor 198.51.110.1 route-map test-replaced-route out",
+            "no network 198.51.110.10 mask 255.255.255.255 backdoor",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -191,56 +295,379 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath=[dict(compare_routerid=True)],
-                        nopeerup_delay=[dict(post_boot=10)],
-                    ),
-                    redistribute=[dict(connected=dict(metric=10))],
-                    neighbor=[
+                    address_family=[
                         dict(
-                            address="198.51.100.1",
-                            remote_as=100,
-                            route_map=dict(name="test-route", out=True),
-                        )
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.2.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                aggregate_timer=10,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=1,
+                                    suppress_route_val=1,
+                                    max_suppress=1,
+                                ),
+                                slow_peer=[
+                                    dict(detection=dict(threshold=150))
+                                ],
+                            ),
+                            neighbor=[
+                                dict(
+                                    activate=True,
+                                    address="198.51.100.1",
+                                    aigp=dict(
+                                        send=dict(
+                                            cost_community=dict(
+                                                id=100,
+                                                poi=dict(
+                                                    igp_cost=True,
+                                                    transitive=True,
+                                                ),
+                                            )
+                                        )
+                                    ),
+                                    slow_peer=[
+                                        dict(detection=dict(threshold=150))
+                                    ],
+                                    remote_as=10,
+                                    route_map=dict(
+                                        name="test-route", out=True
+                                    ),
+                                    route_server_client=True,
+                                )
+                            ],
+                            network=[
+                                dict(
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
+                                )
+                            ],
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="mdt",
+                            bgp=dict(
+                                dmzlink_bw=True,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=10,
+                                    suppress_route_val=100,
+                                    max_suppress=5,
+                                ),
+                                soft_reconfig_backup=True,
+                            ),
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            aggregate_address=dict(
+                                address="192.0.3.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            default_metric=12,
+                            distance=dict(external=10, internal=10, local=100),
+                            network=[
+                                dict(
+                                    address="198.51.111.11",
+                                    mask="255.255.255.255",
+                                    route_map="test",
+                                )
+                            ],
+                            table_map=dict(name="test_tableMap", filter=True),
+                        ),
                     ],
-                    timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
                 ),
                 state="replaced",
             )
         )
         self.execute_module(changed=False, commands=[])
 
+    def test_ios_bgp_address_family_overridden_idempotent(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.2.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                aggregate_timer=10,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=1,
+                                    suppress_route_val=1,
+                                    max_suppress=1,
+                                ),
+                                slow_peer=[
+                                    dict(detection=dict(threshold=150))
+                                ],
+                            ),
+                            neighbor=[
+                                dict(
+                                    activate=True,
+                                    address="198.51.100.1",
+                                    aigp=dict(
+                                        send=dict(
+                                            cost_community=dict(
+                                                id=100,
+                                                poi=dict(
+                                                    igp_cost=True,
+                                                    transitive=True,
+                                                ),
+                                            )
+                                        )
+                                    ),
+                                    slow_peer=[
+                                        dict(detection=dict(threshold=150))
+                                    ],
+                                    remote_as=10,
+                                    route_map=dict(
+                                        name="test-route", out=True
+                                    ),
+                                    route_server_client=True,
+                                )
+                            ],
+                            network=[
+                                dict(
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
+                                )
+                            ],
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="mdt",
+                            bgp=dict(
+                                dmzlink_bw=True,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=10,
+                                    suppress_route_val=100,
+                                    max_suppress=5,
+                                ),
+                                soft_reconfig_backup=True,
+                            ),
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            aggregate_address=dict(
+                                address="192.0.3.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            default_metric=12,
+                            distance=dict(external=10, internal=10, local=100),
+                            network=[
+                                dict(
+                                    address="198.51.111.11",
+                                    mask="255.255.255.255",
+                                    route_map="test",
+                                )
+                            ],
+                            table_map=dict(name="test_tableMap", filter=True),
+                        ),
+                    ],
+                ),
+                state="overridden",
+            )
+        )
+        self.execute_module(changed=False, commands=[])
+
     def test_ios_bgp_address_family_deleted(self):
-        set_module_args(dict(config=dict(as_number=65000), state="deleted"))
+        set_module_args(dict(state="deleted"))
         commands = [
             "router bgp 65000",
-            "no bgp nopeerup-delay post-boot 10",
-            "no bgp bestpath compare-routerid",
-            "no bgp advertise-best-external",
-            "no timers bgp 100 200 150",
-            "no redistribute connected metric 10",
-            "no neighbor 198.51.100.1 remote-as 100",
-            "no neighbor 198.51.100.1 route-map test-route out",
+            "no address-family ipv4 multicast vrf blue",
+            "no address-family ipv4 mdt",
+            "no address-family ipv4 multicast",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_bgp_address_family_purged(self):
-        set_module_args(dict(config=dict(as_number=65000), state="purged"))
-        commands = ["no router bgp 65000"]
-        self.execute_module(changed=True, commands=commands)
+    def test_ios_bgp_address_family_delete_without_config(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(afi="ipv4", safi="multicast"),
+                        dict(afi="ipv4", safi="mdt"),
+                    ],
+                ),
+                state="deleted",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "no address-family ipv4 mdt",
+            "no address-family ipv4 multicast",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_rendered(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            vrf="blue",
+                            aggregate_address=dict(
+                                address="192.0.2.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            bgp=dict(
+                                aggregate_timer=10,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=1,
+                                    suppress_route_val=1,
+                                    max_suppress=1,
+                                ),
+                                slow_peer=[
+                                    dict(detection=dict(threshold=150))
+                                ],
+                            ),
+                            neighbor=[
+                                dict(
+                                    activate=True,
+                                    address="198.51.100.1",
+                                    aigp=dict(
+                                        send=dict(
+                                            cost_community=dict(
+                                                id=100,
+                                                poi=dict(
+                                                    igp_cost=True,
+                                                    transitive=True,
+                                                ),
+                                            )
+                                        )
+                                    ),
+                                    slow_peer=[
+                                        dict(detection=dict(threshold=150))
+                                    ],
+                                    remote_as=10,
+                                    route_map=dict(
+                                        name="test-route", out=True
+                                    ),
+                                    route_server_client=True,
+                                )
+                            ],
+                            network=[
+                                dict(
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
+                                )
+                            ],
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="mdt",
+                            bgp=dict(
+                                dmzlink_bw=True,
+                                dampening=dict(
+                                    penalty_half_time=1,
+                                    reuse_route_val=10,
+                                    suppress_route_val=100,
+                                    max_suppress=5,
+                                ),
+                                soft_reconfig_backup=True,
+                            ),
+                        ),
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            aggregate_address=dict(
+                                address="192.0.3.1",
+                                netmask="255.255.255.255",
+                                as_confed_set=True,
+                            ),
+                            default_metric=12,
+                            distance=dict(external=10, internal=10, local=100),
+                            network=[
+                                dict(
+                                    address="198.51.111.11",
+                                    mask="255.255.255.255",
+                                    route_map="test",
+                                )
+                            ],
+                            table_map=dict(name="test_tableMap", filter=True),
+                        ),
+                    ],
+                ),
+                state="rendered",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4 multicast vrf blue",
+            "bgp aggregate-timer 10",
+            "bgp slow-peer detection threshold 150",
+            "bgp dampening 1 1 1 1",
+            "neighbor 198.51.100.1 remote-as 10",
+            "neighbor 198.51.100.1 activate",
+            "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+            "neighbor 198.51.100.1 route-map test-route out",
+            "neighbor 198.51.100.1 route-server-client",
+            "neighbor 198.51.100.1 slow-peer detection threshold 150",
+            "network 198.51.110.10 mask 255.255.255.255 backdoor",
+            "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
+            "address-family ipv4 mdt",
+            "bgp dmzlink-bw",
+            "bgp dampening 1 10 100 5",
+            "bgp soft-reconfig-backup",
+            "address-family ipv4 multicast",
+            "network 198.51.111.11 mask 255.255.255.255 route-map test",
+            "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+            "default-metric 12",
+            "distance bgp 10 10 100",
+            "table-map test_tableMap filter",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["rendered"], commands)
 
     def test_ios_bgp_address_family_parsed(self):
         set_module_args(
             dict(
-                running_config="router bgp 65000\n bgp nopeerup-delay post-boot 10",
+                running_config="router bgp 65000\n address-family ipv4 multicast vrf blue\n bgp aggregate-timer 10\n bgp slow-peer detection threshold 150",
                 state="parsed",
             )
         )
         result = self.execute_module(changed=False)
         parsed_list = {
+            "address_family": [
+                {
+                    "afi": "ipv4",
+                    "bgp": {
+                        "aggregate_timer": 10,
+                        "slow_peer": [{"detection": {"threshold": 150}}],
+                    },
+                    "safi": "multicast",
+                    "vrf": "blue",
+                }
+            ],
             "as_number": "65000",
-            "bgp": {"nopeerup_delay": [{"post_boot": 10}]},
         }
         self.assertEqual(parsed_list, result["parsed"])

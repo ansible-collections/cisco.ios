@@ -737,12 +737,12 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""\s*aggregate-address*
                     \s*(?P<address>(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s(?:[0-9]{1,3}\.){3}[0-9]{1,3})*
-                    \s*(?P<advertise_map>advertise-map\s\S+)*
                     \s*(?P<as_confed_set>as-confed-set)*
                     \s*(?P<as_set>as-set)*
-                    \s*(?P<attribute_map>attribute-map\s\S+)*
                     \s*(?P<route_map>route-map\s\S+)*
                     \s*(?P<summary_only>summary-only)*
+                    \s*(?P<attribute_map>attribute-map\s\S+)*
+                    \s*(?P<advertise_map>advertise-map\s\S+)*
                     \s*(?P<suppress_map>suppress-map\s\S+)*
                     $""",
                 re.VERBOSE,

@@ -116,11 +116,9 @@ class Bgp_AddressFamilyFacts(object):
                             temp["ipv6_address"] = neighbor_identifier
                         else:
                             temp["tag"] = neighbor_identifier
-                    {
-                        each.pop(every)
-                        for every in ["address", "ipv6_address", "tag"]
-                        if every in each
-                    }
+                    for every in ["address", "ipv6_address", "tag"]:
+                        if every in each:
+                            each.pop(every)
                     temp.update(each)
                     slow_peer_val = each.get("slow_peer")
                     if slow_peer_val:
