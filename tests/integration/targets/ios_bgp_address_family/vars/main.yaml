@@ -15,19 +15,16 @@ merged:
     - neighbor 198.51.100.1 slow-peer detection threshold 150
     - network 198.51.110.10 mask 255.255.255.255 backdoor
     - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    - exit-address-family
     - address-family ipv4 mdt
     - bgp dmzlink-bw
     - bgp dampening 1 10 100 5
     - bgp soft-reconfig-backup
-    - exit-address-family
     - address-family ipv4 multicast
     - network 198.51.111.11 mask 255.255.255.255 route-map test
     - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     - default-metric 12
     - distance bgp 10 10 100
     - table-map test_tableMap filter
-    - exit-address-family
 
   after:
     address_family:
@@ -121,13 +118,11 @@ overridden:
     - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
-    - exit-address-family
     - address-family ipv6 multicast
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 200
     - bgp dampening 10 10 10 10
     - network 2001:DB8:0:3::/64 route-map test_ipv6
-    - exit-address-family
 
   after:
     address_family:
@@ -203,7 +198,6 @@ replaced:
     - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
-    - exit-address-family
     - address-family ipv4 multicast
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 200
@@ -214,7 +208,6 @@ replaced:
     - no default-metric 12
     - no distance bgp 10 10 100
     - no table-map test_tableMap filter
-    - exit-address-family
 
   after:
     address_family:

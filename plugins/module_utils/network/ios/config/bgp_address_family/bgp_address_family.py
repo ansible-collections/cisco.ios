@@ -81,7 +81,7 @@ class Bgp_AddressFamily(ResourceModule):
             haved = {self.have["as_number"]: self.have}
         else:
             haved = dict()
-
+        q(wantd, haved)
         for each in wantd, haved:
             self.list_to_dict(each)
 
@@ -168,9 +168,6 @@ class Bgp_AddressFamily(ResourceModule):
                 if val.get("vrf"):
                     af_cmd += " vrf {vrf}".format(**val)
                 self.commands.insert(cmd_len, af_cmd)
-                self.commands.insert(
-                    len(self.commands) + 1, "exit-address-family"
-                )
         if not w and self.state == "overridden":
             self._delete_af(have)
 
