@@ -538,13 +538,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 as_confed_set=True,
                             ),
                             bgp=dict(
-                                aggregate_timer=10,
                                 dampening=dict(
                                     penalty_half_time=1,
                                     reuse_route_val=1,
                                     suppress_route_val=1,
                                     max_suppress=1,
-                                ),
+                                )
                             ),
                             neighbor=[
                                 dict(
@@ -620,7 +619,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         commands = [
             "router bgp 65000",
             "address-family ipv4 multicast vrf blue",
-            "bgp aggregate-timer 10",
             "bgp dampening 1 1 1 1",
             "neighbor 198.51.100.1 remote-as 10",
             "neighbor 198.51.100.1 activate",

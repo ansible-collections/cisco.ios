@@ -37,7 +37,6 @@ options:
       as_number:
         description: Autonomous system number.
         type: str
-        required: true
       address_family:
         description: A list of configurations for bgp address family.
         type: list

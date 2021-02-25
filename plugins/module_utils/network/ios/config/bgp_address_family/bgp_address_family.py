@@ -105,7 +105,7 @@ class Bgp_AddressFamily(ResourceModule):
                             if k in w:
                                 temp.update({k: v})
                     val["address_family"] = temp
-            else:
+            elif haved:
                 as_number = list(haved)[0]
                 temp = {}
                 for k, v in iteritems(haved):
@@ -339,35 +339,45 @@ class Bgp_AddressFamily(ResourceModule):
         if param:
             for key, val in iteritems(param):
                 if val.get("address_family"):
-                    val["address_family"] = {
-                        each["afi"]
-                        + "_"
-                        + each.get("safi", "")
-                        + "_"
-                        + each.get("vrf", ""): each
-                        for each in val.get("address_family", [])
-                    }
+                    temp = {}
+                    for each in val.get("address_family", []):
+                        temp.update(
+                            {
+                                each["afi"]
+                                + "_"
+                                + each.get("safi", "")
+                                + "_"
+                                + each.get("vrf", ""): each
+                            }
+                        )
+                    val["address_family"] = temp
                     self.list_to_dict(val["address_family"])
                 if "bgp" in val and "slow_peer" in val["bgp"]:
-                    val["bgp"]["slow_peer"] = {
-                        list(each)[0]: each[list(each)[0]]
-                        for each in val["bgp"]["slow_peer"]
-                    }
+                    temp = {}
+                    for each in val["bgp"]["slow_peer"]:
+                        temp.update({list(each)[0]: each[list(each)[0]]})
+                    val["bgp"]["slow_peer"] = temp
                 if "neighbor" in val:
                     for each in val["neighbor"]:
                         if each.get("slow_peer"):
-                            each["slow_peer"] = {
-                                list(every)[0]: every[list(every)[0]]
-                                for every in each["slow_peer"]
+                            temp = {}
+                            for every in each["slow_peer"]:
+                                temp.update(
+                                    {list(every)[0]: every[list(every)[0]]}
+                                )
+                            each["slow_peer"] = temp
+                    temp = {}
+                    for each in val.get("neighbor", []):
+                        temp.update(
+                            {
+                                each.get("address")
+                                or each.get("ipv6_address")
+                                or each.get("tag"): each
                             }
-                    val["neighbor"] = {
-                        each.get("address")
-                        or each.get("ipv6_address")
-                        or each.get("tag"): each
-                        for each in val.get("neighbor", [])
-                    }
+                        )
+                    val["neighbor"] = temp
                 if "network" in val:
-                    val["network"] = {
-                        each["address"]: each
-                        for each in val.get("network", [])
-                    }
+                    temp = {}
+                    for each in val.get("network", []):
+                        temp.update({each["address"]: each})
+                    val["network"] = temp

@@ -38,7 +38,7 @@ class Bgp_AddressFamilyArgs(object):
         "config": {
             "type": "dict",
             "options": {
-                "as_number": {"type": "str", "required": True},
+                "as_number": {"type": "str"},
                 "address_family": {
                     "type": "list",
                     "elements": "dict",
