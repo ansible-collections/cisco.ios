@@ -545,9 +545,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     suppress_route_val=1,
                                     max_suppress=1,
                                 ),
-                                slow_peer=[
-                                    dict(detection=dict(threshold=150))
-                                ],
                             ),
                             neighbor=[
                                 dict(
@@ -624,7 +621,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "router bgp 65000",
             "address-family ipv4 multicast vrf blue",
             "bgp aggregate-timer 10",
-            "bgp slow-peer detection threshold 150",
             "bgp dampening 1 1 1 1",
             "neighbor 198.51.100.1 remote-as 10",
             "neighbor 198.51.100.1 activate",
