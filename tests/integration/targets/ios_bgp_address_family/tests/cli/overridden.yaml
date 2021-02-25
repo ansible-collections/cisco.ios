@@ -66,9 +66,6 @@
                 slow_peer:
                   - detection:
                       threshold: 200
-              network:
-                - address: 2001:DB8:0:3::/64
-                  route_map: test_ipv6
         state: overridden
 
     - name: Assert that correct set of commands were generated

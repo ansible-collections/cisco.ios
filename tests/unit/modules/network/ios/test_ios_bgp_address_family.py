@@ -587,8 +587,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     reuse_route_val=10,
                                     suppress_route_val=100,
                                     max_suppress=5,
-                                ),
-                                soft_reconfig_backup=True,
+                                )
                             ),
                         ),
                         dict(
@@ -629,7 +628,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
             "address-family ipv4 mdt",
             "bgp dampening 1 10 100 5",
-            "bgp soft-reconfig-backup",
             "address-family ipv4 multicast",
             "network 198.51.111.11 mask 255.255.255.255 route-map test",
             "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
