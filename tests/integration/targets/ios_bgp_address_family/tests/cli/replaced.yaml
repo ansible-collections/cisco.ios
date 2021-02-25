@@ -77,11 +77,6 @@
           - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
 
-    - name: Assert that after dict is correctly generated
-      assert:
-        that:
-          - replaced['after'] == result['after']
-
     - name: Replaced provided BGP Address family configuration
         (IDEMPOTENT)
       register: result

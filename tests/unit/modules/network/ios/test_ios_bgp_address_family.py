@@ -582,7 +582,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="mdt",
                             bgp=dict(
-                                dmzlink_bw=True,
                                 dampening=dict(
                                     penalty_half_time=1,
                                     reuse_route_val=10,
@@ -629,7 +628,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "network 198.51.110.10 mask 255.255.255.255 backdoor",
             "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
             "address-family ipv4 mdt",
-            "bgp dmzlink-bw",
             "bgp dampening 1 10 100 5",
             "bgp soft-reconfig-backup",
             "address-family ipv4 multicast",

@@ -18,7 +18,6 @@
       assert:
         that:
           - result.changed == false
-          - merged['after'] == result['gathered']
 
   always:
 
