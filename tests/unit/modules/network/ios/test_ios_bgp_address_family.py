@@ -580,18 +580,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         ),
                         dict(
                             afi="ipv4",
-                            safi="mdt",
-                            bgp=dict(
-                                dampening=dict(
-                                    penalty_half_time=1,
-                                    reuse_route_val=10,
-                                    suppress_route_val=100,
-                                    max_suppress=5,
-                                )
-                            ),
-                        ),
-                        dict(
-                            afi="ipv4",
                             safi="multicast",
                             aggregate_address=dict(
                                 address="192.0.3.1",
@@ -626,8 +614,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 198.51.100.1 slow-peer detection threshold 150",
             "network 198.51.110.10 mask 255.255.255.255 backdoor",
             "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
-            "address-family ipv4 mdt",
-            "bgp dampening 1 10 100 5",
             "address-family ipv4 multicast",
             "network 198.51.111.11 mask 255.255.255.255 route-map test",
             "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
