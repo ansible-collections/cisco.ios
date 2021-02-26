@@ -260,6 +260,24 @@ class Bgp_AddressFamily(ResourceModule):
                 self.compare(
                     parsers=parsers, want=dict(), have={"neighbor": val}
                 )
+            count = 0
+            remote = None
+            activate = None
+            for each in self.commands:
+                if "no" in each and "remote-as" in each:
+                    remote = count
+                if "no" in each and "activate" in each:
+                    activate = count
+                if "neighbor" in each:
+                    count += 1
+                else:
+                    break
+            if activate:
+                if count > 0 or "activate" in self.commands[activate]:
+                    self.commands.append(self.commands.pop(activate))
+            if remote:
+                if count > 0 or "remote-as" in self.commands[remote]:
+                    self.commands.append(self.commands.pop(remote))
 
     def _compare_network(self, want, have):
         parsers = ["network"]

@@ -34,28 +34,23 @@ def _tmplt_af(config_data):
 
 def _tmplt_af_aggregate_address(config_data):
     if "aggregate_address" in config_data:
-        cmd = "aggregate-address {address} {netmask}".format(
-            **config_data["aggregate_address"]
-        )
-        if "advertise_map" in config_data["aggregate_address"]:
-            cmd += " advertise-map {advertise_map}".format(
-                **config_data["aggregate_address"]
-            )
-        if "as_confed_set" in config_data["aggregate_address"]:
-            cmd += " as-confed-set"
-        if "as_set" in config_data["aggregate_address"]:
-            cmd += " as-set"
-        if "attribute_map" in config_data["aggregate_address"]:
-            cmd += " attribute-map {attribute_map}".format(
-                **config_data["aggregate_address"]
-            )
-        if "summary_only" in config_data["aggregate_address"]:
-            cmd += " summary-only"
-        if "suppress_map" in config_data["aggregate_address"]:
-            cmd += " suppress-map {suppress_map}".format(
-                **config_data["aggregate_address"]
-            )
-        return cmd
+        command = []
+        for each in config_data["aggregate_address"]:
+            cmd = "aggregate-address {address} {netmask}".format(**each)
+            if "advertise_map" in each:
+                cmd += " advertise-map {advertise_map}".format(**each)
+            if "as_confed_set" in each:
+                cmd += " as-confed-set"
+            if "as_set" in each:
+                cmd += " as-set"
+            if "attribute_map" in each:
+                cmd += " attribute-map {attribute_map}".format(**each)
+            if "summary_only" in each:
+                cmd += " summary-only"
+            if "suppress_map" in each:
+                cmd += " suppress-map {suppress_map}".format(**each)
+            command.append(cmd)
+        return command
 
 
 def _tmplt_bgp_af_additional_paths(config_data):
@@ -752,16 +747,18 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "aggregate_address": {
-                            "address": "{{ address.split(' ')[0] }}",
-                            "netmask": "{{ address.split(' ')[1] }}",
-                            "advertise_map": "{{ advertise_map.split('advertise-map ')[1] if advertise_map is defined }}",
-                            "as_confed_set": "{{ True if as_confed_set is defined }}",
-                            "as_set": "{{ True if as_set is defined }}",
-                            "attribute_map": "{{ attribute_map.split('attribute-map ')[1] if attribute_map is defined }}",
-                            "summary_only": "{{ True if summary_only is defined }}",
-                            "suppress_map": "{{ suppress_map.split('suppress-map ')[1] if suppress_map is defined }}",
-                        }
+                        "aggregate_address": [
+                            {
+                                "address": "{{ address.split(' ')[0] }}",
+                                "netmask": "{{ address.split(' ')[1] }}",
+                                "advertise_map": "{{ advertise_map.split('advertise-map ')[1] if advertise_map is defined }}",
+                                "as_confed_set": "{{ True if as_confed_set is defined }}",
+                                "as_set": "{{ True if as_set is defined }}",
+                                "attribute_map": "{{ attribute_map.split('attribute-map ')[1] if attribute_map is defined }}",
+                                "summary_only": "{{ True if summary_only is defined }}",
+                                "suppress_map": "{{ suppress_map.split('suppress-map ')[1] if suppress_map is defined }}",
+                            }
+                        ]
                     }
                 }
             },

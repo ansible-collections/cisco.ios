@@ -18,9 +18,9 @@
               safi: multicast
               vrf: blue
               aggregate_address:
-                address: 192.0.2.1
-                netmask: 255.255.255.255
-                as_confed_set: true
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
               bgp:
                 aggregate_timer: 10
                 dampening:
@@ -77,6 +77,11 @@
           - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
 
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - replaced['after'] == result['after']
+
     - name: Replaced provided BGP Address family configuration
         (IDEMPOTENT)
       register: result
@@ -86,7 +91,6 @@
       assert:
         that:
           - result['changed'] == false
-  when: ansible_net_version != "15.6(2)T"
   always:
 
     - include_tasks: _remove_config.yaml

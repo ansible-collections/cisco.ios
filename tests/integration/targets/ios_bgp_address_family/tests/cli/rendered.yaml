@@ -14,9 +14,9 @@
               safi: multicast
               vrf: blue
               aggregate_address:
-                address: 192.0.2.1
-                netmask: 255.255.255.255
-                as_confed_set: true
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
               bgp:
                 aggregate_timer: 10
                 dampening:

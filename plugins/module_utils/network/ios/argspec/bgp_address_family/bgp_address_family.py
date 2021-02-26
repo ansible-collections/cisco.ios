@@ -68,7 +68,8 @@ class Bgp_AddressFamilyArgs(object):
                         },
                         "vrf": {"type": "str"},
                         "aggregate_address": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "address": {"type": "str"},
                                 "netmask": {"type": "str"},

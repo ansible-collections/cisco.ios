@@ -29,10 +29,20 @@ merged:
   after:
     address_family:
       - afi: "ipv4"
+        bgp:
+          dampening:
+            max_suppress: 5
+            penalty_half_time: 1
+            reuse_route_val: 10
+            suppress_route_val: 100
+          dmzlink_bw: true
+          soft_reconfig_backup: true
+        safi: "mdt"
+      - afi: "ipv4"
         aggregate_address:
-          address: "192.0.2.1"
-          as_confed_set: true
-          netmask: "255.255.255.255"
+          - address: "192.0.2.1"
+            as_confed_set: true
+            netmask: "255.255.255.255"
         bgp:
           aggregate_timer: 10
           dampening:
@@ -69,9 +79,9 @@ merged:
         vrf: "blue"
       - afi: "ipv4"
         aggregate_address:
-          address: "192.0.3.1"
-          as_confed_set: true
-          netmask: "255.255.255.255"
+          - address: "192.0.3.1"
+            as_confed_set: true
+            netmask: "255.255.255.255"
         default_metric: 12
         distance:
           external: 10
@@ -85,16 +95,6 @@ merged:
         table_map:
           filter: true
           name: "test_tableMap"
-      - afi: "ipv4"
-        bgp:
-          dampening:
-            max_suppress: 5
-            penalty_half_time: 1
-            reuse_route_val: 10
-            suppress_route_val: 100
-          dmzlink_bw: true
-          soft_reconfig_backup: true
-        safi: "mdt"
     as_number: "65000"
 
 overridden:
@@ -127,9 +127,9 @@ overridden:
     address_family:
       - afi: "ipv4"
         aggregate_address:
-          address: "192.0.2.1"
-          as_confed_set: true
-          netmask: "255.255.255.255"
+          - address: "192.0.2.1"
+            as_confed_set: true
+            netmask: "255.255.255.255"
         bgp:
           aggregate_timer: 10
           dampening:
@@ -208,10 +208,20 @@ replaced:
   after:
     address_family:
       - afi: "ipv4"
+        bgp:
+          dampening:
+            max_suppress: 5
+            penalty_half_time: 1
+            reuse_route_val: 10
+            suppress_route_val: 100
+          dmzlink_bw: true
+          soft_reconfig_backup: true
+        safi: "mdt"
+      - afi: "ipv4"
         aggregate_address:
-          address: "192.0.2.1"
-          as_confed_set: true
-          netmask: "255.255.255.255"
+          - address: "192.0.2.1"
+            as_confed_set: true
+            netmask: "255.255.255.255"
         bgp:
           aggregate_timer: 10
           dampening:
@@ -262,16 +272,6 @@ replaced:
             mask: "255.255.255.255"
             route_map: "test"
         safi: "multicast"
-      - afi: "ipv4"
-        bgp:
-          dampening:
-            max_suppress: 5
-            penalty_half_time: 1
-            reuse_route_val: 10
-            suppress_route_val: 100
-          dmzlink_bw: true
-          soft_reconfig_backup: true
-        safi: "mdt"
     as_number: "65000"
 
 deleted:

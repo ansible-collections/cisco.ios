@@ -55,7 +55,8 @@ options:
             type: str
           aggregate_address:
             description: Configure BGP aggregate entries
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               address:
                 description: Aggregate address(A.B.C.D)
@@ -1180,9 +1181,9 @@ EXAMPLES = """
           safi: multicast
           vrf: blue
           aggregate_address:
-            address: 192.0.2.1
-            netmask: 255.255.255.255
-            as_confed_set: true
+            - address: 192.0.2.1
+              netmask: 255.255.255.255
+              as_confed_set: true
           bgp:
             aggregate_timer: 10
             dampening:
@@ -1234,9 +1235,9 @@ EXAMPLES = """
         - afi: ipv4
           safi: multicast
           aggregate_address:
-            address: 192.0.3.1
-            netmask: 255.255.255.255
-            as_confed_set: true
+            - address: 192.0.3.1
+              netmask: 255.255.255.255
+              as_confed_set: true
           default_metric: 12
           distance:
             external: 10
@@ -1365,9 +1366,9 @@ EXAMPLES = """
           safi: multicast
           vrf: blue
           aggregate_address:
-            address: 192.0.2.1
-            netmask: 255.255.255.255
-            as_confed_set: true
+            - address: 192.0.2.1
+              netmask: 255.255.255.255
+              as_confed_set: true
           bgp:
             aggregate_timer: 10
             dampening:
@@ -1531,9 +1532,9 @@ EXAMPLES = """
           safi: multicast
           vrf: blue
           aggregate_address:
-            address: 192.0.2.1
-            netmask: 255.255.255.255
-            as_confed_set: true
+            - address: 192.0.2.1
+              netmask: 255.255.255.255
+              as_confed_set: true
           bgp:
             aggregate_timer: 10
             dampening:
@@ -1808,11 +1809,11 @@ EXAMPLES = """
 #       "address_family": [
 #           {
 #               "afi": "ipv4",
-#               "aggregate_address": {
+#               "aggregate_address": [{
 #                   "address": "192.0.2.1",
 #                   "as_confed_set": true,
 #                   "netmask": "255.255.255.255"
-#               },
+#               }],
 #               "bgp": {
 #                   "aggregate_timer": 10,
 #                   "dampening": {
@@ -1881,11 +1882,11 @@ EXAMPLES = """
 #           },
 #           {
 #               "afi": "ipv4",
-#               "aggregate_address": {
+#               "aggregate_address": [{
 #                   "address": "192.0.3.1",
 #                   "as_confed_set": true,
 #                   "netmask": "255.255.255.255"
-#               },
+#               }],
 #               "default_metric": 12,
 #               "distance": {
 #                   "external": 10,
@@ -1934,9 +1935,9 @@ EXAMPLES = """
           safi: multicast
           vrf: blue
           aggregate_address:
-            address: 192.0.2.1
-            netmask: 255.255.255.255
-            as_confed_set: true
+            - address: 192.0.2.1
+              netmask: 255.255.255.255
+              as_confed_set: true
           bgp:
             aggregate_timer: 10
             dampening:
@@ -2047,11 +2048,11 @@ EXAMPLES = """
 #       "address_family": [
 #           {
 #               "afi": "ipv4",
-#               "aggregate_address": {
+#               "aggregate_address": [{
 #                   "address": "192.0.3.1",
 #                   "as_confed_set": true,
 #                   "netmask": "255.255.255.255"
-#               },
+#               }],
 #               "default_metric": 12,
 #               "distance": {
 #                   "external": 10,

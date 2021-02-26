@@ -2,6 +2,5 @@
 - name: Create and Setup VRF configuration
   vars:
     lines: "vrf definition blue\naddress-family ipv4\nrd 45000:2"
-  when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: '{{ lines }}'
