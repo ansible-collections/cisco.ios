@@ -198,6 +198,12 @@ class Cliconf(CliconfBase):
 
                 cmd = line["command"]
                 if cmd != "end" and cmd[0] != "!":
+                    if self.send_command(**line):
+                        raise ValueError(
+                            "Command: '{0}' results into: '{1}'".format(
+                                cmd, self.send_command(**line)
+                            )
+                        )
                     results.append(self.send_command(**line))
                     requests.append(cmd)
 
