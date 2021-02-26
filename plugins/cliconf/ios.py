@@ -198,7 +198,11 @@ class Cliconf(CliconfBase):
 
                 cmd = line["command"]
                 if cmd != "end" and cmd[0] != "!":
-                    if self.send_command(**line):
+                    if (
+                        self.send_command(**line)
+                        and len(self.send_command(**line).split(" ")) > 1
+                        or "%" in self.send_command(**line).split(" ")
+                    ):
                         raise ValueError(
                             "Command: '{0}' results into: '{1}'".format(
                                 cmd, self.send_command(**line)
