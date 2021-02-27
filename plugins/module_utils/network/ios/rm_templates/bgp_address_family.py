@@ -34,23 +34,29 @@ def _tmplt_af(config_data):
 
 def _tmplt_af_aggregate_address(config_data):
     if "aggregate_address" in config_data:
-        command = []
-        for each in config_data["aggregate_address"]:
-            cmd = "aggregate-address {address} {netmask}".format(**each)
-            if "advertise_map" in each:
-                cmd += " advertise-map {advertise_map}".format(**each)
-            if "as_confed_set" in each:
-                cmd += " as-confed-set"
-            if "as_set" in each:
-                cmd += " as-set"
-            if "attribute_map" in each:
-                cmd += " attribute-map {attribute_map}".format(**each)
-            if "summary_only" in each:
-                cmd += " summary-only"
-            if "suppress_map" in each:
-                cmd += " suppress-map {suppress_map}".format(**each)
-            command.append(cmd)
-        return command
+        cmd = "aggregate-address {address} {netmask}".format(
+            **config_data["aggregate_address"]
+        )
+        if "advertise_map" in config_data["aggregate_address"]:
+            cmd += " advertise-map {advertise_map}".format(
+                **config_data["aggregate_address"]
+            )
+        if "as_confed_set" in config_data["aggregate_address"]:
+            cmd += " as-confed-set"
+        if "as_set" in config_data["aggregate_address"]:
+            cmd += " as-set"
+        if "attribute_map" in config_data["aggregate_address"]:
+            cmd += " attribute-map {attribute_map}".format(
+                **config_data["aggregate_address"]
+            )
+        if "summary_only" in config_data["aggregate_address"]:
+            cmd += " summary-only"
+        if "suppress_map" in config_data["aggregate_address"]:
+            cmd += " suppress-map {suppress_map}".format(
+                **config_data["aggregate_address"]
+            )
+
+        return cmd
 
 
 def _tmplt_bgp_af_additional_paths(config_data):

@@ -85,11 +85,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.3.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.3.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 dampening=dict(
                                     penalty_half_time=10,
@@ -143,11 +145,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.2.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.2.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 aggregate_timer=10,
                                 dampening=dict(
@@ -210,11 +214,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            aggregate_address=dict(
-                                address="192.0.3.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.3.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
                             network=[
@@ -243,11 +249,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.2.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.2.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 aggregate_timer=10,
                                 slow_peer=[
@@ -300,11 +308,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.2.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.2.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 aggregate_timer=10,
                                 dampening=dict(
@@ -367,11 +377,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            aggregate_address=dict(
-                                address="192.0.3.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.3.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
                             network=[
@@ -400,11 +412,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.2.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.2.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 aggregate_timer=10,
                                 dampening=dict(
@@ -467,11 +481,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            aggregate_address=dict(
-                                address="192.0.3.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.3.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
                             network=[
@@ -532,11 +548,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=dict(
-                                address="192.0.2.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.2.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             bgp=dict(
                                 dampening=dict(
                                     penalty_half_time=1,
@@ -581,11 +599,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            aggregate_address=dict(
-                                address="192.0.3.1",
-                                netmask="255.255.255.255",
-                                as_confed_set=True,
-                            ),
+                            aggregate_address=[
+                                dict(
+                                    address="192.0.3.1",
+                                    netmask="255.255.255.255",
+                                    as_confed_set=True,
+                                )
+                            ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
                             network=[
@@ -622,7 +642,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "table-map test_tableMap filter",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["rendered"], commands)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_bgp_address_family_parsed(self):
         set_module_args(

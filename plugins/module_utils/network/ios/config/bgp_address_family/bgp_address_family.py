@@ -42,7 +42,6 @@ class Bgp_AddressFamily(ResourceModule):
     parsers = [
         "as_number",
         "afi",
-        "aggregate_address",
         "default",
         "default_metric",
         "distance",
@@ -158,6 +157,7 @@ class Bgp_AddressFamily(ResourceModule):
             else:
                 h_key = dict()
             if val != h_key:
+                self._aggregate_address_af_config_compare(val, have=h_key)
                 self._bgp_af_config_compare(val, have=h_key)
                 self._compare_neighbor(val, have=h_key)
                 self._compare_network(val, have=h_key)
@@ -174,6 +174,42 @@ class Bgp_AddressFamily(ResourceModule):
                 self.commands.insert(cmd_len, af_cmd)
         if not w and self.state == "overridden":
             self._delete_af(have)
+
+    def _aggregate_address_af_config_compare(self, want, have):
+        parsers = ["aggregate_address"]
+        w_aggregate_address = want.get("aggregate_address", {})
+        if have:
+            h_aggregate_address = have.get("aggregate_address", {})
+        else:
+            h_aggregate_address = {}
+        for key, val in iteritems(w_aggregate_address):
+            if h_aggregate_address and h_aggregate_address.get(key):
+                self.compare(
+                    parsers=parsers,
+                    want={"aggregate_address": val},
+                    have={"aggregate_address": h_aggregate_address.pop(key)},
+                )
+            else:
+                self.compare(
+                    parsers=parsers,
+                    want={"aggregate_address": val},
+                    have=dict(),
+                )
+        if self.state == "replaced" or self.state == "overridden":
+            if h_aggregate_address:
+                for key, val in iteritems(h_aggregate_address):
+                    self.compare(
+                        parsers=parsers,
+                        want=dict(),
+                        have={"aggregate_address": val},
+                    )
+            elif have.get("aggregate_address"):
+                for key, val in iteritems(have.pop("aggregate_address")):
+                    self.compare(
+                        parsers=parsers,
+                        want=dict(),
+                        have={"aggregate_address": val},
+                    )
 
     def _bgp_af_config_compare(self, want, have):
         parsers = [
@@ -370,6 +406,11 @@ class Bgp_AddressFamily(ResourceModule):
                         )
                     val["address_family"] = temp
                     self.list_to_dict(val["address_family"])
+                if "aggregate_address" in val:
+                    temp = {}
+                    for each in val["aggregate_address"]:
+                        temp.update({each["address"]: each})
+                    val["aggregate_address"] = temp
                 if "bgp" in val and "slow_peer" in val["bgp"]:
                     temp = {}
                     for each in val["bgp"]["slow_peer"]:
