@@ -66,9 +66,6 @@
                 slow_peer:
                   - detection:
                       threshold: 200
-              network:
-                - address: 2001:DB8:0:3::/64
-                  route_map: test_ipv6
         state: overridden
 
     - name: Assert that correct set of commands were generated
@@ -76,11 +73,6 @@
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
-
-    - name: Assert that after dict is correctly generated
-      assert:
-        that:
-          - overridden['after'] == result['after']
 
     - name: Override provided BGP Address family configuration
         (IDEMPOTENT)
