@@ -1,4 +1,11 @@
 ---
+- name: Delete and Clean VRF RD configuration first
+  register: result
+  cisco.ios.ios_config:
+    commands:
+      - no rd 45000:2
+    parents: vrf definition blue
+
 - name: Delete and Clean VRF configuration
   vars:
     lines: "no vrf definition blue\n"
@@ -6,5 +13,7 @@
     config: '{{ lines }}'
 
 - name: Remove BGP Address family Config
-  cisco.ios.ios_bgp_address_family:
-    state: deleted
+  vars:
+    lines: "no router bgp 65000\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

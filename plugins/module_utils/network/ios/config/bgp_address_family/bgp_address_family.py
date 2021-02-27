@@ -304,14 +304,11 @@ class Bgp_AddressFamily(ResourceModule):
                     remote = count
                 if "no" in each and "activate" in each:
                     activate = count
-                if "neighbor" in each:
-                    count += 1
-                else:
-                    break
-            if activate:
+                count += 1
+            if activate and activate > remote:
                 if count > 0 or "activate" in self.commands[activate]:
                     self.commands.append(self.commands.pop(activate))
-            if remote:
+            if remote and activate > remote:
                 if count > 0 or "remote-as" in self.commands[remote]:
                     self.commands.append(self.commands.pop(remote))
 

@@ -112,12 +112,12 @@ overridden:
     - neighbor 198.51.110.1 route-server-client
     - neighbor 198.51.110.1 version 4
     - neighbor 198.51.110.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 remote-as 10
-    - no neighbor 198.51.100.1 activate
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
     - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
+    - no neighbor 198.51.100.1 activate
+    - no neighbor 198.51.100.1 remote-as 10
     - address-family ipv6 multicast
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 200
@@ -188,12 +188,12 @@ replaced:
     - neighbor 198.51.110.1 route-map test-replaced-route out
     - neighbor 198.51.110.1 route-server-client
     - neighbor 198.51.110.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 remote-as 10
-    - no neighbor 198.51.100.1 activate
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
     - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
+    - no neighbor 198.51.100.1 activate
+    - no neighbor 198.51.100.1 remote-as 10
     - address-family ipv4 multicast
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 200
