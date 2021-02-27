@@ -136,9 +136,10 @@ class Bgp_AddressFamilyFacts(object):
             objs["address_family"] = sorted(
                 objs["address_family"], key=lambda k, sk="afi": k[sk]
             )
-            objs["address_family"] = sorted(
-                objs["address_family"], key=lambda k, sk="safi": k[sk]
-            )
+            if objs["address_family"].get("safi"):
+                objs["address_family"] = sorted(
+                    objs["address_family"], key=lambda k, sk="safi": k[sk]
+                )
         if objs:
             ansible_facts["ansible_network_resources"].pop(
                 "bgp_address_family", None
