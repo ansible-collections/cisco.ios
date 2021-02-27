@@ -122,6 +122,7 @@ overridden:
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 200
     - bgp dampening 10 10 10 10
+    - network 2001:DB8:0:3::/64 route-map test_ipv6
 
   after:
     address_family:
@@ -175,6 +176,9 @@ overridden:
           slow_peer:
             - detection:
                 threshold: 200
+        network:
+          - address: 2001:DB8:0:3::/64
+            route_map: test_ipv6
         safi: "multicast"
     as_number: "65000"
 
