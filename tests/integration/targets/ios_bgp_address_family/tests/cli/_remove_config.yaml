@@ -1,4 +1,10 @@
 ---
+- name: Delete and Clean IPv6 routings configuration
+  vars:
+    lines: "no ipv6 unicast-routing\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+
 - name: Delete and Clean VRF RD configuration first
   register: result
   cisco.ios.ios_config:

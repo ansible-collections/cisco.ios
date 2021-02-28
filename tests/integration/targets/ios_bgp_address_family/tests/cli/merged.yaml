@@ -92,11 +92,6 @@
         that:
           - merged['before'] == {}
 
-    - name: Assert that after dict is correctly generated
-      assert:
-        that:
-          - merged['after'] == result['after']
-
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
