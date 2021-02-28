@@ -141,6 +141,10 @@ class TestIosAclsModule(TestIosModule):
                 config=[
                     dict(
                         afi="ipv4",
+                        acls=[dict(acl_type="standard", name="test_acl")],
+                    ),
+                    dict(
+                        afi="ipv4",
                         acls=[
                             dict(
                                 name="110",
@@ -246,6 +250,10 @@ class TestIosAclsModule(TestIosModule):
                 config=[
                     dict(
                         afi="ipv4",
+                        acls=[dict(acl_type="standard", name="test_acl")],
+                    ),
+                    dict(
+                        afi="ipv4",
                         acls=[
                             dict(
                                 name="110",
@@ -270,7 +278,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             )
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
             )
@@ -316,6 +324,7 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=True)
         commands = [
             "no ip access-list extended 110",
+            "no ip access-list standard test_acl",
             "no ipv6 access-list R1_TRAFFIC",
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
@@ -326,6 +335,10 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[dict(acl_type="standard", name="test_acl")],
+                    ),
                     dict(
                         afi="ipv4",
                         acls=[
@@ -388,7 +401,10 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_deleted_afi_based(self):
         set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
         result = self.execute_module(changed=True)
-        commands = ["no ip access-list extended 110"]
+        commands = [
+            "no ip access-list extended 110",
+            "no ip access-list standard test_acl",
+        ]
         self.assertEqual(result["commands"], commands)
 
     def test_ios_acls_deleted_acl_based(self):

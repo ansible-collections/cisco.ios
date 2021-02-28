@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - IOS acls module throwing nonetype error when aces were empty (https://github.com/ansible-collections/cisco.ios/issues/257).
