@@ -1,8 +1,4 @@
 ---
-- name: Gather IOS facts
-  cisco.ios.ios_facts:
-    gather_subset: min
-    gather_network_resources: bgp_address_family
 - include_tasks: _initial_vrf_setup.yaml
 - name: Populate BGP Address family Configuration
   cisco.ios.ios_bgp_address_family:

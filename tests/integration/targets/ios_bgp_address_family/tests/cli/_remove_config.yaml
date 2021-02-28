@@ -12,8 +12,6 @@
   ansible.netcommon.cli_config:
     config: '{{ lines }}'
 
-- name: Remove BGP Address family Config
-  vars:
-    lines: "no router bgp 65000\n"
-  ansible.netcommon.cli_config:
-    config: '{{ lines }}'
+- name: Remove BGP Global Config
+  cisco.ios.ios_bgp_global:
+    state: purged
