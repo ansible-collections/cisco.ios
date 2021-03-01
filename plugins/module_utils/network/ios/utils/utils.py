@@ -279,6 +279,18 @@ def netmask_to_cidr(netmask):
     return str(sum([bin(int(x)).count("1") for x in netmask.split(".")]))
 
 
+def is_valid_ip(ip_str):
+    valid = True
+    try:
+        if "::" in ip_str:
+            socket.inet_pton(socket.AF_INET6, ip_str)  # for IPv6
+        else:
+            socket.inet_pton(socket.AF_INET, ip_str)  # for IPv4
+    except socket.error:
+        valid = False
+    return valid
+
+
 def normalize_interface(name):
     """Return the normalized interface name
     """

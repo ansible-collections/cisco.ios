@@ -1,0 +1,101 @@
+---
+- block:
+  - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
+
+  - set_fact:
+      interfaces:
+        - interface GigabitEthernet0/1
+        - interface GigabitEthernet0/2
+
+  - name: setup
+    cisco.ios.ios_config: &rem
+      lines:
+        - "no description"
+        - "no mtu"
+        - "no duplex"
+        - "no speed"
+        - "shutdown"
+        - "no ip address"
+        - "no ipv6 address"
+      parents:
+        - "{{ intf }}"
+    with_items: "{{ interfaces }}"
+    loop_control:
+      loop_var: intf
+
+  - name: Merge base interfaces configuration
+    register: result
+    cisco.ios.ios_interfaces: &merged
+      config:
+        - name: GigabitEthernet0/1
+          description: Configured by Ansible (L3)
+          enabled: true
+          duplex: auto
+
+        - name: GigabitEthernet0/2
+          description: Configured by Ansible (L3)
+          enabled: true
+          duplex: full
+      state: merged
+
+  - assert:
+      that:
+        - '"interface GigabitEthernet0/1" in result.commands'
+        - '"description Configured by Ansible (L3)" in result.commands'
+        - '"no shutdown" in result.commands'
+        - '"interface GigabitEthernet0/2" in result.commands'
+        - '"description Configured by Ansible (L3)" in result.commands'
+        - '"no shutdown" in result.commands'
+        - '"duplex full" in result.commands'
+        - result.commands|length == 7
+
+  - name: Merge base interfaces configuration (IDEMPOTENT)
+    register: result
+    cisco.ios.ios_interfaces: *merged
+
+  - assert:
+      that:
+        - result.changed == False
+
+  - name: Merge L3 interfaces configuration
+    cisco.ios.ios_l3_interfaces: &merged_l3
+      config:
+        - name: GigabitEthernet0/1
+          ipv4:
+            - address: dhcp
+              dhcp_client: 0
+              dhcp_hostname: test.com
+        - name: GigabitEthernet0/2
+          ipv4:
+            - address: 198.51.100.1/24
+              secondary: true
+            - address: 198.51.100.2/24
+          ipv6:
+            - address: 2001:db8:0:3::/64
+      state: merged
+    register: result
+
+  - assert:
+      that:
+        - '"interface GigabitEthernet0/1" in result.commands'
+        - '"ip address dhcp client-id GigabitEthernet0/0 hostname test.com" in result.commands'
+        - '"interface GigabitEthernet0/2" in result.commands'
+        - '"ip address 198.51.100.1 255.255.255.0 secondary" in result.commands'
+        - '"ip address 198.51.100.2 255.255.255.0" in result.commands'
+        - '"ipv6 address 2001:db8:0:3::/64" in result.commands'
+        - result.commands|length == 6
+
+  - name: Merge L3 interfaces configuration (IDEMPOTENT)
+    cisco.ios.ios_l3_interfaces: *merged_l3
+    register: result
+
+  - assert:
+      that: result.changed == False
+
+  always:
+    - name: cleanup
+      cisco.ios.ios_config: *rem
+      with_items: "{{ interfaces }}"
+      loop_control:
+        loop_var: intf
+  when: ansible_connection == "network_cli" and ansible_network_single_user_mode|d(False)

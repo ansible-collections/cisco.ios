@@ -65,17 +65,15 @@ class Ospfv3(ResourceModule):
                   to the desired configuration
         """
         if self.want:
-            wantd = {
-                (entry["process_id"], entry.get("vrf")): entry
-                for entry in self.want.get("processes", [])
-            }
+            wantd = {}
+            for entry in self.want.get("processes", []):
+                wantd.update({(entry["process_id"], entry.get("vrf")): entry})
         else:
             wantd = {}
         if self.have:
-            haved = {
-                (entry["process_id"], entry.get("vrf")): entry
-                for entry in self.have.get("processes", [])
-            }
+            haved = {}
+            for entry in self.have.get("processes", []):
+                haved.update({(entry["process_id"], entry.get("vrf")): entry})
         else:
             haved = {}
 
@@ -83,29 +81,26 @@ class Ospfv3(ResourceModule):
         for thing in wantd, haved:
             for _pid, proc in iteritems(thing):
                 for area in proc.get("areas", []):
-                    ranges = {
-                        entry["address"]: entry
-                        for entry in area.get("ranges", [])
-                    }
+                    ranges = {}
+                    for entry in area.get("ranges", []):
+                        ranges.update({entry["address"]: entry})
                     if bool(ranges):
                         area["ranges"] = ranges
-                    filter_list = {
-                        entry["direction"]: entry
-                        for entry in area.get("filter_list", [])
-                    }
+                    filter_list = {}
+                    for entry in area.get("filter_list", []):
+                        filter_list.update({entry["direction"]: entry})
                     if bool(filter_list):
                         area["filter_list"] = filter_list
-                proc["areas"] = {
-                    entry["area_id"]: entry for entry in proc.get("areas", [])
-                }
+                temp = {}
+                for entry in proc.get("areas", []):
+                    temp.update({entry["area_id"]: entry})
+                proc["areas"] = temp
                 if proc.get("distribute_list"):
                     if "acls" in proc.get("distribute_list"):
-                        proc["distribute_list"]["acls"] = {
-                            entry["name"]: entry
-                            for entry in proc["distribute_list"].get(
-                                "acls", []
-                            )
-                        }
+                        temp = {}
+                        for entry in proc["distribute_list"].get("acls", []):
+                            temp.update({entry["name"]: entry})
+                        proc["distribute_list"]["acls"] = temp
 
         # if state is merged, merge want onto have
         if self.state == "merged":
@@ -114,9 +109,11 @@ class Ospfv3(ResourceModule):
         # if state is deleted, limit the have to anything in want
         # set want to nothing
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            temp = {}
+            for k, v in iteritems(haved):
+                if k in wantd or not wantd:
+                    temp.update({k: v})
+            haved = temp
             wantd = {}
 
         # delete processes first so we do run into "more than one" errors

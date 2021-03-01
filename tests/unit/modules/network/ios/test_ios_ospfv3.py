@@ -40,7 +40,7 @@ class TestIosOspfV3Module(TestIosModule):
         )
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module."
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection"
         )
         self.get_resource_connection_facts = (

@@ -1,0 +1,44 @@
+---
+- name: Populate BGP Global Configuration
+  cisco.ios.ios_bgp_global:
+    config:
+      as_number: 65000
+      bgp:
+        advertise_best_external: true
+        bestpath:
+          - compare_routerid: true
+        dampening:
+          penalty_half_time: 1
+          reuse_route_val: 1
+          suppress_route_val: 1
+          max_suppress: 1
+        graceful_shutdown:
+          neighbors:
+            time: 50
+          community: 100
+          local_preference: 100
+        log_neighbor_changes: true
+        nopeerup_delay:
+          - post_boot: 10
+      neighbor:
+        - address: 198.51.100.1
+          description: merge neighbor
+          remote_as: 100
+          aigp:
+            send:
+              cost_community:
+                id: 100
+                poi:
+                  igp_cost: true
+                  transitive: true
+          route_map:
+            name: test-route
+            out: true
+      redistribute:
+        - connected:
+            metric: 10
+      timers:
+        keepalive: 100
+        holdtime: 200
+        min_holdtime: 150
+    state: merged

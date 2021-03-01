@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - 223_fix_static_routes_facts_parsing_with_interface_present(https://github.com/ansible-collections/cisco.ios/issues/223).

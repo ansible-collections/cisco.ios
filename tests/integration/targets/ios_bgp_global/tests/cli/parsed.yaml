@@ -1,0 +1,15 @@
+---
+- debug:
+    msg: START ios_bgp_global parsed integration tests on connection={{ ansible_connection
+      }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_bgp_global:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- assert:
+    that:
+      - result.changed == false
+      - merged['after'] == result['parsed']
