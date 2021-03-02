@@ -33,6 +33,7 @@ Name | Description
 [cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acls_module.rst)|ACLs resource module
 [cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_banner_module.rst)|Manage multiline banners on Cisco IOS devices
 [cisco.ios.ios_bgp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_module.rst)|Configure global BGP protocol settings on Cisco IOS.
+[cisco.ios.ios_bgp_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_address_family_module.rst)|BGP Address family resource module
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Global BGP resource module
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Run commands on remote devices running Cisco IOS
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Manage Cisco IOS configuration sections
