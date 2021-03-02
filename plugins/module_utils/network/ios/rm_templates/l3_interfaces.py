@@ -19,46 +19,38 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
-def _tmplt_l3_interfaces_ipv4(config_data):
-    try:
-        acl_id = int(config_data.get("name"))
-        if not config_data.get("acl_type"):
-            if acl_id >= 1 and acl_id <= 99:
-                config_data["acl_type"] = "standard"
-            if acl_id >= 100 and acl_id <= 199:
-                config_data["acl_type"] = "extended"
-    except ValueError:
-        pass
-    afi = config_data.get("afi")
-    if afi == "ipv4":
-        command = "ip access-list {acl_type} {name}".format(**config_data)
-    elif afi == "ipv6":
-        command = "ipv6 access-list {name}".format(**config_data)
-    return command
+def _tmplt_l3_interfaces(config_data):
+    if config_data.get("ipv4"):
+        cmd = "ip address {address}".format(**config_data["ipv4"])
+        if config_data["ipv4"].get("secondary"):
+            cmd += " secondary"
+        if config_data["ipv4"].get("dhcp_client"):
+            cmd += " client-id GigabitEthernet 0/{dhcp_client}".format(
+                **config_data["ipv4"]
+            )
+        if config_data["ipv4"].get("dhcp_hostname"):
+            cmd += " hostname {dhcp_hostname}".format(**config_data["ipv4"])
+    elif config_data.get("ipv6"):
+        cmd = "ipv6 address {address}".format(**config_data["ipv6"])
+    return cmd
 
-def _tmplt_l3_interfaces_ipv6(config_data):
-    pass
 
 class L3_InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None):
-        super(AclsTemplate, self).__init__(lines=lines, tmplt=self)
+        super(L3_InterfacesTemplate, self).__init__(lines=lines, tmplt=self)
 
     PARSERS = [
         {
-            "name": "interface",
+            "name": "name",
             "getval": re.compile(
-                r"""^interaface*
+                r"""^interface*
                     \s*(?P<name>\S+)
-                    $""",
+                    *$""",
                 re.VERBOSE,
             ),
-            "compval": "interface {{ name }}",
-            "setval": _tmplt_access_list_name,
-            "result": {
-                "{{ name }}": {
-                    "name": "{{ name }}",
-                }
-            },
+            "compval": "name",
+            "setval": "interface {{ name }}",
+            "result": {"{{ name }}": {"name": "{{ name }}"}},
             "shared": True,
         },
         {
@@ -66,24 +58,23 @@ class L3_InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""\s+ip\saddress*
                     \s*(?P<ipv4>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\ssecondary|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\s\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<ipv4_dhcp>dhcp\sclient-id\s\S+\shostname\s\S+|dhcp\sclient-id\s\S+|dhcp\shostname\s\S+|dhcp)*
-                    \s*()
+                    \s*(?P<ipv4_dhcp>dhcp\sclient-id\s\S+\shostname\s\S+|dhcp\sclient-id\s\S+|dhcp\shostname\s\S+|dhcp)
                     *$""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_l3_interfaces_attributes,
-            "compval": "aces",
+            "setval": _tmplt_l3_interfaces,
+            "compval": "ipv4",
             "result": {
                 "{{ name }}": {
-                    "ipv4":[
+                    "ipv4": [
                         {
                             "address": "{{ ipv4.split(' ')[0] if ipv4 is defined }}",
                             "netmask": "{{ ipv4.split(' ')[1] if ipv4 is defined }}",
-                            "secondary": "{{ ipv4.split(' ')[2] if ipv4 is defined and 'secondary' in ipv4 }}",
+                            "secondary": "{{ True if ipv4 is defined and 'secondary' in ipv4 }}",
                             "dhcp_client": "{{ ipv4_dhcp.split('/')[1].split(' ')[0] if ipv4_dhcp is defined and 'client-id' in ipv4_dhcp }}",
                             "dhcp_hostname": "{{ ipv4_dhcp.split('hostname ')[1] if ipv4_dhcp is defined and 'hostname' in ipv4_dhcp }}",
-                        },
-                    ],
+                        }
+                    ]
                 }
             },
         },
@@ -95,16 +86,8 @@ class L3_InterfacesTemplate(NetworkTemplate):
                     *$""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_l3_interfaces_ipv6,
-            "compval": "aces",
-            "result": {
-                "{{ name }}": {                 
-                    "ipv6":[
-                        {
-                            "address": "{{ ipv6 }}"
-                        }
-                    ],
-                }
-            },
+            "setval": _tmplt_l3_interfaces,
+            "compval": "ipv6",
+            "result": {"{{ name }}": {"ipv6": [{"address": "{{ ipv6 }}"}]}},
         },
     ]
