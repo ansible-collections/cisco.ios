@@ -1,14 +1,14 @@
-.. _cisco.ios.ios_bgp_global_module:
+.. _cisco.ios.ios_bgp_address_family_module:
 
 
-************************
-cisco.ios.ios_bgp_global
-************************
+********************************
+cisco.ios.ios_bgp_address_family
+********************************
 
-**Global BGP resource module**
+**BGP Address family resource module**
 
 
-Version added: 1.3.0
+Version added: 1.2.0
 
 .. contents::
    :local:
@@ -17,7 +17,7 @@ Version added: 1.3.0
 
 Synopsis
 --------
-- This module configures and manages the attributes of global bgp on Cisco IOS.
+- This module configures and manages the attributes of bgp address family on Cisco IOS.
 
 
 
@@ -29,12 +29,12 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="7">Parameter</th>
+            <th colspan="8">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -45,17 +45,62 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A list of configurations for global bgp.</div>
+                        <div>A list of configurations for bgp address family.</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="7">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address_family</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>A list of configurations for bgp address family.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>afi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>ipv4</li>
+                                    <li>ipv6</li>
+                                    <li>l2vpn</li>
+                                    <li>nsap</li>
+                                    <li>rtfilter</li>
+                                    <li>vpnv4</li>
+                                    <li>vpnv6</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Address Family</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>aggregate_address</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -65,6 +110,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -78,10 +124,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Aggregate address</div>
+                        <div>Aggregate address(A.B.C.D)</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -99,6 +146,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -122,6 +170,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>as_set</b>
@@ -143,6 +192,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>attribute_map</b>
@@ -160,6 +210,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>netmask</b>
@@ -171,10 +222,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Aggregate mask</div>
+                        <div>Aggregate mask(A.B.C.D)</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -198,6 +250,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>suppress_map</b>
@@ -215,22 +268,6 @@ Parameters
 
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>as_number</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Autonomous system number.</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -252,6 +289,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>bgp</b>
@@ -263,10 +301,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Enable address family and enter its config mode</div>
+                        <div>Configure BGP aggregate entries</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -285,27 +324,6 @@ Parameters
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>install</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Additional paths to install into RIB</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -331,6 +349,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>select</b>
@@ -346,6 +365,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -373,6 +393,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>best</b>
@@ -389,28 +410,6 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>best_external</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Select best-external path</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -438,6 +437,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>send</b>
@@ -460,26 +460,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>advertise_best_external</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Advertise best external path to internal peers</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -499,523 +479,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>always_compare_med</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Allow comparing MED from different neighbors</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>asnotation</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Change the default asplain notation</div>
-                        <div>asdot notation</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>bestpath</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Change the default bestpath selection</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>aigp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparision</div>
-                        <div>ignore</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>compare_routerid</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Compare router-id for identical EBGP paths</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>cost_community</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>cost community</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>igp_metric</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>igp metric</div>
-                        <div>Ignore igp metric in bestpath selection</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>med</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>MED attribute</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>confed</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Compare MED among confederation paths</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>missing_as_worst</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Treat missing MED as the least preferred one</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>client_to_client</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Configure client to client route reflection</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>all</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>inter-cluster and intra-cluster (default)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>intra_cluster</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>intra cluster reflection</div>
-                        <div>intra-cluster reflection for cluster-id</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>set reflection of routes allowed</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>cluster_id</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Configure Route-Reflector Cluster-id (peers may reset)</div>
-                        <div>A.B.C.D/Please refer vendor documentation for valid Route-Reflector Cluster-id</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>confederation</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>AS confederation parameters</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>identifier</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set routing domain confederation AS</div>
-                        <div>AS number</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>peers</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Peer ASs in BGP confederation</div>
-                        <div>AS number</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>consistency_checker</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Consistency-checker</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>auto_repair</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Auto-Repair</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interval</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the bgp consistency checker</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable Auto-Repair</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>error_message</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Log Error-Msg</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interval</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the bgp consistency checker</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable Error-Msg</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -1032,6 +495,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1054,6 +518,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>penalty_half_time</b>
@@ -1070,6 +535,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1092,6 +558,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -1107,6 +574,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1128,26 +596,6 @@ Parameters
 
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>deterministic_med</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Pick the best-MED path among paths advertised from the neighboring AS</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -1171,612 +619,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>enforce_first_as</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enforce the first AS for EBGP routes(default)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>enhanced_error</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enabled BGP Enhanced error handling</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>fast_external_fallover</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Immediately reset session if a link to a directly connected external peer goes down</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>graceful_restart</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Graceful restart capability parameters</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>extended</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable Graceful-Restart Extension</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>restart_time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the max time needed to restart and come back up</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set Graceful-Restart</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>stalepath_time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the max time to hold onto restarting peer&#x27;s stale paths</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>graceful_shutdown</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Graceful shutdown capability parameters</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>community</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set Community for Gshut routes</div>
-                        <div>community number/community number in aa:nn format</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>local_preference</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set Local Preference for Gshut routes</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>neighbors</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Gracefully shut down all neigbors</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>activate</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate graceful shutdown of all neigbors</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>time in seconds</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vrfs</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Gracefully shut down all vrf neigbors</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>activate</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate graceful shutdown of all neigbors</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>time in seconds</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>inject_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Routemap which specifies prefixes to inject</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>copy_attributes</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Copy attributes from aggregate</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>exist_map_name</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>route-map name</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>name</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>route-map name</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>listen</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Neighbor subnet range listener</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>limit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the max limit for the dynamic subnet range neighbors</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>range</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Subnet network range</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv4_with_subnet</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>IPv4 subnet range(A.B.C.D/nn)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_with_subnet</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>IPv6 subnet range(X:X:X:X::X/&lt;0-128&gt;)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>peer_group</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Member of the peer-group</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>log_neighbor_changes</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Log neighbor up/down and reset reason</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maxas_limit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Allow AS-PATH attribute from any neighbor imposing a limit on number of ASes</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maxcommunity_limit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Allow COMMUNITY attribute from any neighbor imposing a limit on number of communities</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maxextcommunity_limit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Allow EXTENDED COMMUNITY attribute from any neighbor imposing a limit on number of extended communities</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -1793,6 +635,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1814,6 +657,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>trigger</b>
@@ -1825,10 +669,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>nexthop trackings</div>
+                        <div>Nexthop triggering</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1849,6 +694,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1876,122 +722,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>nopeerup_delay</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set how long BGP will wait for the first peer to come up before beginning the update delay or graceful restart timers (in seconds)</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>cold_boot</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>How long to wait for the first peer to come up upon a cold boot</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>nsf_switchover</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>How long to wait for the first peer, post NSF switchover</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>post_boot</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>How long to wait for the first peer to come up once the system is already booted and all peers go down</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>user_initiated</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>How long to wait for the first peer, post a manual clear of BGP peers by the admin user</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>recursion</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>recursion rule for the nexthops</div>
-                        <div>recursion via host for the nexthops</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2013,83 +743,6 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>refresh</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>refresh</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_eor_time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Configure refresh max-eor time</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>stalepath_time</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Configure refresh stale-path time</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>regexp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Select regular expression engine</div>
-                        <div>Enable bounded-execution-time regular expression engine</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -2114,82 +767,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>router_id</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Override configured router identifier (peers will reset)</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Manually configured router identifier(A.B.C.D)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Use IPv4 address on interface</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vrf</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>vrf-specific router id configuration</div>
-                        <div>Automatically assign per-vrf bgp router id</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2209,21 +786,24 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>slow_peer</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Configure slow-peer</div>
+                        <div>Nexthop triggering</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -2246,9 +826,10 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
+                    <b>enable</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -2261,10 +842,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Slow-peer detection</div>
+                        <div>Enable slow-peer detection</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -2281,11 +863,13 @@ Parameters
                 </td>
                 <td>
                         <div>Set the slow-peer detection threshold</div>
+                        <div>Threshold value (seconds)</div>
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -2304,6 +888,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -2331,28 +916,10 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>permanent</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Keep the slow-peer permanently in slow-update group</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>snmp</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -2365,12 +932,13 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>BGP SNMP options</div>
-                        <div>BGP SNMP trap options</div>
-                        <div>Use cbgpPeer2Type as part of index for traps</div>
+                        <div>Keep the slow-peer permanently in slow-update group</div>
                 </td>
             </tr>
+
+
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -2394,88 +962,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>sso</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Stateful Switchover</div>
-                        <div>Enable SSO only for Route-Refresh capable peers</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>suppress_inactive</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Suppress routes that are not in the routing table</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>transport</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Global enable/disable transport session parameters</div>
-                        <div>Transport path MTU discovery</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>update_delay</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set the max initial delay for sending update</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2497,145 +983,13 @@ Parameters
                         <div>Keep peers with as-override in different update groups</div>
                 </td>
             </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>upgrade_cli</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Upgrade to hierarchical AFI mode</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>af_mode</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Upgrade to AFI mode</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>enable upgrade to hierarchical AFI mode</div>
-                </td>
-            </tr>
-
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>bmp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP Monitoring Protocol)</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>buffer_size</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BMP Buffer Size</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>initial_refresh</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Initial Refresh options</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>delay</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Delay before Initial Refresh</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>skip</b>
+                    <b>default</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -2648,30 +1002,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>skip all refreshes</div>
+                        <div>Set a command to its defaults</div>
                 </td>
             </tr>
-
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>server</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Server Information</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2688,11 +1023,12 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Control distribution of default information</div>
-                        <div>Distribute a default route</div>
+                        <div>Distribution of default information</div>
+                        <div>Distribute default route</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2706,10 +1042,10 @@ Parameters
                 </td>
                 <td>
                         <div>Set metric of redistributed routes</div>
-                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -2728,120 +1064,10 @@ Parameters
                                 <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>admin</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Administrative distance</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>acl</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>IP Standard access list number</div>
-                        <div>IP Standard expanded access list number</div>
-                        <div>Standard access-list name</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>IP Source address (A.B.C.D)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>distance</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Administrative distance</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>wildcard_bit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Wildcard bits (A.B.C.D)</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>bgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP distance</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_external</b>
+                    <b>external</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -2851,16 +1077,15 @@ Parameters
                 </td>
                 <td>
                         <div>Distance for routes external to the AS</div>
-                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_internal</b>
+                    <b>internal</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -2870,16 +1095,15 @@ Parameters
                 </td>
                 <td>
                         <div>Distance for routes internal to the AS</div>
-                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_local</b>
+                    <b>local</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -2889,316 +1113,11 @@ Parameters
                 </td>
                 <td>
                         <div>Distance for local routes</div>
-                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>mbgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>MBGP distance</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_external</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Distance for routes external to the AS</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_internal</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Distance for routes internal to the AS</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>routes_local</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Distance for local routes</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>distribute_list</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Filter networks in routing updates</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>acl</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>IP access list number/name</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>in</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Filter incoming routing updates</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>interface details</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>out</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Filter outgoing routing updates</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maximum_paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Forward packets over multiple paths</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>eibgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Both eBGP and iBGP paths as multipath</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ibgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>iBGP-multipath</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Number of paths</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>maximum_secondary_paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Maximum secondary paths</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>eibgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Both eBGP and iBGP paths as secondary multipath</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ibgp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>iBGP-secondary-multipath</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Number of secondary paths</div>
-                </td>
-            </tr>
-
-            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -3216,6 +1135,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -3239,6 +1159,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>additional_paths</b>
@@ -3254,6 +1175,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3279,6 +1201,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>receive</b>
@@ -3301,6 +1224,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>send</b>
@@ -3316,11 +1240,12 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Send additional paths to neighbors</div>
+                        <div>Send additional paths to this neighbor</div>
                 </td>
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -3340,6 +1265,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>advertise</b>
@@ -3352,23 +1278,6 @@ Parameters
                 </td>
                 <td>
                         <div>Advertise to this neighbor</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>additional_paths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
                         <div>Advertise additional paths</div>
                 </td>
             </tr>
@@ -3377,7 +1286,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="3">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>all</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -3400,7 +1309,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="3">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>best</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -3419,7 +1328,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="3">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>group_best</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -3442,93 +1351,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>best_external</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Advertise best-external (at RRs best-internal) path</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>diverse_path</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Advertise additional paths</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>backup</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Diverse path can be backup path</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>mpath</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Diverse path can be multipath</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>advertise_map</b>
@@ -3544,6 +1366,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3566,6 +1389,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
@@ -3581,6 +1405,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3603,6 +1428,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>advertisement_interval</b>
@@ -3620,6 +1446,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>aigp</b>
@@ -3631,10 +1458,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>AIGP on neighbor</div>
+                        <div>Enable a AIGP on neighbor</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3643,20 +1471,17 @@ Parameters
                     <b>enable</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
                 </td>
                 <td>
-                        <div>Enable AIGP</div>
+                        <div>Enable a AIGP on neighbor</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3679,6 +1504,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>cost_community</b>
@@ -3694,6 +1520,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3720,6 +1547,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>poi</b>
@@ -3735,6 +1563,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3766,6 +1595,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>pre_bestpath</b>
@@ -3785,6 +1615,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3816,6 +1647,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>med</b>
@@ -3839,6 +1671,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>allow_policy</b>
@@ -3860,6 +1693,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>allowas_in</b>
@@ -3872,14 +1706,35 @@ Parameters
                 </td>
                 <td>
                         <div>Accept as-path with my AS present in it</div>
+                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>as_override</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Override matching AS-number while sending update</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -3892,11 +1747,35 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Override matching AS-number while sending update</div>
-                        <div>Maintain Split Horizon while sending update</div>
+                        <div>Enable AS override</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>split_horizon</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Maintain Split Horizon while sending update</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -3914,6 +1793,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -3939,6 +1819,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>server</b>
@@ -3959,6 +1840,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>capability</b>
@@ -3976,6 +1858,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4001,6 +1884,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>receive</b>
@@ -4020,6 +1904,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4045,6 +1930,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>cluster_id</b>
@@ -4063,6 +1949,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>default_originate</b>
@@ -4078,6 +1965,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4099,6 +1987,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -4114,11 +2003,12 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Originate default route to this neighbor</div>
+                        <div>Set default route to this neighbor</div>
                 </td>
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4136,6 +2026,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4159,6 +2050,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>distribute_list</b>
@@ -4177,6 +2069,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>acl</b>
@@ -4188,10 +2081,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>IP access list number/name</div>
+                        <div>ACL id/name</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4217,6 +2111,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>out</b>
@@ -4237,6 +2132,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4260,6 +2156,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ebgp_multihop</b>
@@ -4275,6 +2172,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4300,6 +2198,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>hop_count</b>
@@ -4317,6 +2216,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4337,6 +2237,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>bfd</b>
@@ -4352,6 +2253,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4379,6 +2281,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -4398,6 +2301,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4425,6 +2329,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -4443,6 +2348,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>filter_list</b>
@@ -4458,6 +2364,27 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>as_path_acl</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>AS path access list</div>
+                        <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4483,6 +2410,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>out</b>
@@ -4501,26 +2429,9 @@ Parameters
                         <div>Filter outgoing updates</div>
                 </td>
             </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>path_acl</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>AS path access list</div>
-                </td>
-            </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4538,6 +2449,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4563,6 +2475,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -4585,6 +2498,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>inherit</b>
@@ -4597,10 +2511,33 @@ Parameters
                 </td>
                 <td>
                         <div>Inherit a template</div>
-                        <div>Inherit a peer-session template and Template name</div>
+                        <div>Inherit a peer-policy template</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>internal_vpn_client</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Stack iBGP-CE Neighbor Path in ATTR_SET for vpn update</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4620,6 +2557,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>local_as</b>
@@ -4635,6 +2573,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4660,6 +2599,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>no_prepend</b>
@@ -4675,6 +2615,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4702,6 +2643,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -4725,6 +2667,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>number</b>
@@ -4741,6 +2684,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4766,6 +2710,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>log_neighbor_changes</b>
@@ -4781,6 +2726,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4806,6 +2752,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -4828,6 +2775,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>maximum_prefix</b>
@@ -4839,16 +2787,17 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Maximum number of prefixes accepted from this peer</div>
+                        <div>Establish BGP filters</div>
                 </td>
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_no</b>
+                    <b>number</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -4858,9 +2807,11 @@ Parameters
                 </td>
                 <td>
                         <div>maximum no. of prefix limit</div>
+                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4882,9 +2833,10 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>threshold_val</b>
+                    <b>threshold_value</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -4894,9 +2846,11 @@ Parameters
                 </td>
                 <td>
                         <div>Threshold value (%) at which to generate a warning msg</div>
+                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4922,66 +2876,27 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>next_hop_self</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Disable the next hop calculation for this neighbor</div>
                 </td>
             </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>all</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable next-hop-self for both eBGP and iBGP received paths</div>
-                </td>
-            </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable next-hop-self</div>
-                </td>
-            </tr>
-
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -4989,62 +2904,21 @@ Parameters
                     <b>next_hop_unchanged</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Propagate next hop unchanged for iBGP paths to this neighbor</div>
-                        <div>Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>allpaths</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable next-hop-unchanged</div>
-                </td>
-            </tr>
-
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -5064,6 +2938,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>path_attribute</b>
@@ -5079,6 +2954,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5101,6 +2977,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>in</b>
@@ -5124,6 +3001,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>range</b>
@@ -5139,6 +3017,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5165,6 +3044,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>start</b>
@@ -5186,6 +3066,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>type</b>
@@ -5203,6 +3084,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5225,6 +3107,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>in</b>
@@ -5248,6 +3131,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>range</b>
@@ -5263,6 +3147,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5289,6 +3174,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>start</b>
@@ -5306,6 +3192,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5330,9 +3217,74 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>peer_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Member of the peer-group</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>prefix_list</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Filter updates to/from this neighbor</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>in</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Filter incoming updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -5341,10 +3293,35 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Member of the peer-group</div>
+                        <div>Name of a prefix list</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>out</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Filter outgoing updates</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -5365,6 +3342,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>remove_private_as</b>
@@ -5380,6 +3358,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5405,6 +3384,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>replace_as</b>
@@ -5427,6 +3407,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -5442,11 +3423,12 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Remove private AS number</div>
+                        <div>Remove private AS number from outbound updates</div>
                 </td>
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -5464,6 +3446,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5489,6 +3472,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
@@ -5500,10 +3484,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Replace all private AS numbers with local AS</div>
+                        <div>Name of route map</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5529,6 +3514,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_reflector_client</b>
@@ -5550,46 +3536,10 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_server_client</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Configure a neighbor as Route Server client</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>context</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specify Route Server context for neighbor</div>
-                        <div>Route Server context name</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -5602,11 +3552,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Set Route Server client</div>
+                        <div>Configure a neighbor as Route Server client</div>
                 </td>
             </tr>
-
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -5624,6 +3574,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5649,6 +3600,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>extended</b>
@@ -5669,27 +3621,6 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set send Community attribute to this neighbor</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5715,67 +3646,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>send_label</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Send NLRI + MPLS Label to this peer</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>explicit_null</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Advertise Explicit Null label in place of Implicit Null</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set send NLRI + MPLS Label to this peer</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -5792,6 +3662,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5812,6 +3683,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5837,12 +3709,14 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>slow_peer</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -5852,6 +3726,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5870,6 +3745,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5897,6 +3773,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>enable</b>
@@ -5916,6 +3793,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5939,6 +3817,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>split_update_group</b>
@@ -5950,10 +3829,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Configure slow-peer split-update-group</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5969,10 +3849,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Dynamically split the slow peer to slow-update group</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5993,10 +3874,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Disable slow-peer detection</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6017,10 +3899,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enable slow-peer detection</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6041,11 +3924,12 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Keep the slow-peer permanently in slow-update group</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6065,12 +3949,13 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Static slow-peer</div>
+                        <div>Configure slow-peer</div>
                 </td>
             </tr>
 
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -6095,6 +3980,25 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>soo</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Site-of-Origin extended community</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>tag</b>
@@ -6112,6 +4016,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>timers</b>
@@ -6127,6 +4032,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6148,6 +4054,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>interval</b>
@@ -6163,6 +4070,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6184,110 +4092,6 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>translate_update</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Translate Update to MBGP format</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>nlri</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specify type of nlri to translate to</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>multicast</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Translate Update to multicast nlri</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>unicast</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Process Update as unicast nlri</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set Translate Update</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -6307,6 +4111,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>connection_mode</b>
@@ -6322,6 +4127,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6349,6 +4155,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>passive</b>
@@ -6369,6 +4176,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6394,6 +4202,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>path_mtu_discovery</b>
@@ -6409,6 +4218,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6436,6 +4246,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>set</b>
@@ -6459,6 +4270,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ttl_security</b>
@@ -6478,6 +4290,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>unsuppress_map</b>
@@ -6490,10 +4303,10 @@ Parameters
                 </td>
                 <td>
                         <div>Route-map to selectively unsuppress suppressed routes</div>
-                        <div>Name of route map</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -6515,6 +4328,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>weight</b>
@@ -6532,6 +4346,102 @@ Parameters
 
             <tr>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>network</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify a network to announce via BGP</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Network number (A.B.C.D)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>backdoor</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specify a BGP backdoor route</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mask</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Network mask (A.B.C.D)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>route_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route-map to modify the attributes</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>redistribute</b>
@@ -6548,6 +4458,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -6568,6 +4479,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -6583,6 +4495,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6604,6 +4517,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -6620,6 +4534,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -6640,6 +4555,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>as_number</b>
@@ -6655,6 +4571,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6676,6 +4593,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -6692,6 +4610,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -6712,6 +4631,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -6727,6 +4647,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6748,6 +4669,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>eigrp</b>
@@ -6763,6 +4685,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6784,6 +4707,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -6799,6 +4723,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6820,6 +4745,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>isis</b>
@@ -6838,6 +4764,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>area_tag</b>
@@ -6853,6 +4780,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6878,6 +4806,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ip</b>
@@ -6900,6 +4829,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -6915,6 +4845,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6936,6 +4867,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>iso_igrp</b>
@@ -6951,6 +4883,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6972,6 +4905,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -6988,6 +4922,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -7008,6 +4943,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7023,6 +4959,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7042,6 +4979,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -7062,6 +5000,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7077,6 +5016,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7096,6 +5036,7 @@ Parameters
             </tr>
 
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -7116,6 +5057,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7131,6 +5073,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7152,6 +5095,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ospf</b>
@@ -7170,6 +5114,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>match</b>
@@ -7185,6 +5130,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7212,6 +5158,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>internal</b>
@@ -7231,6 +5178,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7258,6 +5206,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>type_1</b>
@@ -7277,6 +5226,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7304,6 +5254,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7319,6 +5270,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7340,6 +5292,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -7355,6 +5308,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7376,6 +5330,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ospfv3</b>
@@ -7394,6 +5349,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>match</b>
@@ -7409,6 +5365,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7436,6 +5393,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>internal</b>
@@ -7455,6 +5413,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7482,6 +5441,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>type_1</b>
@@ -7501,6 +5461,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7528,6 +5489,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7543,6 +5505,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7564,6 +5527,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -7582,6 +5546,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>rip</b>
@@ -7597,6 +5562,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7618,6 +5584,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
@@ -7636,6 +5603,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>static</b>
@@ -7651,6 +5619,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7676,6 +5645,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ip</b>
@@ -7698,6 +5668,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>metric</b>
@@ -7713,6 +5684,7 @@ Parameters
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7734,6 +5706,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>vrf</b>
@@ -7749,6 +5722,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -7774,6 +5748,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
@@ -7792,44 +5767,10 @@ Parameters
 
             <tr>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_server_context</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Enter route server context command mode</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>address_family</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Enter address family command mode</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>afi</b>
+                    <b>safi</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -7837,48 +5778,11 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>ipv4</li>
-                                    <li>ipv6</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Address family</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>import_map</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Import matching routes using a route map</div>
-                        <div>Name of route map</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>modifier</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>flowspec</li>
+                                    <li>mdt</li>
                                     <li>multicast</li>
+                                    <li>mvpn</li>
+                                    <li>evpn</li>
                                     <li>unicast</li>
                         </ul>
                 </td>
@@ -7886,13 +5790,70 @@ Parameters
                         <div>Address Family modifier</div>
                 </td>
             </tr>
-
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>snmp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Modify snmp parameters</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>description</b>
+                    <b>context</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure a SNMP context</div>
+                        <div>Context Name</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>community</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure a SNMP v2c Community string and access privs</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>acl</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -7901,13 +5862,107 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Textual description of the router server context</div>
+                        <div>Standard IP accesslist allowing access with this community string</div>
+                        <div>Expanded IP accesslist allowing access with this community string</div>
+                        <div>Access-list name</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ipv6</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify IPv6 Named Access-List</div>
+                        <div>IPv6 Access-list name</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ro</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Read-only access with this community string</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>rw</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Read-write access with this community string</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>snmp_community</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>SNMP community string</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -7918,15 +5973,17 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Name of route server context</div>
+                        <div>Context Name</div>
                 </td>
             </tr>
-
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="6">
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>scope</b>
+                    <b>user</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -7935,36 +5992,39 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Enter scope command mode</div>
+                        <div>Configure a SNMP v3 user</div>
                 </td>
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>global</b>
+                    <b>access</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
                 </td>
                 <td>
-                        <div>Global scope</div>
+                        <div>specify an access-list associated with this group</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                <td colspan="5">
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vrf</b>
+                    <b>acl</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -7973,16 +6033,106 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>VRF scope</div>
-                        <div>VPN Routing/Forwarding instance name</div>
+                        <div>SNMP community string</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ipv6</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify IPv6 Named Access-List</div>
+                        <div>IPv6 Access-list name</div>
                 </td>
             </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="6">
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>synchronization</b>
+                    <b>auth</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>authentication parameters for the user</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>md5</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Use HMAC MD5 algorithm for authentication</div>
+                        <div>authentication password for user</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>sha</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Use HMAC SHA algorithm for authentication</div>
+                        <div>authentication password for user</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>credential</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -7995,10 +6145,100 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Perform IGP synchronization</div>
+                        <div>If the user password is already configured and saved</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>encrypted</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>specifying passwords as MD5 or SHA digests</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>SNMP community string</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>priv</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>encryption parameters for the user</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>des</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Use 56 bit DES algorithm for encryption</div>
+                </td>
+            </tr>
+
+
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -8015,6 +6255,7 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -8038,6 +6279,7 @@ Parameters
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
@@ -8055,26 +6297,10 @@ Parameters
 
             <tr>
                     <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>template</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Enter template command mode</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>peer_policy</b>
+                    <b>vrf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -8083,99 +6309,29 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Template configuration for policy parameters</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>peer_session</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Template configuration for session parameters</div>
+                        <div>Specify parameters for a VPN Routing/Forwarding instance</div>
                 </td>
             </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>timers</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Adjust routing timers</div>
-                        <div>BGP timers</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>holdtime</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Holdtime</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>keepalive</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Keepalive interval</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>min_holdtime</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Minimum hold time from neighbor</div>
-                </td>
-            </tr>
-
-
-            <tr>
                 <td colspan="7">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>as_number</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Autonomous system number.</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="8">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -8192,7 +6348,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -8204,8 +6360,8 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
-                                    <li>purged</li>
                                     <li>gathered</li>
                                     <li>rendered</li>
                                     <li>parsed</li>
@@ -8242,74 +6398,156 @@ Examples
     # -------------
     #
     # vios#sh running-config | section ^router bgp
+    # router bgp 65000
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
 
     - name: Merge provided configuration with device configuration
-      cisco.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_address_family:
         config:
           as_number: 65000
-          bgp:
-            advertise_best_external: true
-            bestpath:
-              - compare_routerid: true
-            nopeerup_delay:
-              - post_boot: 10
-            dampening:
-              penalty_half_time: 1
-              reuse_route_val: 1
-              suppress_route_val: 1
-              max_suppress: 1
-            graceful_shutdown:
-              neighbors:
-                time: 50
-              community: 100
-              local_preference: 100
-          neighbor:
-            - address: 198.51.100.1
-              description:  merge neighbor
-              remote_as: 100
-              aigp:
-                send:
-                  cost_community:
-                    id: 100
-                    poi:
-                      igp_cost: true
-                      transitive: true
-              route_map:
-                name: test-route
-                out: true
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 1
+                  suppress_route_val: 1
+                  max_suppress: 1
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.100.1
+                  aigp:
+                    send:
+                      cost_community:
+                        id: 100
+                        poi:
+                          igp_cost: true
+                          transitive: true
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 10
+                  route_map:
+                    name: test-route
+                    out: true
+                  route_server_client: true
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+              snmp:
+                context:
+                  name: snmp_con
+                  community:
+                    snmp_community: community
+                    ro: true
+                    acl: 10
+            - afi: ipv4
+              safi: mdt
+              bgp:
+                dmzlink_bw: true
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                  max_suppress: 5
+                soft_reconfig_backup: true
+            - afi: ipv4
+              safi: multicast
+              aggregate_address:
+                - address: 192.0.3.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              default_metric: 12
+              distance:
+                external: 10
+                internal: 10
+                local: 100
+              network:
+                - address: 198.51.111.11
+                  mask: 255.255.255.255
+                  route_map: test
+              table_map:
+                name: test_tableMap
+                filter: true
         state: merged
 
     # Commands fired:
     # ---------------
-    #
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "bgp dampening 1 1 1 1",
-    #         "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "bgp advertise-best-external",
-    #         "bgp nopeerup-delay post-boot 10",
-    #         "bgp bestpath compare-routerid",
-    #         "neighbor 198.51.100.1 remote-as 100",
-    #         "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "neighbor 198.51.100.1 description merge neighbor",
-    #         "neighbor 198.51.100.1 route-map test-route out"
-    #     ]
+    # "commands": [
+    #     "router bgp 65000",
+    #     "address-family ipv4 multicast vrf blue",
+    #     "bgp aggregate-timer 10",
+    #     "bgp slow-peer detection threshold 150",
+    #     "bgp dampening 1 1 1 1",
+    #     "neighbor 198.51.100.1 remote-as 10",
+    #     "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+    #     "neighbor 198.51.100.1 route-map test-route out",
+    #     "neighbor 198.51.100.1 route-server-client",
+    #     "neighbor 198.51.100.1 slow-peer detection threshold 150",
+    #     "network 198.51.110.10 mask 255.255.255.255 backdoor",
+    #     "snmp context snnmp_con_1 community community ro 10",
+    #     "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
+    #     "exit-address-family",
+    #     "address-family ipv4 mdt",
+    #     "bgp dmzlink-bw",
+    #     "bgp dampening 1 10 100 5",
+    #     "bgp soft-reconfig-backup",
+    #     "exit-address-family",
+    #     "address-family ipv4 multicast",
+    #     "network 1.1.1.1 mask 255.255.255.255 route-map test",
+    #     "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+    #     "default-metric 12",
+    #     "distance bgp 10 10 100",
+    #     "table-map test_tableMap filter"
+    #     "exit-address-family",
+    # ]
 
     # After state:
     # ------------
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
-
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
 
     # Using replaced
 
@@ -8318,59 +6556,293 @@ Examples
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
 
-
-    - name: Replaces device configuration of listed global BGP with provided configuration
-      cisco.ios.ios_bgp_global:
+    - name: Replaces device configuration of listed AF BGP with provided configuration
+      cisco.ios.ios_bgp_address_family:
         config:
           as_number: 65000
-          bgp:
-            advertise_best_external: true
-            bestpath:
-              - med:
-                  confed: true
-            log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
-                cold_boot: 20
-          neighbor:
-            - address: 192.0.2.1
-              description:  replace neighbor
-              remote_as: 100
-              slow_peer:
-                detection:
-                  disable: true
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 1
+                  suppress_route_val: 1
+                  max_suppress: 1
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.110.1
+                  activate: true
+                  aigp:
+                    send:
+                      cost_community:
+                        id: 200
+                        poi:
+                          igp_cost: true
+                          transitive: true
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 10
+                  route_map:
+                    name: test-replaced-route
+                    out: true
+                  route_server_client: true
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+            - afi: ipv4
+              safi: multicast
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 10
+                  max_suppress: 10
+                slow_peer:
+                  - detection:
+                      threshold: 200
+              network:
+                - address: 192.0.2.1
+                  mask: 255.255.255.255
+                  route_map: test
         state: replaced
 
     # Commands fired:
     # ---------------
-    #
-    #  "commands": [
-    #     "router bgp 65000"
-    #     "no bgp dampening 1 1 1 1"
-    #     "no timers bgp 100 200 150"
-    #     "no bgp bestpath compare-routerid"
-    #     "bgp bestpath med confed"
-    #     "bgp nopeerup-delay cold-boot 20"
-    #     "no neighbor 198.51.100.1 remote-as 100"
-    #     "neighbor 192.0.2.1 remote-as 100"
-    #     "no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
-    #     "no neighbor 198.51.100.1 route-map test-route out"
-    #     "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive"
-    #     "no neighbor 198.51.100.1 description merge neighbor"
-    #     "neighbor 192.0.2.1 slow-peer detection disable"
-    #     "neighbor 192.0.2.1 description replace neighbor"
-    # ]
+    # "commands": [
+    #         "router bgp 65000",
+    #         "address-family ipv4 multicast vrf blue",
+    #         "neighbor 198.51.110.1 remote-as 10",
+    #         "neighbor 198.51.110.1 activate",
+    #         "neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive",
+    #         "neighbor 198.51.110.1 route-map test-replaced-route out",
+    #         "neighbor 198.51.110.1 route-server-client",
+    #         "neighbor 198.51.110.1 slow-peer detection threshold 150",
+    #         "no neighbor 198.51.100.1 remote-as 10",
+    #         "no neighbor 198.51.100.1 activate",
+    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+    #         "no neighbor 198.51.100.1 route-map test-route out",
+    #         "no neighbor 198.51.100.1 route-server-client",
+    #         "no neighbor 198.51.100.1 slow-peer detection threshold 150",
+    #         "exit-address-family",
+    #         "address-family ipv4 multicast",
+    #         "bgp aggregate-timer 10",
+    #         "bgp slow-peer detection threshold 200",
+    #         "bgp dampening 10 10 10 10",
+    #         "network 192.0.2.1 mask 255.255.255.255 route-map test",
+    #         "no network 1.1.1.1 mask 255.255.255.255 route-map test",
+    #         "no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+    #         "no default-metric 12",
+    #         "no distance bgp 10 10 100",
+    #         "no table-map test_tableMap filter"
+    #         "exit-address-family",
+    #     ]
 
+    # After state:
+    # -------------
+    #
+    # vios#sh running-config | section ^router bgp
+    # router bgp 65000
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
+    #   network 192.0.2.1 mask 255.255.255.255 route-map test
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.110.1 remote-as 10
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 route-server-client
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 route-map test-replaced-route out
+    #  exit-address-family
+
+    # Using overridden
+
+    # Before state:
+    # -------------
+    #
+    # vios#sh running-config | section ^router bgp
+    # router bgp 65000
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
+
+    - name: Override device configuration of all AF BGP with provided configuration
+      cisco.ios.ios_bgp_address_family:
+        config:
+          as_number: 65000
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                  max_suppress: 50
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.110.1
+                  activate: true
+                  log_neighbor_changes:
+                    disable: true
+                  maximum_prefix:
+                    number: 1
+                    threshold_value: 10
+                    restart: 100
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 100
+                  route_map:
+                    name: test-override-route
+                    out: true
+                  route_server_client: true
+                  version: 4
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+            - afi: ipv6
+              safi: multicast
+              default_information: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 10
+                  max_suppress: 10
+                slow_peer:
+                  - detection:
+                      threshold: 200
+              network:
+                - address: 2001:DB8:0:3::/64
+                  route_map: test_ipv6
+        state: overridden
+
+    # Commands fired:
+    # ---------------
+    # "commands": [
+    #       "router bgp 65000",
+    #       "no address-family ipv4 multicast",
+    #       "no address-family ipv4 mdt",
+    #       "address-family ipv4 multicast vrf blue",
+    #       "bgp aggregate-timer 10",
+    #       "bgp slow-peer detection threshold 150",
+    #       "bgp dampening 10 10 100 50",
+    #       "neighbor 198.51.110.1 remote-as 100",
+    #       "neighbor 198.51.110.1 activate",
+    #       "neighbor 198.51.110.1 log-neighbor-changes disable",
+    #       "neighbor 198.51.110.1 maximum-prefix 1 10 restart 100",
+    #       "neighbor 198.51.110.1 route-map test-override-route out",
+    #       "neighbor 198.51.110.1 route-server-client",
+    #       "neighbor 198.51.110.1 version 4",
+    #       "neighbor 198.51.110.1 slow-peer detection threshold 150",
+    #       "network 198.51.110.10 mask 255.255.255.255 backdoor",
+    #       "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
+    #       "exit-address-family",
+    #       "address-family ipv6 multicast",
+    #       "bgp aggregate-timer 10",
+    #       "bgp slow-peer detection threshold 200",
+    #       "bgp dampening 10 10 10 10",
+    #       "network 2001:DB8:0:3::/64 route-map test_ipv6"
+    #       "exit-address-family",
+    #   ]
 
     # After state:
     # -------------
@@ -8381,11 +6853,33 @@ Examples
     #  bgp nopeerup-delay cold-boot 20
     #  bgp nopeerup-delay post-boot 10
     #  bgp bestpath med confed
-    #  bgp advertise-best-external
-    #  redistribute connected metric 10
+    #  snmp context snnmp_con_1 community community RO 10
     #  neighbor 192.0.2.1 remote-as 100
     #  neighbor 192.0.2.1 description replace neighbor
-    #  neighbor 192.0.2.1 slow-peer detection disable
+    #  neighbor 198.51.100.1 remote-as 10
+    #  !
+    #  address-family ipv6 multicast
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
+    #   network 2001:DB8:0:3::/64 route-map test_ipv6
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 10 10 100 50
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.110.1 remote-as 100
+    #   neighbor 198.51.110.1 log-neighbor-changes disable
+    #   neighbor 198.51.110.1 version 4
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 route-server-client
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 route-map test-override-route out
+    #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    #  exit-address-family
 
     # Using Deleted
 
@@ -8394,332 +6888,437 @@ Examples
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
 
-    - name: "Delete global BGP (Note: This won't delete the configured global BGP)"
-      cisco.ios.ios_bgp_global:
+    - name: "Delete AF BGP (Note: This won't delete the all configured AF BGP)"
+      cisco.ios.ios_bgp_address_family:
         config:
           as_number: 65000
+          address_family:
+            - afi: ipv4
+              safi: multicast
+            - afi: ipv4
+              safi: mdt
         state: deleted
 
     # Commands fired:
     # ---------------
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "no bgp dampening 1 1 1 1",
-    #         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "no bgp advertise-best-external",
-    #         "no bgp bestpath compare-routerid",
-    #         "no bgp nopeerup-delay post-boot 10",
-    #         "no neighbor 198.51.100.1 remote-as 100",
-    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "no neighbor 198.51.100.1 description merge neighbor",
-    #         "no neighbor 198.51.100.1 route-map test-route out"
-    #     ]
-
+    # "commands": [
+    #       "router bgp 65000",
+    #       "no address-family ipv4 multicast",
+    #       "no address-family ipv4 mdt"
+    #   ]
 
     # After state:
     # -------------
     #
-    # vios#sh running-config | section ^router bgp
+    # vios#sh running-config | section ^router bg
     # router bgp 65000
-
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
 
     # Using Deleted without any config passed
-    #"(NOTE: This will delete all of configured global BGP)"
+    #"(NOTE: This will delete all of configured AF BGP)"
 
     # Before state:
     # -------------
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast vrf blue
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 remote-as 10
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 route-server-client
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.100.1 route-map test-route out
+    #  exit-address-family
 
-
-    - name: "Delete global BGP without config"
-      cisco.ios.ios_bgp_global:
+    - name: 'Delete ALL of configured AF BGP (Note: This WILL delete the all configured
+        AF BGP)'
+      cisco.ios.ios_bgp_address_family:
         state: deleted
 
     # Commands fired:
     # ---------------
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "no bgp dampening 1 1 1 1",
-    #         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "no bgp advertise-best-external",
-    #         "no bgp bestpath compare-routerid",
-    #         "no bgp nopeerup-delay post-boot 10",
-    #         "no neighbor 198.51.100.1 remote-as 100",
-    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "no neighbor 198.51.100.1 description merge neighbor",
-    #         "no neighbor 198.51.100.1 route-map test-route out"
-    #     ]
-
+    # "commands": [
+    #       "router bgp 65000",
+    #       "no address-family ipv4 multicast vrf blue",
+    #       "no address-family ipv4 multicast",
+    #       "no address-family ipv4 mdt"
+    #   ]
 
     # After state:
     # -------------
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
-
-    # Using Purged
-    #"(NOTE: This WILL delete the configured global BGP)"
-
-    # Before state:
-    # -------------
-    #
-    # vios#sh running-config | section ^router bgp
-    # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
-
-
-    - name: 'Delete the configured global BGP (Note: This WILL delete the the configured
-        global BGP)'
-      cisco.ios.ios_bgp_global:
-        state: purged
-
-    # Commands fired:
-    # ---------------
-    #  "commands": [
-    #         "no router bgp 65000",
-    #     ]
-
-    # After state:
-    # -------------
-    #
-    # vios#sh running-config | section ^router bgp
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
 
     # Using Gathered
-
     # Before state:
     # -------------
     #
     # vios#sh running-config | section ^router bgp
-    # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
 
-
-    - name: Gather listed global BGP with provided configurations
-      cisco.ios.ios_bgp_global:
+    - name: Gather listed AF BGP with provided configurations
+      cisco.ios.ios_bgp_address_family:
         config:
         state: gathered
 
     # Module Execution Result:
     # ------------------------
     #
-    #  "gathered": {
-    #         "as_number": "65000",
-    #         "bgp": {
-    #             "advertise_best_external": true,
-    #             "bestpath": [
-    #                 {
-    #                     "compare_routerid": true
-    #                 }
-    #             ],
-    #             "dampening": {
-    #                 "max_suppress": 1,
-    #                 "penalty_half_time": 1,
-    #                 "reuse_route_val": 1,
-    #                 "suppress_route_val": 1
-    #             },
-    #             "graceful_shutdown": {
-    #                 "community": "100",
-    #                 "local_preference": 100,
-    #                 "neighbors": {
-    #                     "time": 50
-    #                 }
-    #             },
-    #             "nopeerup_delay": [
-    #                 {
-    #                     "post_boot": 10
-    #                 }
-    #             ]
-    #         },
-    #         "neighbor": [
-    #             {
-    #                 "address": "198.51.100.1",
-    #                 "aigp": {
-    #                     "send": {
-    #                         "cost_community": {
-    #                             "id": 100,
-    #                             "poi": {
-    #                                 "igp_cost": true,
-    #                                 "transitive": true
-    #                             }
-    #                         }
-    #                     }
-    #                 },
-    #                 "description": "merge neighbor",
-    #                 "remote_as": 100,
-    #                 "route_map": {
-    #                     "name": "test-route",
-    #                     "out": true
-    #                 }
-    #             }
-    #         ]
-    #     }
+    # "gathered": {
+    #       "address_family": [
+    #           {
+    #               "afi": "ipv4",
+    #               "aggregate_address": [{
+    #                   "address": "192.0.2.1",
+    #                   "as_confed_set": true,
+    #                   "netmask": "255.255.255.255"
+    #               }],
+    #               "bgp": {
+    #                   "aggregate_timer": 10,
+    #                   "dampening": {
+    #                       "max_suppress": 1,
+    #                       "penalty_half_time": 1,
+    #                       "reuse_route_val": 1,
+    #                       "suppress_route_val": 1
+    #                   },
+    #                   "slow_peer": [
+    #                       {
+    #                           "detection": {
+    #                               "threshold": 150
+    #                           }
+    #                       }
+    #                   ]
+    #               },
+    #               "neighbor": [
+    #                   {
+    #                       "activate": true,
+    #                       "address": "198.51.100.1",
+    #                       "aigp": {
+    #                           "send": {
+    #                               "cost_community": {
+    #                                   "id": 100,
+    #                                   "poi": {
+    #                                       "igp_cost": true,
+    #                                       "transitive": true
+    #                                   }
+    #                               }
+    #                           }
+    #                       },
+    #                       "remote_as": 10,
+    #                       "route_map": {
+    #                           "name": "test-route",
+    #                           "out": true
+    #                       },
+    #                       "route_server_client": true,
+    #                       "slow_peer": [
+    #                           {
+    #                               "detection": {
+    #                                   "threshold": 150
+    #                               }
+    #                           }
+    #                       ]
+    #                   }
+    #               ],
+    #               "network": [
+    #                   {
+    #                       "address": "198.51.110.10",
+    #                       "backdoor": true,
+    #                       "mask": "255.255.255.255"
+    #                   }
+    #               ],
+    #               "safi": "multicast",
+    #               "snmp": {
+    #                   "context": {
+    #                       "community": {
+    #                           "acl": "10",
+    #                           "ro": true,
+    #                           "snmp_community": "community"
+    #                       },
+    #                       "name": "snnmp_con_1"
+    #                   }
+    #               },
+    #               "vrf": "blue"
+    #           },
+    #           {
+    #               "afi": "ipv4",
+    #               "aggregate_address": [{
+    #                   "address": "192.0.3.1",
+    #                   "as_confed_set": true,
+    #                   "netmask": "255.255.255.255"
+    #               }],
+    #               "default_metric": 12,
+    #               "distance": {
+    #                   "external": 10,
+    #                   "internal": 10,
+    #                   "local": 100
+    #               },
+    #               "network": [
+    #                   {
+    #                       "address": "1.1.1.1",
+    #                       "mask": "255.255.255.255",
+    #                       "route_map": "test"
+    #                   }
+    #               ],
+    #               "safi": "multicast",
+    #               "table_map": {
+    #                   "filter": true,
+    #                   "name": "test_tableMap"
+    #               }
+    #           },
+    #           {
+    #               "afi": "ipv4",
+    #               "bgp": {
+    #                   "dampening": {
+    #                       "max_suppress": 5,
+    #                       "penalty_half_time": 1,
+    #                       "reuse_route_val": 10,
+    #                       "suppress_route_val": 100
+    #                   },
+    #                   "dmzlink_bw": true,
+    #                   "soft_reconfig_backup": true
+    #               },
+    #               "safi": "mdt"
+    #           }
+    #       ],
+    #       "as_number": "65000"
+    #   }
 
     # Using Rendered
 
     - name: Rendered the provided configuration with the exisiting running configuration
-      cisco.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_address_family:
         config:
           as_number: 65000
-          bgp:
-            advertise_best_external: true
-            bestpath:
-              - compare_routerid: true
-            nopeerup_delay:
-              - post_boot: 10
-            dampening:
-              penalty_half_time: 1
-              reuse_route_val: 1
-              suppress_route_val: 1
-              max_suppress: 1
-            graceful_shutdown:
-              neighbors:
-                time: 50
-              community: 100
-              local_preference: 100
-          neighbor:
-            - address: 198.51.100.1
-              description:  merge neighbor
-              remote_as: 100
-              aigp:
-                send:
-                  cost_community:
-                    id: 100
-                    poi:
-                      igp_cost: true
-                      transitive: true
-              route_map:
-                name: test-route
-                out: true
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 1
+                  suppress_route_val: 1
+                  max_suppress: 1
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.100.1
+                  aigp:
+                    send:
+                      cost_community:
+                        id: 100
+                        poi:
+                          igp_cost: true
+                          transitive: true
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 10
+                  route_map:
+                    name: test-route
+                    out: true
+                  route_server_client: true
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+              snmp:
+                context:
+                  name: snmp_con
+                  community:
+                    snmp_community: community
+                    ro: true
+                    acl: 10
+            - afi: ipv4
+              safi: mdt
+              bgp:
+                dmzlink_bw: true
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                  max_suppress: 5
+                soft_reconfig_backup: true
         state: rendered
 
     # Module Execution Result:
     # ------------------------
     #
     # "rendered": [
-    #       "router bgp 65000",
-    #       "bgp dampening 1 1 1 1",
-    #       "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #       "bgp advertise-best-external",
-    #       "bgp nopeerup-delay post-boot 10",
-    #       "bgp bestpath compare-routerid",
-    #       "neighbor 198.51.100.1 remote-as 100",
-    #       "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #       "neighbor 198.51.100.1 description merge neighbor",
-    #       "neighbor 198.51.100.1 route-map test-route out"
-    #  ]
+    #     "router bgp 65000",
+    #     "address-family ipv4 multicast vrf blue",
+    #     "bgp aggregate-timer 10",
+    #     "bgp slow-peer detection threshold 150",
+    #     "bgp dampening 1 1 1 1",
+    #     "neighbor 198.51.100.1 remote-as 10",
+    #     "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
+    #     "neighbor 198.51.100.1 route-map test-route out",
+    #     "neighbor 198.51.100.1 route-server-client",
+    #     "neighbor 198.51.100.1 slow-peer detection threshold 150",
+    #     "network 198.51.110.10 mask 255.255.255.255 backdoor",
+    #     "snmp context snnmp_con_1 community community ro 10",
+    #     "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
+    #     "exit-address-family",
+    #     "address-family ipv4 mdt",
+    #     "bgp dmzlink-bw",
+    #     "bgp dampening 1 10 100 5",
+    #     "bgp soft-reconfig-backup"
+    #     "exit-address-family",
+    # ]
 
     # Using Parsed
 
     # File: parsed.cfg
     # ----------------
-    #
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-    #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  bgp log-neighbor-changes
+    #  bgp nopeerup-delay cold-boot 20
+    #  !
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
+    #  !
 
     - name: Parse the commands for provided configuration
-      cisco.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_address_family:
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
     # Module Execution Result:
     # ------------------------
     #
-    #  "parsed": {
-    #         "as_number": "65000",
-    #         "bgp": {
-    #             "advertise_best_external": true,
-    #             "bestpath": [
-    #                 {
-    #                     "compare_routerid": true
-    #                 }
-    #             ],
-    #             "dampening": {
-    #                 "max_suppress": 1,
-    #                 "penalty_half_time": 1,
-    #                 "reuse_route_val": 1,
-    #                 "suppress_route_val": 1
-    #             },
-    #             "graceful_shutdown": {
-    #                 "community": "100",
-    #                 "local_preference": 100,
-    #                 "neighbors": {
-    #                     "time": 50
-    #                 }
-    #             },
-    #             "nopeerup_delay": [
-    #                 {
-    #                     "post_boot": 10
-    #                 }
-    #             ]
-    #         },
-    #         "neighbor": [
-    #             {
-    #                 "address": "198.51.100.1",
-    #                 "aigp": {
-    #                     "send": {
-    #                         "cost_community": {
-    #                             "id": 100,
-    #                             "poi": {
-    #                                 "igp_cost": true,
-    #                                 "transitive": true
-    #                             }
-    #                         }
-    #                     }
-    #                 },
-    #                 "description": "merge neighbor",
-    #                 "remote_as": 100,
-    #                 "route_map": {
-    #                     "name": "test-route",
-    #                     "out": true
-    #                 }
-    #             }
-    #         ]
-    #     }
+    # "parsed": {
+    #       "address_family": [
+    #           {
+    #               "afi": "ipv4",
+    #               "aggregate_address": [{
+    #                   "address": "192.0.3.1",
+    #                   "as_confed_set": true,
+    #                   "netmask": "255.255.255.255"
+    #               }],
+    #               "default_metric": 12,
+    #               "distance": {
+    #                   "external": 10,
+    #                   "internal": 10,
+    #                   "local": 100
+    #               },
+    #               "network": [
+    #                   {
+    #                       "address": "1.1.1.1",
+    #                       "mask": "255.255.255.255",
+    #                       "route_map": "test"
+    #                   }
+    #               ],
+    #               "safi": "multicast",
+    #               "table_map": {
+    #                   "filter": true,
+    #                   "name": "test_tableMap"
+    #               }
+    #           },
+    #           {
+    #               "afi": "ipv4",
+    #               "bgp": {
+    #                   "dampening": {
+    #                       "max_suppress": 5,
+    #                       "penalty_half_time": 1,
+    #                       "reuse_route_val": 10,
+    #                       "suppress_route_val": 100
+    #                   },
+    #                   "dmzlink_bw": true,
+    #                   "soft_reconfig_backup": true
+    #               },
+    #               "safi": "mdt"
+    #           }
+    #       ],
+    #       "as_number": "65000"
+    #   }
 
 
 
@@ -8783,7 +7382,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65000&#x27;, &#x27;bgp nopeerup-delay post-boot 10&#x27;, &#x27;bgp advertise-best-external&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65000&#x27;, &#x27;address-family ipv4 multicast&#x27;, &#x27;table-map test_tableMap filter&#x27;, &#x27;network 1.1.1.1 mask 255.255.255.255 route-map test&#x27;, &#x27;aggregate-address 192.0.3.1 255.255.255.255 as-confed-set&#x27;]</div>
                 </td>
             </tr>
     </table>
