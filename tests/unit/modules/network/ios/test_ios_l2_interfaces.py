@@ -93,6 +93,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["9-15", "20"],
                         ),
                     ),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                    ),
                 ],
                 state="merged",
             )
@@ -182,6 +187,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                    ),
                 ],
                 state="replaced",
             )
@@ -214,6 +224,9 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport access vlan 10",
             "switchport voice vlan 20",
             "switchport mode access",
+            "interface TwoGigabitEthernet1/0/1",
+            "no switchport mode",
+            "no switchport access vlan",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -236,6 +249,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                             native_vlan=10,
                             pruning_vlans=["10", "20"],
                         ),
+                    ),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
                     ),
                 ],
                 state="overridden",
@@ -266,6 +284,9 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport trunk native vlan",
             "no switchport trunk allowed vlan",
             "no switchport trunk pruning vlan",
+            "interface TwoGigabitEthernet1/0/1",
+            "no switchport mode",
+            "no switchport access vlan",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
