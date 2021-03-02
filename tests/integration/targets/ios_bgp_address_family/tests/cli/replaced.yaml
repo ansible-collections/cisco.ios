@@ -1,0 +1,90 @@
+---
+- debug:
+    msg: START Replaced ios_bgp_address_family state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Replaced provided BGP Address family configuration
+      register: result
+      cisco.ios.ios_bgp_address_family: &id001
+        config:
+          as_number: 65000
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 1
+                  suppress_route_val: 1
+                  max_suppress: 1
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.110.1
+                  activate: true
+                  aigp:
+                    send:
+                      cost_community:
+                        id: 200
+                        poi:
+                          igp_cost: true
+                          transitive: true
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 10
+                  route_map:
+                    name: test-replaced-route
+                    out: true
+                  route_server_client: true
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+            - afi: ipv4
+              safi: multicast
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 10
+                  max_suppress: 10
+                slow_peer:
+                  - detection:
+                      threshold: 200
+              network:
+                - address: 192.0.2.1
+                  mask: 255.255.255.255
+                  route_map: test
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ | length == 0 }}"
+
+    - name: Replaced provided BGP Address family configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_bgp_address_family: *id001
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml
