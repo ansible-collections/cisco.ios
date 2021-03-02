@@ -24,6 +24,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     get_interface_type,
     normalize_interface,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
+    L3_InterfacesTemplate,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
     L3_InterfacesArgs,
 )
@@ -62,14 +65,20 @@ class L3_InterfacesFacts(object):
 
         if not data:
             data = self.get_l3_interfaces_data(connection)
+
+        # parse native config using the l3_interfaces template
+        l3_interfaces_parser = L3_InterfacesTemplate(lines=data.splitlines())
+        objs = l3_interfaces_parser.parse()
+
+        objs = utils.remove_empties(objs)
         # operate on a collection of resource x
-        config = ("\n" + data).split("\ninterface ")
-        for conf in config:
-            if conf:
-                obj = self.render_config(self.generated_spec, conf)
-                if obj:
-                    objs.append(obj)
-        facts = {}
+        #config = ("\n" + data).split("\ninterface ")
+        # for conf in config:
+        #     if conf:
+        #         obj = self.render_config(self.generated_spec, conf)
+        #         if obj:
+        #             objs.append(obj)
+        # facts = {}
 
         if objs:
             facts["l3_interfaces"] = []
