@@ -1,2 +1,3 @@
+---
 trivial:
-- sanity tests - remove unnecessary requirements.txt file (https://github.com/ansible-collections/overview/issues/43).
+  - sanity tests - remove unnecessary requirements.txt file (https://github.com/ansible-collections/overview/issues/43).
