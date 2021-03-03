@@ -427,10 +427,24 @@ options:
                 type: str
               log:
                 description: Log matches against this entry.
-                type: str
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
               log_input:
                 description: Log matches against this entry, including input interface.
-                type: str
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry, including input interface.
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
               option:
                 description:
                 - Match packets with given IP Options value.

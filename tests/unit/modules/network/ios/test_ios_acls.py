@@ -117,7 +117,16 @@ class TestIosAclsModule(TestIosModule):
                                             host="172.16.1.1",
                                             port_protocol=dict(eq="telnet"),
                                         ),
-                                    )
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        log_input=dict(
+                                            user_cookie="test_logInput"
+                                        ),
+                                        protocol="ip",
+                                        source=dict(any=True),
+                                        destination=dict(any=True),
+                                    ),
                                 ],
                             ),
                         ],
@@ -132,6 +141,7 @@ class TestIosAclsModule(TestIosModule):
             "deny 192.0.2.0 0.0.0.255",
             "ip access-list extended in_to_out",
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
+            "deny ip any any log-input test_logInput",
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -146,11 +156,25 @@ class TestIosAclsModule(TestIosModule):
                                 name="110",
                                 aces=[
                                     dict(
+                                        grant="permit",
+                                        log=dict(user_cookie="testLog"),
+                                        protocol="tcp",
+                                        sequence="10",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            any=True,
+                                            port_protocol=dict(eq="22"),
+                                        ),
+                                    ),
+                                    dict(
                                         grant="deny",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
-                                        sequence="10",
+                                        sequence="20",
                                         source=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
@@ -161,7 +185,7 @@ class TestIosAclsModule(TestIosModule):
                                         ),
                                         dscp="ef",
                                         ttl=dict(eq=10),
-                                    )
+                                    ),
                                 ],
                             )
                         ],
@@ -251,11 +275,25 @@ class TestIosAclsModule(TestIosModule):
                                 name="110",
                                 aces=[
                                     dict(
+                                        grant="permit",
+                                        log=dict(user_cookie="testLog"),
+                                        protocol="tcp",
+                                        sequence="10",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            any=True,
+                                            port_protocol=dict(eq="22"),
+                                        ),
+                                    ),
+                                    dict(
                                         grant="deny",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
-                                        sequence="10",
+                                        sequence="20",
                                         source=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
@@ -266,7 +304,7 @@ class TestIosAclsModule(TestIosModule):
                                         ),
                                         dscp="ef",
                                         ttl=dict(eq=10),
-                                    )
+                                    ),
                                 ],
                             )
                         ],
@@ -333,11 +371,25 @@ class TestIosAclsModule(TestIosModule):
                                 name="110",
                                 aces=[
                                     dict(
+                                        grant="permit",
+                                        log=dict(user_cookie="testLog"),
+                                        protocol="tcp",
+                                        sequence="10",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            any=True,
+                                            port_protocol=dict(eq="22"),
+                                        ),
+                                    ),
+                                    dict(
                                         grant="deny",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
-                                        sequence="10",
+                                        sequence="20",
                                         source=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
@@ -348,7 +400,7 @@ class TestIosAclsModule(TestIosModule):
                                         ),
                                         dscp="ef",
                                         ttl=dict(eq=10),
-                                    )
+                                    ),
                                 ],
                             )
                         ],
