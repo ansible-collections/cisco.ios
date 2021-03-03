@@ -134,6 +134,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
+                    dict(
+                        mode="trunk",
+                        name="GigabitEthernet0/3",
+                        trunk=dict(
+                            allowed_vlans=[
+                                "1",
+                                "21",
+                                "231",
+                                "232",
+                                "233",
+                                "234",
+                                "312",
+                            ],
+                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
+                            encapsulation="dot1q",
+                        ),
+                    ),
                 ],
                 state="merged",
             )
@@ -192,6 +209,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                         mode="access",
                         name="TwoGigabitEthernet1/0/1",
                     ),
+                    dict(
+                        mode="trunk",
+                        name="GigabitEthernet0/3",
+                        trunk=dict(
+                            allowed_vlans=[
+                                "1",
+                                "21",
+                                "231",
+                                "232",
+                                "233",
+                                "234",
+                                "312",
+                            ],
+                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
+                            encapsulation="dot1q",
+                        ),
+                    ),
                 ],
                 state="replaced",
             )
@@ -227,6 +261,11 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface TwoGigabitEthernet1/0/1",
             "no switchport mode",
             "no switchport access vlan",
+            "interface GigabitEthernet0/3",
+            "no switchport mode",
+            "no switchport trunk encapsulation",
+            "no switchport trunk allowed vlan",
+            "no switchport trunk pruning vlan",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -254,6 +293,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                         access=dict(vlan=20),
                         mode="access",
                         name="TwoGigabitEthernet1/0/1",
+                    ),
+                    dict(
+                        mode="trunk",
+                        name="GigabitEthernet0/3",
+                        trunk=dict(
+                            allowed_vlans=[
+                                "1",
+                                "21",
+                                "231",
+                                "232",
+                                "233",
+                                "234",
+                                "312",
+                            ],
+                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
+                            encapsulation="dot1q",
+                        ),
                     ),
                 ],
                 state="overridden",
@@ -287,6 +343,11 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface TwoGigabitEthernet1/0/1",
             "no switchport mode",
             "no switchport access vlan",
+            "interface GigabitEthernet0/3",
+            "no switchport mode",
+            "no switchport trunk encapsulation",
+            "no switchport trunk allowed vlan",
+            "no switchport trunk pruning vlan",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
