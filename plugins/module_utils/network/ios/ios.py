@@ -168,6 +168,8 @@ def normalize_interface(name):
 
     if name.lower().startswith("gi"):
         if_type = "GigabitEthernet"
+    elif name.lower().startswith("tw"):
+        if_type = "TwoGigabitEthernet"
     elif name.lower().startswith("te"):
         if_type = "TenGigabitEthernet"
     elif name.lower().startswith("fa"):
