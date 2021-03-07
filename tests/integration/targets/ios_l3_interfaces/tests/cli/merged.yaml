@@ -14,6 +14,9 @@
           - name: Loopback999
             ipv4:
               - address: 192.0.2.1/24
+          - name: Vlan10
+            ipv4:
+              - address: 198.51.0.1/24
           - name: GigabitEthernet0/1
             ipv4:
               - address: dhcp
