@@ -386,7 +386,8 @@ class Bgp_AddressFamilyArgs(object):
                                 },
                                 "peer_group": {"type": "bool"},
                                 "prefix_list": {
-                                    "type": "dict",
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
@@ -403,7 +404,8 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "route_map": {
-                                    "type": "dict",
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
