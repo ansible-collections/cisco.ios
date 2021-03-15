@@ -82,10 +82,17 @@ class VlansFacts(object):
             elif "VLAN AREHops" in conf or "STEHops" in conf:
                 vlan_info = "Hops"
                 vlan_name = False
+            elif "Primary Secondary" in conf:
+                vlan_info = "Primary"
+                vlan_name = False
             if temp:
                 conf = temp
                 temp = ""
-            if conf and " " not in filter(None, conf.split("-")):
+            if (
+                conf
+                and " " not in filter(None, conf.split("-"))
+                and not conf.split(" ")[0] == ""
+            ):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
                     mtu_objs.append(obj)
