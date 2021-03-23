@@ -86,6 +86,11 @@ class TestIosLoggingModule(TestIosModule):
         commands = []
         self.execute_module(changed=False, commands=commands)
 
+    def test_ios_logging_dest_on_idempotent(self):
+        set_module_args(dict(dest="on"))
+        commands = []
+        self.execute_module(changed=False, commands=commands)
+
     def test_ios_logging_delete_non_exist_host(self):
         set_module_args(dict(dest="host", name="192.168.1.1", state="absent"))
         commands = []
@@ -147,6 +152,11 @@ class TestIosLoggingModuleIOS12(TestIosModule):
 
     def test_ios_logging_host_idempotent(self):
         set_module_args(dict(dest="host", name="2.3.4.5"))
+        commands = []
+        self.execute_module(changed=False, commands=commands)
+
+    def test_ios_logging_dest_on_idempotent(self):
+        set_module_args(dict(dest="on"))
         commands = []
         self.execute_module(changed=False, commands=commands)
 
