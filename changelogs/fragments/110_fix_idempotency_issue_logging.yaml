@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - This fixes IOS logging for default values with configuration causing idemotency issue (https://github.com/ansible-collections/cisco.ios/pull/283).
