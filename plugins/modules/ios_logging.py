@@ -207,31 +207,6 @@ def validate_size(value, module):
         else:
             return value
 
-def is_command_present(w, have):
-    flag = False
-    combined_have = dict()
-
-    for h in have:
-        for k, v in h.items():
-            if v:
-                if combined_have.__contains__(k):
-                    combined_have[k].append(v)
-                else:
-                    combined_have[k] = [v]
-
-    for k, v in w.items():
-        if v:
-            if combined_have.get(k):
-                if v in combined_have.get(k):
-                    flag = True
-                else:
-                    flag = False
-                    break
-            else:
-                flag = False
-                break
-
-    return flag
 
 def map_obj_to_commands(updates, module, os_version):
     dest_group = "console", "monitor", "buffered", "on", "trap"
@@ -245,8 +220,6 @@ def map_obj_to_commands(updates, module, os_version):
         level = w["level"]
         state = w["state"]
         del w["state"]
-        if is_command_present(w, have):
-            continue
         if facility:
             w["dest"] = "facility"
         if state == "absent" and w in have:
