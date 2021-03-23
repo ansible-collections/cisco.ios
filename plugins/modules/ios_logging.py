@@ -350,7 +350,7 @@ def map_config_to_obj(module):
         "facility",
         "trap",
     )
-    data = get_config(module, flags=["| include logging"])
+    data = get_config(module, flags=["all | include ^logging"])
     for line in data.split("\n"):
         match = re.search("^logging (\\S+)", line, re.M)
         if match:
