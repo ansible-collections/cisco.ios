@@ -167,7 +167,7 @@ class AclsTemplate(NetworkTemplate):
             "setval": _tmplt_access_list_name,
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
                         "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
@@ -207,7 +207,7 @@ class AclsTemplate(NetworkTemplate):
             "compval": "aces",
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
