@@ -318,8 +318,20 @@ class AclsArgs(object):
                                 },
                                 "dscp": {"type": "str"},
                                 "fragments": {"type": "str"},
-                                "log": {"type": "str"},
-                                "log_input": {"type": "str"},
+                                "log": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                },
+                                "log_input": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                },
                                 "option": {
                                     "type": "dict",
                                     "options": {

@@ -1570,7 +1570,6 @@ options:
     choices:
     - merged
     - replaced
-    - overridden
     - deleted
     - purged
     - gathered

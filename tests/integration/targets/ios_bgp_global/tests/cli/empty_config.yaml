@@ -25,17 +25,6 @@
     that:
       - result.msg == 'value of config parameter must not be empty for state replaced'
 
-- name: Overridden with empty config should give appropriate error message
-  register: result
-  ignore_errors: true
-  cisco.ios.ios_bgp_global:
-    config:
-    state: overridden
-
-- assert:
-    that:
-      - result.msg == 'value of config parameter must not be empty for state overridden'
-
 - name: Rendered with empty config should give appropriate error message
   register: result
   ignore_errors: true

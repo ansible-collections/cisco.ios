@@ -1,0 +1,83 @@
+---
+- debug:
+    msg: Start ios_bgp_address_family rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+    - name: Render the commands for provided  configuration
+      register: result
+      cisco.ios.ios_bgp_address_family: &id001
+        config:
+          as_number: 65000
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 1
+                  suppress_route_val: 1
+                  max_suppress: 1
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.100.1
+                  aigp:
+                    send:
+                      cost_community:
+                        id: 100
+                        poi:
+                          igp_cost: true
+                          transitive: true
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 10
+                  route_map:
+                    name: test-route
+                    out: true
+                  route_server_client: true
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+            - afi: ipv4
+              safi: mdt
+              bgp:
+                dmzlink_bw: true
+                dampening:
+                  penalty_half_time: 1
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                  max_suppress: 5
+                soft_reconfig_backup: true
+            - afi: ipv4
+              safi: multicast
+              aggregate_address:
+                - address: 192.0.3.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              default_metric: 12
+              distance:
+                external: 10
+                internal: 10
+                local: 100
+              network:
+                - address: 198.51.111.11
+                  mask: 255.255.255.255
+                  route_map: test
+              table_map:
+                name: test_tableMap
+                filter: true
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false

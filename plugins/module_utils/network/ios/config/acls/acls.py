@@ -90,29 +90,30 @@ class Acls(ResourceModule):
                             for each_have_acls in each_have.get("acls"):
                                 if each_acls["name"] == each_have_acls["name"]:
                                     aces = []
-                                    for each_ace in each_acls["aces"]:
-                                        each_ace_sequence = each_ace.get(
-                                            "sequence"
-                                        )
-                                        if each_ace_sequence:
-                                            for (
-                                                each_have_ace
-                                            ) in each_have_acls["aces"]:
-                                                if (
-                                                    each_ace_sequence
-                                                    == each_have_ace.get(
-                                                        "sequence"
-                                                    )
-                                                ):
-                                                    aces.append(
-                                                        dict(
-                                                            dict_merge(
-                                                                each_have_ace,
-                                                                each_ace,
+                                    if each_acls.get("aces"):
+                                        for each_ace in each_acls["aces"]:
+                                            each_ace_sequence = each_ace.get(
+                                                "sequence"
+                                            )
+                                            if each_ace_sequence:
+                                                for (
+                                                    each_have_ace
+                                                ) in each_have_acls["aces"]:
+                                                    if (
+                                                        each_ace_sequence
+                                                        == each_have_ace.get(
+                                                            "sequence"
+                                                        )
+                                                    ):
+                                                        aces.append(
+                                                            dict(
+                                                                dict_merge(
+                                                                    each_have_ace,
+                                                                    each_ace,
+                                                                )
                                                             )
                                                         )
-                                                    )
-                                                    break
+                                                        break
                                     if aces:
                                         temp_acls["acls"].append(
                                             {

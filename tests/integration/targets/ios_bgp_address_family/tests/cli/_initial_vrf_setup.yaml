@@ -1,0 +1,13 @@
+---
+- name: Enable IPV6 routing configuration
+  vars:
+    lines: "ipv6 unicast-routing\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+- name: Create and Setup VRF configuration
+  register: result
+  cisco.ios.ios_config:
+    commands:
+      - rd 45000:2
+      - address-family ipv4
+    parents: vrf definition blue

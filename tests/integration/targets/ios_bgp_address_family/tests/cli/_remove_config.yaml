@@ -1,0 +1,23 @@
+---
+- name: Delete and Clean IPv6 routings configuration
+  vars:
+    lines: "no ipv6 unicast-routing\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+
+- name: Delete and Clean VRF RD configuration first
+  register: result
+  cisco.ios.ios_config:
+    commands:
+      - no rd 45000:2
+    parents: vrf definition blue
+
+- name: Delete and Clean VRF configuration
+  vars:
+    lines: "no vrf definition blue\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'
+
+- name: Remove BGP Global Config
+  cisco.ios.ios_bgp_global:
+    state: purged

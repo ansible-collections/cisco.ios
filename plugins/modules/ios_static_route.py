@@ -187,7 +187,9 @@ commands:
 """
 from copy import deepcopy
 from re import findall
+from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.validation import check_required_together
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     validate_ip_address,
@@ -308,10 +310,16 @@ def map_params_to_obj(module, required_together=None):
                 if route.get(key) is None:
                     route[key] = module.params.get(key)
             route = dict((k, v) for k, v in route.items() if v is not None)
-            module._check_required_together(required_together, route)
+            try:
+                check_required_together(required_together, route)
+            except TypeError as exc:
+                module.fail_json(to_text(exc))
             obj.append(route)
     else:
-        module._check_required_together(required_together, module.params)
+        try:
+            check_required_together(required_together, module.params)
+        except TypeError as exc:
+            module.fail_json(to_text(exc))
         route = dict()
         for key in keys:
             if module.params.get(key) is not None:
