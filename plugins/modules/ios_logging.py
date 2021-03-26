@@ -27,7 +27,7 @@ description:
 version_added: 1.0.0
 notes:
 - Tested against IOS 15.6
-- The 'Default System Message Logging Configuration' of the ios device like facility Local7 or logging on is not subjected to idempotency causes
+- This module does not  consider the 'Default System Message Logging Configuration' of the IOS device such as facility Local7 or logging on, so your playbooks might show 'changed' instead of 'ok' when you configure these values.
 options:
   dest:
     description:
