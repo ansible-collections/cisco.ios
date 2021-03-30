@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - IOS Vlans module throws traceback with empty line config (https://github.com/ansible-collections/cisco.ios/issues/268).
