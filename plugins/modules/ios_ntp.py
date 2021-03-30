@@ -67,6 +67,10 @@ options:
     - present
     - absent
     type: str
+  vrf:
+    description:
+    - VRF configuration for NTP servers
+    type: str
 """
 EXAMPLES = """
 # Set new NTP server and source interface
@@ -95,6 +99,7 @@ EXAMPLES = """
     source_int: Loopback0
     acl: NTP_ACL
     logging: true
+    vrf: mgmt
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
@@ -126,6 +131,7 @@ def parse_server(line, dest):
         if match:
             vrf = match.group(2)
             server = match.group(3)
+            
             return vrf, server
 
 
@@ -260,7 +266,6 @@ def map_obj_to_commands(want, have, module):
     key_id_have = have[0].get("key_id", None)
     vrf_have = have[0].get("vrf", None)
 
-    
     for w in want:
 
         server = w["server"]
