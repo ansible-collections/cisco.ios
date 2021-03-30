@@ -4,6 +4,23 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v2.0.1
+======
+
+Minor Changes
+-------------
+- Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
+
+Bugfixes
+--------
+- Doc update to update users WRT to idempotence issue in ios_logging when logging is ON (https://github.com/ansible-collections/cisco.ios/pull/287).
+- To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
+- To add support for TwoGigabitEthernet interface option from IOS standpoint (https://github.com/ansible-collections/cisco.ios/pull/262).
+- To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
+- PR to fix ios_l2_interfaces issue where it wasn't working with range of vlans as expected (https://github.com/ansible-collections/cisco.ios/pull/264).
+- To fix ios_acls Nonetype error when aces are empty (https://github.com/ansible-collections/cisco.ios/pull/260).
+- To fix ios_vlans traceback error when empty line with just Ports information is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
+
 v2.0.0
 ======
 
