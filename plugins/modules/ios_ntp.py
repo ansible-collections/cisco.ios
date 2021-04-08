@@ -290,7 +290,7 @@ def map_obj_to_commands(want, have, module):
             if server_have and server in server_have:
                 if vrf:
                     if vrf_have == vrf:
-                        commands.append("no ntp server {0} {1}".format(vrf, server))
+                        commands.append("no ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("no ntp server {0}".format(server))
 
@@ -320,7 +320,7 @@ def map_obj_to_commands(want, have, module):
 
             if server is not None and server not in server_have:
                 if vrf and vrf != vrf_have:
-                    commands.append("ntp server {0} {1}".format(vrf, server))
+                    commands.append("ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("ntp server {0}".format(server))
 
