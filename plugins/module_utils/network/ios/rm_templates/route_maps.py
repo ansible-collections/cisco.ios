@@ -19,8 +19,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     NetworkTemplate,
 )
 
+
 def _tmplt_route_map(config_data):
     pass
+
 
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None):
@@ -35,7 +37,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<route_map>\S+)*
                 \s*(?P<action>deny|permit)*
                 \s*(?P<sequence>\d+)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": _tmplt_route_map,
             "result": {
                 "{{ route_map }}": {
@@ -45,10 +49,10 @@ class Route_mapsTemplate(NetworkTemplate):
                             "action": "{{ action }}",
                             "sequence": "{{ sequence }}",
                         }
-                    }
+                    },
                 }
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "continue",
@@ -56,7 +60,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+continue*
                 \s*(?P<entry_sequence>\d+)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "result": {
                 "{{ route_map }}": {
@@ -68,7 +74,7 @@ class Route_mapsTemplate(NetworkTemplate):
                             }
                         }
                     }
-                },
+                }
             },
         },
         {
@@ -77,16 +83,16 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+description*
                 \s*(?P<description>\S.*)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "result": {
                 "{{ route_map }}": {
                     "{{ action|d() + '_' + sequence|d() }}": {
-                        "entries": {
-                            "description": "{{ description }}"
-                        },
-                    },
-                },
+                        "entries": {"description": "{{ description }}"}
+                    }
+                }
             },
         },
         {
@@ -99,7 +105,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<best>best\s\d)*
                 \s*(?P<best_range>best-range\s\d\s\d)*
                 \s*(?P<group_best>group-best)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "additional_paths",
             "result": {
@@ -115,11 +123,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "upper_limit": "{{ best_range.split(' ')[2] if best_range is defined }}",
                                     },
                                     "group_best": "{{ True if group_best is defined }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -141,7 +149,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<rpki>rpki\s(invalid|not-found|valid))*
                 \s*(?P<security_group>security-group\s(destination\stag\s\d.*|source\stag\s\d.*))*
                 \s*(?P<tag>tag\slist\s\S.*|tag\s\S.*)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "result": {
                 "{{ route_map }}": {
@@ -159,7 +169,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 },
                                 "community": {
                                     "name": "{{ community.split(' ')[1] if community is defined }}",
-                                    "exact_match": "{{ community.split(' ')[2] if community is defined and 'exact-match' in community }}"
+                                    "exact_match": "{{ community.split(' ')[2] if community is defined and 'exact-match' in community }}",
                                 },
                                 "extcommunity": "{{ extcommunity.split('extcommunity ')[1] if extcommunity is defined }}",
                                 "interface": "{{ interface.split('interface ')[1] if interface is defined }}",
@@ -194,18 +204,22 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "valid": "{{ True if rpki is defined and 'valid' in rpki }}",
                                 },
                                 "security_group": {
-                                    "destination": ["{{ security_group.split('destination tag ')[1] if security_group is defined and 'destination' in security_group }}"],
-                                    "source": ["{{ security_group.split('source tag ')[1] if security_group is defined and 'source' in security_group }}"],
+                                    "destination": [
+                                        "{{ security_group.split('destination tag ')[1] if security_group is defined and 'destination' in security_group }}"
+                                    ],
+                                    "source": [
+                                        "{{ security_group.split('source tag ')[1] if security_group is defined and 'source' in security_group }}"
+                                    ],
                                 },
                                 "tag": {
                                     "value": "{{ tag.split('tag ')[1] if tag is defined and 'list' not in tag }}",
                                     "list": "{{ tag.split('tag list ')[1] if tag is defined and 'list' in tag }}",
                                 },
-                                "track": "{{ track.split('track ')[1] if track is defined }}"
-                            },
-                        },
-                    },
-                },
+                                "track": "{{ track.split('track ')[1] if track is defined }}",
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -219,7 +233,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<next_hop>next-hop\sprefix-list\s\S.*|next-hop\s\S.*|next-hop)*
                 \s*(?P<redistribution_source>redistribution-source\sprefix-list\s\S.*|redistribution-source\s\S.*|redistribution-source)*
                 \s*(?P<route_source>route-source\sredistribution-source\sprefix-list\s\S.*|route-source\sredistribution-source\s\S.*|route-source\sprefix-list\s\S.*|route-source\s\S.*|route-source\sredistribution-source|route-source)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "ip",
             "result": {
@@ -230,7 +246,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "ip": {
                                     "address": {
                                         "acl": [
-                                            "{{ address.split('address ')[1] if address is defined and 'prefix-list' not in address else none }}",
+                                            "{{ address.split('address ')[1] if address is defined and 'prefix-list' not in address else none }}"
                                         ],
                                         "prefix_list": [
                                             "{{ address.split('address prefix-list ')[1] if address is defined and 'prefix-list' in address else None }}"
@@ -240,7 +256,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "dest_pfx": "{{ True if flowspec is defined and 'dest-pfx' in flowspec }}",
                                         "src_pfx": "{{ True if flowspec is defined and 'src-pfx' in flowspec }}",
                                         "acl": [
-                                            "{{ flowspec.split('flowspec ')[1]|d() if flowspec is defined and 'prefix-list' not in flowspec else '' }}",
+                                            "{{ flowspec.split('flowspec ')[1]|d() if flowspec is defined and 'prefix-list' not in flowspec else '' }}"
                                         ],
                                         "prefix_list": [
                                             "{{ flowspec.split('flowspec prefix-list ')[1]|d() if flowspec is defined and 'prefix-list' in flowspec else ''}}"
@@ -249,7 +265,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "next_hop": {
                                         "set": "{{ True if next_hop is defined and next_hop.split(' ')|length == 1 }}",
                                         "acl": [
-                                            "{{ next_hop.split('next-hop ')[1] if next_hop is defined and 'prefix-list' not in next_hop else '' }}",
+                                            "{{ next_hop.split('next-hop ')[1] if next_hop is defined and 'prefix-list' not in next_hop else '' }}"
                                         ],
                                         "prefix_list": [
                                             "{{ next_hop.split('next-hop prefix-list ')[1] if next_hop is defined and 'prefix-list' in next_hop and next_hop.split('next-hop prefix-list ')[1] is not none else '' }}"
@@ -268,17 +284,17 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "set": "{{ True if route_source is defined and route_source.split(' ')|length == 1 }}",
                                         "redistribution_source": "{{ True if route_source is defined and 'redistribution-source' in route_source }}",
                                         "acl": [
-                                            "{{ route_source.split('route-source ')[1] if route_source is defined and 'prefix-list' not in route_source else '' }}",
+                                            "{{ route_source.split('route-source ')[1] if route_source is defined and 'prefix-list' not in route_source else '' }}"
                                         ],
                                         "prefix_list": [
                                             "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and 'prefix-list' in route_source else '' }}"
                                         ],
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -291,7 +307,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<flowspec>flowspec\sdest-pfx\s(prefix-list\s\S.*|\S.*)|flowspec\ssrc-pfx\s(prefix-list\s\S.*|\S.*))*
                 \s*(?P<next_hop>next-hop\sprefix-list\s\S.*|next-hop\s\S.*)*
                 \s*(?P<route_source>route-source\sprefix-list\s\S.*|route-source\s\S.*)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "ipv6",
             "result": {
@@ -302,27 +320,27 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "ipv6": {
                                     "address": {
                                         "acl": "{{ address.split('address ')[1] if address is defined and 'prefix-list' not in address }}",
-                                        "prefix_list": "{{ address.split('address prefix-list ')[1] if address is defined and 'prefix-list' in address }}"
+                                        "prefix_list": "{{ address.split('address prefix-list ')[1] if address is defined and 'prefix-list' in address }}",
                                     },
                                     "flowspec": {
                                         "dest_pfx": "{{ True if flowspec is defined and 'dest-pfx' in flowspec }}",
                                         "src_pfx": "{{ True if flowspec is defined and 'src-pfx' in flowspec }}",
                                         "acl": "{{ flowspec.split('flowspec ')[1] if flowspec is defined and 'prefix-list' not in flowspec }}",
-                                        "prefix_list": "{{ flowspec.split('flowspec prefix-list ')[1] if flowspec is defined and 'prefix-list' in flowspec }}"
+                                        "prefix_list": "{{ flowspec.split('flowspec prefix-list ')[1] if flowspec is defined and 'prefix-list' in flowspec }}",
                                     },
                                     "next_hop": {
                                         "acl": "{{ next_hop.split('next-hop ')[1] if next_hop is defined and 'prefix-list' not in next_hop }}",
-                                        "prefix_list": "{{ next_hop.split('next-hop prefix-list ')[1] if next_hop is defined and 'prefix-list' in next_hop }}"
+                                        "prefix_list": "{{ next_hop.split('next-hop prefix-list ')[1] if next_hop is defined and 'prefix-list' in next_hop }}",
                                     },
                                     "route_source": {
                                         "acl": "{{ route_source.split('route-source ')[1] if route_source is defined and 'prefix-list' not in route_source }}",
-                                        "prefix_list": "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and 'prefix-list' in route_source }}"
+                                        "prefix_list": "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and 'prefix-list' in route_source }}",
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -341,7 +359,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<ospfv3>ospfv3\s\d+)*
                 \s*(?P<rip>rip)*
                 \s*(?P<static>static)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "ipv6",
             "result": {
@@ -360,11 +380,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "ospfv3": "{{ ospfv3.split('ospfv3 ')[1] if ospfv3 is defined }}",
                                     "rip": "{{ True if rip is defined }}",
                                     "static": "{{ True if static is defined }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -393,7 +413,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<traffic_index>traffic-index\s\d+)*
                 \s*(?P<vrf>vrf\s\S+)*
                 \s*(?P<weight>weight\s\d+)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "result": {
                 "{{ route_map }}": {
@@ -409,7 +431,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "as_number": "{{ as_path.split('as-path prepend ')[1] if as_path is defined and 'prepend' in as_path and 'last-as' not in as_path }}",
                                         "last_as": "{{ as_path.split('as-path prepend last-as ')[1] if as_path is defined and 'prepend' in as_path and 'last-as' in as_path }}",
                                     },
-                                    "tag": "{{ True if as_path is defined and 'tag' in as_path }}"
+                                    "tag": "{{ True if as_path is defined and 'tag' in as_path }}",
                                 },
                                 "automatic_tag": "{{ True if automatic_tag is defined }}",
                                 "clns": "{{ clns.split('clns next-hop ')[1] if clns is defined }}",
@@ -455,11 +477,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "tag": "{{ tag.split('tag ')[1] if tag is defined }}",
                                 "traffic_index": "{{ traffic_index.split('traffic-index ')[1] if traffic_index is defined }}",
                                 "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",
-                                "weight": "{{ weight.split('weight ')[1] if weight is defined }}"
-                            },
-                        },
-                    },
-                },
+                                "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -477,7 +499,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<tos>tos\s(max-reliability|max-throughput|min-delay|min-monetary-cost|normal)|tos)*
                 \s*(?P<vrf>vrf\s\S+\snext-hop\s\S.*)*
                 \s*(?P<next_hop>next-hop\s\S.*)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "ip",
             "result": {
@@ -550,11 +574,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "track": "{{ vrf.split('track ')[1] if vrf is defined and 'track' in vrf }}",
                                         },
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -569,7 +593,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<precedence>precedence\s\d+)*
                 \s*(?P<vrf>vrf\s\S+\snext-hop\sverify-availability\s(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+\s\d+\strack\s\d+)*
                 \s*(?P<next_hop>next-hop\s\S.*)*
-                $""", re.VERBOSE),
+                $""",
+                re.VERBOSE,
+            ),
             "setval": "",
             "compval": "ipv6",
             "result": {
@@ -585,7 +611,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "address": "{{ global.split(' ')[3] if global is defined and 'verify-availability' in global }}",
                                             "sequence": "{{ global.split(' ')[4] if global is defined and 'verify-availability' in global }}",
                                             "track": "{{ global.split('track ')[1] if global is defined and 'verify-availability' in global }}",
-                                        },
+                                        }
                                     },
                                     "next_hop": {
                                         "address": "{{ next_hop.split('next-hop ')[1] if next_hop is defined and next_hop.split(' ')|length == 2 and 'peer-address' not in next_hop }}",
@@ -602,11 +628,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "track": "{{ vrf.split('track ')[1] if vrf is defined and 'verify-availability' in vrf }}",
                                         },
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
     ]

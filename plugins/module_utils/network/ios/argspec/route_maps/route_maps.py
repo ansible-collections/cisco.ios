@@ -45,7 +45,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "sequence": {"type": "int"},
-                        "action": {"type": "str", "choices": ["deny", "permit"]},
+                        "action": {
+                            "type": "str",
+                            "choices": ["deny", "permit"],
+                        },
                         "continue": {
                             "type": "dict",
                             "options": {
@@ -76,7 +79,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "set": {"type": "bool"},
-                                        "acl": {"type": "list", "elements": "int"},
+                                        "acl": {
+                                            "type": "list",
+                                            "elements": "int",
+                                        },
                                     },
                                 },
                                 "clns": {
@@ -95,7 +101,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "extcommunity": {"type": "str"},
-                                "interface": {"type": "list", "elements": "str"},
+                                "interface": {
+                                    "type": "list",
+                                    "elements": "str",
+                                },
                                 "ip": {
                                     "type": "dict",
                                     "options": {
@@ -246,7 +255,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "mpls_label": {"type": "bool"},
-                                "policy_list": {"type": "list", "elements": "str"},
+                                "policy_list": {
+                                    "type": "list",
+                                    "elements": "str",
+                                },
                                 "route_type": {
                                     "type": "dict",
                                     "options": {
@@ -383,7 +395,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "id": {"type": "int"},
                                                 "cost": {"type": "int"},
                                                 "igp": {"type": "bool"},
-                                                "pre_bestpath": {"type": "bool"},
+                                                "pre_bestpath": {
+                                                    "type": "bool"
+                                                },
                                             },
                                         },
                                         "rt": {
@@ -411,7 +425,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {"type": "str"},
                                         "default": {"type": "bool"},
-                                        "df": {"choices": [0, 1], "type": "int"},
+                                        "df": {
+                                            "choices": [0, 1],
+                                            "type": "int",
+                                        },
                                         "global": {
                                             "type": "bool",
                                             "options": {
@@ -419,11 +436,15 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "verify_availability": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "address": {"type": "str"},
+                                                        "address": {
+                                                            "type": "str"
+                                                        },
                                                         "sequence": {
                                                             "type": "int"
                                                         },
-                                                        "track": {"type": "int"},
+                                                        "track": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -434,12 +455,18 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "address": {"type": "str"},
                                                 "dynamic": {"type": "bool"},
                                                 "encapsulate": {"type": "str"},
-                                                "peer_address": {"type": "bool"},
+                                                "peer_address": {
+                                                    "type": "bool"
+                                                },
                                                 "recursive": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "address": {"type": "str"},
-                                                        "global": {"type": "str"},
+                                                        "address": {
+                                                            "type": "str"
+                                                        },
+                                                        "global": {
+                                                            "type": "str"
+                                                        },
                                                         "vrf": {
                                                             "type": "dict",
                                                             "options": {
@@ -457,12 +484,16 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "verify_availability": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "set": {"type": "bool"},
+                                                        "set": {
+                                                            "type": "bool"
+                                                        },
                                                         "address": {},
                                                         "sequence": {
                                                             "type": "int"
                                                         },
-                                                        "track": {"type": "int"},
+                                                        "track": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -473,7 +504,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "set": {"type": "bool"},
                                                 "critical": {"type": "bool"},
                                                 "flash": {"type": "bool"},
-                                                "flash_override": {"type": "bool"},
+                                                "flash_override": {
+                                                    "type": "bool"
+                                                },
                                                 "immediate": {"type": "bool"},
                                                 "internet": {"type": "bool"},
                                                 "network": {"type": "bool"},
@@ -489,7 +522,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "max_reliability": {
                                                     "type": "bool"
                                                 },
-                                                "max_throughput": {"type": "bool"},
+                                                "max_throughput": {
+                                                    "type": "bool"
+                                                },
                                                 "min_delay": {"type": "bool"},
                                                 "min_monetary_cost": {
                                                     "type": "bool"
@@ -505,12 +540,16 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "verify_availability": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "set": {"type": "bool"},
+                                                        "set": {
+                                                            "type": "bool"
+                                                        },
                                                         "address": {},
                                                         "sequence": {
                                                             "type": "int"
                                                         },
-                                                        "track": {"type": "int"},
+                                                        "track": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -529,11 +568,15 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "verify_availability": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "address": {"type": "str"},
+                                                        "address": {
+                                                            "type": "str"
+                                                        },
                                                         "sequence": {
                                                             "type": "int"
                                                         },
-                                                        "track": {"type": "int"},
+                                                        "track": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -543,7 +586,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "address": {"type": "str"},
                                                 "encapsulate": {"type": "str"},
-                                                "peer_address": {"type": "bool"},
+                                                "peer_address": {
+                                                    "type": "bool"
+                                                },
                                                 "recursive": {"type": "str"},
                                             },
                                         },
@@ -559,7 +604,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "sequence": {
                                                             "type": "int"
                                                         },
-                                                        "track": {"type": "int"},
+                                                        "track": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },

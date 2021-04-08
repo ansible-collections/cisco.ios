@@ -47,8 +47,7 @@ class Route_maps(ResourceModule):
             resource="route_maps",
             tmplt=Route_mapsTemplate(),
         )
-        self.parsers = [
-        ]
+        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -106,35 +105,74 @@ class Route_maps(ResourceModule):
            for the Route_maps network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
-    
+
     def list_to_dict(self, param):
         if param:
+
             def convert_to_dict(inner_match, key):
                 temp = dict()
                 for each in inner_match:
-                    temp.update({key + '_' + str(each): each})
+                    temp.update({key + "_" + str(each): each})
                 return temp
+
             for key, val in iteritems(param):
                 temp_entries = dict()
-                for every in val['entries']:
-                    match = every.get('match')
+                for every in val["entries"]:
+                    match = every.get("match")
                     if match:
-                        if match.get('as_path') and match.get('as_path').get('acl'):
-                            match['as_path']['acl'] = convert_to_dict(match['as_path']['acl'], 'acl')
-                        if match.get('ip'):
-                            for each_ip_param in ['address', 'flowspec', 'next_hop', 'redistribution_source', 'route_source']:
-                                if match['ip'].get(each_ip_param):
-                                    if match['ip'][each_ip_param].get('acl'):
-                                        match['ip'][each_ip_param]['acl'] = convert_to_dict(match['ip'][each_ip_param]['acl'], 'acl')
-                                    elif match['ip'][each_ip_param].get('prefix_list'):
-                                        match['ip'][each_ip_param]['prefix_list'] = convert_to_dict(match['ip'][each_ip_param]['prefix_list'], 'prefix_list')
-                        if match.get('local_preference') and match.get('local_preference').get('value'):
-                            match['local_preference']['value'] = convert_to_dict(match['local_preference']['value'], 'value')
-                        if match.get('security_group'):
-                            for each_sg_param in ['source', 'destination']:
-                                if match.get('security_group').get(each_sg_param):
-                                    match['security_group'][each_sg_param] = convert_to_dict(match['security_group'][each_sg_param], each_sg_param)
-                    action = every.get('action')
-                    sequence = every.get('sequence')
-                    temp_entries.update({action+'_'+str(sequence): every})
-                val['entries'] = temp_entries
+                        if match.get("as_path") and match.get("as_path").get(
+                            "acl"
+                        ):
+                            match["as_path"]["acl"] = convert_to_dict(
+                                match["as_path"]["acl"], "acl"
+                            )
+                        if match.get("ip"):
+                            for each_ip_param in [
+                                "address",
+                                "flowspec",
+                                "next_hop",
+                                "redistribution_source",
+                                "route_source",
+                            ]:
+                                if match["ip"].get(each_ip_param):
+                                    if match["ip"][each_ip_param].get("acl"):
+                                        match["ip"][each_ip_param][
+                                            "acl"
+                                        ] = convert_to_dict(
+                                            match["ip"][each_ip_param]["acl"],
+                                            "acl",
+                                        )
+                                    elif match["ip"][each_ip_param].get(
+                                        "prefix_list"
+                                    ):
+                                        match["ip"][each_ip_param][
+                                            "prefix_list"
+                                        ] = convert_to_dict(
+                                            match["ip"][each_ip_param][
+                                                "prefix_list"
+                                            ],
+                                            "prefix_list",
+                                        )
+                        if match.get("local_preference") and match.get(
+                            "local_preference"
+                        ).get("value"):
+                            match["local_preference"][
+                                "value"
+                            ] = convert_to_dict(
+                                match["local_preference"]["value"], "value"
+                            )
+                        if match.get("security_group"):
+                            for each_sg_param in ["source", "destination"]:
+                                if match.get("security_group").get(
+                                    each_sg_param
+                                ):
+                                    match["security_group"][
+                                        each_sg_param
+                                    ] = convert_to_dict(
+                                        match["security_group"][each_sg_param],
+                                        each_sg_param,
+                                    )
+                    action = every.get("action")
+                    sequence = every.get("sequence")
+                    temp_entries.update({action + "_" + str(sequence): every})
+                val["entries"] = temp_entries
