@@ -126,13 +126,20 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 def parse_server(line, dest):
     if dest == "server":
         match = re.search(
-            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M
+            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)?(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M
         )
-        if match:
+
+        if match.group(2) and match.group(3):
             vrf = match.group(2)
             server = match.group(3)
-            
+
             return vrf, server
+
+        if match.group(3):
+            vrf = None
+            server = match.group(3)
+
+            return server
 
 
 def parse_source_int(line, dest):
@@ -204,7 +211,7 @@ def map_config_to_obj(module):
             key_id = parse_key_id(line, dest)
             
             if vrf and server:
-                server_list.append(vrf, server)
+                server_list.append(vrf.split()[1], server)
             
             if not vrf and server:
                 server_list.append(server)
