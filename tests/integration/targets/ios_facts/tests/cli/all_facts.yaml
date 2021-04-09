@@ -24,4 +24,18 @@
   loop: "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True)\
     \ }}"
 
+- name: Collect list of available network resources for ios
+  register: result
+  cisco.ios.ios_facts:
+    available_network_resources: true
+    gather_network_resources: all
+    provider: '{{ cli }}'
+
+- name: Assert that correct available_network_resources returned
+  assert:
+    that:
+      - result.changed == false
+      - "{{ result['ansible_facts']['ansible_net_gather_network_resources'] | symmetric_difference(result['ansible_facts']['ansible_net_gather_network_resources']) |length\
+          \ == 0 }}"
+
 - debug: msg="END cli/all_facts.yaml on connection={{ ansible_connection }}"
