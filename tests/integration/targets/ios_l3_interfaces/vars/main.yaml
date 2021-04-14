@@ -39,6 +39,7 @@ merged:
           secondary: true
         - address: 198.51.100.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: dhcp
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
@@ -57,6 +58,7 @@ replaced:
           secondary: true
         - address: 192.0.2.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
   commands:
@@ -99,6 +101,7 @@ overridden:
           secondary: true
         - address: 192.0.2.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
   commands:
@@ -136,6 +139,7 @@ deleted:
           secondary: true
         - address: 192.0.2.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
   commands:
@@ -167,6 +171,7 @@ gathered:
           secondary: true
         - address: 192.0.2.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
 parsed:
@@ -181,6 +186,7 @@ parsed:
           secondary: true
         - address: 198.51.100.2 255.255.255.0
       ipv6:
+        - address: autoconfig
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
 rtt:
