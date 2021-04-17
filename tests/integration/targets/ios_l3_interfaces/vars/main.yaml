@@ -41,7 +41,6 @@ merged:
       ipv6:
         - address: dhcp
         - address: 2001:db8:0:3::/64
-        - address: autoconfig
       name: GigabitEthernet0/2
 replaced:
   before:
