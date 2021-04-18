@@ -527,10 +527,8 @@ class Logging_globalTemplate(NetworkTemplate):
             "result": { 
                 "logging" : {
                     "origin_id": {
-                        "session_id": {
                             "tag" : "{{ tag }}",
                             "text" : "{{ text.split('string ')[1] if text is defined }}",  
-                        }
                     }  
                 }
             },
