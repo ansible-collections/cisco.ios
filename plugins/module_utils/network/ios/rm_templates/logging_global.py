@@ -36,7 +36,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<xml>xml)*
                 \s*(?P<sequence_num_session>sequence-num-session)*
                 \s*(?P<vrf>\svrf\s\S+)*
-                \s*(?P<discriminator>discriminator\s\S+)*
+                \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -64,7 +64,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<audit>audit)*
                 \s*(?P<sequence_num_session>sequence-num-session)*
                 \s*(?P<xml>xml)*
-                \s*(?P<discriminator>discriminator\s\S+)*
+                \s*(?P<discriminator>discriminator\s.+$)*
                 \s*(?P<port>port\s[1-9][0-9]*)*
                 \s*(?P<filtered>filtered\sstream\s[1-9][0-9]*)*
                 $""", re.VERBOSE),
@@ -98,7 +98,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<transport>transport\sudp\ssession-id)*
                 \s*(?P<tag>hostname|ipv4|ipv6)*
-                \s*(?P<text>\sstring\s\S+)*
+                \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -128,7 +128,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<transport>transport\stcp\ssession-id)*
                 \s*(?P<tag>hostname|ipv4|ipv6)*
-                \s*(?P<text>\sstring\s\S+)*
+                \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -214,7 +214,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<session_id>session-id)*
                 \s*(?P<tag>hostname|ipv4|ipv6)*
-                \s*(?P<text>\sstring\s\S+)*
+                \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -239,7 +239,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<filtered>filtered)*
                 \s*(?P<xml>xml)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
-                \s*(?P<discriminator>discriminator\s\S+$)*
+                \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging buffered",
             "result": { 
@@ -308,7 +308,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<filtered>filtered)*
                 \s*(?P<xml>xml)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings|guaranteed$)*
-                \s*(?P<discriminator>discriminator\s\S+)*
+                \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging console",
             "result": { 
@@ -357,7 +357,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "name": "discriminator",
             "getval": re.compile(
                 r"""
-                ^logging\sdiscriminator\s(?P<discriminator>\S+\s|\S+)
+                ^logging\sdiscriminator\s(?P<discriminator>.+$)
                 $""", re.VERBOSE),
             "setval": "logging discriminator",
             "result": { 
@@ -487,7 +487,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<filtered>filtered)*
                 \s*(?P<xml>xml)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
-                \s*(?P<discriminator>discriminator\s\S+)*
+                \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging monitor",
             "result": { 
@@ -521,7 +521,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sorigin-id
                 \s*(?P<tag>hostname|ipv4|ipv6)*
-                \s*(?P<text>\sstring\s\S+)*
+                \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -675,7 +675,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging
                 \s(?P<source_interface>source-interface)
-                \s(?P<interface>\S+)
+                \s(?P<interface>\.+)
                 \s*(?P<vrf>vrf\s\S+)*
                 $""", re.VERBOSE),
             "setval": "logging snmp_trap",
