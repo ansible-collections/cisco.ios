@@ -201,7 +201,7 @@ options:
       message_counter:   
         description: Configure log message to include certain counter value
         type: list
-        elements: str
+        elements: list
         choices: ["log", "debug", "syslog"]
       monitor:        
         description: Set terminal line (monitor) logging parameters

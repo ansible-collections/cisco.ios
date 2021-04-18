@@ -473,8 +473,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging message-counter",
             "result": { 
-                "{{ counter }}" : {
-                    "message_counter": "{{ counter }}",
+                "logging" : {
+                    "message_counter": ["{{ counter }}",]
                 }
             },
         },
@@ -679,7 +679,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging snmp_trap",
             "result": { 
-                "{{ interface }}": {
+                "logging": {
                         "source_interface": [{
                             "interface": "{{ interface }}",
                             "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",                       
