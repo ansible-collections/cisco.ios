@@ -28,17 +28,21 @@ options:
         description: Set buffered logging parameters
         type: dict
         suboptions:
-          level: &level          
-            description: Logging severity level (0-7)
-            type: int
-            choices: [0,1,2,3,4,5,6,7]
           size: &size           
             description: Logging buffer size
             type: int
           severity: &severity
             description: Logging severity level
             type: str
-            choices: ["alerts","critical","debugging","emergencies","errors","informational","notifications","warnings"]
+            choices: &severity_subgroup
+              - alerts
+              - critical
+              - debugging
+              - emergencies
+              - errors
+              - informational
+              - notifications
+              - warnings
           discriminator: &discriminator   
             description: Establish MD-Buffer association
             type: str
@@ -48,23 +52,17 @@ options:
           xml: &xml             
             description: Enable logging in XML to XML logging buffer
             type: bool
-          enable:
-            description: to enable buffered logging
-            type: bool
       buginf:          
         description: Enable buginf logging for debugging
         type: bool
       cns_events:   
         description: Set CNS Event logging level
-        type: dict
-        suboptions:
-          level: *level          
-          severity: *severity
+        type: str
+        choices: *severity_subgroup
       console:         
         description: Set console logging parameters
         type: dict
-        suboptions:
-          level: *level          
+        suboptions:         
           severity:
             description: Logging severity level
             type: str
@@ -123,8 +121,7 @@ options:
       history:
         description: Configure syslog history table
         type: dict
-        suboptions:
-          level: *level       
+        suboptions:     
           size: *size          
           severity: *severity
       host:           
@@ -209,13 +206,12 @@ options:
       monitor:        
         description: Set terminal line (monitor) logging parameters
         type: dict
-        suboptions:
-          level: *level          
+        suboptions:        
           severity: *severity
           discriminator: *discriminator  
           filtered: *filtered        
           xml: *xml              
-      on:               
+      logging_on:               
         description: Enable logging to all enabled destinations
         type: bool
       origin_id:      
@@ -281,25 +277,18 @@ options:
             required: True
           all:
             description: (1-10000) message per second
-            type: dict
-            suboptions:
-              size: *rate_limit_size
+            type: bool
           console:
             description: (1-10000) message per second
-            type: dict
-            suboptions:
-              size: *rate_limit_size
+            type: bool
           except:
             description: Messages of this severity or higher
-            type: dict
-            suboptions:
-              level: *level           
-              severity: *severity
+            type: str
+            choices: *severity_subgroup
       reload:        
         description: Set reload logging level
         type: dict
-        suboptions:
-          level: *level          
+        suboptions:      
           severity: *severity
           message_limit:
             description: Number of messages (1-4294967295>)
@@ -309,10 +298,8 @@ options:
         type: bool
       snmp_trap:   
         description: Set syslog level for sending snmp trap
-        type: dict
-        suboptions:
-          level: *level         
-          severity: *severity
+        type: str
+        choices: *severity_subgroup
       source_interface:
         description: Specify interface for source address in logging transactions
         type: list
@@ -326,13 +313,20 @@ options:
             type: str
       trap:   
         description: Set syslog server logging level
-        type: dict
-        suboptions:
-          level: *level         
-          severity: *severity
+        type: str
+        choices: *severity_subgroup
       userinfo:      
         description: Enable logging of user info on privileged mode enabling
         type: bool
+  running_config:
+      description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the EOS device by
+        executing the command B(show running-config | section access-list).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
+      type: str
   state:
     choices:
     - merged
@@ -358,6 +352,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.loggi
     Logging_global,
 )
 
+# print("Checking logging via VSCode")
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 def main():
     """

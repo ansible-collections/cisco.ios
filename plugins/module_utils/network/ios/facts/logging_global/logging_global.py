@@ -35,6 +35,9 @@ class Logging_globalFacts(object):
         self._module = module
         self.argument_spec = Logging_globalArgs.argument_spec
 
+    def get_logging_data(self, connection):
+        return connection.get("show running-config | include logging")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Logging_global network resource
 
@@ -49,7 +52,7 @@ class Logging_globalFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_logging_data(connection)
 
         # parse native config using the Logging_global template
         logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)

@@ -42,10 +42,6 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 "buffered": {
                     "type": "dict",
                     "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
                         "size": {"type": "int"},
                         "severity": {
                             "type": "str",
@@ -63,39 +59,25 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "discriminator": {"type": "str"},
                         "filtered": {"type": "bool"},
                         "xml": {"type": "bool"},
-                        "enable": {"type": "bool"},
                     },
                 },
                 "buginf": {"type": "bool"},
                 "cns_events": {
-                    "type": "dict",
-                    "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
-                        "severity": {
-                            "type": "str",
-                            "choices": [
-                                "alerts",
-                                "critical",
-                                "debugging",
-                                "emergencies",
-                                "errors",
-                                "informational",
-                                "notifications",
-                                "warnings",
-                            ],
-                        },
-                    },
+                    "type": "str",
+                    "choices": [
+                        "alerts",
+                        "critical",
+                        "debugging",
+                        "emergencies",
+                        "errors",
+                        "informational",
+                        "notifications",
+                        "warnings",
+                    ],
                 },
                 "console": {
                     "type": "dict",
                     "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
                         "severity": {
                             "type": "str",
                             "choices": [
@@ -168,10 +150,6 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 "history": {
                     "type": "dict",
                     "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
                         "size": {"type": "int"},
                         "severity": {
                             "type": "str",
@@ -279,10 +257,6 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 "monitor": {
                     "type": "dict",
                     "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
                         "severity": {
                             "type": "str",
                             "choices": [
@@ -301,7 +275,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "xml": {"type": "bool"},
                     },
                 },
-                True: {"type": "bool"},
+                "logging_on": {"type": "bool"},
                 "origin_id": {
                     "type": "dict",
                     "options": {
@@ -342,45 +316,26 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {
                         "size": {"type": "int", "required": True},
-                        "all": {
-                            "type": "dict",
-                            "options": {"size": {"type": "int", "required": True}},
-                        },
-                        "console": {
-                            "type": "dict",
-                            "options": {"size": {"type": "int", "required": True}},
-                        },
+                        "all": {"type": "bool"},
+                        "console": {"type": "bool"},
                         "except": {
-                            "type": "dict",
-                            "options": {
-                                "level": {
-                                    "type": "int",
-                                    "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                                },
-                                "severity": {
-                                    "type": "str",
-                                    "choices": [
-                                        "alerts",
-                                        "critical",
-                                        "debugging",
-                                        "emergencies",
-                                        "errors",
-                                        "informational",
-                                        "notifications",
-                                        "warnings",
-                                    ],
-                                },
-                            },
+                            "type": "str",
+                            "choices": [
+                                "alerts",
+                                "critical",
+                                "debugging",
+                                "emergencies",
+                                "errors",
+                                "informational",
+                                "notifications",
+                                "warnings",
+                            ],
                         },
                     },
                 },
                 "reload": {
                     "type": "dict",
                     "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
                         "severity": {
                             "type": "str",
                             "choices": [
@@ -399,26 +354,17 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 },
                 "server_arp": {"type": "bool"},
                 "snmp_trap": {
-                    "type": "dict",
-                    "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
-                        "severity": {
-                            "type": "str",
-                            "choices": [
-                                "alerts",
-                                "critical",
-                                "debugging",
-                                "emergencies",
-                                "errors",
-                                "informational",
-                                "notifications",
-                                "warnings",
-                            ],
-                        },
-                    },
+                    "type": "str",
+                    "choices": [
+                        "alerts",
+                        "critical",
+                        "debugging",
+                        "emergencies",
+                        "errors",
+                        "informational",
+                        "notifications",
+                        "warnings",
+                    ],
                 },
                 "source_interface": {
                     "type": "list",
@@ -429,30 +375,22 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "trap": {
-                    "type": "dict",
-                    "options": {
-                        "level": {
-                            "type": "int",
-                            "choices": [0, 1, 2, 3, 4, 5, 6, 7],
-                        },
-                        "severity": {
-                            "type": "str",
-                            "choices": [
-                                "alerts",
-                                "critical",
-                                "debugging",
-                                "emergencies",
-                                "errors",
-                                "informational",
-                                "notifications",
-                                "warnings",
-                            ],
-                        },
-                    },
+                    "type": "str",
+                    "choices": [
+                        "alerts",
+                        "critical",
+                        "debugging",
+                        "emergencies",
+                        "errors",
+                        "informational",
+                        "notifications",
+                        "warnings",
+                    ],
                 },
                 "userinfo": {"type": "bool"},
             },
         },
+        "running_config": {"type": "str"},
         "state": {
             "choices": [
                 "merged",
