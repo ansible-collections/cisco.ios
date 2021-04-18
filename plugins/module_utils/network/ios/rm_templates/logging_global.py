@@ -247,7 +247,7 @@ class Logging_globalTemplate(NetworkTemplate):
                     "buffered" : {
                         "filtered" : "{{ True if filtered is defined }}",
                         "xml" : "{{ True if xml is defined }}",
-                        "severity" : "{{ severity if severity is defined }}",
+                        "severity" : "{{ severity }}",
                         "discriminator" : "{{ discriminator.split('discriminator ')[1] if discriminator is defined }}",
                     }
                 }
@@ -266,7 +266,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 "logging": {
                     "buffered" : {
                         "size" : "{{ size }}",
-                        "severity" : "{{ severity if severity is defined }}",
+                        "severity" : "{{ severity }}",
                     }
                 }
             },
@@ -426,27 +426,26 @@ class Logging_globalTemplate(NetworkTemplate):
                 } 
             },
         },
-        # { #breaks the code maybe Checking
-        #     "name": "filter",
-        #     "getval": re.compile(
-        #         r"""
-        #         ^logging
-        #         \s*filter*
-        #         \s*(?P<url>\S+)*
-        #         \s*(?P<order>\d+)*
-        #         \s*(?P<args>args\s\S+)*
-        #         $""", re.VERBOSE),
-        #     "setval": "logging filter",
-        #     "result": { 
-        #         "logging": {
-        #             "filter": {
-        #                 "url" : "{{ url }}",
-        #                 "order" : "{{ order }}",
-        #                 "args" : "{{ args }}",
-        #             }
-        #         } 
-        #     },
-        # },
+        {
+            "name": "filter",
+            "getval": re.compile(
+                r"""
+                ^logging\sfilter
+                \s*(?P<url>\S+)*
+                \s*(?P<order>\d+)*
+                \s*(?P<args>args\s.+$)*
+                $""", re.VERBOSE),
+            "setval": "logging filter",
+            "result": { 
+                "logging": {
+                    "filter":[{
+                        "url" : "{{ url }}",
+                        "order" : "{{ order }}",
+                        "args" : "{{ args.split('args ')[1] if args is defined }}",
+                    }]
+                } 
+            },
+        },
         {
             "name": "history",
             "getval": re.compile(
@@ -675,7 +674,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging
                 \s(?P<source_interface>source-interface)
-                \s(?P<interface>\.+)
+                \s(?P<interface>\S+)
                 \s*(?P<vrf>vrf\s\S+)*
                 $""", re.VERBOSE),
             "setval": "logging snmp_trap",
@@ -683,7 +682,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 "{{ interface }}": {
                         "source_interface": [{
                             "interface": "{{ interface }}",
-                            "vrf": "{{ vrf.split('vrf ')[1] if text is defined }}",                       
+                            "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",                       
                         }
                     ]
                 } 
