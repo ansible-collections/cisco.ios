@@ -17,8 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
@@ -39,6 +37,8 @@ class Route_maps(ResourceModule):
     The cisco.ios_route_maps config class
     """
 
+    parsers = ["continue", "description"]
+
     def __init__(self, module):
         super(Route_maps, self).__init__(
             empty_fact_val={},
@@ -47,7 +47,6 @@ class Route_maps(ResourceModule):
             resource="route_maps",
             tmplt=Route_mapsTemplate(),
         )
-        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -93,7 +92,8 @@ class Route_maps(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    route_map_cmd = "no route-map {route_map}".format(**have)
+                    self.commands.append(route_map_cmd)
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
@@ -104,7 +104,263 @@ class Route_maps(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Route_maps network resource.
         """
-        self.compare(parsers=self.parsers, want=want, have=have)
+        if want != have and self.state != "deleted":
+            self.entries_compare(want, have)
+
+    def entries_compare(self, want, have):
+        if want.get("entries"):
+            cmd_len = len(self.commands)
+            if have.get("entries"):
+                for k, v in iteritems(want["entries"]):
+                    have_entry = have["entries"].pop(k, {})
+                    if have_entry and want["entries"][k] != have_entry:
+                        # description gets merged with existing description, so explicit delete is required
+                        # replaced and overridden state
+                        if (
+                            (
+                                self.state == "replaced"
+                                or self.state == "overridden"
+                            )
+                            and have_entry.get("description")
+                            and have_entry.get("description")
+                            != want["entries"][k].get("description")
+                        ):
+                            self.compare(
+                                parsers=["description"],
+                                want=dict(),
+                                have=have_entry,
+                            )
+                        self.compare(
+                            parsers=self.parsers,
+                            want=want["entries"][k],
+                            have=have_entry,
+                        )
+                        have_match = have_entry.get("match")
+                        want_match = v.get("match")
+                        if have_match and want_match:
+                            self.list_type_compare(
+                                "match", want=want_match, have=have_match
+                            )
+                        elif not have_match and want_match:
+                            self.list_type_compare(
+                                "match", want=want_match, have=dict()
+                            )
+                        have_set = have_entry.get("set")
+                        want_set = v.get("set")
+                        if have_set and want_set:
+                            self.list_type_compare(
+                                "set", want=want_set, have=have_set
+                            )
+                        elif not have_set and want_set:
+                            self.list_type_compare(
+                                "set", want=want_set, have=dict()
+                            )
+                if cmd_len != len(self.commands):
+                    route_map_cmd = "route-map {route_map}".format(**want)
+                    if want["entries"][k].get("action"):
+                        route_map_cmd += " {action}".format(
+                            **want["entries"][k]
+                        )
+                    if want["entries"][k].get("sequence"):
+                        route_map_cmd += " {sequence}".format(
+                            **want["entries"][k]
+                        )
+                    self.commands.insert(cmd_len, route_map_cmd)
+            else:
+                for k, v in iteritems(want["entries"]):
+                    if cmd_len != len(self.commands):
+                        cmd_len = len(self.commands)
+                    self.compare(
+                        parsers=self.parsers,
+                        want=want["entries"][k],
+                        have=dict(),
+                    )
+                    want_match = v.get("match")
+                    if want_match:
+                        self.list_type_compare(
+                            "match", want=want_match, have=dict()
+                        )
+                    want_set = v.get("set")
+                    if want_set:
+                        self.list_type_compare(
+                            "set", want=want_set, have=dict()
+                        )
+                    if cmd_len != len(self.commands):
+                        route_map_cmd = "route-map {route_map}".format(**want)
+                        if want["entries"][k].get("action"):
+                            route_map_cmd += " {action}".format(
+                                **want["entries"][k]
+                            )
+                        if want["entries"][k].get("sequence"):
+                            route_map_cmd += " {sequence}".format(
+                                **want["entries"][k]
+                            )
+                        self.commands.insert(cmd_len, route_map_cmd)
+        if (
+            self.state == "replaced" or self.state == "overridden"
+        ) and have.get("entries"):
+            cmd_len = len(self.commands)
+            for k, v in iteritems(have["entries"]):
+                route_map_cmd = "no route-map {route_map}".format(**have)
+                if have["entries"][k].get("action"):
+                    route_map_cmd += " {action}".format(**have["entries"][k])
+                if have["entries"][k].get("sequence"):
+                    route_map_cmd += " {sequence}".format(**have["entries"][k])
+                self.commands.insert(cmd_len, route_map_cmd)
+            # for k, v in iteritems(have['entries']):
+            #     self.compare(parsers=self.parsers, want=dict(), have=have['entries'][k])
+            #     have_match = v.get('match')
+            #     if have_match:
+            #         self.list_type_compare('match', want=dict(), have=have_match)
+            #     have_set = v.get('set')
+            #     if have_set:
+            #         self.list_type_compare('set', want=dict(), have=have_set)
+
+    def list_type_compare(self, compare_type, want, have):
+        parsers = [
+            "{0}".format(compare_type),
+            "{0}.ip".format(compare_type),
+            "{0}.ipv6".format(compare_type),
+        ]
+        for k, v in iteritems(want):
+            have_v = have.pop(k, {})
+            if v != have_v and k not in ["ip", "ipv6", "action", "sequence"]:
+                if have_v:
+                    self.compare(
+                        parsers=parsers,
+                        want={compare_type: {k: v}},
+                        have={compare_type: {k: have_v}},
+                    )
+                else:
+                    self.compare(
+                        parsers=parsers,
+                        want={compare_type: {k: v}},
+                        have=dict(),
+                    )
+            if k in ["ip", "ipv6"]:
+                for key, val in iteritems(v):
+                    have_val = have_v.pop(key, {})
+                    if val != have_val:
+                        if have_val:
+                            if (
+                                self.state == "overridden"
+                                or self.state == "replaced"
+                            ):
+                                self.compare(
+                                    parsers=parsers,
+                                    want=dict(),
+                                    have={compare_type: {k: {key: have_val}}},
+                                )
+                            self.compare(
+                                parsers=parsers,
+                                want={compare_type: {k: {key: val}}},
+                                have={compare_type: {k: {key: have_val}}},
+                            )
+                        else:
+                            self.compare(
+                                parsers=parsers,
+                                want={compare_type: {k: {key: val}}},
+                                have=dict(),
+                            )
+                if (
+                    self.state == "overridden" or self.state == "replaced"
+                ) and have_v:
+                    for key, val in iteritems(have_v):
+                        self.compare(
+                            parsers=parsers,
+                            want=dict(),
+                            have={compare_type: {k: {key: val}}},
+                        )
+        if have and (self.state == "replaced" or self.state == "overridden"):
+            for k, v in iteritems(have):
+                if k in ["ip", "ipv6"]:
+                    for key, val in iteritems(v):
+                        if key and val:
+                            self.compare(
+                                parsers=parsers,
+                                want=dict(),
+                                have={compare_type: {k: {key: val}}},
+                            )
+                else:
+                    self.compare(
+                        parsers=parsers,
+                        want=dict(),
+                        have={compare_type: {k: v}},
+                    )
+
+    # def match_compare(self, want, have):
+    #     parsers = [
+    #         "match",
+    #         "match.ip",
+    #         "match.ipv6",
+    #     ]
+    #     for k, v in iteritems(want):
+    #         have_v = have.pop(k, {})
+    #         if v != have_v and k not in ['ip', 'ipv6', 'action', 'sequence']:
+    #             if have_v:
+    #                 self.compare(parsers=parsers, want={'match': {k: v}}, have={'match': {k: have_v}})
+    #             else:
+    #                 self.compare(parsers=parsers, want={'match': {k: v}}, have=dict())
+    #         if k in ['ip', 'ipv6']:
+    #             for key, val in iteritems(v):
+    #                 have_val = have_v.pop(key, {})
+    #                 if val != have_val:
+    #                     if have_val:
+    #                         self.compare(parsers=parsers, want={'match': {k: {key: val}}}, have={'match': {k: {key: have_val}}})
+    #                         if self.state == 'overridden' or self.state == "replaced":
+    #                             self.compare(parsers=parsers, want=dict(),
+    #                                          have={'match': {k: {key: have_val}}})
+    #                     else:
+    #                         self.compare(parsers=parsers, want={'match': {k: {key: val}}}, have=dict())
+    #             if (self.state == 'overridden' or self.state == "replaced") and have_v:
+    #                 for key, val in iteritems(have_v):
+    #                     self.compare(parsers=parsers, want=dict(),
+    #                                  have={'match': {k: {key: val}}})
+    #     if have and (self.state == 'replaced' or self.state == 'overridden'):
+    #         for k, v in iteritems(have):
+    #             if k in ['ip', 'ipv6']:
+    #                 for key, val in iteritems(v):
+    #                     if key and val:
+    #                         self.compare(parsers=parsers, want=dict(), have={'match': {k: {key: val}}})
+    #             else:
+    #                 self.compare(parsers=parsers, want=dict(), have={'match': {k: v}})
+
+    # def set_compare(self, want, have):
+    #     parsers = [
+    #         "set",
+    #         "set.ip",
+    #         "set.ipv6",
+    #     ]
+    #     for k, v in iteritems(want):
+    #         have_v = have.pop(k, {})
+    #         if v != have_v and k not in ['ip', 'ipv6', 'action', 'sequence']:
+    #             if have_v:
+    #                 self.compare(parsers=parsers, want={'set': {k: v}}, have={'set': {k: have_v}})
+    #             else:
+    #                 self.compare(parsers=parsers, want={'set': {k: v}}, have=dict())
+    #         if k in ['ip', 'ipv6']:
+    #             for key, val in iteritems(v):
+    #                 have_val = have_v.pop(key, {})
+    #                 if val != have_val:
+    #                     if have_val:
+    #                         self.compare(parsers=parsers, want={'set': {k: {key: val}}}, have={'set': {k: {key: have_val}}})
+    #                         if self.state == 'overridden' or self.state == "replaced":
+    #                             self.compare(parsers=parsers, want=dict(),
+    #                                          have={'set': {k: {key: have_val}}})
+    #                     else:
+    #                         self.compare(parsers=parsers, want={'set': {k: {key: val}}}, have=dict())
+    #             if (self.state == 'overridden' or self.state == "replaced") and have_v:
+    #                 for key, val in iteritems(have_v):
+    #                     self.compare(parsers=parsers, want=dict(),
+    #                                  have={'set': {k: {key: val}}})
+    #     if have and (self.state == 'replaced' or self.state == 'overridden'):
+    #         for k, v in iteritems(have):
+    #             if k in ['ip', 'ipv6']:
+    #                 for key, val in iteritems(v):
+    #                     if key and val:
+    #                         self.compare(parsers=parsers, want=dict(), have={'set': {k: {key: val}}})
+    #             else:
+    #                 self.compare(parsers=parsers, want=dict(), have={'set': {k: v}})
 
     def list_to_dict(self, param):
         if param:
@@ -117,62 +373,71 @@ class Route_maps(ResourceModule):
 
             for key, val in iteritems(param):
                 temp_entries = dict()
-                for every in val["entries"]:
-                    match = every.get("match")
-                    if match:
-                        if match.get("as_path") and match.get("as_path").get(
-                            "acl"
-                        ):
-                            match["as_path"]["acl"] = convert_to_dict(
-                                match["as_path"]["acl"], "acl"
-                            )
-                        if match.get("ip"):
-                            for each_ip_param in [
-                                "address",
-                                "flowspec",
-                                "next_hop",
-                                "redistribution_source",
-                                "route_source",
-                            ]:
-                                if match["ip"].get(each_ip_param):
-                                    if match["ip"][each_ip_param].get("acl"):
-                                        match["ip"][each_ip_param][
+                if val.get("entries"):
+                    for every in val["entries"]:
+                        match = every.get("match")
+                        if match:
+                            if match.get("as_path") and match.get(
+                                "as_path"
+                            ).get("acl"):
+                                match["as_path"]["acl"] = convert_to_dict(
+                                    match["as_path"]["acl"], "acl"
+                                )
+                            if match.get("ip"):
+                                for each_ip_param in [
+                                    "address",
+                                    "flowspec",
+                                    "next_hop",
+                                    "redistribution_source",
+                                    "route_source",
+                                ]:
+                                    if match["ip"].get(each_ip_param):
+                                        if match["ip"][each_ip_param].get(
                                             "acl"
-                                        ] = convert_to_dict(
-                                            match["ip"][each_ip_param]["acl"],
-                                            "acl",
-                                        )
-                                    elif match["ip"][each_ip_param].get(
-                                        "prefix_list"
-                                    ):
-                                        match["ip"][each_ip_param][
+                                        ):
+                                            match["ip"][each_ip_param][
+                                                "acl"
+                                            ] = convert_to_dict(
+                                                match["ip"][each_ip_param][
+                                                    "acl"
+                                                ],
+                                                "acl",
+                                            )
+                                        elif match["ip"][each_ip_param].get(
                                             "prefix_list"
-                                        ] = convert_to_dict(
+                                        ):
                                             match["ip"][each_ip_param][
                                                 "prefix_list"
-                                            ],
-                                            "prefix_list",
-                                        )
-                        if match.get("local_preference") and match.get(
-                            "local_preference"
-                        ).get("value"):
-                            match["local_preference"][
-                                "value"
-                            ] = convert_to_dict(
-                                match["local_preference"]["value"], "value"
-                            )
-                        if match.get("security_group"):
-                            for each_sg_param in ["source", "destination"]:
-                                if match.get("security_group").get(
-                                    each_sg_param
-                                ):
-                                    match["security_group"][
+                                            ] = convert_to_dict(
+                                                match["ip"][each_ip_param][
+                                                    "prefix_list"
+                                                ],
+                                                "prefix_list",
+                                            )
+                            if match.get("local_preference") and match.get(
+                                "local_preference"
+                            ).get("value"):
+                                match["local_preference"][
+                                    "value"
+                                ] = convert_to_dict(
+                                    match["local_preference"]["value"], "value"
+                                )
+                            if match.get("security_group"):
+                                for each_sg_param in ["source", "destination"]:
+                                    if match.get("security_group").get(
                                         each_sg_param
-                                    ] = convert_to_dict(
-                                        match["security_group"][each_sg_param],
-                                        each_sg_param,
-                                    )
-                    action = every.get("action")
-                    sequence = every.get("sequence")
-                    temp_entries.update({action + "_" + str(sequence): every})
-                val["entries"] = temp_entries
+                                    ):
+                                        match["security_group"][
+                                            each_sg_param
+                                        ] = convert_to_dict(
+                                            match["security_group"][
+                                                each_sg_param
+                                            ],
+                                            each_sg_param,
+                                        )
+                        action = every.get("action")
+                        sequence = every.get("sequence")
+                        temp_entries.update(
+                            {action + "_" + str(sequence): every}
+                        )
+                    val["entries"] = temp_entries

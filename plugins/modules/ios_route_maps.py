@@ -115,7 +115,7 @@ options:
                     type: str
                   route_source:
                     description: Match advertising source address of route
-                    type: str
+                    type: bool
               community:
                 description: Match BGP community list
                 type: dict
@@ -127,13 +127,14 @@ options:
                     type: str
                   exact_match:
                     description: Do exact matching of communities
-                    type: str
+                    type: bool
               extcommunity:
                 description:
                   - Match BGP/VPN extended community list
                   - Extended community-list number
                   - Please refer vendor documentation for valid values
-                type: str
+                type: list
+                elements: str
               interface:
                 description: Match first hop interface of route
                 type: list
@@ -282,7 +283,8 @@ options:
                     description:
                       - IP access-list number/IP standard access-list name
                       - Please refer vendor documentation for valid values
-                    type: str
+                    type: list
+                    elements: str
               metric:
                 description: Match metric of route
                 type: dict
@@ -297,8 +299,7 @@ options:
                     type: bool
                   deviation:
                     description: Deviation option to match metric in a range
-                    choices: ['plus', 'minus']
-                    type: str
+                    type: bool
                   deviation_value:
                     description:
                       - deviation value, 500 +- 10 creates the range 490 - 510
@@ -434,7 +435,7 @@ options:
                     description: Tag value/Tag in Dotted Decimal eg, 10.10.10.10
                     type: list
                     elements: str
-                  list:
+                  tag_list:
                     description: Route Tag List/Tag list name
                     type: list
                     elements: str
@@ -571,7 +572,7 @@ options:
                           - Community ID
                           - Please refer vendor documentation for valid values
                         type: int
-                      cost:
+                      cost_value:
                         description:
                           - Cost Value (No-preference Cost = 2147483647)
                           - Please refer vendor documentation for valid values
@@ -591,6 +592,16 @@ options:
                         type: str
                       range:
                         description: Specify a range of extended community
+                        type: dict
+                        suboptions:
+                          lower_limit:
+                            description: VPN extended community
+                            type: str
+                          upper_limit:
+                            description: VPN extended community
+                            type: str
+                      additive:
+                        description: Add to the existing extcommunity
                         type: bool
                   soo:
                     description: Site-of-Origin extended community
@@ -604,7 +615,14 @@ options:
                         type: str
                       range:
                         description: Specify a range of extended community
-                        type: bool
+                        type: dict
+                        suboptions:
+                          lower_limit:
+                            description: VPN extended community
+                            type: str
+                          upper_limit:
+                            description: VPN extended community
+                            type: str
                       additive:
                         description: Add to the existing extcommunity
                         type: bool
@@ -623,9 +641,6 @@ options:
                       - Specify IP address
                       - Prefix-list name to set ip address
                     type: str
-                  default:
-                    description: Set default information
-                    type: bool
                   df:
                     description: Set DF bit
                     choices: [0, 1]
@@ -680,22 +695,15 @@ options:
                         description: Recursive next-hop
                         type: dict
                         suboptions:
+                          global:
+                            description: global routing table
+                            type: bool
+                          vrf:
+                            description: VRF
+                            type: str
                           address:
                             description: IP address of recursive next hop
                             type: str
-                          global:
-                            description: global routing table
-                            type: str
-                          vrf:
-                            description: VRF
-                            type: dict
-                            suboptions:
-                              name:
-                                description: VRF name
-                                type: str
-                              address:
-                                description: IP address of recursive next hop
-                                type: str
                       self:
                         description: Use self address (for BGP only)
                         type: bool
@@ -1040,7 +1048,1262 @@ mutually_exclusive:
 - ["config", "running_config"]
 supports_check_mode: True
 """
+
 EXAMPLES = """
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Delete provided Route maps config
+  cisco.ios.ios_route_maps:
+    config:
+      - route_map: test_1
+    state: deleted
+
+#  Commands Fired:
+#  ---------------
+#
+#  "commands": [
+#         "no route-map test_1"
+#     ]
+
+# After state:
+# -------------
+# router-ios#sh running-config | section ^route-map
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+# Using deleted without any config passed (NOTE: This will delete all Route maps configuration from device)
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Delete all Route maps config
+  cisco.ios.ios_route_maps:
+    state: deleted
+
+# Commands Fired:
+# ---------------
+#
+#  "commands": [
+#         "no route-map test_1",
+#         "no route-map test_2"
+#     ]
+
+# After state:
+# -------------
+# router-ios#sh running-config | section ^route-map
+# router-ios#
+
+# Using merged
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# router-ios#
+
+- name: Merge provided Route maps configuration
+  cisco.ios.ios_route_maps:
+    config:
+      - route_map: test_1
+        entries:
+          - sequence: 10
+            action: deny
+            description: this is test route
+            match:
+              ip:
+                next_hop:
+                  prefix_list:
+                    - test_1_new
+                    - test_2_new
+                route_source:
+                  acl:
+                    - 10
+              security_group:
+                source:
+                  - 10
+                  - 20
+              local_preference:
+                value:
+                  - 50
+                  - 100
+              mpls_label: true
+          - sequence: 20
+            action: deny
+            continue:
+              entry_sequence: 100
+            match:
+              additional_paths:
+                all: true
+                group_best: true
+              as_path:
+                acl:
+                  - 100
+                  - 200
+              ipv6:
+                address:
+                  acl: test_acl_20
+              route_type:
+                level_1: true
+              tag:
+                tag_list:
+                  - test_match_tag
+              track: 105
+      - route_map: test_2
+        entries:
+          - sequence: 10
+            action: deny
+            match:
+              ipv6:
+                address:
+                  acl: test_ip_acl
+                next_hop:
+                  prefix_list: test_new
+                route_source:
+                  acl: route_src_acl
+              security_group:
+                source:
+                  - 10
+                  - 20
+              local_preference:
+                value:
+                  - 55
+                  - 105
+              mpls_label: true
+            set:
+              aigp_metric:
+                value: 100
+              automatic_tag: true
+              extcommunity:
+                cost:
+                  id: 10
+                  cost_value: 100
+                  pre_bestpath: true
+              ip:
+                address: 192.0.2.1
+                df: 1
+                next_hop:
+                  recursive:
+                    global: true
+                    address: 198.51.110.1
+                  verify_availability:
+                    address: 198.51.111.1
+                    sequence: 100
+                    track: 10
+                precedence:
+                  critical: true
+    state: merged
+
+#  Commands Fired:
+#  ---------------
+#
+#   "commands": [
+#      "route-map test_2 deny 10",
+#      "match security-group source tag 10 20",
+#      "match local-preference 55 105",
+#      "match mpls-label",
+#      "match ipv6 next-hop prefix-list test_new",
+#      "match ipv6 route-source route_src_acl",
+#      "match ipv6 address test_ip_acl",
+#      "set extcommunity cost pre-bestpath 10 100",
+#      "set ip df 1",
+#      "set ip next-hop recursive global 198.51.110.1",
+#      "set ip next-hop verify-availability 198.51.111.1 100 track 10",
+#      "set ip precedence critical",
+#      "set ip address prefix-list 192.0.2.1",
+#      "set automatic-tag",
+#      "set aigp-metric 100",
+#      "route-map test_1 deny 20",
+#      "continue 100",
+#      "match track 105",
+#      "match tag list test_match_tag",
+#      "match ipv6 address test_acl_20",
+#      "match route-type level-1",
+#      "match as-path 200 100",
+#      "match additional-paths advertise-set all group-best",
+#      "route-map test_1 deny 10",
+#      "description this is test route",
+#      "match security-group source tag 10 20",
+#      "match ip next-hop prefix-list test_2_new test_1_new",
+#      "match ip route-source 10",
+#      "match local-preference 100 50",
+#      "match mpls-label"
+#     ]
+
+# After state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Override provided Route maps configuration
+  cisco.ios.ios_route_maps:
+    config:
+      - route_map: test_1
+        entries:
+          - sequence: 10
+            action: deny
+            description: this is override route
+            match:
+              ip:
+                next_hop:
+                  acl:
+                    - 10
+                    - test1_acl
+                flowspec:
+                  dest_pfx: true
+                  acl:
+                    - test_acl_1
+                    - test_acl_2
+              length:
+                minimum: 10
+                maximum: 100
+              metric:
+                value: 10
+                external: true
+              security_group:
+                source:
+                  - 10
+                  - 20
+              mpls_label: true
+            set:
+              extcommunity:
+                vpn_distinguisher:
+                  address: 192.0.2.1:12
+                  additive: true
+              metric:
+                metric_value: 100
+                deviation: plus
+                eigrp_delay: 100
+                metric_reliability: 10
+                metric_bandwidth: 20
+                mtu: 30
+      - route_map: test_override
+        entries:
+          - sequence: 10
+            action: deny
+            match:
+              ipv6:
+                address:
+                  acl: test_acl
+                next_hop:
+                  prefix_list: test_new
+                route_source:
+                  acl: route_src_acl
+              security_group:
+                source:
+                  - 15
+                  - 20
+              local_preference:
+                value:
+                  - 105
+                  - 110
+              mpls_label: true
+            set:
+              aigp_metric:
+                value: 100
+              automatic_tag: true
+              extcommunity:
+                cost:
+                  id: 10
+                  cost_value: 100
+                  pre_bestpath: true
+              ip:
+                address: 192.0.2.1
+                df: 1
+                next_hop:
+                  recursive:
+                    global: true
+                    address: 198.110.51.1
+                  verify_availability:
+                    address: 198.110.51.2
+                    sequence: 100
+                    track: 10
+                precedence:
+                  critical: true
+    state: overridden
+
+# Commands Fired:
+# ---------------
+#
+#  "commands": [
+#         "no route-map test_2",
+#         "route-map test_override deny 10",
+#         "match security-group source tag 15 20",
+#         "match local-preference 110 105",
+#         "match mpls-label",
+#         "match ipv6 next-hop prefix-list test_new",
+#         "match ipv6 route-source route_src_acl",
+#         "match ipv6 address test_acl",
+#         "set extcommunity cost pre-bestpath 10 100",
+#         "set ip df 1",
+#         "set ip next-hop recursive global 198.110.51.1",
+#         "set ip next-hop verify-availability 198.110.51.2 100 track 10",
+#         "set ip precedence critical",
+#         "set ip address prefix-list 192.0.2.1",
+#         "set automatic-tag",
+#         "set aigp-metric 100",
+#         "route-map test_1 deny 10",
+#         "no description this is test route",
+#         "description this is override route",
+#         "match ip flowspec dest-pfx test_acl_1 test_acl_2",
+#         "no match ip next-hop prefix-list test_2_new test_1_new",
+#         "match ip next-hop test1_acl 10",
+#         "no match ip route-source 10",
+#         "match metric external 10",
+#         "match length 10 100",
+#         "no match local-preference 100 50",
+#         "set extcommunity vpn-distinguisher 192.0.2.1:12 additive",
+#         "set metric 100 +100 10 20 30",
+#         "no route-map test_1 deny 20"
+#     ]
+
+# After state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_override deny 10
+#  match security-group source tag 15 20
+#  match local-preference 110 105
+#  match mpls-label
+#  match ipv6 address test_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.110.51.2 100 track 10
+#  set ip next-hop recursive global 198.110.51.1
+# route-map test_1 deny 10
+#  description this is override route
+#  match ip flowspec dest-pfx test_acl_1 test_acl_2
+#  match ip next-hop test1_acl 10
+#  match security-group source tag 10 20
+#  match metric external 10
+#  match mpls-label
+#  match length 10 100
+#  set metric 100 +100 10 20 30
+#  set extcommunity vpn-distinguisher 192.0.2.1:12 additive
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Replaced provided Route maps configuration
+  cisco.ios.ios_route_maps:
+    config:
+      - route_map: test_1
+        entries:
+          - sequence: 10
+            action: deny
+            description: this is replaced route
+            match:
+              ip:
+                next_hop:
+                  acl:
+                    - 10
+                    - test1_acl
+                flowspec:
+                  dest_pfx: true
+                  acl:
+                    - test_acl_1
+                    - test_acl_2
+              length:
+                minimum: 10
+                maximum: 100
+              metric:
+                value: 10
+                external: true
+              security_group:
+                source:
+                  - 10
+                  - 20
+              mpls_label: true
+            set:
+              extcommunity:
+                vpn_distinguisher:
+                  address: 192.0.2.1:12
+                  additive: true
+              metric:
+                metric_value: 100
+                deviation: plus
+                eigrp_delay: 100
+                metric_reliability: 10
+                metric_bandwidth: 20
+                mtu: 30
+      - route_map: test_replaced
+        entries:
+          - sequence: 10
+            action: deny
+            match:
+              ipv6:
+                address:
+                  acl: test_acl
+                next_hop:
+                  prefix_list: test_new
+                route_source:
+                  acl: route_src_acl
+              security_group:
+                source:
+                  - 15
+                  - 20
+              local_preference:
+                value:
+                  - 105
+                  - 110
+              mpls_label: true
+            set:
+              aigp_metric:
+                value: 100
+              automatic_tag: true
+              extcommunity:
+                cost:
+                  id: 10
+                  cost_value: 100
+                  pre_bestpath: true
+              ip:
+                address: 192.0.2.1
+                df: 1
+                next_hop:
+                  recursive:
+                    global: true
+                    address: 198.110.51.1
+                  verify_availability:
+                    address: 198.110.51.2
+                    sequence: 100
+                    track: 10
+                precedence:
+                  critical: true
+    state: replaced
+
+# Commands Fired:
+# ---------------
+#  "commands": [
+#         "route-map test_replaced deny 10",
+#         "match security-group source tag 15 20",
+#         "match local-preference 110 105",
+#         "match mpls-label",
+#         "match ipv6 next-hop prefix-list test_new",
+#         "match ipv6 route-source route_src_acl",
+#         "match ipv6 address test_acl",
+#         "set extcommunity cost pre-bestpath 10 100",
+#         "set ip df 1",
+#         "set ip next-hop recursive global 198.110.51.1",
+#         "set ip next-hop verify-availability 198.110.51.2 100 track 10",
+#         "set ip precedence critical",
+#         "set ip address prefix-list 192.0.2.1",
+#         "set automatic-tag",
+#         "set aigp-metric 100",
+#         "route-map test_1 deny 10",
+#         "no description this is test route",
+#         "description this is replaced route",
+#         "match ip flowspec dest-pfx test_acl_1 test_acl_2",
+#         "no match ip next-hop prefix-list test_2_new test_1_new",
+#         "match ip next-hop test1_acl 10",
+#         "no match ip route-source 10",
+#         "match metric external 10",
+#         "match length 10 100",
+#         "no match local-preference 100 50",
+#         "set extcommunity vpn-distinguisher 192.0.2.1:12 additive",
+#         "set metric 100 +100 10 20 30",
+#         "no route-map test_1 deny 20"
+#     ]
+
+# After state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_replaced deny 10
+#  match security-group source tag 15 20
+#  match local-preference 110 105
+#  match mpls-label
+#  match ipv6 address test_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.110.51.2 100 track 10
+#  set ip next-hop recursive global 198.110.51.1
+# route-map test_1 deny 10
+#  description this is replaced route
+#  match ip flowspec dest-pfx test_acl_1 test_acl_2
+#  match ip next-hop test1_acl 10
+#  match security-group source tag 10 20
+#  match metric external 10
+#  match mpls-label
+#  match length 10 100
+#  set metric 100 +100 10 20 30
+#  set extcommunity vpn-distinguisher 192.0.2.1:12 additive
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Gather Route maps provided configurations
+  cisco.ios.ios_route_maps:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#         {
+#             "entries": [
+#                 {
+#                     "action": "deny",
+#                     "description": "this is test route",
+#                     "match": {
+#                         "ip": {
+#                             "next_hop": {
+#                                 "prefix_list": [
+#                                     "test_2_new",
+#                                     "test_1_new"
+#                                 ]
+#                             },
+#                             "route_source": {
+#                                 "acl": [
+#                                     "10"
+#                                 ]
+#                             }
+#                         },
+#                         "local_preference": {
+#                             "value": [
+#                                 "100",
+#                                 "50"
+#                             ]
+#                         },
+#                         "mpls_label": true,
+#                         "security_group": {
+#                             "source": [
+#                                 10,
+#                                 20
+#                             ]
+#                         }
+#                     },
+#                     "sequence": 10
+#                 },
+#                 {
+#                     "action": "deny",
+#                     "continue": {
+#                         "entry_sequence": 100
+#                     },
+#                     "match": {
+#                         "additional_paths": {
+#                             "all": true,
+#                             "group_best": true
+#                         },
+#                         "as_path": {
+#                             "acl": [
+#                                 200,
+#                                 100
+#                             ]
+#                         },
+#                         "ipv6": {
+#                             "address": {
+#                                 "acl": "test_acl_20"
+#                             }
+#                         },
+#                         "route_type": {
+#                             "external": {
+#                                 "set": true
+#                             },
+#                             "level_1": true,
+#                             "nssa_external": {
+#                                 "set": true
+#                             }
+#                         },
+#                         "tag": {
+#                             "tag_list": [
+#                                 "test_match_tag"
+#                             ]
+#                         },
+#                         "track": 105
+#                     },
+#                     "sequence": 20
+#                 }
+#             ],
+#             "route_map": "test_1"
+#         },
+#         {
+#             "entries": [
+#                 {
+#                     "action": "deny",
+#                     "match": {
+#                         "ipv6": {
+#                             "address": {
+#                                 "acl": "test_ip_acl"
+#                             },
+#                             "next_hop": {
+#                                 "prefix_list": "test_new"
+#                             },
+#                             "route_source": {
+#                                 "acl": "route_src_acl"
+#                             }
+#                         },
+#                         "local_preference": {
+#                             "value": [
+#                                 "55",
+#                                 "105"
+#                             ]
+#                         },
+#                         "mpls_label": true,
+#                         "security_group": {
+#                             "source": [
+#                                 10,
+#                                 20
+#                             ]
+#                         }
+#                     },
+#                     "sequence": 10,
+#                     "set": {
+#                         "aigp_metric": {
+#                             "value": 100
+#                         },
+#                         "automatic_tag": true,
+#                         "extcommunity": {
+#                             "cost": {
+#                                 "cost_value": 100,
+#                                 "id": "10",
+#                                 "pre_bestpath": true
+#                             }
+#                         },
+#                         "ip": {
+#                             "address": "192.0.2.1",
+#                             "df": 1,
+#                             "next_hop": {
+#                                 "recursive": {
+#                                     "address": "198.51.110.1",
+#                                     "global": true
+#                                 },
+#                                 "verify_availability": {
+#                                     "address": "198.51.111.1",
+#                                     "sequence": 100,
+#                                     "track": 10
+#                                 }
+#                             },
+#                             "precedence": {
+#                                 "critical": true
+#                             }
+#                         }
+#                     }
+#                 }
+#             ],
+#             "route_map": "test_2"
+#         }
+#     ]
+
+# After state:
+# ------------
+#
+# router-ios#sh running-config | section ^route-map
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_route_maps:
+    config:
+      - route_map: test_1
+        entries:
+          - sequence: 10
+            action: deny
+            description: this is test route
+            match:
+              ip:
+                next_hop:
+                  prefix_list:
+                    - test_1_new
+                    - test_2_new
+                route_source:
+                  acl:
+                    - 10
+              security_group:
+                source:
+                  - 10
+                  - 20
+              local_preference:
+                value:
+                  - 50
+                  - 100
+              mpls_label: true
+          - sequence: 20
+            action: deny
+            continue:
+              entry_sequence: 100
+            match:
+              additional_paths:
+                all: true
+                group_best: true
+              as_path:
+                acl:
+                  - 100
+                  - 200
+              ipv6:
+                address:
+                  acl: test_acl_20
+              route_type:
+                level_1: true
+              tag:
+                tag_list:
+                  - test_match_tag
+              track: 105
+      - route_map: test_2
+        entries:
+          - sequence: 10
+            action: deny
+            match:
+              ipv6:
+                address:
+                  acl: test_ip_acl
+                next_hop:
+                  prefix_list: test_new
+                route_source:
+                  acl: route_src_acl
+              security_group:
+                source:
+                  - 10
+                  - 20
+              local_preference:
+                value:
+                  - 55
+                  - 105
+              mpls_label: true
+            set:
+              aigp_metric:
+                value: 100
+              automatic_tag: true
+              extcommunity:
+                cost:
+                  id: 10
+                  cost_value: 100
+                  pre_bestpath: true
+              ip:
+                address: 192.0.2.1
+                df: 1
+                next_hop:
+                  recursive:
+                    global: true
+                    address: 198.51.110.1
+                  verify_availability:
+                    address: 198.51.111.1
+                    sequence: 100
+                    track: 10
+                precedence:
+                  critical: true
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+#  "rendered": [
+#      "route-map test_2 deny 10",
+#      "match security-group source tag 10 20",
+#      "match local-preference 55 105",
+#      "match mpls-label",
+#      "match ipv6 next-hop prefix-list test_new",
+#      "match ipv6 route-source route_src_acl",
+#      "match ipv6 address test_ip_acl",
+#      "set extcommunity cost pre-bestpath 10 100",
+#      "set ip df 1",
+#      "set ip next-hop recursive global 198.51.110.1",
+#      "set ip next-hop verify-availability 198.51.111.1 100 track 10",
+#      "set ip precedence critical",
+#      "set ip address prefix-list 192.0.2.1",
+#      "set automatic-tag",
+#      "set aigp-metric 100",
+#      "route-map test_1 deny 20",
+#      "continue 100",
+#      "match track 105",
+#      "match tag list test_match_tag",
+#      "match ipv6 address test_acl_20",
+#      "match route-type level-1",
+#      "match as-path 200 100",
+#      "match additional-paths advertise-set all group-best",
+#      "route-map test_1 deny 10",
+#      "description this is test route",
+#      "match security-group source tag 10 20",
+#      "match ip next-hop prefix-list test_2_new test_1_new",
+#      "match ip route-source 10",
+#      "match local-preference 100 50",
+#      "match mpls-label"
+#     ]
+
+# Using Parsed
+
+# File: parsed.cfg
+# ----------------
+#
+# route-map test_1 deny 10
+#  description this is test route
+#  match ip next-hop prefix-list test_2_new test_1_new
+#  match ip route-source 10
+#  match security-group source tag 10 20
+#  match local-preference 100 50
+#  match mpls-label
+# route-map test_1 deny 20
+#  match track  105
+#  match tag list test_match_tag
+#  match route-type level-1
+#  match additional-paths advertise-set all group-best
+#  match as-path 200 100
+#  match ipv6 address test_acl_20
+#  continue 100
+# route-map test_2 deny 10
+#  match security-group source tag 10 20
+#  match local-preference 55 105
+#  match mpls-label
+#  match ipv6 address test_ip_acl
+#  match ipv6 next-hop prefix-list test_new
+#  match ipv6 route-source route_src_acl
+#  set automatic-tag
+#  set ip precedence critical
+#  set ip address prefix-list 192.0.2.1
+#  set aigp-metric 100
+#  set extcommunity cost pre-bestpath 10 100
+#  set ip df 1
+#  set ip next-hop verify-availability 198.51.111.1 100 track 10
+#  set ip next-hop recursive global 198.51.110.1
+
+- name: Parse the provided configuration with the exisiting running configuration
+  cisco.ios.ios_route_maps:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#         {
+#             "entries": [
+#                 {
+#                     "action": "deny",
+#                     "description": "this is test route",
+#                     "match": {
+#                         "ip": {
+#                             "next_hop": {
+#                                 "prefix_list": [
+#                                     "test_2_new",
+#                                     "test_1_new"
+#                                 ]
+#                             },
+#                             "route_source": {
+#                                 "acl": [
+#                                     "10"
+#                                 ]
+#                             }
+#                         },
+#                         "local_preference": {
+#                             "value": [
+#                                 "100",
+#                                 "50"
+#                             ]
+#                         },
+#                         "mpls_label": true,
+#                         "security_group": {
+#                             "source": [
+#                                 10,
+#                                 20
+#                             ]
+#                         }
+#                     },
+#                     "sequence": 10
+#                 },
+#                 {
+#                     "action": "deny",
+#                     "continue": {
+#                         "entry_sequence": 100
+#                     },
+#                     "match": {
+#                         "additional_paths": {
+#                             "all": true,
+#                             "group_best": true
+#                         },
+#                         "as_path": {
+#                             "acl": [
+#                                 200,
+#                                 100
+#                             ]
+#                         },
+#                         "ipv6": {
+#                             "address": {
+#                                 "acl": "test_acl_20"
+#                             }
+#                         },
+#                         "route_type": {
+#                             "external": {
+#                                 "set": true
+#                             },
+#                             "level_1": true,
+#                             "nssa_external": {
+#                                 "set": true
+#                             }
+#                         },
+#                         "tag": {
+#                             "tag_list": [
+#                                 "test_match_tag"
+#                             ]
+#                         },
+#                         "track": 105
+#                     },
+#                     "sequence": 20
+#                 }
+#             ],
+#             "route_map": "test_1"
+#         },
+#         {
+#             "entries": [
+#                 {
+#                     "action": "deny",
+#                     "match": {
+#                         "ipv6": {
+#                             "address": {
+#                                 "acl": "test_ip_acl"
+#                             },
+#                             "next_hop": {
+#                                 "prefix_list": "test_new"
+#                             },
+#                             "route_source": {
+#                                 "acl": "route_src_acl"
+#                             }
+#                         },
+#                         "local_preference": {
+#                             "value": [
+#                                 "55",
+#                                 "105"
+#                             ]
+#                         },
+#                         "mpls_label": true,
+#                         "security_group": {
+#                             "source": [
+#                                 10,
+#                                 20
+#                             ]
+#                         }
+#                     },
+#                     "sequence": 10,
+#                     "set": {
+#                         "aigp_metric": {
+#                             "value": 100
+#                         },
+#                         "automatic_tag": true,
+#                         "extcommunity": {
+#                             "cost": {
+#                                 "cost_value": 100,
+#                                 "id": "10",
+#                                 "pre_bestpath": true
+#                             }
+#                         },
+#                         "ip": {
+#                             "address": "192.0.2.1",
+#                             "df": 1,
+#                             "next_hop": {
+#                                 "recursive": {
+#                                     "address": "198.51.110.1",
+#                                     "global": true
+#                                 },
+#                                 "verify_availability": {
+#                                     "address": "198.51.111.1",
+#                                     "sequence": 100,
+#                                     "track": 10
+#                                 }
+#                             },
+#                             "precedence": {
+#                                 "critical": true
+#                             }
+#                         }
+#                     }
+#                 }
+#             ],
+#             "route_map": "test_2"
+#         }
+#     ]
+
+"""
+
+RETURN = """
+before:
+  description: The configuration prior to the model invocation.
+  returned: always
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+  type: dict
+after:
+  description: The resulting configuration model invocation.
+  returned: when changed
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+  type: dict
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample: ['route-map test_1 deny 10', 'description this is test route', 'match ip route-source 10', 'match track  105']
 """
 
 from ansible.module_utils.basic import AnsibleModule
