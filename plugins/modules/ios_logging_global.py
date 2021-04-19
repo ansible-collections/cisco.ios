@@ -192,6 +192,9 @@ options:
             description: Set VRF option
             type: str
           xml: *xml
+          stream:
+            description: This server should only receive messages from a numbered stream
+            type: int 
           ipv6:            
             description: Configure IPv6 syslog server
             type: str
@@ -352,10 +355,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.loggi
     Logging_global,
 )
 
-# print("Checking logging via VSCode")
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
+print("Checking logging via VSCode")
+import debugpy
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 def main():
     """

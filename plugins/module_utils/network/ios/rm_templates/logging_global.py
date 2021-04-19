@@ -37,6 +37,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<sequence_num_session>sequence-num-session)*
                 \s*(?P<vrf>\svrf\s\S+)*
                 \s*(?P<discriminator>discriminator\s.+$)*
+                \s*(?P<stream>stream\s\d+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
@@ -48,7 +49,8 @@ class Logging_globalTemplate(NetworkTemplate):
                         "vrf" : "{{ vrf.split('vrf ')[1] }}",
                         "xml" : "{{ True if xml is defined }}",
                         "filtered" : "{{ True if filtered is defined }}",
-                        "sequence_num_session" : "{{ True if sequence_num_session is defined }}" }
+                        "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
+                        "stream" : "{{ stream.split('stream ')[1] }}", }
                         ]
                 }
             },
@@ -81,7 +83,7 @@ class Logging_globalTemplate(NetworkTemplate):
                                     "xml" : "{{ True if xml is defined }}",
                                     "discriminator" : "{{ discriminator.split('discriminator ')[1] if discriminator is defined }}",
                                     "port" : "{{ port.split('port ')[1] if port is defined }}",
-                                    "filtered" : "{{ port.split('port ')[1] if port is defined }}",
+                                    "filtered" : "{{ filtered.split('filtered ')[1] if filtered is defined }}",
                                 }
                             }
                         }
