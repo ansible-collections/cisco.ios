@@ -178,7 +178,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "tag": {
                                     "type": "str",
-                                    "choices": ["hostname", "ipv4", "ipv6"],
+                                    "choices": ["hostname", "ip", "ipv6"],
                                 },
                                 "text": {"type": "str"},
                             },
@@ -204,7 +204,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "str",
                                                     "choices": [
                                                         "hostname",
-                                                        "ipv4",
+                                                        "ip",
                                                         "ipv6",
                                                     ],
                                                 },
@@ -231,7 +231,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "str",
                                                     "choices": [
                                                         "hostname",
-                                                        "ipv4",
+                                                        "ip",
                                                         "ipv6",
                                                     ],
                                                 },
@@ -282,7 +282,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     "options": {
                         "tag": {
                             "type": "str",
-                            "choices": ["hostname", "ipv4", "ipv6"],
+                            "choices": ["hostname", "ip", "ipv6"],
                         },
                         "text": {"type": "str"},
                     },

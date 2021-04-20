@@ -19,6 +19,82 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     NetworkTemplate,
 )
 
+def tmplt_host(config_data):
+    commands = []
+    cmd = "logging host "
+
+    # for k, v in iteritems(config_data.get("host")):
+    #     if v.get("hostname"):
+    #         cmd += v.get("hostname")
+    #     if v.get("ipv6"):
+    #         cmd += "ipv6 {ipv6}".format(v.get("ipv6"))
+    #     if v.get("filtered"):
+    #         cmd += "filtered"
+    #     if v.get("xml"):
+    #         cmd += "xml"
+    #     if v.get("sequence_num_session"):
+    #         cmd += "sequence_num_session"
+    #     if v.get("vrf"):
+    #         cmd += "vrf {vrf}".format(v.get("vrf"))
+    #     if v.get("discriminator"):
+    #         cmd += "discriminator {vrf}".format(v.get("discriminator"))
+    #     if v.get("stream"):
+    #         cmd += "vrf {stream}".format(v.get("stream"))
+    #     commands.append(cmd)
+    return commands
+
+def tmplt_buffered(config_data):
+    return tmplt_common(config_data.get("buffered"), "logging buffered")
+
+def tmplt_console(config_data):
+    return tmplt_common(config_data.get("history"), "logging history")
+
+def tmplt_history(config_data):
+    return tmplt_common(config_data.get("console"), "logging console")
+
+def tmplt_monitor(config_data):
+    return tmplt_common(config_data.get("monitor"), "logging monitor")
+
+def tmplt_origin_id(config_data):
+    return tmplt_common(config_data.get("origin_id"), "logging origin-id")
+
+def tmplt_queue_limit(config_data):
+    return tmplt_common(config_data.get("queue_limit"), "logging queue-limit")
+
+def tmplt_rate_limit(config_data):
+    return tmplt_common(config_data.get("rate_limit"), "logging rate-limit")
+
+def tmplt_reload(config_data):
+    return tmplt_common(config_data.get("reload"), "logging reload")
+
+
+def tmplt_common(verb, cmd):
+    if verb.get("all"):
+        cmd += " {all}".format(all="all")
+    if verb.get("console"):
+        cmd += " {console}".format(console=verb["console"])
+    if verb.get("message_limit"):
+        cmd += " message_limit {message_limit}".format(message_limit=verb["message_limit"])
+    if verb.get("discriminator"):
+        cmd += " discriminator {discriminator}".format(discriminator=verb.get("discriminator"))
+    if verb.get("filtered"):
+        cmd += " {filtered}".format(filtered="filtered")
+    if verb.get("xml"):
+        cmd += " {xml}".format(xml="xml")
+    if verb.get("size"):
+        cmd += " {size}".format(size=verb["size"])
+    if verb.get("severity"):
+        cmd += " {severity}".format(severity=verb["severity"])
+    if verb.get("tag"):
+        cmd += " {tag}".format(tag=verb["tag"])
+    if verb.get("text"):
+        cmd += " string {tag}".format(tag=verb["text"])
+    if verb.get("esm"):
+        cmd += " esm {tag}".format(tag=verb["esm"])
+    if verb.get("trap"):
+        cmd += " trap {tag}".format(tag=verb["trap"])
+    return cmd
+
 class Logging_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Logging_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -39,18 +115,18 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<discriminator>discriminator\s.+$)*
                 \s*(?P<stream>stream\s\d+$)*
                 $""", re.VERBOSE),
-            "setval": "logging host",
+            "setval": tmplt_host,
             "result": { 
                 "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
                     "host": [
                         {"hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
-                        "discriminator" : "{{ discriminator.split('discriminator ')[1] }}",
+                        "discriminator" : "{{ discriminator.split('discriminator ')[1] if discriminator is defined }}",
                         "vrf" : "{{ vrf.split('vrf ')[1] }}",
                         "xml" : "{{ True if xml is defined }}",
                         "filtered" : "{{ True if filtered is defined }}",
                         "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
-                        "stream" : "{{ stream.split('stream ')[1] }}", }
+                        "stream" : "{{ stream.split('stream ')[1] if stream is defined }}", }
                         ]
                 }
             },
@@ -99,7 +175,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<hostname>\S+)*
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<transport>transport\sudp\ssession-id)*
-                \s*(?P<tag>hostname|ipv4|ipv6)*
+                \s*(?P<tag>hostname|ip|ipv6)*
                 \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
@@ -129,7 +205,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<hostname>\S+)*
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<transport>transport\stcp\ssession-id)*
-                \s*(?P<tag>hostname|ipv4|ipv6)*
+                \s*(?P<tag>hostname|ip|ipv6)*
                 \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
@@ -215,7 +291,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<hostname>\S+)*
                 \s*(?P<ipv6>\sipv6\s\S+)*
                 \s*(?P<session_id>session-id)*
-                \s*(?P<tag>hostname|ipv4|ipv6)*
+                \s*(?P<tag>hostname|ip|ipv6)*
                 \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
             "setval": "logging host",
@@ -243,7 +319,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
-            "setval": "logging buffered",
+            "setval": tmplt_buffered,
             "result": { 
                 "logging": {
                     "buffered" : {
@@ -263,7 +339,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<size>[1-9][0-9]*)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings$)*
                 $""", re.VERBOSE),
-            "setval": "logging buffer",
+            "setval": tmplt_buffered,
             "result": { 
                 "logging": {
                     "buffered" : {
@@ -295,7 +371,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*cns-events*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 $""", re.VERBOSE),
-            "setval": "logging cns-events",
+            "setval": "logging cns-events {{ severity }}",
             "result": { 
                 "logging": {
                     "cns_events": "{{ severity }}"   
@@ -312,7 +388,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings|guaranteed$)*
                 \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
-            "setval": "logging console",
+            "setval": tmplt_console,
             "result": { 
                 "logging": {
                     "console": {
@@ -361,7 +437,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sdiscriminator\s(?P<discriminator>.+$)
                 $""", re.VERBOSE),
-            "setval": "logging discriminator",
+            "setval": "logging discriminator {{ discriminator }}",
             "result": { 
                 "logging": { 
                     "discriminator": "{{ discriminator }}"
@@ -376,7 +452,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<rate_limit>rate-limit)*
                 \s*(?P<rate>\d+)*
                 $""", re.VERBOSE),
-            "setval": "logging dmvpn",
+            "setval": "logging dmvpn rate-limit {{ rate }}",
             "result": { 
                 "logging": {
                     "dmvpn": {
@@ -391,7 +467,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sesm\s(?P<config>config)
                 $""", re.VERBOSE),
-            "setval": "logging esm",
+            "setval": "logging esm config",
             "result": {
                 "logging": {
                     "esm" : { 
@@ -407,7 +483,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\sexception
                 \s(?P<exception>[1-9][0-9]*)
                 $""", re.VERBOSE),
-            "setval": "logging exception",
+            "setval": "logging exception {{ exception }}",
             "result": { 
                 "logging": {
                     "exception": "{{ exception }}"
@@ -421,7 +497,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\sfacility
                 \s(?P<facility>auth|cron|daemon|kern|local0|local1|local2|local3|local4|local5|local6|local7|lpr|mail|news|sys10|sys11|sys12|sys13|sys14|sys9|syslog|user|uucp)
                 $""", re.VERBOSE),
-            "setval": "logging facility",
+            "setval": "logging facility {{ facility }}",
             "result": {
                 "logging" : {
                     "facility": "{{ facility }}"
@@ -456,12 +532,12 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<size>\d+)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 $""", re.VERBOSE),
-            "setval": "logging history",
+            "setval": tmplt_history,
             "result": { 
                 "logging": {
                     "history": { 
                         "severity" : "{{ severity }}",
-                        "size" : "{{ size }}" 
+                        "size" : "{{ size }}",
                     }
                 }
             },
@@ -473,7 +549,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\smessage-counter
                 \s(?P<counter>log|debug|syslog)
                 $""", re.VERBOSE),
-            "setval": "logging message-counter",
+            "setval": "logging message-counter {{ counter }}",
             "result": { 
                 "logging" : {
                     "message_counter": ["{{ counter }}",]
@@ -490,7 +566,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 \s*(?P<discriminator>discriminator\s.+$)*
                 $""", re.VERBOSE),
-            "setval": "logging monitor",
+            "setval": tmplt_monitor,
             "result": { 
                 "logging": {
                     "monitor" :{
@@ -509,10 +585,10 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging
                 \s(?P<on>on)
                 $""", re.VERBOSE),
-            "setval": "logging",
+            "setval": "logging on",
             "result": {
                 "logging": {
-                    "logging_on" : "{{ True if on is defined }}"
+                    "logging_on" : "{{ True if on is defined }}",
                 }
             },
         },
@@ -521,10 +597,10 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\sorigin-id
-                \s*(?P<tag>hostname|ipv4|ipv6)*
+                \s*(?P<tag>hostname|ip|ipv6)*
                 \s*(?P<text>\sstring\s.+$)*
                 $""", re.VERBOSE),
-            "setval": "logging host",
+            "setval": tmplt_origin_id,
             "result": { 
                 "logging" : {
                     "origin_id": {
@@ -573,7 +649,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<rate_limit>rate-limit)*
                 \s*(?P<rate>\d+)*
                 $""", re.VERBOSE),
-            "setval": "logging policy-firewall",
+            "setval": "logging policy-firewall rate-limit {{ rate }}",
             "result": { 
                 "logging": {
                     "policy_firewall": {
@@ -591,7 +667,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<esm>esm\s[1-9][0-9]*)*
                 \s*(?P<trap>trap\s[1-9][0-9]*)*
                 $""", re.VERBOSE),
-            "setval": "logging queue_limit",
+            "setval": tmplt_queue_limit,
             "result": { 
                 "logging": {
                     "queue_limit": {
@@ -611,7 +687,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<size>[1-9][0-9]*))?
                 (\sexcept\s(?P<except>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
                 $""", re.VERBOSE),
-            "setval": "logging rate_limit",
+            "setval": tmplt_rate_limit,
             "result": { 
                 "logging": {
                     "rate_limit": {
@@ -631,7 +707,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<message_limit>message-limit\s[1-9][0-9]*)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 $""", re.VERBOSE),
-            "setval": "logging reload",
+            "setval": tmplt_reload,
             "result": { 
                 "logging": {
                     "reload": {
@@ -663,7 +739,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s*(?P<snmp_trap>snmp-trap)*
                 \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)*
                 $""", re.VERBOSE),
-            "setval": "logging snmp_trap",
+            "setval": "logging snmp-trap {{ severity }}",
             "result": { 
                 "logging": {
                     "snmp_trap": "{{ severity }}",                      
@@ -697,7 +773,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\strap
                 \s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)
                 $""", re.VERBOSE),
-            "setval": "logging trap",
+            "setval": "logging trap {{ severity }}",
             "result": { 
                 "logging": {
                     "trap": "{{ severity }}",                       

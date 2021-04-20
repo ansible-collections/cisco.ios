@@ -100,8 +100,17 @@ class Logging_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        if self.want:
+            wantd = self.list_to_dict(self.want)
+        else:
+            wantd = dict()
+        if self.have:
+            haved = self.list_to_dict(self.have)
+        else:
+            haved = dict()
+
+        # wantd = {entry['name']: entry for entry in self.want}
+        # haved = {entry['name']: entry for entry in self.have}
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -129,4 +138,78 @@ class Logging_global(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Logging_global network resource.
         """
+
         self.compare(parsers=self.parsers, want=want, have=have)
+
+    # def list_to_dict(self, param):
+    #     _temp_param = {"logging": {}}
+    #     for element in param:
+    #         if element.get("message_counter"):
+    #             _temp = {}
+    #             for idx, ctr in enumerate(element.get("message_counter"), start=1):
+    #                 _temp.update({ctr: idx})
+    #             element["message_counter"] = _temp
+    #         if element.get("source_interface"):
+    #             _temp = {}
+    #             for interface in element.get("source_interface"):
+    #                 _temp.update({interface.get("interface"): interface})
+    #             element["source_interface"] = _temp
+    #         if element.get("persistent"):
+    #             _temp = {}
+    #             for pers in element.get("persistent"):
+    #                 _temp.update(pers)
+    #             element["persistent"] = _temp
+    #         if element.get("filter"):
+    #             _temp = {}
+    #             for url in element.get("filter"):
+    #                 _temp.update({url.get("url"): url})
+    #             element["filter"] = _temp
+    #         if element.get("host"):
+    #             _temp = {}
+    #             for host in element.get("host"):
+    #                 _temp.update({host.get("hostname"): host})
+    #             element["host"] = _temp
+        
+    #     for element in param:
+    #         _temp_param["logging"].update(element)
+    #     param = _temp_param
+
+    #     return param
+
+    def list_to_dict(self, param):
+        _temp_param = {"logging": {}}
+        for element in param:
+            if element.get("message_counter"):
+                _temp = {}
+                for idx, ctr in enumerate(element.get("message_counter"), start=1):
+                    _temp.update({ctr: idx})
+                element["message_counter"] = _temp
+            if element.get("source_interface"):
+                _temp = {}
+                for interface in element.get("source_interface"):
+                    _temp.update({interface.get("interface"): interface})
+                element["source_interface"] = _temp
+            if element.get("persistent"):
+                _temp = {}
+                for pers in element.get("persistent"):
+                    _temp.update(pers)
+                element["persistent"] = _temp
+            if element.get("filter"):
+                _temp = {}
+                for url in element.get("filter"):
+                    _temp.update({url.get("url"): url})
+                element["filter"] = _temp
+            if element.get("host"):
+                _temp = {}
+                for host in element.get("host"):
+                    _temp.update({host.get("hostname"): host})
+                element["host"] = _temp
+        
+        for element in param:
+            _temp_param["logging"].update(element)
+        param = _temp_param
+
+        return param
+
+                    
+
