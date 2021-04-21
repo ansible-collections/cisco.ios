@@ -37,7 +37,7 @@ class Route_maps(ResourceModule):
     The cisco.ios_route_maps config class
     """
 
-    parsers = ["continue", "description"]
+    parsers = ["continue_entry", "description"]
 
     def __init__(self, module):
         super(Route_maps, self).__init__(
@@ -155,21 +155,20 @@ class Route_maps(ResourceModule):
                             self.list_type_compare(
                                 "set", want=want_set, have=dict()
                             )
-                if cmd_len != len(self.commands):
-                    route_map_cmd = "route-map {route_map}".format(**want)
-                    if want["entries"][k].get("action"):
-                        route_map_cmd += " {action}".format(
-                            **want["entries"][k]
-                        )
-                    if want["entries"][k].get("sequence"):
-                        route_map_cmd += " {sequence}".format(
-                            **want["entries"][k]
-                        )
-                    self.commands.insert(cmd_len, route_map_cmd)
+                    if cmd_len != len(self.commands):
+                        route_map_cmd = "route-map {route_map}".format(**want)
+                        if want["entries"][k].get("action"):
+                            route_map_cmd += " {action}".format(
+                                **want["entries"][k]
+                            )
+                        if want["entries"][k].get("sequence"):
+                            route_map_cmd += " {sequence}".format(
+                                **want["entries"][k]
+                            )
+                        self.commands.insert(cmd_len, route_map_cmd)
+                        cmd_len = len(self.commands)
             else:
                 for k, v in iteritems(want["entries"]):
-                    if cmd_len != len(self.commands):
-                        cmd_len = len(self.commands)
                     self.compare(
                         parsers=self.parsers,
                         want=want["entries"][k],
@@ -196,6 +195,7 @@ class Route_maps(ResourceModule):
                                 **want["entries"][k]
                             )
                         self.commands.insert(cmd_len, route_map_cmd)
+                        cmd_len = len(self.commands)
         if (
             self.state == "replaced" or self.state == "overridden"
         ) and have.get("entries"):
@@ -207,14 +207,6 @@ class Route_maps(ResourceModule):
                 if have["entries"][k].get("sequence"):
                     route_map_cmd += " {sequence}".format(**have["entries"][k])
                 self.commands.insert(cmd_len, route_map_cmd)
-            # for k, v in iteritems(have['entries']):
-            #     self.compare(parsers=self.parsers, want=dict(), have=have['entries'][k])
-            #     have_match = v.get('match')
-            #     if have_match:
-            #         self.list_type_compare('match', want=dict(), have=have_match)
-            #     have_set = v.get('set')
-            #     if have_set:
-            #         self.list_type_compare('set', want=dict(), have=have_set)
 
     def list_type_compare(self, compare_type, want, have):
         parsers = [
@@ -288,80 +280,6 @@ class Route_maps(ResourceModule):
                         have={compare_type: {k: v}},
                     )
 
-    # def match_compare(self, want, have):
-    #     parsers = [
-    #         "match",
-    #         "match.ip",
-    #         "match.ipv6",
-    #     ]
-    #     for k, v in iteritems(want):
-    #         have_v = have.pop(k, {})
-    #         if v != have_v and k not in ['ip', 'ipv6', 'action', 'sequence']:
-    #             if have_v:
-    #                 self.compare(parsers=parsers, want={'match': {k: v}}, have={'match': {k: have_v}})
-    #             else:
-    #                 self.compare(parsers=parsers, want={'match': {k: v}}, have=dict())
-    #         if k in ['ip', 'ipv6']:
-    #             for key, val in iteritems(v):
-    #                 have_val = have_v.pop(key, {})
-    #                 if val != have_val:
-    #                     if have_val:
-    #                         self.compare(parsers=parsers, want={'match': {k: {key: val}}}, have={'match': {k: {key: have_val}}})
-    #                         if self.state == 'overridden' or self.state == "replaced":
-    #                             self.compare(parsers=parsers, want=dict(),
-    #                                          have={'match': {k: {key: have_val}}})
-    #                     else:
-    #                         self.compare(parsers=parsers, want={'match': {k: {key: val}}}, have=dict())
-    #             if (self.state == 'overridden' or self.state == "replaced") and have_v:
-    #                 for key, val in iteritems(have_v):
-    #                     self.compare(parsers=parsers, want=dict(),
-    #                                  have={'match': {k: {key: val}}})
-    #     if have and (self.state == 'replaced' or self.state == 'overridden'):
-    #         for k, v in iteritems(have):
-    #             if k in ['ip', 'ipv6']:
-    #                 for key, val in iteritems(v):
-    #                     if key and val:
-    #                         self.compare(parsers=parsers, want=dict(), have={'match': {k: {key: val}}})
-    #             else:
-    #                 self.compare(parsers=parsers, want=dict(), have={'match': {k: v}})
-
-    # def set_compare(self, want, have):
-    #     parsers = [
-    #         "set",
-    #         "set.ip",
-    #         "set.ipv6",
-    #     ]
-    #     for k, v in iteritems(want):
-    #         have_v = have.pop(k, {})
-    #         if v != have_v and k not in ['ip', 'ipv6', 'action', 'sequence']:
-    #             if have_v:
-    #                 self.compare(parsers=parsers, want={'set': {k: v}}, have={'set': {k: have_v}})
-    #             else:
-    #                 self.compare(parsers=parsers, want={'set': {k: v}}, have=dict())
-    #         if k in ['ip', 'ipv6']:
-    #             for key, val in iteritems(v):
-    #                 have_val = have_v.pop(key, {})
-    #                 if val != have_val:
-    #                     if have_val:
-    #                         self.compare(parsers=parsers, want={'set': {k: {key: val}}}, have={'set': {k: {key: have_val}}})
-    #                         if self.state == 'overridden' or self.state == "replaced":
-    #                             self.compare(parsers=parsers, want=dict(),
-    #                                          have={'set': {k: {key: have_val}}})
-    #                     else:
-    #                         self.compare(parsers=parsers, want={'set': {k: {key: val}}}, have=dict())
-    #             if (self.state == 'overridden' or self.state == "replaced") and have_v:
-    #                 for key, val in iteritems(have_v):
-    #                     self.compare(parsers=parsers, want=dict(),
-    #                                  have={'set': {k: {key: val}}})
-    #     if have and (self.state == 'replaced' or self.state == 'overridden'):
-    #         for k, v in iteritems(have):
-    #             if k in ['ip', 'ipv6']:
-    #                 for key, val in iteritems(v):
-    #                     if key and val:
-    #                         self.compare(parsers=parsers, want=dict(), have={'set': {k: {key: val}}})
-    #             else:
-    #                 self.compare(parsers=parsers, want=dict(), have={'set': {k: v}})
-
     def list_to_dict(self, param):
         if param:
 
@@ -369,7 +287,7 @@ class Route_maps(ResourceModule):
                 temp = dict()
                 for each in inner_match:
                     temp.update({key + "_" + str(each): each})
-                return temp
+                return dict(sorted(temp.items(), key=lambda x: x[1]))
 
             for key, val in iteritems(param):
                 temp_entries = dict()
@@ -382,6 +300,16 @@ class Route_maps(ResourceModule):
                             ).get("acl"):
                                 match["as_path"]["acl"] = convert_to_dict(
                                     match["as_path"]["acl"], "acl"
+                                )
+                            if match.get("community") and match.get(
+                                "community"
+                            ).get("name"):
+                                match["community"]["name"] = convert_to_dict(
+                                    match["community"]["name"], "name"
+                                )
+                            if match.get("extcommunity"):
+                                match["extcommunity"] = convert_to_dict(
+                                    match["extcommunity"], "num"
                                 )
                             if match.get("ip"):
                                 for each_ip_param in [
@@ -422,6 +350,16 @@ class Route_maps(ResourceModule):
                                 ] = convert_to_dict(
                                     match["local_preference"]["value"], "value"
                                 )
+                            if match.get("mdt_group") and match.get(
+                                "mdt_group"
+                            ).get("acl"):
+                                match["mdt_group"]["acl"] = convert_to_dict(
+                                    match["mdt_group"]["acl"], "acl"
+                                )
+                            if match.get("policy_list"):
+                                match["policy_list"] = convert_to_dict(
+                                    match["policy_list"], "policy"
+                                )
                             if match.get("security_group"):
                                 for each_sg_param in ["source", "destination"]:
                                     if match.get("security_group").get(
@@ -435,6 +373,12 @@ class Route_maps(ResourceModule):
                                             ],
                                             each_sg_param,
                                         )
+                        set = every.get("set")
+                        if set:
+                            if set.get("interface"):
+                                set["interface"] = convert_to_dict(
+                                    set["interface"], "interface"
+                                )
                         action = every.get("action")
                         sequence = every.get("sequence")
                         temp_entries.update(

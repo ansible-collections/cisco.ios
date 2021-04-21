@@ -35,7 +35,7 @@
                   mpls_label: true
               - sequence: 20
                 action: deny
-                continue:
+                continue_entry:
                   entry_sequence: 100
                 match:
                   additional_paths:
@@ -89,7 +89,7 @@
                     df: 1
                     next_hop:
                       recursive:
-                        global: true
+                        global_route: true
                         address: 198.51.110.1
                       verify_availability:
                         address: 198.51.111.1

@@ -46,7 +46,7 @@ options:
             description: Route map set operations
             type: str
             choices: ['deny', 'permit']
-          continue:
+          continue_entry:
             description: Continue on a different entry within the route-map
             type: dict
             suboptions:
@@ -97,7 +97,7 @@ options:
                   set:
                     description: Set AS path list
                     type: bool
-                  acl: &acl
+                  acl:
                     description:
                       - AS path access-list
                       - Please refer vendor documentation for valid values
@@ -115,7 +115,7 @@ options:
                     type: str
                   route_source:
                     description: Match advertising source address of route
-                    type: bool
+                    type: str
               community:
                 description: Match BGP community list
                 type: dict
@@ -124,7 +124,8 @@ options:
                     description:
                       - Community-list number/Community-list name
                       - Please refer vendor documentation for valid values
-                    type: str
+                    type: list
+                    elements: str
                   exact_match:
                     description: Do exact matching of communities
                     type: bool
@@ -147,7 +148,13 @@ options:
                     description: Match address of route or match packet
                     type: dict
                     suboptions:
-                      acl: *acl
+                      acl: &acl
+                        description:
+                          - Match entries of acl
+                          - IP acl name/number
+                          - Please refer vendor documentation for valid values
+                        type: list
+                        elements: str
                       prefix_list: &prefix_list
                         description:
                           - Match entries of prefix-lists
@@ -202,6 +209,7 @@ options:
                 suboptions:
                   address:
                     type: dict
+                    description: Match address of route or match packet
                     suboptions:
                       acl:
                         description: IPv6 access-list name
@@ -571,7 +579,7 @@ options:
                         description:
                           - Community ID
                           - Please refer vendor documentation for valid values
-                        type: int
+                        type: str
                       cost_value:
                         description:
                           - Cost Value (No-preference Cost = 2147483647)
@@ -626,12 +634,13 @@ options:
                       additive:
                         description: Add to the existing extcommunity
                         type: bool
-              global:
+              global_route:
                 description: Set to global routing table
                 type: bool
               interface:
                 description: Output interface
-                type: str
+                type: list
+                elements: str
               ip:
                 description: IP specific information
                 type: dict
@@ -645,9 +654,9 @@ options:
                     description: Set DF bit
                     choices: [0, 1]
                     type: int
-                  global:
+                  global_route:
                     description: global routing table
-                    type: bool
+                    type: dict
                     suboptions:
                       address:
                         description: IP address of next hop
@@ -695,7 +704,7 @@ options:
                         description: Recursive next-hop
                         type: dict
                         suboptions:
-                          global:
+                          global_route:
                             description: global routing table
                             type: bool
                           vrf:
@@ -716,7 +725,7 @@ options:
                             type: bool
                           address:
                             description: IP address of next hop
-                            ype: str
+                            type: str
                           sequence:
                             description:
                               - Sequence to insert into next-hop list
@@ -805,7 +814,7 @@ options:
                             type: bool
                           address:
                             description: IP address of next hop
-                            ype: str
+                            type: str
                           sequence:
                             description:
                               - Sequence to insert into next-hop list
@@ -829,7 +838,7 @@ options:
                   default:
                     description: Set default information
                     type: bool
-                  global:
+                  global_route:
                     description: global routing table
                     type: dict
                     suboptions:
@@ -894,7 +903,7 @@ options:
                         suboptions:
                           address:
                             description: IPv6 address of next hop
-                            ype: str
+                            type: str
                           sequence:
                             description:
                               - Sequence to insert into next-hop list
@@ -1026,9 +1035,6 @@ options:
         I(parsed) key within the result.
     type: str
   state:
-    description:
-      - The state the configuration should be left in.
-    type: str
     choices:
       - merged
       - replaced
@@ -1038,15 +1044,24 @@ options:
       - parsed
       - rendered
     default: merged
-required_if:
-- ["state", "merged", ["config",]]
-- ["state", "replaced", ["config",]]
-- ["state", "overridden", ["config",]]
-- ["state", "rendered", ["config",]]
-- ["state", "parsed", ["running_config",]]
-mutually_exclusive:
-- ["config", "running_config"]
-supports_check_mode: True
+    description:
+      - The state the configuration should be left in
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
+        on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to
+        platform specific CLI commands which will be returned in the I(rendered) key
+        within the result. For state I(rendered) active connection to remote host is
+        not required.
+      - The state I(gathered) will fetch the running configuration from device and transform
+        it into structured data in the format as per the resource module argspec and
+        the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into JSON format as per the resource module parameters and the
+        value is returned in the I(parsed) key within the result. The value of C(running_config)
+        option should be the same format as the output of command I(sh running-config
+        | section ^route-map) executed on device. For state I(parsed) active
+        connection to remote host is not required.
+    type: str
 """
 
 EXAMPLES = """
@@ -1210,7 +1225,7 @@ EXAMPLES = """
               mpls_label: true
           - sequence: 20
             action: deny
-            continue:
+            continue_entry:
               entry_sequence: 100
             match:
               additional_paths:
@@ -1264,7 +1279,7 @@ EXAMPLES = """
                 df: 1
                 next_hop:
                   recursive:
-                    global: true
+                    global_route: true
                     address: 198.51.110.1
                   verify_availability:
                     address: 198.51.111.1
@@ -1459,7 +1474,7 @@ EXAMPLES = """
                 df: 1
                 next_hop:
                   recursive:
-                    global: true
+                    global_route: true
                     address: 198.110.51.1
                   verify_availability:
                     address: 198.110.51.2
@@ -1648,7 +1663,7 @@ EXAMPLES = """
                 df: 1
                 next_hop:
                   recursive:
-                    global: true
+                    global_route: true
                     address: 198.110.51.1
                   verify_availability:
                     address: 198.110.51.2
@@ -1819,7 +1834,7 @@ EXAMPLES = """
 #                 },
 #                 {
 #                     "action": "deny",
-#                     "continue": {
+#                     "continue_entry": {
 #                         "entry_sequence": 100
 #                     },
 #                     "match": {
@@ -1908,7 +1923,7 @@ EXAMPLES = """
 #                             "next_hop": {
 #                                 "recursive": {
 #                                     "address": "198.51.110.1",
-#                                     "global": true
+#                                     "global_route": true
 #                                 },
 #                                 "verify_availability": {
 #                                     "address": "198.51.111.1",
@@ -1992,7 +2007,7 @@ EXAMPLES = """
               mpls_label: true
           - sequence: 20
             action: deny
-            continue:
+            continue_entry:
               entry_sequence: 100
             match:
               additional_paths:
@@ -2046,7 +2061,7 @@ EXAMPLES = """
                 df: 1
                 next_hop:
                   recursive:
-                    global: true
+                    global_route: true
                     address: 198.51.110.1
                   verify_availability:
                     address: 198.51.111.1
@@ -2174,7 +2189,7 @@ EXAMPLES = """
 #                 },
 #                 {
 #                     "action": "deny",
-#                     "continue": {
+#                     "continue_entry": {
 #                         "entry_sequence": 100
 #                     },
 #                     "match": {
@@ -2263,7 +2278,7 @@ EXAMPLES = """
 #                             "next_hop": {
 #                                 "recursive": {
 #                                     "address": "198.51.110.1",
-#                                     "global": true
+#                                     "global_route": true
 #                                 },
 #                                 "verify_availability": {
 #                                     "address": "198.51.111.1",

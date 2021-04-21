@@ -93,12 +93,16 @@ class Route_mapsFacts(object):
                                     ):
                                         val["entries"]["match"][
                                             "local_preference"
-                                        ]["value"] = [
-                                            each
-                                            for each in local_preference_val[
-                                                0
-                                            ].split(" ")
-                                        ]
+                                        ]["value"] = local_preference_val[
+                                            0
+                                        ].split(
+                                            " "
+                                        )
+                                        #     each
+                                        #     for each in local_preference_val[
+                                        #         0
+                                        #     ].split(" ")
+                                        # ]
                                     else:
                                         val["entries"]["match"][
                                             "local_preference"
@@ -176,6 +180,17 @@ class Route_mapsFacts(object):
                                 ].split(
                                     " "
                                 )
+                            if val["entries"]["match"].get("community"):
+                                if val["entries"]["match"]["community"].get(
+                                    "name"
+                                ):
+                                    community_name = val["entries"]["match"][
+                                        "community"
+                                    ]["name"]
+                                    val["entries"]["match"]["community"][
+                                        "name"
+                                    ] = community_name.split(" ")
+                                    # [each for each in community_name.split(" ")]
                             if val["entries"]["match"].get("extcommunity"):
                                 val["entries"]["match"]["extcommunity"] = val[
                                     "entries"
@@ -220,6 +235,11 @@ class Route_mapsFacts(object):
                                 ].split(
                                     " "
                                 )
+                        if val["entries"].get("set"):
+                            if val["entries"]["set"].get("interface"):
+                                val["entries"]["set"]["interface"] = val[
+                                    "entries"
+                                ]["set"]["interface"].split(" ")
                         temp_dict["entries"].append(val["entries"])
                 temp_dict["entries"] = sorted(
                     temp_dict["entries"], key=lambda k, sk="sequence": k[sk]

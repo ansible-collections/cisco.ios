@@ -9,6 +9,9 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
+- debug:
+    msg: "{{ merged['after'] | symmetric_difference(result['parsed']) }}"
+
 - assert:
     that:
       - result.changed == false

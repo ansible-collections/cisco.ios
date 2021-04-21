@@ -49,7 +49,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["deny", "permit"],
                         },
-                        "continue": {
+                        "continue_entry": {
                             "type": "dict",
                             "options": {
                                 "set": {"type": "bool"},
@@ -96,7 +96,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                 "community": {
                                     "type": "dict",
                                     "options": {
-                                        "name": {"type": "str"},
+                                        "name": {
+                                            "type": "list",
+                                            "elements": "str",
+                                        },
                                         "exact_match": {"type": "bool"},
                                     },
                                 },
@@ -442,18 +445,20 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         },
                                     },
                                 },
-                                "global": {"type": "bool"},
-                                "interface": {"type": "str"},
+                                "global_route": {"type": "bool"},
+                                "interface": {
+                                    "type": "list",
+                                    "elements": "str",
+                                },
                                 "ip": {
                                     "type": "dict",
                                     "options": {
                                         "address": {"type": "str"},
-                                        "default": {"type": "bool"},
                                         "df": {
                                             "choices": [0, 1],
                                             "type": "int",
                                         },
-                                        "global": {
+                                        "global_route": {
                                             "type": "dict",
                                             "options": {
                                                 "address": {"type": "str"},
@@ -488,7 +493,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "address": {
                                                             "type": "str"
                                                         },
-                                                        "global": {
+                                                        "global_route": {
                                                             "type": "bool"
                                                         },
                                                         "vrf": {"type": "str"},
@@ -575,7 +580,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {"type": "str"},
                                         "default": {"type": "bool"},
-                                        "global": {
+                                        "global_route": {
                                             "type": "dict",
                                             "options": {
                                                 "address": {"type": "str"},

@@ -58,7 +58,7 @@ merged:
                 - 20
           sequence: 10
         - action: deny
-          continue:
+          continue_entry:
             entry_sequence: 100
           match:
             additional_paths:
@@ -118,7 +118,7 @@ merged:
               next_hop:
                 recursive:
                   address: "198.51.110.1"
-                  global: true
+                  global_route: true
                 verify_availability:
                   address: "198.51.111.1"
                   sequence: 100
@@ -234,7 +234,7 @@ overridden:
               next_hop:
                 recursive:
                   address: "198.110.51.1"
-                  global: true
+                  global_route: true
                 verify_availability:
                   address: "198.110.51.2"
                   sequence: 100
@@ -349,7 +349,7 @@ replaced:
               next_hop:
                 recursive:
                   address: "198.51.110.1"
-                  global: true
+                  global_route: true
                 verify_availability:
                   address: "198.51.111.1"
                   sequence: 100
@@ -392,7 +392,7 @@ replaced:
               next_hop:
                 recursive:
                   address: "198.110.51.1"
-                  global: true
+                  global_route: true
                 verify_availability:
                   address: "198.110.51.2"
                   sequence: 100

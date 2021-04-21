@@ -86,7 +86,7 @@
                     df: 1
                     next_hop:
                       recursive:
-                        global: true
+                        global_route: true
                         address: 198.110.51.1
                       verify_availability:
                         address: 198.110.51.2
