@@ -130,7 +130,9 @@ class Ospfv3Facts(object):
 
         ipv4 = {"processes": []}
         rmmod = NetworkTemplate(
-            lines=data.splitlines(), tmplt=Ospfv3Template()
+            lines=data.splitlines(),
+            tmplt=Ospfv3Template(),
+            module=self._module,
         )
         current = self.parse(rmmod)
         address_family = self.parse_for_address_family(current)
@@ -171,7 +173,7 @@ class Ospfv3Facts(object):
         facts = {}
         if current:
             params = utils.validate_config(
-                self.argument_spec, {"config": ipv4}
+                self.argument_spec, {"config": ipv4}, redact=True
             )
             params = utils.remove_empties(params)
 

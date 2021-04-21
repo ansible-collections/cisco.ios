@@ -245,8 +245,10 @@ def _tmplt_ip_ospf_ttl_security(config_data):
 
 
 class Ospf_InterfacesTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Ospf_InterfacesTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None, module=None):
+        super(Ospf_InterfacesTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     PARSERS = [
         {
