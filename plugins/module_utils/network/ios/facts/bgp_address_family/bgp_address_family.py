@@ -66,7 +66,9 @@ class Bgp_AddressFamilyFacts(object):
             data = self.get_bgp_address_family_data(connection)
 
         # parse native config using the Bgp_address_family template
-        bgp_af_parser = Bgp_AddressFamilyTemplate(lines=data.splitlines())
+        bgp_af_parser = Bgp_AddressFamilyTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = bgp_af_parser.parse()
         objs = utils.remove_empties(objs)
         temp_af = []
@@ -142,7 +144,9 @@ class Bgp_AddressFamilyFacts(object):
             )
 
             params = utils.remove_empties(
-                utils.validate_config(self.argument_spec, {"config": objs})
+                bgp_af_parser.validate_config(
+                    self.argument_spec, {"config": objs}, redact=True
+                )
             )
 
             facts["bgp_address_family"] = params["config"]

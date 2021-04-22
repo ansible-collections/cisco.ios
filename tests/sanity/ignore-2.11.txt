@@ -7,9 +7,3 @@ plugins/module_utils/network/ios/config/bgp_global/bgp_global.py import-2.6!skip
 plugins/module_utils/network/ios/config/bgp_address_family/bgp_address_family.py import-2.6!skip
 plugins/module_utils/network/ios/config/ospf_interfaces/ospf_interfaces.py import-2.6!skip
 plugins/module_utils/network/ios/config/ospfv3/ospfv3.py import-2.6!skip
-plugins/modules/ios_bgp_address_family.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
-plugins/modules/ios_bgp_global.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
-plugins/modules/ios_ntp.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
-plugins/modules/ios_ospf_interfaces.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
-plugins/modules/ios_ospfv3.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
-plugins/modules/ios_user.py validate-modules:no-log-needed # temporary workaround for unspecified no-log
