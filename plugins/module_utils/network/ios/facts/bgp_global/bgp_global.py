@@ -91,7 +91,7 @@ class Bgp_globalFacts(object):
             ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
             params = utils.remove_empties(
-                utils.validate_config(
+                bgp_global_parser.validate_config(
                     self.argument_spec, {"config": objs}, redact=True
                 )
             )

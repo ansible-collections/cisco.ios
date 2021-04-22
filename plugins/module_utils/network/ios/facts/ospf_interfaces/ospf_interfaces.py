@@ -86,7 +86,7 @@ class Ospf_InterfacesFacts(object):
         ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)
 
         params = utils.remove_empties(
-            utils.validate_config(
+            ospf_interfaces_parser.validate_config(
                 self.argument_spec, {"config": final_objs}, redact=True
             )
         )
