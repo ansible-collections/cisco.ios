@@ -95,7 +95,7 @@ class Acls(ResourceModule):
                                             each_ace_sequence = each_ace.get(
                                                 "sequence"
                                             )
-                                            if each_ace_sequence:
+                                            if each_ace_sequence and each_have_acls.get("aces"):
                                                 for (
                                                     each_have_ace
                                                 ) in each_have_acls["aces"]:
