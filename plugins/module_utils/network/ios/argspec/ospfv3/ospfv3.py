@@ -75,7 +75,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "options": {
                                                 "key_chain": {
                                                     "type": "str",
-                                                    "no_log": False,
+                                                    "no_log": True,
                                                 },
                                                 "null": {"type": "bool"},
                                             },
@@ -149,7 +149,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "key_chain": {
                                                             "type": "str",
-                                                            "no_log": False,
+                                                            "no_log": True,
                                                         },
                                                         "null": {
                                                             "type": "bool"
@@ -541,7 +541,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                     "options": {
                                         "key_chain": {
                                             "type": "str",
-                                            "no_log": False,
+                                            "no_log": True,
                                         },
                                         "ipsec": {
                                             "type": "dict",
