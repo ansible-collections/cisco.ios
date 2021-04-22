@@ -56,7 +56,6 @@ class Logging_global(ResourceModule):
             "host.transport.udp.filtered",
             "host.session_id",
             "buffered",
-            "buffered.size",
             "buginf",
             "cns_events",
             "console",
@@ -83,7 +82,7 @@ class Logging_global(ResourceModule):
             "source_interface",
             "trap",
             "userinfo",
-        ]
+        ] #segrigate for O(1) operation
 
     def execute_module(self):
         """ Execute the module
@@ -178,37 +177,39 @@ class Logging_global(ResourceModule):
 
     def list_to_dict(self, param):
         _temp_param = {"logging": {}}
+        exculde = []
         for element in param:
             if element.get("message_counter"):
                 _temp = {}
-                for idx, ctr in enumerate(element.get("message_counter"), start=1):
-                    _temp.update({ctr: idx})
-                element["message_counter"] = _temp
+                for ctr in element.get("message_counter"):
+                    _temp.update({ctr: { "message_counter": ctr }})
+                _temp_param.update(_temp)
+                exculde.append("message_counter")
             if element.get("source_interface"):
                 _temp = {}
                 for interface in element.get("source_interface"):
-                    _temp.update({interface.get("interface"): interface})
-                element["source_interface"] = _temp
-            if element.get("persistent"):
-                _temp = {}
-                for pers in element.get("persistent"):
-                    _temp.update(pers)
-                element["persistent"] = _temp
+                    _temp.update({interface.get("interface"):{ "source_interface": interface }})
+                _temp_param.update(_temp)
+                exculde.append("source_interface")
             if element.get("filter"):
                 _temp = {}
                 for url in element.get("filter"):
-                    _temp.update({url.get("url"): url})
-                element["filter"] = _temp
+                    _temp.update({url.get("url"):{ "filter":url }})
+                _temp_param.update(_temp)
+                exculde.append("filter")
             if element.get("host"):
                 _temp = {}
                 for host in element.get("host"):
-                    _temp.update({host.get("hostname"): host})
-                element["host"] = _temp
+                    _temp.update({host.get("hostname"):{ "host": host }})    
+                _temp_param.update(_temp)
+                exculde.append("host")
+        else:
+            for element in param:
+                for k, v in iteritems(element):
+                    if k not in exculde:
+                        _temp_param["logging"].update({k:v})
         
-        for element in param:
-            _temp_param["logging"].update(element)
         param = _temp_param
-
         return param
 
                     

@@ -223,8 +223,7 @@ options:
         suboptions: *session_id_suboptions
       persistent:
         description: Set persistent logging parameters
-        type: list
-        elements: dict
+        type: dict
         suboptions:
           batch:      
             description: Set batch size for writing to persistent storage (4096-2142715904)

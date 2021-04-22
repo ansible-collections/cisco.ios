@@ -288,8 +288,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "persistent": {
-                    "type": "list",
-                    "elements": "dict",
+                    "type": "dict",
                     "options": {
                         "batch": {"type": "int"},
                         "filesize": {"type": "int"},
