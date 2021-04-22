@@ -20,36 +20,30 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 def tmplt_host(config_data):
-    commands = [] #TODO
-    cmd = "logging host "
+    cmd = "logging host"
+    verb = config_data.get("host")
 
-    # for k, v in iteritems(config_data.get("host")):
-    #     if v.get("hostname"):
-    #         cmd += v.get("hostname")
-    #     if v.get("ipv6"):
-    #         cmd += "ipv6 {ipv6}".format(v.get("ipv6"))
-    #     if v.get("filtered"):
-    #         cmd += "filtered"
-    #     if v.get("xml"):
-    #         cmd += "xml"
-    #     if v.get("sequence_num_session"):
-    #         cmd += "sequence_num_session"
-    #     if v.get("vrf"):
-    #         cmd += "vrf {vrf}".format(v.get("vrf"))
-    #     if v.get("discriminator"):
-    #         cmd += "discriminator {vrf}".format(v.get("discriminator"))
-    #     if v.get("stream"):
-    #         cmd += "vrf {stream}".format(v.get("stream"))
-    #     commands.append(cmd)
-    return commands
+    if verb.get("hostname"):
+        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("ipv6"):
+        cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+    if verb.get("filtered"):
+        cmd += " {filtered}".format(filtered="filtered")
+    if verb.get("xml"):
+        cmd += " {xml}".format(xml="xml")
+    if verb.get("sequence_num_session"):
+        cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+    if verb.get("stream"):
+        cmd += " stream {stream}".format(stream=verb["stream"])
+    return cmd
 
 def tmplt_buffered(config_data):
     return tmplt_common(config_data.get("buffered"), "logging buffered")
 
-def tmplt_console(config_data):
+def tmplt_history(config_data):
     return tmplt_common(config_data.get("history"), "logging history")
 
-def tmplt_history(config_data):
+def tmplt_console(config_data):
     return tmplt_common(config_data.get("console"), "logging console")
 
 def tmplt_monitor(config_data):
@@ -87,32 +81,33 @@ def tmplt_filter(config_data):
     return cmd
 
 def tmplt_common(verb, cmd):
-    if verb.get("all"):
-        cmd += " {all}".format(all="all")
-    if verb.get("console"):
-        cmd += " {console}".format(console=verb["console"])
-    if verb.get("message_limit"):
-        cmd += " message_limit {message_limit}".format(message_limit=verb["message_limit"])
-    if verb.get("discriminator"):
-        cmd += " discriminator {discriminator}".format(discriminator=verb.get("discriminator"))
-    if verb.get("filtered"):
-        cmd += " {filtered}".format(filtered="filtered")
-    if verb.get("xml"):
-        cmd += " {xml}".format(xml="xml")
-    if verb.get("size"):
-        cmd += " {size}".format(size=verb["size"])
-    if verb.get("severity"):
-        cmd += " {severity}".format(severity=verb["severity"])
-    if verb.get("except"):
-        cmd += " except {exceptSev}".format(exceptSev=verb["except"])
-    if verb.get("tag"):
-        cmd += " {tag}".format(tag=verb["tag"])
-    if verb.get("text"):
-        cmd += " string {tag}".format(tag=verb["text"])
-    if verb.get("esm"):
-        cmd += " esm {tag}".format(tag=verb["esm"])
-    if verb.get("trap"):
-        cmd += " trap {tag}".format(tag=verb["trap"])
+    if verb:
+        if verb.get("all"):
+            cmd += " {all}".format(all="all")
+        if verb.get("console"):
+            cmd += " {console}".format(console=verb["console"])
+        if verb.get("message_limit"):
+            cmd += " message_limit {message_limit}".format(message_limit=verb["message_limit"])
+        if verb.get("discriminator"):
+            cmd += " discriminator {discriminator}".format(discriminator=verb.get("discriminator"))
+        if verb.get("filtered"):
+            cmd += " {filtered}".format(filtered="filtered")
+        if verb.get("xml"):
+            cmd += " {xml}".format(xml="xml")
+        if verb.get("size"):
+            cmd += " {size}".format(size=verb["size"])
+        if verb.get("severity"):
+            cmd += " {severity}".format(severity=verb["severity"])
+        if verb.get("except"):
+            cmd += " except {exceptSev}".format(exceptSev=verb["except"])
+        if verb.get("tag"):
+            cmd += " {tag}".format(tag=verb["tag"])
+        if verb.get("text"):
+            cmd += " string {tag}".format(tag=verb["text"])
+        if verb.get("esm"):
+            cmd += " esm {tag}".format(tag=verb["esm"])
+        if verb.get("trap"):
+            cmd += " trap {tag}".format(tag=verb["trap"])
     return cmd
 
 def tmplt_persistent(config_data):
@@ -820,8 +815,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "name": "userinfo",
             "getval": re.compile(
                 r"""
-                ^logging
-                \s(?P<userinfo>userinfo)
+                ^logging\s(?P<userinfo>userinfo)
                 $""", re.VERBOSE),
             "setval": "logging userinfo",
             "result": { 

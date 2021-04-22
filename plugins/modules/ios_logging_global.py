@@ -354,10 +354,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.loggi
     Logging_global,
 )
 
-print("Checking logging via VSCode")
-import debugpy
-debugpy.listen(3000)
-debugpy.wait_for_client()
+# print("Checking logging via VSCode")
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 def main():
     """
