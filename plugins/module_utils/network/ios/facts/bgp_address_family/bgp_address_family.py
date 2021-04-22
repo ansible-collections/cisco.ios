@@ -143,8 +143,8 @@ class Bgp_AddressFamilyFacts(object):
                 "bgp_address_family", None
             )
 
-            params = bgp_af_parser.remove_empties(
-                utils.validate_config(
+            params = utils.remove_empties(
+                bgp_af_parser.validate_config(
                     self.argument_spec, {"config": objs}, redact=True
                 )
             )
