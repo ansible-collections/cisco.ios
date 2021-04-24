@@ -323,8 +323,8 @@ options:
   running_config:
       description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the EOS device by
-        executing the command B(show running-config | section access-list).
+      - The value of this option should be the output received from the IOS device by
+        executing the command B(show running-config | include logging).
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
@@ -354,10 +354,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.loggi
     Logging_global,
 )
 
-# print("Checking logging via VSCode")
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 def main():
     """
