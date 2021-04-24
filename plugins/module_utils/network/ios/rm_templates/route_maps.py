@@ -59,10 +59,12 @@ def _tmplt_route_map_match(config_data):
                 cmd += " group-best"
             command.append(cmd)
         if match.get("as_path"):
-            cmd = "match as-path"
-            if match["as_path"].get("acl"):
-                for k, v in iteritems(match["as_path"]["acl"]):
-                    cmd += " {0}".format(v)
+            cmd = "match as-path "
+            if match["as_path"].get("acls"):
+                temp = []
+                for k, v in iteritems(match["as_path"]["acls"]):
+                    temp.append(str(v))
+                cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("clns"):
             cmd = "match clns"
@@ -74,37 +76,47 @@ def _tmplt_route_map_match(config_data):
                 cmd = " route-source {route_source}".format(**match["clns"])
             command.append(cmd)
         if match.get("community"):
-            cmd = "match community"
+            cmd = "match community "
+            temp = []
             for k, v in iteritems(match["community"]["name"]):
-                cmd += " {0}".format(v)
+                temp.append(v)
+            cmd += " ".join(sorted(temp))
             if match["community"].get("exact_match"):
                 cmd += " exact-match"
             command.append(cmd)
         if match.get("extcommunity"):
-            cmd = "match extcommunity"
+            cmd = "match extcommunity "
+            temp = []
             for k, v in iteritems(match["extcommunity"]):
-                cmd += " {0}".format(v)
+                temp.append(v)
+            cmd += " ".join(sorted(temp))
             command.append(cmd)
-        if match.get("interface"):
-            cmd = "match interface"
-            for each in match["interface"]:
-                cmd += " {0}".format(each)
+        if match.get("interfaces"):
+            cmd = "match interface "
+            temp = []
+            for k, v in iteritems(match["interfaces"]):
+                temp.append(v)
+            cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("length"):
             command.append(
                 "match length {minimum} {maximum}".format(**match["length"])
             )
         if match.get("local_preference"):
-            cmd = "match local-preference"
+            cmd = "match local-preference "
             if match["local_preference"].get("value"):
+                temp = []
                 for k, v in iteritems(match["local_preference"]["value"]):
-                    cmd += " {0}".format(v)
+                    temp.append(v)
+                cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("mdt_group"):
-            cmd = "match mdt-group"
-            if match["mdt_group"].get("acl"):
-                for k, v in iteritems(match["mdt_group"]["acl"]):
-                    cmd += " {0}".format(v)
+            cmd = "match mdt-group "
+            if match["mdt_group"].get("acls"):
+                temp = []
+                for k, v in iteritems(match["mdt_group"]["acls"]):
+                    temp.append(v)
+                cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("metric"):
             cmd = "match metric"
@@ -119,10 +131,12 @@ def _tmplt_route_map_match(config_data):
             command.append(cmd)
         if match.get("mpls_label"):
             command.append("match mpls-label")
-        if match.get("policy_list"):
-            cmd = "match policy-list"
-            for k, v in iteritems(match["policy_list"]):
-                cmd += " {0}".format(v)
+        if match.get("policy_lists"):
+            cmd = "match policy-list "
+            temp = []
+            for k, v in iteritems(match["policy_lists"]):
+                temp.append(v)
+            cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("route_type"):
             cmd = "match route-type"
@@ -159,9 +173,11 @@ def _tmplt_route_map_match(config_data):
         if match.get("security_group"):
             cmd = "match security-group"
             if match["security_group"].get("source"):
-                cmd += " source tag"
+                cmd += " source tag "
+                temp = []
                 for k, v in iteritems(match["security_group"]["source"]):
-                    cmd += " {0}".format(v)
+                    temp.append(str(v))
+                cmd += " ".join(sorted(temp))
             elif match["security_group"].get("destination"):
                 cmd += " destination tag"
                 for each in match["destination"]:
@@ -207,86 +223,89 @@ def _tmplt_route_map_match(config_data):
 
 def _tmplt_route_map_match_ip(config_data):
     if config_data.get("match") and config_data["match"].get("ip"):
+
+        def construct_cmd_from_list(cmd, config):
+            temp = []
+            for k, v in iteritems(config):
+                temp.append(v)
+            cmd += " " + " ".join(sorted(temp))
+            return cmd
+
         cmd = "match ip"
         if config_data["match"]["ip"].get("address"):
             cmd += " address"
-            if config_data["match"]["ip"]["address"].get("prefix_list"):
+            if config_data["match"]["ip"]["address"].get("prefix_lists"):
                 cmd += " prefix-list"
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["address"]["prefix_list"]
-                ):
-                    cmd += " {0}".format(v)
-            elif config_data["match"]["ip"]["address"].get("acl"):
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["address"]["acl"]
-                ):
-                    cmd += " {0}".format(v)
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["address"]["prefix_lists"]
+                )
+            elif config_data["match"]["ip"]["address"].get("acls"):
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["address"]["acls"]
+                )
         if config_data["match"]["ip"].get("flowspec"):
             cmd += " flowspec"
             if config_data["match"]["ip"]["flowspec"].get("dest_pfx"):
                 cmd += " dest-pfx"
             elif config_data["match"]["ip"]["flowspec"].get("src_pfx"):
                 cmd += " src-pfx"
-            if config_data["match"]["ip"]["flowspec"].get("prefix_list"):
+            if config_data["match"]["ip"]["flowspec"].get("prefix_lists"):
                 cmd += " prefix-list"
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["flowspec"]["prefix_list"]
-                ):
-                    cmd += " {0}".format(v)
-            elif config_data["match"]["ip"]["flowspec"].get("acl"):
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["flowspec"]["acl"]
-                ):
-                    cmd += " {0}".format(v)
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["flowspec"]["prefix_lists"]
+                )
+            elif config_data["match"]["ip"]["flowspec"].get("acls"):
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["flowspec"]["acls"]
+                )
         if config_data["match"]["ip"].get("next_hop"):
             cmd += " next-hop"
-            if config_data["match"]["ip"]["next_hop"].get("prefix_list"):
+            if config_data["match"]["ip"]["next_hop"].get("prefix_lists"):
                 cmd += " prefix-list"
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["next_hop"]["prefix_list"]
-                ):
-                    cmd += " {0}".format(v)
-            elif config_data["match"]["ip"]["next_hop"].get("acl"):
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["next_hop"]["acl"]
-                ):
-                    cmd += " {0}".format(v)
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["next_hop"]["prefix_lists"]
+                )
+            elif config_data["match"]["ip"]["next_hop"].get("acls"):
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["next_hop"]["acls"]
+                )
         if config_data["match"]["ip"].get("redistribution_source"):
             cmd += " redistribution-source"
             if config_data["match"]["ip"]["redistribution_source"].get(
-                "prefix_list"
+                "prefix_lists"
             ):
                 cmd += " prefix-list"
-                for k, v in iteritems(
+                cmd = construct_cmd_from_list(
+                    cmd,
                     config_data["match"]["ip"]["redistribution_source"][
-                        "prefix_list"
-                    ]
-                ):
-                    cmd += " {0}".format(v)
+                        "prefix_lists"
+                    ],
+                )
             elif config_data["match"]["ip"]["redistribution_source"].get(
-                "acl"
+                "acls"
             ):
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["redistribution_source"]["acl"]
-                ):
-                    cmd += " {0}".format(v)
+                cmd = construct_cmd_from_list(
+                    cmd,
+                    config_data["match"]["ip"]["redistribution_source"][
+                        "acls"
+                    ],
+                )
         if config_data["match"]["ip"].get("route_source"):
             cmd += " route-source"
             if config_data["match"]["ip"]["route_source"].get(
                 "redistribution_source"
             ):
                 cmd += " redistribution-source"
-            if config_data["match"]["ip"]["route_source"].get("prefix_list"):
+            if config_data["match"]["ip"]["route_source"].get("prefix_lists"):
                 cmd += " prefix-list"
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["route_source"]["prefix_list"]
-                ):
-                    cmd += " {0}".format(v)
-            elif config_data["match"]["ip"]["route_source"].get("acl"):
-                for k, v in iteritems(
-                    config_data["match"]["ip"]["route_source"]["acl"]
-                ):
-                    cmd += " {0}".format(v)
+                cmd = construct_cmd_from_list(
+                    cmd,
+                    config_data["match"]["ip"]["route_source"]["prefix_lists"],
+                )
+            elif config_data["match"]["ip"]["route_source"].get("acls"):
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["route_source"]["acls"]
+                )
         return cmd
 
 
@@ -447,10 +466,12 @@ def _tmplt_route_map_set(config_data):
                 command.append(cmd)
         if set.get("global"):
             command.append("set global")
-        if set.get("interface"):
-            cmd = "set interface"
-            for k, v in iteritems(set["interface"]):
-                cmd += " {0}".format(v)
+        if set.get("interfaces"):
+            cmd = "set interface "
+            temp = []
+            for k, v in iteritems(set["interfaces"]):
+                temp.append(v)
+            cmd += " ".join(sorted(temp))
             command.append(cmd)
         if set.get("level"):
             cmd = "set level"
@@ -738,7 +759,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<clns>clns\s(address\s\S+|next-hop\s\S+|route-source\s\S+))*
                 \s*(?P<community>community\s\S.*)*
                 \s*(?P<extcommunity>extcommunity\s\S.*)*
-                \s*(?P<interface>interface\s\S.*)*
+                \s*(?P<interfaces>interface\s\S.*)*
                 \s*(?P<length>length\s\d+\s\d+)*
                 \s*(?P<local_preference>local-preference\s\d.*|local-preference)*
                 \s*(?P<mdt_group>mdt-group\s\S.*|mdt-group)*
@@ -763,18 +784,18 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "additional_paths": {
                                     "all": "{{ True if additional_paths is defined and 'all' in additional_paths }}",
                                     "best": "{{ additional_paths.split('best ')[1].split(' ')[0]|int if additional_paths is defined and\
-                                         'best' in additional_paths and 'best-range' not in additional_paths }}",
+                                             'best' in additional_paths and 'best-range' not in additional_paths }}",
                                     "best_range": {
                                         "lower_limit": "{{ additional_paths.split('best-range ')[1].split(' ')[0]|int if additional_paths is defined and\
-                                             'best-range' in additional_paths }}",
+                                                 'best-range' in additional_paths }}",
                                         "upper_limit": "{{ additional_paths.split('best-range ')[1].split(' ')[1]|int if additional_paths is defined and\
-                                             'best-range' in additional_paths }}",
+                                                 'best-range' in additional_paths }}",
                                     },
                                     "group_best": "{{ True if additional_paths is defined and 'group-best' in additional_paths }}",
                                 },
                                 "as_path": {
                                     "set": "{{ True if as_path is defined and as_path.split(' ')|length == 1 }}",
-                                    "acl": "{{ as_path.split('as-path ')[1] if as_path is defined and as_path.split(' ')|length > 1 }}",
+                                    "acls": "{{ as_path.split('as-path ')[1].split(' ')|sort if as_path is defined and as_path.split(' ')|length > 1 }}",
                                 },
                                 "clns": {
                                     "address": "{{ clns.split('clns address ')[1] if clns is defined }}",
@@ -782,37 +803,34 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "route_source": "{{ clns.split('clns route-source ')[1] if clns is defined }}",
                                 },
                                 "community": {
-                                    "name": "{{ community.split('community ')[1].split(' exact-match')[0] if community is defined }}",
+                                    "name": "{{ community.split('community ')[1].split(' exact-match')[0].split(' ')|sort if community is defined }}",
                                     "exact_match": "{{ True if community is defined and 'exact-match' in community }}",
                                 },
-                                "extcommunity": "{{ extcommunity.split('extcommunity ')[1] if extcommunity is defined }}",
-                                "interface": "{{ interface.split('interface ')[1] if interface is defined }}",
+                                "extcommunity": "{{ extcommunity.split('extcommunity ')[1].split(' ')|sort if extcommunity is defined }}",
+                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ')|sort if interfaces is defined }}",
                                 "length": {
                                     "minimum": "{{ length.split(' ')[1] if length is defined }}",
                                     "maximum": "{{ length.split(' ')[2] if length is defined }}",
                                 },
                                 "local_preference": {
                                     "set": "{{ True if local_preference is defined and local_preference.split(' ')|length == 1 }}",
-                                    "value": [
-                                        "{{ local_preference.split('local-preference ')[1] if local_preference is defined }}"
-                                    ],
+                                    "value": "{{ local_preference.split('local-preference ')[1].split(' ')|sort if local_preference is defined }}",
                                 },
                                 "mdt_group": {
                                     "set": "{{ True if mdt_group is defined and mdt_group.split(' ')|length == 1 }}",
-                                    "acl": "{{ mdt_group.split('mdt-group ')[1] if mdt_group is defined }}",
+                                    "acls": "{{ mdt_group.split('mdt-group ')[1].split(' ')|sort if mdt_group is defined }}",
                                 },
                                 "metric": {
-                                    # "value": "{{  metric.split(' ')[1] if metric is defined and 'external' not in metric.split(' ') }}",
                                     "external": "{{ True if metric is defined and 'external' in metric.split(' ') }}",
                                     "value": "{% if metric is defined and 'external' not in metric.split(' ') %}{{ metric.split(' ')[1] }}\
-                                        {% elif metric is defined and 'external' in metric.split(' ') %}{{ metric.split(' ')[2] }}\
-                                        {% endif %}",
+                                            {% elif metric is defined and 'external' in metric.split(' ') %}{{ metric.split(' ')[2] }}\
+                                            {% endif %}",
                                     "deviation": "{{ True if metric is defined and '+-' in metric }}",
                                     "deviation_value": "{% if metric is defined and 'external' in metric and '+-' in metric %}{{ metric.split(' ')[4] }}\
-                                        {% elif metric is defined and 'external' not in metric and '+-' in metric %}{{ metric.split(' ')[3] }}{% endif %}",
+                                            {% elif metric is defined and 'external' not in metric and '+-' in metric %}{{ metric.split(' ')[3] }}{% endif %}",
                                 },
                                 "mpls_label": "{{ True if mpls_label is defined }}",
-                                "policy_list": "{{ policy_list.split('policy-list ')[1] if policy_list is defined }}",
+                                "policy_lists": "{{ policy_list.split('policy-list ')[1].split(' ')|sort if policy_list is defined }}",
                                 "route_type": {
                                     "external": {
                                         "set": "{{ True if route_type is defined and 'type-1' not in route_type and 'type-2' not in route_type}}",
@@ -835,31 +853,27 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "valid": "{{ True if rpki is defined and 'valid' in rpki and 'invalid' not in rpki.split(' ') }}",
                                 },
                                 "security_group": {
-                                    "destination": [
-                                        "{{ security_group.split('destination tag ')[1] if security_group is defined and 'destination' in security_group }}"
-                                    ],
-                                    "source": [
-                                        "{{ security_group.split('source tag ')[1] if security_group is defined and 'source' in security_group }}"
-                                    ],
+                                    "destination": "{{ security_group.split('destination tag ')[1].split(' ')|sort if security_group is defined and 'destination' in security_group }}",
+                                    "source": "{{ security_group.split('source tag ')[1].split(' ')|sort if security_group is defined and 'source' in security_group }}",
                                 },
                                 "source_protocol": {
                                     "bgp": "{{ source_protocol.split('bgp ')[1].split(' ')[0] if source_protocol is defined and 'bgp' in source_protocol }}",
                                     "connected": "{{ True if source_protocol is defined and 'connected' in source_protocol }}",
                                     "eigrp": "{{ source_protocol.split('eigrp ')[1].split(' ')[0] if source_protocol is defined and\
-                                        'eigrp' in source_protocol }}",
+                                            'eigrp' in source_protocol }}",
                                     "isis": "{{ True if source_protocol is defined and 'isis' in source_protocol }}",
                                     "lisp": "{{ True if source_protocol is defined and 'lisp' in source_protocol }}",
                                     "mobile": "{{ True if source_protocol is defined and 'mobile' in source_protocol }}",
                                     "ospf": "{{ source_protocol.split('ospf ')[1].split(' ')[0] if source_protocol is defined and\
-                                        'ospf' in source_protocol }}",
+                                            'ospf' in source_protocol }}",
                                     "ospfv3": "{{ source_protocol.split('ospfv3 ')[1].split(' ')[0] if source_protocol is defined and\
-                                        'ospfv3' in source_protocol }}",
+                                            'ospfv3' in source_protocol }}",
                                     "rip": "{{ True if source_protocol is defined and 'rip' in source_protocol }}",
                                     "static": "{{ True if source_protocol is defined and 'static' in source_protocol }}",
                                 },
                                 "tag": {
-                                    "value": "{{ tag.split('tag ')[1] if tag is defined and 'list' not in tag }}",
-                                    "tag_list": "{{ tag.split('tag list ')[1] if tag is defined and 'list' in tag }}",
+                                    "value": "{{ tag.split('tag ')[1].split(' ')|sort if tag is defined and 'list' not in tag }}",
+                                    "tag_list": "{{ tag.split('tag list ')[1].split(' ')|sort if tag is defined and 'list' in tag }}",
                                 },
                                 "track": "{{ track.split('track ')[1] if track is defined }}",
                             }
@@ -891,55 +905,35 @@ class Route_mapsTemplate(NetworkTemplate):
                             "match": {
                                 "ip": {
                                     "address": {
-                                        "acl": [
-                                            "{{ address.split('address ')[1] if address is defined and 'prefix-list' not in address else none }}"
-                                        ],
-                                        "prefix_list": [
-                                            "{{ address.split('address prefix-list ')[1] if address is defined and 'prefix-list' in address else None }}"
-                                        ],
+                                        "acls": "{{ address.split('address ')[1].split(' ')|sort if address is defined and 'prefix-list' not in address else none }}",
+                                        "prefix_lists": "{{ address.split('address prefix-list ')[1].split(' ')|sort if address is defined and 'prefix-list' in address else None }}",
                                     },
                                     "flowspec": {
                                         "dest_pfx": "{{ True if flowspec is defined and 'dest-pfx' in flowspec }}",
                                         "src_pfx": "{{ True if flowspec is defined and 'src-pfx' in flowspec }}",
-                                        "acl": [
-                                            "{{ flowspec.split('flowspec ')[1]|d() if flowspec is defined and 'prefix-list' not in flowspec else '' }}"
-                                        ],
-                                        "prefix_list": [
-                                            "{{ flowspec.split('flowspec prefix-list ')[1]|d() if flowspec is defined and 'prefix-list' in flowspec else ''}}"
-                                        ],
+                                        "acls": "{{ flowspec.split('flowspec ')[1].split(' ')|d()|sort if flowspec is defined and 'prefix-list' not in flowspec else '' }}",
+                                        "prefix_lists": "{{ flowspec.split('flowspec prefix-list ')[1].split(' ')|d()|sort if flowspec is defined and 'prefix-list' in flowspec else ''}}",
                                     },
                                     "next_hop": {
                                         "set": "{{ True if next_hop is defined and next_hop.split(' ')|length == 1 }}",
-                                        "acl": [
-                                            "{{ next_hop.split('next-hop ')[1] if next_hop is defined and 'prefix-list' not in next_hop else '' }}"
-                                        ],
-                                        "prefix_list": [
-                                            "{{ next_hop.split('next-hop prefix-list ')[1] if next_hop is defined and 'prefix-list' in next_hop and\
-                                                next_hop.split('next-hop prefix-list ')[1] is not none else '' }}"
-                                        ],
+                                        "acls": "{{ next_hop.split('next-hop ')[1].split(' ')|sort if next_hop is defined and 'prefix-list' not in next_hop else '' }}",
+                                        "prefix_lists": "{{ next_hop.split('next-hop prefix-list ')[1].split(' ')|sort if next_hop is defined and 'prefix-list' in next_hop and\
+                                                next_hop.split('next-hop prefix-list ')[1] is not none else '' }}",
                                     },
                                     "redistribution_source": {
                                         "set": "{{ True if redistribution_source is defined and redistribution_source.split(' ')|length == 1 }}",
-                                        "acl": [
-                                            "{{ redistribution_source.split('redistribution-source ')[1]|d() if redistribution_source is defined and\
-                                                'prefix-list' not in redistribution_source else '' }}"
-                                        ],
-                                        "prefix_list": [
-                                            "{{ redistribution_source.split('redistribution-source prefix-list ')[1]|d() if redistribution_source is defined and\
-                                                'prefix-list' in redistribution_source else '' }}"
-                                        ],
+                                        "acls": "{{ redistribution_source.split('redistribution-source ')[1].split(' ')|d()|sort if redistribution_source is defined and\
+                                                'prefix-list' not in redistribution_source else '' }}",
+                                        "prefix_lists": "{{ redistribution_source.split('redistribution-source prefix-list ')[1].split(' ')|sort|d() if redistribution_source is defined and\
+                                                'prefix-list' in redistribution_source else '' }}",
                                     },
                                     "route_source": {
                                         "set": "{{ True if route_source is defined and route_source.split(' ')|length == 1 }}",
                                         "redistribution_source": "{{ True if route_source is defined and 'redistribution-source' in route_source }}",
-                                        "acl": [
-                                            "{{ route_source.split('route-source ')[1] if route_source is defined and\
-                                                'prefix-list' not in route_source else '' }}"
-                                        ],
-                                        "prefix_list": [
-                                            "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and\
-                                                'prefix-list' in route_source else '' }}"
-                                        ],
+                                        "acls": "{{ route_source.split('route-source ')[1].split(' ')|sort if route_source is defined and\
+                                                'prefix-list' not in route_source else '' }}",
+                                        "prefix_lists": "{{ route_source.split('route-source prefix-list ')[1].split(' ')|sort if route_source is defined and\
+                                                'prefix-list' in route_source else '' }}",
                                     },
                                 }
                             }
@@ -986,7 +980,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "route_source": {
                                         "acl": "{{ route_source.split('route-source ')[1] if route_source is defined and 'prefix-list' not in route_source }}",
                                         "prefix_list": "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and\
-                                            'prefix-list' in route_source }}",
+                                                'prefix-list' in route_source }}",
                                     },
                                 }
                             }
@@ -1011,7 +1005,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<extcomm_list>extcomm-list\s\S+\sdelete)*
                 \s*(?P<extcommunity>extcommunity\s\S.*)*
                 \s*(?P<global>global)*
-                \s*(?P<interface>interface\s\S.*)*
+                \s*(?P<interfaces>interface\s\S.*)*
                 \s*(?P<level>level\s(level-1-2|level-1|level-2|nssa-only))*
                 \s*(?P<lisp>lisp\slocator-set\s\S+)*
                 \s*(?P<local_preference>local-preference\s\d+)*
@@ -1034,15 +1028,15 @@ class Route_mapsTemplate(NetworkTemplate):
                             "set": {
                                 "aigp_metric": {
                                     "value": "{{ aigp_metric.split('aigp-metric ')[1] if aigp_metric is defined and\
-                                        'igp-metric' not in aigp_metric.split(' ') }}",
+                                            'igp-metric' not in aigp_metric.split(' ') }}",
                                     "igp_metric": "{{ True if aigp_metric is defined and 'igp-metric' in aigp_metric.split(' ') }}",
                                 },
                                 "as_path": {
                                     "prepend": {
-                                        "as_number": "{{ as_path.split('as-path prepend ')[1] if as_path is defined and 'prepend' in as_path and\
-                                            'last-as' not in as_path }}",
+                                        "as_number": "{{ as_path.split('as-path prepend ')[1].split(' ')|sort if as_path is defined and 'prepend' in as_path and\
+                                                'last-as' not in as_path }}",
                                         "last_as": "{{ as_path.split('as-path prepend last-as ')[1] if as_path is defined and 'prepend' in as_path and\
-                                            'last-as' in as_path }}",
+                                                'last-as' in as_path }}",
                                     },
                                     "tag": "{{ True if as_path is defined and 'tag' in as_path }}",
                                 },
@@ -1051,9 +1045,9 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "comm_list": "{{ comm_list.split(' ')[1] if comm_list is defined }}",
                                 "community": {
                                     "number": "{{ community.split(' ')[1] if community is defined and 'additive' not in community.split(' ')\
-                                             and 'gshut' not in community.split(' ') and 'internet' not in community.split(' ')\
-                                                 and 'internet' not in community.split(' ') and 'local_as' not in community.split(' ')\
-                                                     and 'no_advertise' not in community.split(' ') and 'no_export' not in community.split(' ') }}",
+                                                 and 'gshut' not in community.split(' ') and 'internet' not in community.split(' ')\
+                                                     and 'internet' not in community.split(' ') and 'local_as' not in community.split(' ')\
+                                                         and 'no_advertise' not in community.split(' ') and 'no_export' not in community.split(' ') }}",
                                     "additive": "{{ True if community is defined and 'additive' in community }}",
                                     "gshut": "{{ True if community is defined and 'gshut' in community }}",
                                     "internet": "{{ True if community is defined and 'internet' in community }}",
@@ -1072,46 +1066,46 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "extcomm_list": "{{ extcomm_list.split(' ')[1] if extcomm_list is defined }}",
                                 "extcommunity": {
                                     "cost": {
-                                        "id": "{% if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and 'pre-bestpath' not in extcommunity %}\
-                                            {{ extcommunity.split(' ')[2] }}\
-                                                {% elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) %}\
-                                                    {{ extcommunity.split(' ')[3] }}\
-                                                    {% endif %}",
+                                        "id": "{%- if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and 'pre-bestpath' not in extcommunity -%}\
+                                                {{ extcommunity.split(' ')[2] }}\
+                                                    {%- elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) -%}\
+                                                        {{ extcommunity.split(' ')[3] }}\
+                                                        {%- endif -%}",
                                         "cost_value": "{% if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and 'pre-bestpath' not in extcommunity %}\
-                                            {{ extcommunity.split(' ')[3] }}\
-                                            {% elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) %}\
-                                                {{ extcommunity.split(' ')[4] }}\
-                                                {% endif %}",
+                                                {{ extcommunity.split(' ')[3] }}\
+                                                {% elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) %}\
+                                                    {{ extcommunity.split(' ')[4] }}\
+                                                    {% endif %}",
                                         "igp": "{{ True if extcommunity is defined and 'cost' in extcommunity and 'igp' in extcommunity }}",
                                         "pre_bestpath": "{{ True if extcommunity is defined and 'cost' in extcommunity and 'pre-bestpath' in extcommunity }}",
                                     },
                                     "rt": {
                                         "address": "{{ extcommunity.split(' ')[2] if extcommunity is defined and 'rt' in extcommunity and\
-                                            'range' not in extcommunity }}",
+                                                'range' not in extcommunity }}",
                                         "range": {
                                             "lower_limit": "{{ extcommunity.split('range ')[1].split(' ')[0] if extcommunity is defined and\
-                                                'rt' in extcommunity and 'range' in extcommunity }}",
+                                                    'rt' in extcommunity and 'range' in extcommunity }}",
                                             "upper_limit": "{{ extcommunity.split('range ')[1].split(' ')[1] if extcommunity is defined and\
-                                                'rt' in extcommunity and 'range' in extcommunity }}",
+                                                    'rt' in extcommunity and 'range' in extcommunity }}",
                                         },
                                         "additive": "{{ True if extcommunity is defined and 'rt' in extcommunity and 'additive' in extcommunity  }}",
                                     },
                                     "soo": "{{ extcommunity.split(' ')[2] if extcommunity is defined and 'soo' in extcommunity }}",
                                     "vpn_distinguisher": {
                                         "address": "{{ extcommunity.split(' ')[2] if extcommunity is defined and\
-                                            'vpn-distinguisher' in extcommunity and 'range' not in extcommunity }}",
+                                                'vpn-distinguisher' in extcommunity and 'range' not in extcommunity }}",
                                         "range": {
                                             "lower_limit": "{{ extcommunity.split('range ')[1].split(' ')[0] if extcommunity is defined and\
-                                                'vpn-distinguisher' in extcommunity and 'range' in extcommunity }}",
+                                                    'vpn-distinguisher' in extcommunity and 'range' in extcommunity }}",
                                             "upper_limit": "{{ extcommunity.split('range ')[1].split(' ')[1] if extcommunity is defined and\
-                                                'vpn-distinguisher' in extcommunity and 'range' in extcommunity }}",
+                                                    'vpn-distinguisher' in extcommunity and 'range' in extcommunity }}",
                                         },
                                         "additive": "{{ True if extcommunity is defined and 'vpn-distinguisher' in extcommunity and\
-                                             'additive' in extcommunity }}",
+                                                 'additive' in extcommunity }}",
                                     },
                                 },
                                 "global_route": "{{ True if global is defined }}",
-                                "interface": "{{ interface.split('interface ')[1] if interface is defined }}",
+                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ')|sort() if interfaces is defined }}",
                                 "level": {
                                     "level_1": "{{ True if level is defined and 'level-1' in level and 'level-1-2' not in level }}",
                                     "level_1_2": "{{ True if level is defined and 'level-1-2' in level }}",
@@ -1122,29 +1116,29 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "local_preference": "{{ local_preference.split('local-preference ')[1] if local_preference is defined }}",
                                 "metric": {
                                     "deviation": "{%- if metric is defined and '+' in metric -%}{{ 'plus' }}\
-                                            {%- elif metric is defined and '-' in metric -%}{{ 'minus' }}{%- endif -%}",
+                                                {%- elif metric is defined and '-' in metric -%}{{ 'minus' }}{%- endif -%}",
                                     "metric_value": "{{ metric.split(' ')[1] if metric is defined and\
-                                         (metric.split(' ')[1] != '+' or metric.split(' ')[1] != '-') }}",
+                                             (metric.split(' ')[1] != '+' or metric.split(' ')[1] != '-') }}",
                                     "eigrp_delay": "{% if metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                        {{ metric.split('+')[1].split(' ')[0] }}\
-                                            {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                                {{ metric.split('-')[1].split(' ')[0] }}\
-                                                {% endif %}",
+                                            {{ metric.split('+')[1].split(' ')[0] }}\
+                                                {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
+                                                    {{ metric.split('-')[1].split(' ')[0] }}\
+                                                    {% endif %}",
                                     "metric_reliability": "{% if metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                        {{ metric.split('+')[1].split(' ')[1] }}\
-                                            {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                                {{ metric.split('-')[1].split(' ')[1] }}\
-                                                {% endif %}",
+                                            {{ metric.split('+')[1].split(' ')[1] }}\
+                                                {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
+                                                    {{ metric.split('-')[1].split(' ')[1] }}\
+                                                    {% endif %}",
                                     "metric_bandwidth": "{% if metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                        {{ metric.split('+')[1].split(' ')[2] }}\
-                                            {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                                {{ metric.split('-')[1].split(' ')[2] }}\
-                                                {% endif %}",
+                                            {{ metric.split('+')[1].split(' ')[2] }}\
+                                                {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
+                                                    {{ metric.split('-')[1].split(' ')[2] }}\
+                                                    {% endif %}",
                                     "mtu": "{% if metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                        {{ metric.split('+')[1].split(' ')[3] }}\
-                                            {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
-                                                {{ metric.split('-')[1].split(' ')[3] }}\
-                                                {% endif %}",
+                                            {{ metric.split('+')[1].split(' ')[3] }}\
+                                                {% elif metric is defined and metric.split(' ')|length > 2 and '+' in metric %}\
+                                                    {{ metric.split('-')[1].split(' ')[3] }}\
+                                                    {% endif %}",
                                 },
                                 "metric_type": {
                                     "external": "{{ True if metric_type is defined and 'external' in metric_type }}",
@@ -1198,7 +1192,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "df": "{{ df.split('df ')[1] if df is defined }}",
                                     "global_route": {
                                         "address": "{% if global is defined and 'verify-availability' not in global %}{{ global.split('global next-hop ')[1] }}\
-                                                    {% elif global is defined and 'verify-availability' in global %}{{ global.split(' ')[3] }}{% endif %}",
+                                                        {% elif global is defined and 'verify-availability' in global %}{{ global.split(' ')[3] }}{% endif %}",
                                         "verify_availability": {
                                             "address": "{{ global.split(' ')[3] if global is defined and 'verify-availability' in global }}",
                                             "sequence": "{{ global.split(' ')[4] if global is defined and 'verify-availability' in global }}",
@@ -1207,30 +1201,30 @@ class Route_mapsTemplate(NetworkTemplate):
                                     },
                                     "next_hop": {
                                         "address": "{{ next_hop.split('next-hop ')[1] if next_hop is defined and 'peer-address' not in next_hop and\
-                                             'self' not in next_hop and next_hop.split(' ')|length == 2 }}",
+                                                 'self' not in next_hop and next_hop.split(' ')|length == 2 }}",
                                         "dynamic": "{{ True if next_hop is defined and 'dynamic dhcp' in next_hop }}",
                                         "encapsulate": "{{ next_hop.split('next-hop encapsulate l3vpn ')[1] if next_hop is defined and\
-                                            'encapsulate' in next_hop }}",
+                                                'encapsulate' in next_hop }}",
                                         "peer_address": "{{ True if next_hop is defined and 'peer-address' in next_hop }}",
                                         "recursive": {
                                             "global_route": "{{ True if next_hop is defined and 'global' in next_hop.split(' ') }}",
                                             "vrf": "{{ next_hop.split(' ')[3] if next_hop is defined and 'vrf' in next_hop }}",
                                             "address": "{%- if next_hop is defined and 'global' in next_hop.split(' ') -%}\
-                                                {{  next_hop.split('next-hop recursive global ')[1] }}\
-                                                {%- elif next_hop is defined and 'vrf' in next_hop.split(' ') -%}{{  next_hop.split(' ')[4] }}\
-                                                {%- elif next_hop is defined and 'vrf' not in next_hop.split(' ') and 'global' not in next_hop.split(' ') -%}\
-                                                    {{ next_hop.split(' ')[2] }}\
-                                                        {%- endif -%}",
+                                                    {{  next_hop.split('next-hop recursive global ')[1] }}\
+                                                    {%- elif next_hop is defined and 'vrf' in next_hop.split(' ') -%}{{  next_hop.split(' ')[4] }}\
+                                                    {%- elif next_hop is defined and 'vrf' not in next_hop.split(' ') and 'global' not in next_hop.split(' ') -%}\
+                                                        {{ next_hop.split(' ')[2] }}\
+                                                            {%- endif -%}",
                                         },
                                         "self": "{{ True if next_hop is defined and 'self' in next_hop }}",
                                         "verify_availability": {
                                             "set": "{{ True if next_hop is defined and 'verify-availability' in next_hop and 'track' not in next_hop }}",
                                             "address": "{{ next_hop.split(' ')[2] if next_hop is defined and 'verify-availability' in next_hop and\
-                                                 'track' in next_hop }}",
+                                                     'track' in next_hop }}",
                                             "sequence": "{{ next_hop.split(' ')[3] if next_hop is defined and 'verify-availability' in next_hop and\
-                                                 'track' in next_hop }}",
+                                                     'track' in next_hop }}",
                                             "track": "{{ next_hop.split('track ')[1] if next_hop is defined and 'verify-availability' in next_hop and\
-                                                 'track' in next_hop }}",
+                                                     'track' in next_hop }}",
                                         },
                                     },
                                     "precedence": {
@@ -1305,9 +1299,9 @@ class Route_mapsTemplate(NetworkTemplate):
                                     },
                                     "next_hop": {
                                         "address": "{{ next_hop.split('next-hop ')[1] if next_hop is defined and\
-                                             next_hop.split(' ')|length == 2 and 'peer-address' not in next_hop }}",
+                                                 next_hop.split(' ')|length == 2 and 'peer-address' not in next_hop }}",
                                         "encapsulate": "{{ next_hop.split('next-hop encapsulate l3vpn ')[1] if next_hop is defined and\
-                                             'encapsulate' in next_hop}}",
+                                                 'encapsulate' in next_hop}}",
                                         "peer_address": "{{ True if next_hop is defined and next_hop.split(' ')|length == 2 and 'peer-address' in next_hop }}",
                                         "recursive": "{{ next_hop.split('next-hop recursive ')[1] if next_hop is defined }}",
                                     },

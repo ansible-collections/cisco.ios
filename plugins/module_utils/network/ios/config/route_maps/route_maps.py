@@ -297,9 +297,9 @@ class Route_maps(ResourceModule):
                         if match:
                             if match.get("as_path") and match.get(
                                 "as_path"
-                            ).get("acl"):
-                                match["as_path"]["acl"] = convert_to_dict(
-                                    match["as_path"]["acl"], "acl"
+                            ).get("acls"):
+                                match["as_path"]["acls"] = convert_to_dict(
+                                    match["as_path"]["acls"], "acl"
                                 )
                             if match.get("community") and match.get(
                                 "community"
@@ -311,6 +311,10 @@ class Route_maps(ResourceModule):
                                 match["extcommunity"] = convert_to_dict(
                                     match["extcommunity"], "num"
                                 )
+                            if match.get("interfaces"):
+                                match["interfaces"] = convert_to_dict(
+                                    match["interfaces"], "interface"
+                                )
                             if match.get("ip"):
                                 for each_ip_param in [
                                     "address",
@@ -321,24 +325,24 @@ class Route_maps(ResourceModule):
                                 ]:
                                     if match["ip"].get(each_ip_param):
                                         if match["ip"][each_ip_param].get(
-                                            "acl"
+                                            "acls"
                                         ):
                                             match["ip"][each_ip_param][
-                                                "acl"
+                                                "acls"
                                             ] = convert_to_dict(
                                                 match["ip"][each_ip_param][
-                                                    "acl"
+                                                    "acls"
                                                 ],
                                                 "acl",
                                             )
                                         elif match["ip"][each_ip_param].get(
-                                            "prefix_list"
+                                            "prefix_lists"
                                         ):
                                             match["ip"][each_ip_param][
-                                                "prefix_list"
+                                                "prefix_lists"
                                             ] = convert_to_dict(
                                                 match["ip"][each_ip_param][
-                                                    "prefix_list"
+                                                    "prefix_lists"
                                                 ],
                                                 "prefix_list",
                                             )
@@ -352,13 +356,13 @@ class Route_maps(ResourceModule):
                                 )
                             if match.get("mdt_group") and match.get(
                                 "mdt_group"
-                            ).get("acl"):
-                                match["mdt_group"]["acl"] = convert_to_dict(
-                                    match["mdt_group"]["acl"], "acl"
+                            ).get("acls"):
+                                match["mdt_group"]["acls"] = convert_to_dict(
+                                    match["mdt_group"]["acls"], "acl"
                                 )
-                            if match.get("policy_list"):
-                                match["policy_list"] = convert_to_dict(
-                                    match["policy_list"], "policy"
+                            if match.get("policy_lists"):
+                                match["policy_lists"] = convert_to_dict(
+                                    match["policy_lists"], "policy"
                                 )
                             if match.get("security_group"):
                                 for each_sg_param in ["source", "destination"]:
@@ -375,9 +379,9 @@ class Route_maps(ResourceModule):
                                         )
                         set = every.get("set")
                         if set:
-                            if set.get("interface"):
-                                set["interface"] = convert_to_dict(
-                                    set["interface"], "interface"
+                            if set.get("interfaces"):
+                                set["interfaces"] = convert_to_dict(
+                                    set["interfaces"], "interface"
                                 )
                         action = every.get("action")
                         sequence = every.get("sequence")

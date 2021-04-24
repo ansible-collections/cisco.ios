@@ -5,7 +5,7 @@ merged:
   commands:
     - route-map test_2 deny 10
     - match security-group source tag 10 20
-    - match local-preference 55 105
+    - match local-preference 105 55
     - match mpls-label
     - match ipv6 next-hop prefix-list test_new
     - match ipv6 route-source route_src_acl
@@ -24,12 +24,12 @@ merged:
     - match tag list test_match_tag
     - match ipv6 address test_acl_20
     - match route-type level-1
-    - match as-path 200 100
+    - match as-path 100 200
     - match additional-paths advertise-set all group-best
     - route-map test_1 deny 10
     - description this is test route
     - match security-group source tag 10 20
-    - match ip next-hop prefix-list test_2_new test_1_new
+    - match ip next-hop prefix-list test_1_new test_2_new
     - match ip route-source 10
     - match local-preference 100 50
     - match mpls-label
@@ -41,11 +41,11 @@ merged:
           match:
             ip:
               next_hop:
-                prefix_list:
-                  - test_2_new
+                prefix_lists:
                   - test_1_new
+                  - test_2_new
               route_source:
-                acl:
+                acls:
                   - "10"
             local_preference:
               value:
@@ -65,9 +65,9 @@ merged:
               all: true
               group_best: true
             as_path:
-              acl:
-                - 200
+              acls:
                 - 100
+                - 200
             ipv6:
               address:
                 acl: "test_acl_20"
@@ -95,8 +95,8 @@ merged:
                 acl: route_src_acl
             local_preference:
               value:
-                - "55"
                 - "105"
+                - "55"
             mpls_label: true
             security_group:
               source:
@@ -132,7 +132,7 @@ overridden:
     - no route-map test_2
     - route-map test_override deny 10
     - match security-group source tag 15 20
-    - match local-preference 110 105
+    - match local-preference 105 110
     - match mpls-label
     - match ipv6 next-hop prefix-list test_new
     - match ipv6 route-source route_src_acl
@@ -149,8 +149,8 @@ overridden:
     - no description this is test route
     - description this is override route
     - match ip flowspec dest-pfx test_acl_1 test_acl_2
-    - no match ip next-hop prefix-list test_2_new test_1_new
-    - match ip next-hop test1_acl 10
+    - no match ip next-hop prefix-list test_1_new test_2_new
+    - match ip next-hop 10 test1_acl
     - no match ip route-source 10
     - match metric external 10
     - match length 10 100
@@ -166,14 +166,14 @@ overridden:
           match:
             ip:
               flowspec:
-                acl:
+                acls:
                   - test_acl_1
                   - test_acl_2
                 dest_pfx: true
               next_hop:
-                acl:
-                  - "test1_acl"
+                acls:
                   - "10"
+                  - "test1_acl"
             length:
               maximum: 100
               minimum: 10
@@ -211,8 +211,8 @@ overridden:
                 acl: route_src_acl
             local_preference:
               value:
-                - "110"
                 - "105"
+                - "110"
             mpls_label: true
             security_group:
               source:
@@ -247,7 +247,7 @@ replaced:
   commands:
     - route-map test_replaced deny 10
     - match security-group source tag 15 20
-    - match local-preference 110 105
+    - match local-preference 105 110
     - match mpls-label
     - match ipv6 next-hop prefix-list test_new
     - match ipv6 route-source route_src_acl
@@ -264,8 +264,8 @@ replaced:
     - no description this is test route
     - description this is replaced route
     - match ip flowspec dest-pfx test_acl_1 test_acl_2
-    - no match ip next-hop prefix-list test_2_new test_1_new
-    - match ip next-hop test1_acl 10
+    - no match ip next-hop prefix-list test_1_new test_2_new
+    - match ip next-hop 10 test1_acl
     - no match ip route-source 10
     - match metric external 10
     - match length 10 100
@@ -281,14 +281,14 @@ replaced:
           match:
             ip:
               flowspec:
-                acl:
+                acls:
                   - test_acl_1
                   - test_acl_2
                 dest_pfx: true
               next_hop:
-                acl:
-                  - "test1_acl"
+                acls:
                   - "10"
+                  - "test1_acl"
             length:
               maximum: 100
               minimum: 10
@@ -326,8 +326,8 @@ replaced:
                 acl: route_src_acl
             local_preference:
               value:
-                - "55"
                 - "105"
+                - "55"
             mpls_label: true
             security_group:
               source:
@@ -369,8 +369,8 @@ replaced:
                 acl: route_src_acl
             local_preference:
               value:
-                - "110"
                 - "105"
+                - "110"
             mpls_label: true
             security_group:
               source:

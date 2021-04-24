@@ -97,7 +97,7 @@ options:
                   set:
                     description: Set AS path list
                     type: bool
-                  acl:
+                  acls:
                     description:
                       - AS path access-list
                       - Please refer vendor documentation for valid values
@@ -136,7 +136,7 @@ options:
                   - Please refer vendor documentation for valid values
                 type: list
                 elements: str
-              interface:
+              interfaces:
                 description: Match first hop interface of route
                 type: list
                 elements: str
@@ -148,14 +148,14 @@ options:
                     description: Match address of route or match packet
                     type: dict
                     suboptions:
-                      acl: &acl
+                      acls: &acls
                         description:
                           - Match entries of acl
                           - IP acl name/number
                           - Please refer vendor documentation for valid values
                         type: list
                         elements: str
-                      prefix_list: &prefix_list
+                      prefix_lists: &prefix_lists
                         description:
                           - Match entries of prefix-lists
                           - IP prefix-list name
@@ -171,8 +171,8 @@ options:
                       src_pfx:
                         description: Match source prefix component of flowspec prefix
                         type: bool
-                      acl: *acl
-                      prefix_list: *prefix_list
+                      acls: *acls
+                      prefix_lists: *prefix_lists
                   next_hop:
                     description: Match next-hop address of route
                     type: dict
@@ -180,8 +180,8 @@ options:
                       set:
                         description: Set next-hop address
                         type: bool
-                      acl: *acl
-                      prefix_list: *prefix_list
+                      acls: *acls
+                      prefix_lists: *prefix_lists
                   redistribution_source:
                     description: route redistribution source (EIGRP only)
                     type: dict
@@ -189,8 +189,8 @@ options:
                       set:
                         description: Set redistribution-source
                         type: bool
-                      acl: *acl
-                      prefix_list: *prefix_list
+                      acls: *acls
+                      prefix_lists: *prefix_lists
                   route_source:
                     description: Match advertising source address of route
                     type: dict
@@ -201,8 +201,8 @@ options:
                       redistribution_source:
                         description: route redistribution source (EIGRP only)
                         type: bool
-                      acl: *acl
-                      prefix_list: *prefix_list
+                      acls: *acls
+                      prefix_lists: *prefix_lists
               ipv6:
                 description: IPv6 specific information
                 type: dict
@@ -287,7 +287,7 @@ options:
                   set:
                     description: Set and Match routes corresponding to MDT group
                     type: bool
-                  acl:
+                  acls:
                     description:
                       - IP access-list number/IP standard access-list name
                       - Please refer vendor documentation for valid values
@@ -316,7 +316,7 @@ options:
               mpls_label:
                 description: Match routes which have MPLS labels
                 type: bool
-              policy_list:
+              policy_lists:
                 description: Match IP policy list
                 type: list
                 elements: str
@@ -476,7 +476,8 @@ options:
                         description:
                           - AS number
                           - Please refer vendor documentation for valid values
-                        type: str
+                        type: list
+                        elements: str
                       last_as:
                         description:
                           - Prepend last AS to the as-path
@@ -637,7 +638,7 @@ options:
               global_route:
                 description: Set to global routing table
                 type: bool
-              interface:
+              interfaces:
                 description: Output interface
                 type: list
                 elements: str
@@ -1208,11 +1209,11 @@ EXAMPLES = """
             match:
               ip:
                 next_hop:
-                  prefix_list:
+                  prefix_lists:
                     - test_1_new
                     - test_2_new
                 route_source:
-                  acl:
+                  acls:
                     - 10
               security_group:
                 source:
@@ -1232,7 +1233,7 @@ EXAMPLES = """
                 all: true
                 group_best: true
               as_path:
-                acl:
+                acls:
                   - 100
                   - 200
               ipv6:
@@ -1408,12 +1409,12 @@ EXAMPLES = """
             match:
               ip:
                 next_hop:
-                  acl:
+                  acls:
                     - 10
                     - test1_acl
                 flowspec:
                   dest_pfx: true
-                  acl:
+                  acls:
                     - test_acl_1
                     - test_acl_2
               length:
@@ -1597,12 +1598,12 @@ EXAMPLES = """
             match:
               ip:
                 next_hop:
-                  acl:
+                  acls:
                     - 10
                     - test1_acl
                 flowspec:
                   dest_pfx: true
-                  acl:
+                  acls:
                     - test_acl_1
                     - test_acl_2
               length:
@@ -1805,13 +1806,13 @@ EXAMPLES = """
 #                     "match": {
 #                         "ip": {
 #                             "next_hop": {
-#                                 "prefix_list": [
+#                                 "prefix_lists": [
 #                                     "test_2_new",
 #                                     "test_1_new"
 #                                 ]
 #                             },
 #                             "route_source": {
-#                                 "acl": [
+#                                 "acls": [
 #                                     "10"
 #                                 ]
 #                             }
@@ -1843,7 +1844,7 @@ EXAMPLES = """
 #                             "group_best": true
 #                         },
 #                         "as_path": {
-#                             "acl": [
+#                             "acls": [
 #                                 200,
 #                                 100
 #                             ]
@@ -1990,11 +1991,11 @@ EXAMPLES = """
             match:
               ip:
                 next_hop:
-                  prefix_list:
+                  prefix_lists:
                     - test_1_new
                     - test_2_new
                 route_source:
-                  acl:
+                  acls:
                     - 10
               security_group:
                 source:
@@ -2014,7 +2015,7 @@ EXAMPLES = """
                 all: true
                 group_best: true
               as_path:
-                acl:
+                acls:
                   - 100
                   - 200
               ipv6:
@@ -2160,13 +2161,13 @@ EXAMPLES = """
 #                     "match": {
 #                         "ip": {
 #                             "next_hop": {
-#                                 "prefix_list": [
+#                                 "prefix_lists": [
 #                                     "test_2_new",
 #                                     "test_1_new"
 #                                 ]
 #                             },
 #                             "route_source": {
-#                                 "acl": [
+#                                 "acls": [
 #                                     "10"
 #                                 ]
 #                             }
@@ -2198,7 +2199,7 @@ EXAMPLES = """
 #                             "group_best": true
 #                         },
 #                         "as_path": {
-#                             "acl": [
+#                             "acls": [
 #                                 200,
 #                                 100
 #                             ]

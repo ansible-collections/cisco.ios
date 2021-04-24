@@ -85,15 +85,15 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is merge test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True, name=["new_merge"]
                                     ),
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -163,7 +163,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "route-map test_1 deny 10",
             "continue 20",
             "description this is merge test",
-            "match community 99 new_merge test_2 100 test_1 exact-match",
+            "match community 100 99 new_merge test_1 test_2 exact-match",
             "match length 5000 50000",
             "set dampening 10 100 100 10",
             "set extcomm-list test_excomm delete",
@@ -180,7 +180,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "match ipv6 next-hop prefix-list test_new",
             "match ipv6 route-source route_src_acl",
             "match security-group source tag 10 20",
-            "match local-preference 55 105",
+            "match local-preference 105 55",
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
@@ -198,24 +198,24 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True,
                                         name=["99", "100", "test_1", "test_2"],
                                     ),
                                     extcommunity=["110", "130"],
-                                    interface=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    interfaces=["GigabitEthernet0/1"],
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     ipv6=dict(
                                         route_source=dict(acl="test_ipv6")
                                     ),
                                     length=dict(maximum=10000, minimum=1000),
                                     local_preference=dict(value=[100]),
-                                    mdt_group=dict(acl=["25", "30"]),
+                                    mdt_group=dict(acls=["25", "30"]),
                                     metric=dict(external=True, value=100),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -252,7 +252,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                         )
                                     ),
                                     global_route=True,
-                                    interface=[
+                                    interfaces=[
                                         "GigabitEthernet0/2",
                                         "GigabitEthernet0/1",
                                     ],
@@ -291,15 +291,15 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is replace test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True, name=["new_replace"]
                                     ),
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -372,7 +372,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "description this is replace test",
             "match community new_replace exact-match",
             "match length 5000 50000",
-            "no match mdt-group 30 25",
+            "no match mdt-group 25 30",
             "no match extcommunity 110 130",
             "no match interface GigabitEthernet0/1",
             "no match ipv6 route-source test_ipv6",
@@ -398,7 +398,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "match ipv6 next-hop prefix-list test_new",
             "match ipv6 route-source route_src_acl",
             "match security-group source tag 10 20",
-            "match local-preference 55 105",
+            "match local-preference 105 55",
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
@@ -416,24 +416,24 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True,
                                         name=["99", "100", "test_1", "test_2"],
                                     ),
                                     extcommunity=["110", "130"],
-                                    interface=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    interfaces=["GigabitEthernet0/1"],
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     ipv6=dict(
                                         route_source=dict(acl="test_ipv6")
                                     ),
                                     length=dict(maximum=10000, minimum=1000),
                                     local_preference=dict(value=[100]),
-                                    mdt_group=dict(acl=["25", "30"]),
+                                    mdt_group=dict(acls=["25", "30"]),
                                     metric=dict(external=True, value=100),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -473,7 +473,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                         )
                                     ),
                                     global_route=True,
-                                    interface=[
+                                    interfaces=[
                                         "GigabitEthernet0/2",
                                         "GigabitEthernet0/1",
                                     ],
@@ -512,15 +512,15 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is override test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True, name=["new_override"]
                                     ),
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -593,7 +593,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "description this is override test",
             "match community new_override exact-match",
             "match length 5000 50000",
-            "no match mdt-group 30 25",
+            "no match mdt-group 25 30",
             "no match extcommunity 110 130",
             "no match interface GigabitEthernet0/1",
             "no match ipv6 route-source test_ipv6",
@@ -619,7 +619,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "match ipv6 next-hop prefix-list test_new",
             "match ipv6 route-source route_src_acl",
             "match security-group source tag 10 20",
-            "match local-preference 55 105",
+            "match local-preference 105 55",
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
@@ -637,24 +637,24 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True,
                                         name=["99", "100", "test_1", "test_2"],
                                     ),
                                     extcommunity=["110", "130"],
-                                    interface=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    interfaces=["GigabitEthernet0/1"],
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     ipv6=dict(
                                         route_source=dict(acl="test_ipv6")
                                     ),
                                     length=dict(maximum=10000, minimum=1000),
                                     local_preference=dict(value=[100]),
-                                    mdt_group=dict(acl=["25", "30"]),
+                                    mdt_group=dict(acls=["25", "30"]),
                                     metric=dict(external=True, value=100),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -694,7 +694,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                         )
                                     ),
                                     global_route=True,
-                                    interface=[
+                                    interfaces=[
                                         "GigabitEthernet0/2",
                                         "GigabitEthernet0/1",
                                     ],
@@ -747,27 +747,27 @@ class TestIosRouteMapsModule(TestIosModule):
                                 description="this is test",
                                 match=dict(
                                     additional_paths=dict(all=True),
-                                    as_path=dict(acl=[100, 120]),
+                                    as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
                                         exact_match=True,
                                         name=["99", "100", "test_1", "test_2"],
                                     ),
                                     extcommunity=["110", "130"],
-                                    interface=[
+                                    interfaces=[
                                         "GigabitEthernet0/1",
                                         "GigabitEthernet0/2",
                                     ],
-                                    ip=dict(address=dict(acl=[10, 100])),
+                                    ip=dict(address=dict(acls=[10, 100])),
                                     ipv6=dict(
                                         route_source=dict(acl="test_ipv6")
                                     ),
                                     length=dict(maximum=10000, minimum=1000),
                                     local_preference=dict(value=[100]),
-                                    mdt_group=dict(acl=["25", "30"]),
+                                    mdt_group=dict(acls=["25", "30"]),
                                     metric=dict(external=True, value=100),
                                     mpls_label=True,
-                                    policy_list=["ip_policy"],
+                                    policy_lists=["ip_policy"],
                                     route_type=dict(
                                         external=dict(type_1=True),
                                         nssa_external=dict(type_1=True),
@@ -807,7 +807,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                         )
                                     ),
                                     global_route=True,
-                                    interface=[
+                                    interfaces=[
                                         "GigabitEthernet0/2",
                                         "GigabitEthernet0/1",
                                     ],
@@ -837,10 +837,10 @@ class TestIosRouteMapsModule(TestIosModule):
             "continue 100",
             "description this is test",
             "match additional-paths advertise-set all",
-            "match as-path 120 100",
+            "match as-path 100 120",
             "match clns address test_osi",
-            "match mdt-group 30 25",
-            "match community 99 test_2 100 test_1 exact-match",
+            "match mdt-group 25 30",
+            "match community 100 99 test_1 test_2 exact-match",
             "match extcommunity 110 130",
             "match interface GigabitEthernet0/1 GigabitEthernet0/2",
             "match ip address 10 100",

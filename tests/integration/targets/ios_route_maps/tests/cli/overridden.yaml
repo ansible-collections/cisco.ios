@@ -20,12 +20,12 @@
                 match:
                   ip:
                     next_hop:
-                      acl:
+                      acls:
                         - 10
                         - test1_acl
                     flowspec:
                       dest_pfx: true
-                      acl:
+                      acls:
                         - test_acl_1
                         - test_acl_2
                   length:
@@ -95,9 +95,6 @@
                     precedence:
                       critical: true
         state: overridden
-
-    - debug:
-        msg: "{{ result['after'] }}"
 
     - name: Assert that before dict is correctly generated
       assert:

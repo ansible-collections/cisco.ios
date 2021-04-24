@@ -18,11 +18,11 @@
                 match:
                   ip:
                     next_hop:
-                      prefix_list:
+                      prefix_lists:
                         - test_1_new
                         - test_2_new
                     route_source:
-                      acl:
+                      acls:
                         - 10
                   security_group:
                     source:
@@ -42,7 +42,7 @@
                     all: true
                     group_best: true
                   as_path:
-                    acl:
+                    acls:
                       - 100
                       - 200
                   ipv6:
