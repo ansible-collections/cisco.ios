@@ -80,6 +80,16 @@ def tmplt_filter(config_data):
         cmd += " args {args}".format(args=verb["args"])
     return cmd
 
+def tmplt_source_interface(config_data):
+    cmd = "logging source-interface"
+    verb = config_data.get("source_interface")
+
+    if verb.get("interface"):
+        cmd += " {interface}".format(interface=verb["interface"])
+    if verb.get("vrf"):
+        cmd += " vrf {vrf}".format(vrf=verb["vrf"])
+    return cmd
+
 def tmplt_common(verb, cmd):
     if verb:
         if verb.get("all"):
@@ -144,28 +154,29 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<filtered>filtered)*
-                \s*(?P<xml>xml)*
-                \s*(?P<sequence_num_session>sequence-num-session)*
-                \s*(?P<vrf>\svrf\s\S+)*
-                \s*(?P<discriminator>discriminator\s.+$)*
-                \s*(?P<stream>stream\s\d+$)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<filtered>filtered))?
+                (\s(?P<xml>xml))?
+                (\s(?P<sequence_num_session>sequence-num-session))?
+                (\svrf\s(?P<vrf>\S+))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
+                (\sstream\s(?P<stream>\d+$))?
                 $""", re.VERBOSE),
             "setval": tmplt_host,
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [
                         {"hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
-                        "discriminator" : "{{ discriminator.split('discriminator ')[1] if discriminator is defined }}",
-                        "vrf" : "{{ vrf.split('vrf ')[1] }}",
+                        "ipv6" : "{{ ipv6 }}",
+                        "discriminator" : "{{ discriminator }}",
+                        "vrf" : "{{ vrf }}",
                         "xml" : "{{ True if xml is defined }}",
                         "filtered" : "{{ True if filtered is defined }}",
                         "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
-                        "stream" : "{{ stream.split('stream ')[1] if stream is defined }}", }
-                        ]
+                        "stream" : "{{ stream }}", 
+                        }
+                    ]
                 }
             },
         },
@@ -174,29 +185,29 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<transport>transport\stcp|udp)*
-                \s*(?P<audit>audit)*
-                \s*(?P<sequence_num_session>sequence-num-session)*
-                \s*(?P<xml>xml)*
-                \s*(?P<discriminator>discriminator\s.+$)*
-                \s*(?P<port>port\s[1-9][0-9]*)*
-                \s*(?P<filtered>filtered\sstream\s[1-9][0-9]*)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\stransport\s(?P<transport>tcp|udp))?
+                (\sport\s(?P<port>[1-9][0-9]*))?
+                (\s(?P<audit>audit))?
+                (\s(?P<xml>xml))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
+                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
+                (\s(?P<sequence_num_session>sequence-num-session))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
+                        "ipv6" : "{{ ipv6 }}",
                         "transport": {
-                            "{{ transport.split('transport ')[1] if transport is defined }}" : {
+                            "{{ transport }}" : {
                                     "audit" : "{{ True if audit is defined }}",
                                     "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
                                     "xml" : "{{ True if xml is defined }}",
-                                    "discriminator" : "{{ discriminator.split('discriminator ')[1] if discriminator is defined }}",
-                                    "port" : "{{ port.split('port ')[1] if port is defined }}",
+                                    "discriminator" : "{{ discriminator }}",
+                                    "port" : "{{ port }}",
                                     "filtered" : "{{ filtered.split('filtered ')[1] if filtered is defined }}",
                                 }
                             }
@@ -210,23 +221,34 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<transport>transport\sudp\ssession-id)*
-                \s*(?P<tag>hostname|ip|ipv6)*
-                \s*(?P<text>\sstring\s.+$)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<transport>transport\sudp))?
+                (\sport\s(?P<port>[1-9][0-9]*))?
+                (\s(?P<audit>audit))?
+                (\s(?P<xml>xml))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
+                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
+                (\s(?P<sequence_num_session>sequence-num-session))?
+                (\ssession-id\s(?P<tag>hostname|ip|ipv6))?
+                (\ssession-id\sstring\s(?P<text>.+$))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
+                        "ipv6" : "{{ ipv6 }}",
                         "transport": {
                             "udp" : {
+                                "audit" : "{{ True if audit is defined }}",
+                                "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
+                                "xml" : "{{ True if xml is defined }}",
+                                "discriminator" : "{{ discriminator }}",
+                                "port" : "{{ port }}",
                                 "session_id": {
                                     "tag" : "{{ tag }}",
-                                    "text" : "{{ text.split('string ')[1] if text is defined }}",
+                                    "text" : "{{ text }}",
                                     }
                                 }
                             }
@@ -240,23 +262,34 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<transport>transport\stcp\ssession-id)*
-                \s*(?P<tag>hostname|ip|ipv6)*
-                \s*(?P<text>\sstring\s.+$)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<transport>transport\stcp))?
+                (\sport\s(?P<port>[1-9][0-9]*))?
+                (\s(?P<audit>audit))?
+                (\s(?P<xml>xml))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
+                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
+                (\s(?P<sequence_num_session>sequence-num-session))?
+                (\ssession-id\s(?P<tag>hostname|ip|ipv6))?
+                (\ssession-id\sstring\s(?P<text>.+$))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
+                        "ipv6" : "{{ ipv6 }}",
                         "transport": {
                                 "tcp": {
+                                    "audit" : "{{ True if audit is defined }}",
+                                    "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
+                                    "xml" : "{{ True if xml is defined }}",
+                                    "discriminator" : "{{ discriminator }}",
+                                    "port" : "{{ port }}",
                                     "session_id": {
                                         "tag" : "{{ tag }}",
-                                        "text" : "{{ text.split('string ')[1] if text is defined }}",
+                                        "text" : "{{ text }}",
                                     }
                                 }
                             }    
@@ -270,21 +303,21 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<transport>transport\stcp\sfiltered)*
-                \s*(?P<stream>stream\s[1-9][0-9]*)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<transport>transport\stcp\sfiltered))?
+                (\sstream\s(?P<stream>[1-9][0-9]*))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
+                        "ipv6" : "{{ ipv6 }}",
                         "transport": {
                                 "tcp" : {
                                     "filtered": {
-                                        "stream" : "{{ stream.split('stream ')[1] if stream is defined }}",
+                                        "stream" : "{{ stream }}",
                                     }
                                 }
                             }        
@@ -298,21 +331,21 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<transport>transport\sudp\sfiltered)*
-                \s*(?P<stream>stream\s[1-9][0-9]*)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<transport>transport\sudp\sfiltered))?
+                (\sstream\s(?P<stream>[1-9][0-9]*))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}",
+                        "ipv6" : "{{ ipv6 }}",
                         "transport": {
                                 "udp" : {
                                     "filtered": {
-                                        "stream" : "{{ stream.split('stream ')[1] if stream is defined }}",
+                                        "stream" : "{{ stream }}",
                                     }
                                 }
                             }   
@@ -326,21 +359,21 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s*(?P<hostname>\S+)*
-                \s*(?P<ipv6>\sipv6\s\S+)*
-                \s*(?P<session_id>session-id)*
-                \s*(?P<tag>hostname|ip|ipv6)*
-                \s*(?P<text>\sstring\s.+$)*
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
+                (\s(?P<session_id>session-id))?
+                (\s(?P<tag>hostname|ip|ipv6))?
+                (\sstring\s(?P<text>.+$))?
                 $""", re.VERBOSE),
             "setval": "logging host",
             "result": { 
-                "{{ hostname if hostname is defined or ipv6.split('ipv6 ')[1] if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6.split('ipv6 ')[1] if ipv6 is defined }}", 
+                        "ipv6" : "{{ ipv6 }}", 
                         "session_id": {
                             "tag" : "{{ tag }}",
-                            "text" : "{{ text.split('string ')[1] if text is defined }}",  
+                            "text" : "{{ text }}",  
                             }
                         }
                     ]
@@ -483,8 +516,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "name": "dmvpn",
             "getval": re.compile(
                 r"""
-                ^logging\sdmvpn
-                (\s(?P<rate_limit>rate-limit))?
+                ^logging\sdmvpn\srate-limit
                 (\s(?P<rate>\d+))?
                 $""", re.VERBOSE),
             "setval": "logging dmvpn rate-limit {{ rate }}",
@@ -786,7 +818,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<interface>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
                 $""", re.VERBOSE),
-            "setval": "logging snmp_trap",
+            "setval": tmplt_source_interface,
             "result": { 
                 "logging": {
                         "source_interface": [{
