@@ -1,1 +1,2 @@
 plugins/action/ios.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
+plugins/module_utils/network/ios/config/route_maps/route_maps.py import-2.6!skip
