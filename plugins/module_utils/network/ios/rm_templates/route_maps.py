@@ -795,7 +795,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 },
                                 "as_path": {
                                     "set": "{{ True if as_path is defined and as_path.split(' ')|length == 1 }}",
-                                    "acls": "{{ as_path.split('as-path ')[1].split(' ')|sort if as_path is defined and as_path.split(' ')|length > 1 }}",
+                                    "acls": "{{ as_path.split('as-path ')[1].split(' ') if as_path is defined and as_path.split(' ')|length > 1 }}",
                                 },
                                 "clns": {
                                     "address": "{{ clns.split('clns address ')[1] if clns is defined }}",
@@ -803,22 +803,22 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "route_source": "{{ clns.split('clns route-source ')[1] if clns is defined }}",
                                 },
                                 "community": {
-                                    "name": "{{ community.split('community ')[1].split(' exact-match')[0].split(' ')|sort if community is defined }}",
+                                    "name": "{{ community.split('community ')[1].split(' exact-match')[0].split(' ') if community is defined }}",
                                     "exact_match": "{{ True if community is defined and 'exact-match' in community }}",
                                 },
-                                "extcommunity": "{{ extcommunity.split('extcommunity ')[1].split(' ')|sort if extcommunity is defined }}",
-                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ')|sort if interfaces is defined }}",
+                                "extcommunity": "{{ extcommunity.split('extcommunity ')[1].split(' ') if extcommunity is defined }}",
+                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ') if interfaces is defined }}",
                                 "length": {
                                     "minimum": "{{ length.split(' ')[1] if length is defined }}",
                                     "maximum": "{{ length.split(' ')[2] if length is defined }}",
                                 },
                                 "local_preference": {
                                     "set": "{{ True if local_preference is defined and local_preference.split(' ')|length == 1 }}",
-                                    "value": "{{ local_preference.split('local-preference ')[1].split(' ')|sort if local_preference is defined }}",
+                                    "value": "{{ local_preference.split('local-preference ')[1].split(' ') if local_preference is defined }}",
                                 },
                                 "mdt_group": {
                                     "set": "{{ True if mdt_group is defined and mdt_group.split(' ')|length == 1 }}",
-                                    "acls": "{{ mdt_group.split('mdt-group ')[1].split(' ')|sort if mdt_group is defined }}",
+                                    "acls": "{{ mdt_group.split('mdt-group ')[1].split(' ') if mdt_group is defined }}",
                                 },
                                 "metric": {
                                     "external": "{{ True if metric is defined and 'external' in metric.split(' ') }}",
@@ -830,7 +830,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                             {% elif metric is defined and 'external' not in metric and '+-' in metric %}{{ metric.split(' ')[3] }}{% endif %}",
                                 },
                                 "mpls_label": "{{ True if mpls_label is defined }}",
-                                "policy_lists": "{{ policy_list.split('policy-list ')[1].split(' ')|sort if policy_list is defined }}",
+                                "policy_lists": "{{ policy_list.split('policy-list ')[1].split(' ') if policy_list is defined }}",
                                 "route_type": {
                                     "external": {
                                         "set": "{{ True if route_type is defined and 'type-1' not in route_type and 'type-2' not in route_type}}",
@@ -853,8 +853,10 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "valid": "{{ True if rpki is defined and 'valid' in rpki and 'invalid' not in rpki.split(' ') }}",
                                 },
                                 "security_group": {
-                                    "destination": "{{ security_group.split('destination tag ')[1].split(' ')|sort if security_group is defined and 'destination' in security_group }}",
-                                    "source": "{{ security_group.split('source tag ')[1].split(' ')|sort if security_group is defined and 'source' in security_group }}",
+                                    "destination": "{{ security_group.split('destination tag ')[1].split(' ') if security_group is defined and\
+                                        'destination' in security_group }}",
+                                    "source": "{{ security_group.split('source tag ')[1].split(' ') if security_group is defined and\
+                                        'source' in security_group }}",
                                 },
                                 "source_protocol": {
                                     "bgp": "{{ source_protocol.split('bgp ')[1].split(' ')[0] if source_protocol is defined and 'bgp' in source_protocol }}",
@@ -872,8 +874,8 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "static": "{{ True if source_protocol is defined and 'static' in source_protocol }}",
                                 },
                                 "tag": {
-                                    "value": "{{ tag.split('tag ')[1].split(' ')|sort if tag is defined and 'list' not in tag }}",
-                                    "tag_list": "{{ tag.split('tag list ')[1].split(' ')|sort if tag is defined and 'list' in tag }}",
+                                    "value": "{{ tag.split('tag ')[1].split(' ') if tag is defined and 'list' not in tag }}",
+                                    "tag_list": "{{ tag.split('tag list ')[1].split(' ') if tag is defined and 'list' in tag }}",
                                 },
                                 "track": "{{ track.split('track ')[1] if track is defined }}",
                             }
@@ -905,34 +907,39 @@ class Route_mapsTemplate(NetworkTemplate):
                             "match": {
                                 "ip": {
                                     "address": {
-                                        "acls": "{{ address.split('address ')[1].split(' ')|sort if address is defined and 'prefix-list' not in address else none }}",
-                                        "prefix_lists": "{{ address.split('address prefix-list ')[1].split(' ')|sort if address is defined and 'prefix-list' in address else None }}",
+                                        "acls": "{{ address.split('address ')[1].split(' ') if address is defined and\
+                                            'prefix-list' not in address else none }}",
+                                        "prefix_lists": "{{ address.split('address prefix-list ')[1].split(' ') if address is defined and\
+                                            'prefix-list' in address else None }}",
                                     },
                                     "flowspec": {
                                         "dest_pfx": "{{ True if flowspec is defined and 'dest-pfx' in flowspec }}",
                                         "src_pfx": "{{ True if flowspec is defined and 'src-pfx' in flowspec }}",
-                                        "acls": "{{ flowspec.split('flowspec ')[1].split(' ')|d()|sort if flowspec is defined and 'prefix-list' not in flowspec else '' }}",
-                                        "prefix_lists": "{{ flowspec.split('flowspec prefix-list ')[1].split(' ')|d()|sort if flowspec is defined and 'prefix-list' in flowspec else ''}}",
+                                        "acls": "{{ flowspec.split('flowspec ')[1].split(' ')|d() if flowspec is defined and\
+                                            'prefix-list' not in flowspec else '' }}",
+                                        "prefix_lists": "{{ flowspec.split('flowspec prefix-list ')[1].split(' ')|d() if flowspec is defined and\
+                                            'prefix-list' in flowspec else ''}}",
                                     },
                                     "next_hop": {
                                         "set": "{{ True if next_hop is defined and next_hop.split(' ')|length == 1 }}",
-                                        "acls": "{{ next_hop.split('next-hop ')[1].split(' ')|sort if next_hop is defined and 'prefix-list' not in next_hop else '' }}",
-                                        "prefix_lists": "{{ next_hop.split('next-hop prefix-list ')[1].split(' ')|sort if next_hop is defined and 'prefix-list' in next_hop and\
-                                                next_hop.split('next-hop prefix-list ')[1] is not none else '' }}",
+                                        "acls": "{{ next_hop.split('next-hop ')[1].split(' ') if next_hop is defined and\
+                                            'prefix-list' not in next_hop else '' }}",
+                                        "prefix_lists": "{{ next_hop.split('next-hop prefix-list ')[1].split(' ') if next_hop is defined and\
+                                             'prefix-list' in next_hop and next_hop.split('next-hop prefix-list ')[1] is not none else '' }}",
                                     },
                                     "redistribution_source": {
                                         "set": "{{ True if redistribution_source is defined and redistribution_source.split(' ')|length == 1 }}",
-                                        "acls": "{{ redistribution_source.split('redistribution-source ')[1].split(' ')|d()|sort if redistribution_source is defined and\
-                                                'prefix-list' not in redistribution_source else '' }}",
-                                        "prefix_lists": "{{ redistribution_source.split('redistribution-source prefix-list ')[1].split(' ')|sort|d() if redistribution_source is defined and\
-                                                'prefix-list' in redistribution_source else '' }}",
+                                        "acls": "{{ redistribution_source.split('redistribution-source ')[1].split(' ')|d()\
+                                            if redistribution_source is defined and 'prefix-list' not in redistribution_source else '' }}",
+                                        "prefix_lists": "{{ redistribution_source.split('redistribution-source prefix-list ')[1].split(' ')|d()\
+                                            if redistribution_source is defined and 'prefix-list' in redistribution_source else '' }}",
                                     },
                                     "route_source": {
                                         "set": "{{ True if route_source is defined and route_source.split(' ')|length == 1 }}",
                                         "redistribution_source": "{{ True if route_source is defined and 'redistribution-source' in route_source }}",
-                                        "acls": "{{ route_source.split('route-source ')[1].split(' ')|sort if route_source is defined and\
+                                        "acls": "{{ route_source.split('route-source ')[1].split(' ') if route_source is defined and\
                                                 'prefix-list' not in route_source else '' }}",
-                                        "prefix_lists": "{{ route_source.split('route-source prefix-list ')[1].split(' ')|sort if route_source is defined and\
+                                        "prefix_lists": "{{ route_source.split('route-source prefix-list ')[1].split(' ') if route_source is defined and\
                                                 'prefix-list' in route_source else '' }}",
                                     },
                                 }
@@ -1033,8 +1040,8 @@ class Route_mapsTemplate(NetworkTemplate):
                                 },
                                 "as_path": {
                                     "prepend": {
-                                        "as_number": "{{ as_path.split('as-path prepend ')[1].split(' ')|sort if as_path is defined and 'prepend' in as_path and\
-                                                'last-as' not in as_path }}",
+                                        "as_number": "{{ as_path.split('as-path prepend ')[1].split(' ')\
+                                            if as_path is defined and 'prepend' in as_path and 'last-as' not in as_path }}",
                                         "last_as": "{{ as_path.split('as-path prepend last-as ')[1] if as_path is defined and 'prepend' in as_path and\
                                                 'last-as' in as_path }}",
                                     },
@@ -1066,16 +1073,14 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "extcomm_list": "{{ extcomm_list.split(' ')[1] if extcomm_list is defined }}",
                                 "extcommunity": {
                                     "cost": {
-                                        "id": "{%- if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and 'pre-bestpath' not in extcommunity -%}\
-                                                {{ extcommunity.split(' ')[2] }}\
-                                                    {%- elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) -%}\
-                                                        {{ extcommunity.split(' ')[3] }}\
-                                                        {%- endif -%}",
-                                        "cost_value": "{% if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and 'pre-bestpath' not in extcommunity %}\
-                                                {{ extcommunity.split(' ')[3] }}\
-                                                {% elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or 'pre-bestpath' in extcommunity) %}\
-                                                    {{ extcommunity.split(' ')[4] }}\
-                                                    {% endif %}",
+                                        "id": "{%- if extcommunity is defined and 'cost' in extcommunity and\
+                                            'igp' not in extcommunity and 'pre-bestpath' not in extcommunity -%} {{ extcommunity.split(' ')[2] }}\
+                                                {%- elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or\
+                                                    'pre-bestpath' in extcommunity) -%} {{ extcommunity.split(' ')[3] }} {%- endif -%}",
+                                        "cost_value": "{% if extcommunity is defined and 'cost' in extcommunity and 'igp' not in extcommunity and\
+                                            'pre-bestpath' not in extcommunity %} {{ extcommunity.split(' ')[3] }}\
+                                                {% elif extcommunity is defined and 'cost' in extcommunity and ('igp' in extcommunity or\
+                                                    'pre-bestpath' in extcommunity) %} {{ extcommunity.split(' ')[4] }} {% endif %}",
                                         "igp": "{{ True if extcommunity is defined and 'cost' in extcommunity and 'igp' in extcommunity }}",
                                         "pre_bestpath": "{{ True if extcommunity is defined and 'cost' in extcommunity and 'pre-bestpath' in extcommunity }}",
                                     },
@@ -1105,7 +1110,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     },
                                 },
                                 "global_route": "{{ True if global is defined }}",
-                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ')|sort() if interfaces is defined }}",
+                                "interfaces": "{{ interfaces.split('interface ')[1].split(' ') if interfaces is defined }}",
                                 "level": {
                                     "level_1": "{{ True if level is defined and 'level-1' in level and 'level-1-2' not in level }}",
                                     "level_1_2": "{{ True if level is defined and 'level-1-2' in level }}",
@@ -1210,11 +1215,10 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "global_route": "{{ True if next_hop is defined and 'global' in next_hop.split(' ') }}",
                                             "vrf": "{{ next_hop.split(' ')[3] if next_hop is defined and 'vrf' in next_hop }}",
                                             "address": "{%- if next_hop is defined and 'global' in next_hop.split(' ') -%}\
-                                                    {{  next_hop.split('next-hop recursive global ')[1] }}\
-                                                    {%- elif next_hop is defined and 'vrf' in next_hop.split(' ') -%}{{  next_hop.split(' ')[4] }}\
-                                                    {%- elif next_hop is defined and 'vrf' not in next_hop.split(' ') and 'global' not in next_hop.split(' ') -%}\
-                                                        {{ next_hop.split(' ')[2] }}\
-                                                            {%- endif -%}",
+                                                {{  next_hop.split('next-hop recursive global ')[1] }}\
+                                                {%- elif next_hop is defined and 'vrf' in next_hop.split(' ') -%}{{  next_hop.split(' ')[4] }}\
+                                                {%- elif next_hop is defined and 'vrf' not in next_hop.split(' ') and 'global' not in next_hop.split(' ') -%}\
+                                                    {{ next_hop.split(' ')[2] }} {%- endif -%}",
                                         },
                                         "self": "{{ True if next_hop is defined and 'self' in next_hop }}",
                                         "verify_availability": {
