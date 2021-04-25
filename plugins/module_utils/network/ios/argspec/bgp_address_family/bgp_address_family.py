@@ -342,7 +342,7 @@ class Bgp_AddressFamilyArgs(object):
                                 },
                                 "next_hop_self": {"type": "bool"},
                                 "next_hop_unchanged": {"type": "bool"},
-                                "password": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
                                 "path_attribute": {
                                     "type": "dict",
                                     "options": {

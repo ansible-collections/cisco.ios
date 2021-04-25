@@ -1069,8 +1069,10 @@ def _tmplt_bgp_timers(config_data):
 
 
 class Bgp_globalTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None, module=None):
+        super(Bgp_globalTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     PARSERS = [
         {
