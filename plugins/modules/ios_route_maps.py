@@ -1029,7 +1029,7 @@ options:
     description:
       - This option is used only with state I(parsed).
       - The value of this option should be the output received from the IOS
-        device by executing the command B(sh running-config | section ^router bgp).
+        device by executing the command B(sh running-config | section ^route-map).
       - The state I(parsed) reads the configuration from C(running_config)
         option and transforms it into Ansible structured data as per the
         resource module's argspec and the value is then returned in the
@@ -2307,14 +2307,14 @@ before:
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.
-  type: dict
+  type: list
 after:
   description: The resulting configuration model invocation.
   returned: when changed
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.
-  type: dict
+  type: list
 commands:
   description: The set of commands pushed to the remote device.
   returned: always
