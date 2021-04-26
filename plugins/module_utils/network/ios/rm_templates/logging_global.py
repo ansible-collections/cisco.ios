@@ -401,7 +401,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": "logging discriminator {{ discriminator }}",
             "result": { 
                 "logging": { 
-                    "discriminator": "{{ discriminator }}"
+                    "discriminator": "{{ discriminator }}",
                 } 
             },
         },
