@@ -184,8 +184,7 @@ options:
           vrf:
             description: Set VRF option
             type: str
-          xml: *xml
-           
+          xml: *xml 
           ipv6:            
             description: Configure IPv6 syslog server
             type: str

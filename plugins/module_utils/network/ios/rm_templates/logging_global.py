@@ -92,6 +92,16 @@ def tmplt_host_transport(config_data):
                 cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
     return cmd
         
+def tmplt_host_del(config_data):
+    cmd = "logging host"
+    verb = config_data.get("host")
+
+    if verb.get("hostname"):
+        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("ipv6"):
+        cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+    return cmd
+
 def tmplt_buffered(config_data):
     return tmplt_common(config_data.get("buffered"), "logging buffered")
 
@@ -198,6 +208,8 @@ def tmplt_persistent(config_data):
         cmd += " {notify}".format(notify=verb["notify"])
     return cmd
 
+
+
 class Logging_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Logging_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -222,7 +234,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
             "setval": tmplt_host,
-            "remval": "logging host {{ hostname }}",
+            "remval": tmplt_host_del,
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [
@@ -264,7 +276,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 $""", re.VERBOSE),
             "setval": tmplt_host_transport,
-            "remval": "logging host {{ hostname }}",
+            "remval": tmplt_host_del,
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
