@@ -141,7 +141,7 @@ options:
               tag: 
                 description: Include hostname in session ID tag
                 type: str
-                choices: ["hostname","ip","ipv6"]
+                choices: ["hostname","ipv4","ipv6"]
               text: 
                 description: Include custom string in session ID tag
                 type: str
