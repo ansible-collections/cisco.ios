@@ -145,6 +145,9 @@ options:
               text: 
                 description: Include custom string in session ID tag
                 type: str
+          stream: &stream
+            description: This server should only receive messages from a numbered stream
+            type: int
           transport: &transport
             description: Specify the transport protocol (default=UDP)
             type: dict
@@ -157,13 +160,8 @@ options:
                     description: Set this host for IOS firewall audit logging
                     type: bool
                   discriminator: *discriminator
-                  filtered:
-                    description: Enable filtered logging
-                    type: dict
-                    suboptions:
-                      stream: 
-                        description: This server should only receive messages from a numbered stream
-                        type: int
+                  stream: *stream
+                  filtered: *filtered
                   port:
                     description: Specify the TCP port number (default=601) (1 - 65535)
                     type: int
@@ -175,13 +173,8 @@ options:
                 type: dict
                 suboptions:
                   discriminator: *discriminator
-                  filtered:
-                    description: Enable filtered logging
-                    type: dict
-                    suboptions:
-                      stream: 
-                        description: This server should only receive messages from a numbered stream
-                        type: int
+                  stream: *stream
+                  filtered: *filtered
                   port:
                     description: Specify the TCP port number (default=601) (1 - 65535)
                     type: int
@@ -192,9 +185,7 @@ options:
             description: Set VRF option
             type: str
           xml: *xml
-          stream:
-            description: This server should only receive messages from a numbered stream
-            type: int 
+           
           ipv6:            
             description: Configure IPv6 syslog server
             type: str

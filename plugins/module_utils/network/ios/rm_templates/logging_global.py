@@ -27,16 +27,72 @@ def tmplt_host(config_data):
         cmd += " {hostname}".format(hostname=verb["hostname"])
     if verb.get("ipv6"):
         cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+    if verb.get("vrf"):
+        cmd += " vrf {vrf}".format(vrf=verb["vrf"])
     if verb.get("filtered"):
         cmd += " {filtered}".format(filtered="filtered")
     if verb.get("xml"):
         cmd += " {xml}".format(xml="xml")
-    if verb.get("sequence_num_session"):
-        cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+    if verb.get("session_id"):
+        sesson_id = verb.get("session_id")
+        if sesson_id.get("text"):
+            cmd += " session-id string {text}".format(text=sesson_id["text"])  
+        elif sesson_id.get("tag"):
+            cmd += " session-id {tag}".format(tag=sesson_id["tag"])
     if verb.get("stream"):
         cmd += " stream {stream}".format(stream=verb["stream"])
+    if verb.get("sequence_num_session"):
+        cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+    if verb.get("discriminator"):
+        cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
     return cmd
 
+def tmplt_host_transport(config_data):
+    cmd = "logging host"
+    verb = config_data.get("host")
+
+    if verb.get("hostname"):
+        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("ipv6"):
+        cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+    if verb.get("vrf"):
+        cmd += " vrf {vrf}".format(vrf=verb["vrf"])
+    if verb.get("transport"):
+        transport_type = verb.get("transport")
+        prot = None
+        if transport_type.get("udp"):
+            cmd += " transport {prot}".format(prot="udp")
+            prot = "upd"
+        elif transport_type.get("tcp"):
+            cmd += " transport {prot}".format(prot="tcp")
+            prot = "tcp"
+
+        if prot:
+            verb = transport_type.get(prot)
+
+            if verb.get("port"):
+                cmd += " port {port}".format(port=verb["port"])
+            if verb.get("audit"):
+                cmd += " {audit}".format(audit="audit")
+            if verb.get("xml"):
+                cmd += " {xml}".format(xml="xml")
+            if verb.get("filtered"):
+                cmd += " {filtered}".format(filtered="filtered")
+                st = verb.get("filtered")
+                if st.get("stream"):
+                    cmd += " stream {stream}".format(stream=st["stream"])
+            if verb.get("discriminator"):
+                cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+            if verb.get("session_id"):
+                sesson_id = verb.get("session_id")
+                if sesson_id.get("text"):
+                    cmd += " session-id string {text}".format(text=sesson_id["text"])  
+                elif sesson_id.get("tag"):
+                    cmd += " session-id {tag}".format(tag=sesson_id["tag"])
+            if verb.get("sequence_num_session"):
+                cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+    return cmd
+        
 def tmplt_buffered(config_data):
     return tmplt_common(config_data.get("buffered"), "logging buffered")
 
@@ -156,14 +212,18 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\shost
                 (\s(?P<hostname>\S+))?
                 (\sipv6\s(?P<ipv6>\S+))?
+                (\svrf\s(?P<vrf>\w+))?
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
-                (\s(?P<sequence_num_session>sequence-num-session))?
-                (\svrf\s(?P<vrf>\S+))?
-                (\sdiscriminator\s(?P<discriminator>.+$))?
+                (\s(?P<session_id>session-id))?
+                (\s(?P<tag>hostname|ipv4|ipv6))?
+                (\sstring\s(?P<text>\w+))?
                 (\sstream\s(?P<stream>\d+$))?
+                (\s(?P<sequence_num_session>sequence-num-session))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
             "setval": tmplt_host,
+            "remval": "logging host {{ hostname }}",
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [
@@ -174,7 +234,11 @@ class Logging_globalTemplate(NetworkTemplate):
                         "xml" : "{{ True if xml is defined }}",
                         "filtered" : "{{ True if filtered is defined }}",
                         "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
-                        "stream" : "{{ stream }}", 
+                        "stream" : "{{ stream }}",
+                        "session_id": {
+                            "tag" : "{{ tag }}",
+                            "text" : "{{ text }}",
+                            }
                         }
                     ]
                 }
@@ -187,101 +251,29 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\shost
                 (\s(?P<hostname>\S+))?
                 (\sipv6\s(?P<ipv6>\S+))?
+                (\svrf\s(?P<vrf>\w+))?
                 (\stransport\s(?P<transport>tcp|udp))?
                 (\sport\s(?P<port>[1-9][0-9]*))?
                 (\s(?P<audit>audit))?
                 (\s(?P<xml>xml))?
+                (\s(?P<filtered>filtered))?
                 (\sdiscriminator\s(?P<discriminator>.+$))?
-                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
+                (\sstream\s(?P<stream>\d+$))?
+                (\s(?P<session_id>session-id))?
+                (\s(?P<tag>hostname|ipv4|ipv6))?
+                (\sstring\s(?P<text>\w+))?
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 $""", re.VERBOSE),
-            "setval": "logging host",
+            "setval": tmplt_host_transport,
+            "remval": "logging host {{ hostname }}",
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
                     "host": [{
                         "hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6 }}",
+                        "vrf" : "{{ vrf }}",
                         "transport": {
                             "{{ transport }}" : {
-                                    "audit" : "{{ True if audit is defined }}",
-                                    "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
-                                    "xml" : "{{ True if xml is defined }}",
-                                    "discriminator" : "{{ discriminator }}",
-                                    "port" : "{{ port }}",
-                                    "filtered" : "{{ filtered.split('filtered ')[1] if filtered is defined }}",
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "host.transport.udp.session_id",
-            "getval": re.compile(
-                r"""
-                ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
-                (\s(?P<transport>transport\sudp))?
-                (\sport\s(?P<port>[1-9][0-9]*))?
-                (\s(?P<audit>audit))?
-                (\s(?P<xml>xml))?
-                (\sdiscriminator\s(?P<discriminator>.+$))?
-                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
-                (\s(?P<sequence_num_session>sequence-num-session))?
-                (\ssession-id\s(?P<tag>hostname|ip|ipv6))?
-                (\ssession-id\sstring\s(?P<text>.+$))?
-                $""", re.VERBOSE),
-            "setval": "logging host",
-            "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
-                        "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6 }}",
-                        "transport": {
-                            "udp" : {
-                                "audit" : "{{ True if audit is defined }}",
-                                "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
-                                "xml" : "{{ True if xml is defined }}",
-                                "discriminator" : "{{ discriminator }}",
-                                "port" : "{{ port }}",
-                                "session_id": {
-                                    "tag" : "{{ tag }}",
-                                    "text" : "{{ text }}",
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "host.transport.tcp.session_id",
-            "getval": re.compile(
-                r"""
-                ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
-                (\s(?P<transport>transport\stcp))?
-                (\sport\s(?P<port>[1-9][0-9]*))?
-                (\s(?P<audit>audit))?
-                (\s(?P<xml>xml))?
-                (\sdiscriminator\s(?P<discriminator>.+$))?
-                (\s(?P<filtered>filtered\sstream\s[1-9][0-9]*))?
-                (\s(?P<sequence_num_session>sequence-num-session))?
-                (\ssession-id\s(?P<tag>hostname|ip|ipv6))?
-                (\ssession-id\sstring\s(?P<text>.+$))?
-                $""", re.VERBOSE),
-            "setval": "logging host",
-            "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
-                        "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6 }}",
-                        "transport": {
-                                "tcp": {
                                     "audit" : "{{ True if audit is defined }}",
                                     "sequence_num_session" : "{{ True if sequence_num_session is defined }}",
                                     "xml" : "{{ True if xml is defined }}",
@@ -290,90 +282,10 @@ class Logging_globalTemplate(NetworkTemplate):
                                     "session_id": {
                                         "tag" : "{{ tag }}",
                                         "text" : "{{ text }}",
-                                    }
+                                    },
+                                    "filtered" : "{{ True if filtered is defined }}",
+                                    "stream" : "{{ stream }}",
                                 }
-                            }    
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "host.transport.tcp.filtered",
-            "getval": re.compile(
-                r"""
-                ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
-                (\s(?P<transport>transport\stcp\sfiltered))?
-                (\sstream\s(?P<stream>[1-9][0-9]*))?
-                $""", re.VERBOSE),
-            "setval": "logging host",
-            "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
-                        "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6 }}",
-                        "transport": {
-                                "tcp" : {
-                                    "filtered": {
-                                        "stream" : "{{ stream }}",
-                                    }
-                                }
-                            }        
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "host.transport.udp.filtered",
-            "getval": re.compile(
-                r"""
-                ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
-                (\s(?P<transport>transport\sudp\sfiltered))?
-                (\sstream\s(?P<stream>[1-9][0-9]*))?
-                $""", re.VERBOSE),
-            "setval": "logging host",
-            "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
-                        "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6 }}",
-                        "transport": {
-                                "udp" : {
-                                    "filtered": {
-                                        "stream" : "{{ stream }}",
-                                    }
-                                }
-                            }   
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "host.session_id",
-            "getval": re.compile(
-                r"""
-                ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
-                (\s(?P<session_id>session-id))?
-                (\s(?P<tag>hostname|ip|ipv6))?
-                (\sstring\s(?P<text>.+$))?
-                $""", re.VERBOSE),
-            "setval": "logging host",
-            "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
-                        "hostname" : "{{ hostname }}",
-                        "ipv6" : "{{ ipv6 }}", 
-                        "session_id": {
-                            "tag" : "{{ tag }}",
-                            "text" : "{{ text }}",  
                             }
                         }
                     ]
@@ -404,24 +316,6 @@ class Logging_globalTemplate(NetworkTemplate):
                 }
             },
         },
-        # {
-        #     "name": "buffered.size",
-        #     "getval": re.compile(
-        #         r"""
-        #         ^logging\sbuffered
-        #         \s*(?P<size>[1-9][0-9]*)*
-        #         \s*(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings$)*
-        #         $""", re.VERBOSE),
-        #     "setval": tmplt_buffered,
-        #     "result": { 
-        #         "logging": {
-        #             "buffered" : {
-        #                 "size" : "{{ size }}",
-        #                 "severity" : "{{ severity }}",
-        #             }
-        #         }
-        #     },
-        # },
         {
             "name": "buginf",
             "getval": re.compile(

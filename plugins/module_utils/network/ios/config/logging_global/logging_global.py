@@ -50,11 +50,6 @@ class Logging_global(ResourceModule):
         self.parsers = [
             "host",
             "host.transport",
-            "host.transport.udp.session_id",
-            "host.transport.tcp.session_id",
-            "host.transport.tcp.filtered",
-            "host.transport.udp.filtered",
-            "host.session_id",
             "buffered",
             "buginf",
             "cns_events",
