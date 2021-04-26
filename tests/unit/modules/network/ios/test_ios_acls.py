@@ -160,7 +160,7 @@ class TestIosAclsModule(TestIosModule):
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_acl",
-            "100 permit tcp host 192.0.2.1 192.0.2.0 0.0.0.255 eq www"
+            "100 permit tcp host 192.0.2.1 192.0.2.0 0.0.0.255 eq www",
         ]
         self.assertEqual(result["commands"], commands)
 
