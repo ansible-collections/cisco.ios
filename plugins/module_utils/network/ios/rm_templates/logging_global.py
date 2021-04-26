@@ -78,11 +78,10 @@ def tmplt_host_transport(config_data):
                 cmd += " {xml}".format(xml="xml")
             if verb.get("filtered"):
                 cmd += " {filtered}".format(filtered="filtered")
-                st = verb.get("filtered")
-                if st.get("stream"):
-                    cmd += " stream {stream}".format(stream=st["stream"])
             if verb.get("discriminator"):
                 cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+            if verb.get("stream"):
+                cmd += " stream {stream}".format(stream=verb["stream"])
             if verb.get("session_id"):
                 sesson_id = verb.get("session_id")
                 if sesson_id.get("text"):

@@ -191,10 +191,8 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "audit": {"type": "bool"},
                                         "discriminator": {"type": "str"},
-                                        "filtered": {
-                                            "type": "dict",
-                                            "options": {"stream": {"type": "int"}},
-                                        },
+                                        "filtered": {"type": "bool"},
+                                        "stream": {"type": "int"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {"type": "bool"},
                                         "session_id": {
@@ -218,10 +216,8 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "discriminator": {"type": "str"},
-                                        "filtered": {
-                                            "type": "dict",
-                                            "options": {"stream": {"type": "int"}},
-                                        },
+                                        "filtered": {"type": "bool"},
+                                        "stream": {"type": "int"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {"type": "bool"},
                                         "session_id": {
