@@ -23,28 +23,33 @@ def tmplt_host(config_data):
     cmd = "logging host"
     verb = config_data.get("host")
 
-    if verb.get("hostname"):
-        cmd += " {hostname}".format(hostname=verb["hostname"])
-    if verb.get("ipv6"):
-        cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
-    if verb.get("vrf"):
-        cmd += " vrf {vrf}".format(vrf=verb["vrf"])
-    if verb.get("filtered"):
-        cmd += " {filtered}".format(filtered="filtered")
-    if verb.get("xml"):
-        cmd += " {xml}".format(xml="xml")
-    if verb.get("session_id"):
-        sesson_id = verb.get("session_id")
-        if sesson_id.get("text"):
-            cmd += " session-id string {text}".format(text=sesson_id["text"])  
-        elif sesson_id.get("tag"):
-            cmd += " session-id {tag}".format(tag=sesson_id["tag"])
-    if verb.get("stream"):
-        cmd += " stream {stream}".format(stream=verb["stream"])
-    if verb.get("sequence_num_session"):
-        cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
-    if verb.get("discriminator"):
-        cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+    if verb.get("transport"):
+        cmd, verb = None, None
+    if verb:
+        if verb.get("hostname"):
+            cmd += " {hostname}".format(hostname=verb["hostname"])
+        if verb.get("ipv6"):
+            cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+        if verb.get("vrf"):
+            cmd += " vrf {vrf}".format(vrf=verb["vrf"])
+        if verb.get("filtered"):
+            cmd += " {filtered}".format(filtered="filtered")
+        if verb.get("xml"):
+            cmd += " {xml}".format(xml="xml")
+        if verb.get("session_id"):
+            sesson_id = verb.get("session_id")
+            if sesson_id.get("text"):
+                cmd += " session-id string {text}".format(text=sesson_id["text"])  
+            elif sesson_id.get("tag"):
+                cmd += " session-id {tag}".format(tag=sesson_id["tag"])
+        if verb.get("stream"):
+            cmd += " stream {stream}".format(stream=verb["stream"])
+        if verb.get("sequence_num_session"):
+            cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+        if verb.get("discriminator"):
+            cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+        if verb.get("transport"):
+            cmd = None
     return cmd
 
 def tmplt_host_transport(config_data):
@@ -226,10 +231,10 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\w+))?
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
+                (\sstream\s(?P<stream>\d+))?
                 (\s(?P<session_id>session-id))?
                 (\s(?P<tag>hostname|ipv4|ipv6))?
                 (\sstring\s(?P<text>\w+))?
-                (\sstream\s(?P<stream>\d+$))?
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
@@ -260,8 +265,8 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                (\s(?P<hostname>\S+))?
-                (\sipv6\s(?P<ipv6>\S+))?
+                \s(?P<hostname>\S+)
+                \sipv6\s(?P<ipv6>\S+)
                 (\svrf\s(?P<vrf>\w+))?
                 (\stransport\s(?P<transport>tcp|udp))?
                 (\sport\s(?P<port>[1-9][0-9]*))?
@@ -269,7 +274,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<xml>xml))?
                 (\s(?P<filtered>filtered))?
                 (\sdiscriminator\s(?P<discriminator>.+$))?
-                (\sstream\s(?P<stream>\d+$))?
+                (\sstream\s(?P<stream>\d+))?
                 (\s(?P<session_id>session-id))?
                 (\s(?P<tag>hostname|ipv4|ipv6))?
                 (\sstring\s(?P<text>\w+))?
@@ -333,10 +338,10 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\s(?P<buginf>buginf)
                 $""", re.VERBOSE),
-            "setval": "logging {{ buginf }}",
+            "setval": "logging buginf",
             "result": { 
                 "logging": { 
-                    "{{ buginf }}": "{{ True if buginf is defined }}"
+                    "buginf": "{{ True if buginf is defined }}"
                 } 
             },
         },
@@ -347,7 +352,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\scns-events
                 (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
                 $""", re.VERBOSE),
-            "setval": "logging cns-events {{ severity }}",
+            "setval": "logging cns-events {{ cns_events }}",
             "result": { 
                 "logging": {
                     "cns_events": "{{ severity }}"   
@@ -382,7 +387,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\s(?P<count>count)
                 $""", re.VERBOSE),
-            "setval": "logging {{ count }}",
+            "setval": "logging count",
             "result": { 
                 "logging": {
                     "count": "{{ True if count is defined }}"
@@ -424,7 +429,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\sdmvpn\srate-limit
                 (\s(?P<rate>\d+))?
                 $""", re.VERBOSE),
-            "setval": "logging dmvpn rate-limit {{ rate }}",
+            "setval": "logging dmvpn rate-limit {{ dmvpn.rate_limit }}",
             "result": { 
                 "logging": {
                     "dmvpn": {
@@ -618,7 +623,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\spolicy-firewall
                 (\srate-limit\s(?P<rate>[1-9][0-9]*))?
                 $""", re.VERBOSE),
-            "setval": "logging policy-firewall rate-limit {{ rate }}",
+            "setval": "logging policy-firewall rate-limit {{ policy_firewall.rate_limit }}",
             "result": { 
                 "logging": {
                     "policy_firewall": {
@@ -708,7 +713,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\ssnmp-trap
                 (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
                 $""", re.VERBOSE),
-            "setval": "logging snmp-trap {{ severity }}",
+            "setval": "logging snmp-trap {{ snmp_trap }}",
             "result": { 
                 "logging": {
                     "snmp_trap": "{{ severity }}",                      
@@ -741,7 +746,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\strap
                 \s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings)
                 $""", re.VERBOSE),
-            "setval": "logging trap {{ severity }}",
+            "setval": "logging trap {{ trap }}",
             "result": { 
                 "logging": {
                     "trap": "{{ severity }}",                       
