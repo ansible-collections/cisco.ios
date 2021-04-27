@@ -73,6 +73,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.loggin
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_maps.route_maps import (
     Route_mapsFacts,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix_lists.prefix_lists import (
+    Prefix_listsFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
@@ -106,6 +108,7 @@ FACT_RESOURCE_SUBSETS = dict(
     bgp_address_family=Bgp_AddressFamilyFacts,
     logging_global=Logging_globalFacts,
     route_maps=Route_mapsFacts,
+    prefix_lists=Prefix_listsFacts,
 )
 
 
