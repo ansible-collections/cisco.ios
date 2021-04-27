@@ -25,24 +25,24 @@
     \ }}"
 
 - set_fact:
-        supported_network_resources:
-          - interfaces
-          - l2_interfaces
-          - vlans
-          - lag_interfaces
-          - lacp
-          - lacp_interfaces
-          - lldp_global
-          - lldp_interfaces
-          - l3_interfaces
-          - acl_interfaces
-          - static_routes
-          - acls
-          - ospfv2
-          - ospfv3
-          - ospf_interfaces
-          - bgp_global
-          - bgp_address_family
+    supported_network_resources:
+      - interfaces
+      - l2_interfaces
+      - vlans
+      - lag_interfaces
+      - lacp
+      - lacp_interfaces
+      - lldp_global
+      - lldp_interfaces
+      - l3_interfaces
+      - acl_interfaces
+      - static_routes
+      - acls
+      - ospfv2
+      - ospfv3
+      - ospf_interfaces
+      - bgp_global
+      - bgp_address_family
 
 - name: Collect list of available network resources for ios
   register: result
