@@ -37,11 +37,11 @@ def tmplt_host(config_data):
         if verb.get("xml"):
             cmd += " {xml}".format(xml="xml")
         if verb.get("session_id"):
-            sesson_id = verb.get("session_id")
-            if sesson_id.get("text"):
-                cmd += " session-id string {text}".format(text=sesson_id["text"])  
-            elif sesson_id.get("tag"):
-                cmd += " session-id {tag}".format(tag=sesson_id["tag"])
+            session_id = verb.get("session_id")
+            if session_id.get("text"):
+                cmd += " session-id string {text}".format(text=session_id["text"])  
+            elif session_id.get("tag"):
+                cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
             cmd += " stream {stream}".format(stream=verb["stream"])
         if verb.get("sequence_num_session"):
@@ -88,11 +88,11 @@ def tmplt_host_transport(config_data):
             if verb.get("stream"):
                 cmd += " stream {stream}".format(stream=verb["stream"])
             if verb.get("session_id"):
-                sesson_id = verb.get("session_id")
-                if sesson_id.get("text"):
-                    cmd += " session-id string {text}".format(text=sesson_id["text"])  
-                elif sesson_id.get("tag"):
-                    cmd += " session-id {tag}".format(tag=sesson_id["tag"])
+                session_id = verb.get("session_id")
+                if session_id.get("text"):
+                    cmd += " session-id string {text}".format(text=session_id["text"])  
+                elif session_id.get("tag"):
+                    cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
                 cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
     return cmd
@@ -212,8 +212,6 @@ def tmplt_persistent(config_data):
     if verb.get("notify"):
         cmd += " {notify}".format(notify=verb["notify"])
     return cmd
-
-
 
 class Logging_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -418,7 +416,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": "logging discriminator {{ discriminator }}",
             "result": { 
                 "logging": { 
-                    "discriminator": "{{ discriminator }}",
+                    "discriminator": ["{{ discriminator }}",]
                 } 
             },
         },
@@ -716,7 +714,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": "logging snmp-trap {{ snmp_trap }}",
             "result": { 
                 "logging": {
-                    "snmp_trap": "{{ severity }}",                      
+                    "snmp_trap": ["{{ severity }}",]                      
                 }
             },
         },

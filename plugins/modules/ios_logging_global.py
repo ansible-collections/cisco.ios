@@ -88,7 +88,8 @@ options:
             type: bool
       discriminator:
         description: Create or modify a message discriminator
-        type: str
+        type: list
+        elements: str
       dmvpn:          
         description: DMVPN Configuration
         type: dict
@@ -216,7 +217,14 @@ options:
       origin_id:      
         description: Add origin ID to syslog messages
         type: dict
-        suboptions: *session_id_suboptions
+        suboptions: 
+          tag: 
+            description: Include hostname in session ID tag
+            type: str
+            choices: ["hostname","ip","ipv6"]
+          text: 
+            description: Include custom string in session ID tag
+            type: str
       persistent:
         description: Set persistent logging parameters
         type: dict
@@ -296,7 +304,8 @@ options:
         type: bool
       snmp_trap:   
         description: Set syslog level for sending snmp trap
-        type: str
+        type: list
+        elements: str
         choices: *severity_subgroup
       source_interface:
         description: Specify interface for source address in logging transactions
@@ -340,6 +349,99 @@ options:
     type: str
 """
 EXAMPLES = """
+# Using state: merged
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging
+# no logging exception
+# logging buffered xml 5099 notifications
+# logging console xml critical
+# no logging monitor
+# logging cns-events warnings
+# logging dmvpn rate-limit 10
+# logging host 10.0.2.10 
+
+- name: Apply the provided configuration
+    cisco.ios.ios_logging_global:
+      config:
+        - buffered:
+            severity: notifications
+            size: 5099
+            xml: True
+        - console:
+            severity: critical
+            xml: True
+        - facility: local5
+        - host: 
+          - hostname: 10.0.1.12
+          - hostname: 10.0.1.11
+            xml: True
+          - hostname: 10.0.1.10
+            filtered: True
+            stream: 10
+          - hostname: 10.0.1.13
+            transport:
+              tcp: 
+                port: 514
+        - monitor:
+            severity: warnings
+        - message_counter: log
+        - snmp_trap: errors
+        - trap: errors
+        - userinfo: True
+        - policy_firewall:
+            rate_limit: 10
+        - logging_on: True
+        - exception: 4099
+        - dmvpn:
+            rate_limit: 10
+        - cns_events: warnings
+      state: merged
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#         "logging exception 4099",
+#         "logging facility local5",
+#         "logging monitor warnings",
+#         "logging on",
+#         "logging policy-firewall rate-limit 10",
+#         "logging snmp-trap errors",
+#         "logging trap errors",
+#         "logging userinfo",
+#         "logging host 10.0.1.13 transport tcp port 514",
+#         "logging host 10.0.1.11 xml",
+#         "logging host 10.0.1.12",
+#         "logging host 10.0.1.10 filtered stream 10",
+#         "logging message-counter log"
+#     ],
+
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section logging 
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
+# logging host 10.0.2.10 
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.11 xml
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+
 """
 
 from ansible.module_utils.basic import AnsibleModule

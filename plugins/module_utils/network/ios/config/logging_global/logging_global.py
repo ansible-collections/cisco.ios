@@ -77,7 +77,7 @@ class Logging_global(ResourceModule):
             "source_interface",
             "trap",
             "userinfo",
-        ] #segrigate for O(1) operation
+        ] #segregate for O(1) operation
 
     def execute_module(self):
         """ Execute the module
@@ -129,41 +129,40 @@ class Logging_global(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Logging_global network resource.
         """
-
         self.compare(parsers=self.parsers, want=want, have=have)
 
     def list_to_dict(self, param):
         _temp_param = {"logging": {}}
-        exculde = []
+        exclude = []
         for element in param:
             if element.get("message_counter"):
                 _temp = {}
                 for ctr in element.get("message_counter"):
                     _temp.update({ctr: { "message_counter": ctr }})
                 _temp_param.update(_temp)
-                exculde.append("message_counter")
+                exclude.append("message_counter")
             if element.get("source_interface"):
                 _temp = {}
                 for interface in element.get("source_interface"):
                     _temp.update({interface.get("interface"):{ "source_interface": interface }})
                 _temp_param.update(_temp)
-                exculde.append("source_interface")
+                exclude.append("source_interface")
             if element.get("filter"):
                 _temp = {}
                 for url in element.get("filter"):
                     _temp.update({url.get("url"):{ "filter":url }})
                 _temp_param.update(_temp)
-                exculde.append("filter")
+                exclude.append("filter")
             if element.get("host"):
                 _temp = {}
                 for host in element.get("host"):
                     _temp.update({host.get("hostname"):{ "host": host }})    
                 _temp_param.update(_temp)
-                exculde.append("host")
+                exclude.append("host")
         else:
             for element in param:
                 for k, v in iteritems(element):
-                    if k not in exculde:
+                    if k not in exclude:
                         _temp_param["logging"].update({k:v})
         
         param = _temp_param

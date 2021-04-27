@@ -178,7 +178,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "tag": {
                                     "type": "str",
-                                    "choices": ["hostname", "ip", "ipv6"],
+                                    "choices": ["hostname", "ipv4", "ipv6"],
                                 },
                                 "text": {"type": "str"},
                             },
@@ -202,7 +202,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "str",
                                                     "choices": [
                                                         "hostname",
-                                                        "ip",
+                                                        "ipv4",
                                                         "ipv6",
                                                     ],
                                                 },
@@ -227,7 +227,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "str",
                                                     "choices": [
                                                         "hostname",
-                                                        "ip",
+                                                        "ipv4",
                                                         "ipv6",
                                                     ],
                                                 },
@@ -350,7 +350,8 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 },
                 "server_arp": {"type": "bool"},
                 "snmp_trap": {
-                    "type": "str",
+                    "type": "list",
+                    "elements": "str",
                     "choices": [
                         "alerts",
                         "critical",
