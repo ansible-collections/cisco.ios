@@ -186,7 +186,7 @@ class Logging_global(ResourceModule):
             for element in param:
                 for k, v in iteritems(element):
                     if k not in exclude:
-                        _temp_param["logging"].update({k:v})
+                        _temp_param.update({k:{k:v}})
         
         param = _temp_param
         return param

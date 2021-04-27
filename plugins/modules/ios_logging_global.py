@@ -356,67 +356,73 @@ EXAMPLES = """
 
 # router-ios#show running-config | section logging
 # no logging exception
-# logging buffered xml 5099 notifications
-# logging console xml critical
+# no logging buffered
+# no logging reload
+# no logging rate-limit
+# no logging console
 # no logging monitor
-# logging cns-events warnings
-# logging dmvpn rate-limit 10
-# logging host 10.0.2.10 
+# no logging cns-events
+# no logging trap
 
 - name: Apply the provided configuration
-    cisco.ios.ios_logging_global:
-      config:
-        - buffered:
-            severity: notifications
-            size: 5099
-            xml: True
-        - console:
-            severity: critical
-            xml: True
-        - facility: local5
-        - host: 
-          - hostname: 10.0.1.12
-          - hostname: 10.0.1.11
-            xml: True
-          - hostname: 10.0.1.10
-            filtered: True
-            stream: 10
-          - hostname: 10.0.1.13
-            transport:
-              tcp: 
-                port: 514
-        - monitor:
-            severity: warnings
-        - message_counter: log
-        - snmp_trap: errors
-        - trap: errors
-        - userinfo: True
-        - policy_firewall:
-            rate_limit: 10
-        - logging_on: True
-        - exception: 4099
-        - dmvpn:
-            rate_limit: 10
-        - cns_events: warnings
-      state: merged
+  cisco.ios.ios_logging_global:
+    config:
+      - buffered:
+          severity: notifications
+          size: 5099
+          xml: True
+      - console:
+          severity: critical
+          xml: True
+      - facility: local5
+      - host: 
+        - hostname: 10.0.1.12
+        - hostname: 10.0.1.11
+          xml: True
+        - hostname: 10.0.1.10
+          filtered: True
+          stream: 10
+        - hostname: 10.0.1.13
+          transport:
+            tcp: 
+              port: 514
+      - monitor:
+          severity: warnings
+      - message_counter: log
+      - snmp_trap: 
+        - errors
+      - trap: errors
+      - userinfo: True
+      - policy_firewall:
+          rate_limit: 10
+      - logging_on: True
+      - exception: 4099
+      - dmvpn:
+          rate_limit: 10
+      - cns_events: warnings
+    state: merged
 
 # Commands Fired:
 # ---------------
 
 # "commands": [
-#         "logging exception 4099",
-#         "logging facility local5",
-#         "logging monitor warnings",
-#         "logging on",
-#         "logging policy-firewall rate-limit 10",
-#         "logging snmp-trap errors",
-#         "logging trap errors",
-#         "logging userinfo",
-#         "logging host 10.0.1.13 transport tcp port 514",
-#         "logging host 10.0.1.11 xml",
-#         "logging host 10.0.1.12",
-#         "logging host 10.0.1.10 filtered stream 10",
-#         "logging message-counter log"
+#       "logging buffered xml 5099 notifications",
+#       "logging cns-events warnings",
+#       "logging console xml critical",
+#       "logging dmvpn rate-limit 10",
+#       "logging exception 4099",
+#       "logging facility local5",
+#       "logging monitor warnings",
+#       "logging on",
+#       "logging policy-firewall rate-limit 10",
+#       "logging trap errors",
+#       "logging userinfo",
+#       "logging host 10.0.1.12",
+#       "logging host 10.0.1.10 filtered stream 10",
+#       "logging host 10.0.1.13 transport tcp port 514",
+#       "logging message-counter log",
+#       "logging snmp-trap errors",
+#       "logging host 10.0.1.11 xml"
 #     ],
 
 
@@ -428,6 +434,8 @@ EXAMPLES = """
 # logging message-counter log
 # logging userinfo
 # logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
 # logging console xml critical
 # logging monitor warnings
 # logging cns-events warnings
@@ -436,11 +444,459 @@ EXAMPLES = """
 # logging trap errors
 # logging facility local5
 # logging snmp-trap errors
-# logging host 10.0.2.10 
+# logging snmp-trap warnings
 # logging host 10.0.1.13 transport tcp port 514
 # logging host 10.0.1.11 xml
 # logging host 10.0.1.12
 # logging host 10.0.1.10 filtered stream 10
+
+# Using state: deleted
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging 
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
+# logging snmp-trap warnings
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.11 xml
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+
+- name: Remove as per the provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      - snmp_trap:
+          - errors
+          - warnings
+      - host:
+          - hostname: 10.0.1.11
+    state: deleted
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#         "no logging snmp-trap errors",
+#         "no logging snmp-trap warnings",
+#         "no logging host 10.0.1.11"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section logging 
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+
+# Using state: overridden
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered 6000 critical
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local6
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+# logging host 10.0.1.25 filtered
+
+- name: Override commands with provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      - buffered:
+          severity: critical
+          size: 6000
+      - facility: local6
+      - host: 
+          - hostname: 10.0.1.25
+            filtered: True
+    state: overridden
+
+# Commands Fired:
+# ---------------
+# "commands": [
+#         "no logging message-counter log",
+#         "no logging host 10.0.1.12",
+#         "no logging host 10.0.1.10",
+#         "no logging host 10.0.1.13",
+#         "no logging exception 4099",
+#         "no logging userinfo",
+#         "no logging console xml critical",
+#         "no logging monitor warnings",
+#         "no logging cns-events warnings",
+#         "no logging policy-firewall rate-limit 10",
+#         "no logging dmvpn rate-limit 10",
+#         "no logging trap errors"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section logging
+# no logging exception
+# logging buffered 6000 critical
+# no logging reload
+# no logging rate-limit
+# no logging console
+# no logging monitor
+# no logging cns-events
+# no logging trap
+# logging facility local6
+# logging host 10.0.1.25 filtered
+
+# Using state: gathered
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.11 xml
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+# logging host 10.0.1.25 filtered
+
+- name: Gather listed logging config
+  cisco.ios.ios_logging_global:
+    config:
+    state: gathered
+    
+# Module Execution Result:
+# ------------------------
+
+# "gathered": [
+#     {
+#         "buffered": {
+#             "severity": "notifications",
+#             "size": 5099,
+#             "xml": true
+#         },
+#         "cns_events": "warnings",
+#         "console": {
+#             "severity": "critical",
+#             "xml": true
+#         },
+#         "dmvpn": {
+#             "rate_limit": 10
+#         },
+#         "exception": 4099,
+#         "facility": "local5",
+#         "message_counter": [
+#             "log"
+#         ],
+#         "monitor": {
+#             "severity": "warnings"
+#         },
+#         "policy_firewall": {
+#             "rate_limit": 10
+#         },
+#         "snmp_trap": [
+#             "errors"
+#         ],
+#         "trap": "errors",
+#         "userinfo": true
+#     },
+#     {
+#         "host": [
+#             {
+#                 "hostname": "10.0.1.11",
+#                 "xml": true
+#             },
+#             {
+#                 "hostname": "10.0.1.12"
+#             },
+#             {
+#                 "filtered": true,
+#                 "hostname": "10.0.1.10",
+#                 "stream": 10
+#             },
+#             {
+#                 "filtered": true,
+#                 "hostname": "10.0.1.25"
+#             }
+#         ]
+#     }
+# ],
+
+# After state:
+# -------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
+# logging host 10.0.1.13 transport tcp port 514
+# logging host 10.0.1.11 xml
+# logging host 10.0.1.12
+# logging host 10.0.1.10 filtered stream 10
+# logging host 10.0.1.25 filtered
+
+# Using state: rendered
+
+- name: Render the commands for provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      - buffered:
+          severity: notifications
+          size: 5099
+          xml: True
+      - console:
+          severity: critical
+          xml: True
+      - facility: local5
+      - host: 
+        - hostname: 10.0.1.12
+        - hostname: 10.0.1.11
+          xml: True
+        - hostname: 10.0.1.10
+          filtered: True
+          stream: 10
+        - hostname: 10.0.1.13
+          transport:
+            tcp: 
+              port: 514
+      - monitor:
+          severity: warnings
+      - message_counter: log
+      - snmp_trap: errors
+      - trap: errors
+      - userinfo: True
+      - policy_firewall:
+          rate_limit: 10
+      - logging_on: True
+      - exception: 10
+      - dmvpn:
+          rate_limit: 10
+      - cns_events: warnings
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+
+# "rendered": [
+#     "logging host 10.0.1.12",
+#     "logging host 10.0.1.11 xml",
+#     "logging host 10.0.1.10 filtered stream 10",
+#     "logging host 10.0.1.13 transport tcp port 514",
+#     "logging message-counter log",
+#     "logging snmp-trap errors",
+#     "logging buffered xml 5099 notifications",
+#     "logging console xml critical",
+#     "logging facility local5",
+#     "logging monitor warnings",
+#     "logging trap errors",
+#     "logging userinfo",
+#     "logging policy-firewall rate-limit 10",
+#     "logging on",
+#     "logging exception 10",
+#     "logging dmvpn rate-limit 10",
+#     "logging cns-events warnings"
+#     ]
+
+# Using state: parsed
+
+# File: parsed.cfg
+# ----------------
+
+# logging on
+# logging count
+# logging userinfo
+# logging trap errors
+# logging reload alerts
+# logging host 10.0.1.1
+# logging exception 4099
+# logging history alerts
+# logging facility local5
+# logging snmp-trap errors
+# logging monitor warnings
+# logging origin-id hostname
+# logging host 10.0.1.11 xml
+# logging cns-events warnings
+# logging dmvpn rate-limit 10
+# logging message-counter log
+# logging console xml critical
+# logging message-counter debug
+# logging persistent batch 4444
+# logging host 10.0.1.25 filtered
+# logging source-interface GBit1/0
+# logging source-interface CTunnel2
+# logging policy-firewall rate-limit 10
+# logging buffered xml 5099 notifications
+# logging rate-limit all 2 except warnings
+# logging host 10.0.1.10 filtered stream 10
+# logging host 10.0.1.13 transport tcp port 514
+# logging discriminator msglog01 severity includes 5
+# logging filter tftp://10.0.2.18/ESM/elate.tcl args TESTInst2 
+# logging filter tftp://10.0.2.14/ESM/escalate.tcl args TESTInst
+
+- name: Parse the provided configuration with the existing running configuration
+  cisco.ios.ios_logging_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+
+# Module Execution Result:
+# ------------------------
+
+# "parsed": [
+#         {
+#             "buffered": {
+#                 "severity": "notifications",
+#                 "size": 5099,
+#                 "xml": true
+#             },
+#             "cns_events": "warnings",
+#             "console": {
+#                 "severity": "critical",
+#                 "xml": true
+#             },
+#             "count": true,
+#             "discriminator": [
+#                 "msglog01 severity includes 5"
+#             ],
+#             "dmvpn": {
+#                 "rate_limit": 10
+#             },
+#             "exception": 4099,
+#             "facility": "local5",
+#             "filter": [
+#                 {
+#                     "args": "TESTInst2 ",
+#                     "url": "tftp://10.0.2.18/ESM/elate.tcl"
+#                 },
+#                 {
+#                     "args": "TESTInst",
+#                     "url": "tftp://10.0.2.14/ESM/escalate.tcl"
+#                 }
+#             ],
+#             "history": {
+#                 "severity": "alerts"
+#             },
+#             "logging_on": true,
+#             "message_counter": [
+#                 "debug",
+#                 "log"
+#             ],
+#             "monitor": {
+#                 "severity": "warnings"
+#             },
+#             "origin_id": {
+#                 "tag": "hostname"
+#             },
+#             "persistent": {
+#                 "batch": 4444
+#             },
+#             "policy_firewall": {
+#                 "rate_limit": 10
+#             },
+#             "rate_limit": {
+#                 "all": true,
+#                 "except": "warnings",
+#                 "size": 2
+#             },
+#             "reload": {
+#                 "severity": "alerts"
+#             },
+#             "snmp_trap": [
+#                 "errors"
+#             ],
+#             "source_interface": [
+#                 {
+#                     "interface": "GBit1/0"
+#                 },
+#                 {
+#                     "interface": "CTunnel2"
+#                 }
+#             ],
+#             "trap": "errors",
+#             "userinfo": true
+#         },
+#         {
+#             "host": [
+#                 {
+#                     "hostname": "10.0.1.1"
+#                 },
+#                 {
+#                     "hostname": "10.0.1.11",
+#                     "xml": true
+#                 },
+#                 {
+#                     "filtered": true,
+#                     "hostname": "10.0.1.25"
+#                 },
+#                 {
+#                     "filtered": true,
+#                     "hostname": "10.0.1.10",
+#                     "stream": 10
+#                 }
+#             ]
+#         }
+#     ]
 
 """
 
