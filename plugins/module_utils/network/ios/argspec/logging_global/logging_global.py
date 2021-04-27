@@ -102,7 +102,10 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {"tcp": {"type": "bool"}},
                 },
-                "discriminator": {"type": "str"},
+                "discriminator": {
+                    "type": "list",
+                    "elements": "str",
+                },
                 "dmvpn": {
                     "type": "dict",
                     "options": {"rate_limit": {"type": "int"}},

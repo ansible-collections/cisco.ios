@@ -132,6 +132,17 @@ class Logging_global(ResourceModule):
         self.compare(parsers=self.parsers, want=want, have=have)
 
     def list_to_dict(self, param):
+        """Converts a dict that contains list to a dict of dict
+            The linear structure of the logging configuration
+            converts every logging configuration to dict with unique key
+            
+        Args:
+            param (dict): The have or want
+
+        Returns:
+            dict: for any defined configuration dict contains unique keys
+        """
+        
         _temp_param = {"logging": {}}
         exclude = []
         for element in param:
@@ -141,6 +152,18 @@ class Logging_global(ResourceModule):
                     _temp.update({ctr: { "message_counter": ctr }})
                 _temp_param.update(_temp)
                 exclude.append("message_counter")
+            if element.get("discriminator"):
+                _temp = {}
+                for ctr in element.get("discriminator"):
+                    _temp.update({ctr + "_discriminator" : { "discriminator": ctr }})
+                _temp_param.update(_temp)
+                exclude.append("discriminator")
+            if element.get("snmp_trap"):
+                _temp = {}
+                for ctr in element.get("snmp_trap"):
+                    _temp.update({ctr + "_snmp_trap" : { "snmp_trap": ctr }})
+                _temp_param.update(_temp)
+                exclude.append("snmp_trap")
             if element.get("source_interface"):
                 _temp = {}
                 for interface in element.get("source_interface"):
