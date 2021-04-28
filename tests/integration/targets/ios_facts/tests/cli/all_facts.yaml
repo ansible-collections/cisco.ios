@@ -54,7 +54,21 @@
   assert:
     that:
       - result.changed == false
-      - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(supported_network_resources) |length\
-                      \ == 0 }}"
+      - result.changed == false
+      - "'acls' in result['ansible_facts']['available_network_resources']"
+      - "'bgp_address_family' in result['ansible_facts']['available_network_resources']"
+      - "'bgp_global' in result['ansible_facts']['available_network_resources']"
+      - "'interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'l2_interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'l3_interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'lacp' in result['ansible_facts']['available_network_resources']"
+      - "'lacp_interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'lldp_global' in result['ansible_facts']['available_network_resources']"
+      - "'lldp_interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'ospf_interfaces' in result['ansible_facts']['available_network_resources']"
+      - "'ospfv2' in result['ansible_facts']['available_network_resources']"
+      - "'ospfv3' in result['ansible_facts']['available_network_resources']"
+      - "'static_routes' in result['ansible_facts']['available_network_resources']"
+      - "'vlans' in result['ansible_facts']['available_network_resources']"
 
 - debug: msg="END cli/all_facts.yaml on connection={{ ansible_connection }}"

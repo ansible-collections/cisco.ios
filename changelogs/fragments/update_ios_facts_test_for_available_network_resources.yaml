@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - update ios_facts test for available_network_resource feature.
