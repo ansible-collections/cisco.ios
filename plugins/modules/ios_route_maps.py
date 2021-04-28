@@ -2144,7 +2144,7 @@ EXAMPLES = """
 #  set ip next-hop verify-availability 198.51.111.1 100 track 10
 #  set ip next-hop recursive global 198.51.110.1
 
-- name: Parse the provided configuration with the exisiting running configuration
+- name: Parse the provided configuration with the existing running configuration
   cisco.ios.ios_route_maps:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
