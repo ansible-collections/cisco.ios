@@ -22,9 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 def tmplt_host(config_data):
     cmd = "logging host"
     verb = config_data.get("host")
-
+    changed = True
     if verb.get("transport"):
-        cmd, verb = None, None
+        changed = False
     if verb:
         if verb.get("hostname"):
             cmd += " {hostname}".format(hostname=verb["hostname"])
@@ -34,22 +34,28 @@ def tmplt_host(config_data):
             cmd += " vrf {vrf}".format(vrf=verb["vrf"])
         if verb.get("filtered"):
             cmd += " {filtered}".format(filtered="filtered")
+            changed = True
         if verb.get("xml"):
             cmd += " {xml}".format(xml="xml")
+            changed = True
         if verb.get("session_id"):
             session_id = verb.get("session_id")
+            changed = True
             if session_id.get("text"):
                 cmd += " session-id string {text}".format(text=session_id["text"])  
             elif session_id.get("tag"):
                 cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
             cmd += " stream {stream}".format(stream=verb["stream"])
+            changed = True
         if verb.get("sequence_num_session"):
             cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+            changed = True
         if verb.get("discriminator"):
             cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
-        if verb.get("transport"):
-            cmd = None
+            changed = True
+    if changed == False:
+        cmd = None
     return cmd
 
 def tmplt_host_transport(config_data):
@@ -557,12 +563,16 @@ class Logging_globalTemplate(NetworkTemplate):
             "name": "logging_on",
             "getval": re.compile(
                 r"""
-                ^logging\s(?P<on>on)
+                ((?P<negate>no))? 
+                ((\s|^))?logging 
+                (\s(?P<on>on))?
                 $""", re.VERBOSE),
-            "setval": "logging on",
+            "setval": "{{ 'no ' if logging_on == 'disable' }}" 
+                        "logging on",
+            "remval": "logging on",
             "result": {
                 "logging": {
-                    "logging_on" : "{{ True if on is defined }}",
+                    "logging_on" : "{{ 'disable' if negate is defined else 'enable' }}",
                 }
             },
         },

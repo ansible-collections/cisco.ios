@@ -143,53 +143,86 @@ class Logging_global(ResourceModule):
             dict: for any defined configuration dict contains unique keys
         """
         
-        _temp_param = {"logging": {}}
+        _temp_param = {}
         exclude = []
         for element in param:
             if element.get("message_counter"):
                 _temp = {}
                 for ctr in element.get("message_counter"):
-                    _temp.update({ctr: { "message_counter": ctr }})
+                    _temp.update({
+                        ctr: { "message_counter": ctr 
+                            }
+                        }
+                    )
                 _temp_param.update(_temp)
                 exclude.append("message_counter")
             if element.get("discriminator"):
                 _temp = {}
                 for ctr in element.get("discriminator"):
-                    _temp.update({ctr + "_discriminator" : { "discriminator": ctr }})
+                    _temp.update({ 
+                                self.trim_whitespace("discriminator_" + ctr) : { 
+                                    "discriminator": ctr 
+                                    }
+                                }
+                            )
                 _temp_param.update(_temp)
                 exclude.append("discriminator")
             if element.get("snmp_trap"):
                 _temp = {}
                 for ctr in element.get("snmp_trap"):
-                    _temp.update({ctr + "_snmp_trap" : { "snmp_trap": ctr }})
+                    _temp.update({
+                        self.trim_whitespace("snmp_trap_" + ctr) : { 
+                            "snmp_trap": ctr 
+                            }
+                        }
+                    )
                 _temp_param.update(_temp)
                 exclude.append("snmp_trap")
             if element.get("source_interface"):
                 _temp = {}
                 for interface in element.get("source_interface"):
-                    _temp.update({interface.get("interface"):{ "source_interface": interface }})
+                    _temp.update({
+                        interface.get("interface"):{
+                            "source_interface": interface 
+                            }
+                        }
+                    )
                 _temp_param.update(_temp)
                 exclude.append("source_interface")
             if element.get("filter"):
                 _temp = {}
                 for url in element.get("filter"):
-                    _temp.update({url.get("url"):{ "filter":url }})
+                    _temp.update({
+                        url.get("url"):{
+                            "filter":url 
+                            }
+                        }
+                    )
                 _temp_param.update(_temp)
                 exclude.append("filter")
             if element.get("host"):
                 _temp = {}
                 for host in element.get("host"):
-                    _temp.update({host.get("hostname"):{ "host": host }})    
+                    _temp.update({
+                        host.get("hostname"):{
+                            "host": host 
+                            }
+                        }
+                    )    
                 _temp_param.update(_temp)
                 exclude.append("host")
         else:
             for element in param:
                 for k, v in iteritems(element):
                     if k not in exclude:
-                        _temp_param.update({k:{k:v}})
+                        _temp_param.update({
+                            k:{k:v}
+                        }
+                    )
         
         param = _temp_param
         return param
 
-                    
+    def trim_whitespace(self, word):
+        return word.strip()
 

@@ -275,7 +275,10 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "xml": {"type": "bool"},
                     },
                 },
-                "logging_on": {"type": "bool"},
+                "logging_on": {
+                    "type": "str",
+                    "choices": ["enable", "disable"],
+                },
                 "origin_id": {
                     "type": "dict",
                     "options": {

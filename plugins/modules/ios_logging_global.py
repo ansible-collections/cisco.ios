@@ -213,7 +213,8 @@ options:
           xml: *xml              
       logging_on:               
         description: Enable logging to all enabled destinations
-        type: bool
+        type: str
+        choices: ["enable", "disable"]
       origin_id:      
         description: Add origin ID to syslog messages
         type: dict
@@ -799,7 +800,6 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-
 # Module Execution Result:
 # ------------------------
 
@@ -907,7 +907,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.logging_global.logging_global import (
     Logging_global,
 )
-
 
 def main():
     """
