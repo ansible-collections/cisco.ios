@@ -48,8 +48,8 @@ class Logging_global(ResourceModule):
             tmplt=Logging_globalTemplate(),
         )
         self.parsers = [
-            "host",
-            "host.transport",
+            "hosts",
+            "hosts.transport",
             "buffered",
             "buginf",
             "cns_events",
@@ -78,6 +78,16 @@ class Logging_global(ResourceModule):
             "trap",
             "userinfo",
         ] #segregate for O(1) operation
+        
+        self.list_parsers = [
+            "hosts",
+            "hosts.transport",
+            "filter",
+            "message_counter",
+            "snmp_trap",
+            "source_interface",
+            "discriminator",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -119,7 +129,12 @@ class Logging_global(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     self._compare(want={}, have=have)
-
+        
+        if self.state == "replaced":
+            for k, have in iteritems(haved):
+                if list(have.keys())[0] in self.list_parsers:
+                    self._compare(want={}, have=have)
+                    
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
@@ -205,12 +220,12 @@ class Logging_global(ResourceModule):
                 for host in element.get("host"):
                     _temp.update({
                         host.get("hostname"):{
-                            "host": host 
+                            "hosts": host 
                             }
                         }
                     )    
                 _temp_param.update(_temp)
-                exclude.append("host")
+                exclude.append("hosts")
         else:
             for element in param:
                 for k, v in iteritems(element):

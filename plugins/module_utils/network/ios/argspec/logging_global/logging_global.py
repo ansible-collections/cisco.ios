@@ -169,7 +169,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         },
                     },
                 },
-                "host": {
+                "hosts": {
                     "type": "list",
                     "elements": "dict",
                     "options": {

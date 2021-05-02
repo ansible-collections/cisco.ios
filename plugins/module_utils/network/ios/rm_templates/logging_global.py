@@ -226,7 +226,7 @@ class Logging_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "host",
+            "name": "hosts",
             "getval": re.compile(
                 r"""
                 ^logging\shost
@@ -246,7 +246,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "remval": tmplt_host_del,
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [
+                    "hosts": [
                         {"hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6 }}",
                         "discriminator" : "{{ discriminator }}",
@@ -265,7 +265,7 @@ class Logging_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "host.transport",
+            "name": "hosts.transport",
             "getval": re.compile(
                 r"""
                 ^logging\shost
@@ -288,7 +288,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "remval": tmplt_host_del,
             "result": { 
                 "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
-                    "host": [{
+                    "hosts": [{
                         "hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6 }}",
                         "vrf" : "{{ vrf }}",

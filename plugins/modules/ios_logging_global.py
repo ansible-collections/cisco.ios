@@ -131,7 +131,7 @@ options:
         suboptions:     
           size: *size          
           severity: *severity
-      host:           
+      hosts:           
         description: Set syslog server IP address and parameters
         type: list
         elements: dict
@@ -907,6 +907,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.logging_global.logging_global import (
     Logging_global,
 )
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
+
 
 def main():
     """
