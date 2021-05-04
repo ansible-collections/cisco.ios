@@ -73,7 +73,10 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                         "authentication": {
                                             "type": "dict",
                                             "options": {
-                                                "key_chain": {"type": "str"},
+                                                "key_chain": {
+                                                    "type": "str",
+                                                    "no_log": True,
+                                                },
                                                 "null": {"type": "bool"},
                                             },
                                         },
@@ -145,7 +148,8 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "key_chain": {
-                                                            "type": "str"
+                                                            "type": "str",
+                                                            "no_log": True,
                                                         },
                                                         "null": {
                                                             "type": "bool"
@@ -535,7 +539,10 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                 "authentication": {
                                     "type": "dict",
                                     "options": {
-                                        "key_chain": {"type": "str"},
+                                        "key_chain": {
+                                            "type": "str",
+                                            "no_log": True,
+                                        },
                                         "ipsec": {
                                             "type": "dict",
                                             "options": {

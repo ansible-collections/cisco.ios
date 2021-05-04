@@ -67,7 +67,7 @@ class Ospf_InterfacesFacts(object):
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_InterfacesTemplate(
-            lines=data.splitlines()
+            lines=data.splitlines(), module=self._module
         )
 
         objs = ospf_interfaces_parser.parse()
@@ -86,7 +86,9 @@ class Ospf_InterfacesFacts(object):
         ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)
 
         params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": final_objs})
+            ospf_interfaces_parser.validate_config(
+                self.argument_spec, {"config": final_objs}, redact=True
+            )
         )
 
         facts["ospf_interfaces"] = params["config"]
