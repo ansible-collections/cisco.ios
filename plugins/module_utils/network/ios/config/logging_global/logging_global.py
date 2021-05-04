@@ -218,12 +218,20 @@ class Logging_global(ResourceModule):
             if element.get("hosts"):
                 _temp = {}
                 for host in element.get("hosts"):
-                    _temp.update({
-                        host.get("hostname"):{
-                            "hosts": host 
+                    if host.get("hostname"):
+                        _temp.update({
+                            host.get("hostname"):{
+                                "hosts": host 
+                                }
                             }
-                        }
-                    )    
+                        )
+                    elif host.get("ipv6"):
+                        _temp.update({
+                            host.get("ipv6"):{
+                                "hosts": host 
+                                }
+                            }
+                        )
                 _temp_param.update(_temp)
                 exclude.append("hosts")
         else:

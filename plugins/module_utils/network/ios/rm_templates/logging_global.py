@@ -49,7 +49,7 @@ def tmplt_host(config_data):
             cmd += " stream {stream}".format(stream=verb["stream"])
             changed = True
         if verb.get("sequence_num_session"):
-            cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+            cmd += " {sequence_num_session}".format(sequence_num_session="sequence-num-session")
             changed = True
         if verb.get("discriminator"):
             cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
@@ -73,7 +73,7 @@ def tmplt_host_transport(config_data):
         prot = None
         if transport_type.get("udp"):
             cmd += " transport {prot}".format(prot="udp")
-            prot = "upd"
+            prot = "udp"
         elif transport_type.get("tcp"):
             cmd += " transport {prot}".format(prot="tcp")
             prot = "tcp"
@@ -100,12 +100,12 @@ def tmplt_host_transport(config_data):
                 elif session_id.get("tag"):
                     cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
-                cmd += " {sequence_num_session}".format(sequence_num_session="sequence_num_session")
+                cmd += " {sequence_num_session}".format(sequence_num_session="sequence-num-session")
     return cmd
         
 def tmplt_host_del(config_data):
     cmd = "logging host"
-    verb = config_data.get("host")
+    verb = config_data.get("hosts")
 
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
@@ -171,9 +171,9 @@ def tmplt_common(verb, cmd):
         if verb.get("all"):
             cmd += " {all}".format(all="all")
         if verb.get("console"):
-            cmd += " {console}".format(console=verb["console"])
+            cmd += " {console}".format(console="console")
         if verb.get("message_limit"):
-            cmd += " message_limit {message_limit}".format(message_limit=verb["message_limit"])
+            cmd += " message-limit {message_limit}".format(message_limit=verb["message_limit"])
         if verb.get("discriminator"):
             cmd += " discriminator {discriminator}".format(discriminator=verb.get("discriminator"))
         if verb.get("filtered"):
@@ -212,11 +212,11 @@ def tmplt_persistent(config_data):
     if verb.get("threshold"):
         cmd += " threshold {threshold}".format(threshold=verb["threshold"])
     if verb.get("immediate"):
-        cmd += " {immediate}".format(immediate=verb["immediate"])
+        cmd += " {immediate}".format(immediate="immediate")
     if verb.get("protected"):
-        cmd += " {protected}".format(protected=verb["protected"])
+        cmd += " {protected}".format(protected="protected")
     if verb.get("notify"):
-        cmd += " {notify}".format(notify=verb["notify"])
+        cmd += " {notify}".format(notify="notify")
     return cmd
 
 class Logging_globalTemplate(NetworkTemplate):
@@ -245,7 +245,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host,
             "remval": tmplt_host_del,
             "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined else ipv6 }}" : {
                     "hosts": [
                         {"hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6 }}",
@@ -287,11 +287,11 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host_transport,
             "remval": tmplt_host_del,
             "result": { 
-                "{{ hostname if hostname is defined or ipv6 if ipv6 is defined }}" : {
+                "{{ hostname if hostname is defined else ipv6 }}" : {
                     "hosts": [{
                         "hostname" : "{{ hostname }}",
                         "ipv6" : "{{ ipv6 }}",
-                        "vrf" : "{{ vrf }}",
+                        "vrf" : "{{ vrf if transport is defined }}",
                         "transport": {
                             "{{ transport }}" : {
                                     "audit" : "{{ True if audit is defined }}",
@@ -589,7 +589,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 "logging" : {
                     "origin_id": {
                             "tag" : "{{ tag }}",
-                            "text" : "{{ text.split('string ')[1] if text is defined }}",  
+                            "text" : "{{ text }}",  
                     }  
                 }
             },
