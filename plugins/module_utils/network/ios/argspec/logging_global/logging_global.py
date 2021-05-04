@@ -320,7 +320,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "size": {"type": "int", "required": True},
                         "all": {"type": "bool"},
                         "console": {"type": "bool"},
-                        "except": {
+                        "except_severity": {
                             "type": "str",
                             "choices": [
                                 "alerts",

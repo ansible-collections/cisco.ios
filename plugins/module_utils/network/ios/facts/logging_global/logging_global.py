@@ -53,7 +53,7 @@ class Logging_globalFacts(object):
 
         if not data:
             data = self.get_logging_data(connection)
-
+        print(data)
         # parse native config using the Logging_global template
         logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = list(logging_global_parser.parse().values())

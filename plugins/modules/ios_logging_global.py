@@ -288,7 +288,7 @@ options:
           console:
             description: (1-10000) message per second
             type: bool
-          except:
+          except_severity:
             description: Messages of this severity or higher
             type: str
             choices: *severity_subgroup
@@ -376,7 +376,7 @@ EXAMPLES = """
           severity: critical
           xml: True
       - facility: local5
-      - host: 
+      - hosts: 
         - hostname: 10.0.1.12
         - hostname: 10.0.1.11
           xml: True
@@ -483,7 +483,7 @@ EXAMPLES = """
       - snmp_trap:
           - errors
           - warnings
-      - host:
+      - hosts:
           - hostname: 10.0.1.11
     state: deleted
 
@@ -548,7 +548,7 @@ EXAMPLES = """
           severity: critical
           size: 6000
       - facility: local6
-      - host: 
+      - hosts: 
           - hostname: 10.0.1.25
             filtered: True
     state: overridden
@@ -710,7 +710,7 @@ EXAMPLES = """
           severity: critical
           xml: True
       - facility: local5
-      - host: 
+      - hosts: 
         - hostname: 10.0.1.12
         - hostname: 10.0.1.11
           xml: True
@@ -856,7 +856,7 @@ EXAMPLES = """
 #             },
 #             "rate_limit": {
 #                 "all": true,
-#                 "except": "warnings",
+#                 "except_severity": "warnings",
 #                 "size": 2
 #             },
 #             "reload": {
@@ -877,7 +877,7 @@ EXAMPLES = """
 #             "userinfo": true
 #         },
 #         {
-#             "host": [
+#             "hosts": [
 #                 {
 #                     "hostname": "10.0.1.1"
 #                 },

@@ -215,9 +215,9 @@ class Logging_global(ResourceModule):
                     )
                 _temp_param.update(_temp)
                 exclude.append("filter")
-            if element.get("host"):
+            if element.get("hosts"):
                 _temp = {}
-                for host in element.get("host"):
+                for host in element.get("hosts"):
                     _temp.update({
                         host.get("hostname"):{
                             "hosts": host 

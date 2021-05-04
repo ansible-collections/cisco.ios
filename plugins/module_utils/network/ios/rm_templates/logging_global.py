@@ -21,7 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 def tmplt_host(config_data):
     cmd = "logging host"
-    verb = config_data.get("host")
+    verb = config_data.get("hosts")
     changed = True
     if verb.get("transport"):
         changed = False
@@ -60,7 +60,7 @@ def tmplt_host(config_data):
 
 def tmplt_host_transport(config_data):
     cmd = "logging host"
-    verb = config_data.get("host")
+    verb = config_data.get("hosts")
 
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
@@ -184,8 +184,8 @@ def tmplt_common(verb, cmd):
             cmd += " {size}".format(size=verb["size"])
         if verb.get("severity"):
             cmd += " {severity}".format(severity=verb["severity"])
-        if verb.get("except"):
-            cmd += " except {exceptSev}".format(exceptSev=verb["except"])
+        if verb.get("except_severity"):
+            cmd += " except {exceptSev}".format(exceptSev=verb["except_severity"])
         if verb.get("tag"):
             cmd += " {tag}".format(tag=verb["tag"])
         if verb.get("text"):
@@ -269,8 +269,8 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\shost
-                \s(?P<hostname>\S+)
-                \sipv6\s(?P<ipv6>\S+)
+                (\s(?P<hostname>\S+))?
+                (\sipv6\s(?P<ipv6>\S+))?
                 (\svrf\s(?P<vrf>\w+))?
                 (\stransport\s(?P<transport>tcp|udp))?
                 (\sport\s(?P<port>[1-9][0-9]*))?
@@ -667,7 +667,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\srate-limit
                 (\s(?P<option>all|console))?
                 (\s(?P<size>[1-9][0-9]*))?
-                (\sexcept\s(?P<except>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
+                (\sexcept\s(?P<except_severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
                 $""", re.VERBOSE),
             "setval": tmplt_rate_limit,
             "result": { 
@@ -676,7 +676,7 @@ class Logging_globalTemplate(NetworkTemplate):
                         "size": "{{ size }}",
                         "all": "{{ True if option == 'all' }}",
                         "console": "{{ True if option == 'console' }}",
-                        "except" : "{{ except }}",
+                        "except_severity" : "{{ except_severity }}",
                     }
                 } 
             },
