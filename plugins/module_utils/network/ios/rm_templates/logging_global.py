@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     NetworkTemplate,
 )
 
+
 def tmplt_host(config_data):
     cmd = "logging host"
     verb = config_data.get("hosts")
@@ -42,21 +43,26 @@ def tmplt_host(config_data):
             session_id = verb.get("session_id")
             changed = True
             if session_id.get("text"):
-                cmd += " session-id string {text}".format(text=session_id["text"])  
+                cmd += " session-id string {text}".format(text=session_id["text"])
             elif session_id.get("tag"):
                 cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
             cmd += " stream {stream}".format(stream=verb["stream"])
             changed = True
         if verb.get("sequence_num_session"):
-            cmd += " {sequence_num_session}".format(sequence_num_session="sequence-num-session")
+            cmd += " {sequence_num_session}".format(
+                sequence_num_session="sequence-num-session"
+            )
             changed = True
         if verb.get("discriminator"):
-            cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+            cmd += " discriminator {discriminator}".format(
+                discriminator=verb["discriminator"]
+            )
             changed = True
     if changed == False:
         cmd = None
     return cmd
+
 
 def tmplt_host_transport(config_data):
     cmd = "logging host"
@@ -90,19 +96,24 @@ def tmplt_host_transport(config_data):
             if verb.get("filtered"):
                 cmd += " {filtered}".format(filtered="filtered")
             if verb.get("discriminator"):
-                cmd += " discriminator {discriminator}".format(discriminator=verb["discriminator"])
+                cmd += " discriminator {discriminator}".format(
+                    discriminator=verb["discriminator"]
+                )
             if verb.get("stream"):
                 cmd += " stream {stream}".format(stream=verb["stream"])
             if verb.get("session_id"):
                 session_id = verb.get("session_id")
                 if session_id.get("text"):
-                    cmd += " session-id string {text}".format(text=session_id["text"])  
+                    cmd += " session-id string {text}".format(text=session_id["text"])
                 elif session_id.get("tag"):
                     cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
-                cmd += " {sequence_num_session}".format(sequence_num_session="sequence-num-session")
+                cmd += " {sequence_num_session}".format(
+                    sequence_num_session="sequence-num-session"
+                )
     return cmd
-        
+
+
 def tmplt_host_del(config_data):
     cmd = "logging host"
     verb = config_data.get("hosts")
@@ -113,29 +124,38 @@ def tmplt_host_del(config_data):
         cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
     return cmd
 
+
 def tmplt_buffered(config_data):
     return tmplt_common(config_data.get("buffered"), "logging buffered")
+
 
 def tmplt_history(config_data):
     return tmplt_common(config_data.get("history"), "logging history")
 
+
 def tmplt_console(config_data):
     return tmplt_common(config_data.get("console"), "logging console")
+
 
 def tmplt_monitor(config_data):
     return tmplt_common(config_data.get("monitor"), "logging monitor")
 
+
 def tmplt_origin_id(config_data):
     return tmplt_common(config_data.get("origin_id"), "logging origin-id")
+
 
 def tmplt_queue_limit(config_data):
     return tmplt_common(config_data.get("queue_limit"), "logging queue-limit")
 
+
 def tmplt_rate_limit(config_data):
     return tmplt_common(config_data.get("rate_limit"), "logging rate-limit")
 
+
 def tmplt_reload(config_data):
     return tmplt_common(config_data.get("reload"), "logging reload")
+
 
 def tmplt_message_counter(verb):
     cmd = "logging message-counter"
@@ -143,6 +163,7 @@ def tmplt_message_counter(verb):
     if verb.get("message_counter"):
         cmd += " {message_counter}".format(message_counter=verb["message_counter"])
     return cmd
+
 
 def tmplt_filter(config_data):
     cmd = "logging filter"
@@ -156,6 +177,7 @@ def tmplt_filter(config_data):
         cmd += " args {args}".format(args=verb["args"])
     return cmd
 
+
 def tmplt_source_interface(config_data):
     cmd = "logging source-interface"
     verb = config_data.get("source_interface")
@@ -166,6 +188,7 @@ def tmplt_source_interface(config_data):
         cmd += " vrf {vrf}".format(vrf=verb["vrf"])
     return cmd
 
+
 def tmplt_common(verb, cmd):
     if verb:
         if verb.get("all"):
@@ -173,9 +196,13 @@ def tmplt_common(verb, cmd):
         if verb.get("console"):
             cmd += " {console}".format(console="console")
         if verb.get("message_limit"):
-            cmd += " message-limit {message_limit}".format(message_limit=verb["message_limit"])
+            cmd += " message-limit {message_limit}".format(
+                message_limit=verb["message_limit"]
+            )
         if verb.get("discriminator"):
-            cmd += " discriminator {discriminator}".format(discriminator=verb.get("discriminator"))
+            cmd += " discriminator {discriminator}".format(
+                discriminator=verb.get("discriminator")
+            )
         if verb.get("filtered"):
             cmd += " {filtered}".format(filtered="filtered")
         if verb.get("xml"):
@@ -196,11 +223,12 @@ def tmplt_common(verb, cmd):
             cmd += " trap {tag}".format(tag=verb["trap"])
     return cmd
 
+
 def tmplt_persistent(config_data):
     command = []
     cmd = "logging persistent"
     verb = config_data.get("persistent")
-    
+
     if verb.get("url"):
         cmd += " url {url}".format(url=verb["url"])
     if verb.get("size"):
@@ -219,9 +247,12 @@ def tmplt_persistent(config_data):
         cmd += " {notify}".format(notify="notify")
     return cmd
 
+
 class Logging_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Logging_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Logging_globalTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [
@@ -776,3 +807,4 @@ class Logging_globalTemplate(NetworkTemplate):
         },
     ]
     # fmt: on
+

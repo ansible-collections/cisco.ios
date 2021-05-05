@@ -16,7 +16,7 @@ DOCUMENTATION = """
 module: ios_logging_global
 version_added: 2.1.0
 short_description: Manages logging attributes of Cisco IOS network devices
-description: This module manages the logging attributes of Cisco IOS network devices.
+description: This module manages the logging attributes of Cisco IOS network devices
 author: Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSv Version 15.2 on VIRL
@@ -907,6 +907,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.logging_global.logging_global import (
     Logging_global,
 )
+
 # import debugpy
 # debugpy.listen(3000)
 # debugpy.wait_for_client()
