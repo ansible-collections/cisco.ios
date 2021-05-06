@@ -143,7 +143,7 @@ def parse_server(line, dest):
 
 def parse_source_int(line, dest):
     if dest == "source":
-        match = re.search("(ntp source )(\\S+)", line, re.M)
+        match = re.search("(ntp\\ssource\\s)(\\S+)", line, re.M)
         if match:
             source = match.group(2)
             return source
@@ -152,7 +152,7 @@ def parse_source_int(line, dest):
 def parse_acl(line, dest):
     if dest == "access-group":
         match = re.search(
-            "ntp access-group (?:peer|serve)(?:\\s+)(\\S+)", line, re.M
+            "ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)", line, re.M
         )
         if match:
             acl = match.group(1)
@@ -168,7 +168,7 @@ def parse_logging(line, dest):
 def parse_auth_key(line, dest):
     if dest == "authentication-key":
         match = re.search(
-            "(ntp authentication-key \\d+ md5 )(\\w+)", line, re.M
+            "(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)", line, re.M
         )
         if match:
             auth_key = match.group(2)
@@ -177,7 +177,7 @@ def parse_auth_key(line, dest):
 
 def parse_key_id(line, dest):
     if dest == "trusted-key":
-        match = re.search("(ntp trusted-key )(\\d+)", line, re.M)
+        match = re.search("(ntp\\strusted-key\\s)(\\d+)", line, re.M)
         if match:
             auth_key = match.group(2)
             return auth_key
@@ -197,7 +197,7 @@ def map_config_to_obj(module):
     
     for line in config.splitlines():
 
-        match = re.search("ntp (\\S+)", line, re.M)
+        match = re.search("ntp\\s(\\S+)", line, re.M)
         
         if match:
             dest = match.group(1)
