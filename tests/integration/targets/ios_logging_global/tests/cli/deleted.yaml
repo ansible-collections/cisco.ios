@@ -7,12 +7,12 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-    - name: Remove all configuration
+    - name: TEST - [deleted] Remove all configuration
       cisco.ios.ios_logging_global:
         state: deleted
       register: result
 
-    - name: Assert that correct set of commands were generated
+    - name: TEST - [deleted] Assert that correct set of commands were generated
       assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\

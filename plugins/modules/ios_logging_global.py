@@ -23,18 +23,18 @@ notes:
   - This module works with connection C(network_cli).
     See L(IOS Platform Options,../network/user_guide/platform_ios.html)
   - The Configuration defaults of the Cisco IOS network devices
-    are not subjected to idempotency causes 
+    are not subjected to idempotency causes
 options:
   config:
     description: A list containing dictionary of logging options
     type: list
     elements: dict
     suboptions:
-      buffered:       
+      buffered:
         description: Set buffered logging parameters
         type: dict
         suboptions:
-          size: &size           
+          size: &size
             description: Logging buffer size
             type: int
           severity: &severity
@@ -49,77 +49,77 @@ options:
               - informational
               - notifications
               - warnings
-          discriminator: &discriminator   
+          discriminator: &discriminator
             description: Establish MD-Buffer association
             type: str
-          filtered: &filtered        
+          filtered: &filtered
             description: Enable filtered logging
             type: bool
-          xml: &xml             
+          xml: &xml
             description: Enable logging in XML to XML logging buffer
             type: bool
-      buginf:          
+      buginf:
         description: Enable buginf logging for debugging
         type: bool
-      cns_events:   
+      cns_events:
         description: Set CNS Event logging level
         type: str
         choices: *severity_subgroup
-      console:         
+      console:
         description: Set console logging parameters
         type: dict
-        suboptions:         
+        suboptions:
           severity:
             description: Logging severity level
             type: str
             choices: ["alerts","critical","debugging","emergencies","errors","informational","notifications","warnings","guaranteed"]
-          discriminator: *discriminator   
-          filtered: *filtered       
-          xml: *xml            
-      count:                
+          discriminator: *discriminator
+          filtered: *filtered
+          xml: *xml
+      count:
         description: Count every log message and timestamp last occurance
         type: bool
-      delimiter:    
+      delimiter:
         description: Append delimiter to syslog messages
         type: dict
         suboptions:
-          tcp:           
+          tcp:
             description: Append delimiter to syslog messages over TCP
             type: bool
       discriminator:
         description: Create or modify a message discriminator
         type: list
         elements: str
-      dmvpn:          
+      dmvpn:
         description: DMVPN Configuration
         type: dict
         suboptions:
-          rate_limit: &rate_limit          
+          rate_limit: &rate_limit
             description: rate in messages/minute, default is 600 messages/minute (1-10000)
             type: int
-      esm:        
+      esm:
         description: Set ESM filter restrictions
         type: dict
         suboptions:
-          config:           
+          config:
             description: Permit/Deny configuration changes from ESM filters
             type: bool
-      exception:    
+      exception:
         description: Limit size of exception flush output (4096-2147483647)
         type: int
-      facility:     
+      facility:
         description: Facility parameter for syslog messages
         type: str
         choices: ["auth","cron","daemon","kern","local0","local1","local2","local3","local4","local5","local6","local7","lpr","mail","news","sys10","sys11","sys12","sys13","sys14","sys9","syslog","user","uucp"]
-      filter:     
+      filter:
         description: Specify logging filter
         type: list
         elements: dict
         suboptions:
-          url: 
+          url:
             description: Filter Uniform Resource Locator
             type: str
-          order: 
+          order:
             description: Order of filter execution
             type: int
           args:
@@ -128,14 +128,14 @@ options:
       history:
         description: Configure syslog history table
         type: dict
-        suboptions:     
-          size: *size          
+        suboptions:
+          size: *size
           severity: *severity
-      hosts:           
+      hosts:
         description: Set syslog server IP address and parameters
         type: list
         elements: dict
-        suboptions:          
+        suboptions:
           discriminator: *discriminator
           filtered: *filtered
           sequence_num_session: &sequence_num_session
@@ -145,11 +145,11 @@ options:
             description: Specify syslog message session ID tagging
             type: dict
             suboptions: &session_id_suboptions
-              tag: 
+              tag:
                 description: Include hostname in session ID tag
                 type: str
                 choices: ["hostname","ipv4","ipv6"]
-              text: 
+              text:
                 description: Include custom string in session ID tag
                 type: str
           stream: &stream
@@ -191,52 +191,52 @@ options:
           vrf:
             description: Set VRF option
             type: str
-          xml: *xml 
-          ipv6:            
+          xml: *xml
+          ipv6:
             description: Configure IPv6 syslog server
             type: str
           hostname:
             description: IP address of the syslog server
             type: str
-      message_counter:   
+      message_counter:
         description: Configure log message to include certain counter value
         type: list
         elements: str
         choices: ["log", "debug", "syslog"]
-      monitor:        
+      monitor:
         description: Set terminal line (monitor) logging parameters
         type: dict
-        suboptions:        
+        suboptions:
           severity: *severity
-          discriminator: *discriminator  
-          filtered: *filtered        
-          xml: *xml              
-      logging_on:               
+          discriminator: *discriminator
+          filtered: *filtered
+          xml: *xml
+      logging_on:
         description: Enable logging to all enabled destinations
         type: str
         choices: ["enable", "disable"]
-      origin_id:      
+      origin_id:
         description: Add origin ID to syslog messages
         type: dict
-        suboptions: 
-          tag: 
+        suboptions:
+          tag:
             description: Include hostname in session ID tag
             type: str
             choices: ["hostname","ip","ipv6"]
-          text: 
+          text:
             description: Include custom string in session ID tag
             type: str
       persistent:
         description: Set persistent logging parameters
         type: dict
         suboptions:
-          batch:      
+          batch:
             description: Set batch size for writing to persistent storage (4096-2142715904)
             type: int
-          filesize:   
+          filesize:
             description: Set size of individual log files (4096-2142715904)
             type: int
-          immediate:  
+          immediate:
             description: Write log entry to storage immediately (no buffering).
             type: bool
           notify:
@@ -245,23 +245,23 @@ options:
           protected:
             description: Eliminates manipulation on logging-persistent files.
             type: bool
-          size:       
+          size:
             description: Set disk space for writing log messages (4096-2142715904)
             type: int
-          threshold:  
+          threshold:
             description: Set threshold for logging persistent
             type: int
-          url:        
+          url:
             description: URL to store logging messages
-            type: str 
-      policy_firewall:   
+            type: str
+      policy_firewall:
         description: Firewall configuration
         type: dict
         suboptions:
           rate_limit:
             description: (0-3600) value in seconds, default is 30 Sec.
             type: int
-      queue_limit:     
+      queue_limit:
         description: Set logger message queue size
         type: dict
         suboptions:
@@ -274,7 +274,7 @@ options:
           trap:
             description: (100-2147483647) set new queue size
             type: int
-      rate_limit:           
+      rate_limit:
         description: Set messages per second limit
         type: dict
         suboptions:
@@ -292,18 +292,18 @@ options:
             description: Messages of this severity or higher
             type: str
             choices: *severity_subgroup
-      reload:        
+      reload:
         description: Set reload logging level
         type: dict
-        suboptions:      
+        suboptions:
           severity: *severity
           message_limit:
             description: Number of messages (1-4294967295>)
             type: int
-      server_arp:        
+      server_arp:
         description: Enable sending ARP requests for syslog servers when first configured
         type: bool
-      snmp_trap:   
+      snmp_trap:
         description: Set syslog level for sending snmp trap
         type: list
         elements: str
@@ -319,11 +319,11 @@ options:
           vrf:
             description: VPN Routing/Forwarding intstance name
             type: str
-      trap:   
+      trap:
         description: Set syslog server logging level
         type: str
         choices: *severity_subgroup
-      userinfo:      
+      userinfo:
         description: Enable logging of user info on privileged mode enabling
         type: bool
   running_config:
@@ -376,7 +376,7 @@ EXAMPLES = """
           severity: critical
           xml: True
       - facility: local5
-      - hosts: 
+      - hosts:
         - hostname: 10.0.1.12
         - hostname: 10.0.1.11
           xml: True
@@ -385,12 +385,12 @@ EXAMPLES = """
           stream: 10
         - hostname: 10.0.1.13
           transport:
-            tcp: 
+            tcp:
               port: 514
       - monitor:
           severity: warnings
       - message_counter: log
-      - snmp_trap: 
+      - snmp_trap:
         - errors
       - trap: errors
       - userinfo: True
@@ -430,7 +430,7 @@ EXAMPLES = """
 # After state:
 # ------------
 
-# router-ios#show running-config | section logging 
+# router-ios#show running-config | section logging
 # logging exception 4099
 # logging message-counter log
 # logging userinfo
@@ -456,7 +456,7 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-# router-ios#show running-config | section logging 
+# router-ios#show running-config | section logging
 # logging exception 4099
 # logging message-counter log
 # logging userinfo
@@ -499,7 +499,7 @@ EXAMPLES = """
 # After state:
 # ------------
 
-# router-ios#show running-config | section logging 
+# router-ios#show running-config | section logging
 # logging exception 4099
 # logging message-counter log
 # logging userinfo
@@ -548,7 +548,7 @@ EXAMPLES = """
           severity: critical
           size: 6000
       - facility: local6
-      - hosts: 
+      - hosts:
           - hostname: 10.0.1.25
             filtered: True
     state: overridden
@@ -615,7 +615,7 @@ EXAMPLES = """
   cisco.ios.ios_logging_global:
     config:
     state: gathered
-    
+
 # Module Execution Result:
 # ------------------------
 
@@ -710,7 +710,7 @@ EXAMPLES = """
           severity: critical
           xml: True
       - facility: local5
-      - hosts: 
+      - hosts:
         - hostname: 10.0.1.12
         - hostname: 10.0.1.11
           xml: True
@@ -719,7 +719,7 @@ EXAMPLES = """
           stream: 10
         - hostname: 10.0.1.13
           transport:
-            tcp: 
+            tcp:
               port: 514
       - monitor:
           severity: warnings
@@ -792,7 +792,7 @@ EXAMPLES = """
 # logging host 10.0.1.10 filtered stream 10
 # logging host 10.0.1.13 transport tcp port 514
 # logging discriminator msglog01 severity includes 5
-# logging filter tftp://10.0.2.18/ESM/elate.tcl args TESTInst2 
+# logging filter tftp://10.0.2.18/ESM/elate.tcl args TESTInst2
 # logging filter tftp://10.0.2.14/ESM/escalate.tcl args TESTInst
 
 - name: Parse the provided configuration with the existing running configuration
@@ -897,7 +897,6 @@ EXAMPLES = """
 #             ]
 #         }
 #     ]
-
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -907,11 +906,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.logging_global.logging_global import (
     Logging_global,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():

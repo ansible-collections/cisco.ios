@@ -95,10 +95,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "count": {"type": "bool"},
-                "delimiter": {"type": "dict", "options": {"tcp": {"type": "bool"}}},
+                "delimiter": {
+                    "type": "dict",
+                    "options": {"tcp": {"type": "bool"}},
+                },
                 "discriminator": {"type": "list", "elements": "str"},
-                "dmvpn": {"type": "dict", "options": {"rate_limit": {"type": "int"}}},
-                "esm": {"type": "dict", "options": {"config": {"type": "bool"}}},
+                "dmvpn": {
+                    "type": "dict",
+                    "options": {"rate_limit": {"type": "int"}},
+                },
+                "esm": {
+                    "type": "dict",
+                    "options": {"config": {"type": "bool"}},
+                },
                 "exception": {"type": "int"},
                 "facility": {
                     "type": "str",
@@ -185,7 +194,9 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                         "filtered": {"type": "bool"},
                                         "stream": {"type": "int"},
                                         "port": {"type": "int"},
-                                        "sequence_num_session": {"type": "bool"},
+                                        "sequence_num_session": {
+                                            "type": "bool"
+                                        },
                                         "session_id": {
                                             "type": "dict",
                                             "options": {
@@ -210,7 +221,9 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                         "filtered": {"type": "bool"},
                                         "stream": {"type": "int"},
                                         "port": {"type": "int"},
-                                        "sequence_num_session": {"type": "bool"},
+                                        "sequence_num_session": {
+                                            "type": "bool"
+                                        },
                                         "session_id": {
                                             "type": "dict",
                                             "options": {
@@ -263,11 +276,17 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "xml": {"type": "bool"},
                     },
                 },
-                "logging_on": {"type": "str", "choices": ["enable", "disable"]},
+                "logging_on": {
+                    "type": "str",
+                    "choices": ["enable", "disable"],
+                },
                 "origin_id": {
                     "type": "dict",
                     "options": {
-                        "tag": {"type": "str", "choices": ["hostname", "ip", "ipv6"]},
+                        "tag": {
+                            "type": "str",
+                            "choices": ["hostname", "ip", "ipv6"],
+                        },
                         "text": {"type": "str"},
                     },
                 },
@@ -354,7 +373,10 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 "source_interface": {
                     "type": "list",
                     "elements": "dict",
-                    "options": {"interface": {"type": "str"}, "vrf": {"type": "str"}},
+                    "options": {
+                        "interface": {"type": "str"},
+                        "vrf": {"type": "str"},
+                    },
                 },
                 "trap": {
                     "type": "str",

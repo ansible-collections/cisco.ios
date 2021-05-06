@@ -26,17 +26,17 @@ merged:
     - buffered:
         severity: notifications
         size: 5099
-        xml: True
+        xml: true
     - console:
         severity: critical
-        xml: True
+        xml: true
     - facility: local5
     - hosts:
         - hostname: 10.0.1.12
         - hostname: 10.0.1.11
-          xml: True
+          xml: true
         - hostname: 10.0.1.10
-          filtered: True
+          filtered: true
           stream: 10
         - hostname: 10.0.1.13
           transport:
@@ -50,7 +50,7 @@ merged:
     - snmp_trap:
         - errors
     - trap: errors
-    - userinfo: True
+    - userinfo: true
     - policy_firewall:
         rate_limit: 10
     - logging_on: enable
@@ -101,3 +101,41 @@ deleted:
     - no logging trap errors
     - no logging facility local5
   after: {}
+
+parsed:
+  after:
+    - buffered:
+        severity: notifications
+        size: 5099
+        xml: true
+    - console:
+        severity: critical
+        xml: true
+    - facility: local5
+    - hosts:
+        - hostname: 10.0.1.12
+        - hostname: 10.0.1.11
+          xml: true
+        - hostname: 10.0.1.10
+          filtered: true
+          stream: 10
+        - hostname: 10.0.1.13
+          transport:
+            tcp:
+              port: 514
+    - monitor:
+        severity: warnings
+    - message_counter:
+        - log
+        - syslog
+    - snmp_trap:
+        - errors
+    - trap: errors
+    - userinfo: true
+    - policy_firewall:
+        rate_limit: 10
+    - logging_on: enable
+    - exception: 4099
+    - dmvpn:
+        rate_limit: 10
+    - cns_events: warnings

@@ -1,21 +1,21 @@
 ---
-- name: Apply commands for provided configuration
+- name: CONFIG APPLY - [merged] Apply provided configuration
   cisco.ios.ios_logging_global:
     config:
       - buffered:
           severity: notifications
           size: 5099
-          xml: True
+          xml: true
       - console:
           severity: critical
-          xml: True
+          xml: true
       - facility: local5
       - hosts:
           - hostname: 10.0.1.12
           - hostname: 10.0.1.11
-            xml: True
+            xml: true
           - hostname: 10.0.1.10
-            filtered: True
+            filtered: true
             stream: 10
           - hostname: 10.0.1.13
             transport:
@@ -29,13 +29,12 @@
       - snmp_trap:
           - errors
       - trap: errors
-      - userinfo: True
+      - userinfo: true
       - policy_firewall:
           rate_limit: 10
       - logging_on: enable
       - exception: 4099
       - dmvpn:
           rate_limit: 10
-      #- discriminator: console alert
       - cns_events: warnings
     state: merged

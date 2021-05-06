@@ -1,29 +1,28 @@
 ---
----
 - debug:
-    msg: Start Deleted integration state for ios_logging ansible_connection={{
+    msg: Start Merged integration state for ios_logging ansible_connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-    - name: Merge commands for provided configuration
+    - name: TEST - [merged] Apply provided configuration
       cisco.ios.ios_logging_global:
         config:
           - buffered:
               severity: notifications
               size: 5099
-              xml: True
+              xml: true
           - console:
               severity: critical
-              xml: True
+              xml: true
           - facility: local5
           - hosts:
               - hostname: 10.0.1.12
               - hostname: 10.0.1.11
-                xml: True
+                xml: true
               - hostname: 10.0.1.10
-                filtered: True
+                filtered: true
                 stream: 10
               - hostname: 10.0.1.13
                 transport:
@@ -37,7 +36,7 @@
           - snmp_trap:
               - errors
           - trap: errors
-          - userinfo: True
+          - userinfo: true
           - policy_firewall:
               rate_limit: 10
           - logging_on: enable
@@ -48,24 +47,11 @@
         state: merged
       register: result
 
-    - name: Assert that correct set of commands were generated
+    - name: TEST - [merged] Assert that correct set of commands were generated
       assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
             \ length == 0 }}"
 
-    # - name: Assert that before dicts are correctly generated
-    #   assert:
-    #     that:
-    #       - "{{ merged['before'] == {} }}"
-
-    # - name: Merge provided configuration with device configuration (IDEMPOTENT)
-    #   register: result
-    #   cisco.ios.ios_ospfv3: *id001
-
-    # - name: Assert that the previous task was idempotent
-    #   assert:
-    #     that:
-    #       - result['changed'] == false
   always:
     - include_tasks: _remove_config.yaml
