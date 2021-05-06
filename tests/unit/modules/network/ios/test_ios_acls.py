@@ -162,7 +162,7 @@ class TestIosAclsModule(TestIosModule):
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "deny ip any any log-input test_logInput",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_merged_idempotent(self):
         set_module_args(
