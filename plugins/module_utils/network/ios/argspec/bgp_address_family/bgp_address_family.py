@@ -340,7 +340,13 @@ class Bgp_AddressFamilyArgs(object):
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {"type": "bool"},
+                                "next_hop_self": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "all": {"type": "bool"},
+                                    },
+                                },
                                 "next_hop_unchanged": {"type": "bool"},
                                 "password": {"type": "str", "no_log": True},
                                 "path_attribute": {

@@ -548,7 +548,14 @@ options:
                     type: bool
               next_hop_self:
                 description: Disable the next hop calculation for this neighbor
-                type: bool
+                type: dict
+                suboptions:
+                  set:
+                    description: Disable the next hop self
+                    type: bool
+                  all:
+                    description: Enable next-hop-self for both eBGP and iBGP received paths
+                    type: bool
               next_hop_unchanged:
                 description: Propagate next hop unchanged for iBGP paths to this neighbor
                 type: bool
