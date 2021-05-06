@@ -27,11 +27,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
     Logging_globalArgs,
 )
 
+
 class Logging_globalFacts(object):
     """ The ios logging_global facts class
     """
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Logging_globalArgs.argument_spec
 
@@ -55,16 +56,21 @@ class Logging_globalFacts(object):
             data = self.get_logging_data(connection)
         print(data)
         # parse native config using the Logging_global template
-        logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)
+        logging_global_parser = Logging_globalTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = list(logging_global_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('logging_global', None)
+        ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
-            logging_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            logging_global_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            )
         )
-
-        facts['logging_global'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        if not objs:
+            params["config"] = []
+        facts["logging_global"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

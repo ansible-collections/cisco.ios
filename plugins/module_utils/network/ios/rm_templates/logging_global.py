@@ -117,7 +117,18 @@ def tmplt_host_transport(config_data):
 def tmplt_host_del(config_data):
     cmd = "logging host"
     verb = config_data.get("hosts")
+    if verb.get("hostname"):
+        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("ipv6"):
+        cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
+    if verb.get("transport"):
+        cmd = None
+    return cmd
 
+
+def tmplt_host_transport_del(config_data):
+    cmd = "logging host"
+    verb = config_data.get("hosts")
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
     if verb.get("ipv6"):
@@ -316,7 +327,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 $""", re.VERBOSE),
             "setval": tmplt_host_transport,
-            "remval": tmplt_host_del,
+            "remval": tmplt_host_transport_del,
             "result": { 
                 "{{ hostname if hostname is defined else ipv6 }}" : {
                     "hosts": [{

@@ -1,0 +1,71 @@
+---
+---
+- debug:
+    msg: Start Deleted integration state for ios_logging ansible_connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge commands for provided configuration
+      cisco.ios.ios_logging_global:
+        config:
+          - buffered:
+              severity: notifications
+              size: 5099
+              xml: True
+          - console:
+              severity: critical
+              xml: True
+          - facility: local5
+          - hosts:
+              - hostname: 10.0.1.12
+              - hostname: 10.0.1.11
+                xml: True
+              - hostname: 10.0.1.10
+                filtered: True
+                stream: 10
+              - hostname: 10.0.1.13
+                transport:
+                  tcp:
+                    port: 514
+          - monitor:
+              severity: warnings
+          - message_counter:
+              - log
+              - syslog
+          - snmp_trap:
+              - errors
+          - trap: errors
+          - userinfo: True
+          - policy_firewall:
+              rate_limit: 10
+          - logging_on: enable
+          - exception: 4099
+          - dmvpn:
+              rate_limit: 10
+          - cns_events: warnings
+        state: merged
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
+            \ length == 0 }}"
+
+    # - name: Assert that before dicts are correctly generated
+    #   assert:
+    #     that:
+    #       - "{{ merged['before'] == {} }}"
+
+    # - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    #   register: result
+    #   cisco.ios.ios_ospfv3: *id001
+
+    # - name: Assert that the previous task was idempotent
+    #   assert:
+    #     that:
+    #       - result['changed'] == false
+  always:
+    - include_tasks: _remove_config.yaml

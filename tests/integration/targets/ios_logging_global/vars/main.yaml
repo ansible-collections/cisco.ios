@@ -3,58 +3,61 @@ merged:
   before: {}
 
   commands:
-    - router ospfv3 1
-    - max-metric router-lsa on-startup 110
-    - area 10 nssa default-information-originate metric 10
-    - address-family ipv4 unicast vrf ospf_vrf
-    - adjacency stagger 25 25
-    - area 25 nssa default-information-originate metric 25 nssa-only
-    - exit-address-family
-    - router ospfv3 200
-    - auto-cost reference-bandwidth 4
-    - max-metric router-lsa on-startup 100
-    - address-family ipv4 unicast
-    - adjacency stagger 200 200
-    - exit-address-family
+    - logging on
+    - logging policy-firewall rate-limit 10
+    - logging host 10.0.1.13 transport tcp port 514
+    - logging userinfo
+    - logging facility local5
+    - logging message-counter log
+    - logging dmvpn rate-limit 10
+    - logging host 10.0.1.12
+    - logging host 10.0.1.11 xml
+    - logging message-counter syslog
+    - logging buffered xml 5099 notifications
+    - logging console xml critical
+    - logging monitor warnings
+    - logging exception 4099
+    - logging host 10.0.1.10 filtered stream 10
+    - logging snmp-trap errors
+    - logging cns-events warnings
+    - logging trap errors
 
   after:
-    processes:
-      - address_family:
-          - adjacency:
-              max_adjacency: 25
-              min_adjacency: 25
-            afi: ipv4
-            areas:
-              - area_id: "25"
-                nssa:
-                  default_information_originate:
-                    metric: 25
-                    nssa_only: true
-            unicast: true
-            vrf: ospf_vrf
-        areas:
-          - area_id: "10"
-            nssa:
-              default_information_originate:
-                metric: 10
-        max_metric:
-          on_startup:
-            time: 110
-          router_lsa: true
-        process_id: 1
-      - address_family:
-          - adjacency:
-              max_adjacency: 200
-              min_adjacency: 200
-            afi: ipv4
-            unicast: true
-        auto_cost:
-          reference_bandwidth: 4
-        max_metric:
-          on_startup:
-            time: 100
-          router_lsa: true
-        process_id: 200
+    - buffered:
+        severity: notifications
+        size: 5099
+        xml: True
+    - console:
+        severity: critical
+        xml: True
+    - facility: local5
+    - hosts:
+        - hostname: 10.0.1.12
+        - hostname: 10.0.1.11
+          xml: True
+        - hostname: 10.0.1.10
+          filtered: True
+          stream: 10
+        - hostname: 10.0.1.13
+          transport:
+            tcp:
+              port: 514
+    - monitor:
+        severity: warnings
+    - message_counter:
+        - log
+        - syslog
+    - snmp_trap:
+        - errors
+    - trap: errors
+    - userinfo: True
+    - policy_firewall:
+        rate_limit: 10
+    - logging_on: enable
+    - exception: 4099
+    - dmvpn:
+        rate_limit: 10
+    - cns_events: warnings
 
 replaced:
   commands:
@@ -81,24 +84,20 @@ overridden:
 
 deleted:
   commands:
-    - no router ospfv3 1
-    - no router ospfv3 200
-
+    - no logging message-counter log
+    - no logging snmp-trap errors
+    - no logging host 10.0.1.13
+    - no logging host 10.0.1.11
+    - no logging host 10.0.1.12
+    - no logging host 10.0.1.10
+    - no logging exception 4099
+    - no logging userinfo
+    - no logging buffered xml 5099 notifications
+    - no logging console xml critical
+    - no logging monitor warnings
+    - no logging cns-events warnings
+    - no logging policy-firewall rate-limit 10
+    - no logging dmvpn rate-limit 10
+    - no logging trap errors
+    - no logging facility local5
   after: {}
-
-rtt:
-  commands:
-    - router ospfv3 1
-    - max-metric router-lsa on-startup 110
-    - area 10 nssa default-information-originate metric 10
-    - address-family ipv4 unicast vrf ospf_vrf
-    - adjacency stagger 25 25
-    - area 25 nssa default-information-originate metric 25 nssa-only
-    - exit-address-family
-    - router ospfv3 200
-    - auto-cost reference-bandwidth 4
-    - max-metric router-lsa on-startup 100
-    - no area 10 nssa default-information-originate metric 10
-    - address-family ipv4 unicast
-    - exit-address-family
-    - adjacency stagger 200 200

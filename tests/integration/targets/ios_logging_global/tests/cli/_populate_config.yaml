@@ -1,0 +1,41 @@
+---
+- name: Apply commands for provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      - buffered:
+          severity: notifications
+          size: 5099
+          xml: True
+      - console:
+          severity: critical
+          xml: True
+      - facility: local5
+      - hosts:
+          - hostname: 10.0.1.12
+          - hostname: 10.0.1.11
+            xml: True
+          - hostname: 10.0.1.10
+            filtered: True
+            stream: 10
+          - hostname: 10.0.1.13
+            transport:
+              tcp:
+                port: 514
+      - monitor:
+          severity: warnings
+      - message_counter:
+          - log
+          - syslog
+      - snmp_trap:
+          - errors
+      - trap: errors
+      - userinfo: True
+      - policy_firewall:
+          rate_limit: 10
+      - logging_on: enable
+      - exception: 4099
+      - dmvpn:
+          rate_limit: 10
+      #- discriminator: console alert
+      - cns_events: warnings
+    state: merged
