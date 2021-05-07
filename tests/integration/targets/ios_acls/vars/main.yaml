@@ -163,8 +163,6 @@ rtt:
   commands:
     - no ip access-list extended 150
     - ip access-list extended 123
-    - 10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos
-      12
     - 20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt
       20
     - ip access-list extended test_acl
