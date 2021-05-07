@@ -110,7 +110,31 @@ options:
       facility:
         description: Facility parameter for syslog messages
         type: str
-        choices: ["auth","cron","daemon","kern","local0","local1","local2","local3","local4","local5","local6","local7","lpr","mail","news","sys10","sys11","sys12","sys13","sys14","sys9","syslog","user","uucp"]
+        choices:
+          - auth
+          - cron
+          - daemon
+          - kern
+          - local0
+          - local1
+          - local2
+          - local3
+          - local4
+          - local5
+          - local6
+          - local7
+          - lpr
+          - mail
+          - news
+          - sys10
+          - sys11
+          - sys12
+          - sys13
+          - sys14
+          - sys9
+          - syslog
+          - user
+          - uucp
       filter:
         description: Specify logging filter
         type: list
