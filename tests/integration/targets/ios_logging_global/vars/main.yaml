@@ -87,7 +87,7 @@ overridden:
     - logging host 172.16.1.12 xml
     - logging monitor critical
     - logging buffered xml 5099 warnings
-    - logging facility local6"
+    - logging facility local6
 
 deleted:
   commands:
