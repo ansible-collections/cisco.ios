@@ -279,7 +279,10 @@ class Bgp_global(ResourceModule):
                                 elif param_have and self.state == "replaced":
                                     if set_have and param_have.get(each):
                                         if isinstance(each, dict):
-                                            for key_have, val_have in iteritems(
+                                            for (
+                                                key_have,
+                                                val_have,
+                                            ) in iteritems(
                                                 param_have.get(each)
                                             ):
                                                 multi_compare(
@@ -316,13 +319,17 @@ class Bgp_global(ResourceModule):
                                             temp_want = temp
                                             if temp_have:
                                                 self.compare(
-                                                    parsers=[every + "." + each],
+                                                    parsers=[
+                                                        every + "." + each
+                                                    ],
                                                     want=dict(),
                                                     have={"bgp": temp_have},
                                                 )
                                             if temp_want:
                                                 self.compare(
-                                                    parsers=[every + "." + each],
+                                                    parsers=[
+                                                        every + "." + each
+                                                    ],
                                                     want={"bgp": temp_want},
                                                     have=dict(),
                                                 )
@@ -411,7 +418,9 @@ class Bgp_global(ResourceModule):
                         if every == "bgp" and del_config_have:
                             for each in ["bestpath", "nopeerup_delay"]:
                                 if param_have.get(each):
-                                    for k, v in iteritems(param_have.get(each)):
+                                    for k, v in iteritems(
+                                        param_have.get(each)
+                                    ):
                                         self.compare(
                                             parsers=[every + "." + each],
                                             want=dict(),
