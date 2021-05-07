@@ -183,7 +183,7 @@
 
     - assert:
         that:
-          - result.commands|length == 8
+          - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
