@@ -217,11 +217,11 @@ class Logging_global(ResourceModule):
                         _temp.update({host.get("ipv6"): {"hosts": host}})
                 _temp_param.update(_temp)
                 exclude.append("hosts")
-        else:
-            for element in param:
-                for k, v in iteritems(element):
-                    if k not in exclude:
-                        _temp_param.update({k: {k: v}})
+
+        for element in param:
+            for k, v in iteritems(element):
+                if k not in exclude:
+                    _temp_param.update({k: {k: v}})
 
         param = _temp_param
         return param

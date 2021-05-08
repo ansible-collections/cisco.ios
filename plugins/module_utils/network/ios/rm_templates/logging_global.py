@@ -43,7 +43,9 @@ def tmplt_host(config_data):
             session_id = verb.get("session_id")
             changed = True
             if session_id.get("text"):
-                cmd += " session-id string {text}".format(text=session_id["text"])
+                cmd += " session-id string {text}".format(
+                    text=session_id["text"]
+                )
             elif session_id.get("tag"):
                 cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
@@ -104,7 +106,9 @@ def tmplt_host_transport(config_data):
             if verb.get("session_id"):
                 session_id = verb.get("session_id")
                 if session_id.get("text"):
-                    cmd += " session-id string {text}".format(text=session_id["text"])
+                    cmd += " session-id string {text}".format(
+                        text=session_id["text"]
+                    )
                 elif session_id.get("tag"):
                     cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
@@ -172,7 +176,9 @@ def tmplt_message_counter(verb):
     cmd = "logging message-counter"
 
     if verb.get("message_counter"):
-        cmd += " {message_counter}".format(message_counter=verb["message_counter"])
+        cmd += " {message_counter}".format(
+            message_counter=verb["message_counter"]
+        )
     return cmd
 
 
@@ -223,7 +229,9 @@ def tmplt_common(verb, cmd):
         if verb.get("severity"):
             cmd += " {severity}".format(severity=verb["severity"])
         if verb.get("except_severity"):
-            cmd += " except {exceptSev}".format(exceptSev=verb["except_severity"])
+            cmd += " except {exceptSev}".format(
+                exceptSev=verb["except_severity"]
+            )
         if verb.get("tag"):
             cmd += " {tag}".format(tag=verb["tag"])
         if verb.get("text"):
