@@ -19,7 +19,7 @@
 - assert:
     that:
       - result.changed == true
-      - "'banner login @\nthis is my login banner confgiured by net_banner\n@' in\
+      - "'banner login %\nthis is my login banner confgiured by net_banner\n%' in\
         \ result.commands"
 
 - name: teardown - remove login

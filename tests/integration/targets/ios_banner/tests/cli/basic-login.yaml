@@ -19,8 +19,8 @@
 - assert:
     that:
       - result.changed == true
-      - "'banner login @\nthis is my login banner\nthat has a multiline\nstring\n\
-        @' in result.commands"
+      - "'banner login %\nthis is my login banner\nthat has a multiline\nstring\n\
+        %' in result.commands"
 
 - name: Set login again (idempotent)
   register: result

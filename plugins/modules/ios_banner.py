@@ -110,9 +110,9 @@ def map_obj_to_commands(updates, module):
     elif state == "present":
         if want["text"] and (want["text"] != have.get("text")):
             banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " @\n"
+            banner_cmd += " %\n"
             banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n@"
+            banner_cmd += "\n%"
             commands.append(banner_cmd)
     return commands
 

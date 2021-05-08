@@ -60,7 +60,7 @@ class TestIosBannerModule(TestIosModule):
                 dict(banner=banner_type, text="test\nbanner\nstring")
             )
             commands = [
-                "banner {0} @\ntest\nbanner\nstring\n@".format(banner_type)
+                "banner {0} %\ntest\nbanner\nstring\n%".format(banner_type)
             ]
             self.execute_module(changed=True, commands=commands)
 
