@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - TO fix ios banner issue with banner having @ symbol (https://github.com/ansible-collections/cisco.ios/issues/205).
