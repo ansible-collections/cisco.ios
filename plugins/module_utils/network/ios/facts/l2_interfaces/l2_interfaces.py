@@ -129,6 +129,9 @@ class L2_InterfacesFacts(object):
             allowed_vlan = utils.parse_conf_arg(conf, "allowed vlan")
             if allowed_vlan:
                 trunk["allowed_vlans"] = allowed_vlan.split(",")
+            allowed_vlan_add = utils.parse_conf_arg(conf, "allowed vlan add")
+            if allowed_vlan_add:
+                trunk["allowed_vlans"].extend(allowed_vlan_add.split(","))
             pruning_vlan = utils.parse_conf_arg(conf, "pruning vlan")
             if pruning_vlan:
                 trunk["pruning_vlans"] = pruning_vlan.split(",")
