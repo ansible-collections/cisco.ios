@@ -77,15 +77,7 @@ class Logging_global(ResourceModule):
             "userinfo",
         ]  # segregate for O(1) operation
 
-        self.list_parsers = [
-            "hosts",
-            "hosts.transport",
-            "filter",
-            "message_counter",
-            "snmp_trap",
-            "source_interface",
-            "discriminator",
-        ]
+        self.exclude = {"want": [], "have": []}
 
     def execute_module(self):
         """ Execute the module
@@ -103,11 +95,11 @@ class Logging_global(ResourceModule):
             want, have and desired state.
         """
         if self.want:
-            wantd = self.list_to_dict(self.want)
+            wantd = self.list_to_dict(self.want, "want")
         else:
             wantd = dict()
         if self.have:
-            haved = self.list_to_dict(self.have)
+            haved = self.list_to_dict(self.have, "have")
         else:
             haved = dict()
 
@@ -131,7 +123,7 @@ class Logging_global(ResourceModule):
         # replaced state for handling list type attrs
         if self.state == "replaced":
             for k, have in iteritems(haved):
-                if list(have.keys())[0] in self.list_parsers:
+                if list(have.keys())[0] in self.exclude["want"]:
                     self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
@@ -145,7 +137,7 @@ class Logging_global(ResourceModule):
         """
         self.compare(parsers=self.parsers, want=want, have=have)
 
-    def list_to_dict(self, param):
+    def list_to_dict(self, param, op):
         """Converts a dict that contains list to a dict of dict
             The linear structure of the logging configuration
             converts every logging configuration to dict with unique key
@@ -158,14 +150,13 @@ class Logging_global(ResourceModule):
         """
 
         _temp_param = {}
-        exclude = []
         for element in param:
             if element.get("message_counter"):
                 _temp = {}
                 for ctr in element.get("message_counter"):
                     _temp.update({ctr: {"message_counter": ctr}})
                 _temp_param.update(_temp)
-                exclude.append("message_counter")
+                self.exclude[op].append("message_counter")
             if element.get("discriminator"):
                 _temp = {}
                 for ctr in element.get("discriminator"):
@@ -177,7 +168,7 @@ class Logging_global(ResourceModule):
                         }
                     )
                 _temp_param.update(_temp)
-                exclude.append("discriminator")
+                self.exclude[op].append("discriminator")
             if element.get("snmp_trap"):
                 _temp = {}
                 for ctr in element.get("snmp_trap"):
@@ -189,7 +180,7 @@ class Logging_global(ResourceModule):
                         }
                     )
                 _temp_param.update(_temp)
-                exclude.append("snmp_trap")
+                self.exclude[op].append("snmp_trap")
             if element.get("source_interface"):
                 _temp = {}
                 for interface in element.get("source_interface"):
@@ -201,13 +192,13 @@ class Logging_global(ResourceModule):
                         }
                     )
                 _temp_param.update(_temp)
-                exclude.append("source_interface")
+                self.exclude[op].append("source_interface")
             if element.get("filter"):
                 _temp = {}
                 for url in element.get("filter"):
                     _temp.update({url.get("url"): {"filter": url}})
                 _temp_param.update(_temp)
-                exclude.append("filter")
+                self.exclude[op].append("filter")
             if element.get("hosts"):
                 _temp = {}
                 for host in element.get("hosts"):
@@ -216,11 +207,11 @@ class Logging_global(ResourceModule):
                     elif host.get("ipv6"):
                         _temp.update({host.get("ipv6"): {"hosts": host}})
                 _temp_param.update(_temp)
-                exclude.append("hosts")
+                self.exclude[op].append("hosts")
 
         for element in param:
             for k, v in iteritems(element):
-                if k not in exclude:
+                if k not in self.exclude.get(op):
                     _temp_param.update({k: {k: v}})
 
         param = _temp_param
