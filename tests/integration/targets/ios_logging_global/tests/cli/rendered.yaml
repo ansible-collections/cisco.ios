@@ -65,7 +65,6 @@
           - reload:
               severity: alerts
           - server_arp: true
-          - snmp_trap: errors
           - source_interface:
               - interface: GBit1/0
               - interface: CTunnel2

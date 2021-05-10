@@ -26,8 +26,6 @@
       - message_counter:
           - log
           - syslog
-      - snmp_trap:
-          - errors
       - trap: errors
       - userinfo: true
       - policy_firewall:
