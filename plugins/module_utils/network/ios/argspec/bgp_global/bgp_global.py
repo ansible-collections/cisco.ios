@@ -31,9 +31,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
     """The arg spec for the cisco.ios_bgp_global module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "type": "dict",
@@ -546,7 +543,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "allpaths": {"type": "bool"},
                             },
                         },
-                        "password": {"type": "str"},
+                        "password": {"type": "str", "no_log": True},
                         "path_attribute": {
                             "type": "dict",
                             "options": {

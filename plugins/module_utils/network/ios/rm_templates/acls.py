@@ -45,9 +45,7 @@ def _tmplt_access_list_entries(config_data):
             if config_data[type].get("address"):
                 command += " {address}".format(**config_data[type])
                 if config_data[type].get("wildcard_bits"):
-                    command += " {wildcard_bits}".format(
-                        **config_data["source"]
-                    )
+                    command += " {wildcard_bits}".format(**config_data[type])
             elif config_data[type].get("any"):
                 command += " any".format(**config_data[type])
             elif config_data[type].get("host"):
@@ -111,9 +109,13 @@ def _tmplt_access_list_entries(config_data):
             if aces.get("fragments"):
                 command += " fragments {fragments}".format(**aces)
             if aces.get("log"):
-                command += " log {log}".format(**aces)
+                command += " log"
+                if aces["log"].get("user_cookie"):
+                    command += " {user_cookie}".format(**aces["log"])
             if aces.get("log_input"):
-                command += " log-input {log_input}".format(**aces)
+                command += " log-input"
+                if aces["log_input"].get("user_cookie"):
+                    command += " {user_cookie}".format(**aces["log_input"])
             if aces.get("option"):
                 option_val = list(aces.get("option").keys())[0]
                 command += " option {0}".format(option_val)
@@ -163,7 +165,7 @@ class AclsTemplate(NetworkTemplate):
             "setval": _tmplt_access_list_name,
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
                         "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
@@ -188,8 +190,8 @@ class AclsTemplate(NetworkTemplate):
                         \s*(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo|echo-reply|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg)*
                         \s*(?P<dscp>dscp\s\S+)*
                         \s*(?P<fragment>fragments\s\S+)*
-                        \s*(?P<log>log\s\S+)*
-                        \s*(?P<log_input>log-input\s\S+)*
+                        \s*(?P<log_input>log-input\s\(tag\s=\s\S+\)|log-input)*
+                        \s*(?P<log>log\s\(tag\s=\s\S+\)|log)*
                         \s*(?P<option>option\s\S+|option\s\d+)*
                         \s*(?P<precedence>precedence\s\S+|precedence\s\d+)*
                         \s*(?P<time_range>time-range\s\S+)*
@@ -203,7 +205,7 @@ class AclsTemplate(NetworkTemplate):
             "compval": "aces",
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
@@ -254,8 +256,14 @@ class AclsTemplate(NetworkTemplate):
                                 },
                                 "dscp": "{{ dscp.split(' ')[1] if dscp is defined }}",
                                 "fragments": "{{ fragments.split(' ')[1] if fragments is defined }}",
-                                "log": "{{ log.split('log ')[1] if log is defined }}",
-                                "log_input": "{{ log_input.split(' ')[1] if log_input is defined }}",
+                                "log": {
+                                    "set": "{{ True if log is defined and 'tag' not in log }}",
+                                    "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log }}",
+                                },
+                                "log_input": {
+                                    "set": "{{ True if log_input is defined and 'tag' not in log_input }}",
+                                    "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
+                                },
                                 "option": {
                                     "{% if option is defined %}{{ option.split(' ')[1] if option is defined }}{% endif %}": "{{ True if option is defined }}"
                                 },

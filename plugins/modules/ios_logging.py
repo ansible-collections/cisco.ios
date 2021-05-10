@@ -27,6 +27,9 @@ description:
 version_added: 1.0.0
 notes:
 - Tested against IOS 15.6
+- |
+  The 'Default System Message Logging Configuration' of the ios device
+  like facility Local7 or logging on is not subjected to idempotency causes
 options:
   dest:
     description:
@@ -183,7 +186,9 @@ commands:
 """
 import re
 from copy import deepcopy
+from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.validation import check_required_if
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     validate_ip_address,
@@ -402,7 +407,10 @@ def map_params_to_obj(module, required_if=None):
             for key in item:
                 if item.get(key) is None:
                     item[key] = module.params[key]
-            module._check_required_if(required_if, item)
+            try:
+                check_required_if(required_if, item)
+            except TypeError as exc:
+                module.fail_json(to_text(exc))
             d = item.copy()
             if d["dest"] != "host":
                 d["name"] = None

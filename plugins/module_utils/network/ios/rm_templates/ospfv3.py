@@ -613,8 +613,10 @@ def _tmplt_ospf_ttl_security(config_data):
 
 
 class Ospfv3Template(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Ospfv3Template, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None, module=None):
+        super(Ospfv3Template, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     PARSERS = [
         {

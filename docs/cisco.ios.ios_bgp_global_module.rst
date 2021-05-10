@@ -8204,7 +8204,6 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
-                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>purged</li>
                                     <li>gathered</li>

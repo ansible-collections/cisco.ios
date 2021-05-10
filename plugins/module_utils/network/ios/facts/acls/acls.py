@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -39,16 +38,6 @@ class AclsFacts(object):
 
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_acl_data(self, connection):
         # Get the access-lists from the ios router
@@ -82,38 +71,42 @@ class AclsFacts(object):
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
             temp_v6 = sorted(temp_v6, key=lambda i: str(i["name"]))
             for each in temp_v4:
-                for each_ace in each.get("aces"):
-                    if each["acl_type"] == "standard":
-                        each_ace["source"] = each_ace.pop("std_source")
-                    if each_ace.get("icmp_igmp_tcp_protocol"):
-                        each_ace["protocol_options"] = {
-                            each_ace["protocol"]: {
-                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-", "_"
-                                ): True
+                aces_ipv4 = each.get("aces")
+                if aces_ipv4:
+                    for each_ace in each.get("aces"):
+                        if each["acl_type"] == "standard":
+                            each_ace["source"] = each_ace.pop("std_source")
+                        if each_ace.get("icmp_igmp_tcp_protocol"):
+                            each_ace["protocol_options"] = {
+                                each_ace["protocol"]: {
+                                    each_ace.pop(
+                                        "icmp_igmp_tcp_protocol"
+                                    ).replace("-", "_"): True
+                                }
                             }
-                        }
-                    if each_ace.get("std_source") == {}:
-                        del each_ace["std_source"]
+                        if each_ace.get("std_source") == {}:
+                            del each_ace["std_source"]
             for each in temp_v6:
-                for each_ace in each.get("aces"):
-                    if each_ace.get("std_source") == {}:
-                        del each_ace["std_source"]
-                    if each_ace.get("icmp_igmp_tcp_protocol"):
-                        each_ace["protocol_options"] = {
-                            each_ace["protocol"]: {
-                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-", "_"
-                                ): True
+                aces_ipv6 = each.get("aces")
+                if aces_ipv6:
+                    for each_ace in each.get("aces"):
+                        if each_ace.get("std_source") == {}:
+                            del each_ace["std_source"]
+                        if each_ace.get("icmp_igmp_tcp_protocol"):
+                            each_ace["protocol_options"] = {
+                                each_ace["protocol"]: {
+                                    each_ace.pop(
+                                        "icmp_igmp_tcp_protocol"
+                                    ).replace("-", "_"): True
+                                }
                             }
-                        }
 
         objs = []
         if temp_v4:
             objs.append({"afi": "ipv4", "acls": temp_v4})
         if temp_v6:
             objs.append({"afi": "ipv6", "acls": temp_v6})
-        # objs['ipv6'] = {'acls': temp_v6}
+
         facts = {}
         if objs:
             facts["acls"] = []
