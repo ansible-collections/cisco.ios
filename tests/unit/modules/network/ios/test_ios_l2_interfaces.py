@@ -336,6 +336,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                                 "828",
                                 "921",
                                 "924",
+                                "923"
                             ],
                             pruning_vlans=["10", "11", "12", "13", "14", "15"],
                             encapsulation="dot1q",
