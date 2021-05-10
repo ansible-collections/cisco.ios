@@ -179,10 +179,12 @@ class L3_Interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
-                        temp.update({each["address"]: each})
+                        if each.get("address"):
+                            temp.update({each["address"]: each})
                     val["ipv4"] = temp
                 if "ipv6" in val:
                     temp = {}
                     for each in val["ipv6"]:
-                        temp.update({each["address"]: each})
+                        if each.get("address"):
+                            temp.update({each["address"]: each})
                     val["ipv6"] = temp
