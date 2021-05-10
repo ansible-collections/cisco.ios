@@ -279,20 +279,46 @@ class Vlans(ConfigBase):
         diff = want_dict - have_dict
 
         if diff:
+            if self.state == "replaced" or self.state == "overridden":
+                have_diff = have_dict - want_dict
+                if have_diff:
+                    state = dict(have_diff).get("state")
+                    if state:
+                        self.remove_command_from_config_list(
+                            vlan, "state {0}".format(state), commands
+                        )
+                    shutdown = dict(have_diff).get("shutdown")
+                    if shutdown:
+                        self.remove_command_from_config_list(
+                            vlan, "shutdown", commands
+                        )
+                    mtu = dict(have_diff).get("mtu")
+                    if mtu:
+                        self.remove_command_from_config_list(
+                            vlan, "mtu {0}".format(mtu), commands
+                        )
+                    remote_span = dict(have_diff).get("remote_span")
+                    if remote_span:
+                        self.remove_command_from_config_list(
+                            vlan, "remote-span", commands
+                        )
             name = dict(diff).get("name")
             state = dict(diff).get("state")
             shutdown = dict(diff).get("shutdown")
             mtu = dict(diff).get("mtu")
             remote_span = dict(diff).get("remote_span")
             if name:
-                cmd = "name {0}".format(name)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "name {0}".format(name), commands
+                )
             if state:
-                cmd = "state {0}".format(state)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "state {0}".format(state), commands
+                )
             if mtu:
-                cmd = "mtu {0}".format(mtu)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "mtu {0}".format(mtu), commands
+                )
             if remote_span:
                 self.add_command_to_config_list(vlan, "remote-span", commands)
             if shutdown == "enabled":

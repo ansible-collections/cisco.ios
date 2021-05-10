@@ -138,7 +138,7 @@ EXAMPLES = """
       vlan_id: 10
       state: active
       shutdown: disabled
-      remote_span: 10
+      remote_span: true
     - name: Vlan_20
       vlan_id: 20
       mtu: 610
@@ -562,7 +562,7 @@ EXAMPLES = """
       vlan_id: 10
       state: active
       shutdown: disabled
-      remote_span: 10
+      remote_span: true
     - name: Vlan_20
       vlan_id: 20
       mtu: 610
