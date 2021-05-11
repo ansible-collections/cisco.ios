@@ -75,7 +75,7 @@ class Logging_global(ResourceModule):
             "source_interface",
             "trap",
             "userinfo",
-        ]  # segregate for O(1) operation
+        ]
 
         self.exclude = {"want": [], "have": []}
 
