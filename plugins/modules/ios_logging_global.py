@@ -643,7 +643,9 @@ EXAMPLES = """
       - facility: local6
       - hosts:
           - hostname: 172.16.1.19
-            filtered: False
+          - hostname: 172.16.1.10
+            filtered: true
+            stream: 15
     state: replaced
 
 # Commands Fired:
@@ -655,6 +657,7 @@ EXAMPLES = """
 #         "no logging host 172.16.1.12",
 #         "no logging host 172.16.1.10",
 #         "logging host 172.16.1.19",
+#         "logging host 172.16.1.10 filtered stream 15",
 #         "logging buffered 6025 alerts",
 #         "logging facility local6"
 #     ],
@@ -991,6 +994,34 @@ EXAMPLES = """
 #             ]
 #         }
 #     ]
+"""
+RETURN = """
+before:
+  description: The configuration prior to the model invocation.
+  returned: always
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+  type: dict
+after:
+  description: The resulting configuration model invocation.
+  returned: when changed
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+  type: dict
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample:
+    - "logging on"
+    - "logging userinfo"
+    - "logging trap errors"
+    - "logging host 172.16.1.12"
+    - "logging console xml critical"
+    - "logging message-counter log"
+    - "logging policy-firewall rate-limit 10"
 """
 
 from ansible.module_utils.basic import AnsibleModule

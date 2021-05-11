@@ -52,6 +52,7 @@ Name | Description
 [cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_global_module.rst)|LLDP resource module
 [cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_interfaces_module.rst)|LLDP interfaces resource module
 [cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|Manage logging on network devices
+[cisco.ios.ios_logging_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_global_module.rst)|Manages logging attributes of Cisco IOS network devices
 [cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_module.rst)|Manages core NTP configuration.
 [cisco.ios.ios_ospf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospf_interfaces_module.rst)|OSPF_Interfaces resource module
 [cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv2_module.rst)|OSPFv2 resource module
