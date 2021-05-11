@@ -30,6 +30,7 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+- This RM works only with Cisco IOS L2 switch.
 options:
   config:
     description: A dictionary of VLANs options
