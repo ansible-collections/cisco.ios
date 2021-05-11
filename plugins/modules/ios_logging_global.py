@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_logging_global
-version_added: 2.1.0
+version_added: 2.2.0
 short_description: Manages logging attributes of Cisco IOS network devices
 description: This module manages the logging attributes of Cisco IOS network devices
 author: Sagar Paul (@KB-perByte)
@@ -322,7 +322,7 @@ options:
         suboptions:
           severity: *severity
           message_limit:
-            description: Number of messages (1-4294967295>)
+            description: Number of messages (1-4294967295)
             type: int
       server_arp:
         description: Enable sending ARP requests for syslog servers when first configured

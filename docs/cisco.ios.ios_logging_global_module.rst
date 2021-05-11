@@ -8,7 +8,7 @@ cisco.ios.ios_logging_global
 **Manages logging attributes of Cisco IOS network devices**
 
 
-Version added: 2.1.0
+Version added: 2.2.0
 
 .. contents::
    :local:
@@ -1942,7 +1942,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Number of messages (1-4294967295&gt;)</div>
+                        <div>Number of messages (1-4294967295)</div>
                 </td>
             </tr>
             <tr>
