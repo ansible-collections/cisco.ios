@@ -2168,7 +2168,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version 15.2 on VIRL
+   - Tested against Cisco IOSv Version 15.6
    - This module works with connection ``network_cli``. See `IOS Platform Options <../network/user_guide/platform_ios.html>`_
    - The Configuration defaults of the Cisco IOS network devices are not subjected to idempotency causes
 

@@ -19,7 +19,7 @@ short_description: Manages logging attributes of Cisco IOS network devices
 description: This module manages the logging attributes of Cisco IOS network devices
 author: Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSv Version 15.6
   - This module works with connection C(network_cli).
     See L(IOS Platform Options,../network/user_guide/platform_ios.html)
   - The Configuration defaults of the Cisco IOS network devices
