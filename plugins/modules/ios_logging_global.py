@@ -641,7 +641,7 @@ EXAMPLES = """
           severity: alerts
           size: 6025
       - facility: local6
-      - hosts: 
+      - hosts:
           - hostname: 172.16.1.19
             filtered: False
     state: replaced

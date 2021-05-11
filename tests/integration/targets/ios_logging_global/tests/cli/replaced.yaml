@@ -18,7 +18,7 @@
           - facility: local6
           - hosts:
               - hostname: 172.16.1.19
-                filtered: False
+                filtered: false
         state: replaced
 
     - name: TEST - [replaced] Assert that correct set of commands were generated
