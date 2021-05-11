@@ -401,13 +401,13 @@ EXAMPLES = """
           xml: True
       - facility: local5
       - hosts:
-        - hostname: 10.0.1.12
-        - hostname: 10.0.1.11
+        - hostname: 172.16.1.12
+        - hostname: 172.16.1.11
           xml: True
-        - hostname: 10.0.1.10
+        - hostname: 172.16.1.10
           filtered: True
           stream: 10
-        - hostname: 10.0.1.13
+        - hostname: 172.16.1.13
           transport:
             tcp:
               port: 514
@@ -442,12 +442,12 @@ EXAMPLES = """
 #       "logging policy-firewall rate-limit 10",
 #       "logging trap errors",
 #       "logging userinfo",
-#       "logging host 10.0.1.12",
-#       "logging host 10.0.1.10 filtered stream 10",
-#       "logging host 10.0.1.13 transport tcp port 514",
+#       "logging host 172.16.1.12",
+#       "logging host 172.16.1.10 filtered stream 10",
+#       "logging host 172.16.1.13 transport tcp port 514",
 #       "logging message-counter log",
 #       "logging snmp-trap errors",
-#       "logging host 10.0.1.11 xml"
+#       "logging host 172.16.1.11 xml"
 #     ],
 
 
@@ -470,10 +470,10 @@ EXAMPLES = """
 # logging facility local5
 # logging snmp-trap errors
 # logging snmp-trap warnings
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.11 xml
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
 
 # Using state: deleted
 
@@ -496,10 +496,10 @@ EXAMPLES = """
 # logging facility local5
 # logging snmp-trap errors
 # logging snmp-trap warnings
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.11 xml
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
 
 - name: Remove as per the provided configuration
   cisco.ios.ios_logging_global:
@@ -508,7 +508,7 @@ EXAMPLES = """
           - errors
           - warnings
       - hosts:
-          - hostname: 10.0.1.11
+          - hostname: 172.16.1.11
     state: deleted
 
 # Commands Fired:
@@ -517,7 +517,7 @@ EXAMPLES = """
 # "commands": [
 #         "no logging snmp-trap errors",
 #         "no logging snmp-trap warnings",
-#         "no logging host 10.0.1.11"
+#         "no logging host 172.16.1.11"
 #     ],
 
 # After state:
@@ -537,9 +537,9 @@ EXAMPLES = """
 # logging dmvpn rate-limit 10
 # logging trap errors
 # logging facility local5
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
 
 # Using state: overridden
 
@@ -560,10 +560,10 @@ EXAMPLES = """
 # logging dmvpn rate-limit 10
 # logging trap errors
 # logging facility local6
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
-# logging host 10.0.1.25 filtered
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+# logging host 172.16.1.25 filtered
 
 - name: Override commands with provided configuration
   cisco.ios.ios_logging_global:
@@ -573,7 +573,7 @@ EXAMPLES = """
           size: 6000
       - facility: local6
       - hosts:
-          - hostname: 10.0.1.25
+          - hostname: 172.16.1.25
             filtered: True
     state: overridden
 
@@ -581,9 +581,9 @@ EXAMPLES = """
 # ---------------
 # "commands": [
 #         "no logging message-counter log",
-#         "no logging host 10.0.1.12",
-#         "no logging host 10.0.1.10",
-#         "no logging host 10.0.1.13",
+#         "no logging host 172.16.1.12",
+#         "no logging host 172.16.1.10",
+#         "no logging host 172.16.1.13",
 #         "no logging exception 4099",
 #         "no logging userinfo",
 #         "no logging console xml critical",
@@ -607,7 +607,77 @@ EXAMPLES = """
 # no logging cns-events
 # no logging trap
 # logging facility local6
-# logging host 10.0.1.25 filtered
+# logging host 172.16.1.25 filtered
+
+# Using state: replaced
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+
+- name: Replace commands with provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      - buffered:
+          severity: alerts
+          size: 6025
+      - facility: local6
+      - hosts: 
+          - hostname: 172.16.1.19
+            filtered: False
+    state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#         "no logging host 172.16.1.13",
+#         "no logging host 172.16.1.11",
+#         "no logging host 172.16.1.12",
+#         "no logging host 172.16.1.10",
+#         "logging host 172.16.1.19",
+#         "logging buffered 6025 alerts",
+#         "logging facility local6"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered 6025 alerts
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local6
+# logging snmp-trap errors
+# logging host 172.16.1.19
 
 # Using state: gathered
 
@@ -629,11 +699,11 @@ EXAMPLES = """
 # logging trap errors
 # logging facility local5
 # logging snmp-trap errors
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.11 xml
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
-# logging host 10.0.1.25 filtered
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+# logging host 172.16.1.25 filtered
 
 - name: Gather listed logging config
   cisco.ios.ios_logging_global:
@@ -678,20 +748,20 @@ EXAMPLES = """
 #     {
 #         "host": [
 #             {
-#                 "hostname": "10.0.1.11",
+#                 "hostname": "172.16.1.11",
 #                 "xml": true
 #             },
 #             {
-#                 "hostname": "10.0.1.12"
+#                 "hostname": "172.16.1.12"
 #             },
 #             {
 #                 "filtered": true,
-#                 "hostname": "10.0.1.10",
+#                 "hostname": "172.16.1.10",
 #                 "stream": 10
 #             },
 #             {
 #                 "filtered": true,
-#                 "hostname": "10.0.1.25"
+#                 "hostname": "172.16.1.25"
 #             }
 #         ]
 #     }
@@ -715,11 +785,11 @@ EXAMPLES = """
 # logging trap errors
 # logging facility local5
 # logging snmp-trap errors
-# logging host 10.0.1.13 transport tcp port 514
-# logging host 10.0.1.11 xml
-# logging host 10.0.1.12
-# logging host 10.0.1.10 filtered stream 10
-# logging host 10.0.1.25 filtered
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+# logging host 172.16.1.25 filtered
 
 # Using state: rendered
 
@@ -735,13 +805,13 @@ EXAMPLES = """
           xml: True
       - facility: local5
       - hosts:
-        - hostname: 10.0.1.12
-        - hostname: 10.0.1.11
+        - hostname: 172.16.1.12
+        - hostname: 172.16.1.11
           xml: True
-        - hostname: 10.0.1.10
+        - hostname: 172.16.1.10
           filtered: True
           stream: 10
-        - hostname: 10.0.1.13
+        - hostname: 172.16.1.13
           transport:
             tcp:
               port: 514
@@ -764,10 +834,10 @@ EXAMPLES = """
 # ------------------------
 
 # "rendered": [
-#     "logging host 10.0.1.12",
-#     "logging host 10.0.1.11 xml",
-#     "logging host 10.0.1.10 filtered stream 10",
-#     "logging host 10.0.1.13 transport tcp port 514",
+#     "logging host 172.16.1.12",
+#     "logging host 172.16.1.11 xml",
+#     "logging host 172.16.1.10 filtered stream 10",
+#     "logging host 172.16.1.13 transport tcp port 514",
 #     "logging message-counter log",
 #     "logging snmp-trap errors",
 #     "logging buffered xml 5099 notifications",
@@ -793,31 +863,31 @@ EXAMPLES = """
 # logging userinfo
 # logging trap errors
 # logging reload alerts
-# logging host 10.0.1.1
+# logging host 172.16.1.1
 # logging exception 4099
 # logging history alerts
 # logging facility local5
 # logging snmp-trap errors
 # logging monitor warnings
 # logging origin-id hostname
-# logging host 10.0.1.11 xml
+# logging host 172.16.1.11 xml
 # logging cns-events warnings
 # logging dmvpn rate-limit 10
 # logging message-counter log
 # logging console xml critical
 # logging message-counter debug
 # logging persistent batch 4444
-# logging host 10.0.1.25 filtered
+# logging host 172.16.1.25 filtered
 # logging source-interface GBit1/0
 # logging source-interface CTunnel2
 # logging policy-firewall rate-limit 10
 # logging buffered xml 5099 notifications
 # logging rate-limit all 2 except warnings
-# logging host 10.0.1.10 filtered stream 10
-# logging host 10.0.1.13 transport tcp port 514
+# logging host 172.16.1.10 filtered stream 10
+# logging host 172.16.1.13 transport tcp port 514
 # logging discriminator msglog01 severity includes 5
-# logging filter tftp://10.0.2.18/ESM/elate.tcl args TESTInst2
-# logging filter tftp://10.0.2.14/ESM/escalate.tcl args TESTInst
+# logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
+# logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
 
 - name: Parse the provided configuration with the existing running configuration
   cisco.ios.ios_logging_global:
@@ -851,11 +921,11 @@ EXAMPLES = """
 #             "filter": [
 #                 {
 #                     "args": "TESTInst2 ",
-#                     "url": "tftp://10.0.2.18/ESM/elate.tcl"
+#                     "url": "tftp://172.16.2.18/ESM/elate.tcl"
 #                 },
 #                 {
 #                     "args": "TESTInst",
-#                     "url": "tftp://10.0.2.14/ESM/escalate.tcl"
+#                     "url": "tftp://172.16.2.14/ESM/escalate.tcl"
 #                 }
 #             ],
 #             "history": {
@@ -903,19 +973,19 @@ EXAMPLES = """
 #         {
 #             "hosts": [
 #                 {
-#                     "hostname": "10.0.1.1"
+#                     "hostname": "172.16.1.1"
 #                 },
 #                 {
-#                     "hostname": "10.0.1.11",
+#                     "hostname": "172.16.1.11",
 #                     "xml": true
 #                 },
 #                 {
 #                     "filtered": true,
-#                     "hostname": "10.0.1.25"
+#                     "hostname": "172.16.1.25"
 #                 },
 #                 {
 #                     "filtered": true,
-#                     "hostname": "10.0.1.10",
+#                     "hostname": "172.16.1.10",
 #                     "stream": 10
 #                 }
 #             ]
