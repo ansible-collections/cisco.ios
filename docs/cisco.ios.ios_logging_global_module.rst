@@ -2346,6 +2346,68 @@ Examples
     # logging host 172.16.1.12
     # logging host 172.16.1.10 filtered stream 10
 
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section logging
+    # logging exception 4099
+    # logging message-counter log
+    # logging userinfo
+    # logging buffered xml 5099 notifications
+    # no logging reload
+    # no logging rate-limit
+    # logging console xml critical
+    # logging monitor warnings
+    # logging cns-events warnings
+    # logging policy-firewall rate-limit 10
+    # logging dmvpn rate-limit 10
+    # logging trap errors
+    # logging facility local5
+    # logging snmp-trap errors
+    # logging host 10.0.1.13 transport tcp port 514
+    # logging host 10.0.1.11 xml
+    # logging host 10.0.1.12
+    # logging host 10.0.1.10 filtered stream 10
+
+    - name: Remove all existing configuration
+      cisco.ios.ios_logging_global:
+        state: deleted
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "no logging message-counter log",
+    #       "no logging snmp-trap errors",
+    #       "no logging host 10.0.1.13",
+    #       "no logging host 10.0.1.11",
+    #       "no logging host 10.0.1.12",
+    #       "no logging host 10.0.1.10",
+    #       "no logging exception 4099",
+    #       "no logging userinfo",
+    #       "no logging buffered xml 5099 notifications",
+    #       "no logging console xml critical",
+    #       "no logging monitor warnings",
+    #       "no logging cns-events warnings",
+    #       "no logging policy-firewall rate-limit 10",
+    #       "no logging dmvpn rate-limit 10",
+    #       "no logging trap errors",
+    #       "no logging facility local5"
+    #     ],
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section logging
+    # no logging exception
+    # no logging buffered
+    # no logging reload
+    # no logging rate-limit
+    # no logging console
+    # no logging monitor
+    # no logging cns-events
+    # no logging trap
+
     # Using state: overridden
 
     # Before state:
@@ -2373,12 +2435,8 @@ Examples
     - name: Override commands with provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - buffered:
-              severity: critical
-              size: 6000
-          - facility: local6
           - hosts:
-              - hostname: 172.16.1.25
+              - hostname: 172.16.1.27
                 filtered: True
         state: overridden
 
@@ -2396,7 +2454,10 @@ Examples
     #         "no logging cns-events warnings",
     #         "no logging policy-firewall rate-limit 10",
     #         "no logging dmvpn rate-limit 10",
-    #         "no logging trap errors"
+    #         "no logging trap errors",
+    #         "no logging buffered 6000 critical",
+    #         "no logging facility local6",
+    #         "logging host 172.16.1.27 filtered",
     #     ],
 
     # After state:
@@ -2404,15 +2465,14 @@ Examples
 
     # router-ios#show running-config | section logging
     # no logging exception
-    # logging buffered 6000 critical
+    # no logging buffered
     # no logging reload
     # no logging rate-limit
     # no logging console
     # no logging monitor
     # no logging cns-events
     # no logging trap
-    # logging facility local6
-    # logging host 172.16.1.25 filtered
+    # logging host 172.16.1.27 filtered
 
     # Using state: replaced
 
@@ -2515,7 +2575,6 @@ Examples
 
     - name: Gather listed logging config
       cisco.ios.ios_logging_global:
-        config:
         state: gathered
 
     # Module Execution Result:

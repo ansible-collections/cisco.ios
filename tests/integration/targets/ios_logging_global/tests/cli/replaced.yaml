@@ -10,7 +10,7 @@
 - block:
     - name: TEST - [replaced] Replace provided logging configuration
       register: result
-      cisco.ios.ios_logging_global:
+      cisco.ios.ios_logging_global: &replacedid001
         config:
           - buffered:
               severity: alerts
@@ -26,6 +26,15 @@
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
+
+    - name: TEST - [replaced] Replaced provided ios logging global configuration idempotent
+      register: result
+      cisco.ios.ios_logging_global: *replacedid001
+
+    - name: TEST - [replaced] Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
 
   always:
     - include_tasks: _remove_config.yaml

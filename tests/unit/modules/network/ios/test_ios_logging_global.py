@@ -493,6 +493,30 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
+    def test_ios_logging_global_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            logging host 172.16.1.11 xml
+            logging monitor critical
+            logging buffered xml 5099 warnings
+            logging facility local6
+            """
+        )
+        playbook = dict(
+            config=[
+                dict(buffered=dict(size=5099, severity="warnings", xml=True)),
+                dict(facility="local6"),
+                dict(hosts=[dict(hostname="172.16.1.11", xml=True)]),
+                dict(monitor=dict(severity="critical")),
+            ]
+        )
+        overridden = []
+        playbook["state"] = "overridden"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
     def test_ios_logging_global_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -736,6 +760,28 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
+    def test_ios_logging_global_deleted_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            no logging exception
+            no logging buffered
+            no logging reload
+            no logging rate-limit
+            no logging console
+            no logging monitor
+            no logging cns-events
+            no logging trap
+            """
+        )
+        playbook = dict(config=[])
+        deleted = []
+        playbook["state"] = "deleted"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+
+        self.maxDiff = None
+        self.assertEqual(result["commands"], deleted)
+
     def test_ios_logging_global_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -754,7 +800,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 )
             ]
         )
-        merged = [
+        replaced = [
             "no logging host 172.16.1.1",
             "logging host 172.16.2.15 session-id string Test",
         ]
@@ -763,4 +809,19 @@ class TestIosLoggingGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_ios_logging_global_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            logging host 172.16.2.15
+            """
+        )
+        playbook = dict(config=[dict(hosts=[dict(hostname="172.16.2.15")])])
+        replaced = []
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+
+        self.maxDiff = None
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))

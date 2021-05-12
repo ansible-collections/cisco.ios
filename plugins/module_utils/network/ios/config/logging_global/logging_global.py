@@ -124,7 +124,8 @@ class Logging_global(ResourceModule):
         if self.state == "replaced":
             for k, have in iteritems(haved):
                 if list(have.keys())[0] in self.exclude["want"]:
-                    self._compare(want={}, have=have)
+                    if k not in wantd:
+                        self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
