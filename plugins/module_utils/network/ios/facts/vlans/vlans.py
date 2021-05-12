@@ -47,7 +47,9 @@ class VlansFacts(object):
             return connection.get("show vlan")
         except Exception as ex:
             self._module.fail_json(
-                "'show vlan' doesn't seems to be supported on the respective IOS box, please make sure it's an L2 switch"
+                "'show vlan' doesn't seems to be supported on the IOS box and failed with error: {0}. Please make sure it's an L2 switch".format(
+                    ex
+                )
             )
 
     def populate_facts(self, connection, ansible_facts, data=None):
