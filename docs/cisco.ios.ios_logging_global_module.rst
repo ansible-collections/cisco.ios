@@ -336,7 +336,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Count every log message and timestamp last occurance</div>
+                        <div>Count every log message and timestamp last occurrence</div>
                 </td>
             </tr>
             <tr>
@@ -2068,7 +2068,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>VPN Routing/Forwarding intstance name</div>
+                        <div>VPN Routing/Forwarding instance name</div>
                 </td>
             </tr>
 
@@ -2170,7 +2170,7 @@ Notes
 .. note::
    - Tested against Cisco IOSv Version 15.6
    - This module works with connection ``network_cli``. See `IOS Platform Options <../network/user_guide/platform_ios.html>`_
-   - The Configuration defaults of the Cisco IOS network devices are not subjected to idempotency causes
+   - The Configuration defaults of the Cisco IOS network devices are supposed to hinder idempotent behavior of plays
 
 
 
