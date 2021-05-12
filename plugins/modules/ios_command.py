@@ -81,7 +81,7 @@ options:
     default: 1
     type: int
 """
-EXAMPLES = """
+EXAMPLES = r"""
 - name: run show version on remote devices
   cisco.ios.ios_command:
     commands: show version
@@ -114,7 +114,7 @@ EXAMPLES = """
       answer: 'y'
     - command: 'clear counters GigabitEthernet0/2'
       prompt: '[confirm]'
-      answer: "\r"
+      answer: '\r'
 """
 RETURN = """
 stdout:
