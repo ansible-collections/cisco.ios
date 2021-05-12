@@ -60,8 +60,8 @@ replaced:
   commands:
     - no logging host 172.16.1.11
     - no logging host 172.16.1.12
-    - no logging host 172.16.1.10
     - no logging host 172.16.1.13
+    - logging host 172.16.1.10 filtered stream 15
     - logging host 172.16.1.19
     - logging buffered 6025 alerts
     - logging facility local6
