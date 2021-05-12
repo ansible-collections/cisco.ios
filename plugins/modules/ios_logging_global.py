@@ -23,7 +23,7 @@ notes:
   - This module works with connection C(network_cli).
     See L(IOS Platform Options,../network/user_guide/platform_ios.html)
   - The Configuration defaults of the Cisco IOS network devices
-    are not subjected to idempotency causes
+    are supposed to hinder idempotent behavior of plays
 options:
   config:
     description: A list containing dictionary of logging options
@@ -77,7 +77,7 @@ options:
           filtered: *filtered
           xml: *xml
       count:
-        description: Count every log message and timestamp last occurance
+        description: Count every log message and timestamp last occurrence
         type: bool
       delimiter:
         description: Append delimiter to syslog messages
@@ -341,7 +341,7 @@ options:
             description: Interface name with number
             type: str
           vrf:
-            description: VPN Routing/Forwarding intstance name
+            description: VPN Routing/Forwarding instance name
             type: str
       trap:
         description: Set syslog server logging level
