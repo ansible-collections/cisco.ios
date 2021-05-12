@@ -52,7 +52,10 @@ class TerminalModule(TerminalBase):
         re.compile(br"[%\S] ?Error: ?[\s]+", re.I),
         re.compile(br"[%\S] ?Informational: ?[\s]+", re.I),
         re.compile(br"Command authorization failed"),
+        re.compile(br"Command Rejected: ?[\s]+", re.I),
     ]
+
+    terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
 
     def on_open_shell(self):
         try:

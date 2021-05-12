@@ -1,0 +1,36 @@
+---
+- name: Populate OSPF Interfaces Configuration
+  cisco.ios.ios_ospf_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        address_family:
+          - afi: ipv4
+            authentication:
+              message_digest: true
+            process:
+              id: 10
+              area_id: 30
+            adjacency: true
+            bfd: true
+            cost:
+              interface_cost: 5
+            dead_interval:
+              time: 5
+            demand_circuit:
+              ignore: true
+            network:
+              broadcast: true
+            priority: 25
+            resync_timeout: 10
+            shutdown: true
+            ttl_security:
+              hops: 50
+          - afi: ipv6
+            adjacency: true
+            database_filter: true
+            manet:
+              link_metrics:
+                cost_threshold: 10
+            priority: 55
+            transmit_delay: 45
+    state: merged

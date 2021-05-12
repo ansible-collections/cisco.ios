@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - To provide support return for "Command Rejected" (https://github.com/ansible-collections/cisco.ios/issues/216)

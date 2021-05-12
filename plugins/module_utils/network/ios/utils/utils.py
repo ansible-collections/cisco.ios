@@ -275,28 +275,20 @@ def validate_n_expand_ipv4(module, want):
 
 
 def netmask_to_cidr(netmask):
-    bit_range = [128, 64, 32, 16, 8, 4, 2, 1]
-    count = 0
-    cidr = 0
-    netmask_list = netmask.split(".")
-    netmask_calc = [i for i in netmask_list if int(i) != 255 and int(i) != 0]
-    if netmask_calc:
-        netmask_calc_index = netmask_list.index(netmask_calc[0])
-    elif sum(list(map(int, netmask_list))) == 0:
-        return "32"
-    else:
-        return "24"
-    for each in bit_range:
-        if cidr == int(netmask.split(".")[2]):
-            if netmask_calc_index == 1:
-                return str(8 + count)
-            elif netmask_calc_index == 2:
-                return str(8 * 2 + count)
-            elif netmask_calc_index == 3:
-                return str(8 * 3 + count)
-            break
-        cidr += each
-        count += 1
+    # convert netmask to cidr and returns the cidr notation
+    return str(sum([bin(int(x)).count("1") for x in netmask.split(".")]))
+
+
+def is_valid_ip(ip_str):
+    valid = True
+    try:
+        if "::" in ip_str:
+            socket.inet_pton(socket.AF_INET6, ip_str)  # for IPv6
+        else:
+            socket.inet_pton(socket.AF_INET, ip_str)  # for IPv4
+    except socket.error:
+        valid = False
+    return valid
 
 
 def normalize_interface(name):
@@ -314,6 +306,8 @@ def normalize_interface(name):
 
     if name.lower().startswith("gi"):
         if_type = "GigabitEthernet"
+    elif name.lower().startswith("tw"):
+        if_type = "TwoGigabitEthernet"
     elif name.lower().startswith("te"):
         if_type = "TenGigabitEthernet"
     elif name.lower().startswith("fa"):
@@ -363,6 +357,8 @@ def get_interface_type(interface):
 
     if interface.upper().startswith("GI"):
         return "GigabitEthernet"
+    elif interface.upper().startswith("TW"):
+        return "TwoGigabitEthernet"
     elif interface.upper().startswith("TE"):
         return "TenGigabitEthernet"
     elif interface.upper().startswith("FA"):

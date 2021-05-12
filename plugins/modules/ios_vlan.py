@@ -76,7 +76,6 @@ options:
       interfaces:
         description:
         - List of interfaces that should be associated to the VLAN.
-        required: true
         type: list
         elements: str
       associated_interfaces:

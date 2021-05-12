@@ -98,7 +98,6 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
                          / <span style="color: purple">elements=string</span>
-                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -450,7 +449,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Create vlan
       cisco.ios.ios_vlan:

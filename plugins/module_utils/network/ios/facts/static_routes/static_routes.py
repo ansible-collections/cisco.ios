@@ -25,6 +25,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    is_valid_ip,
+)
 
 
 class Static_RoutesFacts(object):
@@ -48,7 +51,7 @@ class Static_RoutesFacts(object):
 
     def get_static_routes_data(self, connection):
         return connection.get(
-            "sh running-config | include ip route|ipv6 route"
+            "sh running-config | section ^ip route|ipv6 route"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -112,7 +115,7 @@ class Static_RoutesFacts(object):
         same_dest = {}
         ip_str = ""
         for i in sorted(config):
-            if i:
+            if i and "ospf" not in i:
                 if "::" in i and "vrf" in i:
                     ip_str = "ipv6 route vrf"
                 elif "::" in i and "vrf" not in i:
@@ -124,7 +127,7 @@ class Static_RoutesFacts(object):
 
                 if "vrf" in i:
                     filter_vrf = utils.parse_conf_arg(i, ip_str)
-                    if "/" not in filter_vrf and "::" not in filter_vrf:
+                    if "::" not in filter_vrf:
                         filter_vrf, dest_vrf = self.update_netmask_to_cidr(
                             filter_vrf, 1, 2
                         )
@@ -140,21 +143,23 @@ class Static_RoutesFacts(object):
                     else:
                         same_dest[dest_vrf].append(("vrf " + filter_vrf))
                 else:
-                    filter = utils.parse_conf_arg(i, ip_str)
-                    if "/" not in filter and "::" not in filter:
-                        filter, dest = self.update_netmask_to_cidr(
-                            filter, 0, 1
+                    filter_non_vrf = utils.parse_conf_arg(i, ip_str)
+                    if (
+                        "::" not in filter_non_vrf
+                    ):  # "/" not in filter_non_vrf and
+                        filter_non_vrf, dest = self.update_netmask_to_cidr(
+                            filter_non_vrf, 0, 1
                         )
                     else:
-                        dest = filter.split(" ")[0]
+                        dest = filter_non_vrf.split(" ")[0]
                     if dest not in same_dest.keys():
                         same_dest[dest] = []
-                        same_dest[dest].append(filter)
+                        same_dest[dest].append(filter_non_vrf)
                     elif "vrf" in same_dest[dest][0]:
                         same_dest[dest] = []
-                        same_dest[dest].append(filter)
+                        same_dest[dest].append(filter_non_vrf)
                     else:
-                        same_dest[dest].append(filter)
+                        same_dest[dest].append(filter_non_vrf)
         return same_dest
 
     def render_config(self, spec, conf, conf_val):
@@ -190,20 +195,34 @@ class Static_RoutesFacts(object):
                     hops["forward_router_address"] = route[3]
                     afi["afi"] = "ipv6"
                 elif "." in conf:
-                    hops["forward_router_address"] = route[3]
-                    afi["afi"] = "ipv4"
-                else:
-                    hops["interface"] = conf
+                    if is_valid_ip(route[3]):
+                        hops["forward_router_address"] = route[3]
+                        afi["afi"] = "ipv4"
+                    else:
+                        hops["interface"] = route[3]
+                        afi["afi"] = "ipv4"
+                        if is_valid_ip(route[4]):
+                            hops["forward_router_address"] = route[4]
             else:
 
                 if "::" in conf:
-                    hops["forward_router_address"] = route[1]
-                    afi["afi"] = "ipv6"
+                    if is_valid_ip(route[1]):
+                        hops["forward_router_address"] = route[1]
+                        afi["afi"] = "ipv6"
+                    else:
+                        hops["interface"] = route[1]
+                        afi["afi"] = "ipv6"
+                        if is_valid_ip(route[2]):
+                            hops["forward_router_address"] = route[2]
                 elif "." in conf:
-                    hops["forward_router_address"] = route[1]
-                    afi["afi"] = "ipv4"
-                else:
-                    hops["interface"] = route[1]
+                    if is_valid_ip(route[1]):
+                        hops["forward_router_address"] = route[1]
+                        afi["afi"] = "ipv4"
+                    else:
+                        hops["interface"] = route[1]
+                        afi["afi"] = "ipv4"
+                        if is_valid_ip(route[2]):
+                            hops["forward_router_address"] = route[2]
             try:
                 temp_list = each.split(" ")
                 if "tag" in temp_list:

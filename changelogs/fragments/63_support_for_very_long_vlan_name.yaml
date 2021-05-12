@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - To add support for accepting vlan name more than 32 characters(https://github.com/ansible-collections/cisco.ios/issues/63).

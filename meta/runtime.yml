@@ -1,5 +1,5 @@
 ---
-requires_ansible: '>=2.9.10,<2.11'
+requires_ansible: '>=2.9.10'
 plugin_routing:
   action:
     ios_acl_interfaces:
@@ -17,6 +17,10 @@ plugin_routing:
     ios_bgp:
       redirect: cisco.ios.ios
     bgp:
+      redirect: cisco.ios.ios
+    ios_bgp_global:
+      redirect: cisco.ios.ios
+    bgp_global:
       redirect: cisco.ios.ios
     ios_command:
       redirect: cisco.ios.ios
@@ -98,6 +102,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     ping:
       redirect: cisco.ios.ios
+    ios_route_maps:
+      redirect: cisco.ios.ios
+    route_maps:
+      redirect: cisco.ios.ios
     ios_static_route:
       redirect: cisco.ios.ios
     static_route:
@@ -135,6 +143,8 @@ plugin_routing:
       redirect: cisco.ios.ios_banner
     bgp:
       redirect: cisco.ios.ios_bgp
+    bgp_global:
+      redirect: cisco.ios.ios_bgp_global
     command:
       redirect: cisco.ios.ios_command
     config:
@@ -196,6 +206,8 @@ plugin_routing:
       redirect: cisco.ios.ios_ospfv2
     ping:
       redirect: cisco.ios.ios_ping
+    route_maps:
+      redirect: cisco.ios.ios_route_maps
     static_route:
       redirect: cisco.ios.ios_static_route
       deprecation:

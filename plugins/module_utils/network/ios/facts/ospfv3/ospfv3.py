@@ -51,10 +51,11 @@ class Ospfv3Facts(object):
                 cap = re.match(parser["getval"], line)
                 if cap:
                     capdict = cap.groupdict()
-
-                    capdict = {
-                        k: v for k, v in iteritems(capdict) if v is not None
-                    }
+                    temp = {}
+                    for k, v in iteritems(capdict):
+                        if v is not None:
+                            temp.update({k: v})
+                    capdict = temp
                     if "address-family" in line:
                         capdict.update({"id": temp_pid})
                     if (
@@ -128,10 +129,12 @@ class Ospfv3Facts(object):
             data = self.get_ospfv3_data(connection)
 
         ipv4 = {"processes": []}
-        rmmod = NetworkTemplate(
-            lines=data.splitlines(), tmplt=Ospfv3Template()
+        ospfv3_parser = NetworkTemplate(
+            lines=data.splitlines(),
+            tmplt=Ospfv3Template(),
+            module=self._module,
         )
-        current = self.parse(rmmod)
+        current = self.parse(ospfv3_parser)
         address_family = self.parse_for_address_family(current)
         if address_family:
             for k, v in iteritems(current["processes"]):
@@ -169,8 +172,8 @@ class Ospfv3Facts(object):
         ansible_facts["ansible_network_resources"].pop("ospfv3", None)
         facts = {}
         if current:
-            params = utils.validate_config(
-                self.argument_spec, {"config": ipv4}
+            params = ospfv3_parser.validate_config(
+                self.argument_spec, {"config": ipv4}, redact=True
             )
             params = utils.remove_empties(params)
 

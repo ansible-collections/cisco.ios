@@ -566,7 +566,7 @@ def main():
         password_type=dict(default="secret", choices=["secret", "password"]),
         privilege=dict(type="int"),
         view=dict(aliases=["role"]),
-        sshkey=dict(type="list", elements="str"),
+        sshkey=dict(type="list", elements="str", no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
     )
     aggregate_spec = deepcopy(element_spec)

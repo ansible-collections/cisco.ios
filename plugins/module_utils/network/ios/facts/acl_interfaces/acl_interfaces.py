@@ -65,7 +65,7 @@ class Acl_InterfacesFacts(object):
         if not data:
             data = self.get_acl_interfaces_data(connection)
         # operate on a collection of resource x
-        config = data.split("interface ")
+        config = ("\n" + data).split("\ninterface ")
         for conf in config:
             if conf:
                 obj = self.render_config(self.generated_spec, conf)

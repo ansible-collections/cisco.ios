@@ -34,9 +34,6 @@ class AclsArgs(object):
     """The arg spec for the ios_acls module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "elements": "dict",
@@ -64,6 +61,7 @@ class AclsArgs(object):
                                     "type": "str",
                                 },
                                 "sequence": {"type": "int"},
+                                "evaluate": {"type": "str"},
                                 "source": {
                                     "type": "dict",
                                     "mutually_exclusive": [
@@ -317,8 +315,20 @@ class AclsArgs(object):
                                 },
                                 "dscp": {"type": "str"},
                                 "fragments": {"type": "str"},
-                                "log": {"type": "str"},
-                                "log_input": {"type": "str"},
+                                "log": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                },
+                                "log_input": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                },
                                 "option": {
                                     "type": "dict",
                                     "options": {

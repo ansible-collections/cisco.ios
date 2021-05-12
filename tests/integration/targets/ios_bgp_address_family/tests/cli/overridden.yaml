@@ -1,0 +1,91 @@
+---
+- debug:
+    msg: START Overridden ios_bgp_address_family state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Override provided BGP Address family configuration
+      register: result
+      cisco.ios.ios_bgp_address_family: &id001
+        config:
+          as_number: 65000
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              vrf: blue
+              aggregate_address:
+                - address: 192.0.2.1
+                  netmask: 255.255.255.255
+                  as_confed_set: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                  max_suppress: 50
+                slow_peer:
+                  - detection:
+                      threshold: 150
+              neighbor:
+                - address: 198.51.110.1
+                  activate: true
+                  log_neighbor_changes:
+                    disable: true
+                  maximum_prefix:
+                    number: 1
+                    threshold_value: 10
+                    restart: 100
+                  slow_peer:
+                    - detection:
+                        threshold: 150
+                  remote_as: 100
+                  route_map:
+                    name: test-override-route
+                    out: true
+                  route_server_client: true
+                  version: 4
+              network:
+                - address: 198.51.110.10
+                  mask: 255.255.255.255
+                  backdoor: true
+            - afi: ipv6
+              safi: multicast
+              default_information: true
+              bgp:
+                aggregate_timer: 10
+                dampening:
+                  penalty_half_time: 10
+                  reuse_route_val: 10
+                  suppress_route_val: 10
+                  max_suppress: 10
+                slow_peer:
+                  - detection:
+                      threshold: 200
+              network:
+                - address: 2001:DB8:0:3::/64
+                  route_map: test_ipv6
+        state: overridden
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
+            \ | length == 0 }}"
+
+    - name: Override provided BGP Address family configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_bgp_address_family: *id001
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml

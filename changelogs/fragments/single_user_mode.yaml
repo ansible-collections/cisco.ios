@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Add support for configuration caching (single_user_mode).
+  - Re-use device_info dictionary in cliconf.

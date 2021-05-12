@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix IOS bgp global RM tracback while there's no bestpath/nopeerup_delay configured (https://github.com/ansible-collections/cisco.ios/issues/310 and https://github.com/ansible-collections/cisco.ios/issues/311).

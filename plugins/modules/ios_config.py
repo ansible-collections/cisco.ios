@@ -33,13 +33,15 @@ notes:
 - Tested against IOS 15.6
 - Abbreviated commands are NOT idempotent, see L
   (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
+  appear if present in the running configuration on device including the indentation.
 options:
   lines:
     description:
-    - The ordered set of commands that should be configured in the section.  The commands
-      must be the exact same commands as found in the device running-config.  Be sure
-      to note the configuration command syntax as some commands are automatically
-      modified by the device config parser.
+    - The ordered set of commands that should be configured in the section. The commands
+      must be the exact same commands as found in the device running-config to ensure
+      idempotency and correct diff. Be sure to note the configuration command syntax as
+      some commands are automatically modified by the device config parser.
     type: list
     elements: str
     aliases:
@@ -55,8 +57,10 @@ options:
     description:
     - Specifies the source path to the file that contains the configuration or configuration
       template to load.  The path to the source file can either be the full path on
-      the Ansible control host or a relative path from the playbook or role root directory.  This
-      argument is mutually exclusive with I(lines), I(parents).
+      the Ansible control host or a relative path from the playbook or role root directory. This
+      argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
+      source file should be similar to how it will appear if present in the running-configuration
+      of the device including the indentation to ensure idempotency and correct diff.
     type: str
   before:
     description:
@@ -124,6 +128,9 @@ options:
       There are times when it is not desirable to have the task get the current running-config
       for every task in a playbook.  The I(running_config) argument allows the implementer
       to pass in the configuration to use as the base config for comparison.
+      The configuration lines for this option should be similar to how it will appear if present
+      in the running-configuration of the device including the indentation to ensure idempotency
+      and correct diff.
     type: str
     aliases:
     - config
@@ -185,7 +192,9 @@ options:
       will not modify any settings on the remote device and is strictly used to check
       the compliance of the current device's configuration against.  When specifying
       this argument, the task should also modify the C(diff_against) value and set
-      it to I(intended).
+      it to I(intended). The configuration lines for this value should be similar to how it
+      will appear if present in the running-configuration of the device including the indentation
+      to ensure correct diff.
     type: str
   backup_options:
     description:
@@ -467,6 +476,13 @@ def main():
         if module.params["backup"]:
             result["__backup__"] = contents
     if any((module.params["lines"], module.params["src"])):
+        msg = (
+            "To ensure idempotency and correct diff the input configuration lines should be"
+            " similar to how they appear if present in the running configuration on device"
+        )
+        if module.params["src"]:
+            msg += " including the indentation"
+        warnings.append(msg)
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]

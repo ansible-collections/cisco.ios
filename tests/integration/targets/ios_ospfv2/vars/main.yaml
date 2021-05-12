@@ -50,9 +50,9 @@ merged:
             time: 110
           router_lsa: true
         network:
-          address: 198.51.100.0
-          area: "5"
-          wildcard_bits: 0.0.0.255
+          - address: 198.51.100.0
+            area: "5"
+            wildcard_bits: 0.0.0.255
         process_id: 1
       - areas:
           - area_id: "10"
@@ -122,9 +122,9 @@ replaced:
             time: 110
           router_lsa: true
         network:
-          address: 198.51.100.0
-          area: "5"
-          wildcard_bits: 0.0.0.255
+          - address: 198.51.100.0
+            area: "5"
+            wildcard_bits: 0.0.0.255
         process_id: 1
       - areas:
           - area_id: "5"

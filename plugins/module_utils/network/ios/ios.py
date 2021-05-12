@@ -50,7 +50,9 @@ ios_provider_spec = {
         fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"]), type="path"
     ),
     "authorize": dict(
-        fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]), type="bool"
+        default=False,
+        fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]),
+        type="bool",
     ),
     "auth_pass": dict(
         fallback=(env_fallback, ["ANSIBLE_NET_AUTH_PASS"]), no_log=True
@@ -166,6 +168,8 @@ def normalize_interface(name):
 
     if name.lower().startswith("gi"):
         if_type = "GigabitEthernet"
+    elif name.lower().startswith("tw"):
+        if_type = "TwoGigabitEthernet"
     elif name.lower().startswith("te"):
         if_type = "TenGigabitEthernet"
     elif name.lower().startswith("fa"):

@@ -15,28 +15,22 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import copy
-import sys
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
-    ConfigBase,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible.module_utils.six import iteritems
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_empties,
     dict_merge,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    new_dict_to_set,
-    reverify_diff_py35,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
+    AclsTemplate,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 
 
-class Acls(ConfigBase):
+class Acls(ResourceModule):
     """
     The ios_acls class
     """
@@ -45,23 +39,16 @@ class Acls(ConfigBase):
 
     gather_network_resources = ["acls"]
 
+    parsers = ["aces"]
+
     def __init__(self, module):
-        super(Acls, self).__init__(module)
-
-    def get_acl_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
-
-        :rtype: A dictionary
-        :returns: The current configuration as a dictionary
-        """
-        facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+        super(Acls, self).__init__(
+            empty_fact_val={},
+            facts_module=Facts(module),
+            module=module,
+            resource="acls",
+            tmplt=AclsTemplate(),
         )
-        acl_facts = facts["ansible_network_resources"].get("acls")
-        if not acl_facts:
-            return []
-
-        return acl_facts
 
     def execute_module(self):
         """ Execute the module
@@ -69,784 +56,267 @@ class Acls(ConfigBase):
         :rtype: A dictionary
         :returns: The result from moduel execution
         """
-        result = {"changed": False}
-        commands = list()
-        warnings = list()
+        self.gen_config()
+        self.run_commands()
+        return self.result
 
-        if self.state in self.ACTION_STATES:
-            existing_acl_facts = self.get_acl_facts()
-        else:
-            existing_acl_facts = []
-
-        if self.state in self.ACTION_STATES or self.state == "rendered":
-            commands.extend(self.set_config(existing_acl_facts))
-
-        if commands and self.state in self.ACTION_STATES:
-            if not self._module.check_mode:
-                self._connection.edit_config(commands)
-            result["changed"] = True
-
-        if self.state in self.ACTION_STATES:
-            result["commands"] = commands
-
-        if self.state in self.ACTION_STATES or self.state == "gathered":
-            changed_acl_facts = self.get_acl_facts()
-        elif self.state == "rendered":
-            result["rendered"] = commands
-        elif self.state == "parsed":
-            running_config = self._module.params["running_config"]
-            if not running_config:
-                self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
-                )
-            result["parsed"] = self.get_acl_facts(data=running_config)
-        else:
-            changed_acl_facts = []
-
-        if self.state in self.ACTION_STATES:
-            result["before"] = existing_acl_facts
-            if result["changed"]:
-                result["after"] = changed_acl_facts
-        elif self.state == "gathered":
-            result["gathered"] = changed_acl_facts
-
-        result["warnings"] = warnings
-
-        return result
-
-    def set_config(self, existing_acl_facts):
-        """ Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
-
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
-        """
-        want = self._module.params["config"]
-        have = existing_acl_facts
-        resp = self.set_state(want, have)
-        return to_list(resp)
-
-    def set_state(self, want, have):
+    def gen_config(self):
         """ Select the appropriate function based on the state provided
-
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+        to the desired configuration
         """
-        commands = []
 
-        state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
-            self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
-            )
-
-        if state == "overridden":
-            commands = self._state_overridden(want, have)
-        elif state == "deleted":
-            commands = self._state_deleted(want, have)
-        elif state == "merged" or state == "rendered":
-            commands = self._state_merged(want, have)
-        elif state == "replaced":
-            commands = self._state_replaced(want, have)
-
-        return commands
-
-    def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
-
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
-        """
-        commands = []
-
-        for config_want in want:
-            for acls_want in config_want.get("acls"):
-                for ace_want in acls_want.get("aces"):
-                    check = False
-                    for config_have in have:
-                        for acls_have in config_have.get("acls"):
-                            for ace_have in acls_have.get("aces"):
-                                if acls_want.get("name") == acls_have.get(
-                                    "name"
-                                ):
-                                    ace_want = remove_empties(ace_want)
-                                    acls_want = remove_empties(acls_want)
-                                    cmd, change = self._set_config(
-                                        ace_want,
-                                        ace_have,
-                                        acls_want,
-                                        config_want["afi"],
-                                    )
-                                    if cmd:
-                                        for temp_acls_have in config_have.get(
-                                            "acls"
-                                        ):
-                                            for (
-                                                temp_ace_have
-                                            ) in temp_acls_have.get("aces"):
-                                                if acls_want.get(
-                                                    "name"
-                                                ) == temp_acls_have.get(
-                                                    "name"
-                                                ):
-                                                    commands.extend(
-                                                        self._clear_config(
-                                                            temp_acls_have,
-                                                            config_have,
-                                                            temp_ace_have.get(
-                                                                "sequence"
-                                                            ),
-                                                        )
-                                                    )
-                                        commands.extend(cmd)
-                                    check = True
-                            if check:
-                                break
-                        if check:
-                            break
-                    if not check:
-                        # For configuring any non-existing want config
-                        ace_want = remove_empties(ace_want)
-                        cmd, change = self._set_config(
-                            ace_want, {}, acls_want, config_want["afi"]
-                        )
-                        commands.extend(cmd)
-        # Split and arrange the config commands
-        commands = self.split_set_cmd(commands)
-
-        return commands
-
-    def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
-        # Creating a copy of want, so that want dict is intact even after delete operation
-        # performed during override want n have comparison
-        temp_want = copy.deepcopy(want)
-
-        for config_have in have:
-            for acls_have in config_have.get("acls"):
-                for ace_have in acls_have.get("aces"):
-                    check = False
-                    for config_want in temp_want:
-                        count = 0
-                        for acls_want in config_want.get("acls"):
-                            for ace_want in acls_want.get("aces"):
-                                if acls_want.get("name") == acls_have.get(
-                                    "name"
-                                ):
-                                    ace_want = remove_empties(ace_want)
-                                    acls_want = remove_empties(acls_want)
-                                    cmd, change = self._set_config(
-                                        ace_want,
-                                        ace_have,
-                                        acls_want,
-                                        config_want["afi"],
-                                    )
-                                    if cmd:
-                                        for temp_acls_have in config_have.get(
-                                            "acls"
-                                        ):
-                                            for (
-                                                temp_ace_have
-                                            ) in temp_acls_have.get("aces"):
-                                                if acls_want.get(
-                                                    "name"
-                                                ) == temp_acls_have.get(
-                                                    "name"
-                                                ):
-                                                    commands.extend(
-                                                        self._clear_config(
-                                                            temp_acls_have,
-                                                            config_have,
-                                                            temp_ace_have.get(
-                                                                "sequence"
-                                                            ),
-                                                        )
-                                                    )
-                                        commands.extend(cmd)
-                                    check = True
-                                    if check:
-                                        del config_want.get("acls")[count]
-                                else:
-                                    count += 1
-                        if check:
-                            break
-                    if check:
-                        break
-                if not check:
-                    # Delete the config not present in want config
-                    commands.extend(self._clear_config(acls_have, config_have))
-
-        # For configuring any non-existing want config
-        for config_want in temp_want:
-            for acls_want in config_want.get("acls"):
-                for ace_want in acls_want.get("aces"):
-                    ace_want = remove_empties(ace_want)
-                    cmd, change = self._set_config(
-                        ace_want, {}, acls_want, config_want["afi"]
-                    )
-                    commands.extend(cmd)
-
-        # Split and arrange the config commands
-        commands = self.split_set_cmd(commands)
-        # Arranging the cmds suct that all delete cmds are fired before all set cmds
-        negate_commands = [
-            each for each in commands if "no" in each and "access-list" in each
-        ]
-        negate_commands.extend(
-            [each for each in commands if each not in negate_commands]
-        )
-        commands = negate_commands
-
-        return commands
-
-    def _state_merged(self, want, have):
-        """ The command generator when state is merged
-
-        :param want: the additive configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to merge the provided into
-                  the current configuration
-        """
-        commands = []
-
-        for config_want in want:
-            for acls_want in config_want.get("acls"):
-                for ace_want in acls_want.get("aces"):
-                    check = False
-                    for config_have in have:
-                        for acls_have in config_have.get("acls"):
-                            for ace_have in acls_have.get("aces"):
-                                if acls_want.get("name") == acls_have.get(
-                                    "name"
-                                ) and ace_want.get("sequence") == ace_have.get(
-                                    "sequence"
-                                ):
-                                    ace_want = remove_empties(ace_want)
-                                    ace_want = dict_merge(ace_have, ace_want)
-                                    cmd, change = self._set_config(
-                                        ace_want,
-                                        ace_have,
-                                        acls_want,
-                                        config_want["afi"],
-                                    )
-                                    # clear config will be fired only when there's command wrt to config
-                                    if (
-                                        config_want.get("afi") == "ipv4"
-                                        and change
-                                    ):
-                                        # for ipv4 only inplace update cannot be done, so deleting the sequence ace
-                                        # and then updating the want ace changes
-                                        commands.extend(
-                                            self._clear_config(
-                                                acls_want,
-                                                config_want,
-                                                ace_want.get("sequence"),
-                                            )
-                                        )
-                                    commands.extend(cmd)
-                                    check = True
-                                elif acls_want.get("name") == acls_have.get(
-                                    "name"
-                                ):
-                                    ace_want = remove_empties(ace_want)
-                                    cmd, check = self.common_condition_check(
-                                        ace_want,
-                                        ace_have,
-                                        acls_want,
-                                        config_want,
-                                        check,
-                                        acls_have,
-                                    )
-                                    if acls_have.get("acl_type") == "standard":
-                                        check = True
-                                    commands.extend(cmd)
-                            if check:
-                                break
-                        if check:
-                            break
-                    if not check:
-                        # For configuring any non-existing want config
-                        ace_want = remove_empties(ace_want)
-                        cmd, change = self._set_config(
-                            ace_want, {}, acls_want, config_want["afi"]
-                        )
-                        commands.extend(cmd)
-        # Split and arrange the config commands
-        commands = self.split_set_cmd(commands)
-
-        return commands
-
-    def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
-
-        :param want: the objects from which the configuration should be removed
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to remove the current configuration
-                  of the provided objects
-        """
-        commands = []
-        if want:
-            for config_want in want:
-                if config_want.get("acls"):
-                    for acls_want in config_want.get("acls"):
-                        if acls_want.get("aces"):
-                            for config_have in have:
-                                for acls_have in config_have.get("acls"):
-                                    if acls_want.get("name") == acls_have.get(
-                                        "name"
-                                    ):
-                                        commands.extend(
-                                            self._clear_config(
-                                                acls_want, config_want
-                                            )
-                                        )
-                        else:
-                            for config_have in have:
-                                for acls_have in config_have.get("acls"):
-                                    if acls_want.get("name") == acls_have.get(
-                                        "name"
-                                    ):
-                                        commands.extend(
-                                            self._clear_config(
-                                                acls_want, config_want
-                                            )
-                                        )
-                else:
-                    afi_want = config_want.get("afi")
-                    for config_have in have:
-                        if config_have.get("afi") == afi_want:
-                            for acls_have in config_have.get("acls"):
-                                commands.extend(
-                                    self._clear_config(acls_have, config_want)
-                                )
-            # Split and arrange the config commands
-            commands = self.split_set_cmd(commands)
+        if self.want:
+            wantd = self.want
         else:
-            for config_have in have:
-                for acls_have in config_have.get("acls"):
-                    commands.extend(self._clear_config(acls_have, config_have))
+            wantd = {}
+        if self.have:
+            haved = self.have
+        else:
+            haved = {}
 
-        return commands
+        haved = self.list_to_dict(haved)
+        self.update_sequence_in_want(wantd, haved)
+        wantd = self.list_to_dict(wantd)
 
-    def common_condition_check(
-        self,
-        want,
-        have,
-        acls_want,
-        config_want,
-        check,
-        state="",
-        acls_have=None,
-    ):
-        """ The command formatter from the generated command
-        :param want: want config
-        :param have: have config
-        :param acls_want: acls want config
-        :param config_want: want config list
-        :param check: for same acls in want and have config, check=True
-        :param state: operation state
-        :rtype: A list
-        :returns: commands generated from want n have config diff
+        # if state is merged, merge want onto have and then compare
+        if self.state == "merged":
+            wantd = dict_merge(haved, wantd)
+
+        # if state is deleted, empty out wantd and set haved to wantd
+        if self.state == "deleted":
+            for k, v in iteritems(haved):
+                afi = k
+                afi_want = wantd.get(k)
+                if (afi_want and not afi_want.get("acls")) or not wantd:
+                    for key, val in iteritems(v["acls"]):
+                        val.update({"afi": afi, "name": key})
+                        self.addcmd(val, "acls_name", True)
+                elif afi_want:
+                    for key, val in iteritems(v["acls"]):
+                        want_acl = afi_want["acls"].get(key)
+                        if want_acl:
+                            val.update({"afi": afi, "name": key})
+                            self.addcmd(val, "acls_name", True)
+
+        # remove superfluous config for overridden and deleted
+        if self.state == "overridden":
+            for k, v in iteritems(haved):
+                afi = k
+                afi_want = wantd.get(k)
+                for key, val in iteritems(v["acls"]):
+                    if afi_want:
+                        acls_want = afi_want["acls"].get(key, {})
+                        if not acls_want:
+                            val.update({"afi": afi, "name": key})
+                            self.addcmd(val, "acls_name", True)
+                    else:
+                        val.update({"afi": afi, "name": key})
+                        self.addcmd(val, "acls_name", True)
+
+        for k, want in iteritems(wantd):
+            want.update({"afi": k})
+            self._compare(want=want, have=haved.pop(k, {}))
+
+    def _compare(self, want, have):
+        """Leverages the base class `compare()` method and
+           populates the list of commands to be run by comparing
+           the `want` and `have` data with the `parsers` defined
+           for the acls network resource.
         """
-        commands = []
 
-        if (
-            want.get("source")
-            and want.get("destination")
-            and have.get("source")
-            and have.get("destination")
-        ):
-            if (
-                want.get("destination")
-                and have.get("destination")
-                or want.get("source").get("address")
-                and have.get("source")
-            ):
-                if want.get("destination").get("address") == have.get(
-                    "destination"
-                ).get("address") and want.get("source").get(
-                    "address"
-                ) == have.get(
-                    "source"
-                ).get(
-                    "address"
-                ):
-                    cmd, change = self._set_config(
-                        want, have, acls_want, config_want["afi"]
-                    )
-                    commands.extend(cmd)
-                    check = True
-                    if commands:
-                        if state == "replaced" or state == "overridden":
-                            commands.extend(
-                                self._clear_config(acls_want, config_want)
+        if want != have and self.state != "deleted":
+            if want.get("acls"):
+                afi = want["afi"]
+                for k, v in iteritems(want["acls"]):
+                    if have.get("acls") and k in have["acls"]:
+                        cmd_len = len(self.commands)
+                        have_acl = have["acls"].pop(k, {})
+                        if have_acl:
+                            for key, val in iteritems(v.get("aces")):
+                                have_ace = have_acl["aces"].pop(key, {})
+                                if val.get("protocol_options"):
+                                    if not val.get("protocol") and (
+                                        list(val.get("protocol_options"))[0]
+                                        == have_ace.get("protocol")
+                                    ):
+                                        have_ace.pop("protocol")
+                                if have_ace and val != have_ace:
+                                    self.compare(
+                                        parsers=self.parsers,
+                                        want=dict(),
+                                        have={"aces": have_ace, "afi": afi},
+                                    )
+                                    self.compare(
+                                        parsers=self.parsers,
+                                        want={
+                                            "aces": val,
+                                            "afi": afi,
+                                            "acl_type": v.get("acl_type"),
+                                        },
+                                        have={"aces": have_ace, "afi": afi},
+                                    )
+                                elif not have_ace:
+                                    self.compare(
+                                        parsers=self.parsers,
+                                        want={"aces": val, "afi": afi},
+                                        have=dict(),
+                                    )
+                        if (
+                            self.state == "overridden"
+                            or self.state == "replaced"
+                        ):
+                            if have_acl.get("aces"):
+                                for key, val in iteritems(have_acl["aces"]):
+                                    self.compare(
+                                        parsers=self.parsers,
+                                        want=dict(),
+                                        have={"aces": val, "afi": afi},
+                                    )
+                        if cmd_len != len(self.commands):
+                            command = self.acl_name_config_cmd(
+                                name=k, afi=afi, acl_type=v.get("acl_type")
                             )
-                elif (
-                    want.get("destination").get("any")
-                    == have.get("destination").get("any")
-                    and want.get("source").get("address")
-                    == have.get("source").get("address")
-                    and want.get("destination").get("any")
-                ):
-                    cmd, change = self._set_config(
-                        want, have, acls_want, config_want["afi"]
-                    )
-                    commands.extend(cmd)
-                    check = True
-                    if commands:
-                        if state == "replaced" or state == "overridden":
-                            commands.extend(
-                                self._clear_config(acls_want, config_want)
+                            self.commands.insert(cmd_len, command)
+                    else:
+                        cmd_len = len(self.commands)
+                        for key, val in iteritems(v.get("aces")):
+                            self.compare(
+                                parsers=self.parsers,
+                                want={
+                                    "aces": val,
+                                    "afi": afi,
+                                    "acl_type": v.get("acl_type"),
+                                },
+                                have=dict(),
                             )
-                elif (
-                    want.get("destination").get("address")
-                    == have.get("destination").get("address")
-                    and want.get("source").get("any")
-                    == have.get("source").get("any")
-                    and want.get("source").get("any")
-                ):
-                    cmd, change = self._set_config(
-                        want, have, acls_want, config_want["afi"]
-                    )
-                    commands.extend(cmd)
-                    check = True
-                    if commands:
-                        if state == "replaced" or state == "overridden":
-                            commands.extend(
-                                self._clear_config(acls_want, config_want)
+                        if cmd_len != self.commands:
+                            command = self.acl_name_config_cmd(
+                                name=k, afi=afi, acl_type=v.get("acl_type")
                             )
-                elif (
-                    want.get("destination").get("any")
-                    == have.get("destination").get("any")
-                    and want.get("source").get("any")
-                    == have.get("source").get("any")
-                    and want.get("destination").get("any")
-                ):
-                    cmd, change = self._set_config(
-                        want, have, acls_want, config_want["afi"]
-                    )
-                    commands.extend(cmd)
-                    check = True
-                    if commands:
-                        if state == "replaced" or state == "overridden":
-                            commands.extend(
-                                self._clear_config(acls_want, config_want)
-                            )
-                elif acls_have and acls_have.get("acl_type") == "standard":
-                    check = True
-                    if want.get("source") == have.get("source"):
-                        cmd, change = self._set_config(
-                            want, have, acls_want, config_want["afi"]
-                        )
-                        commands.extend(cmd)
+                            self.commands.insert(cmd_len, command)
 
-        return commands, check
+    def update_sequence_in_want(self, want, have):
+        if (want and not have) or (not want and have):
+            return want
+        else:
+            temp_acl = {}
+            count = 0
+            for each in want:
+                if each.get("acls"):
+                    have_each = have.get(each["afi"])
+                    temp_acl["acls"] = []
+                    for acl in each["acls"]:
+                        temp_ace = []
+                        have_aces = None
+                        if have_each:
+                            have_acls = have_each.get("acls")
+                        if acl.get("aces"):
+                            if have_acls:
+                                have_aces = have_acls.get(acl["name"])
+                            for every in acl["aces"]:
+                                if every.get("sequence"):
+                                    temp_ace.append(every)
+                                else:
+                                    if have_aces:
+                                        for key, val in iteritems(
+                                            have_aces["aces"]
+                                        ):
+                                            temp = copy.copy(val)
+                                            seq = temp.pop("sequence")
+                                            protocol = (
+                                                temp.pop("protocol")
+                                                if temp.get("protocol")
+                                                else None
+                                            )
+                                            if temp == every:
+                                                if protocol:
+                                                    every.update(
+                                                        {
+                                                            "protocol": protocol,
+                                                            "sequence": seq,
+                                                        }
+                                                    )
+                                                else:
+                                                    every.update(
+                                                        {"sequence": seq}
+                                                    )
+                                                temp_ace.append(every)
+                                    else:
+                                        temp_ace.append(every)
+                        if have_aces:
+                            aces = {
+                                "aces": temp_ace,
+                                "acl_type": have_aces.get("acl_type"),
+                                "name": acl["name"],
+                            }
+                        elif acl.get("acl_type"):
+                            aces = {
+                                "aces": temp_ace,
+                                "acl_type": acl["acl_type"],
+                                "name": acl["name"],
+                            }
+                        else:
+                            aces = {"aces": temp_ace, "name": acl["name"]}
+                        temp_acl["acls"].append(aces)
+                temp_acl.update({"afi": each["afi"]})
+                want[count] = copy.copy(temp_acl)
+                count += 1
 
-    def split_set_cmd(self, cmds):
-        """ The command formatter from the generated command
-        :param cmds: generated command
-        :rtype: A list
-        :returns: the formatted commands which is compliant and
-        actually fired on the device
-        """
-        command = []
-
-        def common_code(access_grant, cmd, command):
-            cmd = cmd.split(access_grant)
-            access_list = cmd[0].strip(" ")
-            if access_list not in command:
-                command.append(access_list)
-            command_items = len(command)
-            # get the last index of the list and push the trimmed cmd at the end of list
-            index = command.index(access_list) + (
-                command_items - command.index(access_list)
-            )
-            cmd = access_grant + cmd[1]
-            command.insert(index + 1, cmd)
-
-        def sequence_common_code(sequence_index, each_list, command):
-            # Command to split
-            def join_list_to_str(temp_list, cmd=""):
-                for item in temp_list:
-                    cmd += item
-                    cmd += " "
-                return cmd
-
-            temp_list = each_list[:sequence_index]
-            cmd = join_list_to_str(temp_list).rstrip(" ")
-            if cmd not in command:
-                command.append(cmd)
-            temp_list = each_list[sequence_index:]
-            cmd = join_list_to_str(temp_list).rstrip(" ")
-            command.append(cmd)
-
-        def grant_common_code(cmd_list, grant_type, command):
-            index = cmd_list.index(grant_type)
-            if "extended" in each_list:
-                if cmd_list.index("extended") == (index - 2):
-                    common_code(grant_type, each, command)
-                else:
-                    sequence_common_code((index - 1), each_list, command)
-            elif "standard" in each_list:
-                if cmd_list.index("standard") == (index - 2):
-                    common_code(grant_type, each, command)
-                else:
-                    sequence_common_code((index - 1), each_list, command)
-            elif "ipv6" in each_list:
-                if "sequence" in each_list:
-                    sequence_index = each_list.index("sequence")
-                    sequence_common_code(sequence_index, each_list, command)
-                else:
-                    common_code(grant_type, each, command)
-            return command
-
-        for each in cmds:
-            each_list = each.split(" ")
-            if "no" in each:
-                if each_list.index("no") == 0:
-                    command.append(each)
-                else:
-                    common_code("no", each, command)
-            if "deny" in each:
-                grant_common_code(each_list, "deny", command)
-            if "permit" in each:
-                grant_common_code(each_list, "permit", command)
-
+    def acl_name_config_cmd(self, name, afi, acl_type):
+        if afi == "ipv4":
+            if not acl_type:
+                try:
+                    acl_id = int(name)
+                    if not acl_type:
+                        if acl_id >= 1 and acl_id <= 99:
+                            acl_type = "standard"
+                        if acl_id >= 100 and acl_id <= 199:
+                            acl_type = "extended"
+                except ValueError:
+                    acl_type = "extended"
+            command = "ip access-list {0} {1}".format(acl_type, name)
+        elif afi == "ipv6":
+            command = "ipv6 access-list {0}".format(name)
         return command
 
-    def source_dest_config(self, config, cmd, protocol_option):
-        """ Function to populate source/destination address and port protocol options
-        :param config: want and have diff config
-        :param cmd: source/destination command
-        :param protocol_option: source/destination protocol option
-        :rtype: A list
-        :returns: the commands generated based on input source/destination params
-        """
-        if "ipv6" in cmd:
-            address = config.get("address")
-            host = config.get("host")
-            if (address and "::" not in address) or (
-                host and "::" not in host
-            ):
-                self._module.fail_json(msg="Incorrect IPV6 address!")
+    def list_to_dict(self, param):
+        if param:
+            temp = {}
+            for each in param:
+                temp_acls = {}
+                if each.get("acls"):
+                    acls = each.get("acls")
+                    for every in acls:
+                        acl_name = every.get("name")
+                        temp_aces = {}
+                        aces = every.get("aces")
+                        if aces:
+                            count = 0
+                            for ace in aces:
+                                seq = (
+                                    ace["sequence"]
+                                    if ace.get("sequence")
+                                    else count
+                                )
+                                temp_aces.update(
+                                    {acl_name + "_" + str(seq): ace}
+                                )
+                                count += 1
+                        if every.get("acl_type"):
+                            temp_acls.update(
+                                {
+                                    acl_name: {
+                                        "aces": temp_aces,
+                                        "acl_type": every["acl_type"],
+                                    }
+                                }
+                            )
+                        else:
+                            temp_acls.update({acl_name: {"aces": temp_aces}})
+                each["acls"] = temp_acls
+                temp.update({each["afi"]: {"acls": temp_acls}})
+            return temp
         else:
-            address = config.get("address")
-            wildcard = config.get("wildcard_bits")
-            host = config.get("host")
-        any = config.get("any")
-        if "standard" in cmd and address and not wildcard:
-            cmd = cmd + " {0}".format(address)
-        elif address and wildcard:
-            cmd = cmd + " {0} {1}".format(address, wildcard)
-        elif host:
-            cmd = cmd + " host {0}".format(host)
-        if any:
-            cmd = cmd + " {0}".format("any")
-        port_protocol = config.get("port_protocol")
-        if port_protocol and ("tcp" in cmd or "udp" in cmd):
-            cmd = cmd + " {0} {1}".format(
-                list(port_protocol)[0], list(port_protocol.values())[0]
-            )
-        elif port_protocol and ("tcp" not in cmd or "udp" not in cmd):
-            self._module.fail_json(
-                msg="Port Protocol option is valid only with TCP/UDP Protocol option!"
-            )
-
-        return cmd
-
-    def _set_config(self, want, have, acl_want, afi):
-        """ Function that sets the acls config based on the want and have config
-        :param want: want config
-        :param have: have config
-        :param acl_want: want acls config
-        :param afi: acls afi type
-        :rtype: A list
-        :returns: the commands generated based on input want/have params
-        """
-        commands = []
-        change = False
-        want_set = set()
-        have_set = set()
-        # Convert the want and have dict to its respective set for taking the set diff
-        new_dict_to_set(want, [], want_set)
-        new_dict_to_set(have, [], have_set)
-        diff = want_set - have_set
-
-        # Check Py Version and if its py35, verify the diff again
-        if diff and sys.version[0:3] == "3.5":
-            if not reverify_diff_py35(want_set, have_set):
-                diff = set()
-
-        # Populate the config only when there's a diff b/w want and have config
-        if diff:
-            name = acl_want.get("name")
-            if afi == "ipv4":
-                try:
-                    name = int(name)
-                    # If name is numbered acls
-                    if name <= 99:
-                        cmd = "ip access-list standard {0}".format(name)
-                    elif name >= 100:
-                        cmd = "ip access-list extended {0}".format(name)
-                except ValueError:
-                    # If name is named acls
-                    acl_type = acl_want.get("acl_type")
-                    if acl_type:
-                        cmd = "ip access-list {0} {1}".format(acl_type, name)
-                    else:
-                        self._module.fail_json(
-                            msg="ACL type value is required for Named ACL!"
-                        )
-
-            elif afi == "ipv6":
-                cmd = "ipv6 access-list {0}".format(name)
-
-            # Get all of aces option values from diff dict
-            sequence = want.get("sequence")
-            grant = want.get("grant")
-            source = want.get("source")
-            destination = want.get("destination")
-            po = want.get("protocol_options")
-            protocol = want.get("protocol")
-            dscp = want.get("dscp")
-            fragments = want.get("fragments")
-            log = want.get("log")
-            log_input = want.get("log_input")
-            option = want.get("option")
-            precedence = want.get("precedence")
-            time_range = want.get("time_range")
-            tos = want.get("tos")
-            ttl = want.get("ttl")
-
-            if sequence:
-                if afi == "ipv6":
-                    cmd = cmd + " sequence {0}".format(sequence)
-                else:
-                    cmd = cmd + " {0}".format(sequence)
-            if grant:
-                cmd = cmd + " {0}".format(grant)
-            if po and isinstance(po, dict):
-                po_key = list(po)[0]
-                po_val = dict()
-                if protocol and protocol != po_key:
-                    self._module.fail_json(
-                        msg="Protocol value cannot be different from Protocol option protocol value!"
-                    )
-                cmd = cmd + " {0}".format(po_key)
-                if po.get("icmp"):
-                    po_val = po.get("icmp")
-                elif po.get("igmp"):
-                    po_val = po.get("igmp")
-                elif po.get("tcp"):
-                    po_val = po.get("tcp")
-            elif protocol:
-                cmd = cmd + " {0}".format(protocol)
-            if source:
-                cmd = self.source_dest_config(source, cmd, po)
-            if destination:
-                cmd = self.source_dest_config(destination, cmd, po)
-            if po and po_val:
-                cmd = cmd + " {0}".format(list(po_val)[0])
-            if dscp:
-                cmd = cmd + " dscp {0}".format(dscp)
-            if fragments:
-                cmd = cmd + " fragments {0}".format(fragments)
-            if log:
-                cmd = cmd + " log {0}".format(log)
-            if log_input:
-                cmd = cmd + " log-input {0}".format(log_input)
-            if option:
-                cmd = cmd + " option {0}".format(list(option)[0])
-            if precedence:
-                cmd = cmd + " precedence {0}".format(precedence)
-            if time_range:
-                cmd = cmd + " time-range {0}".format(time_range)
-            if tos:
-                for k, v in iteritems(tos):
-                    if k == "service_value":
-                        cmd = cmd + " tos {0}".format(v)
-                    else:
-                        cmd = cmd + " tos {0}".format(v)
-            if ttl:
-                for k, v in iteritems(ttl):
-                    if k == "range" and v:
-                        start = v.get("start")
-                        end = v.get("start")
-                        cmd = cmd + " ttl {0} {1}".format(start, end)
-                    elif v:
-                        cmd = cmd + " ttl {0} {1}".format(k, v)
-
-            commands.append(cmd)
-        if commands:
-            change = True
-
-        return commands, change
-
-    def _clear_config(self, acls, config, sequence=""):
-        """ Function that deletes the acls config based on the want and have config
-        :param acls: acls config
-        :param config: config
-        :rtype: A list
-        :returns: the commands generated based on input acls/config params
-        """
-        commands = []
-        afi = config.get("afi")
-        name = acls.get("name")
-        if afi == "ipv4" and name:
-            try:
-                name = int(name)
-                if name <= 99 and not sequence:
-                    cmd = "no ip access-list standard {0}".format(name)
-                elif name >= 100 and not sequence:
-                    cmd = "no ip access-list extended {0}".format(name)
-                elif sequence:
-                    if name <= 99:
-                        cmd = "ip access-list standard {0} ".format(name)
-                    elif name >= 100:
-                        cmd = "ip access-list extended {0} ".format(name)
-                    cmd += "no {0}".format(sequence)
-            except ValueError:
-                acl_type = acls.get("acl_type")
-                if acl_type == "extended" and not sequence:
-                    cmd = "no ip access-list extended {0}".format(name)
-                elif acl_type == "standard" and not sequence:
-                    cmd = "no ip access-list standard {0}".format(name)
-                elif sequence:
-                    if acl_type == "extended":
-                        cmd = "ip access-list extended {0} ".format(name)
-                    elif acl_type == "standard":
-                        cmd = "ip access-list standard {0}".format(name)
-                    cmd += "no {0}".format(sequence)
-                else:
-                    self._module.fail_json(
-                        msg="ACL type value is required for Named ACL!"
-                    )
-        elif afi == "ipv6" and name:
-            if sequence:
-                cmd = "no sequence {0}".format(sequence)
-            else:
-                cmd = "no ipv6 access-list {0}".format(name)
-        commands.append(cmd)
-
-        return commands
+            return dict()

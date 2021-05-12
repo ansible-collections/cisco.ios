@@ -445,6 +445,8 @@ Notes
 
 .. note::
    - Tested against IOS 15.6
+   - The 'Default System Message Logging Configuration' of the ios device
+     like facility Local7 or logging on is not subjected to idempotency causes
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
@@ -453,7 +455,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure host logging
       cisco.ios.ios_logging:

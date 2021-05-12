@@ -280,7 +280,7 @@ class L2_Interfaces(ConfigBase):
         for each in vlan:
             vlan_range = each.split("-")
             if len(vlan_range) > 1:
-                if vlan_range[0] < vlan_range[1]:
+                if int(vlan_range[0]) < int(vlan_range[1]):
                     return True
                 else:
                     module.fail_json(
@@ -290,10 +290,40 @@ class L2_Interfaces(ConfigBase):
             else:
                 return True
 
+    def _expand_vlan_range_if_any(self, param_type, vlan):
+        temp = []
+        check = False
+        for each in vlan:
+            if "-" in each and param_type == "have":
+                l, h = map(int, each.split("-"))
+                temp.extend([str(e) for e in range(l, h + 1)])
+            elif "-" in each and param_type == "want":
+                check = True
+                temp.append(each)
+            else:
+                temp.append(each)
+        return check, temp
+
     def _set_config(self, want, have, module):
         # Set the interface config based on the want and have config
         commands = []
         interface = "interface " + want["name"]
+
+        # expand a have allowed and pruning vlan if any
+        if have.get("trunk") and want.get("trunk"):
+            for each in ["allowed_vlans", "pruning_vlans"]:
+                if have["trunk"].get(each) and want["trunk"].get(each):
+                    check, want["trunk"][
+                        each
+                    ] = self._expand_vlan_range_if_any(
+                        "want", want["trunk"][each]
+                    )
+                    if not check:
+                        check, have["trunk"][
+                            each
+                        ] = self._expand_vlan_range_if_any(
+                            "have", have["trunk"][each]
+                        )
 
         # Get the diff b/w want and have
         want_dict = dict_to_set(want)

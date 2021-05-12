@@ -1,0 +1,3 @@
+---
+trivial:
+  - replace module._check_required_* calls removed in ansible-core 2.11 with equivalent calls from common.validation

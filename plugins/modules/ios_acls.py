@@ -79,6 +79,9 @@ options:
                 - Sequence Number for the Access Control Entry(ACE).
                 - Refer to vendor documentation for valid values.
                 type: int
+              evaluate:
+                description: Evaluate an access list
+                type: str
               protocol:
                 description:
                 - Specify the protocol to match.
@@ -424,10 +427,24 @@ options:
                 type: str
               log:
                 description: Log matches against this entry.
-                type: str
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
               log_input:
                 description: Log matches against this entry, including input interface.
-                type: str
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry, including input interface.
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
               option:
                 description:
                 - Match packets with given IP Options value.
@@ -575,11 +592,13 @@ options:
                         type: int
   running_config:
     description:
-      - The module, by default, will connect to the remote device and retrieve the current
-        running-config to use as a base for comparing against the contents of source.
-        There are times when it is not desirable to have the task get the current running-config
-        for every task in a playbook.  The I(running_config) argument allows the implementer
-        to pass in the configuration to use as the base config for comparison.
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS
+        device by executing the command B(sh access-list).
+      - The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into Ansible structured data as per the
+        resource module's argspec and the value is then returned in the
+        I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -1311,7 +1330,7 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 #
-# ipv6 access-list R1_TRAFFIC
+# IPv6 access-list R1_TRAFFIC
 # deny tcp any eq www any eq telnet ack dscp af11
 
 - name: Parse the commands for provided configuration
