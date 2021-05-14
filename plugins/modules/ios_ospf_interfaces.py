@@ -972,7 +972,7 @@ EXAMPLES = """
 #  ipv6 ospf manet peering link-metrics 10
 # interface GigabitEthernet0/0
 
-- name: Parse the provided configuration with the exisiting running configuration
+- name: Parse the provided configuration with the existing running configuration
   cisco.ios.ios_ospf_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed

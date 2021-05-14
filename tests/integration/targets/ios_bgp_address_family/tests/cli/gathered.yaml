@@ -1,14 +1,14 @@
 ---
 - debug:
-    msg: START ios_bgp_address_family gathered integration tests on connection={{ ansible_connection
+    msg:
+      START ios_bgp_address_family gathered integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
 
 - block:
-
-    - name: Gather the provided configuration with the exisiting running configuration
+    - name: Gather the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_bgp_address_family:
         config:
@@ -19,5 +19,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: _remove_config.yaml

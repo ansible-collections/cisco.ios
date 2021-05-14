@@ -1,21 +1,18 @@
 ---
 - debug:
-    msg: Start ios_acls rendered integration tests ansible_connection={{ ansible_connection
+    msg:
+      Start ios_acls rendered integration tests ansible_connection={{ ansible_connection
       }}
 
 - block:
-
-    - name: Rendered the provided configuration with the exisiting running configuration
+    - name: Rendered the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_acls:
         config:
-
           - afi: ipv4
             acls:
-
               - name: 110
                 aces:
-
                   - grant: deny
                     sequence: 10
                     protocol_options:
@@ -35,7 +32,6 @@
 
               - name: 150
                 aces:
-
                   - grant: deny
                     protocol_options:
                       tcp:
