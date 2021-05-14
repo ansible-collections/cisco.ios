@@ -57,5 +57,19 @@
         that:
           - merged['before'] == {}
 
+    - name: TEST - [merged] Assert that after dicts are correctly generated
+      assert:
+        that:
+          - merged['after'][0]['buffered'] == result['after'][0]['buffered']
+          - merged['after'][1]['cns_events'] == result['after'][0]['cns_events']
+          - merged['after'][2]['console'] == result['after'][0]['console']
+          - merged['after'][3]['dmvpn'] == result['after'][0]['dmvpn']
+          - merged['after'][4]['exception'] == result['after'][0]['exception']
+          - merged['after'][5]['facility'] == result['after'][0]['facility']
+          - merged['after'][6]['monitor'] == result['after'][0]['monitor']
+          - merged['after'][8]['trap'] == result['after'][0]['trap']
+          - merged['after'][9]['userinfo'] == result['after'][0]['userinfo']
+          - merged['after'][10]['policy_firewall'] == result['after'][0]['policy_firewall']
+
   always:
     - include_tasks: _remove_config.yaml

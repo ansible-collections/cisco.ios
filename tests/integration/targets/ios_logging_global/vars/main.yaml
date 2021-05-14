@@ -26,8 +26,28 @@ merged:
         severity: notifications
         size: 5099
         xml: true
+    - cns_events: warnings
     - console:
         severity: critical
+        xml: true
+    - dmvpn:
+        rate_limit: 10
+    - exception: 4099
+    - facility: local5
+    - monitor:
+        severity: warnings
+    - message_counter:
+        - log
+    - trap: errors
+    - userinfo: true
+    - policy_firewall:
+        rate_limit: 10
+
+replaced:
+  before:
+    - buffered:
+        severity: notifications
+        size: 5099
         xml: true
     - facility: local5
     - hosts:
@@ -41,22 +61,7 @@ merged:
           transport:
             tcp:
               port: 514
-    - monitor:
-        severity: warnings
-    - message_counter:
-        - log
-        - syslog
-    - trap: errors
-    - userinfo: true
-    - policy_firewall:
-        rate_limit: 10
-    - logging_on: enable
-    - exception: 4099
-    - dmvpn:
-        rate_limit: 10
-    - cns_events: warnings
 
-replaced:
   commands:
     - no logging host 172.16.1.11
     - no logging host 172.16.1.12
@@ -65,6 +70,17 @@ replaced:
     - logging host 172.16.1.19
     - logging buffered 6025 alerts
     - logging facility local6
+
+  after:
+    - buffered:
+        severity: alerts
+        size: 6025
+    - facility: local6
+    - hosts:
+        - hostname: 172.16.1.19
+        - hostname: 172.16.1.10
+          filtered: true
+          stream: 15
 
 overridden:
   commands:
@@ -83,6 +99,18 @@ overridden:
     - logging monitor critical
     - logging buffered xml 5099 warnings
     - logging facility local6
+
+  after:
+    - monitor:
+        severity: critical
+    - buffered:
+        severity: warnings
+        xml: true
+        size: 5099
+    - facility: local6
+    - hosts:
+        - hostname: 172.16.1.12
+          xml: true
 
 deleted:
   commands:

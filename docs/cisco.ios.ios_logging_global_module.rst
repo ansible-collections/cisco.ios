@@ -2158,6 +2158,9 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
+                        <div>With state <em>replaced</em>, for the listed logging configurations, that are in running-config and can have multiple set of commands but not in the task are negated.</div>
+                        <div>With state <em>overridden</em>, all configurations that are in running-config but not in the task are negated.</div>
+                        <div>Please refer to examples for more details.</div>
                 </td>
             </tr>
     </table>
@@ -2364,10 +2367,10 @@ Examples
     # logging trap errors
     # logging facility local5
     # logging snmp-trap errors
-    # logging host 10.0.1.13 transport tcp port 514
-    # logging host 10.0.1.11 xml
-    # logging host 10.0.1.12
-    # logging host 10.0.1.10 filtered stream 10
+    # logging host 172.16.1.13 transport tcp port 514
+    # logging host 172.16.1.11 xml
+    # logging host 172.16.1.12
+    # logging host 172.16.1.10 filtered stream 10
 
     - name: Remove all existing configuration
       cisco.ios.ios_logging_global:
@@ -2379,10 +2382,10 @@ Examples
     # "commands": [
     #       "no logging message-counter log",
     #       "no logging snmp-trap errors",
-    #       "no logging host 10.0.1.13",
-    #       "no logging host 10.0.1.11",
-    #       "no logging host 10.0.1.12",
-    #       "no logging host 10.0.1.10",
+    #       "no logging host 172.16.1.13",
+    #       "no logging host 172.16.1.11",
+    #       "no logging host 172.16.1.12",
+    #       "no logging host 172.16.1.10",
     #       "no logging exception 4099",
     #       "no logging userinfo",
     #       "no logging buffered xml 5099 notifications",

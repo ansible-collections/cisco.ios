@@ -371,6 +371,12 @@ options:
     default: merged
     description:
     - The state the configuration should be left in
+    - With state I(replaced), for the listed logging configurations,
+      that are in running-config and can have multiple set of commands
+      but not in the task are negated.
+    - With state I(overridden), all configurations that are in running-config but
+      not in the task are negated.
+    - Please refer to examples for more details.
     type: str
 """
 EXAMPLES = """
