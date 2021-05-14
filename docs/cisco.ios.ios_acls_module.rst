@@ -4460,7 +4460,7 @@ Examples
 
     # Using Rendered
 
-    - name: Rendered the provided configuration with the exisiting running configuration
+    - name: Rendered the provided configuration with the existing running configuration
       cisco.ios.ios_acls:
         config:
         - afi: ipv4
