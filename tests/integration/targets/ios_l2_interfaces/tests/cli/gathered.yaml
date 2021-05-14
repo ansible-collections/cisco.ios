@@ -1,13 +1,13 @@
 ---
 - debug:
-    msg: START ios_l2_interfaces gathered integration tests on connection={{ ansible_connection
+    msg:
+      START ios_l2_interfaces gathered integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _populate_config.yaml
 
 - block:
-
-    - name: Gather the provided configuration with the exisiting running configuration
+    - name: Gather the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_l2_interfaces:
         config:
@@ -20,5 +20,4 @@
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml

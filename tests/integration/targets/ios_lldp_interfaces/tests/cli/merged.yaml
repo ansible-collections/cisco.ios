@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Merged ios_lldp_interfaces state for integration tests on connection={{
+    msg:
+      START Merged ios_lldp_interfaces state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _enable_lldp.yaml
@@ -8,12 +9,10 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
         config:
-
           - name: GigabitEthernet0/0
             receive: true
             transmit: true
@@ -45,7 +44,8 @@
           - "{{ merged['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name:
+        Merge the provided configuration with the existing running configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_lldp_interfaces: *id001
@@ -55,5 +55,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

@@ -6,18 +6,14 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_acl_interfaces: &id001
         config:
-
           - name: GigabitEthernet0/1
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: 110
                     direction: in
 
@@ -26,7 +22,6 @@
 
               - afi: ipv6
                 acls:
-
                   - name: temp_v6
                     direction: in
 
@@ -35,10 +30,8 @@
 
           - name: GigabitEthernet0/2
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: 110
                     direction: in
 
@@ -52,7 +45,8 @@
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name:
+        Merge the provided configuration with the existing running configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_acl_interfaces: *id001
@@ -62,5 +56,4 @@
           - result.commands|length == 0
           - result.changed == false
   always:
-
     - include_tasks: _remove_config.yaml
