@@ -33,8 +33,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
-            "type": "list",
-            "elements": "dict",
+            "type": "dict",
             "options": {
                 "buffered": {
                     "type": "dict",
@@ -183,6 +182,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                 "text": {"type": "str"},
                             },
                         },
+                        "stream": {"type": "int"},
                         "transport": {
                             "type": "dict",
                             "options": {
@@ -191,8 +191,8 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "audit": {"type": "bool"},
                                         "discriminator": {"type": "str"},
-                                        "filtered": {"type": "bool"},
                                         "stream": {"type": "int"},
+                                        "filtered": {"type": "bool"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {
                                             "type": "bool"
@@ -218,8 +218,8 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "discriminator": {"type": "str"},
-                                        "filtered": {"type": "bool"},
                                         "stream": {"type": "int"},
+                                        "filtered": {"type": "bool"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {
                                             "type": "bool"
@@ -245,7 +245,6 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         },
                         "vrf": {"type": "str"},
                         "xml": {"type": "bool"},
-                        "stream": {"type": "int"},
                         "ipv6": {"type": "str"},
                         "hostname": {"type": "str"},
                     },

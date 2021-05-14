@@ -39,14 +39,13 @@ Parameters
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>A list containing dictionary of logging options</div>
+                        <div>A dictionary of logging options</div>
                 </td>
             </tr>
                                 <tr>
@@ -2200,15 +2199,15 @@ Examples
     - name: Apply the provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - buffered:
-              severity: notifications
-              size: 5099
-              xml: True
-          - console:
-              severity: critical
-              xml: True
-          - facility: local5
-          - hosts:
+          buffered:
+            severity: notifications
+            size: 5099
+            xml: True
+          console:
+            severity: critical
+            xml: True
+          facility: local5
+          hosts:
             - hostname: 172.16.1.12
             - hostname: 172.16.1.11
               xml: True
@@ -2219,20 +2218,20 @@ Examples
               transport:
                 tcp:
                   port: 514
-          - monitor:
-              severity: warnings
-          - message_counter: log
-          - snmp_trap:
+          monitor:
+            severity: warnings
+          message_counter: log
+          snmp_trap:
             - errors
-          - trap: errors
-          - userinfo: True
-          - policy_firewall:
-              rate_limit: 10
-          - logging_on: True
-          - exception: 4099
-          - dmvpn:
-              rate_limit: 10
-          - cns_events: warnings
+          trap: errors
+          userinfo: True
+          policy_firewall:
+            rate_limit: 10
+          logging_on: True
+          exception: 4099
+          dmvpn:
+            rate_limit: 10
+          cns_events: warnings
         state: merged
 
     # Commands Fired:
@@ -2312,11 +2311,11 @@ Examples
     - name: Remove as per the provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - snmp_trap:
-              - errors
-              - warnings
-          - hosts:
-              - hostname: 172.16.1.11
+          snmp_trap:
+            - errors
+            - warnings
+          hosts:
+            - hostname: 172.16.1.11
         state: deleted
 
     # Commands Fired:
@@ -2438,9 +2437,9 @@ Examples
     - name: Override commands with provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - hosts:
-              - hostname: 172.16.1.27
-                filtered: True
+          hosts:
+            - hostname: 172.16.1.27
+              filtered: True
         state: overridden
 
     # Commands Fired:
@@ -2505,15 +2504,15 @@ Examples
     - name: Replace commands with provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - buffered:
-              severity: alerts
-              size: 6025
-          - facility: local6
-          - hosts:
-              - hostname: 172.16.1.19
-              - hostname: 172.16.1.10
-                filtered: true
-                stream: 15
+          buffered:
+            severity: alerts
+            size: 6025
+          facility: local6
+          hosts:
+            - hostname: 172.16.1.19
+            - hostname: 172.16.1.10
+              filtered: true
+              stream: 15
         state: replaced
 
     # Commands Fired:
@@ -2555,7 +2554,7 @@ Examples
     # Before state:
     # -------------
 
-    # router-ios#show running-config | section logging
+    #router-ios#show running-config | section logging
     # logging exception 4099
     # logging message-counter log
     # logging userinfo
@@ -2583,59 +2582,63 @@ Examples
     # Module Execution Result:
     # ------------------------
 
-    # "gathered": [
-    #     {
-    #         "buffered": {
-    #             "severity": "notifications",
-    #             "size": 5099,
-    #             "xml": true
-    #         },
-    #         "cns_events": "warnings",
-    #         "console": {
-    #             "severity": "critical",
-    #             "xml": true
-    #         },
-    #         "dmvpn": {
-    #             "rate_limit": 10
-    #         },
-    #         "exception": 4099,
-    #         "facility": "local5",
-    #         "message_counter": [
-    #             "log"
-    #         ],
-    #         "monitor": {
-    #             "severity": "warnings"
-    #         },
-    #         "policy_firewall": {
-    #             "rate_limit": 10
-    #         },
-    #         "snmp_trap": [
-    #             "errors"
-    #         ],
-    #         "trap": "errors",
-    #         "userinfo": true
+    # "gathered": {
+    #     "buffered": {
+    #         "severity": "notifications",
+    #         "size": 5099,
+    #         "xml": true
     #     },
-    #     {
-    #         "host": [
-    #             {
-    #                 "hostname": "172.16.1.11",
-    #                 "xml": true
-    #             },
-    #             {
-    #                 "hostname": "172.16.1.12"
-    #             },
-    #             {
-    #                 "filtered": true,
-    #                 "hostname": "172.16.1.10",
-    #                 "stream": 10
-    #             },
-    #             {
-    #                 "filtered": true,
-    #                 "hostname": "172.16.1.25"
+    #     "cns_events": "warnings",
+    #     "console": {
+    #         "severity": "critical",
+    #         "xml": true
+    #     },
+    #     "dmvpn": {
+    #         "rate_limit": 10
+    #     },
+    #     "exception": 4099,
+    #     "facility": "local5",
+    #     "hosts": [
+    #         {
+    #             "hostname": "172.16.1.11",
+    #             "xml": true
+    #         },
+    #         {
+    #             "hostname": "172.16.1.12"
+    #         },
+    #         {
+    #             "filtered": true,
+    #             "hostname": "172.16.1.10",
+    #             "stream": 10
+    #         },
+    #         {
+    #             "hostname": "172.16.1.13",
+    #             "transport": {
+    #                 "tcp": {
+    #                     "port": 514
+    #                 }
     #             }
-    #         ]
-    #     }
-    # ],
+    #         },
+    #         {
+    #             "filtered": true,
+    #             "hostname": "172.16.1.25"
+    #         }
+    #     ],
+    #     "message_counter": [
+    #         "log"
+    #     ],
+    #     "monitor": {
+    #         "severity": "warnings"
+    #     },
+    #     "policy_firewall": {
+    #         "rate_limit": 10
+    #     },
+    #     "snmp_trap": [
+    #         "errors"
+    #     ],
+    #     "trap": "errors",
+    #     "userinfo": true
+    # },
 
     # After state:
     # -------------
@@ -2666,15 +2669,15 @@ Examples
     - name: Render the commands for provided configuration
       cisco.ios.ios_logging_global:
         config:
-          - buffered:
-              severity: notifications
-              size: 5099
-              xml: True
-          - console:
-              severity: critical
-              xml: True
-          - facility: local5
-          - hosts:
+          buffered:
+            severity: notifications
+            size: 5099
+            xml: True
+          console:
+            severity: critical
+            xml: True
+          facility: local5
+          hosts:
             - hostname: 172.16.1.12
             - hostname: 172.16.1.11
               xml: True
@@ -2685,19 +2688,19 @@ Examples
               transport:
                 tcp:
                   port: 514
-          - monitor:
-              severity: warnings
-          - message_counter: log
-          - snmp_trap: errors
-          - trap: errors
-          - userinfo: True
-          - policy_firewall:
+          monitor:
+            severity: warnings
+          message_counter: log
+          snmp_trap: errors
+          trap: errors
+          userinfo: True
+          policy_firewall:
               rate_limit: 10
-          - logging_on: True
-          - exception: 10
-          - dmvpn:
-              rate_limit: 10
-          - cns_events: warnings
+          logging_on: True
+          exception: 10
+          dmvpn:
+            rate_limit: 10
+          cns_events: warnings
         state: rendered
 
     # Module Execution Result:
@@ -2767,100 +2770,104 @@ Examples
     # Module Execution Result:
     # ------------------------
 
-    # "parsed": [
+    # "parsed": {
+    #     "buffered": {
+    #         "severity": "notifications",
+    #         "size": 5099,
+    #         "xml": true
+    #     },
+    #     "cns_events": "warnings",
+    #     "console": {
+    #         "severity": "critical",
+    #         "xml": true
+    #     },
+    #     "count": true,
+    #     "discriminator": [
+    #         "msglog01 severity includes 5"
+    #     ],
+    #     "dmvpn": {
+    #         "rate_limit": 10
+    #     },
+    #     "exception": 4099,
+    #     "facility": "local5",
+    #     "filter": [
     #         {
-    #             "buffered": {
-    #                 "severity": "notifications",
-    #                 "size": 5099,
-    #                 "xml": true
-    #             },
-    #             "cns_events": "warnings",
-    #             "console": {
-    #                 "severity": "critical",
-    #                 "xml": true
-    #             },
-    #             "count": true,
-    #             "discriminator": [
-    #                 "msglog01 severity includes 5"
-    #             ],
-    #             "dmvpn": {
-    #                 "rate_limit": 10
-    #             },
-    #             "exception": 4099,
-    #             "facility": "local5",
-    #             "filter": [
-    #                 {
-    #                     "args": "TESTInst2 ",
-    #                     "url": "tftp://172.16.2.18/ESM/elate.tcl"
-    #                 },
-    #                 {
-    #                     "args": "TESTInst",
-    #                     "url": "tftp://172.16.2.14/ESM/escalate.tcl"
-    #                 }
-    #             ],
-    #             "history": {
-    #                 "severity": "alerts"
-    #             },
-    #             "logging_on": true,
-    #             "message_counter": [
-    #                 "debug",
-    #                 "log"
-    #             ],
-    #             "monitor": {
-    #                 "severity": "warnings"
-    #             },
-    #             "origin_id": {
-    #                 "tag": "hostname"
-    #             },
-    #             "persistent": {
-    #                 "batch": 4444
-    #             },
-    #             "policy_firewall": {
-    #                 "rate_limit": 10
-    #             },
-    #             "rate_limit": {
-    #                 "all": true,
-    #                 "except_severity": "warnings",
-    #                 "size": 2
-    #             },
-    #             "reload": {
-    #                 "severity": "alerts"
-    #             },
-    #             "snmp_trap": [
-    #                 "errors"
-    #             ],
-    #             "source_interface": [
-    #                 {
-    #                     "interface": "GBit1/0"
-    #                 },
-    #                 {
-    #                     "interface": "CTunnel2"
-    #                 }
-    #             ],
-    #             "trap": "errors",
-    #             "userinfo": true
+    #             "args": "TESTInst2",
+    #             "url": "tftp://172.16.2.18/ESM/elate.tcl"
     #         },
     #         {
-    #             "hosts": [
-    #                 {
-    #                     "hostname": "172.16.1.1"
-    #                 },
-    #                 {
-    #                     "hostname": "172.16.1.11",
-    #                     "xml": true
-    #                 },
-    #                 {
-    #                     "filtered": true,
-    #                     "hostname": "172.16.1.25"
-    #                 },
-    #                 {
-    #                     "filtered": true,
-    #                     "hostname": "172.16.1.10",
-    #                     "stream": 10
-    #                 }
-    #             ]
+    #             "args": "TESTInst",
+    #             "url": "tftp://172.16.2.14/ESM/escalate.tcl"
     #         }
-    #     ]
+    #     ],
+    #     "history": {
+    #         "severity": "alerts"
+    #     },
+    #     "hosts": [
+    #         {
+    #             "hostname": "172.16.1.1"
+    #         },
+    #         {
+    #             "hostname": "172.16.1.11",
+    #             "xml": true
+    #         },
+    #         {
+    #             "filtered": true,
+    #             "hostname": "172.16.1.25"
+    #         },
+    #         {
+    #             "filtered": true,
+    #             "hostname": "172.16.1.10",
+    #             "stream": 10
+    #         },
+    #         {
+    #             "hostname": "172.16.1.13",
+    #             "transport": {
+    #                 "tcp": {
+    #                     "port": 514
+    #                 }
+    #             }
+    #         }
+    #     ],
+    #     "logging_on": "enable",
+    #     "message_counter": [
+    #         "log",
+    #         "debug"
+    #     ],
+    #     "monitor": {
+    #         "severity": "warnings"
+    #     },
+    #     "origin_id": {
+    #         "tag": "hostname"
+    #     },
+    #     "persistent": {
+    #         "batch": 4444
+    #     },
+    #     "policy_firewall": {
+    #         "rate_limit": 10
+    #     },
+    #     "rate_limit": {
+    #         "all": true,
+    #         "except_severity": "warnings",
+    #         "size": 2
+    #     },
+    #     "reload": {
+    #         "severity": "alerts"
+    #     },
+    #     "snmp_trap": [
+    #         "errors"
+    #     ],
+    #     "source_interface": [
+    #         {
+    #             "interface": "GBit1/0"
+    #         },
+    #         {
+    #             "interface": "CTunnel2"
+    #         }
+    #     ],
+    #     "trap": "errors",
+    #     "userinfo": true
+    # }
 
 
 

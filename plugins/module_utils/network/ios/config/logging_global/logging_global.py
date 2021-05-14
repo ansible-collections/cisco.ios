@@ -151,16 +151,16 @@ class Logging_global(ResourceModule):
         """
 
         _temp_param = {}
-        for element in param:
-            if element.get("message_counter"):
+        for element, val in iteritems(param):
+            if element == "message_counter":
                 _temp = {}
-                for ctr in element.get("message_counter"):
+                for ctr in val:
                     _temp.update({ctr: {"message_counter": ctr}})
                 _temp_param.update(_temp)
                 self.exclude[op].append("message_counter")
-            if element.get("discriminator"):
+            if element == "discriminator":
                 _temp = {}
-                for ctr in element.get("discriminator"):
+                for ctr in val:
                     _temp.update(
                         {
                             self.trim_whitespace("discriminator_" + ctr): {
@@ -170,9 +170,9 @@ class Logging_global(ResourceModule):
                     )
                 _temp_param.update(_temp)
                 self.exclude[op].append("discriminator")
-            if element.get("snmp_trap"):
+            if element == "snmp_trap":
                 _temp = {}
-                for ctr in element.get("snmp_trap"):
+                for ctr in val:
                     _temp.update(
                         {
                             self.trim_whitespace("snmp_trap_" + ctr): {
@@ -182,9 +182,9 @@ class Logging_global(ResourceModule):
                     )
                 _temp_param.update(_temp)
                 self.exclude[op].append("snmp_trap")
-            if element.get("source_interface"):
+            if element == "source_interface":
                 _temp = {}
-                for interface in element.get("source_interface"):
+                for interface in val:
                     _temp.update(
                         {
                             interface.get("interface"): {
@@ -194,15 +194,15 @@ class Logging_global(ResourceModule):
                     )
                 _temp_param.update(_temp)
                 self.exclude[op].append("source_interface")
-            if element.get("filter"):
+            if element == "filter":
                 _temp = {}
-                for url in element.get("filter"):
+                for url in val:
                     _temp.update({url.get("url"): {"filter": url}})
                 _temp_param.update(_temp)
                 self.exclude[op].append("filter")
-            if element.get("hosts"):
+            if element == "hosts":
                 _temp = {}
-                for host in element.get("hosts"):
+                for host in val:
                     if host.get("hostname"):
                         _temp.update({host.get("hostname"): {"hosts": host}})
                     elif host.get("ipv6"):
@@ -210,10 +210,9 @@ class Logging_global(ResourceModule):
                 _temp_param.update(_temp)
                 self.exclude[op].append("hosts")
 
-        for element in param:
-            for k, v in iteritems(element):
-                if k not in self.exclude.get(op):
-                    _temp_param.update({k: {k: v}})
+        for k, v in iteritems(param):
+            if k not in self.exclude.get(op):
+                _temp_param.update({k: {k: v}})
 
         param = _temp_param
         return param

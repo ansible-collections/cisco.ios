@@ -11,4 +11,4 @@
 - assert:
     that:
       - result.changed == false
-      - parsed['after']|symmetric_difference(result.parsed) == []
+      - parsed['after'] == result.parsed

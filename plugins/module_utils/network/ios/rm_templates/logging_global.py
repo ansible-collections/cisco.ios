@@ -294,7 +294,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host,
             "remval": tmplt_host_del,
             "result": {
-                "{{ hostname if hostname is defined else ipv6 }}": {
+                "logging": {
                     "hosts": [{
                         "hostname": "{{ hostname }}",
                         "ipv6": "{{ ipv6 }}",
@@ -335,7 +335,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host_transport,
             "remval": tmplt_host_transport_del,
             "result": {
-                "{{ hostname if hostname is defined else ipv6 }}": {
+                "logging": {
                     "hosts": [{
                         "hostname": "{{ hostname }}",
                         "ipv6": "{{ ipv6 }}",

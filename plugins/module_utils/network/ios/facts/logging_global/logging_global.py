@@ -26,8 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logg
 
 
 class Logging_globalFacts(object):
-    """ The ios logging_global facts class
-    """
+    """The ios logging_global facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -37,7 +36,7 @@ class Logging_globalFacts(object):
         return connection.get("show running-config | include logging")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Logging_global network resource
+        """Populate the facts for Logging_global network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -57,16 +56,16 @@ class Logging_globalFacts(object):
             lines=data.splitlines(), module=self._module
         )
         objs = list(logging_global_parser.parse().values())
-
+        objFinal = objs[0] if len(objs) >= 1 else {}
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
             logging_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec, {"config": objFinal}, redact=True
             )
         )
-        if not objs:
-            params["config"] = []
+        if not objFinal:
+            params["config"] = {}
         facts["logging_global"] = params["config"]
         ansible_facts["ansible_network_resources"].update(facts)
 

@@ -12,15 +12,15 @@
       register: result
       cisco.ios.ios_logging_global: &replacedid001
         config:
-          - buffered:
-              severity: alerts
-              size: 6025
-          - facility: local6
-          - hosts:
-              - hostname: 172.16.1.19
-              - hostname: 172.16.1.10
-                filtered: true
-                stream: 15
+          buffered:
+            severity: alerts
+            size: 6025
+          facility: local6
+          hosts:
+            - hostname: 172.16.1.19
+            - hostname: 172.16.1.10
+              filtered: true
+              stream: 15
         state: replaced
 
     - name: TEST - [replaced] Assert that correct set of commands were generated
@@ -32,14 +32,12 @@
     - name: TEST - [replaced] Assert that before dicts are correctly generated
       assert:
         that:
-          - replaced['before'][0]['buffered'] == result['before'][0]['buffered']
-          - replaced['before'][1]['facility'] == result['before'][0]['facility']
+          - merged['after'] == result['before']
 
     - name: TEST - [replaced] Assert that after dicts are correctly generated
       assert:
         that:
-          - replaced['after'][0]['buffered'] == result['after'][0]['buffered']
-          - replaced['after'][1]['facility'] == result['after'][0]['facility']
+          - replaced['after'] == result['after']
 
     - name: TEST - [replaced] Replaced provided ios logging global configuration idempotent
       register: result
