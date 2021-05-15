@@ -25,10 +25,13 @@ short_description: Manage logging on network devices
 description:
 - This module provides declarative management of logging on Cisco Ios devices.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_logging_global
+  why: Newer and updated modules released with more functionality in Ansible 2.10
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against IOS 15.6
-- |
-  The 'Default System Message Logging Configuration' of the ios device
+- The 'Default System Message Logging Configuration' of the ios device
   like facility Local7 or logging on is not subjected to idempotency causes
 options:
   dest:
