@@ -35,12 +35,12 @@ merged:
     exception: 4099
     facility: local5
     hosts:
-      - hostname: 172.16.1.11
-        xml: true
-      - hostname: 172.16.1.12
       - hostname: 172.16.1.10
         filtered: true
         stream: 10
+      - hostname: 172.16.1.11
+        xml: true
+      - hostname: 172.16.1.12
       - hostname: 172.16.1.13
         transport:
           tcp:
