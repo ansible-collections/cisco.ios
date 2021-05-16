@@ -5,7 +5,7 @@
 cisco.ios.ios_logging_global
 ****************************
 
-**Manages logging attributes of Cisco IOS network devices**
+**Logging resource module**
 
 
 Version added: 2.2.0

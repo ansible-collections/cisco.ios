@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_logging
 author: Trishna Guha (@trishnaguha)
-short_description: Manage logging on network devices
+short_description: (deprecated, removed after 2023-06-01) Manage logging on network devices
 description:
 - This module provides declarative management of logging on Cisco Ios devices.
 version_added: 1.0.0

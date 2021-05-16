@@ -15,7 +15,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_logging_global
 version_added: 2.2.0
-short_description: Manages logging attributes of Cisco IOS network devices
+short_description: Logging resource module
 description: This module manages the logging attributes of Cisco IOS network devices
 author: Sagar Paul (@KB-perByte)
 notes:

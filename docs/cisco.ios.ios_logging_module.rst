@@ -5,7 +5,7 @@
 cisco.ios.ios_logging
 *********************
 
-**Manage logging on network devices**
+**(deprecated, removed after 2023-06-01) Manage logging on network devices**
 
 
 Version added: 1.0.0
