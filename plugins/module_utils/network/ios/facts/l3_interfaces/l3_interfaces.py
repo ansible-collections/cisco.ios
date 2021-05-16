@@ -77,9 +77,13 @@ class L3_InterfacesFacts(object):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
                         cidr_val = netmask_to_cidr(each["netmask"])
-                        each["address"] = each["address"] + "/" + cidr_val
+                        each["address"] = (
+                            each["address"].strip(" ") + "/" + cidr_val
+                        )
                         del each["netmask"]
             temp.append(v)
+        # sorting the dict by interface name
+        temp = sorted(temp, key=lambda k, sk="name": k[sk])
 
         objs = temp
         facts = {}

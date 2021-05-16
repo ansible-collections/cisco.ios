@@ -24,7 +24,10 @@ def _tmplt_l3_interfaces(config_data):
         cmd = "ip address {address}".format(**config_data["ipv4"])
         if config_data["ipv4"].get("secondary"):
             cmd += " secondary"
-        if config_data["ipv4"].get("dhcp_client"):
+        if (
+            config_data["ipv4"].get("dhcp_client")
+            or config_data["ipv4"].get("dhcp_client") == 0
+        ):
             cmd += " client-id GigabitEthernet 0/{dhcp_client}".format(
                 **config_data["ipv4"]
             )
@@ -68,7 +71,8 @@ class L3_InterfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "ipv4": [
                         {
-                            "address": "{{ ipv4.split(' ')[0] if ipv4 is defined }}",
+                            "address": "{% if ipv4 is defined and 'dhcp' not in ipv4.split(' ') %}{{ ipv4.split(' ')[0] }}\
+                                {% elif ipv4_dhcp is defined and 'dhcp' in ipv4_dhcp.split(' ') %}{{ 'dhcp' }}{% endif %}",
                             "netmask": "{{ ipv4.split(' ')[1] if ipv4 is defined }}",
                             "secondary": "{{ True if ipv4 is defined and 'secondary' in ipv4 }}",
                             "dhcp_client": "{{ ipv4_dhcp.split('/')[1].split(' ')[0] if ipv4_dhcp is defined and 'client-id' in ipv4_dhcp }}",
@@ -82,7 +86,7 @@ class L3_InterfacesTemplate(NetworkTemplate):
             "name": "ipv6",
             "getval": re.compile(
                 r"""\s+ipv6\saddress*
-                    \s*((?P<ipv6>(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+))
+                    \s*(?P<ipv6>(([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}\S+))
                     *$""",
                 re.VERBOSE,
             ),

@@ -21,6 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     validate_n_expand_ipv4,
     validate_ipv6,
+    normalize_interface,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
@@ -138,7 +139,7 @@ class L3_Interfaces(ResourceModule):
                         self.compare(
                             self.parsers, want={"ipv4": v}, have=dict()
                         )
-            elif want.get("ipv6"):
+            if want.get("ipv6"):
                 for k, v in iteritems(want["ipv6"]):
                     if have.get("ipv6") and have["ipv6"].get(k):
                         h_val = have["ipv6"].pop(k)
@@ -156,8 +157,8 @@ class L3_Interfaces(ResourceModule):
                         self.compare(
                             self.parsers, want={"ipv6": v}, have=dict()
                         )
-        if self.state == "replaced" or self.state == "overridden":
-            self.delete_l3_attributes(have)
+            if self.state == "replaced" or self.state == "overridden":
+                self.delete_l3_attributes(have)
 
     def delete_l3_attributes(self, have):
         if have.get("ipv4"):
@@ -176,6 +177,7 @@ class L3_Interfaces(ResourceModule):
     def list_to_dict(self, param):
         if param:
             for key, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
@@ -186,5 +188,6 @@ class L3_Interfaces(ResourceModule):
                     temp = {}
                     for each in val["ipv6"]:
                         if each.get("address"):
+                            each["address"] = each["address"].lower()
                             temp.update({each["address"]: each})
                     val["ipv6"] = temp
