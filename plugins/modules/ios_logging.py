@@ -27,7 +27,7 @@ description:
 version_added: 1.0.0
 deprecated:
   alternative: ios_logging_global
-  why: Newer and updated modules released with more functionality in Ansible 2.10
+  why: Newer and updated modules released with more functionality
   removed_at_date: '2023-06-01'
 notes:
 - Tested against IOS 15.6

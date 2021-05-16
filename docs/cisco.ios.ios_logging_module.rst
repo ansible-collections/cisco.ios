@@ -17,7 +17,7 @@ Version added: 1.0.0
 DEPRECATED
 ----------
 :Removed in collection release after 2023-06-01
-:Why: Newer and updated modules released with more functionality in Ansible 2.10
+:Why: Newer and updated modules released with more functionality
 :Alternative: ios_logging_global
 
 
