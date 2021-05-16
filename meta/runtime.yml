@@ -205,7 +205,7 @@ plugin_routing:
     logging:
       redirect: cisco.ios.ios_logging
       deprecation:
-        removal_date: "2022-06-01"
+        removal_date: "2023-06-01"
         warning_text: See the plugin documentation for more details
     logging_global:
       redirect: cisco.ios.ios_logging_global
