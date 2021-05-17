@@ -42,7 +42,7 @@ class Prefix_listsArgs(object):
                     "elements": "dict",
                     "options": {
                         "name": {"type": "str"},
-                        "params": {
+                        "entries": {
                             "type": "list",
                             "elements": "dict",
                             "options": {
@@ -52,7 +52,7 @@ class Prefix_listsArgs(object):
                                 },
                                 "description": {"type": "str"},
                                 "sequence": {"type": "int"},
-                                "address": {"type": "str"},
+                                "prefix": {"type": "str"},
                                 "ge": {"type": "int"},
                                 "le": {"type": "int"},
                             },

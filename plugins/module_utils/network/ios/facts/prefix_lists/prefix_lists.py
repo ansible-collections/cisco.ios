@@ -68,25 +68,6 @@ class Prefix_listsFacts(object):
         if objs:
             for k, v in iteritems(objs):
                 temp_prefix_list = {}
-<<<<<<< HEAD
-                temp_prefix_list['params'] = []
-                if not temp['afi'] or v['afi'] != temp['afi']:
-                    if temp and temp['afi']:
-                        temp['prefix_lists'] = sorted(
-                            temp['prefix_lists'], key=lambda k, sk="name": str(k[sk])
-                        )
-                        final_objs.append(copy(temp))
-                        temp['prefix_lists'] = []
-                    temp['afi'] = v['afi']
-                for each in v['prefix_lists']:
-                    if not temp_prefix_list.get('name'):
-                        temp_prefix_list['name'] = each['name']
-                    temp_prefix_list['params'].append(each['params'])
-                temp['prefix_lists'].append(temp_prefix_list)
-            if temp and temp['afi']:
-                temp['prefix_lists'] = sorted(
-                    temp['prefix_lists'], key=lambda k, sk="name": str(k[sk])
-=======
                 temp_prefix_list["entries"] = []
                 if not temp["afi"] or v["afi"] != temp["afi"]:
                     if temp and temp["afi"]:
@@ -113,7 +94,6 @@ class Prefix_listsFacts(object):
             if temp and temp["afi"]:
                 temp["prefix_lists"] = sorted(
                     temp["prefix_lists"], key=lambda k, sk="name": str(k[sk])
->>>>>>> update tests
                 )
                 # additional check for py3.5
                 if len(final_objs) == 2:
