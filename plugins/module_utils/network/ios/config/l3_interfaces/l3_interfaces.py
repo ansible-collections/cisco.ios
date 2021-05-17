@@ -106,6 +106,20 @@ class L3_Interfaces(ResourceModule):
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == 'overridden' or self.state == 'replaced':
+            temp = []
+            temp_cmd = []
+            for each in self.commands:
+                if 'interface' in each:
+                    if temp_cmd:
+                        temp.extend(sorted(temp_cmd)[::-1])
+                        temp_cmd = []
+                    temp.append(each)
+                if 'interface' not in each:
+                    temp_cmd.append(each)
+            if temp_cmd:
+                temp.extend(sorted(temp_cmd)[::-1])
+            self.commands = temp
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and

@@ -13,6 +13,9 @@
         config:
         state: gathered
 
+    - debug:
+        msg: "{{ gathered['config'] | symmetric_difference(result.gathered) }}"
+
     - name: Assert
       assert:
         that:
