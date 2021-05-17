@@ -10,13 +10,13 @@ merged:
     - name: GigabitEthernet0/2
   commands:
     - interface GigabitEthernet0/2
-    - ip address 198.51.100.1 255.255.255.0 secondary
-    - ip address 198.51.100.2 255.255.255.0
+    - ip address 198.51.100.1/24 secondary
+    - ip address 198.51.100.2/24
     - ipv6 address 2001:db8:0:3::/64
     - interface GigabitEthernet0/1
     - ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
     - interface loopback999
-    - ip address 192.0.2.1 255.255.255.0
+    - ip address 192.0.2.1/24
   after:
     - ipv4:
         - address: dhcp
@@ -27,15 +27,15 @@ merged:
           dhcp_hostname: test.com
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
     - name: loopback888
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
       name: loopback999
 replaced:
   before:
@@ -43,12 +43,12 @@ replaced:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.113.27 255.255.255.0
+        - address: 203.0.113.27/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
           secondary: true
-        - address: 192.0.2.2 255.255.255.0
+        - address: 192.0.2.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
@@ -69,12 +69,12 @@ replaced:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.114.1 255.255.255.0
+        - address: 203.0.114.1/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
         - address: 2001:db8:1:1::/64
       name: GigabitEthernet0/2
@@ -86,12 +86,12 @@ overridden:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.113.27 255.255.255.0
+        - address: 203.0.113.27/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
           secondary: true
-        - address: 192.0.2.2 255.255.255.0
+        - address: 192.0.2.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
@@ -114,9 +114,9 @@ overridden:
       name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
           secondary: true
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
       name: GigabitEthernet0/2
 deleted:
   before:
@@ -124,12 +124,12 @@ deleted:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.113.27 255.255.255.0
+        - address: 203.0.113.27/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
           secondary: true
-        - address: 192.0.2.2 255.255.255.0
+        - address: 192.0.2.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
@@ -156,12 +156,12 @@ gathered:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.113.27 255.255.255.0
+        - address: 203.0.113.27/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
           secondary: true
-        - address: 192.0.2.2 255.255.255.0
+        - address: 192.0.2.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
@@ -175,9 +175,9 @@ parsed:
           dhcp_hostname: test.com
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
         - address: 2001:db8:0:3::/64
       name: GigabitEthernet0/2
