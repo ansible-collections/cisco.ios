@@ -42,7 +42,7 @@ options:
           name:
             description: Name of a prefix-list
             type: str
-          params:
+          entries:
             description: Prefix-lists supported params.
             type: list
             elements: dict
@@ -57,7 +57,7 @@ options:
               description:
                 description:  Prefix-list specific description
                 type: str
-              address:
+              prefix:
                 description:
                   - IPv4 prefix <network>/<length>, e.g., A.B.C.D/nn
                   - IPv6 prefix <network>/<length>, e.g., X:X:X:X::X/<0-128>
