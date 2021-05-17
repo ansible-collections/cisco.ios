@@ -94,8 +94,16 @@ class Prefix_listsFacts(object):
                             temp["prefix_lists"],
                             key=lambda k, sk="name": str(k[sk]),
                         )
-                        final_objs.append(copy(temp))
-                        temp["prefix_lists"] = []
+                        # additional check for py3.5
+                        if len(final_objs) == 2:
+                            for each in final_objs:
+                                if v["afi"] == each["afi"]:
+                                    each["prefix_lists"].extend(
+                                        temp["prefix_lists"]
+                                    )
+                        else:
+                            final_objs.append(copy(temp))
+                            temp["prefix_lists"] = []
                     temp["afi"] = v["afi"]
                 for each in v["prefix_lists"]:
                     if not temp_prefix_list.get("name"):
@@ -107,7 +115,13 @@ class Prefix_listsFacts(object):
                     temp["prefix_lists"], key=lambda k, sk="name": str(k[sk])
 >>>>>>> update tests
                 )
-                final_objs.append(copy(temp))
+                # additional check for py3.5
+                if len(final_objs) == 2:
+                    for each in final_objs:
+                        if v["afi"] == each["afi"]:
+                            each["prefix_lists"].extend(temp["prefix_lists"])
+                else:
+                    final_objs.append(copy(temp))
 
             final_objs = sorted(final_objs, key=lambda k, sk="afi": k[sk])
 
