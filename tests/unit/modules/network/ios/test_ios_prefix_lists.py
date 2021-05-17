@@ -606,16 +606,6 @@ class TestIosPrefixListsModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    def test_ios_prefix_lists_deleted_by_afi(self):
-        set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
-        commands = [
-            "no ip prefix-list test",
-            "no ip prefix-list 10",
-            "no ip prefix-list test_prefix",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
     def test_ios_prefix_lists_delete_without_config(self):
         set_module_args(dict(state="deleted"))
         commands = [
