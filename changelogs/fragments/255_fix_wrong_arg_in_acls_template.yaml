@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix the wrong agrs being passed in acls template function (https://github.com/ansible-collections/cisco.ios/issues/255).

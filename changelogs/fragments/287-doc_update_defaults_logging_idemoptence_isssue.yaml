@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Docs updated for ios_logging on idempotency issues with default values (https://github.com/ansible-collections/cisco.ios/pull/287)

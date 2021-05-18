@@ -1,3 +1,0 @@
----
-bugfixes:
-  - fix ios_bgp_af neighbor next_hop_self param (https://github.com/ansible-collections/cisco.ios/issues/319).

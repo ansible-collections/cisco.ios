@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix IOS l2 interfaces trunk allowed VLAN add option which wasn't getting parsed as expected (https://github.com/ansible-collections/cisco.ios/issues/77).

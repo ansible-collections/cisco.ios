@@ -1,3 +1,0 @@
----
-security_fixes:
-  - Properly mask values of sensitive keys in module result.
