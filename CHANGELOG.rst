@@ -4,6 +4,29 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v2.2.0
+======
+
+Minor Changes
+-------------
+- Add ios_logging_global module. (https://github.com/ansible-collections/cisco.ios/pull/306).
+- Add Prefix list resource module (https://github.com/ansible-collections/cisco.ios/pull/308).
+
+Bugfixes
+--------
+- To fix IOS vlans RM where traceback was thrown if show vlan wasn't supported on the device and also fix replace and overridden state behaviour.
+- Fix logging commands for v12 versions (https://github.com/ansible-collections/cisco.ios/issues/207).
+- To fix ios acls overridden and replaced state of their inconsistent behaviour (https://github.com/ansible-collections/cisco.ios/issues/250).
+- Fix IOS bgp global RM tracback while there's no bestpath/nopeerup_delay configured.
+- To fix ios_bgp_address_family neighbor next_hop_self param (https://github.com/ansible-collections/cisco.ios/issues/319).
+- To fix Spelling glitch.
+
+New Modules
+-----------
+
+- ios_logging_global - This module manages the logging attributes of Cisco IOS network devices.
+- ios_prefix_lists - This module configures and manages the attributes of prefix list on Cisco IOS.
+
 v2.1.0
 ======
 

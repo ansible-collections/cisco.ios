@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/issues/190).

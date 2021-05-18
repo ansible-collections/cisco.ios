@@ -328,7 +328,7 @@ Examples
     #  mtu 2500
     #  no ip address
     #  shutdown
-    #  duplex full
+    #  duplex auto
     #  speed 1000
 
     # Using overridden
@@ -387,7 +387,7 @@ Examples
     #  no ip address
     #  shutdown
     #  duplex full
-    #  speed 100
+    #  speed auto
 
     # Using Deleted
 

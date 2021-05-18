@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix ios_static_routes where interface ip route-cache config was being parsed and resulted traceback

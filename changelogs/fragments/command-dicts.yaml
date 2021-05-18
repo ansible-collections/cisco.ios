@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_command - set command type to "raw" to support complex commands (with prompt and answer, for example)

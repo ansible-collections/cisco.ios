@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix IOS vlans RM where traceback was thrown if show vlan wasn't supported on the device and also fix replace and overridden state behaviour.

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Added support for new ios interface i.e. TwoGigabitEthernet (https://github.com/ansible-collections/cisco.ios/issues/217).

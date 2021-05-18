@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix ios_ospf_interfaces resource module authentication param behaviour (https://github.com/ansible-collections/cisco.ios/issues/209).
