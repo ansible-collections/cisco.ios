@@ -105,14 +105,19 @@ def map_obj_to_commands(updates, module):
     commands = list()
     want, have = updates
     state = module.params["state"]
+    delimiting_char = module.params.get("delimiting_char", "@")
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
-        if want["text"] and (want["text"] != have.get("text")):
+        if have.get("text") and len(have.get("text")) > 1:
+            haved = have.get("text")[:-1]
+        else:
+            haved = ""
+        if want["text"] and (want["text"] != haved):
             banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " @\n"
+            banner_cmd += " {}\n".format(delimiting_char)
             banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n@"
+            banner_cmd += "\n{}".format(delimiting_char)
             commands.append(banner_cmd)
     return commands
 
@@ -124,9 +129,7 @@ def map_config_to_obj(module):
     :param module:
     :return: banner config dict object.
     """
-    out = get_config(
-        module, flags="| begin banner %s" % module.params["banner"]
-    )
+    out = get_config(module, flags="| begin banner %s" % module.params["banner"])
     if out:
         regex = "banner " + module.params["banner"] + " ^C\n"
         if search("banner " + module.params["banner"], out, M):
@@ -147,6 +150,7 @@ def map_params_to_obj(module):
     return {
         "banner": module.params["banner"],
         "text": text,
+        "delimiting_char": module.params["delimiting_char"],
         "state": module.params["state"],
     }
 
@@ -156,18 +160,16 @@ def main():
     """
     argument_spec = dict(
         banner=dict(
-            required=True,
-            choices=["login", "motd", "exec", "incoming", "slip-ppp"],
+            required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"]
         ),
+        delimiting_char=dict(),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
     argument_spec.update(ios_argument_spec)
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
-        argument_spec=argument_spec,
-        required_if=required_if,
-        supports_check_mode=True,
+        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True
     )
     warnings = list()
     result = {"changed": False}
