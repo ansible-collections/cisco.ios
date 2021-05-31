@@ -43,6 +43,11 @@ options:
     - incoming
     - slip-ppp
     type: str
+  delimiting_char:
+    description:
+    - Specify the delimiting character than will be used for configuration.
+    default: @
+    type: str
   text:
     description:
     - The banner text that should be present in the remote device running configuration.  This
@@ -100,12 +105,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from re import search, M
 
+# import debugpy
+
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
+
 
 def map_obj_to_commands(updates, module):
     commands = list()
     want, have = updates
     state = module.params["state"]
-    delimiting_char = module.params.get("delimiting_char", "@")
+    delimiting_char = module.params.get("delimiting_char")
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
@@ -129,7 +139,9 @@ def map_config_to_obj(module):
     :param module:
     :return: banner config dict object.
     """
-    out = get_config(module, flags="| begin banner %s" % module.params["banner"])
+    out = get_config(
+        module, flags="| begin banner %s" % module.params["banner"]
+    )
     if out:
         regex = "banner " + module.params["banner"] + " ^C\n"
         if search("banner " + module.params["banner"], out, M):
@@ -160,16 +172,19 @@ def main():
     """
     argument_spec = dict(
         banner=dict(
-            required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"]
+            required=True,
+            choices=["login", "motd", "exec", "incoming", "slip-ppp"],
         ),
-        delimiting_char=dict(),
+        delimiting_char=dict(default="@"),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
     argument_spec.update(ios_argument_spec)
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
-        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True
+        argument_spec=argument_spec,
+        required_if=required_if,
+        supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False}
