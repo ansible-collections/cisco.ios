@@ -741,10 +741,23 @@ options:
                     description: enable helper strict LSA checking
                     type: bool
           passive_interface:
-            description:
-              - Suppress routing updates on an interface (GigabitEthernet A/B)
-              - Interface name with respective interface number
-            type: str
+            description: Suppress routing updates on an interface
+            type: dict
+            suboptions:
+              default:
+                description: Suppress routing updates on all interfaces
+                type: bool
+              interface:
+                description: Suppress/Un-Suppress routing updates on interface
+                type: dict
+                suboptions:
+                  set_interface:
+                    description: Suppress/Un-Suppress routing updates
+                    type: bool
+                  name:
+                    description: Name of interface (GigabitEthernet A/B)
+                    type: list
+                    elements: str
           prefix_suppression:
             description: Enable prefix suppression
             type: bool
@@ -1071,6 +1084,13 @@ EXAMPLES = """
           area: 5
         default_information:
           originate: true
+        passive_interface:
+          default: true
+          interface:
+            set_interface: False
+            name:
+              - GigabitEthernet0/1
+              - GigabitEthernet0/2
       - process_id: 200
         vrf: blue
         domain_id:
@@ -1116,6 +1136,8 @@ EXAMPLES = """
 #         "area 10 filter-list prefix test_prefix_in in",
 #         "area 5 authentication",
 #         "area 5 capability default-exclusion"
+#         "passive-interface default"
+#         "no passive-interface GigabitEthernet0/1"
 #     ]
 
 # After state:
@@ -1138,6 +1160,9 @@ EXAMPLES = """
 #  area 10 filter-list prefix test_prefix_out out
 #  network 198.51.100.0 0.0.0.255 area 5
 #  default-information originate
+#  passive-interface default
+#  no passive-interface GigabitEthernet0/1
+#  no passive-interface GigabitEthernet0/2
 
 # Using overridden
 

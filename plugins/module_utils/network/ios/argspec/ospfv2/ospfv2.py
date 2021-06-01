@@ -34,9 +34,6 @@ class Ospfv2Args(object):
     """The arg spec for the ios_ospfv2 module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "options": {
@@ -441,7 +438,19 @@ class Ospfv2Args(object):
                             },
                             "type": "dict",
                         },
-                        "passive_interface": {"type": "str"},
+                        "passive_interface": {
+                            "options": {
+                                "default": {"type": "bool"},
+                                "interface": {
+                                    "options": {
+                                        "set_interface": {"type": "bool"},
+                                        "name": {"type": "list"},
+                                    },
+                                    "type": "dict",
+                                },
+                            },
+                            "type": "dict",
+                        },
                         "prefix_suppression": {"type": "bool"},
                         "priority": {"type": "int"},
                         "process_id": {"required": True, "type": "int"},
