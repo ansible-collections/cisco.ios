@@ -85,7 +85,7 @@ class TestIosBannerModule(TestIosModule):
                 dict(
                     banner=banner_type,
                     text="test\nbanner\nstring",
-                    delimiting_char="c",
+                    multiline_delimiter="c",
                 )
             )
             commands = [

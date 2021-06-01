@@ -38,7 +38,7 @@
 - name: Set login delimiter
   register: result
   cisco.ios.ios_banner:
-    delimiting_char: "x"
+    multiline_delimiter: "x"
     banner: login
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present

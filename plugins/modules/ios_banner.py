@@ -43,7 +43,7 @@ options:
     - incoming
     - slip-ppp
     type: str
-  delimiting_char:
+  multiline_delimiter:
     description:
     - Specify the delimiting character than will be used for configuration.
     default: @
@@ -110,7 +110,7 @@ def map_obj_to_commands(updates, module):
     commands = list()
     want, have = updates
     state = module.params["state"]
-    delimiting_char = module.params.get("delimiting_char")
+    multiline_delimiter = module.params.get("multiline_delimiter")
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
@@ -120,9 +120,9 @@ def map_obj_to_commands(updates, module):
             haved = ""
         if want["text"] and (want["text"] != haved):
             banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " {}\n".format(delimiting_char)
+            banner_cmd += " {}\n".format(multiline_delimiter)
             banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n{}".format(delimiting_char)
+            banner_cmd += "\n{}".format(multiline_delimiter)
             commands.append(banner_cmd)
     return commands
 
@@ -157,7 +157,7 @@ def map_params_to_obj(module):
     return {
         "banner": module.params["banner"],
         "text": text,
-        "delimiting_char": module.params["delimiting_char"],
+        "multiline_delimiter": module.params["multiline_delimiter"],
         "state": module.params["state"],
     }
 
@@ -170,7 +170,7 @@ def main():
             required=True,
             choices=["login", "motd", "exec", "incoming", "slip-ppp"],
         ),
-        delimiting_char=dict(default="@"),
+        multiline_delimiter=dict(default="@"),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
