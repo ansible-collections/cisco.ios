@@ -105,11 +105,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 from re import search, M
 
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
 
 def map_obj_to_commands(updates, module):
     commands = list()
