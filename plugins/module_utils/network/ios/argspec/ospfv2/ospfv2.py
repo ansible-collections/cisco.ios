@@ -444,7 +444,10 @@ class Ospfv2Args(object):
                                 "interface": {
                                     "options": {
                                         "set_interface": {"type": "bool"},
-                                        "name": {"type": "list"},
+                                        "name": {
+                                            "type": "list",
+                                            "elements": "str",
+                                        },
                                     },
                                     "type": "dict",
                                 },
