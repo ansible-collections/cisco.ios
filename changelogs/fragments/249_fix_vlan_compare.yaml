@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix the detection of wrong vlan ranges pass to the module comparing string instead of integer (https://github.com/ansible-collections/cisco.ios/pull/249).

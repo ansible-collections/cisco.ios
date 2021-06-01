@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix the issue where ios acls was complaining in absence of protocol option value(https://github.com/ansible-collections/cisco.ios/pull/124).

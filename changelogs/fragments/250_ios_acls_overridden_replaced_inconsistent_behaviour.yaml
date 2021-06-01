@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix ios acls overridden and replaced state of their inconsistent behaviour (https://github.com/ansible-collections/cisco.ios/issues/250).

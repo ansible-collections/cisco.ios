@@ -1,4 +1,0 @@
----
-trivial:
-  - fix doc of ios_acls about direction of wildcard_bits and port_protocol (https://github.com/ansible-collections/cisco.ios/pull/329).
-  - fix doc of ios_interfaces about after states (https://github.com/ansible-collections/cisco.ios/pull/330).

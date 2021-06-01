@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Adding Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/51)
