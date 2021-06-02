@@ -71,8 +71,27 @@ class TestIosBannerModule(TestIosModule):
 
     def test_ios_banner_nochange(self):
         banner_text = load_fixture("ios_banner_show_banner.txt")
+        set_module_args(dict(banner="login", text=banner_text[:-1]))
+        self.execute_module()
+
+    def test_ios_banner_idemp(self):
+        banner_text = ""
         set_module_args(dict(banner="login", text=banner_text))
         self.execute_module()
+
+    def test_ios_banner_create_delimiter(self):
+        for banner_type in ("login", "motd", "exec", "incoming", "slip-ppp"):
+            set_module_args(
+                dict(
+                    banner=banner_type,
+                    text="test\nbanner\nstring",
+                    multiline_delimiter="c",
+                )
+            )
+            commands = [
+                "banner {0} c\ntest\nbanner\nstring\nc".format(banner_type)
+            ]
+            self.execute_module(changed=True, commands=commands)
 
 
 class TestIosBannerIos12Module(TestIosBannerModule):
@@ -84,5 +103,5 @@ class TestIosBannerIos12Module(TestIosBannerModule):
 
     def test_ios_banner_nochange(self):
         banner_text = load_fixture("ios_banner_show_banner.txt")
-        set_module_args(dict(banner="exec", text=banner_text))
+        set_module_args(dict(banner="exec", text=banner_text[:-1]))
         self.execute_module()

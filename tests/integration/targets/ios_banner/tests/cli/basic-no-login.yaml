@@ -4,17 +4,17 @@
     banner: login
     text: "Junk login banner\nover multiple lines\n"
     state: present
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - name: remove login
   register: result
   cisco.ios.ios_banner:
     banner: login
     state: absent
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:
@@ -26,7 +26,7 @@
   cisco.ios.ios_banner:
     banner: login
     state: absent
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - assert:
     that:
