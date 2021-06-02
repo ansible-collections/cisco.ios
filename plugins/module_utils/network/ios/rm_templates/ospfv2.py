@@ -529,16 +529,16 @@ def _tmplt_ospf_queue_depth_update(config_data):
         return command
 
 
-def _tmplt_ospf_passive_interface(config_data):
-    if "passive_interface" in config_data:
-        if config_data["passive_interface"].get("default"):
+def _tmplt_ospf_passive_interfaces(config_data):
+    if "passive_interfaces" in config_data:
+        if config_data["passive_interfaces"].get("default"):
             cmd = "passive-interface default"
-        if config_data["passive_interface"].get("interface"):
-            if config_data["passive_interface"].get("set_interface"):
-                for each in config_data["passive_interface"]["interface"]:
+        if config_data["passive_interfaces"].get("interface"):
+            if config_data["passive_interfaces"].get("set_interface"):
+                for each in config_data["passive_interfaces"]["interface"]:
                     cmd = "passive-interface {0}".format(each)
-            elif not config_data["passive_interface"].get("set_interface"):
-                for each in config_data["passive_interface"]["interface"]:
+            elif not config_data["passive_interfaces"].get("set_interface"):
+                for each in config_data["passive_interfaces"]["interface"]:
                     cmd = "no passive-interface {0}".format(each)
         return cmd
 
@@ -1670,7 +1670,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "passive_interface",
+            "name": "passive_interfaces",
             "getval": re.compile(
                 r"""\s*(?P<no>no)*
                     \s*passive-interface*
@@ -1678,11 +1678,11 @@ class Ospfv2Template(NetworkTemplate):
                     *$""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_passive_interface,
+            "setval": _tmplt_ospf_passive_interfaces,
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "passive_interface": {
+                        "passive_interfaces": {
                             "default": "{{ True if 'default' in interface }}",
                             "interface": {
                                 "set_interface": "{% if no is defined %}{{ False }}{% elif 'default' not in interface %}{{ True }}{% endif %}",
@@ -1693,6 +1693,19 @@ class Ospfv2Template(NetworkTemplate):
                         }
                     }
                 }
+            },
+        },
+        {
+            "name": "passive_interface",
+            "getval": re.compile(
+                r"""\s+passive-interface
+                    \s(?P<interface>\S+\s\S+)
+                    *$""",
+                re.VERBOSE,
+            ),
+            "setval": "passive-interface {{ passive_interface }}",
+            "processes": {
+                "{{ pid }}": {"passive_interface": "{{ interface }}"}
             },
         },
         {

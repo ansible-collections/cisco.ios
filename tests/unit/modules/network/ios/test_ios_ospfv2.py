@@ -105,7 +105,7 @@ class TestIosOspfV2Module(TestIosModule):
                             max_metric=dict(
                                 on_startup=dict(time=100), router_lsa=True
                             ),
-                            passive_interface=dict(
+                            passive_interfaces=dict(
                                 interface=dict(
                                     set_interface=False,
                                     name=["GigabitEthernet0/2"],
@@ -153,11 +153,14 @@ class TestIosOspfV2Module(TestIosModule):
                                 on_startup=dict(time=100), router_lsa=True
                             ),
                             areas=[dict(area_id="10", capability=True)],
-                            passive_interface=dict(
+                            passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=["GigabitEthernet0/1"],
+                                    name=[
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                 ),
                             ),
                             vrf="blue",
@@ -223,11 +226,14 @@ class TestIosOspfV2Module(TestIosModule):
                                 on_startup=dict(time=100), router_lsa=True
                             ),
                             areas=[dict(area_id="10", capability=True)],
-                            passive_interface=dict(
+                            passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=["GigabitEthernet0/1"],
+                                    name=[
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                 ),
                             ),
                             vrf="blue",
@@ -292,11 +298,14 @@ class TestIosOspfV2Module(TestIosModule):
                                 on_startup=dict(time=100), router_lsa=True
                             ),
                             areas=[dict(area_id="10", capability=True)],
-                            passive_interface=dict(
+                            passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=["GigabitEthernet0/1"],
+                                    name=[
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                 ),
                             ),
                             vrf="blue",

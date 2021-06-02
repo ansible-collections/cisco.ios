@@ -138,6 +138,7 @@ class Ospfv2(ResourceModule):
             "network",
             "nsf.cisco",
             "nsf.ietf",
+            "passive_interface",
             "prefix_suppression",
             "priority",
             "queue_depth.hello",
@@ -155,8 +156,8 @@ class Ospfv2(ResourceModule):
             self.addcmd(want or have, "pid", False)
             self.compare(parsers, want, have)
             self._areas_compare(want, have)
-            if want.get("passive_interface"):
-                self._passive_interface_compare(want, have)
+            if want.get("passive_interfaces"):
+                self._passive_interfaces_compare(want, have)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -200,11 +201,11 @@ class Ospfv2(ResourceModule):
             if name == "filter_list":
                 self.addcmd(entry, "area.filter_list", True)
 
-    def _passive_interface_compare(self, want, have):
-        parsers = ["passive_interface"]
+    def _passive_interfaces_compare(self, want, have):
+        parsers = ["passive_interfaces"]
         h_pi = None
-        for k, v in iteritems(want["passive_interface"]):
-            h_pi = have.get("passive_interface", [])
+        for k, v in iteritems(want["passive_interfaces"]):
+            h_pi = have.get("passive_interfaces", [])
             if h_pi and h_pi.get(k) and h_pi.get(k) != v:
                 for each in v["name"]:
                     h_interface_name = h_pi[k].get("name", [])
@@ -215,7 +216,7 @@ class Ospfv2(ResourceModule):
                         }
                         self.compare(
                             parsers=parsers,
-                            want={"passive_interface": temp},
+                            want={"passive_interfaces": temp},
                             have=dict(),
                         )
                     else:
@@ -229,13 +230,13 @@ class Ospfv2(ResourceModule):
                         }
                         self.compare(
                             parsers=parsers,
-                            want={"passive_interface": temp},
+                            want={"passive_interfaces": temp},
                             have=dict(),
                         )
                 elif k == "default":
                     self.compare(
                         parsers=parsers,
-                        want={"passive_interface": {"default": True}},
+                        want={"passive_interfaces": {"default": True}},
                         have=dict(),
                     )
             else:

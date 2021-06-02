@@ -438,7 +438,8 @@ class Ospfv2Args(object):
                             },
                             "type": "dict",
                         },
-                        "passive_interface": {
+                        "passive_interface": {"type": "str"},
+                        "passive_interfaces": {
                             "options": {
                                 "default": {"type": "bool"},
                                 "interface": {

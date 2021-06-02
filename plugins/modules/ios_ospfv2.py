@@ -741,6 +741,11 @@ options:
                     description: enable helper strict LSA checking
                     type: bool
           passive_interface:
+            description:
+              - Suppress routing updates on an interface (GigabitEthernet A/B)
+              - Interface name with respective interface number
+            type: str
+          passive_interfaces:
             description: Suppress routing updates on an interface
             type: dict
             suboptions:
@@ -1084,7 +1089,7 @@ EXAMPLES = """
           area: 5
         default_information:
           originate: true
-        passive_interface:
+        passive_interfaces:
           default: true
           interface:
             set_interface: False
