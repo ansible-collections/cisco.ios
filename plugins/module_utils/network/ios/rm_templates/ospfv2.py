@@ -1704,8 +1704,10 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "passive-interface {{ passive_interface }}",
-            "processes": {
-                "{{ pid }}": {"passive_interface": "{{ interface }}"}
+            "result": {
+                "processes": {
+                    "{{ pid }}": {"passive_interface": "{{ interface }}"}
+                },
             },
         },
         {
