@@ -277,7 +277,7 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure the login banner
+    - name: Configure the login banner
       cisco.ios.ios_banner:
         banner: login
         text: |
@@ -286,7 +286,7 @@ Examples
           string
         state: present
 
-    - name: remove the motd banner
+    - name: Remove the motd banner
       cisco.ios.ios_banner:
         banner: motd
         state: absent
@@ -295,6 +295,13 @@ Examples
       cisco.ios.ios_banner:
         banner: motd
         text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+        state: present
+
+    - name: Configure the login banner using delimiter
+      cisco.ios.ios_banner:
+        banner: login
+        multiline_delimiter: x
+        text: this is my login banner
         state: present
 
 
