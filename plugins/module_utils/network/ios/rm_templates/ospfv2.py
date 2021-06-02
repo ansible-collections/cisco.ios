@@ -1707,7 +1707,7 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {"passive_interface": "{{ interface }}"}
-                },
+                }
             },
         },
         {
