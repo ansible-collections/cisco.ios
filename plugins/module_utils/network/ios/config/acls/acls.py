@@ -119,6 +119,18 @@ class Acls(ResourceModule):
             want.update({"afi": k})
             self._compare(want=want, have=haved.pop(k, {}))
 
+        if self.state in ["replaced", "overridden"] and self.commands:
+            config_cmd = [self.commands[0]]
+            config_cmd.extend([cmd for cmd in self.commands if "no" in cmd])
+            config_cmd.extend(
+                [
+                    cmd
+                    for cmd in self.commands
+                    if "no" not in cmd and "access-list" not in cmd
+                ]
+            )
+            self.commands = config_cmd
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
