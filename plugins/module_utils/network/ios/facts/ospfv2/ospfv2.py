@@ -64,17 +64,17 @@ class Ospfv2Facts(object):
                 )
 
         for process in current.get("processes", []):
-            if "passive_interface" in process and process[
-                "passive_interface"
+            if "passive_interfaces" in process and process[
+                "passive_interfaces"
             ].get("default"):
-                if process["passive_interface"].get("interface"):
+                if process["passive_interfaces"].get("interface"):
                     temp = []
-                    for each in process["passive_interface"]["interface"][
+                    for each in process["passive_interfaces"]["interface"][
                         "name"
                     ]:
                         if each:
                             temp.append(each)
-                    process["passive_interface"]["interface"]["name"] = temp
+                    process["passive_interfaces"]["interface"]["name"] = temp
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
                 process["areas"] = sorted(

@@ -286,12 +286,12 @@ class Ospfv2(ResourceModule):
                         for entry in proc["distribute_list"].get("acls", []):
                             temp.update({entry["name"]: entry})
                         proc["distribute_list"]["acls"] = temp
-                if proc.get("passive_interface") and proc[
-                    "passive_interface"
+                if proc.get("passive_interfaces") and proc[
+                    "passive_interfaces"
                 ].get("interface"):
                     temp = {}
-                    for entry in proc["passive_interface"]["interface"].get(
+                    for entry in proc["passive_interfaces"]["interface"].get(
                         "name", []
                     ):
                         temp.update({entry: entry})
-                    proc["passive_interface"]["interface"]["name"] = temp
+                    proc["passive_interfaces"]["interface"]["name"] = temp
