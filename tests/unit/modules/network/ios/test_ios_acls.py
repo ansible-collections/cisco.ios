@@ -416,9 +416,9 @@ class TestIosAclsModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip access-list extended 110",
-            "no ip access-list standard test_acl",
             "no ipv6 access-list R1_TRAFFIC",
+            "no ip access-list standard test_acl",
+            "no ip access-list extended 110",
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
         ]
