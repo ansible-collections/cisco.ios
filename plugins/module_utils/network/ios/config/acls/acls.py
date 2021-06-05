@@ -143,6 +143,13 @@ class Acls(ResourceModule):
                                     ):
                                         have_ace.pop("protocol")
                                 if have_ace and val != have_ace:
+                                    if self.state == "merged" and have_ace.get(
+                                        "sequence"
+                                    ) == val.get("sequence"):
+                                        self._module.fail_json(
+                                            "Merge state cannot merge on the ACL"
+                                            + " pre-existing ACE sequence, it can only add ACE over a new sequence!"
+                                        )
                                     self.compare(
                                         parsers=self.parsers,
                                         want=dict(),

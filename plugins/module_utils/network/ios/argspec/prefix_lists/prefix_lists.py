@@ -42,6 +42,7 @@ class Prefix_listsArgs(object):
                     "elements": "dict",
                     "options": {
                         "name": {"type": "str"},
+                        "description": {"type": "str"},
                         "entries": {
                             "type": "list",
                             "elements": "dict",
@@ -50,7 +51,6 @@ class Prefix_listsArgs(object):
                                     "type": "str",
                                     "choices": ["deny", "permit"],
                                 },
-                                "description": {"type": "str"},
                                 "sequence": {"type": "int"},
                                 "prefix": {"type": "str"},
                                 "ge": {"type": "int"},

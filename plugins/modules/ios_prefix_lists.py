@@ -42,6 +42,9 @@ options:
           name:
             description: Name of a prefix-list
             type: str
+          description:
+            description:  Prefix-list specific description
+            type: str
           entries:
             description: Prefix-lists supported params.
             type: list
@@ -54,9 +57,6 @@ options:
               sequence:
                 description: sequence number of an entry
                 type: int
-              description:
-                description:  Prefix-list specific description
-                type: str
               prefix:
                 description:
                   - IPv4 prefix <network>/<length>, e.g., A.B.C.D/nn
@@ -80,6 +80,11 @@ options:
   state:
     description:
       - The state the configuration should be left in
+      - The states I(merged) is the default state which merges the want and have config, but
+        for Prefix-List module as the IOS platform doesn't allow update of Prefix-List over an
+        pre-existing Prefix-List, same way Prefix-Lists resource module will error out for
+        respective scenario and only addition of new Prefix-List over new sequence will be
+        allowed with merge state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -242,11 +247,40 @@ EXAMPLES = """
 - name: Merge provided Prefix lists configuration
   cisco.ios.ios_prefix_lists:
     config:
+      - afi: ipv6
+        prefix_lists:
+          - name: test_ipv6
+            description: this is ipv6 merge test
+            entries:
+              - action: deny
+                prefix: 2001:DB8:0:4::/64
+                ge: 80
+                le: 100
+                sequence: 10
+    state: merged
+
+# After state:
+# -------------
+#
+# Play Execution fails, with error:
+# Merge state cannot merge on the pre-existing Prefix-List sequence,
+# it can only add Prefix-List entry over a new sequence!
+
+# Before state:
+# -------------
+#
+# router-ios#sh running-config | section ^ip prefix-list|^ipv6 prefix-list
+# ipv6 prefix-list test_ipv6 description this is ipv6
+# ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
+
+- name: Merge provided Prefix lists configuration
+  cisco.ios.ios_prefix_lists:
+    config:
       - afi: ipv4
         prefix_lists:
           - name: 10
+            description: this is new merge test
             entries:
-              - description: this is new merge test
               - action: deny
                 prefix: 1.0.0.0/8
                 le: 15
@@ -265,15 +299,15 @@ EXAMPLES = """
                 le: 21
                 sequence: 20
           - name: test
+            description: this is merge test
             entries:
-              - description: this is merge test
               - action: deny
                 prefix: 12.0.0.0/8
                 ge: 15
                 sequence: 50
           - name: test_prefix
+            description: this is for prefix-list
             entries:
-              - description: this is for prefix-list
               - action: deny
                 prefix: 35.0.0.0/8
                 ge: 10
@@ -286,13 +320,13 @@ EXAMPLES = """
       - afi: ipv6
         prefix_lists:
           - name: test_ipv6
+            description: this is ipv6 merge test
             entries:
-              - description: this is ipv6 merge test
               - action: deny
                 prefix: 2001:DB8:0:4::/64
                 ge: 80
                 le: 100
-                sequence: 10
+                sequence: 20
     state: merged
 
 #  Commands Fired:
@@ -309,8 +343,7 @@ EXAMPLES = """
 #         "ip prefix-list test_prefix seq 10 deny 35.0.0.0/8 ge 20",
 #         "ip prefix-list test_prefix seq 5 deny 35.0.0.0/8 ge 10 le 15",
 #         "ip prefix-list test_prefix description this is for prefix-list",
-#         "no ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80",
-#         "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100",
+#         "ipv6 prefix-list test_ipv6 seq 20 deny 2001:DB8:0:4::/64 ge 80 le 100",
 #         "ipv6 prefix-list test_ipv6 description this is ipv6 merge test"
 #     ]
 
@@ -356,8 +389,8 @@ EXAMPLES = """
       - afi: ipv4
         prefix_lists:
           - name: 10
+            description: this is override test
             entries:
-              - description: this is override test
               - action: deny
                 prefix: 12.0.0.0/8
                 ge: 15
@@ -368,8 +401,8 @@ EXAMPLES = """
                 le: 21
                 sequence: 20
           - name: test_override
+            description: this is override test
             entries:
-              - description: this is override test
               - action: deny
                 prefix: 35.0.0.0/8
                 ge: 20
@@ -377,8 +410,8 @@ EXAMPLES = """
       - afi: ipv6
         prefix_lists:
           - name: test_ipv6
+            description: this is ipv6 override test
             entries:
-              - description: this is ipv6 override test
               - action: deny
                 prefix: 2001:DB8:0:4::/64
                 ge: 80
@@ -439,8 +472,8 @@ EXAMPLES = """
       - afi: ipv4
         prefix_lists:
           - name: 10
+            description: this is replace test
             entries:
-              - description: this is replace test
               - action: deny
                 prefix: 12.0.0.0/8
                 ge: 15
@@ -451,8 +484,8 @@ EXAMPLES = """
                 le: 21
                 sequence: 20
           - name: test_replace
+            description: this is replace test
             entries:
-              - description: this is replace test
               - action: deny
                 prefix: 35.0.0.0/8
                 ge: 20
@@ -460,8 +493,8 @@ EXAMPLES = """
       - afi: ipv6
         prefix_lists:
           - name: test_ipv6
+            description: this is ipv6 replace test
             entries:
-              - description: this is ipv6 replace test
               - action: deny
                 prefix: 2001:DB8:0:4::/64
                 ge: 80
@@ -531,10 +564,8 @@ EXAMPLES = """
 #             "afi": "ipv4",
 #             "prefix_lists": [
 #                 {
+#                     "description": "this is test description"
 #                     "entries": [
-#                         {
-#                             "description": "this is test description"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "le": 15,
@@ -564,10 +595,8 @@ EXAMPLES = """
 #                     "name": "10"
 #                 },
 #                 {
+#                     "description": "this is test"
 #                     "entries": [
-#                         {
-#                             "description": "this is test"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 15,
@@ -578,10 +607,8 @@ EXAMPLES = """
 #                     "name": "test"
 #                 },
 #                 {
+#                     "description": "this is for prefix-list"
 #                     "entries": [
-#                         {
-#                             "description": "this is for prefix-list"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 10,
@@ -604,10 +631,8 @@ EXAMPLES = """
 #             "afi": "ipv6",
 #             "prefix_lists": [
 #                 {
+#                     "description": "this is ipv6 prefix-list"
 #                     "entries": [
-#                         {
-#                             "description": "this is ipv6 prefix-list"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 80,
@@ -646,8 +671,8 @@ EXAMPLES = """
       - afi: ipv4
         prefix_lists:
           - name: 10
+            description: this is new merge test
             entries:
-              - description: this is new merge test
               - action: deny
                 prefix: 1.0.0.0/8
                 le: 15
@@ -666,15 +691,15 @@ EXAMPLES = """
                 le: 21
                 sequence: 20
           - name: test
+            description: this is merge test
             entries:
-              - description: this is merge test
               - action: deny
                 prefix: 12.0.0.0/8
                 ge: 15
                 sequence: 50
           - name: test_prefix
+            description: this is for prefix-list
             entries:
-              - description: this is for prefix-list
               - action: deny
                 prefix: 35.0.0.0/8
                 ge: 10
@@ -687,8 +712,8 @@ EXAMPLES = """
       - afi: ipv6
         prefix_lists:
           - name: test_ipv6
+            description: this is ipv6 merge test
             entries:
-              - description: this is ipv6 merge test
               - action: deny
                 prefix: 2001:DB8:0:4::/64
                 ge: 80
@@ -745,10 +770,8 @@ EXAMPLES = """
 #             "afi": "ipv4",
 #             "prefix_lists": [
 #                 {
+#                     "description": "this is test description"
 #                     "entries": [
-#                         {
-#                             "description": "this is test description"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "le": 15,
@@ -778,10 +801,8 @@ EXAMPLES = """
 #                     "name": "10"
 #                 },
 #                 {
+#                     "description": "this is test"
 #                     "entries": [
-#                         {
-#                             "description": "this is test"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 15,
@@ -792,10 +813,8 @@ EXAMPLES = """
 #                     "name": "test"
 #                 },
 #                 {
+#                     "description": "this is for prefix-list"
 #                     "entries": [
-#                         {
-#                             "description": "this is for prefix-list"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 10,
@@ -818,10 +837,8 @@ EXAMPLES = """
 #             "afi": "ipv6",
 #             "prefix_lists": [
 #                 {
+#                     "description": "this is ipv6 prefix-list"
 #                     "entries": [
-#                         {
-#                             "description": "this is ipv6 prefix-list"
-#                         },
 #                         {
 #                             "action": "deny",
 #                             "ge": 80,
