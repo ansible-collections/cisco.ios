@@ -38,6 +38,7 @@ class Ospfv2Args(object):
         "config": {
             "options": {
                 "processes": {
+                    "mutually_exclusive": [("passive_interface", "passive_interfaces")],
                     "elements": "dict",
                     "options": {
                         "address_family": {
