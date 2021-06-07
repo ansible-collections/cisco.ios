@@ -119,6 +119,11 @@ class Acls(ResourceModule):
             want.update({"afi": k})
             self._compare(want=want, have=haved.pop(k, {}))
 
+        if self.state in ["replaced", "overridden"] and self.commands:
+            self.commands = self._rearrange_replace_overridden_config_cmd(
+                self.commands
+            )
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
@@ -280,6 +285,35 @@ class Acls(ResourceModule):
         elif afi == "ipv6":
             command = "ipv6 access-list {0}".format(name)
         return command
+
+    def _rearrange_replace_overridden_config_cmd(self, commands):
+        """This function rearranges the config command for replace
+           and overridden state. It'll place all ACL negate cmd first
+           and then will place ACL config cmd with all negated ACE first
+           and then the config ACEs cmds.
+        """
+        temp_acl_config = []
+        acl = 0
+        ace_config = False
+        for cmd in commands:
+            if "no ip access-list" in cmd or "no ipv6 access-list" in cmd:
+                temp_acl_config.insert(0, cmd)
+                ace_config = False
+            elif "access-list" in cmd and "no" not in cmd:
+                temp_acl_config.insert(acl, cmd)
+                ace_config = False
+            elif "no" in cmd and "access-list" not in cmd:
+                if ace_config:
+                    ace = len(temp_acl_config) - 1
+                else:
+                    ace = len(temp_acl_config)
+                temp_acl_config.insert(ace, cmd)
+            elif "no" not in cmd and "access-list" not in cmd:
+                ace_config = True
+                temp_acl_config.insert(acl, cmd)
+                ace = len(temp_acl_config)
+            acl += 1
+        return temp_acl_config
 
     def list_to_dict(self, param):
         if param:

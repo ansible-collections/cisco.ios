@@ -143,7 +143,22 @@ class TestIosAclsModule(TestIosModule):
                                         protocol="tcp",
                                         sequence=100,
                                         source=dict(host="192.0.2.1"),
-                                    )
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            tcp=dict(ack="true")
+                                        ),
+                                        sequence="200",
+                                        source=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        destination=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
                                 ],
                             ),
                         ],
@@ -158,6 +173,7 @@ class TestIosAclsModule(TestIosModule):
             "deny 192.0.2.0 0.0.0.255",
             "ip access-list extended test_acl_merge",
             "100 permit tcp host 192.0.2.1 192.0.2.0 0.0.0.255 eq www",
+            "200 deny tcp object-group test_network_og object-group test_network_og ack dscp ef ttl eq 10",
             "ip access-list extended in_to_out",
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "deny ip any any log-input test_logInput",
@@ -203,6 +219,19 @@ class TestIosAclsModule(TestIosModule):
                                             address="192.0.3.0",
                                             wildcard_bits="0.0.0.255",
                                         ),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            icmp=dict(echo="true")
+                                        ),
+                                        sequence="30",
+                                        source=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        destination=dict(any=True),
                                         dscp="ef",
                                         ttl=dict(eq=10),
                                     ),
@@ -326,6 +355,19 @@ class TestIosAclsModule(TestIosModule):
                                         dscp="ef",
                                         ttl=dict(eq=10),
                                     ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            icmp=dict(echo="true")
+                                        ),
+                                        sequence="30",
+                                        source=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        destination=dict(any=True),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
                                 ],
                             ),
                         ],
@@ -374,9 +416,9 @@ class TestIosAclsModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip access-list extended 110",
-            "no ip access-list standard test_acl",
             "no ipv6 access-list R1_TRAFFIC",
+            "no ip access-list standard test_acl",
+            "no ip access-list extended 110",
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
         ]
@@ -421,6 +463,19 @@ class TestIosAclsModule(TestIosModule):
                                             address="192.0.3.0",
                                             wildcard_bits="0.0.0.255",
                                         ),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            icmp=dict(echo="true")
+                                        ),
+                                        sequence="30",
+                                        source=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        destination=dict(any=True),
                                         dscp="ef",
                                         ttl=dict(eq=10),
                                     ),

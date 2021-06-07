@@ -347,6 +347,9 @@ options:
                   host:
                     description: A single source host
                     type: str
+                  object_group:
+                    description: Source network object group
+                    type: str
                   port_protocol:
                     description:
                     - Specify the source port along with protocol.
@@ -390,6 +393,9 @@ options:
                     type: bool
                   host:
                     description: A single destination host
+                    type: str
+                  object_group:
+                    description: Destination network object group
                     type: str
                   port_protocol:
                     description:
