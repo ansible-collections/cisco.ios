@@ -264,7 +264,7 @@ class Prefix_lists(ResourceModule):
                         temp_prefix_list.update(
                             {
                                 each["name"]: {
-                                    "description": each["description"],
+                                    "description": each.get("description"),
                                     "entries": temp_entries,
                                 }
                             }
