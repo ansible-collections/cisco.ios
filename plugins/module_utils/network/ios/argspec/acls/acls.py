@@ -73,6 +73,7 @@ class AclsArgs(object):
                                         "wildcard_bits": {"type": "str"},
                                         "any": {"type": "bool"},
                                         "host": {"type": "str"},
+                                        "object_group": {"type": "str"},
                                         "port_protocol": {
                                             "type": "dict",
                                             "options": {
@@ -104,6 +105,7 @@ class AclsArgs(object):
                                         "wildcard_bits": {"type": "str"},
                                         "any": {"type": "bool"},
                                         "host": {"type": "str"},
+                                        "object_group": {"type": "str"},
                                         "port_protocol": {
                                             "type": "dict",
                                             "options": {

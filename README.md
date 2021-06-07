@@ -121,7 +121,7 @@ We welcome community contributions to this collection. If you find problems, ple
 
 You can also join us on:
 
-- Freenode IRC - ``#ansible-network`` Freenode channel
+- IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.

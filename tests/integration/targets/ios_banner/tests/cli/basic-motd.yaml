@@ -3,7 +3,7 @@
   cisco.ios.ios_banner:
     banner: motd
     state: absent
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - name: Set motd
   register: result
@@ -11,10 +11,10 @@
     banner: motd
     text: "this is my motd banner\nthat has a multiline\nstring\n"
     state: present
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:
@@ -26,9 +26,9 @@
   register: result
   cisco.ios.ios_banner:
     banner: motd
-    text: "this is my motd banner\nthat has a multiline\nstring\n"
+    text: "this is my motd banner\nthat has a multiline\nstring"
     state: present
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - assert:
     that:
