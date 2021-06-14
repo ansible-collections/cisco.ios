@@ -30,7 +30,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_AddressFamilyTemplate,
 )
-#import q
+
 
 class Bgp_AddressFamily(ResourceModule):
     """
@@ -80,7 +80,7 @@ class Bgp_AddressFamily(ResourceModule):
             haved = {self.have["as_number"]: self.have}
         else:
             haved = dict()
-        #q(wantd, haved)
+
         for each in wantd, haved:
             self.list_to_dict(each)
 
@@ -132,8 +132,6 @@ class Bgp_AddressFamily(ResourceModule):
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, dict()), as_number=k)
-        # q(self.commands)
-        # self.commands = []
 
     def _compare(self, want, have, as_number):
         """Leverages the base class `compare()` method and
@@ -254,9 +252,9 @@ class Bgp_AddressFamily(ResourceModule):
             "neighbor",
             "neighbor.prefix_list",
             "neighbor.route_map",
-            "neighbor.slow_peer"
+            "neighbor.slow_peer",
         ]
-        neighbor_key = ['address', 'ipv6_address', 'tag']
+        neighbor_key = ["address", "ipv6_address", "tag"]
         w = want.get("neighbor", {}) if want else {}
         if have:
             h = have.get("neighbor", {})
@@ -265,50 +263,85 @@ class Bgp_AddressFamily(ResourceModule):
         for key, val in iteritems(w):
             val = self.handle_deprecated(val)
             if h and h.get(key):
-                neighbor_tag = [each for each in neighbor_key if each in val][0]
+                neighbor_tag = [each for each in neighbor_key if each in val][
+                    0
+                ]
                 for k, v in iteritems(val):
                     if h[key].get(k) and k not in neighbor_key:
-                        if k in ['prefix_list', 'route_map']:
+                        if k in ["prefix_list", "route_map"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
-                                    want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v_param}},
-                                    have={"neighbor": {neighbor_tag: val[neighbor_tag], k: h[key][k].pop(k_param, {})}},
+                                    want={
+                                        "neighbor": {
+                                            neighbor_tag: val[neighbor_tag],
+                                            k: v_param,
+                                        }
+                                    },
+                                    have={
+                                        "neighbor": {
+                                            neighbor_tag: val[neighbor_tag],
+                                            k: h[key][k].pop(k_param, {}),
+                                        }
+                                    },
                                 )
                         else:
                             self.compare(
                                 parsers=parsers,
-                                want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v}},
-                                have={"neighbor": {neighbor_tag: val[neighbor_tag], k: h[key].pop(k, {})}},
+                                want={
+                                    "neighbor": {
+                                        neighbor_tag: val[neighbor_tag],
+                                        k: v,
+                                    }
+                                },
+                                have={
+                                    "neighbor": {
+                                        neighbor_tag: val[neighbor_tag],
+                                        k: h[key].pop(k, {}),
+                                    }
+                                },
                             )
                     elif k not in neighbor_key:
-                        if k in ['prefix_list', 'route_map']:
+                        if k in ["prefix_list", "route_map"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
-                                    want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v_param}},
+                                    want={
+                                        "neighbor": {
+                                            neighbor_tag: val[neighbor_tag],
+                                            k: v_param,
+                                        }
+                                    },
                                     have=dict(),
                                 )
                         else:
                             self.compare(
                                 parsers=parsers,
-                                want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v}},
+                                want={
+                                    "neighbor": {
+                                        neighbor_tag: val[neighbor_tag],
+                                        k: v,
+                                    }
+                                },
                                 have=dict(),
                             )
             else:
-                for param in ['prefix_list', 'route_map']:
+                for param in ["prefix_list", "route_map"]:
                     if param in val:
                         for k_param, v_param in iteritems(val[param]):
                             self.compare(
                                 parsers=parsers,
-                                want={"neighbor": {'address': val['address'], param: v_param}},
+                                want={
+                                    "neighbor": {
+                                        "address": val["address"],
+                                        param: v_param,
+                                    }
+                                },
                                 have=dict(),
                             )
                         val.pop(param)
                 self.compare(
-                    parsers=parsers,
-                    want={"neighbor": val},
-                    have=dict(),
+                    parsers=parsers, want={"neighbor": val}, have=dict()
                 )
         if self.state == "replaced" or self.state == "overridden":
             for key, val in iteritems(h):
@@ -434,20 +467,26 @@ class Bgp_AddressFamily(ResourceModule):
                     val["bgp"]["slow_peer"] = temp
                 if "neighbor" in val:
                     for each in val["neighbor"]:
-                        if each.get('prefix_list'):
+                        if each.get("prefix_list"):
                             temp = {}
                             for every in each["prefix_list"]:
-                                temp.update({every['name']: every})
+                                temp.update({every["name"]: every})
                             each["prefix_list"] = temp
-                        if each.get('route_map'):
+                        if each.get("route_map"):
                             temp = {}
                             for every in each["route_map"]:
-                                temp.update({every['name']: every})
+                                temp.update({every["name"]: every})
                             each["route_map"] = temp
-                        if each.get('slow_peer'):
-                            each["slow_peer"] = {list(every)[0]: every[list(every)[0]] for every in each["slow_peer"]}
+                        if each.get("slow_peer"):
+                            each["slow_peer"] = {
+                                list(every)[0]: every[list(every)[0]]
+                                for every in each["slow_peer"]
+                            }
                     val["neighbor"] = {
-                        each.get("address") or each.get("ipv6_address") or each.get("tag"): each for each in val.get("neighbor", [])
+                        each.get("address")
+                        or each.get("ipv6_address")
+                        or each.get("tag"): each
+                        for each in val.get("neighbor", [])
                     }
                 if "network" in val:
                     temp = {}

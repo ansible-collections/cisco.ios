@@ -81,14 +81,16 @@ class Bgp_AddressFamilyFacts(object):
                         temp_dict["safi"] = temp[0]
                 neighbor = v.get("neighbor")
                 if neighbor:
+
                     def _update_neighor_list(neighbor_list, temp):
                         set = False
                         for each in neighbor_list:
-                            if neighbor_identifier == each['address']:
+                            if neighbor_identifier == each["address"]:
                                 each.update(temp)
                                 set = True
                         if not neighbor_list or not set:
                             neighbor_list.append(utils.remove_empties(temp))
+
                     neighbor_list = []
                     temp_param_list = []
                     temp = {}
@@ -100,16 +102,24 @@ class Bgp_AddressFamilyFacts(object):
                             _update_neighor_list(neighbor_list, temp)
                             temp_param_list = []
                             temp = {}
-                        if (each.get('address') or each.get('ipv6_address') or each.get('tag')) != neighbor_identifier:
-                            neighbor_identifier = each.get('address') or each.get('ipv6_address') or each.get('tag')
-                            if 'address' in each:
-                                temp['address'] = neighbor_identifier
-                            elif 'ipv6_address' in each:
-                                temp['ipv6_address'] = neighbor_identifier
+                        if (
+                            each.get("address")
+                            or each.get("ipv6_address")
+                            or each.get("tag")
+                        ) != neighbor_identifier:
+                            neighbor_identifier = (
+                                each.get("address")
+                                or each.get("ipv6_address")
+                                or each.get("tag")
+                            )
+                            if "address" in each:
+                                temp["address"] = neighbor_identifier
+                            elif "ipv6_address" in each:
+                                temp["ipv6_address"] = neighbor_identifier
                             else:
-                                temp['tag'] = neighbor_identifier
+                                temp["tag"] = neighbor_identifier
                         temp.update(each)
-                        for param in ['prefix_list', 'route_map', 'slow_peer']:
+                        for param in ["prefix_list", "route_map", "slow_peer"]:
                             param_val = each.get(param)
                             if param_val:
                                 temp_param_list.append(param_val[0])

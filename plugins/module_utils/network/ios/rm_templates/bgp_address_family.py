@@ -500,10 +500,10 @@ def _tmplt_af_neighbor(config_data):
             commands.append("{0} route-reflector-client".format(cmd))
         if "route_server_client" in config_data["neighbor"]:
             self_cmd = "{0} route-server-client".format(cmd)
-            if "context" in config_data["neighbor"]["route_map"]:
-                self_cmd += " context {context}".format(
-                    **config_data["neighbor"]["route_server_client"]
-                )
+            # if "context" in config_data["neighbor"]["route_map"]:
+            #     self_cmd += " context {context}".format(
+            #         **config_data["neighbor"]["route_server_client"]
+            #     )
             commands.append(self_cmd)
         if "send_community" in config_data["neighbor"]:
             self_cmd = "{0} send-community".format(cmd)
@@ -536,6 +536,7 @@ def _tmplt_af_neighbor(config_data):
             )
         return commands
 
+
 def _tmplt_neighbor_af_prefix_list(config_data):
     if "prefix_list" in config_data["neighbor"]:
         cmd = "neighbor"
@@ -545,7 +546,7 @@ def _tmplt_neighbor_af_prefix_list(config_data):
             cmd += " {tag}".format(**config_data["neighbor"])
         elif "ipv6_adddress" in config_data["neighbor"]:
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        cmd = "{0} prefix_list {name}".format(
+        cmd = "{0} prefix-list {name}".format(
             cmd, **config_data["neighbor"]["prefix_list"]
         )
         if config_data["neighbor"]["prefix_list"].get("in"):
@@ -553,6 +554,7 @@ def _tmplt_neighbor_af_prefix_list(config_data):
         elif config_data["neighbor"]["prefix_list"].get("out"):
             cmd += " out"
         return cmd
+
 
 def _tmplt_neighbor_af_route_map(config_data):
     if "neighbor" in config_data and "route_map" in config_data["neighbor"]:
@@ -565,14 +567,13 @@ def _tmplt_neighbor_af_route_map(config_data):
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         cmd = "{0} route-map".format(cmd)
         if "name" in config_data["neighbor"]["route_map"]:
-            cmd += " {name}".format(
-                **config_data["neighbor"]["route_map"]
-            )
+            cmd += " {name}".format(**config_data["neighbor"]["route_map"])
         if "in" in config_data["neighbor"]["route_map"]:
             cmd += " in"
         elif "out" in config_data["neighbor"]["route_map"]:
             cmd += " out"
         return cmd
+
 
 def _tmplt_neighbor_af_slow_peer(config_data):
     if "neighbor" in config_data and "slow_peer" in config_data["neighbor"]:
@@ -586,10 +587,7 @@ def _tmplt_neighbor_af_slow_peer(config_data):
         cmd = "{0} slow-peer".format(cmd)
         if "detection" in config_data["neighbor"]["slow_peer"]:
             cmd += " detection"
-            if (
-                "disable"
-                in config_data["neighbor"]["slow_peer"]["detection"]
-            ):
+            if "disable" in config_data["neighbor"]["slow_peer"]["detection"]:
                 cmd += " disable"
             elif (
                 "threshold"
@@ -602,9 +600,7 @@ def _tmplt_neighbor_af_slow_peer(config_data):
             cmd += " split-update-group"
             if (
                 "dynamic"
-                in config_data["neighbor"]["slow_peer"][
-                    "split_update_group"
-                ]
+                in config_data["neighbor"]["slow_peer"]["split_update_group"]
             ):
                 cmd += " dynamic"
                 if (
@@ -623,9 +619,7 @@ def _tmplt_neighbor_af_slow_peer(config_data):
                     cmd += " permanent"
             elif (
                 "static"
-                in config_data["neighbor"]["slow_peer"][
-                    "split_update_group"
-                ]
+                in config_data["neighbor"]["slow_peer"]["split_update_group"]
             ):
                 cmd += " static"
         return cmd
@@ -1259,20 +1253,22 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [{
-                            "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                            "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
-                            "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
-                            "prefix_list": [
-                                {
-                                    "name": "{{ prefix_list.split(' ')[1] if prefix_list is defined }}",
-                                    "in": "{{ True if prefix_list is defined and 'in' in prefix_list }}",
-                                    "out": "{{ True if prefix_list is defined and 'out' in prefix_list }}",
-                                }
-                            ],
-                        }],
-                    },
-                },
+                        "neighbor": [
+                            {
+                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
+                                "prefix_list": [
+                                    {
+                                        "name": "{{ prefix_list.split(' ')[1] if prefix_list is defined }}",
+                                        "in": "{{ True if prefix_list is defined and 'in' in prefix_list }}",
+                                        "out": "{{ True if prefix_list is defined and 'out' in prefix_list }}",
+                                    }
+                                ],
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -1288,20 +1284,22 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [{
-                            "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                            "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
-                            "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
-                            "route_map": [
-                                {
-                                    "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
-                                    "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
-                                    "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
-                                }
-                            ],
-                        }],
-                    },
-                },
+                        "neighbor": [
+                            {
+                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
+                                "route_map": [
+                                    {
+                                        "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
+                                        "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
+                                        "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
+                                    }
+                                ],
+                            }
+                        ]
+                    }
+                }
             },
         },
         {

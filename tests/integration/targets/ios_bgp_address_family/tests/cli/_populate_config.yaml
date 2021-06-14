@@ -36,8 +36,8 @@
                     threshold: 150
               remote_as: 10
               route_map:
-                name: test-route
-                out: true
+                - name: test-route
+                  out: true
               route_server_client: true
           network:
             - address: 198.51.110.10
