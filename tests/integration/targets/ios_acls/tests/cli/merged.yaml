@@ -133,7 +133,7 @@
 
     - assert:
         that:
-          - result.commands|length == 11
+          - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
