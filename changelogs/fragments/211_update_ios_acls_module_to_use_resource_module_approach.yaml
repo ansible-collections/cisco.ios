@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Updating ios acls module to use newer CLI RM approach to resolve all of the ACL related bugs(https://github.com/ansible-collections/cisco.ios/pulls/211).

@@ -3,7 +3,7 @@
   cisco.ios.ios_banner:
     banner: login
     state: absent
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - name: Set login
   register: result
@@ -11,10 +11,10 @@
     banner: login
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:
@@ -26,11 +26,29 @@
   register: result
   cisco.ios.ios_banner:
     banner: login
-    text: "this is my login banner\nthat has a multiline\nstring\n"
+    text: "this is my login banner\nthat has a multiline\nstring"
     state: present
-    provider: '{{ cli }}'
+    provider: "{{ cli }}"
 
 - assert:
     that:
       - result.changed == false
       - result.commands | length == 0
+
+- name: Set login delimiter
+  register: result
+  cisco.ios.ios_banner:
+    multiline_delimiter: "x"
+    banner: login
+    text: "this is my login banner\nthat has a multiline\nstring\n"
+    state: present
+    provider: "{{ cli }}"
+
+- debug:
+    msg: "{{ result }}"
+
+- assert:
+    that:
+      - result.changed == True
+      - "'banner login x\nthis is my login banner\nthat has a multiline\nstring\nx'
+        in result.commands"

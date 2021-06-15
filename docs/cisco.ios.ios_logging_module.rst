@@ -5,7 +5,7 @@
 cisco.ios.ios_logging
 *********************
 
-**Manage logging on network devices**
+**(deprecated, removed after 2023-06-01) Manage logging on network devices**
 
 
 Version added: 1.0.0
@@ -13,6 +13,13 @@ Version added: 1.0.0
 .. contents::
    :local:
    :depth: 1
+
+DEPRECATED
+----------
+:Removed in collection release after 2023-06-01
+:Why: Newer and updated modules released with more functionality
+:Alternative: ios_logging_global
+
 
 
 Synopsis
@@ -445,6 +452,7 @@ Notes
 
 .. note::
    - Tested against IOS 15.6
+   - The 'Default System Message Logging Configuration' of the ios device like facility Local7 or logging on is not subjected to idempotency causes
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
@@ -533,6 +541,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in version . *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors

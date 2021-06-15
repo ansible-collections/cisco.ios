@@ -7120,7 +7120,7 @@ Examples
     #   adjacency stagger 200 200
     #  exit-address-family
 
-    - name: Parse the provided configuration with the exisiting running configuration
+    - name: Parse the provided configuration with the existing running configuration
       cisco.ios.ios_ospfv3:
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed

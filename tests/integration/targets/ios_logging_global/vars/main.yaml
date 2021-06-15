@@ -1,0 +1,183 @@
+---
+merged:
+  before: {}
+
+  commands:
+    - logging on
+    - logging policy-firewall rate-limit 10
+    - logging host 172.16.1.13 transport tcp port 514
+    - logging userinfo
+    - logging facility local5
+    - logging message-counter log
+    - logging dmvpn rate-limit 10
+    - logging host 172.16.1.12
+    - logging host 172.16.1.11 xml
+    - logging message-counter syslog
+    - logging buffered xml 5099 notifications
+    - logging console xml critical
+    - logging monitor warnings
+    - logging exception 4099
+    - logging host 172.16.1.10 filtered stream 10
+    - logging cns-events warnings
+    - logging trap errors
+
+  after:
+    buffered:
+      severity: notifications
+      size: 5099
+      xml: true
+    cns_events: warnings
+    console:
+      severity: critical
+      xml: true
+    dmvpn:
+      rate_limit: 10
+    exception: 4099
+    facility: local5
+    hosts:
+      - hostname: 172.16.1.10
+        filtered: true
+        stream: 10
+      - hostname: 172.16.1.11
+        xml: true
+      - hostname: 172.16.1.12
+      - hostname: 172.16.1.13
+        transport:
+          tcp:
+            port: 514
+    message_counter:
+      - log
+    monitor:
+      severity: warnings
+    policy_firewall:
+      rate_limit: 10
+    trap: errors
+    userinfo: true
+
+replaced:
+  commands:
+    - no logging host 172.16.1.11
+    - no logging host 172.16.1.12
+    - no logging host 172.16.1.13
+    - logging host 172.16.1.10 filtered stream 15
+    - logging host 172.16.1.19
+    - logging buffered 6025 alerts
+    - logging facility local6
+
+  after:
+    buffered:
+      severity: alerts
+      size: 6025
+    cns_events: warnings
+    console:
+      severity: critical
+      xml: true
+    dmvpn:
+      rate_limit: 10
+    exception: 4099
+    facility: local6
+    hosts:
+      - hostname: 172.16.1.10
+        filtered: true
+        stream: 15
+      - hostname: 172.16.1.19
+    message_counter:
+      - log
+    monitor:
+      severity: warnings
+    policy_firewall:
+      rate_limit: 10
+    trap: errors
+    userinfo: true
+
+overridden:
+  commands:
+    - no logging message-counter log
+    - no logging host 172.16.1.11
+    - no logging host 172.16.1.10
+    - no logging host 172.16.1.13
+    - no logging exception 4099
+    - no logging userinfo
+    - no logging console xml critical
+    - no logging cns-events warnings
+    - no logging policy-firewall rate-limit 10
+    - no logging dmvpn rate-limit 10
+    - no logging trap errors
+    - logging host 172.16.1.12 xml
+    - logging monitor critical
+    - logging buffered xml 5099 warnings
+    - logging facility local6
+
+  after:
+    buffered:
+      severity: warnings
+      xml: true
+      size: 5099
+    facility: local6
+    hosts:
+      - hostname: 172.16.1.12
+        xml: true
+    monitor:
+      severity: critical
+
+deleted:
+  commands:
+    - no logging message-counter log
+    - no logging host 172.16.1.13
+    - no logging host 172.16.1.11
+    - no logging host 172.16.1.12
+    - no logging host 172.16.1.10
+    - no logging exception 4099
+    - no logging userinfo
+    - no logging buffered xml 5099 notifications
+    - no logging console xml critical
+    - no logging monitor warnings
+    - no logging cns-events warnings
+    - no logging policy-firewall rate-limit 10
+    - no logging dmvpn rate-limit 10
+    - no logging trap errors
+    - no logging facility local5
+  after: {}
+
+parsed:
+  after:
+    buffered:
+      severity: notifications
+      size: 5099
+      xml: true
+
+rendered:
+  commands:
+    - logging discriminator msglog01 severity includes 5
+    - logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
+    - logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
+    - logging host 172.16.1.1
+    - logging host 172.16.1.11 xml
+    - logging host 172.16.1.11 transport tcp port 514
+    - logging host 172.16.1.10 filtered stream 10
+    - logging message-counter log
+    - logging message-counter syslog
+    - logging source-interface GBit1/0
+    - logging source-interface CTunnel2
+    - logging buginf
+    - logging buffered xml 5099 notifications
+    - logging cns-events warnings
+    - logging console xml critical
+    - logging count
+    - logging delimiter tcp
+    - logging dmvpn rate-limit 10
+    - logging esm config
+    - logging exception 4099
+    - logging facility local5
+    - logging history alerts
+    - logging monitor warnings
+    - logging origin-id hostname
+    - logging persistent batch 4444
+    - logging policy-firewall rate-limit 10
+    - logging queue-limit esm 150
+    - logging rate-limit all 2 except alerts
+    - logging reload alerts
+    - logging server-arp
+    - logging trap errors
+    - logging userinfo
+    - no logging on

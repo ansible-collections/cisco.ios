@@ -3198,7 +3198,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify the destination port along with protocol.</div>
+                        <div>Specify the source port along with protocol.</div>
                         <div>Note, Valid with TCP/UDP protocol_options</div>
                 </td>
             </tr>
@@ -3362,7 +3362,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Destination wildcard bits, valid with IPV4 address.</div>
+                        <div>Source wildcard bits, valid with IPV4 address.</div>
                 </td>
             </tr>
 
@@ -4460,7 +4460,7 @@ Examples
 
     # Using Rendered
 
-    - name: Rendered the provided configuration with the exisiting running configuration
+    - name: Rendered the provided configuration with the existing running configuration
       cisco.ios.ios_acls:
         config:
         - afi: ipv4

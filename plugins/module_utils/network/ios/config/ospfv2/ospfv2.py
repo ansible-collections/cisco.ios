@@ -78,30 +78,8 @@ class Ospfv2(ResourceModule):
             haved = {}
 
         # turn all lists of dicts into dicts prior to merge
-        for thing in wantd, haved:
-            for _pid, proc in iteritems(thing):
-                for area in proc.get("areas", []):
-                    ranges = {}
-                    for entry in area.get("ranges", []):
-                        ranges.update({entry["address"]: entry})
-                    if bool(ranges):
-                        area["ranges"] = ranges
-                    filter_list = {}
-                    for entry in area.get("filter_list", []):
-                        filter_list.update({entry["direction"]: entry})
-                    if bool(filter_list):
-                        area["filter_list"] = filter_list
-                temp = {}
-                for entry in proc.get("areas", []):
-                    temp.update({entry["area_id"]: entry})
-                proc["areas"] = temp
-                if proc.get("distribute_list"):
-                    if "acls" in proc.get("distribute_list"):
-                        temp = {}
-                        for entry in proc["distribute_list"].get("acls", []):
-                            temp.update({entry["name"]: entry})
-                        proc["distribute_list"]["acls"] = temp
-
+        for each in wantd, haved:
+            self.list_to_dict(each)
         # if state is merged, merge want onto have
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -178,6 +156,8 @@ class Ospfv2(ResourceModule):
             self.addcmd(want or have, "pid", False)
             self.compare(parsers, want, have)
             self._areas_compare(want, have)
+            if want.get("passive_interfaces"):
+                self._passive_interfaces_compare(want, have)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -220,3 +200,98 @@ class Ospfv2(ResourceModule):
         for name, entry in iteritems(haved):
             if name == "filter_list":
                 self.addcmd(entry, "area.filter_list", True)
+
+    def _passive_interfaces_compare(self, want, have):
+        parsers = ["passive_interfaces"]
+        h_pi = None
+        for k, v in iteritems(want["passive_interfaces"]):
+            h_pi = have.get("passive_interfaces", [])
+            if h_pi and h_pi.get(k) and h_pi.get(k) != v:
+                for each in v["name"]:
+                    h_interface_name = h_pi[k].get("name", [])
+                    if each not in h_interface_name:
+                        temp = {
+                            "interface": {each: each},
+                            "set_interface": v["set_interface"],
+                        }
+                        self.compare(
+                            parsers=parsers,
+                            want={"passive_interfaces": temp},
+                            have=dict(),
+                        )
+                    else:
+                        h_interface_name.pop(each)
+            elif not h_pi:
+                if k == "interface":
+                    for each in v["name"]:
+                        temp = {
+                            "interface": {each: each},
+                            "set_interface": v["set_interface"],
+                        }
+                        self.compare(
+                            parsers=parsers,
+                            want={"passive_interfaces": temp},
+                            have=dict(),
+                        )
+                elif k == "default":
+                    self.compare(
+                        parsers=parsers,
+                        want={"passive_interfaces": {"default": True}},
+                        have=dict(),
+                    )
+            else:
+                h_pi.pop(k)
+        if (self.state == "replaced" or self.state == "overridden") and h_pi:
+            if h_pi.get("default") or h_pi.get("interface"):
+                for k, v in iteritems(h_pi):
+                    if k == "interface":
+                        for each in v["name"]:
+                            temp = {
+                                "interface": {each: each},
+                                "set_interface": not (v["set_interface"]),
+                            }
+                            self.compare(
+                                parsers=parsers,
+                                want={"passive_interface": temp},
+                                have=dict(),
+                            )
+                    elif k == "default":
+                        self.compare(
+                            parsers=parsers,
+                            want=dict(),
+                            have={"passive_interface": {"default": True}},
+                        )
+
+    def list_to_dict(self, param):
+        if param:
+            for _pid, proc in iteritems(param):
+                for area in proc.get("areas", []):
+                    ranges = {}
+                    for entry in area.get("ranges", []):
+                        ranges.update({entry["address"]: entry})
+                    if bool(ranges):
+                        area["ranges"] = ranges
+                    filter_list = {}
+                    for entry in area.get("filter_list", []):
+                        filter_list.update({entry["direction"]: entry})
+                    if bool(filter_list):
+                        area["filter_list"] = filter_list
+                temp = {}
+                for entry in proc.get("areas", []):
+                    temp.update({entry["area_id"]: entry})
+                proc["areas"] = temp
+                if proc.get("distribute_list"):
+                    if "acls" in proc.get("distribute_list"):
+                        temp = {}
+                        for entry in proc["distribute_list"].get("acls", []):
+                            temp.update({entry["name"]: entry})
+                        proc["distribute_list"]["acls"] = temp
+                if proc.get("passive_interfaces") and proc[
+                    "passive_interfaces"
+                ].get("interface"):
+                    temp = {}
+                    for entry in proc["passive_interfaces"]["interface"].get(
+                        "name", []
+                    ):
+                        temp.update({entry: entry})
+                    proc["passive_interfaces"]["interface"]["name"] = temp

@@ -34,9 +34,6 @@ class AclsArgs(object):
     """The arg spec for the ios_acls module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "elements": "dict",
@@ -76,6 +73,7 @@ class AclsArgs(object):
                                         "wildcard_bits": {"type": "str"},
                                         "any": {"type": "bool"},
                                         "host": {"type": "str"},
+                                        "object_group": {"type": "str"},
                                         "port_protocol": {
                                             "type": "dict",
                                             "options": {
@@ -107,6 +105,7 @@ class AclsArgs(object):
                                         "wildcard_bits": {"type": "str"},
                                         "any": {"type": "bool"},
                                         "host": {"type": "str"},
+                                        "object_group": {"type": "str"},
                                         "port_protocol": {
                                             "type": "dict",
                                             "options": {

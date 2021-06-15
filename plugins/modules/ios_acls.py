@@ -339,7 +339,7 @@ options:
                     description: Source network address.
                     type: str
                   wildcard_bits:
-                    description: Destination wildcard bits, valid with IPV4 address.
+                    description: Source wildcard bits, valid with IPV4 address.
                     type: str
                   any:
                     description: Match any source address.
@@ -347,9 +347,12 @@ options:
                   host:
                     description: A single source host
                     type: str
+                  object_group:
+                    description: Source network object group
+                    type: str
                   port_protocol:
                     description:
-                    - Specify the destination port along with protocol.
+                    - Specify the source port along with protocol.
                     - Note, Valid with TCP/UDP protocol_options
                     type: dict
                     suboptions:
@@ -390,6 +393,9 @@ options:
                     type: bool
                   host:
                     description: A single destination host
+                    type: str
+                  object_group:
+                    description: Destination network object group
                     type: str
                   port_protocol:
                     description:
@@ -1271,7 +1277,7 @@ EXAMPLES = """
 
 # Using Rendered
 
-- name: Rendered the provided configuration with the exisiting running configuration
+- name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_acls:
     config:
     - afi: ipv4

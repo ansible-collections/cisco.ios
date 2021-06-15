@@ -45,13 +45,15 @@ def _tmplt_access_list_entries(config_data):
             if config_data[type].get("address"):
                 command += " {address}".format(**config_data[type])
                 if config_data[type].get("wildcard_bits"):
-                    command += " {wildcard_bits}".format(
-                        **config_data["source"]
-                    )
+                    command += " {wildcard_bits}".format(**config_data[type])
             elif config_data[type].get("any"):
                 command += " any".format(**config_data[type])
             elif config_data[type].get("host"):
                 command += " host {host}".format(**config_data[type])
+            elif config_data[type].get("object_group"):
+                command += " object-group {object_group}".format(
+                    **config_data[type]
+                )
             if config_data[type].get("port_protocol"):
                 port_proto_type = list(
                     config_data[type]["port_protocol"].keys()
@@ -167,7 +169,7 @@ class AclsTemplate(NetworkTemplate):
             "setval": _tmplt_access_list_name,
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
                         "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
@@ -207,7 +209,7 @@ class AclsTemplate(NetworkTemplate):
             "compval": "aces",
             "result": {
                 "acls": {
-                    "{{ acl_name }}": {
+                    "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "aces": [
                             {

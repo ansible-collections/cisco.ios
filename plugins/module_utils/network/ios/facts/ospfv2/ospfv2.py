@@ -12,7 +12,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -35,16 +34,6 @@ class Ospfv2Facts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Ospfv2Args.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_ospfv2_data(self, connection):
         return connection.get("sh running-config | section ^router ospf")
@@ -75,6 +64,17 @@ class Ospfv2Facts(object):
                 )
 
         for process in current.get("processes", []):
+            if "passive_interfaces" in process and process[
+                "passive_interfaces"
+            ].get("default"):
+                if process["passive_interfaces"].get("interface"):
+                    temp = []
+                    for each in process["passive_interfaces"]["interface"][
+                        "name"
+                    ]:
+                        if each:
+                            temp.append(each)
+                    process["passive_interfaces"]["interface"]["name"] = temp
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
                 process["areas"] = sorted(

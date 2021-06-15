@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add CDP platform information to ios_facts module output.

@@ -14,7 +14,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -33,16 +32,6 @@ class Bgp_globalFacts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_bgp_global_data(self, connection):
         return connection.get("sh running-config | section ^router bgp")
@@ -63,7 +52,9 @@ class Bgp_globalFacts(object):
             data = self.get_bgp_global_data(connection)
 
         # parse native config using the Bgp_global template
-        bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
+        bgp_global_parser = Bgp_globalTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = bgp_global_parser.parse()
 
         objs = utils.remove_empties(objs)
@@ -89,7 +80,9 @@ class Bgp_globalFacts(object):
             ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
             params = utils.remove_empties(
-                utils.validate_config(self.argument_spec, {"config": objs})
+                bgp_global_parser.validate_config(
+                    self.argument_spec, {"config": objs}, redact=True
+                )
             )
             facts["bgp_global"] = params["config"]
             ansible_facts["ansible_network_resources"].update(facts)

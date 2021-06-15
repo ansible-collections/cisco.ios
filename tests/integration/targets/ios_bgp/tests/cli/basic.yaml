@@ -7,7 +7,6 @@
     operation: delete
 
 - block:
-
     - name: Add fake config with 'bgp' string
       cisco.ios.ios_config:
         match: none
@@ -93,7 +92,6 @@
         config:
           bgp_as: 64496
           neighbors:
-
             - neighbor: 192.0.2.10
               remote_as: 64496
               password: ansible
@@ -136,7 +134,6 @@
         config:
           bgp_as: 64496
           neighbors:
-
             - neighbor: 192.0.2.15
               remote_as: 64496
               description: IBGP_NBR_2
@@ -177,7 +174,6 @@
         config:
           bgp_as: 64496
           networks:
-
             - prefix: 203.0.113.0
               masklen: 27
               route_map: RMAP_1
@@ -208,7 +204,6 @@
         config:
           bgp_as: 64496
           networks:
-
             - prefix: 203.0.113.0
               masklen: 27
               route_map: RMAP_1
@@ -239,11 +234,9 @@
         config:
           bgp_as: 64496
           address_family:
-
             - afi: ipv4
               safi: unicast
               neighbors:
-
                 - neighbor: 203.0.113.10
                   activate: true
                   maximum_prefix: 250
@@ -287,11 +280,9 @@
         config:
           bgp_as: 64496
           address_family:
-
             - afi: ipv4
               safi: multicast
               networks:
-
                 - prefix: 198.51.100.48
                   masklen: 28
                   route_map: RMAP_1
@@ -306,7 +297,6 @@
             - afi: ipv4
               safi: unicast
               networks:
-
                 - prefix: 198.51.100.64
                   masklen: 28
 
@@ -338,11 +328,9 @@
         config:
           bgp_as: 64496
           address_family:
-
             - afi: ipv4
               safi: multicast
               networks:
-
                 - prefix: 198.51.100.80
                   masklen: 28
 
@@ -355,7 +343,6 @@
             - afi: ipv4
               safi: unicast
               networks:
-
                 - prefix: 198.51.100.64
                   masklen: 28
 
@@ -387,11 +374,9 @@
         config:
           bgp_as: 64496
           address_family:
-
             - afi: ipv4
               safi: multicast
               redistribute:
-
                 - protocol: ospf
                   id: 112
                   metric: 64
@@ -421,7 +406,8 @@
       cisco.ios.ios_facts:
         gather_subset: all
 
-    - name: Configure redistribute information under address family mode with operation
+    - name:
+        Configure redistribute information under address family mode with operation
         replace
       register: result
       cisco.ios.ios_bgp: &id010
@@ -429,11 +415,9 @@
         config:
           bgp_as: 64496
           address_family:
-
             - afi: ipv4
               safi: multicast
               redistribute:
-
                 - protocol: ospf
                   id: 112
                   metric: 64
@@ -446,7 +430,8 @@
           - "'no redistribute eigrp 233' in result.commands"
           - "'exit-address-family' in result.commands"
 
-    - name: Configure redistribute information under address family mode with operation
+    - name:
+        Configure redistribute information under address family mode with operation
         replace (idempotent)
       register: result
       when: ansible_net_version != "15.6(2)T"
@@ -457,7 +442,7 @@
           - result.changed == false
       when: ansible_net_version != "15.6(2)T"
 
-    - name: Override all the exisiting BGP config
+    - name: Override all the existing BGP config
       register: result
       cisco.ios.ios_bgp:
         operation: override
@@ -481,7 +466,6 @@
           bgp_as: 64497
           log_neighbor_changes: true
           networks:
-
             - prefix: 198.51.100.0
               masklen: 23
 
@@ -504,7 +488,6 @@
         that:
           - result.changed == false
   always:
-
     - name: Teardown
       register: result
       cisco.ios.ios_bgp: &id012

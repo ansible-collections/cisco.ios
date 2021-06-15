@@ -4,6 +4,67 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v2.2.0
+======
+
+Minor Changes
+-------------
+- Add ios_logging_global module. (https://github.com/ansible-collections/cisco.ios/pull/306).
+- Add Prefix list resource module (https://github.com/ansible-collections/cisco.ios/pull/308).
+
+Bugfixes
+--------
+- To fix IOS vlans RM where traceback was thrown if show vlan wasn't supported on the device and also fix replace and overridden state behaviour.
+- Fix logging commands for v12 versions (https://github.com/ansible-collections/cisco.ios/issues/207).
+- To fix ios acls overridden and replaced state of their inconsistent behaviour (https://github.com/ansible-collections/cisco.ios/issues/250).
+- Fix IOS bgp global RM tracback while there's no bestpath/nopeerup_delay configured.
+- To fix ios_bgp_address_family neighbor next_hop_self param (https://github.com/ansible-collections/cisco.ios/issues/319).
+- To fix Spelling glitch.
+
+New Modules
+-----------
+
+- ios_logging_global - This module manages the logging attributes of Cisco IOS network devices.
+- ios_prefix_lists - This module configures and manages the attributes of prefix list on Cisco IOS.
+
+v2.1.0
+======
+
+Minor Changes
+-------------
+- Add support for ansible_network_resources key allows to fetch the available resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
+- Add ios_route_maps Resource Module (https://github.com/ansible-collections/cisco.ios/pull/297).
+
+Security Fixes
+--------------
+- To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
+
+Bugfixes
+--------
+- To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
+
+New Modules
+-----------
+
+- ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
+
+v2.0.1
+======
+
+Minor Changes
+-------------
+- Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
+
+Bugfixes
+--------
+- Doc update to update users WRT to idempotence issue in ios_logging when logging is ON (https://github.com/ansible-collections/cisco.ios/pull/287).
+- To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
+- To add support for TwoGigabitEthernet interface option from IOS standpoint (https://github.com/ansible-collections/cisco.ios/pull/262).
+- To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
+- PR to fix ios_l2_interfaces issue where it wasn't working with range of vlans as expected (https://github.com/ansible-collections/cisco.ios/pull/264).
+- To fix ios_acls Nonetype error when aces are empty (https://github.com/ansible-collections/cisco.ios/pull/260).
+- To fix ios_vlans traceback error when empty line with just Ports information is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
+
 v2.0.0
 ======
 

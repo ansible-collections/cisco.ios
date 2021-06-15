@@ -1,3 +1,0 @@
----
-bugfixes:
-  - fix ios acls parsed state module doc (https://github.com/ansible-collections/cisco.ios/issues/242).
