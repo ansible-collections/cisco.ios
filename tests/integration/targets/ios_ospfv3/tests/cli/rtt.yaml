@@ -53,8 +53,6 @@
                 router_lsa: true
                 on_startup:
                   time: 100
-              auto_cost:
-                reference_bandwidth: 4
         state: merged
 
     - name: Gather OSPFV3 facts

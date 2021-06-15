@@ -4,7 +4,6 @@ merged:
 
   commands:
     - router ospf 200 vrf blue
-    - auto-cost reference-bandwidth 4
     - distribute-list 10 out
     - distribute-list 123 in
     - domain-id 192.0.3.1
@@ -57,8 +56,6 @@ merged:
       - areas:
           - area_id: "10"
             capability: true
-        auto_cost:
-          reference_bandwidth: 4
         distribute_list:
           acls:
             - direction: out
@@ -78,13 +75,11 @@ merged:
 replaced:
   commands:
     - router ospf 100 vrf ospf_vrf
-    - auto-cost reference-bandwidth 5
     - domain-id 192.0.5.1
     - area 5 authentication message-digest
     - area 5 nssa translate type7 suppress-fa
     - area 5 nssa default-information-originate metric 10
     - router ospf 200 vrf blue
-    - no auto-cost reference-bandwidth 4
     - no distribute-list 10 out
     - no distribute-list 123 in
     - domain-id 192.0.4.1
@@ -134,8 +129,6 @@ replaced:
               default_information_originate:
                 metric: 10
               translate: suppress-fa
-        auto_cost:
-          reference_bandwidth: 5
         domain_id:
           ip_address:
             address: 192.0.5.1
@@ -163,13 +156,11 @@ overridden:
   commands:
     - no router ospf 1
     - router ospf 100 vrf ospf_vrf
-    - auto-cost reference-bandwidth 5
     - domain-id 192.0.5.1
     - area 5 authentication message-digest
     - area 5 nssa translate type7 suppress-fa
     - area 5 nssa default-information-originate metric 10
     - router ospf 200 vrf blue
-    - no auto-cost reference-bandwidth 4
     - no distribute-list 10 out
     - no distribute-list 123 in
     - domain-id 192.0.4.1
@@ -190,8 +181,6 @@ overridden:
               default_information_originate:
                 metric: 10
               translate: suppress-fa
-        auto_cost:
-          reference_bandwidth: 5
         domain_id:
           ip_address:
             address: 192.0.5.1
@@ -226,7 +215,6 @@ rtt:
   commands:
     - no router ospf 100 vrf ospf_vrf
     - router ospf 200 vrf blue
-    - auto-cost reference-bandwidth 4
     - distribute-list 10 out
     - distribute-list 123 in
     - domain-id 192.0.3.1

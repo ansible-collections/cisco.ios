@@ -51,8 +51,6 @@
                 router_lsa: true
                 on_startup:
                   time: 100
-              auto_cost:
-                reference_bandwidth: 4
               areas:
                 - area_id: "10"
                   capability: true

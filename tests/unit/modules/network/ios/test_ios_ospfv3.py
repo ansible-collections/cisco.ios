@@ -116,6 +116,7 @@ class TestIosOspfV3Module(TestIosModule):
                     processes=[
                         dict(
                             process_id="1",
+                            auto_cost=dict(reference_bandwidth="5"),
                             max_metric=dict(
                                 router_lsa=True, on_startup=dict(time=110)
                             ),
@@ -187,6 +188,7 @@ class TestIosOspfV3Module(TestIosModule):
             "router ospfv3 1",
             "max-metric router-lsa on-startup 100",
             "no area 10 nssa default-information-originate metric 10",
+            "no auto-cost reference-bandwidth 5",
             "address-family ipv4 unicast vrf blue",
             "adjacency stagger 100 100",
             "exit-address-family",
@@ -202,6 +204,7 @@ class TestIosOspfV3Module(TestIosModule):
                     processes=[
                         dict(
                             process_id="1",
+                            auto_cost=dict(reference_bandwidth="5"),
                             max_metric=dict(
                                 router_lsa=True, on_startup=dict(time=110)
                             ),
@@ -308,6 +311,7 @@ class TestIosOspfV3Module(TestIosModule):
                     processes=[
                         dict(
                             process_id="1",
+                            auto_cost=dict(reference_bandwidth="5"),
                             max_metric=dict(
                                 router_lsa=True, on_startup=dict(time=110)
                             ),

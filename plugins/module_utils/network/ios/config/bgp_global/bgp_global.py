@@ -121,6 +121,16 @@ class Bgp_global(ResourceModule):
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
+        for each in range(len(self.commands)):
+            if (
+                "no neighbor" in self.commands[each]
+                and "remote" in self.commands[each]
+            ):
+                if "no neighbor" in self.commands[each + 1]:
+                    temp = self.commands[each]
+                    self.commands[each] = self.commands[each + 1]
+                    self.commands[each + 1] = temp
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing

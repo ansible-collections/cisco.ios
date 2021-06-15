@@ -36,8 +36,6 @@
               domain_id:
                 ip_address:
                   address: 192.0.5.1
-              auto_cost:
-                reference_bandwidth: 5
               areas:
                 - area_id: "5"
                   authentication:
