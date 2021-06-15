@@ -113,7 +113,6 @@ overridden:
     - neighbor 198.51.110.1 version 4
     - neighbor 198.51.110.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 activate
@@ -193,7 +192,6 @@ replaced:
     - neighbor 198.51.110.1 route-server-client
     - neighbor 198.51.110.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 activate

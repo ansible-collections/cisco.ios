@@ -105,10 +105,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.100.1",
                                     remote_as=65100,
                                     route_map=[
-                                        dict(
-                                            name="test-route-out",
-                                            out="true"
-                                        ),
+                                        dict(name="test-route-out", out="true")
                                     ],
                                     prefix_list=[
                                         dict(
@@ -362,7 +359,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
             "no neighbor 198.51.100.1 route-server-client",
             "no neighbor 198.51.100.1 slow-peer detection threshold 150",
-            "no neighbor 198.51.100.1 route-map",
             "neighbor 198.51.110.1 activate",
             "neighbor 198.51.110.1 remote-as 200",
             "neighbor 198.51.110.1 route-map test-replaced-route out",

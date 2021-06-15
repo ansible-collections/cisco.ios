@@ -557,7 +557,11 @@ def _tmplt_neighbor_af_prefix_list(config_data):
 
 
 def _tmplt_neighbor_af_route_map(config_data):
-    if "neighbor" in config_data and "route_map" in config_data["neighbor"]:
+    if (
+        "neighbor" in config_data
+        and "route_map" in config_data["neighbor"]
+        and len(config_data["neighbor"]) == 2
+    ):
         cmd = "neighbor"
         if "address" in config_data["neighbor"]:
             cmd += " {address}".format(**config_data["neighbor"])

@@ -268,6 +268,22 @@ class Bgp_AddressFamily(ResourceModule):
                 ]
                 for k, v in iteritems(val):
                     if h[key].get(k) and k not in neighbor_key:
+                        if k not in ["prefix_list", "route_map"]:
+                            self.compare(
+                                parsers=parsers,
+                                want={
+                                    "neighbor": {
+                                        neighbor_tag: val[neighbor_tag],
+                                        k: v,
+                                    }
+                                },
+                                have={
+                                    "neighbor": {
+                                        neighbor_tag: val[neighbor_tag],
+                                        k: h[key].pop(k, {}),
+                                    }
+                                },
+                            )
                         if k in ["prefix_list", "route_map"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
@@ -285,7 +301,8 @@ class Bgp_AddressFamily(ResourceModule):
                                         }
                                     },
                                 )
-                        else:
+                    elif k not in neighbor_key:
+                        if k not in ["prefix_list", "route_map"]:
                             self.compare(
                                 parsers=parsers,
                                 want={
@@ -294,15 +311,9 @@ class Bgp_AddressFamily(ResourceModule):
                                         k: v,
                                     }
                                 },
-                                have={
-                                    "neighbor": {
-                                        neighbor_tag: val[neighbor_tag],
-                                        k: h[key].pop(k, {}),
-                                    }
-                                },
+                                have=dict(),
                             )
-                    elif k not in neighbor_key:
-                        if k in ["prefix_list", "route_map"]:
+                        elif k in ["prefix_list", "route_map"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
@@ -314,18 +325,10 @@ class Bgp_AddressFamily(ResourceModule):
                                     },
                                     have=dict(),
                                 )
-                        else:
-                            self.compare(
-                                parsers=parsers,
-                                want={
-                                    "neighbor": {
-                                        neighbor_tag: val[neighbor_tag],
-                                        k: v,
-                                    }
-                                },
-                                have=dict(),
-                            )
             else:
+                self.compare(
+                    parsers=parsers, want={"neighbor": val}, have=dict()
+                )
                 for param in ["prefix_list", "route_map"]:
                     if param in val:
                         for k_param, v_param in iteritems(val[param]):
@@ -340,9 +343,6 @@ class Bgp_AddressFamily(ResourceModule):
                                 have=dict(),
                             )
                         val.pop(param)
-                self.compare(
-                    parsers=parsers, want={"neighbor": val}, have=dict()
-                )
         if self.state == "replaced" or self.state == "overridden":
             for key, val in iteritems(h):
                 self.compare(

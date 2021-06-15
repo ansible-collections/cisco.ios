@@ -84,12 +84,13 @@ class Bgp_AddressFamilyFacts(object):
 
                     def _update_neighor_list(neighbor_list, temp):
                         set = False
+                        temp = utils.remove_empties(temp)
                         for each in neighbor_list:
                             if neighbor_identifier == each["address"]:
                                 each.update(temp)
                                 set = True
                         if not neighbor_list or not set:
-                            neighbor_list.append(utils.remove_empties(temp))
+                            neighbor_list.append(temp)
 
                     neighbor_list = []
                     temp_param_list = []
