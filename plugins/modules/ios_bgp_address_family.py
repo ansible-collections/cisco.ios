@@ -628,6 +628,22 @@ options:
                 description: Member of the peer-group
                 type: bool
               prefix_list:
+                description:
+                  - Filter updates to/from this neighbor
+                  - This option is DEPRECATED and is replaced with route_maps which
+                    accepts list of dict as input
+                type: dict
+                suboptions:
+                  name:
+                    description: Name of a prefix list
+                    type: str
+                  in:
+                    description: Filter incoming updates
+                    type: bool
+                  out:
+                    description: Filter outgoing updates
+                    type: bool
+              prefix_lists:
                 description: Filter updates to/from this neighbor
                 type: list
                 elements: dict
@@ -660,6 +676,22 @@ options:
                     description: Replace all private AS numbers with local AS
                     type: bool
               route_map:
+                description:
+                  - Apply route map to neighbor
+                  - This option is DEPRECATED and is replaced with route_maps which
+                    accepts list of dict as input
+                type: dict
+                suboptions:
+                  name:
+                    description: Name of route map
+                    type: str
+                  in:
+                    description: Apply map to incoming routes
+                    type: bool
+                  out:
+                    description: Apply map to outbound routes
+                    type: bool
+              route_maps:
                 description: Apply route map to neighbor
                 type: list
                 elements: dict
@@ -1223,8 +1255,10 @@ EXAMPLES = """
                     threshold: 150
               remote_as: 10
               route_map:
-                name: test-route
-                out: true
+                - name: test-route-out
+                  out: true
+                - name: test-route-in
+                  in: true
               route_server_client: true
           network:
             - address: 198.51.110.10
@@ -1408,9 +1442,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 10
-              route_map:
-                name: test-replaced-route
-                out: true
+              route_maps:
+                - name: test-replaced-route
+                  out: true
               route_server_client: true
           network:
             - address: 198.51.110.10
@@ -1573,9 +1607,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 100
-              route_map:
-                name: test-override-route
-                out: true
+              route_maps:
+                - name: test-override-route
+                  out: true
               route_server_client: true
               version: 4
           network:
@@ -1861,10 +1895,10 @@ EXAMPLES = """
 #                           }
 #                       },
 #                       "remote_as": 10,
-#                       "route_map": {
+#                       "route_maps": [{
 #                           "name": "test-route",
 #                           "out": true
-#                       },
+#                       }],
 #                       "route_server_client": true,
 #                       "slow_peer": [
 #                           {
@@ -1976,9 +2010,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 10
-              route_map:
-                name: test-route
-                out: true
+              route_maps:
+                - name: test-route
+                  out: true
               route_server_client: true
           network:
             - address: 198.51.110.10

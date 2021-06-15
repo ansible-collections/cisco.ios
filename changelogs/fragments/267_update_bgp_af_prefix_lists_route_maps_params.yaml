@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - To add updated prefix lists and route maps params to Bgp AF RM (https://github.com/ansible-collections/cisco.ios/issues/267).

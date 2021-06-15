@@ -250,8 +250,8 @@ class Bgp_AddressFamily(ResourceModule):
     def _compare_neighbor(self, want, have):
         parsers = [
             "neighbor",
-            "neighbor.prefix_list",
-            "neighbor.route_map",
+            "neighbor.prefix_lists",
+            "neighbor.route_maps",
             "neighbor.slow_peer",
         ]
         neighbor_key = ["address", "ipv6_address", "tag"]
@@ -268,7 +268,7 @@ class Bgp_AddressFamily(ResourceModule):
                 ]
                 for k, v in iteritems(val):
                     if h[key].get(k) and k not in neighbor_key:
-                        if k not in ["prefix_list", "route_map"]:
+                        if k not in ["prefix_lists", "route_maps"]:
                             self.compare(
                                 parsers=parsers,
                                 want={
@@ -284,7 +284,7 @@ class Bgp_AddressFamily(ResourceModule):
                                     }
                                 },
                             )
-                        if k in ["prefix_list", "route_map"]:
+                        if k in ["prefix_lists", "route_maps"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
@@ -302,7 +302,7 @@ class Bgp_AddressFamily(ResourceModule):
                                     },
                                 )
                     elif k not in neighbor_key:
-                        if k not in ["prefix_list", "route_map"]:
+                        if k not in ["prefix_lists", "route_maps"]:
                             self.compare(
                                 parsers=parsers,
                                 want={
@@ -313,7 +313,7 @@ class Bgp_AddressFamily(ResourceModule):
                                 },
                                 have=dict(),
                             )
-                        elif k in ["prefix_list", "route_map"]:
+                        elif k in ["prefix_lists", "route_maps"]:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
@@ -329,7 +329,7 @@ class Bgp_AddressFamily(ResourceModule):
                 self.compare(
                     parsers=parsers, want={"neighbor": val}, have=dict()
                 )
-                for param in ["prefix_list", "route_map"]:
+                for param in ["prefix_lists", "route_maps"]:
                     if param in val:
                         for k_param, v_param in iteritems(val[param]):
                             self.compare(
@@ -467,16 +467,16 @@ class Bgp_AddressFamily(ResourceModule):
                     val["bgp"]["slow_peer"] = temp
                 if "neighbor" in val:
                     for each in val["neighbor"]:
-                        if each.get("prefix_list"):
+                        if each.get("prefix_lists"):
                             temp = {}
-                            for every in each["prefix_list"]:
+                            for every in each["prefix_lists"]:
                                 temp.update({every["name"]: every})
-                            each["prefix_list"] = temp
-                        if each.get("route_map"):
+                            each["prefix_lists"] = temp
+                        if each.get("route_maps"):
                             temp = {}
-                            for every in each["route_map"]:
+                            for every in each["route_maps"]:
                                 temp.update({every["name"]: every})
-                            each["route_map"] = temp
+                            each["route_maps"] = temp
                         if each.get("slow_peer"):
                             each["slow_peer"] = {
                                 list(every)[0]: every[list(every)[0]]

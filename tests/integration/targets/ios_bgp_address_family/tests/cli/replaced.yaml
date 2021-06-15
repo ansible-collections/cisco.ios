@@ -44,7 +44,7 @@
                     - detection:
                         threshold: 150
                   remote_as: 10
-                  route_map:
+                  route_maps:
                     - name: test-replaced-route
                       out: true
                   route_server_client: true

@@ -120,7 +120,11 @@ class Bgp_AddressFamilyFacts(object):
                             else:
                                 temp["tag"] = neighbor_identifier
                         temp.update(each)
-                        for param in ["prefix_list", "route_map", "slow_peer"]:
+                        for param in [
+                            "prefix_lists",
+                            "route_maps",
+                            "slow_peer",
+                        ]:
                             param_val = each.get(param)
                             if param_val:
                                 temp_param_list.append(param_val[0])

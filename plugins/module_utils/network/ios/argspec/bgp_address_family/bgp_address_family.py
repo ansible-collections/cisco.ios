@@ -385,9 +385,17 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
-                                "prefix_list": {
+                                "prefix_lists": {
                                     "type": "list",
                                     "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
+                                    },
+                                },
+                                "prefix_list": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
@@ -403,9 +411,17 @@ class Bgp_AddressFamilyArgs(object):
                                         "replace_as": {"type": "bool"},
                                     },
                                 },
-                                "route_map": {
+                                "route_maps": {
                                     "type": "list",
                                     "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
+                                    },
+                                },
+                                "route_map": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
