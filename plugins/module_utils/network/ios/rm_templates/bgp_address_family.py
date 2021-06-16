@@ -473,7 +473,7 @@ def _tmplt_af_neighbor(config_data):
             "prefix_list" in config_data["neighbor"]
             and "prefix_lists" not in config_data["neighbor"]
         ):
-            self_cmd = "{0} prefix_list {name}".format(
+            self_cmd = "{0} prefix-list {name}".format(
                 cmd, **config_data["neighbor"]["prefix_list"]
             )
             if config_data["neighbor"]["prefix_list"].get("in"):
