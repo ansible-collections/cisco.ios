@@ -674,6 +674,8 @@ options:
         description: Specify a neighbor router
         type: list
         elements: dict
+        aliases:
+          - neighbors
         suboptions:
           address:
             description: Neighbor address (A.B.C.D)

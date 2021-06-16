@@ -163,6 +163,7 @@ class Bgp_AddressFamilyArgs(object):
                         "neighbor": {
                             "type": "list",
                             "elements": "dict",
+                            "aliases": ["neighbors"],
                             "options": {
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
