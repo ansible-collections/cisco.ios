@@ -469,9 +469,11 @@ def _tmplt_af_neighbor(config_data):
             if config_data["neighbor"]["next_hop_unchanged"].get("allpaths"):
                 self_cmd += " allpaths"
             commands.append(self_cmd)
-<<<<<<< HEAD
-        if "prefix_list" in config_data["neighbor"]:
-            self_cmd = "{0} prefix-list {name}".format(
+        if (
+            "prefix_list" in config_data["neighbor"]
+            and "prefix_lists" not in config_data["neighbor"]
+        ):
+            self_cmd = "{0} prefix_list {name}".format(
                 cmd, **config_data["neighbor"]["prefix_list"]
             )
             if config_data["neighbor"]["prefix_list"].get("in"):
@@ -479,8 +481,6 @@ def _tmplt_af_neighbor(config_data):
             elif config_data["neighbor"]["prefix_list"].get("out"):
                 self_cmd += " out"
             commands.append(self_cmd)
-=======
->>>>>>> fix ios 267
         if "peer_group" in config_data["neighbor"]:
             commands.append(
                 "{0} peer-group {peer_group}".format(
@@ -495,6 +495,20 @@ def _tmplt_af_neighbor(config_data):
                 "replace_as"
             ):
                 self_cmd += " replace_as"
+            commands.append(self_cmd)
+        if (
+            "route_map" in config_data["neighbor"]
+            and "route_maps" not in config_data["neighbor"]
+        ):
+            self_cmd = "{0} route-map".format(cmd)
+            if "name" in config_data["neighbor"]["route_map"]:
+                self_cmd += " {name}".format(
+                    **config_data["neighbor"]["route_map"]
+                )
+            if "in" in config_data["neighbor"]["route_map"]:
+                self_cmd += " in"
+            elif "out" in config_data["neighbor"]["route_map"]:
+                self_cmd += " out"
             commands.append(self_cmd)
         if "route_reflector_client" in config_data["neighbor"]:
             commands.append("{0} route-reflector-client".format(cmd))

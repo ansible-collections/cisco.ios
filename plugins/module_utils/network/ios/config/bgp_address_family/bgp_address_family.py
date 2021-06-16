@@ -255,11 +255,27 @@ class Bgp_AddressFamily(ResourceModule):
             "neighbor.slow_peer",
         ]
         neighbor_key = ["address", "ipv6_address", "tag"]
+        deprecated = False
         w = want.get("neighbor", {}) if want else {}
         if have:
             h = have.get("neighbor", {})
         else:
             h = {}
+
+        def _handle_neighbor_deprecated(w_key, h_key, want, have):
+            # function to handle idempotency, when deprecated params are present
+            # in want and their equivalent supported param are present inside have
+            keys = w_key + "s"
+            if have[h_key].get(keys):
+                temp_have = have[h_key][keys]
+                if want["name"] in temp_have:
+                    param_name = want["name"]
+                    if have[h_key][keys][param_name] == want:
+                        k = keys
+                        v = {param_name: want}
+                        deprecated = True
+                    return k, v, deprecated
+
         for key, val in iteritems(w):
             val = self.handle_deprecated(val)
             if h and h.get(key):
@@ -267,6 +283,10 @@ class Bgp_AddressFamily(ResourceModule):
                     0
                 ]
                 for k, v in iteritems(val):
+                    if k == "route_map" or k == "prefix_list":
+                        k, v, deprecated = _handle_neighbor_deprecated(
+                            k, key, v, h
+                        )
                     if h[key].get(k) and k not in neighbor_key:
                         if k not in ["prefix_lists", "route_maps"]:
                             self.compare(
@@ -313,7 +333,10 @@ class Bgp_AddressFamily(ResourceModule):
                                 },
                                 have=dict(),
                             )
-                        elif k in ["prefix_lists", "route_maps"]:
+                        elif (
+                            k in ["prefix_lists", "route_maps"]
+                            and not deprecated
+                        ):
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
