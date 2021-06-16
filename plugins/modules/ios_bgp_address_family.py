@@ -630,7 +630,7 @@ options:
               prefix_list:
                 description:
                   - Filter updates to/from this neighbor
-                  - This option is DEPRECATED and is replaced with route_maps which
+                  - This option is DEPRECATED and is replaced with prefix_lists which
                     accepts list of dict as input
                 type: dict
                 suboptions:
