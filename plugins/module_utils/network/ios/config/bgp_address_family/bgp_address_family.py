@@ -120,14 +120,15 @@ class Bgp_AddressFamily(ResourceModule):
         if self.state == "overridden":
             for key, have in iteritems(haved):
                 if wantd.get(key):
-                    for k, v in iteritems(have.get("address_family")):
-                        w = wantd[key].get("address_family")
-                        if k not in w:
-                            self._compare(
-                                want=dict(),
-                                have={"address_family": {k: v}},
-                                as_number=key,
-                            )
+                    if have.get("address_family"):
+                        for k, v in iteritems(have.get("address_family")):
+                            w = wantd[key].get("address_family")
+                            if k not in w:
+                                self._compare(
+                                    want=dict(),
+                                    have={"address_family": {k: v}},
+                                    as_number=key,
+                                )
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, dict()), as_number=k)
