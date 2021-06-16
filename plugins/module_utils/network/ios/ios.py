@@ -43,20 +43,14 @@ ios_provider_spec = {
     "host": dict(),
     "port": dict(type="int"),
     "username": dict(fallback=(env_fallback, ["ANSIBLE_NET_USERNAME"])),
-    "password": dict(
-        fallback=(env_fallback, ["ANSIBLE_NET_PASSWORD"]), no_log=True
-    ),
+    "password": dict(fallback=(env_fallback, ["ANSIBLE_NET_PASSWORD"]), no_log=True),
     "ssh_keyfile": dict(
         fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"]), type="path"
     ),
     "authorize": dict(
-        default=False,
-        fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]),
-        type="bool",
+        default=False, fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]), type="bool"
     ),
-    "auth_pass": dict(
-        fallback=(env_fallback, ["ANSIBLE_NET_AUTH_PASS"]), no_log=True
-    ),
+    "auth_pass": dict(fallback=(env_fallback, ["ANSIBLE_NET_AUTH_PASS"]), no_log=True),
     "timeout": dict(type="int"),
 }
 ios_argument_spec = {
@@ -127,9 +121,7 @@ def get_config(module, flags=None):
                 # Some ios devices don't understand `| section foo`
                 out = get_config(module, flags=flags[:-1])
             else:
-                module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
-                )
+                module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         cfg = to_text(out, errors="surrogate_then_replace").strip()
         _DEVICE_CONFIGS[flag_str] = cfg
         return cfg
@@ -190,6 +182,8 @@ def normalize_interface(name):
         if_type = "TwentyFiveGigE"
     elif name.lower().startswith("hu"):
         if_type = "HundredGigE"
+    elif name.lower().startswith("se"):
+        if_type = "Serial"
     else:
         if_type = None
 
