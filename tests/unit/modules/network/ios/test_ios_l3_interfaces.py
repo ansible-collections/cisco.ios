@@ -9,9 +9,7 @@ __metaclass__ = type
 
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_l3_interfaces
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -82,12 +80,9 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv4=[dict(address="192.168.0.1/24", secondary=True)],
                     ),
                     dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
+                        name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]
                     ),
-                    dict(
-                        name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]
-                    ),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]),
                 ],
                 state="merged",
             )
@@ -113,12 +108,9 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv4=[dict(address="192.168.0.1/24", secondary=True)],
                     ),
                     dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
+                        name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]
                     ),
-                    dict(
-                        name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]
-                    ),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]),
                 ],
                 state="overridden",
             )
@@ -177,12 +169,9 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
                     ),
                     dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
+                        name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]
                     ),
-                    dict(
-                        name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]
-                    ),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                     dict(
                         name="GigabitEthernet0/3.100",
                         ipv4=[dict(address="192.168.0.4/24")],
@@ -231,8 +220,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
                     ),
                     dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
+                        name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]
                     ),
                     dict(
                         name="GigabitEthernet0/3",
@@ -248,9 +236,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/4",
                         ipv4=[dict(address="192.168.0.4/24", secondary=True)],
                     ),
-                    dict(
-                        name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]
-                    ),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                 ],
                 state="rendered",
             )
@@ -270,18 +256,3 @@ class TestIosL3InterfacesModule(TestIosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
-
-    # def test_ios_l3_interfaces_gathered(self):
-    #     set_module_args(dict(state="gathered"))
-    #     gathered = [
-    #         dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.3/24")]),
-    #         dict(name="Serial1/0"),
-    #         dict(name="GigabitEthernet0/1"),
-    #         dict(name="GigabitEthernet0/2"),
-    #         dict(
-    #             name="GigabitEthernet0/3", ipv6=[dict(address="FD5D:12C9:2201:1::1/64")]
-    #         ),
-    #     ]
-    #     result = self.execute_module(changed=False)
-    #     print(result["gathered"])
-    #     self.assertEqual(sorted(result["gathered"]), sorted(gathered))
