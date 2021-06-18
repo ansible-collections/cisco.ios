@@ -179,7 +179,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
+                                    next_hop_self=True,
+                                    nexthop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
@@ -344,7 +345,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
+                                    nexthop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
@@ -449,7 +450,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
+                                    nexthop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],

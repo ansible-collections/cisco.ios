@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - Deprecated next_hop_self type bool and introduced nexthop_self as dict under bgp_address_family

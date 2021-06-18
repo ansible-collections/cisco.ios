@@ -547,11 +547,17 @@ options:
                     description: Only give warning message when limit is exceeded
                     type: bool
               next_hop_self:
+                description: 
+                  - Disable the next hop calculation for this neighbor
+                  - This option is DEPRECATED and is replaced with nexthop_self which
+                    accepts dict as input
+                type: bool
+              nexthop_self:
                 description: Disable the next hop calculation for this neighbor
                 type: dict
                 suboptions:
                   set:
-                    description: Disable the next hop self
+                    description: set the next hop self
                     type: bool
                   all:
                     description: Enable next-hop-self for both eBGP and iBGP received paths
