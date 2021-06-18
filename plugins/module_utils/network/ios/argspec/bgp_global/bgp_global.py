@@ -349,7 +349,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 "neighbor": {
                     "type": "list",
                     "elements": "dict",
-                    "aliases": ["neighbors"],
                     "options": {
                         "address": {"type": "str"},
                         "tag": {"type": "str"},
