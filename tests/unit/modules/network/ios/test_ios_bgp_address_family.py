@@ -135,6 +135,47 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_bgp_address_family_merged_2(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            vrf="blue",
+                            neighbor=[
+                                dict(
+                                    address="192.0.3.1",
+                                    remote_as=65001,
+                                    soft_reconfiguration=True,
+                                    prefix_list=dict(
+                                        name="PREFIX-OUT", out=True
+                                    ),
+                                )
+                            ],
+                            network=[
+                                dict(address="192.0.3.1", mask="255.255.255.0")
+                            ],
+                        )
+                    ],
+                ),
+                state="merged",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4 unicast vrf blue",
+            "neighbor 192.0.3.1 remote-as 65001",
+            "neighbor 192.0.3.1 prefix_list PREFIX-OUT out",
+            "neighbor 192.0.3.1 soft-reconfiguration inbound",
+            "network 192.0.3.1 mask 255.255.255.0",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
     def test_ios_bgp_address_family_merged_idempotent(self):
         set_module_args(
             dict(

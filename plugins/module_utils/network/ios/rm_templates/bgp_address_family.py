@@ -524,7 +524,7 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " standard"
             commands.append(self_cmd)
         if "soft_reconfiguration" in config_data["neighbor"]:
-            commands.append("{0} soft-reconfiguration".format(cmd))
+            commands.append("{0} soft-reconfiguration inbound".format(cmd))
         if "soo" in config_data["neighbor"]:
             commands.append(
                 "{0} soo {soo}".format(cmd, **config_data["neighbor"])
