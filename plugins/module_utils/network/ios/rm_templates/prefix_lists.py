@@ -71,6 +71,9 @@ class Prefix_listsTemplate(NetworkTemplate):
                             "name": "{{ name if name is defined }}",
                             "description": "{{ description.split('description ')[1] if description is defined }}",
                             "entries": {
+                                # Description at this level is deprecated, should be removed when we plan to remove the
+                                # Description from entries level
+                                "description": "{{ description.split('description ')[1] if description is defined }}",
                                 "sequence": "{{ sequence.split(' ')[1] if sequence is defined }}",
                                 "action": "{{ action if action is defined }}",
                                 "prefix": "{{ prefix if prefix is defined }}",

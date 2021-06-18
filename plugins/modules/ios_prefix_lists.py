@@ -57,6 +57,15 @@ options:
               sequence:
                 description: sequence number of an entry
                 type: int
+              description:
+                description:
+                  - Prefix-list specific description
+                  - Description param at entries level is DEPRECATED
+                  - New Description is introduced at prefix_lists level, please
+                    use the Description param defined at prefix_lists level instead of
+                    Description param at entries level, as at this level description option
+                    will get removed in a future release.
+                type: str
               prefix:
                 description:
                   - IPv4 prefix <network>/<length>, e.g., A.B.C.D/nn

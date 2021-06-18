@@ -157,37 +157,56 @@ class Prefix_lists(ResourceModule):
                                 },
                             )
                         if have_prefix_param and val != have_prefix_param:
-                            if self.state == "merged" and have_prefix_param.get(
-                                "sequence"
-                            ) == val.get(
-                                "sequence"
-                            ):
-                                self._module.fail_json(
-                                    "Merge state cannot merge on the pre-existing Prefix-List sequence,"
-                                    + " it can only add Prefix-List entry over a new sequence!"
+                            if key == "description":
+                                # Code snippet should be removed when Description param is removed from
+                                # entries level as this supports deprecated level of Description
+                                self.compare(
+                                    parsers=self.parsers,
+                                    want={
+                                        "afi": want["afi"],
+                                        "name": k,
+                                        "prefix_list": {key: val},
+                                    },
+                                    have={
+                                        "afi": have["afi"],
+                                        "name": k,
+                                        "prefix_list": {
+                                            key: have_prefix_param
+                                        },
+                                    },
                                 )
-                            self.compare(
-                                parsers=self.parsers,
-                                want=dict(),
-                                have={
-                                    "afi": have["afi"],
-                                    "name": k,
-                                    "prefix_list": have_prefix_param,
-                                },
-                            )
-                            self.compare(
-                                parsers=self.parsers,
-                                want={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": val,
-                                },
-                                have={
-                                    "afi": have["afi"],
-                                    "name": k,
-                                    "prefix_list": have_prefix_param,
-                                },
-                            )
+                            else:
+                                if self.state == "merged" and have_prefix_param.get(
+                                    "sequence"
+                                ) == val.get(
+                                    "sequence"
+                                ):
+                                    self._module.fail_json(
+                                        "Merge state cannot merge on the pre-existing Prefix-List sequence,"
+                                        + " it can only add Prefix-List entry over a new sequence!"
+                                    )
+                                self.compare(
+                                    parsers=self.parsers,
+                                    want=dict(),
+                                    have={
+                                        "afi": have["afi"],
+                                        "name": k,
+                                        "prefix_list": have_prefix_param,
+                                    },
+                                )
+                                self.compare(
+                                    parsers=self.parsers,
+                                    want={
+                                        "afi": want["afi"],
+                                        "name": k,
+                                        "prefix_list": val,
+                                    },
+                                    have={
+                                        "afi": have["afi"],
+                                        "name": k,
+                                        "prefix_list": have_prefix_param,
+                                    },
+                                )
                         elif val and val != have_prefix_param:
                             self.compare(
                                 parsers=self.parsers,
@@ -202,6 +221,8 @@ class Prefix_lists(ResourceModule):
                         self.state == "replaced" or self.state == "overridden"
                     ):
                         if have_prefix.get("description"):
+                            # Code snippet should be removed when Description param is removed from
+                            # entries level as this supports deprecated level of Description
                             self.compare(
                                 parsers=self.parsers,
                                 want=dict(),

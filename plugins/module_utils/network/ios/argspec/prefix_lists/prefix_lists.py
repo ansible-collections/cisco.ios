@@ -52,6 +52,7 @@ class Prefix_listsArgs(object):
                                     "choices": ["deny", "permit"],
                                 },
                                 "sequence": {"type": "int"},
+                                "description": {"type": "str"},
                                 "prefix": {"type": "str"},
                                 "ge": {"type": "int"},
                                 "le": {"type": "int"},
