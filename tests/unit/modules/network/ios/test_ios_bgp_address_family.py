@@ -329,7 +329,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     dict(detection=dict(threshold=150))
                                 ],
                             ),
-                            neighbors=[
+                            neighbor=[
                                 dict(
                                     activate=True,
                                     address="198.51.100.1",
@@ -434,7 +434,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     dict(detection=dict(threshold=150))
                                 ],
                             ),
-                            neighbors=[
+                            neighbor=[
                                 dict(
                                     activate=True,
                                     address="198.51.100.1",
