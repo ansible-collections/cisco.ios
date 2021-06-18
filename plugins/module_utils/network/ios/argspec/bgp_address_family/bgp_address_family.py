@@ -31,6 +31,9 @@ class Bgp_AddressFamilyArgs(object):
     """The arg spec for the cisco.ios_bgp_address_family module
     """
 
+    def __init__(self, **kwargs):
+        pass
+
     argument_spec = {
         "config": {
             "type": "dict",
@@ -337,13 +340,7 @@ class Bgp_AddressFamilyArgs(object):
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {
-                                    "type": "dict",
-                                    "options": {
-                                        "set": {"type": "bool"},
-                                        "all": {"type": "bool"},
-                                    },
-                                },
+                                "next_hop_self": {"type": "bool"},
                                 "next_hop_unchanged": {"type": "bool"},
                                 "password": {"type": "str", "no_log": True},
                                 "path_attribute": {

@@ -179,7 +179,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
@@ -286,7 +285,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "no bgp dampening 1 1 1 1",
             "bgp slow-peer detection threshold 200",
             "no neighbor 198.51.100.1 activate",
-            "no neighbor 198.51.100.1 next-hop-self all",
             "no neighbor 198.51.100.1 remote-as 10",
             "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
             "no neighbor 198.51.100.1 route-server-client",
@@ -344,7 +342,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
@@ -449,7 +446,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             )
                                         )
                                     ),
-                                    next_hop_self=dict(all=True),
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
