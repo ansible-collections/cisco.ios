@@ -168,7 +168,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "router bgp 65000",
             "address-family ipv4 unicast vrf blue",
             "neighbor 192.0.3.1 remote-as 65001",
-            "neighbor 192.0.3.1 prefix_list PREFIX-OUT out",
+            "neighbor 192.0.3.1 prefix-list PREFIX-OUT out",
             "neighbor 192.0.3.1 soft-reconfiguration inbound",
             "network 192.0.3.1 mask 255.255.255.0",
         ]
