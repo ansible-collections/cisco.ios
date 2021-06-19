@@ -1156,7 +1156,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "bgp.config",
             "getval": re.compile(
-                r"""\s*bgp*
+                r"""\sbgp*
                     \s*(?P<advertise_best_external>advertise-best-external)*
                     \s*(?P<aggregate_timer>aggregate-timer\s\d+)*
                     \s*(?P<always_compare_med>always-compare-med)*
@@ -1316,7 +1316,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "bgp.dampening",
             "getval": re.compile(
-                r"""\s*bgp*
+                r"""\sbgp*
                     \s*dampening*
                     \s*(?P<penalty_half_time>\d+)*
                     \s*(?P<reuse_route_val>\d+)*
@@ -1342,7 +1342,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "bgp.graceful_shutdown",
             "getval": re.compile(
-                r"""\s*bgp*
+                r"""\sbgp*
                     \s*graceful-shutdown\sall*
                     \s*(?P<neighbors>neighbors\s(\d+|activate))*
                     \s*(?P<vrfs>vrfs\s(\d+|activate))*
@@ -1372,7 +1372,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "bgp.nopeerup_delay",
             "getval": re.compile(
-                r"""\s*bgp*
+                r"""\sbgp*
                     \s*nopeerup-delay*
                     \s*(?P<cold_boot>cold-boot\s\d+)*
                     \s*(?P<nsf_switchover>nsf-switchover\s\d+)*
@@ -1398,7 +1398,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "neighbor",
             "getval": re.compile(
-                r"""\s*neighbor*
+                r"""\sneighbor*
                     \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
                     \s*(?P<activate>activate)*
                     \s*(?P<additional_paths>additional-paths\s(disable|receive|send))*
