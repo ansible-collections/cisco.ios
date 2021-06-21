@@ -2893,7 +2893,7 @@ Parameters
                 </td>
                 <td>
                         <div>Disable the next hop calculation for this neighbor</div>
-                        <div>This option is DEPRECATED and is replaced with nexthop_self which accepts dict as input this attribute will be removed after 2022-06-01.</div>
+                        <div>This option is DEPRECATED and is replaced with nexthop_self which accepts dict as input this attribute will be removed after 2023-06-01.</div>
                 </td>
             </tr>
             <tr>
