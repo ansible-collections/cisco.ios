@@ -190,6 +190,8 @@ def normalize_interface(name):
         if_type = "nve"
     elif name.lower().startswith("hu"):
         if_type = "HundredGigE"
+    elif name.lower().startswith("se"):
+        if_type = "Serial"
     else:
         if_type = None
 
