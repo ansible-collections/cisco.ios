@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - fixes https://github.com/ansible-collections/cisco.ios/issues/350 l3_interfaces module and Unit Test cases added
+  - fixes Serial interface configuration for l3_interfaces module and Unit Test cases added.

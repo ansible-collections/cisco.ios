@@ -156,6 +156,7 @@ Parameters
                 <td>
                         <div>IPv6 address to be set for the Layer-3 interface mentioned in <em>name</em> option.</div>
                         <div>The address format is &lt;ipv6 address&gt;/&lt;mask&gt;, the mask is number in range 0-128 eg. fd5d:12c9:2201:1::1/64</div>
+                        <div>Can be &#x27;dhcp&#x27; for DHCP or &#x27;autoconfig&#x27; for SLAAC.</div>
                 </td>
             </tr>
                                 <tr>
