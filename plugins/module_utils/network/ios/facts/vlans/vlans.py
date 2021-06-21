@@ -43,14 +43,7 @@ class VlansFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_vlans_data(self, connection):
-        try:
-            return connection.get("show vlan")
-        except Exception as ex:
-            self._module.fail_json(
-                "'show vlan' doesn't seems to be supported on the IOS box and failed with error: {0}. Please make sure it's an L2 switch".format(
-                    ex
-                )
-            )
+        return connection.get("show vlan")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for vlans
@@ -65,73 +58,81 @@ class VlansFacts(object):
         mtu_objs = []
         remote_objs = []
         final_objs = []
+        _warnings = []
         if not data:
-            data = self.get_vlans_data(connection)
-        # operate on a collection of resource x
-        config = data.split("\n")
-        # Get individual vlan configs separately
-        vlan_info = ""
-        temp = ""
-        vlan_name = True
-        for conf in config:
-            if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
-                temp = temp + conf
-                if len(list(filter(None, temp.split(" ")))) <= 2:
-                    continue
-            if "VLAN Name" in conf:
-                vlan_info = "Name"
-            elif "VLAN Type" in conf:
-                vlan_info = "Type"
-                vlan_name = False
-            elif "Remote SPAN" in conf:
-                vlan_info = "Remote"
-                vlan_name = False
-            elif "VLAN AREHops" in conf or "STEHops" in conf:
-                vlan_info = "Hops"
-                vlan_name = False
-            elif "Primary Secondary" in conf:
-                vlan_info = "Primary"
-                vlan_name = False
-            if temp:
-                conf = temp
-                temp = ""
-            if (
-                conf
-                and " " not in filter(None, conf.split("-"))
-                and not conf.split(" ")[0] == ""
-            ):
-                obj = self.render_config(self.generated_spec, conf, vlan_info)
-                if "mtu" in obj:
-                    mtu_objs.append(obj)
-                elif "remote_span" in obj:
-                    remote_objs = obj
-                elif obj:
-                    objs.append(obj)
-        # Appending MTU value to the retrieved dictionary
-        for o, m in zip(objs, mtu_objs):
-            o.update(m)
-            final_objs.append(o)
+            try:
+                data = self.get_vlans_data(connection)
+            except Exception as ex:
+                _warnings.append(
+                    "'show vlan' is not supported, error: {0}. Please make sure it's an L2 switch".format(
+                        ex
+                    )
+                )
 
-        # Appending Remote Span value to related VLAN:
-        if remote_objs:
-            if remote_objs.get("remote_span"):
-                for each in remote_objs.get("remote_span"):
-                    for every in final_objs:
-                        if each == every.get("vlan_id"):
-                            every.update({"remote_span": True})
-                            break
+        if data:
+            # operate on a collection of resource x
+            config = data.split("\n")
+            # Get individual vlan configs separately
+            vlan_info = ""
+            temp = ""
+            vlan_name = True
+            for conf in config:
+                if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
+                    temp = temp + conf
+                    if len(list(filter(None, temp.split(" ")))) <= 2:
+                        continue
+                if "VLAN Name" in conf:
+                    vlan_info = "Name"
+                elif "VLAN Type" in conf:
+                    vlan_info = "Type"
+                    vlan_name = False
+                elif "Remote SPAN" in conf:
+                    vlan_info = "Remote"
+                    vlan_name = False
+                elif "VLAN AREHops" in conf or "STEHops" in conf:
+                    vlan_info = "Hops"
+                    vlan_name = False
+                elif "Primary Secondary" in conf:
+                    vlan_info = "Primary"
+                    vlan_name = False
+                if temp:
+                    conf = temp
+                    temp = ""
+                if (
+                    conf
+                    and " " not in filter(None, conf.split("-"))
+                    and not conf.split(" ")[0] == ""
+                ):
+                    obj = self.render_config(self.generated_spec, conf, vlan_info)
+                    if "mtu" in obj:
+                        mtu_objs.append(obj)
+                    elif "remote_span" in obj:
+                        remote_objs = obj
+                    elif obj:
+                        objs.append(obj)
+            # Appending MTU value to the retrieved dictionary
+            for o, m in zip(objs, mtu_objs):
+                o.update(m)
+                final_objs.append(o)
+
+            # Appending Remote Span value to related VLAN:
+            if remote_objs:
+                if remote_objs.get("remote_span"):
+                    for each in remote_objs.get("remote_span"):
+                        for every in final_objs:
+                            if each == every.get("vlan_id"):
+                                every.update({"remote_span": True})
+                                break
         facts = {}
         if final_objs:
             facts["vlans"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
 
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
-
-        return ansible_facts
+        ansible_facts["warnings"] = _warnings  # I dnt wanna do this
+        return ansible_facts, _warnings  # looking at this
 
     def render_config(self, spec, conf, vlan_info):
         """

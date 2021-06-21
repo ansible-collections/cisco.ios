@@ -52,8 +52,10 @@ class Vlans(ConfigBase):
             self.gather_subset, self.gather_network_resources, data=data
         )
         interfaces_facts = facts["ansible_network_resources"].get("vlans")
+        warn = facts.get("warnings") if facts.get("warnings") else []
+        del facts["warnings"]
         if not interfaces_facts:
-            return []
+            return [], warn
         return interfaces_facts
 
     def execute_module(self):
@@ -67,7 +69,7 @@ class Vlans(ConfigBase):
         warnings = list()
 
         if self.state in self.ACTION_STATES:
-            existing_vlans_facts = self.get_vlans_facts()
+            existing_vlans_facts, warnings = self.get_vlans_facts()
         else:
             existing_vlans_facts = []
 
@@ -127,10 +129,7 @@ class Vlans(ConfigBase):
                   to the desired configuration
         """
 
-        if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     self.state
@@ -286,9 +285,7 @@ class Vlans(ConfigBase):
                 )
             shutdown = dict(have_diff).get("shutdown")
             if shutdown and not dict(want_diff).get("shutdown"):
-                self.remove_command_from_config_list(
-                    vlan, "shutdown", commands
-                )
+                self.remove_command_from_config_list(vlan, "shutdown", commands)
             mtu = dict(have_diff).get("mtu")
             if mtu and not dict(want_diff).get("mtu"):
                 self.remove_command_from_config_list(
@@ -296,9 +293,7 @@ class Vlans(ConfigBase):
                 )
             remote_span = dict(have_diff).get("remote_span")
             if remote_span and not dict(want_diff).get("remote_span"):
-                self.remove_command_from_config_list(
-                    vlan, "remote-span", commands
-                )
+                self.remove_command_from_config_list(vlan, "remote-span", commands)
 
         # Get the diff b/w want n have
         want_dict = dict_to_set(want)
@@ -307,9 +302,7 @@ class Vlans(ConfigBase):
         have_diff = have_dict - want_dict
 
         if diff:
-            if have_diff and (
-                self.state == "replaced" or self.state == "overridden"
-            ):
+            if have_diff and (self.state == "replaced" or self.state == "overridden"):
                 negate_have_config(diff, have_diff, vlan, commands)
 
             name = dict(diff).get("name")
@@ -318,26 +311,20 @@ class Vlans(ConfigBase):
             mtu = dict(diff).get("mtu")
             remote_span = dict(diff).get("remote_span")
             if name:
-                self.add_command_to_config_list(
-                    vlan, "name {0}".format(name), commands
-                )
+                self.add_command_to_config_list(vlan, "name {0}".format(name), commands)
             if state:
                 self.add_command_to_config_list(
                     vlan, "state {0}".format(state), commands
                 )
             if mtu:
-                self.add_command_to_config_list(
-                    vlan, "mtu {0}".format(mtu), commands
-                )
+                self.add_command_to_config_list(vlan, "mtu {0}".format(mtu), commands)
             if remote_span:
                 self.add_command_to_config_list(vlan, "remote-span", commands)
             if shutdown == "enabled":
                 self.add_command_to_config_list(vlan, "shutdown", commands)
             elif shutdown == "disabled":
                 self.add_command_to_config_list(vlan, "no shutdown", commands)
-        elif have_diff and (
-            self.state == "replaced" or self.state == "overridden"
-        ):
+        elif have_diff and (self.state == "replaced" or self.state == "overridden"):
             negate_have_config(diff, have_diff, vlan, commands)
 
         return commands
@@ -350,10 +337,7 @@ class Vlans(ConfigBase):
         if (
             have.get("vlan_id")
             and "default" not in have.get("name")
-            and (
-                have.get("vlan_id") != want.get("vlan_id")
-                or self.state == "deleted"
-            )
+            and (have.get("vlan_id") != want.get("vlan_id") or self.state == "deleted")
         ):
             self.remove_command_from_config_list(vlan, "vlan", commands)
         elif "default" not in have.get("name"):
@@ -362,15 +346,9 @@ class Vlans(ConfigBase):
             if have.get("remote_span") != want.get("remote_span") and want.get(
                 "remote_span"
             ):
-                self.remove_command_from_config_list(
-                    vlan, "remote-span", commands
-                )
-            if have.get("shutdown") != want.get("shutdown") and want.get(
-                "shutdown"
-            ):
-                self.remove_command_from_config_list(
-                    vlan, "shutdown", commands
-                )
+                self.remove_command_from_config_list(vlan, "remote-span", commands)
+            if have.get("shutdown") != want.get("shutdown") and want.get("shutdown"):
+                self.remove_command_from_config_list(vlan, "shutdown", commands)
             if have.get("state") != want.get("state") and want.get("state"):
                 self.remove_command_from_config_list(vlan, "state", commands)
 
