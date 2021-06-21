@@ -272,8 +272,8 @@ EXAMPLES = """
 # -------------
 #
 # Play Execution fails, with error:
-# Merge state cannot merge on the pre-existing Prefix-List sequence,
-# it can only add Prefix-List entry over a new sequence!
+# Cannot update existing sequence 10 of Prefix Lists test_ipv6 with state merged.
+# Please use state replaced or overridden.
 
 # Before state:
 # -------------

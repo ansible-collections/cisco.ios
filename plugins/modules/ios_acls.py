@@ -660,8 +660,8 @@ EXAMPLES = """
 # ------------
 #
 # Play Execution fails, with error:
-# Merge state cannot merge on the ACL pre-existing ACE sequence,
-# it can only add ACE over a new sequence!
+# Cannot update existing sequence 10 of ACLs 100 with state merged.
+# Please use state replaced or overridden.
 
 # Before state:
 # -------------

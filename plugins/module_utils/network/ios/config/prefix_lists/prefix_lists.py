@@ -182,8 +182,10 @@ class Prefix_lists(ResourceModule):
                                     "sequence"
                                 ):
                                     self._module.fail_json(
-                                        "Merge state cannot merge on the pre-existing Prefix-List sequence,"
-                                        + " it can only add Prefix-List entry over a new sequence!"
+                                        "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
+                                            val.get("sequence"), k
+                                        )
+                                        + " Please use state replaced or overridden."
                                     )
                                 self.compare(
                                     parsers=self.parsers,

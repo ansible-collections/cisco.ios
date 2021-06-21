@@ -147,8 +147,10 @@ class Acls(ResourceModule):
                                         "sequence"
                                     ) == val.get("sequence"):
                                         self._module.fail_json(
-                                            "Merge state cannot merge on the ACL"
-                                            + " pre-existing ACE sequence, it can only add ACE over a new sequence!"
+                                            "Cannot update existing sequence {0} of ACLs {1} with state merged.".format(
+                                                val.get("sequence"), k
+                                            )
+                                            + " Please use state replaced or overridden."
                                         )
                                     self.compare(
                                         parsers=self.parsers,
