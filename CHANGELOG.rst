@@ -72,6 +72,11 @@ Bugfixes
 
 - To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
 
+New Modules
+-----------
+
+- ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
+
 v2.0.1
 ======
 
@@ -195,8 +200,24 @@ New Modules
 v1.0.3
 ======
 
+Release Summary
+---------------
+
+- Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+
+Bugfixes
+--------
+
+- To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
+- To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+
 v1.0.2
 ======
+
+Release Summary
+---------------
+
+- Re-releasing 1.0.1 with updated changelog.
 
 v1.0.1
 ======

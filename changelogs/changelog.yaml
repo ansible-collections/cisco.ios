@@ -121,10 +121,16 @@ releases:
     - remove_ios_ignore.yaml
     release_date: '2020-08-03'
   1.0.2:
+    changes:
+      release_summary:
+      - Re-releasing 1.0.1 with updated changelog.
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
   1.0.3:
+    changes:
+      release_summary:
+      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
     release_date: '2020-08-28'
   1.1.0:
     changes:
@@ -183,6 +189,7 @@ releases:
     - description: BGP Global resource module
       name: ios_bgp_global
       namespace: ''
+    release_date: '2021-01-29'
   2.0.0:
     changes:
       bugfixes:
