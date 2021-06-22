@@ -19,10 +19,10 @@
                       tcp:
                         fin: true
                     source:
-                      address: 192.0.2.0
+                      address: 192.0.4.0
                       wildcard_bits: 0.0.0.255
                     destination:
-                      address: 192.0.3.0
+                      address: 192.0.5.0
                       wildcard_bits: 0.0.0.255
                       port_protocol:
                         eq: www
@@ -48,13 +48,22 @@
               - name: test_acl
                 acl_type: extended
                 aces:
-                  - sequence: 10
+                  - grant: deny
+                    protocol_options:
+                      tcp:
+                        fin: true
                     source:
                       address: 192.0.4.0
                       wildcard_bits: 0.0.0.255
                     destination:
                       address: 192.0.5.0
                       wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
+                    option:
+                      traceroute: true
+                    ttl:
+                      eq: 10
               - name: 110
                 aces:
                   - grant: deny
@@ -124,7 +133,7 @@
 
     - assert:
         that:
-          - result.commands|length == 12
+          - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 

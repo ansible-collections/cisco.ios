@@ -89,7 +89,14 @@ class Prefix_listsFacts(object):
                 for each in v["prefix_lists"]:
                     if not temp_prefix_list.get("name"):
                         temp_prefix_list["name"] = each["name"]
-                    temp_prefix_list["entries"].append(each["entries"])
+                    if not temp_prefix_list.get("description") and each.get(
+                        "description"
+                    ):
+                        temp_prefix_list["description"] = each["description"]
+                    if each["entries"] and not each["entries"].get(
+                        "description"
+                    ):
+                        temp_prefix_list["entries"].append(each["entries"])
                 temp["prefix_lists"].append(temp_prefix_list)
             if temp and temp["afi"]:
                 temp["prefix_lists"] = sorted(
