@@ -256,6 +256,7 @@ class Bgp_AddressFamily(ResourceModule):
         else:
             h = dict()
         for key, val in iteritems(w):
+            val = self.handle_deprecated(val)
             if h and h.get(key):
                 neighbor_tag = [each for each in neighbor_key if each in val][
                     0
@@ -438,3 +439,13 @@ class Bgp_AddressFamily(ResourceModule):
                     for each in val.get("network", []):
                         temp.update({each["address"]: each})
                     val["network"] = temp
+
+    def handle_deprecated(self, want_to_validate):
+        if want_to_validate.get("next_hop_self") and want_to_validate.get(
+            "nexthop_self"
+        ):
+            del want_to_validate["next_hop_self"]
+        elif want_to_validate.get("next_hop_self"):
+            del want_to_validate["next_hop_self"]
+            want_to_validate["nexthop_self"] = {"all": True}
+        return want_to_validate

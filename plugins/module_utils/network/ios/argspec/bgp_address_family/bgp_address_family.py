@@ -337,7 +337,8 @@ class Bgp_AddressFamilyArgs(object):
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {
+                                "next_hop_self": {"type": "bool"},
+                                "nexthop_self": {
                                     "type": "dict",
                                     "options": {
                                         "set": {"type": "bool"},

@@ -460,9 +460,9 @@ def _tmplt_af_neighbor(config_data):
             elif config_data["neighbor"]["filter_list"].get("warning_only"):
                 self_cmd += " warning-only"
             commands.append(self_cmd)
-        if "next_hop_self" in config_data["neighbor"]:
+        if "nexthop_self" in config_data["neighbor"]:
             self_cmd = "{0} next-hop-self".format(cmd)
-            if config_data["neighbor"]["next_hop_self"].get("all"):
+            if config_data["neighbor"]["nexthop_self"].get("all"):
                 self_cmd += " all"
             commands.append(self_cmd)
         if "next_hop_unchanged" in config_data["neighbor"]:
@@ -471,7 +471,7 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " allpaths"
             commands.append(self_cmd)
         if "prefix_list" in config_data["neighbor"]:
-            self_cmd = "{0} prefix_list {name}".format(
+            self_cmd = "{0} prefix-list {name}".format(
                 cmd, **config_data["neighbor"]["prefix_list"]
             )
             if config_data["neighbor"]["prefix_list"].get("in"):
@@ -524,7 +524,7 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " standard"
             commands.append(self_cmd)
         if "soft_reconfiguration" in config_data["neighbor"]:
-            commands.append("{0} soft-reconfiguration".format(cmd))
+            commands.append("{0} soft-reconfiguration inbound".format(cmd))
         if "soo" in config_data["neighbor"]:
             commands.append(
                 "{0} soo {soo}".format(cmd, **config_data["neighbor"])
@@ -1004,7 +1004,7 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                     \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as))*
                     \s*(?P<log_neighbor_changes>log-neighbor-changes\sdisable|log-neighbor-changes)*
                     \s*(?P<maximum_prefix>maximum-prefix\s(\d+\s\d+\s(restart\s\d+|warning-only)|\d+\s(restart\s\d+|warning-only)))*
-                    \s*(?P<next_hop_self>next-hop-self\sall|next-hop-self)*
+                    \s*(?P<nexthop_self>next-hop-self\sall|next-hop-self)*
                     \s*(?P<next_hop_unchanged>next-hop-unchanged\sallpaths|next-hop-unchanged)*
                     \s*(?P<password>password\s\S+)*
                     \s*(?P<path_attribute>path-attribute\s(discard\srange\s\d+\s\d+\sin|discard\s\d+\sin)|path-attribute\s(treat-as-withdraw\srange\s\d+\s\d+\sin|treat-as-withdraw\s\d+\sin))*
@@ -1137,9 +1137,9 @@ class Bgp_AddressFamilyTemplate(NetworkTemplate):
                                     "restart": "{{ maximum_prefix.split('restart ')[1] if maximum_prefix is defined and 'restart' in maximum_prefix }}",
                                     "warning_only": "{{ True if maximum_prefix is defined and 'warning-only' in maximum_prefix }}",
                                 },
-                                "next_hop_self": {
-                                    "set": "{{ True if next_hop_self is defined and next_hop_self.split(' ')|length == 1 }}",
-                                    "all": "{{ True if next_hop_self is defined and next_hop_self.split(' ')|length > 1 }}",
+                                "nexthop_self": {
+                                    "set": "{{ True if nexthop_self is defined and nexthop_self.split(' ')|length == 1 }}",
+                                    "all": "{{ True if nexthop_self is defined and nexthop_self.split(' ')|length > 1 }}",
                                 },
                                 "next_hop_unchanged": {
                                     "set": "{{ True if next_hop_unchanged is defined and next_hop_unchanged.split(' ')|length == 1 }}",
