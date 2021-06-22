@@ -58,15 +58,13 @@ class VlansFacts(object):
         mtu_objs = []
         remote_objs = []
         final_objs = []
-        _warnings = []
+        _err = ""
         if not data:
             try:
                 data = self.get_vlans_data(connection)
             except Exception as ex:
-                _warnings.append(
-                    "'show vlan' is not supported, error: {0}. Please make sure it's an L2 switch".format(
-                        ex
-                    )
+                _err = "'show vlan' is not supported, error: {0}. Please make sure it's an L2 switch".format(
+                    ex
                 )
 
         if data:
@@ -131,8 +129,8 @@ class VlansFacts(object):
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
-        ansible_facts["warnings"] = _warnings  # I dnt wanna do this
-        return ansible_facts, _warnings  # looking at this
+        ansible_facts["err"] = _err
+        return ansible_facts
 
     def render_config(self, spec, conf, vlan_info):
         """

@@ -52,8 +52,13 @@ class Vlans(ConfigBase):
             self.gather_subset, self.gather_network_resources, data=data
         )
         interfaces_facts = facts["ansible_network_resources"].get("vlans")
-        warn = facts.get("warnings") if facts.get("warnings") else []
-        del facts["warnings"]
+
+        if facts.get("err"):
+            warn = facts.get("err")
+            del facts["err"]
+        else:
+            warn = []
+
         if not interfaces_facts:
             return [], warn
         return interfaces_facts
@@ -69,7 +74,9 @@ class Vlans(ConfigBase):
         warnings = list()
 
         if self.state in self.ACTION_STATES:
-            existing_vlans_facts, warnings = self.get_vlans_facts()
+            existing_vlans_facts, _err = self.get_vlans_facts()
+            if _err:
+                self._module.fail_json(msg=_err)
         else:
             existing_vlans_facts = []
 
