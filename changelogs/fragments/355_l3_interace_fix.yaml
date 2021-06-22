@@ -1,3 +1,0 @@
----
-bugfixes:
-  - fixes Serial interface configuration for l3_interfaces module and Unit Test cases added.
