@@ -64,9 +64,9 @@ merged:
                     igp_cost: true
                     transitive: true
             remote_as: 10
-            route_map:
-              name: "test-route"
-              out: true
+            route_maps:
+              - name: "test-route"
+                out: true
             route_server_client: true
             slow_peer:
               - detection:
@@ -113,7 +113,6 @@ overridden:
     - neighbor 198.51.110.1 version 4
     - neighbor 198.51.110.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 activate
@@ -151,9 +150,9 @@ overridden:
               restart: 100
               threshold_value: 10
             remote_as: 100
-            route_map:
-              name: "test-override-route"
-              out: true
+            route_maps:
+              - name: "test-override-route"
+                out: true
             route_server_client: true
             slow_peer:
               - detection:
@@ -193,7 +192,6 @@ replaced:
     - neighbor 198.51.110.1 route-server-client
     - neighbor 198.51.110.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    - no neighbor 198.51.100.1 route-map test-route out
     - no neighbor 198.51.100.1 route-server-client
     - no neighbor 198.51.100.1 slow-peer detection threshold 150
     - no neighbor 198.51.100.1 activate
@@ -247,9 +245,9 @@ replaced:
                     igp_cost: true
                     transitive: true
             remote_as: 10
-            route_map:
-              name: "test-replaced-route"
-              out: true
+            route_maps:
+              - name: "test-replaced-route"
+                out: true
             route_server_client: true
             slow_peer:
               - detection:
