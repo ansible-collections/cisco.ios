@@ -1,4 +1,0 @@
----
-minor_changes:
-  - Move ios_config idempotent warning message with the task response under `warnings` key
-    if `changed` is `True`
