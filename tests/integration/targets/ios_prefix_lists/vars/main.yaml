@@ -19,8 +19,8 @@ merged:
   after:
     - afi: ipv4
       prefix_lists:
-        - entries:
-            - description: this is test description
+        - description: this is test description
+          entries:
             - action: deny
               le: 15
               prefix: 1.0.0.0/8
@@ -39,15 +39,15 @@ merged:
               prefix: 14.0.0.0/8
               sequence: 20
           name: "10"
-        - entries:
-            - description: this is test
+        - description: this is test
+          entries:
             - action: deny
               ge: 15
               prefix: 12.0.0.0/8
               sequence: 50
           name: test
-        - entries:
-            - description: this is for prefix-list
+        - description: this is for prefix-list
+          entries:
             - action: deny
               ge: 10
               le: 15
@@ -60,8 +60,8 @@ merged:
           name: test_prefix
     - afi: ipv6
       prefix_lists:
-        - entries:
-            - description: this is ipv6 prefix-list
+        - description: this is ipv6 prefix-list
+          entries:
             - action: deny
               ge: 80
               prefix: 2001:DB8:0:4::/64
@@ -84,8 +84,8 @@ overridden:
   after:
     - afi: ipv4
       prefix_lists:
-        - entries:
-            - description: this is override test
+        - description: this is override test
+          entries:
             - action: deny
               ge: 15
               prefix: 12.0.0.0/8
@@ -96,8 +96,8 @@ overridden:
               prefix: 14.0.0.0/8
               sequence: 20
           name: "10"
-        - entries:
-            - description: this is override test
+        - description: this is override test
+          entries:
             - action: deny
               ge: 20
               prefix: 35.0.0.0/8
@@ -105,8 +105,8 @@ overridden:
           name: test_override
     - afi: ipv6
       prefix_lists:
-        - entries:
-            - description: this is ipv6 override test
+        - description: this is ipv6 override test
+          entries:
             - action: deny
               ge: 80
               le: 100
@@ -128,8 +128,8 @@ replaced:
   after:
     - afi: ipv4
       prefix_lists:
-        - entries:
-            - description: this is replace test
+        - description: this is replace test
+          entries:
             - action: deny
               ge: 15
               prefix: 12.0.0.0/8
@@ -140,15 +140,15 @@ replaced:
               prefix: 14.0.0.0/8
               sequence: 20
           name: "10"
-        - entries:
-            - description: this is test
+        - description: this is test
+          entries:
             - action: deny
               ge: 15
               prefix: 12.0.0.0/8
               sequence: 50
           name: test
-        - entries:
-            - description: this is for prefix-list
+        - description: this is for prefix-list
+          entries:
             - action: deny
               ge: 10
               le: 15
@@ -159,8 +159,8 @@ replaced:
               prefix: 35.0.0.0/8
               sequence: 10
           name: test_prefix
-        - entries:
-            - description: this is replace test
+        - description: this is replace test
+          entries:
             - action: deny
               ge: 20
               prefix: 35.0.0.0/8
@@ -168,8 +168,8 @@ replaced:
           name: test_replace
     - afi: ipv6
       prefix_lists:
-        - entries:
-            - description: this is ipv6 replace test
+        - description: this is ipv6 replace test
+          entries:
             - action: deny
               ge: 80
               le: 100

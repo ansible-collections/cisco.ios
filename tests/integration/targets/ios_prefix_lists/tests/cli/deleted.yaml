@@ -7,7 +7,7 @@
     - include_tasks: _remove_config.yaml
     - include_tasks: _populate_config.yaml
 
-    - name: Delete prefix list based on prefix ame configured
+    - name: Delete prefix list based on prefix name configured
       register: result
       cisco.ios.ios_prefix_lists: &id001
         config:

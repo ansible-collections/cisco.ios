@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Add support for autoconfig and dhcp keywords for IPv6 addresses in l3_interfaces (https://github.com/ansible-collections/cisco.ios/pull/269).

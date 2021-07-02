@@ -100,6 +100,21 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     max_suppress=10,
                                 )
                             ),
+                            neighbor=[
+                                dict(
+                                    address="198.51.100.1",
+                                    remote_as=65100,
+                                    route_maps=[
+                                        dict(name="test-route-out", out="true")
+                                    ],
+                                    prefix_lists=[
+                                        dict(
+                                            name="AS65100-PREFIX-OUT",
+                                            out="true",
+                                        )
+                                    ],
+                                )
+                            ],
                         ),
                         dict(
                             afi="nsap",
@@ -129,6 +144,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "bgp aggregate-timer 20",
             "bgp dmzlink-bw",
             "bgp scan-time 10",
+            "neighbor 198.51.100.1 remote-as 65100",
+            "neighbor 198.51.100.1 route-map test-route-out out",
             "network 192.0.1.1 route-map test_route",
             "default-metric 10",
         ]
@@ -222,13 +239,19 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     ),
                                     next_hop_self=True,
                                     nexthop_self=dict(all=True),
+                                    prefix_lists=[
+                                        dict(
+                                            name="AS65100-PREFIX-OUT",
+                                            out="true",
+                                        )
+                                    ],
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
-                                    route_map=dict(
-                                        name="test-route", out=True
-                                    ),
+                                    route_maps=[
+                                        dict(name="test-out", out=True)
+                                    ],
                                     route_server_client=True,
                                 )
                             ],
@@ -311,9 +334,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.110.1",
                                     activate=True,
                                     remote_as=200,
-                                    route_map=dict(
-                                        name="test-replaced-route", out=True
-                                    ),
+                                    route_maps=[
+                                        dict(
+                                            name="test-replaced-route",
+                                            out=True,
+                                        )
+                                    ],
                                 )
                             ],
                         )
@@ -333,7 +359,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
             "no neighbor 198.51.100.1 route-server-client",
             "no neighbor 198.51.100.1 slow-peer detection threshold 150",
-            "no neighbor 198.51.100.1 route-map test-route out",
             "neighbor 198.51.110.1 activate",
             "neighbor 198.51.110.1 remote-as 200",
             "neighbor 198.51.110.1 route-map test-replaced-route out",
@@ -387,13 +412,19 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         )
                                     ),
                                     nexthop_self=dict(all=True),
+                                    prefix_lists=[
+                                        dict(
+                                            name="AS65100-PREFIX-OUT",
+                                            out="true",
+                                        )
+                                    ],
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
-                                    route_map=dict(
-                                        name="test-route", out=True
-                                    ),
+                                    route_maps=[
+                                        dict(name="test-out", out=True)
+                                    ],
                                     route_server_client=True,
                                 )
                             ],
@@ -492,13 +523,19 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         )
                                     ),
                                     nexthop_self=dict(all=True),
+                                    prefix_lists=[
+                                        dict(
+                                            name="AS65100-PREFIX-OUT",
+                                            out="true",
+                                        )
+                                    ],
                                     slow_peer=[
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
-                                    route_map=dict(
-                                        name="test-route", out=True
-                                    ),
+                                    route_maps=[
+                                        dict(name="test-out", out=True)
+                                    ],
                                     route_server_client=True,
                                 )
                             ],
@@ -628,9 +665,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
-                                    route_map=dict(
-                                        name="test-route", out=True
-                                    ),
+                                    route_maps=[
+                                        dict(name="test-route", out=True)
+                                    ],
                                     route_server_client=True,
                                 )
                             ],

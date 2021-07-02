@@ -1,3 +1,0 @@
----
-minor_changes:
-  - To add ospfv2 passive_interfaces param with added functionality (https://github.com/ansible-collections/cisco.ios/issues/336).

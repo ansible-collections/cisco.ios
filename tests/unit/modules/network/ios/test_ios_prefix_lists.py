@@ -81,23 +81,21 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is merge test",
                                 entries=[
-                                    dict(description="this is merge test"),
                                     dict(
                                         action="deny",
                                         ge=10,
                                         le=15,
                                         prefix="25.0.0.0/8",
                                         sequence=25,
-                                    ),
+                                    )
                                 ],
                                 name="10",
                             ),
                             dict(
+                                description="this is for prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is for prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=10,
@@ -120,17 +118,15 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is merged ipv6 prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is merged ipv6 prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                                        sequence=20,
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
@@ -144,8 +140,7 @@ class TestIosPrefixListsModule(TestIosModule):
             "ip prefix-list 10 description this is merge test",
             "ip prefix-list 10 seq 25 deny 25.0.0.0/8 ge 10 le 15",
             "ipv6 prefix-list test_ipv6 description this is merged ipv6 prefix-list",
-            "no ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80",
-            "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100",
+            "ipv6 prefix-list test_ipv6 seq 20 deny 2001:DB8:0:4::/64 ge 80 le 100",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -158,10 +153,8 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is test description",
                                 entries=[
-                                    dict(
-                                        description="this is test description"
-                                    ),
                                     dict(
                                         action="deny",
                                         le=15,
@@ -191,22 +184,20 @@ class TestIosPrefixListsModule(TestIosModule):
                                 name="10",
                             ),
                             dict(
+                                description="this is test",
                                 entries=[
-                                    dict(description="this is test"),
                                     dict(
                                         action="deny",
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    ),
+                                    )
                                 ],
                                 name="test",
                             ),
                             dict(
+                                description="this is for prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is for prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=10,
@@ -229,16 +220,14 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
@@ -258,8 +247,8 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is replace test",
                                 entries=[
-                                    dict(description="this is replace test"),
                                     dict(
                                         action="deny",
                                         ge=15,
@@ -277,14 +266,14 @@ class TestIosPrefixListsModule(TestIosModule):
                                 name="10",
                             ),
                             dict(
+                                description="this is replace test",
                                 entries=[
-                                    dict(description="this is replace test"),
                                     dict(
                                         action="deny",
                                         ge=20,
                                         prefix="35.0.0.0/8",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_replace",
                             ),
@@ -294,17 +283,15 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 replace test",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 replace test"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
@@ -335,10 +322,8 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is test description",
                                 entries=[
-                                    dict(
-                                        description="this is test description"
-                                    ),
                                     dict(
                                         action="deny",
                                         le=15,
@@ -368,22 +353,20 @@ class TestIosPrefixListsModule(TestIosModule):
                                 name="10",
                             ),
                             dict(
+                                description="this is test",
                                 entries=[
-                                    dict(description="this is test"),
                                     dict(
                                         action="deny",
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    ),
+                                    )
                                 ],
                                 name="test",
                             ),
                             dict(
+                                description="this is for prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is for prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=10,
@@ -406,23 +389,21 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
                         ],
                     ),
                 ],
-                state="merged",
+                state="replaced",
             )
         )
         self.execute_module(changed=False, commands=[])
@@ -435,8 +416,8 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is override test",
                                 entries=[
-                                    dict(description="this is override test"),
                                     dict(
                                         action="deny",
                                         ge=15,
@@ -454,14 +435,14 @@ class TestIosPrefixListsModule(TestIosModule):
                                 name="10",
                             ),
                             dict(
+                                description="this is override test",
                                 entries=[
-                                    dict(description="this is override test"),
                                     dict(
                                         action="deny",
                                         ge=20,
                                         prefix="35.0.0.0/8",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_override",
                             ),
@@ -471,17 +452,15 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 override test",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 override test"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
@@ -514,10 +493,8 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is test description",
                                 entries=[
-                                    dict(
-                                        description="this is test description"
-                                    ),
                                     dict(
                                         action="deny",
                                         le=15,
@@ -547,22 +524,20 @@ class TestIosPrefixListsModule(TestIosModule):
                                 name="10",
                             ),
                             dict(
+                                description="this is test",
                                 entries=[
-                                    dict(description="this is test"),
                                     dict(
                                         action="deny",
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    ),
+                                    )
                                 ],
                                 name="test",
                             ),
                             dict(
+                                description="this is for prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is for prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=10,
@@ -585,23 +560,21 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
                         ],
                     ),
                 ],
-                state="merged",
+                state="overridden",
             )
         )
         self.execute_module(changed=False, commands=[])
@@ -625,23 +598,21 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv4",
                         prefix_lists=[
                             dict(
+                                description="this is merge test",
                                 entries=[
-                                    dict(description="this is merge test"),
                                     dict(
                                         action="deny",
                                         ge=10,
                                         le=15,
                                         prefix="25.0.0.0/8",
                                         sequence=25,
-                                    ),
+                                    )
                                 ],
                                 name="10",
                             ),
                             dict(
+                                description="this is for prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is for prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=10,
@@ -664,17 +635,15 @@ class TestIosPrefixListsModule(TestIosModule):
                         afi="ipv6",
                         prefix_lists=[
                             dict(
+                                description="this is ipv6 prefix-list",
                                 entries=[
-                                    dict(
-                                        description="this is ipv6 prefix-list"
-                                    ),
                                     dict(
                                         action="deny",
                                         ge=80,
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    ),
+                                    )
                                 ],
                                 name="test_ipv6",
                             )
