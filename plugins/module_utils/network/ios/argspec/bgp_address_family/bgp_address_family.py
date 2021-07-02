@@ -337,7 +337,8 @@ class Bgp_AddressFamilyArgs(object):
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {
+                                "next_hop_self": {"type": "bool"},
+                                "nexthop_self": {
                                     "type": "dict",
                                     "options": {
                                         "set": {"type": "bool"},
@@ -384,6 +385,15 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
+                                "prefix_lists": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
+                                    },
+                                },
                                 "prefix_list": {
                                     "type": "dict",
                                     "options": {
@@ -399,6 +409,15 @@ class Bgp_AddressFamilyArgs(object):
                                         "set": {"type": "bool"},
                                         "all": {"type": "bool"},
                                         "replace_as": {"type": "bool"},
+                                    },
+                                },
+                                "route_maps": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
                                     },
                                 },
                                 "route_map": {

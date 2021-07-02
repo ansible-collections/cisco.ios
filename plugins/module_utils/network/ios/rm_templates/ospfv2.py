@@ -529,6 +529,20 @@ def _tmplt_ospf_queue_depth_update(config_data):
         return command
 
 
+def _tmplt_ospf_passive_interfaces(config_data):
+    if "passive_interfaces" in config_data:
+        if config_data["passive_interfaces"].get("default"):
+            cmd = "passive-interface default"
+        if config_data["passive_interfaces"].get("interface"):
+            if config_data["passive_interfaces"].get("set_interface"):
+                for each in config_data["passive_interfaces"]["interface"]:
+                    cmd = "passive-interface {0}".format(each)
+            elif not config_data["passive_interfaces"].get("set_interface"):
+                for each in config_data["passive_interfaces"]["interface"]:
+                    cmd = "no passive-interface {0}".format(each)
+        return cmd
+
+
 def _tmplt_ospf_summary_address(config_data):
     if "summary_address" in config_data:
         command = "summary-address {address} {mask}".format(
@@ -1650,6 +1664,32 @@ class Ospfv2Template(NetworkTemplate):
                                 "disable": "{{ True if disable is defined }}",
                                 "strict_lsa_checking": "{{ True if strict is defined }}",
                             }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "passive_interfaces",
+            "getval": re.compile(
+                r"""\s*(?P<no>no)*
+                    \s*passive-interface*
+                    \s*(?P<interface>\S+\s\S+|\S+)
+                    *$""",
+                re.VERBOSE,
+            ),
+            "setval": _tmplt_ospf_passive_interfaces,
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "passive_interfaces": {
+                            "default": "{{ True if 'default' in interface }}",
+                            "interface": {
+                                "set_interface": "{% if no is defined %}{{ False }}{% elif 'default' not in interface %}{{ True }}{% endif %}",
+                                "name": [
+                                    "{{ interface if 'default' not in interface }}"
+                                ],
+                            },
                         }
                     }
                 }
