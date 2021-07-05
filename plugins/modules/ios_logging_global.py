@@ -21,7 +21,7 @@ author: Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSv Version 15.6
   - This module works with connection C(network_cli).
-    See L(IOS Platform Options,../network/user_guide/platform_ios.html)
+    See U(IOS Platform Options,https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
   - The Configuration defaults of the Cisco IOS network devices
     are supposed to hinder idempotent behavior of plays
 options:

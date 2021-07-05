@@ -5699,7 +5699,7 @@ Notes
 
 .. note::
    - Tested against Cisco IOSv Version 15.2 on VIRL
-   - This module works with connection ``network_cli``. See `IOS Platform Options <../network/user_guide/platform_ios.html>`_
+   - This module works with connection ``network_cli``. See IOS Platform Options,https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 
