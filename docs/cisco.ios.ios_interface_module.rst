@@ -230,7 +230,7 @@ Parameters
                 <td>
                         <div>Receiver rate in bits per second (bps).</div>
                         <div>This is state check parameter only.</div>
-                        <div>Supports conditionals, see <a href='../network/user_guide/network_working_with_command_output.html'>Conditionals in Networking Modules</a></div>
+                        <div>Supports conditionals, see <a href='Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
             <tr>
@@ -286,7 +286,7 @@ Parameters
                 <td>
                         <div>Transmit rate in bits per second (bps).</div>
                         <div>This is state check parameter only.</div>
-                        <div>Supports conditionals, see <a href='../network/user_guide/network_working_with_command_output.html'>Conditionals in Networking Modules</a></div>
+                        <div>Supports conditionals, see <a href='Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
 
@@ -606,7 +606,7 @@ Parameters
                 <td>
                         <div>Receiver rate in bits per second (bps).</div>
                         <div>This is state check parameter only.</div>
-                        <div>Supports conditionals, see <a href='../network/user_guide/network_working_with_command_output.html'>Conditionals in Networking Modules</a></div>
+                        <div>Supports conditionals, see <a href='Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
             <tr>
@@ -659,7 +659,7 @@ Parameters
                 <td>
                         <div>Transmit rate in bits per second (bps).</div>
                         <div>This is state check parameter only.</div>
-                        <div>Supports conditionals, see <a href='../network/user_guide/network_working_with_command_output.html'>Conditionals in Networking Modules</a></div>
+                        <div>Supports conditionals, see <a href='Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>Conditionals in Networking Modules,https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
     </table>
