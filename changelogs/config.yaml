@@ -26,5 +26,7 @@ sections:
   - Bugfixes
 - - known_issues
   - Known Issues
+- - doc_changes
+  - Documentation Changes
 title: Cisco Ios Collection
 trivial_section_name: trivial
