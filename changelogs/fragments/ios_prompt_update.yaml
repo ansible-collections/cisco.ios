@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Terminal err prompt fix for commands with error message.
