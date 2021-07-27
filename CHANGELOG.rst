@@ -86,6 +86,11 @@ Bugfixes
 
 - To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
 
+New Modules
+-----------
+
+- ios_route_maps - Route Maps resource module.
+
 v2.0.1
 ======
 
@@ -93,7 +98,6 @@ Minor Changes
 -------------
 
 - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
-- ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
 
 Bugfixes
 --------
@@ -105,11 +109,6 @@ Bugfixes
 - To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
 - To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
 - To fix ios_vlans traceback error when empty line with just Ports information is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
-
-New Modules
------------
-
-- ios_route_maps - Route Maps resource module.
 
 v2.0.0
 ======
@@ -215,6 +214,11 @@ New Modules
 v1.0.3
 ======
 
+Release Summary
+---------------
+
+Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+
 Bugfixes
 --------
 
@@ -223,6 +227,11 @@ Bugfixes
 
 v1.0.2
 ======
+
+Release Summary
+---------------
+
+Re-releasing 1.0.1 with updated changelog.
 
 v1.0.1
 ======

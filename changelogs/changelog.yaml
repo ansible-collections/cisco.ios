@@ -122,18 +122,19 @@ releases:
     release_date: '2020-08-03'
   1.0.2:
     changes:
-      release_summary:
-      - Re-releasing 1.0.1 with updated changelog.
+      release_summary: Re-releasing 1.0.1 with updated changelog.
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
   1.0.3:
     changes:
       bugfixes:
-      - To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
-      - To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
-      release_summary:
-      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+      - To fix IOS l2 interfaces for traceback error and merge operation not working
+        as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+      - To fix the issue where ios acls was complaining in absence of protocol option
+        value (https://github.com/ansible-collections/cisco.ios/pull/124).
+      release_summary: Releasing 1.0.3 with updated readme with changelog link, galaxy
+        description, and bugfix.
     release_date: '2020-08-28'
   1.1.0:
     changes:
@@ -227,11 +228,6 @@ releases:
         is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
       minor_changes:
       - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
-      - ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
-    modules:
-    - description: Route Maps resource module.
-      name: ios_route_maps
-      namespace: ''
     release_date: '2021-03-30'
   2.1.0:
     changes:
@@ -243,6 +239,10 @@ releases:
         resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
       security_fixes:
       - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
+    modules:
+    - description: Route Maps resource module.
+      name: ios_route_maps
+      namespace: ''
     release_date: '2021-04-27'
   2.2.0:
     changes:
