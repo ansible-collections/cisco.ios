@@ -121,10 +121,19 @@ releases:
     - remove_ios_ignore.yaml
     release_date: '2020-08-03'
   1.0.2:
+    changes:
+      release_summary:
+      - Re-releasing 1.0.1 with updated changelog.
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
   1.0.3:
+    changes:
+      bugfixes:
+      - To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
+      - To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+      release_summary:
+      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
     release_date: '2020-08-28'
   1.1.0:
     changes:
@@ -218,6 +227,11 @@ releases:
         is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
       minor_changes:
       - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
+      - ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
+    modules:
+    - description: Route Maps resource module.
+      name: ios_route_maps
+      namespace: ''
     release_date: '2021-03-30'
   2.1.0:
     changes:
@@ -297,10 +311,8 @@ releases:
       - ios_user fails to add password when configured in separate task with update_password.
       doc_changes:
       - Broken link in documentation fixed.
-      - Updated ios_logging_global Resource Module documentation with proper examples.
     fragments:
     - 166_ios_command_doc_fix.yaml
     - doc_broken_link.yaml
-    - ios_logging_global_example.yaml
     - ios_user_issue.yaml
     release_date: '2021-07-27'

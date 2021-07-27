@@ -18,7 +18,6 @@ Documentation Changes
 ---------------------
 
 - Broken link in documentation fixed.
-- Updated ios_logging_global Resource Module documentation with proper examples.
 
 v2.3.0
 ======
@@ -94,6 +93,7 @@ Minor Changes
 -------------
 
 - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
+- ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
 
 Bugfixes
 --------
@@ -105,6 +105,11 @@ Bugfixes
 - To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
 - To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
 - To fix ios_vlans traceback error when empty line with just Ports information is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
+
+New Modules
+-----------
+
+- ios_route_maps - Route Maps resource module.
 
 v2.0.0
 ======
@@ -209,6 +214,12 @@ New Modules
 
 v1.0.3
 ======
+
+Bugfixes
+--------
+
+- To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+- To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
 
 v1.0.2
 ======
