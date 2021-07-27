@@ -18,6 +18,7 @@ Documentation Changes
 ---------------------
 
 - Broken link in documentation fixed.
+- Updated ios_logging_global Resource Module documentation with proper examples.
 
 v2.3.0
 ======

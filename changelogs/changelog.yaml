@@ -297,8 +297,10 @@ releases:
       - ios_user fails to add password when configured in separate task with update_password.
       doc_changes:
       - Broken link in documentation fixed.
+      - Updated ios_logging_global Resource Module documentation with proper examples.
     fragments:
     - 166_ios_command_doc_fix.yaml
     - doc_broken_link.yaml
+    - ios_logging_global_example.yaml
     - ios_user_issue.yaml
     release_date: '2021-07-27'
