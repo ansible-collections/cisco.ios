@@ -121,16 +121,10 @@ releases:
     - remove_ios_ignore.yaml
     release_date: '2020-08-03'
   1.0.2:
-    changes:
-      release_summary:
-      - Re-releasing 1.0.1 with updated changelog.
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
   1.0.3:
-    changes:
-      release_summary:
-      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
     release_date: '2020-08-28'
   1.1.0:
     changes:
@@ -296,3 +290,15 @@ releases:
     - depricated_next_hop_self_bgpAddFamilt.yaml
     - readme_freenode_to_liberachat.yml
     release_date: '2021-06-23'
+  2.3.1:
+    changes:
+      bugfixes:
+      - Updated ios_command module doc example section with appropriate punctuation.
+      - ios_user fails to add password when configured in separate task with update_password.
+      doc_changes:
+      - Broken link in documentation fixed.
+    fragments:
+    - 166_ios_command_doc_fix.yaml
+    - doc_broken_link.yaml
+    - ios_user_issue.yaml
+    release_date: '2021-07-27'
