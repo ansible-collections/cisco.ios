@@ -500,6 +500,70 @@ EXAMPLES = """
 # logging trap errors
 # logging facility local5
 # logging snmp-trap errors
+# logging snmp-trap warnings
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.11 xml
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+
+- name: Remove as per the provided configuration
+  cisco.ios.ios_logging_global:
+    config:
+      snmp_trap:
+        - errors
+        - warnings
+      hosts:
+        - hostname: 172.16.1.11
+    state: deleted
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#         "no logging snmp-trap errors",
+#         "no logging snmp-trap warnings",
+#         "no logging host 172.16.1.11"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging host 172.16.1.13 transport tcp port 514
+# logging host 172.16.1.12
+# logging host 172.16.1.10 filtered stream 10
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section logging
+# logging exception 4099
+# logging message-counter log
+# logging userinfo
+# logging buffered xml 5099 notifications
+# no logging reload
+# no logging rate-limit
+# logging console xml critical
+# logging monitor warnings
+# logging cns-events warnings
+# logging policy-firewall rate-limit 10
+# logging dmvpn rate-limit 10
+# logging trap errors
+# logging facility local5
+# logging snmp-trap errors
 # logging host 172.16.1.13 transport tcp port 514
 # logging host 172.16.1.11 xml
 # logging host 172.16.1.12
