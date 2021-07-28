@@ -31,7 +31,7 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ replaced['before'] == result['before'] }}"
+          - "{{ replaced['after'] == result['after'] }}"
 
     - name: Replaces Global LLDP configuration with provided LLDP configuration
         (IDEMPOTENT)

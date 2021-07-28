@@ -28,7 +28,7 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ deleted['before'] == result['before'] }}"
+          - "{{ deleted['after'] == result['after'] }}"
 
     - name: Delete configured Global LLDP (IDEMPOTENT)
       register: result
