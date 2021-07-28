@@ -5,6 +5,20 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.3.1
+======
+
+Bugfixes
+--------
+
+- Updated ios_command module doc example section with appropriate punctuation.
+- ios_user fails to add password when configured in separate task with update_password.
+
+Documentation Changes
+---------------------
+
+- Broken link in documentation fixed.
+
 v2.3.0
 ======
 
@@ -75,7 +89,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_route_maps - Manage the attributes of Route maps on Cisco IOS.
+- ios_route_maps - Route Maps resource module.
 
 v2.0.1
 ======
@@ -203,13 +217,13 @@ v1.0.3
 Release Summary
 ---------------
 
-- Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
 
 Bugfixes
 --------
 
-- To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
 - To fix IOS l2 interfaces for traceback error and merge operation not working as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+- To fix the issue where ios acls was complaining in absence of protocol option value (https://github.com/ansible-collections/cisco.ios/pull/124).
 
 v1.0.2
 ======
@@ -217,7 +231,7 @@ v1.0.2
 Release Summary
 ---------------
 
-- Re-releasing 1.0.1 with updated changelog.
+Re-releasing 1.0.1 with updated changelog.
 
 v1.0.1
 ======
