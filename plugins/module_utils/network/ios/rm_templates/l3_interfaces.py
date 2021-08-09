@@ -177,7 +177,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                         "anycast": "{{ True if anycast is defined }}",
                         "cga": "{{ True if cga is defined }}",
                         "eui": "{{ True if eui is defined }}",
-                        "{{ segment_routing if enable is defined }} ":{
+                        "segment_routing": {
                             "enable": "{{ True if enable is defined }}",
                             "default": "{{ True if default is defined }}",
                             "ipv6_sr": "{{ True if ipv6_sr is defined }}",
