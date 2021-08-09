@@ -20,6 +20,56 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def dummy(config_data):
+    print(config_data)
+    return "check"
+
+
+def ip_tmplt(config_data):
+    cmd = "{tp} address {ip}"
+    if config_data.get("ipv4"):
+        config = config_data.get("ipv4")
+        cmd = cmd.format(tp="ip", ip=config["address"])
+    elif config_data.get("ipv6"):
+        config = config_data.get("ipv6")
+        cmd = cmd.format(tp="ipv6", ip=config["address"])
+    if config.get("segment_routing"):
+        if config.get("segment_routing").get("enable"):
+            cmd += " segment-routing"
+        if config.get("segment_routing").get("default"):
+            cmd += " default"
+        if config.get("segment_routing").get("ipv6_sr"):
+            cmd += " ipv6-sr"
+    if config.get("secondary"):
+        cmd += " secondary"
+    if config.get("link_local"):
+        cmd += " link-local"
+    if config.get("anycast"):
+        cmd += " anycast"
+    if config.get("cga"):
+        cmd += " cga"
+    if config.get("eui"):
+        cmd += " eui"
+    return cmd
+
+
+def dhcp_tmplt(config_data):
+    cmd = "{tp} address dhcp"
+    if config_data.get("ipv4"):
+        config = config_data.get("ipv4").get("dhcp_config")
+        cmd = cmd.format(tp="ip")
+    elif config_data.get("ipv6"):
+        config = config_data.get("ipv6").get("dhcp_config")
+        cmd = cmd.format(tp="ipv6")
+    if config.get("rapid_commit"):
+        cmd += " rapid-commit"
+    if config.get("client_id"):
+        cmd += " client-id {cid}".format(cid=config.get("client_id"))
+    if config.get("hostname"):
+        cmd += " hostname {hnm}".format(hnm=config.get("hostname"))
+    return cmd
+
+
 class L3_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L3_interfacesTemplate, self).__init__(
@@ -51,8 +101,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "ip address 10.1.1.2 255.255.255.0 secondary",
-            "compval": "ipv4",
+            "setval": ip_tmplt,
             "result": {
                 "{{ name }}": {
                     "ipv4": [
@@ -71,8 +120,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                 r"""
                 \s+ip\saddress\spool\s(?P<pool>.+$)
                 $""", re.VERBOSE),
-            "setval": "ip address pool Floor1 ww",
-            "compval": "ipv4",
+            "setval": "ip address pool {{ ipv4.pool }}",
             "result": {
                 "{{ name }}": {
                     "ipv4": [
@@ -92,8 +140,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": " ip address dhcp client-id GigabitEthernet0/2 hostname test.com",
-            "compval": "ipv4",
+            "setval": dhcp_tmplt, #" ip address dhcp client-id GigabitEthernet0/2 hostname test.com",
             "result": {
                 "{{ name }}": {
                     "ipv4": [{
@@ -115,11 +162,13 @@ class L3_interfacesTemplate(NetworkTemplate):
                     (\s(?P<anycast>anycast))?
                     (\s(?P<cga>cga))?
                     (\s(?P<eui>eui))?
+                    (\s(?P<enable>segment-routing))?
+                    (\s(?P<default>default))?
+                    (\s(?P<ipv6_sr>ipv6-sr))?
                     $""",
                     re.VERBOSE,
             ),
-            "setval": "ipv6 address FD5D:12C9:2201:1::1/64 link-local",
-            "compval": "ipv6",
+            "setval": ip_tmplt,
             "result": {
                 "{{ name }}": {
                     "ipv6": [{
@@ -128,29 +177,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                         "anycast": "{{ True if anycast is defined }}",
                         "cga": "{{ True if cga is defined }}",
                         "eui": "{{ True if eui is defined }}",
-                        }
-                    ]
-                }
-            },
-        },
-        {
-            "name": "ipv6.segment_routing",
-            "getval": re.compile(
-                r"""\s+ipv6\saddress
-                    (\s(?P<ipv6>\S+))
-                    (\s(?P<enable>segment-routing))
-                    (\s(?P<default>default))?
-                    (\s(?P<ipv6_sr>ipv6-sr))?
-                    $""",
-                    re.VERBOSE,
-            ),
-            "setval": "ipv6 address FD5D:12C9:2201:1::1/64 segment_routing default",
-            "compval": "ipv6",
-            "result": {
-                "{{ name }}": {
-                    "ipv6": [{
-                        "address": "{{ ipv6 }}",
-                        "segment_routing":{
+                        "{{ segment_routing if enable is defined }} ":{
                             "enable": "{{ True if enable is defined }}",
                             "default": "{{ True if default is defined }}",
                             "ipv6_sr": "{{ True if ipv6_sr is defined }}",
@@ -160,6 +187,32 @@ class L3_interfacesTemplate(NetworkTemplate):
                 }
             },
         },
+        # {
+        #     "name": "ipv6.segment_routing",
+        #     "getval": re.compile(
+        #         r"""\s+ipv6\saddress
+        #             (\s(?P<ipv6>\S+))
+        #             (\s(?P<enable>segment-routing))
+        #             (\s(?P<default>default))?
+        #             (\s(?P<ipv6_sr>ipv6-sr))?
+        #             $""",
+        #             re.VERBOSE,
+        #     ),
+        #     "setval": ip_tmplt,
+        #     "result": {
+        #         "{{ name }}": {
+        #             "ipv6": [{
+        #                 "address": "{{ ipv6 }}",
+        #                 "segment_routing":{
+        #                     "enable": "{{ True if enable is defined }}",
+        #                     "default": "{{ True if default is defined }}",
+        #                     "ipv6_sr": "{{ True if ipv6_sr is defined }}",
+        #                     }
+        #                 }
+        #             ]
+        #         }
+        #     },
+        # },
         {
             "name": "ipv6.autoconfig",
             "getval": re.compile(
@@ -170,7 +223,6 @@ class L3_interfacesTemplate(NetworkTemplate):
                     re.VERBOSE,
             ),
             "setval": "ipv6 address autoconfig default",
-            "compval": "ipv6",
             "result": {
                 "{{ name }}": {
                     "ipv6": [{
@@ -190,8 +242,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                     re.VERBOSE,
             ),
-            "setval": "ipv6 address dhcp",
-            "compval": "ipv6",
+            "setval": dhcp_tmplt,
             "result": {
                 "{{ name }}": {
                     "ipv6": [{

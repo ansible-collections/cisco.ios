@@ -139,7 +139,7 @@ options:
                 description: Set a command to its defaults.
                 type: bool
               ipv6_sr:
-                description: Set a command to its defaults.
+                description: Set ipv6_sr.
                 type: bool
   running_config:
     description:
@@ -238,6 +238,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l3_interfaces.l3_interfaces import (
     L3_interfaces,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():

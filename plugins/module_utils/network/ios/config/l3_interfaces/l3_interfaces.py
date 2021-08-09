@@ -41,7 +41,15 @@ class L3_interfaces(ResourceModule):
 
     gather_subset = ["!all", "!min"]
 
-    parsers = ["ipv4", "ipv6"]
+    parsers = [
+        "ipv4.address",
+        "ipv4.pool",
+        "ipv4.dhcp_config",
+        "ipv6.address",
+        # "ipv6.segment_routing",
+        "ipv6.autoconfig",
+        "ipv6.dhcp_config",
+    ]
 
     def __init__(self, module):
         super(L3_interfaces, self).__init__(
@@ -106,6 +114,7 @@ class L3_interfaces(ResourceModule):
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
+
         if self.state == "overridden" or self.state == "replaced":
             temp = []
             temp_cmd = []
@@ -133,7 +142,7 @@ class L3_interfaces(ResourceModule):
                 for k, v in iteritems(want["ipv4"]):
                     if have.get("ipv4") and have["ipv4"].get(k):
                         h_val = have["ipv4"].pop(k)
-                        if v["address"] != "dhcp":
+                        if v.get("address"):
                             v["address"] = validate_n_expand_ipv4(self._module, v)
                             h_val["address"] = validate_n_expand_ipv4(
                                 self._module, h_val
@@ -142,7 +151,7 @@ class L3_interfaces(ResourceModule):
                             self.parsers, want={"ipv4": v}, have={"ipv4": h_val}
                         )
                     else:
-                        if v["address"] != "dhcp":
+                        if v.get("address"):
                             v["address"] = validate_n_expand_ipv4(self._module, v)
                         self.compare(self.parsers, want={"ipv4": v}, have=dict())
             if want.get("ipv6"):
@@ -156,8 +165,9 @@ class L3_interfaces(ResourceModule):
                             self.parsers, want={"ipv6": v}, have={"ipv6": h_val}
                         )
                     else:
-                        if "/" in v["address"]:
-                            validate_ipv6(v["address"], self._module)
+                        if v.get("address"):
+                            if "/" in v["address"]:
+                                validate_ipv6(v["address"], self._module)
                         self.compare(self.parsers, want={"ipv6": v}, have=dict())
             if self.state == "replaced" or self.state == "overridden":
                 self.delete_l3_attributes(have)
@@ -181,6 +191,8 @@ class L3_interfaces(ResourceModule):
                     for each in val["ipv4"]:
                         if each.get("address"):
                             temp.update({each["address"]: each})
+                        if not each.get("address"):
+                            temp.update({list(each.keys())[0]: each})
                     val["ipv4"] = temp
                 if "ipv6" in val:
                     temp = {}
@@ -188,4 +200,6 @@ class L3_interfaces(ResourceModule):
                         if each.get("address"):
                             each["address"] = each["address"].lower()
                             temp.update({each["address"]: each})
+                        if not each.get("address"):
+                            temp.update({list(each.keys())[0]: each})
                     val["ipv6"] = temp
