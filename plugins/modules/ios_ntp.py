@@ -212,7 +212,7 @@ def map_config_to_obj(module):
             key_id = parse_key_id(line, dest)
 
             if server:
-                if server[0] == None:
+                if server[0] is None:
                     server_list.append((server[0], server[1]))
                 else:
                     server_list.append((server[0].split()[1], server[1]))
