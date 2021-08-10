@@ -28,6 +28,8 @@ description:
 version_added: 1.0.0
 author:
 - Federico Olivieri (@Federico87)
+contributors:
+- Joanie Sylvain (@JoanieAda)
 options:
   server:
     description:
@@ -79,20 +81,17 @@ EXAMPLES = """
     source_int: Loopback0
     logging: false
     state: present
-
 # Remove NTP ACL and logging
 - cisco.ios.ios_ntp:
     acl: NTP_ACL
     logging: true
     state: absent
-
 # Set NTP authentication
 - cisco.ios.ios_ntp:
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
-
 # Set new NTP configuration
 - cisco.ios.ios_ntp:
     server: 10.0.255.10
@@ -139,12 +138,12 @@ def parse_server(line, dest):
             vrf = None
             server = match.group(3)
 
-            return server
+            return vrf, server
 
 
 def parse_source_int(line, dest):
     if dest == "source":
-        match = re.search("(ntp source )(\\S+)", line, re.M)
+        match = re.search("(ntp\\ssource\\s)(\\S+)", line, re.M)
         if match:
             source = match.group(2)
             return source
@@ -153,7 +152,7 @@ def parse_source_int(line, dest):
 def parse_acl(line, dest):
     if dest == "access-group":
         match = re.search(
-            "ntp access-group (?:peer|serve)(?:\\s+)(\\S+)", line, re.M
+            "ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)", line, re.M
         )
         if match:
             acl = match.group(1)
@@ -169,7 +168,7 @@ def parse_logging(line, dest):
 def parse_auth_key(line, dest):
     if dest == "authentication-key":
         match = re.search(
-            "(ntp authentication-key \\d+ md5 )(\\w+)", line, re.M
+            "(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)", line, re.M
         )
         if match:
             auth_key = match.group(2)
@@ -178,7 +177,7 @@ def parse_auth_key(line, dest):
 
 def parse_key_id(line, dest):
     if dest == "trusted-key":
-        match = re.search("(ntp trusted-key )(\\d+)", line, re.M)
+        match = re.search("(ntp\\strusted-key\\s)(\\d+)", line, re.M)
         if match:
             auth_key = match.group(2)
             return auth_key
@@ -198,23 +197,23 @@ def map_config_to_obj(module):
     
     for line in config.splitlines():
 
-        match = re.search("ntp (\\S+)", line, re.M)
+        match = re.search("ntp\\s(\\S+)", line, re.M)
         
         if match:
             dest = match.group(1)
-            vrf, server = parse_server(line, dest)
+            server = parse_server(line, dest)
             source_int = parse_source_int(line, dest)
             acl = parse_acl(line, dest)
             logging = parse_logging(line, dest)
             auth = parse_auth(dest)
             auth_key = parse_auth_key(line, dest)
             key_id = parse_key_id(line, dest)
-            
-            if vrf and server:
-                server_list.append(vrf.split()[1], server)
-            
-            if not vrf and server:
-                server_list.append(server)
+
+            if server:
+                if server[0] == None:
+                    server_list.append((server[0], server[1]))
+                else:
+                    server_list.append((server[0].split()[1], server[1]))
             
             if source_int:
                 obj_dict["source_int"] = source_int
@@ -271,7 +270,6 @@ def map_obj_to_commands(want, have, module):
     auth_have = have[0].get("auth", None)
     auth_key_have = have[0].get("auth_key", None)
     key_id_have = have[0].get("key_id", None)
-    vrf_have = have[0].get("vrf", None)
 
     for w in want:
 
@@ -284,13 +282,14 @@ def map_obj_to_commands(want, have, module):
         auth_key = w["auth_key"]
         key_id = w["key_id"]
         vrf = w["vrf"]
+        if vrf == "":
+            vrf = None
 
         if state == "absent":
 
-            if server_have and server in server_have:
-                if vrf:
-                    if vrf_have == vrf:
-                        commands.append("no ntp server vrf {0} {1}".format(vrf, server))
+            if server_have and (vrf,server) in server_have:
+                if vrf is not None:
+                    commands.append("no ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("no ntp server {0}".format(server))
 
@@ -318,12 +317,11 @@ def map_obj_to_commands(want, have, module):
                     )
         elif state == "present":
 
-            if server is not None and server not in server_have:
-                if vrf and vrf != vrf_have:
+            if server is not None and (vrf,server) not in server_have:
+                if vrf is not None:
                     commands.append("ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("ntp server {0}".format(server))
-
 
             if source_int is not None and source_int != source_int_have:
                 commands.append("ntp source {0}".format(source_int))
@@ -365,7 +363,7 @@ def main():
         auth_key=dict(),
         key_id=dict(),
         state=dict(choices=["absent", "present"], default="present"),
-        vrf=dict(),
+        vrf=dict(default=""),
     )
     
     argument_spec.update(ios_argument_spec)
