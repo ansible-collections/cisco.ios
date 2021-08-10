@@ -64,7 +64,7 @@ class TestIosNtpModule(TestIosModule):
                 auth=True,
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
-                vrf= "my_mgmt_vrf",
+                vrf="my_mgmt_vrf",
                 state="present",
             )
         )
@@ -82,7 +82,7 @@ class TestIosNtpModule(TestIosModule):
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
                 state="present",
-                vrf= "my_mgmt_vrf",
+                vrf="my_mgmt_vrf",
             )
         )
         commands = ["ntp server my_mgmt_vrf 10.75.33.5", "ntp source Vlan2"]
@@ -98,7 +98,7 @@ class TestIosNtpModule(TestIosModule):
                 auth=True,
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
-                vrf= "my_mgmt_vrf",
+                vrf="my_mgmt_vrf",
                 state="absent",
             )
         )
