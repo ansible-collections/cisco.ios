@@ -201,9 +201,12 @@ class L3_interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
-                        if each.get("address") != "dhcp":
+                        if (
+                            each.get("address")
+                            and each.get("address") != "dhcp"
+                        ):
                             temp.update({each["address"]: each})
-                        else:
+                        elif each.get("address") == "dhcp":
                             # deprecated attribute
                             temp.update(
                                 {
