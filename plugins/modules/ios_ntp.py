@@ -28,7 +28,6 @@ description:
 version_added: 1.0.0
 author:
 - Federico Olivieri (@Federico87)
-contributors:
 - Joanie Sylvain (@JoanieAda)
 options:
   server:
