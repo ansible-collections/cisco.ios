@@ -101,7 +101,7 @@ options:
                 description: Insert default route.
                 type: bool
           dhcp:
-            description: 
+            description:
             - Obtain a ipv6 address using DHCP.
             - This option is DEPRECATED and is replaced with dhcp which
               accepts dict as input this attribute will be removed after 2023-08-01.

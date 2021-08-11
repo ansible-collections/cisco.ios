@@ -20,11 +20,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def dummy(config_data):
-    print(config_data)
-    return "check"
-
-
 def ip_tmplt(config_data):
     cmd = "{tp} address {ip}"
     if config_data.get("ipv4"):
@@ -34,8 +29,8 @@ def ip_tmplt(config_data):
         config = config_data.get("ipv6")
         cmd = cmd.format(tp="ipv6", ip=config["address"])
     if config.get("segment_routing"):
-        if config.get("segment_routing").get("enable"):
-            cmd += " segment-routing"
+        # if config.get("segment_routing").get("enable"):
+        cmd += " segment-routing"
         if config.get("segment_routing").get("default"):
             cmd += " default"
         if config.get("segment_routing").get("ipv6_sr"):
@@ -78,7 +73,7 @@ class L3_interfacesTemplate(NetworkTemplate):
 
     # fmt: off
     PARSERS = [
-        {  #ipv4
+        {
             "name": "name",
             "getval": re.compile(
                 r"""^interface
@@ -95,8 +90,8 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.address",
             "getval": re.compile(
                 r"""\s+ip\saddress
-                    (\s(?P<ipv4>\S+))?
-                    (\s(?P<netmask>\S+))?
+                    (\s(?P<ipv4>\S+))
+                    (\s(?P<netmask>\S+))
                     (\s(?P<secondary>secondary))?
                     $""",
                 re.VERBOSE,
@@ -140,20 +135,20 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": dhcp_tmplt, #" ip address dhcp client-id GigabitEthernet0/2 hostname test.com",
+            "setval": dhcp_tmplt,
             "result": {
                 "{{ name }}": {
                     "ipv4": [{
-                            "dhcp_config": {
-                                "client_id": "{{ client_id }}",
-                                "hostname": "{{ hostname }}",
+                        "dhcp_config": {
+                            "client_id": "{{ client_id }}",
+                            "hostname": "{{ hostname }}",
                             }
                         }
                     ]
                 }
             },
         },
-        {  #ipv6
+        {
             "name": "ipv6.address",
             "getval": re.compile(
                 r"""\s+ipv6\saddress
@@ -187,32 +182,6 @@ class L3_interfacesTemplate(NetworkTemplate):
                 }
             },
         },
-        # {
-        #     "name": "ipv6.segment_routing",
-        #     "getval": re.compile(
-        #         r"""\s+ipv6\saddress
-        #             (\s(?P<ipv6>\S+))
-        #             (\s(?P<enable>segment-routing))
-        #             (\s(?P<default>default))?
-        #             (\s(?P<ipv6_sr>ipv6-sr))?
-        #             $""",
-        #             re.VERBOSE,
-        #     ),
-        #     "setval": ip_tmplt,
-        #     "result": {
-        #         "{{ name }}": {
-        #             "ipv6": [{
-        #                 "address": "{{ ipv6 }}",
-        #                 "segment_routing":{
-        #                     "enable": "{{ True if enable is defined }}",
-        #                     "default": "{{ True if default is defined }}",
-        #                     "ipv6_sr": "{{ True if ipv6_sr is defined }}",
-        #                     }
-        #                 }
-        #             ]
-        #         }
-        #     },
-        # },
         {
             "name": "ipv6.autoconfig",
             "getval": re.compile(

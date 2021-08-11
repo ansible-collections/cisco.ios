@@ -15,8 +15,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from copy import deepcopy
-import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -67,7 +65,9 @@ class L3_InterfacesFacts(object):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
                         cidr_val = netmask_to_cidr(each["netmask"])
-                        each["address"] = each["address"].strip(" ") + "/" + cidr_val
+                        each["address"] = (
+                            each["address"].strip(" ") + "/" + cidr_val
+                        )
                         del each["netmask"]
             temp.append(v)
         # sorting the dict by interface name
@@ -77,7 +77,9 @@ class L3_InterfacesFacts(object):
         facts = {}
         if objs:
             facts["l3_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["l3_interfaces"].append(utils.remove_empties(cfg))
             facts["l3_interfaces"] = sorted(
