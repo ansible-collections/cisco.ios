@@ -1,0 +1,7 @@
+---
+# TODO(pabelanger): Remove the following warnings once our playbooks have been
+# updated.
+warn_list:
+  - meta-no-info
+  - unnamed-task
+
