@@ -51,10 +51,10 @@ def ip_tmplt(config_data):
 def dhcp_tmplt(config_data):
     cmd = "{tp} address dhcp"
     if config_data.get("ipv4"):
-        config = config_data.get("ipv4").get("dhcp_config")
+        config = config_data.get("ipv4").get("dhcp")
         cmd = cmd.format(tp="ip")
     elif config_data.get("ipv6"):
-        config = config_data.get("ipv6").get("dhcp_config")
+        config = config_data.get("ipv6").get("dhcp")
         cmd = cmd.format(tp="ipv6")
     if config.get("rapid_commit"):
         cmd += " rapid-commit"
@@ -127,7 +127,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv4.dhcp_config",
+            "name": "ipv4.dhcp",
             "getval": re.compile(
                 r"""\s+ip\saddress\sdhcp
                     (\sclient-id\s(?P<client_id>\S+))?
@@ -139,7 +139,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "ipv4": [{
-                        "dhcp_config": {
+                        "dhcp": {
                             "client_id": "{{ client_id }}",
                             "hostname": "{{ hostname }}",
                             }
@@ -203,7 +203,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv6.dhcp_config",
+            "name": "ipv6.dhcp",
             "getval": re.compile(
                 r"""\s+ipv6\saddress\s
                     ((?P<dhcp>dhcp))
@@ -215,7 +215,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "ipv6": [{
-                        "dhcp_config": {
+                        "dhcp": {
                             "enable": "{{ True if dhcp is defined }}",
                             "rapid_commit": "{{ True if rapid_commit is defined }}",
                             }

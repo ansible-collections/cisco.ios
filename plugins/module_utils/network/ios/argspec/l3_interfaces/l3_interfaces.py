@@ -45,7 +45,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                         "secondary": {"type": "bool"},
                         "dhcp_client": {"type": "int"},
                         "dhcp_hostname": {"type": "str"},
-                        "dhcp_config": {
+                        "dhcp": {
                             "type": "dict",
                             "options": {
                                 "client_id": {"type": "str"},
@@ -67,8 +67,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "default": {"type": "bool"},
                             },
                         },
-                        "dhcp": {"type": "bool"},
-                        "dhcp_config": {
+                        "dhcp": {
                             "type": "dict",
                             "options": {
                                 "enable": {"type": "bool"},

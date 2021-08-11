@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -39,17 +40,6 @@ class L3_interfaces(ResourceModule):
     The ios_l3_interfaces class
     """
 
-    gather_subset = ["!all", "!min"]
-
-    parsers = [
-        "ipv4.address",
-        "ipv4.pool",
-        "ipv4.dhcp_config",
-        "ipv6.address",
-        "ipv6.autoconfig",
-        "ipv6.dhcp_config",
-    ]
-
     def __init__(self, module):
         super(L3_interfaces, self).__init__(
             empty_fact_val={},
@@ -58,6 +48,14 @@ class L3_interfaces(ResourceModule):
             resource="l3_interfaces",
             tmplt=L3_interfacesTemplate(),
         )
+        self.parsers = [
+            "ipv4.address",
+            "ipv4.pool",
+            "ipv4.dhcp",
+            "ipv6.address",
+            "ipv6.autoconfig",
+            "ipv6.dhcp",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -203,8 +201,25 @@ class L3_interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
-                        if each.get("address"):
+                        if each.get("address") != "dhcp":
                             temp.update({each["address"]: each})
+                        else:
+                            # deprecated attribute
+                            temp.update(
+                                {
+                                    "dhcp": {
+                                        "dhcp": {
+                                            "client_id": self.handle_dhcp_client(
+                                                val["name"],
+                                                each.get("dhcp_client"),
+                                            ),
+                                            "hostname": each.get(
+                                                "dhcp_hostname"
+                                            ),
+                                        }
+                                    }
+                                }
+                            )
                         if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv4"] = temp
@@ -217,3 +232,8 @@ class L3_interfaces(ResourceModule):
                         if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv6"] = temp
+
+    def handle_dhcp_client(self, name, client):
+        """ This method is to handle the old way of handling the deprecated
+            dhcp client option"""
+        return re.split("\\d+", name)[0] + str(client)

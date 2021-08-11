@@ -65,7 +65,7 @@ options:
             - This option is DEPRECATED and is replaced with dhcp which
               accepts dict as input this attribute will be removed after 2023-08-01.
             type: str
-          dhcp_config:
+          dhcp:
             description: IP Address negotiated via DHCP.
             type: dict
             suboptions:
@@ -101,12 +101,6 @@ options:
                 description: Insert default route.
                 type: bool
           dhcp:
-            description:
-            - Obtain a ipv6 address using DHCP.
-            - This option is DEPRECATED and is replaced with dhcp which
-              accepts dict as input this attribute will be removed after 2023-08-01.
-            type: bool
-          dhcp_config:
             description: Obtain a ipv6 address using DHCP.
             type: dict
             suboptions:

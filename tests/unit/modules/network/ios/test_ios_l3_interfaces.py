@@ -341,7 +341,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/1",
                         ipv4=[
                             dict(
-                                dhcp_config=dict(
+                                dhcp=dict(
                                     client_id="GigabitEthernet0/2",
                                     hostname="test.com",
                                 )
@@ -358,7 +358,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     ),
                     dict(
                         name="Serial2/0",
-                        ipv6=[dict(dhcp_config=dict(rapid_commit=True))],
+                        ipv6=[dict(dhcp=dict(rapid_commit=True))],
                     ),
                     dict(
                         name="Serial3/0",
@@ -468,7 +468,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/1",
                         ipv4=[
                             dict(
-                                dhcp_config=dict(
+                                dhcp=dict(
                                     client_id="GigabitEthernet0/2",
                                     hostname="test.com",
                                 )
@@ -481,7 +481,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     ),
                     dict(
                         name="Serial2/0",
-                        ipv6=[dict(dhcp_config=dict(rapid_commit=True))],
+                        ipv6=[dict(dhcp=dict(rapid_commit=True))],
                     ),
                     dict(
                         name="Serial3/0",
