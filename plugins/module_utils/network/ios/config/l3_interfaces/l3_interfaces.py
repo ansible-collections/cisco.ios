@@ -91,12 +91,9 @@ class L3_interfaces(ResourceModule):
         for each in wantd, haved:
             self.list_to_dict(each)
 
-        # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, limit the have to anything in want
-        # set want to nothing
         if self.state == "deleted":
             temp = {}
             for k, v in iteritems(haved):
@@ -105,7 +102,6 @@ class L3_interfaces(ResourceModule):
             haved = temp
             wantd = {}
 
-        # delete processes first so we do run into "more than one" errors
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd and (have.get("ipv4") or have.get("ipv6")):
@@ -131,11 +127,6 @@ class L3_interfaces(ResourceModule):
             self.commands = temp
 
     def _compare(self, want, have):
-        """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Bgp_address_family network resource.
-        """
         if want != have and self.state != "deleted":
             self.addcmd(want or have, "name", False)
             if want.get("ipv4"):
@@ -158,9 +149,10 @@ class L3_interfaces(ResourceModule):
                 for k, v in iteritems(want["ipv6"]):
                     if have.get("ipv6") and have["ipv6"].get(k):
                         h_val = have["ipv6"].pop(k)
-                        if "/" in v["address"] and "/" in h_val["address"]:
-                            validate_ipv6(v["address"], self._module)
-                            validate_ipv6(h_val["address"], self._module)
+                        if v.get("address"):
+                            if "/" in v["address"] and "/" in h_val["address"]:
+                                validate_ipv6(v["address"], self._module)
+                                validate_ipv6(h_val["address"], self._module)
                         self.compare(
                             self.parsers, want={"ipv6": v}, have={"ipv6": h_val}
                         )
@@ -175,16 +167,19 @@ class L3_interfaces(ResourceModule):
     def delete_l3_attributes(self, have):
         if have.get("ipv4"):
             for k, v in iteritems(have["ipv4"]):
-                if v["address"] != "dhcp":
+                if v.get("address"):
                     v["address"] = validate_n_expand_ipv4(self._module, v)
                 self.compare(parsers=self.parsers, want=dict(), have={"ipv4": v})
-        elif have.get("ipv6"):
+        if have.get("ipv6"):
             for k, v in iteritems(have["ipv6"]):
+                if v.get("address"):
+                    if "/" in v["address"]:
+                        validate_ipv6(v["address"], self._module)
                 self.compare(parsers=self.parsers, want=dict(), have={"ipv6": v})
 
     def list_to_dict(self, param):
         if param:
-            for key, val in iteritems(param):
+            for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
                 if "ipv4" in val:
                     temp = {}
