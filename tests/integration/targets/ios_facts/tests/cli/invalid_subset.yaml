@@ -8,7 +8,6 @@
   cisco.ios.ios_facts:
     gather_subset:
       - foobar
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -24,7 +23,6 @@
     gather_subset:
       - '!hardware'
       - hardware
-    provider: '{{ cli }}'
 
 - assert:
     that:

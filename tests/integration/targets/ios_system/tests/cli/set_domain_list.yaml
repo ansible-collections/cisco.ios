@@ -8,7 +8,6 @@
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
     match: none
-    provider: '{{ cli }}'
 
 - name: configure domain_search
   register: result
@@ -16,7 +15,6 @@
     domain_search:
       - ansible.com
       - redhat.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -30,7 +28,6 @@
     domain_search:
       - ansible.com
       - redhat.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -41,7 +38,6 @@
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -53,7 +49,6 @@
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -65,7 +60,6 @@
     domain_search:
       - ansible.com
       - redhat.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -78,7 +72,6 @@
     domain_search:
       - ansible.com
       - redhat.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -90,7 +83,6 @@
     domain_search:
       - ansible.com
       - eng.ansible.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -105,7 +97,6 @@
     domain_search:
       - ansible.com
       - eng.ansible.com
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -118,7 +109,5 @@
       - no ip domain-list redhat.com
       - no ip domain-list eng.ansible.com
     match: none
-    provider: '{{ cli }}'
-
 - debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection
     }}"

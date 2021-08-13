@@ -9,7 +9,6 @@
   cisco.ios.ios_config:
     lines: ['hostname ios-smoke']
     match: none
-    provider: "{{ cli }}"
 
 - name: hit diff_ignore_lines
   cisco.ios.ios_config:
@@ -17,19 +16,16 @@
     diff_ignore_lines:
       - hostname ios-smoke
     save_when: modified
-    provider: "{{ cli }}"
 
 - name: return hostname
   cisco.ios.ios_config:
     lines: ['hostname {{ shorter_hostname }}']
     match: none
-    provider: "{{ cli }}"
 
 - name: hit items with parents
   cisco.ios.ios_config:
     lines: ['permit ip any any log']
     parents: ['ip access-list extended test']
-    provider: "{{ cli }}"
     match: exact
   register: result
 
@@ -38,7 +34,6 @@
     lines:
       - 'no ip access-list extended test'
     match: none
-    provider: "{{ cli }}"
 
 - name: setup test NetworkConfig.difference, replace=block
   cisco.ios.ios_config:
@@ -49,7 +44,6 @@
     parents: ['ip access-list extended test']
     before: ['no ip access-list extended test']
     after: ['exit']
-    provider: "{{ cli }}"
     match: none
 
 - name: test NetworkConfig.difference, replace=block
@@ -62,7 +56,6 @@
     parents: ['ip access-list extended test']
     replace: block
     after: ['exit']
-    provider: "{{ cli }}"
   register: result
 
 - assert:
@@ -79,7 +72,6 @@
     lines:
       - no ip access-list extended test
     match: none
-    provider: "{{ cli }}"
 
 # CustomNetworkConfig
 # currently gets skipped because switch_type != 'L2'
@@ -91,21 +83,18 @@
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
-        provider: "{{ cli }}"
       ignore_errors: true
 
     - name: setup - remove config used in test(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
-        provider: "{{ cli }}"
       ignore_errors: true
 
     - name: setup - remove config used in test(part3)
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        provider: "{{ cli }}"
         parents: "{{ item }}"
       loop:
         - interface GigabitEthernet0/1
@@ -115,7 +104,6 @@
       ios_linkagg: &create
         group: 20
         state: present
-        provider: "{{ cli }}"
       register: result
 
     - assert:
@@ -130,7 +118,6 @@
         members:
           - GigabitEthernet0/1
           - GigabitEthernet0/2
-        provider: "{{ cli }}"
       register: result
 
     - assert:
@@ -147,7 +134,6 @@
         mode: active
         members:
           - GigabitEthernet0/2
-        provider: "{{ cli }}"
       register: result
 
     - assert:
@@ -160,7 +146,6 @@
       ios_linkagg: &remove
         group: 20
         state: absent
-        provider: "{{ cli }}"
       register: result
 
     - assert:
@@ -173,7 +158,6 @@
         aggregate:
           - { group: 5 }
           - { group: 20, mode: active, members: ['GigabitEthernet0/1'] }
-        provider: "{{ cli }}"
       register: result
 
     - assert:
@@ -188,21 +172,18 @@
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
-        provider: "{{ cli }}"
       ignore_errors: true
 
     - name: teardown(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
-        provider: "{{ cli }}"
       ignore_errors: true
 
     - name: teardown(part3)
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        provider: "{{ cli }}"
         parents: "{{ item }}"
       loop:
         - interface GigabitEthernet0/1

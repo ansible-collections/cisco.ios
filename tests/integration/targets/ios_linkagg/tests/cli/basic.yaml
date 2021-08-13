@@ -10,14 +10,12 @@
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
-        provider: '{{ cli }}'
 
     - name: setup - remove config used in test(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
-        provider: '{{ cli }}'
 
     - name: setup - remove config used in test(part3)
       loop:
@@ -26,7 +24,6 @@
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        provider: '{{ cli }}'
         parents: '{{ item }}'
 
     - name: create linkagg
@@ -34,7 +31,6 @@
       cisco.ios.ios_linkagg: &id001
         group: 20
         state: present
-        provider: '{{ cli }}'
 
     - assert:
         that:
@@ -57,7 +53,6 @@
         members:
           - GigabitEthernet0/1
           - GigabitEthernet0/2
-        provider: '{{ cli }}'
 
     - assert:
         that:
@@ -82,7 +77,6 @@
         mode: active
         members:
           - GigabitEthernet0/2
-        provider: '{{ cli }}'
 
     - assert:
         that:
@@ -103,7 +97,6 @@
       cisco.ios.ios_linkagg: &id004
         group: 20
         state: absent
-        provider: '{{ cli }}'
 
     - assert:
         that:
@@ -129,7 +122,6 @@
             mode: active
             members:
               - GigabitEthernet0/1
-        provider: '{{ cli }}'
 
     - assert:
         that:
@@ -152,14 +144,12 @@
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
-        provider: '{{ cli }}'
 
     - name: teardown(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
-        provider: '{{ cli }}'
 
     - name: teardown(part3)
       loop:
@@ -168,7 +158,6 @@
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        provider: '{{ cli }}'
         parents: '{{ item }}'
   when: switch_type == 'L2'
 

@@ -5,13 +5,11 @@
 - name: Make sure LLDP is not running before tests
   cisco.ios.ios_config:
     lines: no lldp run
-    provider: '{{ cli }}'
 
 - name: Enable LLDP service
   register: result
   cisco.ios.ios_lldp:
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -22,7 +20,6 @@
   register: result
   cisco.ios.ios_lldp:
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -32,7 +29,6 @@
   register: result
   cisco.ios.ios_lldp:
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -43,7 +39,6 @@
   register: result
   cisco.ios.ios_lldp:
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
