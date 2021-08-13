@@ -3,7 +3,6 @@
   cisco.ios.ios_banner:
     banner: login
     state: absent
-    provider: "{{ cli }}"
 
 - name: Set login
   register: result
@@ -11,7 +10,6 @@
     banner: login
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present
-    provider: "{{ cli }}"
 
 - debug:
     msg: "{{ result }}"
@@ -28,7 +26,6 @@
     banner: login
     text: "this is my login banner\nthat has a multiline\nstring"
     state: present
-    provider: "{{ cli }}"
 
 - assert:
     that:
@@ -42,7 +39,6 @@
     banner: login
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present
-    provider: "{{ cli }}"
 
 - debug:
     msg: "{{ result }}"
