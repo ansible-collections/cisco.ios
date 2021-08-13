@@ -102,7 +102,7 @@ class TestIosNtpModule(TestIosModule):
             )
         )
         commands = [
-            "no ntp server my_mgmt_vrf 10.75.32.5",
+            "no ntp server vrf my_mgmt_vrf 10.75.32.5",
             "no ntp source Loopback0",
             "no ntp access-group peer NTP_ACL",
             "no ntp logging",

@@ -368,7 +368,7 @@ def main():
         auth_key=dict(),
         key_id=dict(),
         state=dict(choices=["absent", "present"], default="present"),
-        vrf=dict(default=""),
+        vrf=dict(),
     )
 
     argument_spec.update(ios_argument_spec)
