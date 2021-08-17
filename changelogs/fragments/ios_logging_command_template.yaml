@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Logging command template fixed supporting Jinja version.

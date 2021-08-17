@@ -160,6 +160,15 @@ def tmplt_origin_id(config_data):
     return tmplt_common(config_data.get("origin_id"), "logging origin-id")
 
 
+def tmplt_logging_on(config_data):
+    cmd = ""
+    if config_data.get("logging_on") == "disable":
+        cmd = "no logging on"
+    else:
+        cmd = "logging on"
+    return cmd
+
+
 def tmplt_queue_limit(config_data):
     return tmplt_common(config_data.get("queue_limit"), "logging queue-limit")
 
@@ -614,7 +623,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ((\s|^))?logging
                 (\s(?P<on>on))?
                 $""", re.VERBOSE),
-            "setval": "{{ 'no ' if logging_on == 'disable' }}logging on",
+            "setval": tmplt_logging_on,
             "remval": "logging on",
             "result": {
                 "logging": {
