@@ -276,8 +276,8 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/3",
                         ipv4=[
                             dict(
-                                address="192.168.0.3/24",
-                                dhcp_client=1,
+                                address="dhcp",
+                                dhcp_client="GigabitEthernet0/3",
                                 dhcp_hostname="abc.com",
                             )
                         ],
@@ -300,7 +300,7 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         commands = [
             "interface GigabitEthernet0/3",
-            "ip address 192.168.0.3 255.255.255.0",
+            "ip address dhcp client-id GigabitEthernet0/3 hostname abc.com",
             "ipv6 address fd5d:12c9:2202:1::1/64",
             "interface GigabitEthernet0/2",
             "ip address 192.168.0.2 255.255.255.0",
@@ -311,6 +311,10 @@ class TestIosL3InterfacesModule(TestIosModule):
         ]
 
         result = self.execute_module(changed=False)
+        print(
+            "****************************************************************"
+        )
+        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_l3_interfaces_merged(self):

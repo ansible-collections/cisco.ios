@@ -28,9 +28,9 @@ merged:
         - address: dhcp
       name: GigabitEthernet0/0
     - ipv4:
-        - address: dhcp
-          dhcp_client: 0
-          dhcp_hostname: test.com
+        - dhcp:
+            client_id: GigabitEthernet0
+            hostname: test.com
       ipv6:
         - address: autoconfig
       name: GigabitEthernet0/1

@@ -57,7 +57,7 @@ options:
             - GigabitEthernet interface number
             - This option is DEPRECATED and is replaced with dhcp which
               accepts dict as input this attribute will be removed after 2023-08-01.
-            type: int
+            type: str
           dhcp_hostname:
             description:
             - Configures and specifies value for hostname option over DHCP ip. Note,

@@ -212,9 +212,8 @@ class L3_interfaces(ResourceModule):
                                 {
                                     "dhcp": {
                                         "dhcp": {
-                                            "client_id": self.handle_dhcp_client(
-                                                val["name"],
-                                                each.get("dhcp_client"),
+                                            "client_id": each.get(
+                                                "dhcp_client"
                                             ),
                                             "hostname": each.get(
                                                 "dhcp_hostname"

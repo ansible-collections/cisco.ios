@@ -138,12 +138,13 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": dhcp_tmplt,
             "result": {
                 "{{ name }}": {
-                    "ipv4": [{
-                        "dhcp": {
-                            "client_id": "{{ client_id }}",
-                            "hostname": "{{ hostname }}",
-                            }
-                        }
+                    "ipv4": [
+                        {
+                            "dhcp": {
+                                "client_id": "{{ client_id }}",
+                                "hostname": "{{ hostname }}",
+                            },
+                        },
                     ]
                 }
             },
@@ -166,18 +167,19 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": ip_tmplt,
             "result": {
                 "{{ name }}": {
-                    "ipv6": [{
-                        "address": "{{ ipv6 }}",
-                        "link_local": "{{ True if link_local is defined }}",
-                        "anycast": "{{ True if anycast is defined }}",
-                        "cga": "{{ True if cga is defined }}",
-                        "eui": "{{ True if eui is defined }}",
-                        "segment_routing": {
-                            "enable": "{{ True if enable is defined }}",
-                            "default": "{{ True if default is defined }}",
-                            "ipv6_sr": "{{ True if ipv6_sr is defined }}",
-                            }
-                        }
+                    "ipv6": [
+                        {
+                            "address": "{{ ipv6 }}",
+                            "link_local": "{{ True if link_local is defined }}",
+                            "anycast": "{{ True if anycast is defined }}",
+                            "cga": "{{ True if cga is defined }}",
+                            "eui": "{{ True if eui is defined }}",
+                            "segment_routing": {
+                                "enable": "{{ True if enable is defined }}",
+                                "default": "{{ True if default is defined }}",
+                                "ipv6_sr": "{{ True if ipv6_sr is defined }}",
+                            },
+                        },
                     ]
                 }
             },
@@ -194,10 +196,11 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "ipv6 address autoconfig default",
             "result": {
                 "{{ name }}": {
-                    "ipv6": [{
-                        "enable": "{{ True if enable is defined }}",
-                        "default": "{{ True if default is defined }}",
-                        }
+                    "ipv6": [
+                        {
+                            "enable": "{{ True if enable is defined }}",
+                            "default": "{{ True if default is defined }}",
+                        },
                     ]
                 }
             },
@@ -214,12 +217,13 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": dhcp_tmplt,
             "result": {
                 "{{ name }}": {
-                    "ipv6": [{
-                        "dhcp": {
-                            "enable": "{{ True if dhcp is defined }}",
-                            "rapid_commit": "{{ True if rapid_commit is defined }}",
-                            }
-                        }
+                    "ipv6": [
+                        {
+                            "dhcp": {
+                                "enable": "{{ True if dhcp is defined }}",
+                                "rapid_commit": "{{ True if rapid_commit is defined }}",
+                            },
+                        },
                     ]
                 }
             },
