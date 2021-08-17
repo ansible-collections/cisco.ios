@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -234,8 +233,3 @@ class L3_interfaces(ResourceModule):
                         if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv6"] = temp
-
-    def handle_dhcp_client(self, name, client):
-        """ This method is to handle the old way of handling the deprecated
-            dhcp client option"""
-        return re.split("\\d+", name)[0] + str(client)
