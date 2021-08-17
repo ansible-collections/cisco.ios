@@ -161,11 +161,9 @@ def tmplt_origin_id(config_data):
 
 
 def tmplt_logging_on(config_data):
-    cmd = ""
+    cmd = "logging on"
     if config_data.get("logging_on") == "disable":
-        cmd = "no logging on"
-    else:
-        cmd = "logging on"
+        cmd = "no " + cmd
     return cmd
 
 
