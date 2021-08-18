@@ -9,6 +9,12 @@
         state: present
         configured_password: pass123
 
+    - name: Allow SSH password authentication
+      become: true
+      cisco.ios.ios_command:
+        commands:
+          - ip ssh server authenticate user
+
     - name: reset connection with {{ ansible_user }
       meta: reset_connection
 
