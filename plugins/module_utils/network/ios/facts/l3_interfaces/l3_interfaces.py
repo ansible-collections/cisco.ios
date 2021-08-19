@@ -53,7 +53,6 @@ class L3_InterfacesFacts(object):
 
         if not data:
             data = self.get_l3_interfaces_data(connection)
-            # data = """interface GigabitEthernet0/0\n ip address dhcp\ninterface GigabitEthernet0/1\n ip address 203.0.113.27 255.255.255.0\ninterface GigabitEthernet0/2\n ip address 192.0.2.1 255.255.255.0 secondary\n ip address 192.0.2.2 255.255.255.0\n ipv6 address autoconfig\n ipv6 address 2001:db8:0:3::/64\n"""
 
         # parse native config using the l3_interfaces template
         l3_interfaces_parser = L3_interfacesTemplate(lines=data.splitlines())
@@ -66,7 +65,9 @@ class L3_InterfacesFacts(object):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
                         cidr_val = netmask_to_cidr(each["netmask"])
-                        each["address"] = each["address"].strip(" ") + "/" + cidr_val
+                        each["address"] = (
+                            each["address"].strip(" ") + "/" + cidr_val
+                        )
                         del each["netmask"]
             temp.append(v)
         # sorting the dict by interface name
@@ -76,7 +77,9 @@ class L3_InterfacesFacts(object):
         facts = {}
         if objs:
             facts["l3_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["l3_interfaces"].append(utils.remove_empties(cfg))
             facts["l3_interfaces"] = sorted(

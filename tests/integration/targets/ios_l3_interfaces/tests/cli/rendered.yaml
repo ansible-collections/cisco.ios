@@ -16,8 +16,8 @@
           - name: GigabitEthernet0/1
             ipv4:
               - dhcp:
-                 client_id: GigabitEthernet0/0
-                 hostname: test.com
+                  client_id: GigabitEthernet0/0
+                  hostname: test.com
             ipv6:
               - address: autoconfig
           - name: GigabitEthernet0/2
