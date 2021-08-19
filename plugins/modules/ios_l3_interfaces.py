@@ -69,6 +69,9 @@ options:
             description: IP Address negotiated via DHCP.
             type: dict
             suboptions:
+              enable:
+                description: Enable dhcp.
+                type: bool
               client_id:
                 description: Specify client-id to use.
                 type: str

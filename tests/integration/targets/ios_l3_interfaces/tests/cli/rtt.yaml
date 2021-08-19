@@ -16,12 +16,13 @@
               - address: 192.0.2.1/24
           - name: GigabitEthernet0/0
             ipv4:
-              - address: dhcp
+              - dhcp:
+                  enable: true
           - name: GigabitEthernet0/1
             ipv4:
-              - address: dhcp
-                dhcp_client: 0
-                dhcp_hostname: test.com
+              - dhcp:
+                 client_id: GigabitEthernet0/0
+                 hostname: test.com
           - name: GigabitEthernet0/2
             ipv4:
               - address: 198.51.100.1/24
@@ -48,7 +49,8 @@
               - address: 192.0.2.1/24
           - name: GigabitEthernet0/0
             ipv4:
-              - address: dhcp
+              - dhcp:
+                  enable: true
           - name: GigabitEthernet0/2
             ipv4:
               - address: 198.51.100.1/24

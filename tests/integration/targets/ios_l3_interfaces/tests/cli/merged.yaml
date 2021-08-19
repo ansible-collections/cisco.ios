@@ -16,9 +16,9 @@
               - address: 192.0.2.1/24
           - name: GigabitEthernet0/1
             ipv4:
-              - address: dhcp
-                dhcp_client: 0
-                dhcp_hostname: test.com
+              - dhcp:
+                  client_id: GigabitEthernet0/0
+                  hostname: test.com
             ipv6:
               - address: autoconfig
           - name: GigabitEthernet0/2
@@ -27,7 +27,6 @@
                 secondary: true
               - address: 198.51.100.2/24
             ipv6:
-              - address: dhcp
               - address: 2001:db8:0:3::/64
         state: merged
 

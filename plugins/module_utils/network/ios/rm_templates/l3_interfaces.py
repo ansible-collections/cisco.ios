@@ -129,7 +129,8 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "ipv4.dhcp",
             "getval": re.compile(
-                r"""\s+ip\saddress\sdhcp
+                r"""\s+ip\saddress\s
+                    ((?P<dhcp>dhcp))
                     (\sclient-id\s(?P<client_id>\S+))?
                     (\shostname\s(?P<hostname>\S+))?
                     $""",
@@ -141,6 +142,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv4": [
                         {
                             "dhcp": {
+                                "enable": "{{ True if dhcp is defined }}",
                                 "client_id": "{{ client_id }}",
                                 "hostname": "{{ hostname }}",
                             },
