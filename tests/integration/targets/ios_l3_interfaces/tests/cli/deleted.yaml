@@ -9,7 +9,7 @@
 
 - block:
 
-    - name: Delete attributes of provided configured interfaces
+    - name: l3_interface deleted - Delete attributes of provided configured interfaces
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -19,29 +19,29 @@
           - name: GigabitEthernet0/2
         state: deleted
 
-    - name: Assert that correct set of commands were generated
+    - name: l3_interface deleted - Assert that correct set of commands were generated
       assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
             \ length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
+    - name: l3_interface deleted - Assert that before dicts are correctly generated
       assert:
         that:
           - "{{ deleted['before'] | symmetric_difference(result['before']) | length\
             \ == 0 }}"
 
-    - name: Assert that after dict is correctly generated
+    - name: l3_interface deleted - Assert that after dict is correctly generated
       assert:
         that:
           - "{{ deleted['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Delete attributes of all configured interfaces (IDEMPOTENT)
+    - name: l3_interface deleted - Delete attributes of all configured interfaces (IDEMPOTENT)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
 
-    - name: Assert that the previous task was idempotent
+    - name: l3_interface deleted - Assert that the previous task was idempotent
       assert:
         that:
           - result.changed == false

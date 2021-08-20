@@ -48,6 +48,15 @@ def ip_tmplt(config_data):
     return cmd
 
 
+def autoconfig_tmplt(config_data):
+    cmd = "ipv6 address autoconfig"
+    if config_data["ipv6"].get("autoconfig"):
+        config = config_data.get("ipv6").get("autoconfig")
+        if config.get("default"):
+            cmd = cmd + " default"
+    return cmd
+
+
 def dhcp_tmplt(config_data):
     cmd = "{tp} address dhcp"
     if config_data.get("ipv4"):
@@ -155,7 +164,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv6.address",
             "getval": re.compile(
                 r"""\s+ipv6\saddress
-                    (\s(?P<ipv6>\S+))?
+                    (\s(?P<ipv6>\b(?!autoconfig\b)\S+))
                     (\s(?P<link_local>link-local))?
                     (\s(?P<anycast>anycast))?
                     (\s(?P<cga>cga))?
@@ -195,14 +204,16 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                     re.VERBOSE,
             ),
-            "setval": "ipv6 address autoconfig default",
+            "setval": autoconfig_tmplt,
             "result": {
                 "{{ name }}": {
                     "ipv6": [
                         {
-                            "enable": "{{ True if enable is defined }}",
-                            "default": "{{ True if default is defined }}",
-                        },
+                            "autoconfig": {
+                                "enable": "{{ True if enable is defined }}",
+                                "default": "{{ True if default is defined }}",
+                            },
+                        }
                     ]
                 }
             },
