@@ -219,6 +219,20 @@ EXAMPLES = """
       - address: 192.168.0.3/24
     state: merged
 
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "ip address 192.168.0.1 255.255.255.0 secondary",
+#       "interface GigabitEthernet0/2",
+#       "ip address 192.168.0.2 255.255.255.0",
+#       "interface GigabitEthernet0/3",
+#       "ipv6 address fd5d:12c9:2201:1::1/64",
+#       "GigabitEthernet0/3.100",
+#       "ip address 192.168.0.3 255.255.255.0",
+#     ],
+
 # After state:
 # ------------
 #
@@ -272,14 +286,30 @@ EXAMPLES = """
       - address: 192.168.2.0/24
     - name: GigabitEthernet0/3
       ipv4:
-      - address: dhcp
-        dhcp_client: 2
-        dhcp_hostname: test.com
+      - dhcp:
+          client_id: GigabitEthernet0/2
+          hostname: test.com
     - name: GigabitEthernet0/3.100
       ipv4:
       - address: 192.168.0.3/24
         secondary: true
     state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "ip address 192.168.0.1 255.255.255.0 secondary",
+#       "interface GigabitEthernet0/2",
+#       "ip address 192.168.0.2 255.255.255.0",
+#       "interface GigabitEthernet0/3",
+#       "no ip address 192.168.2.0 255.255.255.0",
+#       "ip address dhcp client-id GigabitEthernet0/2 hostname test.com",
+#       "GigabitEthernet0/3.100",
+#       "no ip address 192.168.0.2 255.255.255.0",
+#       "ip address 192.168.0.3 255.255.255.0 secondary",
+#     ],
 
 # After state:
 # ------------
@@ -300,7 +330,6 @@ EXAMPLES = """
 #  ip address dhcp client-id GigabitEthernet0/2 hostname test.com
 # interface GigabitEthernet0/3.100
 #  encapsulation dot1Q 20
-#  ip address 192.168.0.2 255.255.255.0
 #  ip address 192.168.0.3 255.255.255.0 secondary
 
 # Using overridden
@@ -334,8 +363,24 @@ EXAMPLES = """
       - address: 192.168.0.1/24
     - name: GigabitEthernet0/3.100
       ipv6:
-      - address: autoconfig
+      - autoconfig: true
     state: overridden
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "no ip address 10.1.1.1 255.255.255.0",
+#       "interface GigabitEthernet0/2",
+#       "no ip address 192.168.2.1 255.255.255.0",
+#       "ip address 192.168.0.1 255.255.255.0",
+#       "interface GigabitEthernet0/3",
+#       "no ipv6 address FD5D:12C9:2201:1::1/64",
+#       "GigabitEthernet0/3.100",
+#       "no ip address 192.168.0.2 255.255.255.0",
+#       "ipv6 address autoconfig",
+#     ],
 
 # After state:
 # ------------
@@ -389,12 +434,19 @@ EXAMPLES = """
     - name: GigabitEthernet0/3.100
     state: deleted
 
+# "commands": [
+#       "interface GigabitEthernet0/2",
+#       "no ip address 192.168.1.0 255.255.255.0",
+#       "GigabitEthernet0/3.100",
+#       "no ip address 192.168.0.2 255.255.255.0",
+#     ],
+
 # After state:
 # -------------
 #
 # vios#show running-config | section ^interface
 # interface GigabitEthernet0/1
-#  no ip address
+#  ip address 192.0.2.10 255.255.255.0
 #  shutdown
 #  duplex auto
 #  speed auto
@@ -441,6 +493,18 @@ EXAMPLES = """
   cisco.ios.ios_l3_interfaces:
     state: deleted
 
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "no ip address 192.0.2.10 255.255.255.0",
+#       "interface GigabitEthernet0/2",
+#       "no ip address 192.168.1.0 255.255.255.0",
+#       "interface GigabitEthernet0/3",
+#       "no ip address 192.168.0.1 255.255.255.0",
+#       "no ipv6 address FD5D:12C9:2201:1::1/64",
+#       "GigabitEthernet0/3.100",
+#       "no ip address 192.168.0.2 255.255.255.0",
+#     ],
+
 # After state:
 # -------------
 #
@@ -476,7 +540,6 @@ EXAMPLES = """
 
 - name: Gather listed l3 interfaces with provided configurations
   cisco.ios.ios_l3_interfaces:
-    config:
     state: gathered
 
 # Module Execution Result:

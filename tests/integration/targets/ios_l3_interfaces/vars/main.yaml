@@ -22,7 +22,7 @@ merged:
   after:
     - name: Loopback888
     - ipv4:
-        - address: 192.0.2.1 255.255.255.0
+        - address: 192.0.2.1/24
       name: Loopback999
     - ipv4:
         - dhcp:
@@ -30,18 +30,19 @@ merged:
       name: GigabitEthernet0/0
     - ipv4:
         - dhcp:
-            client_id: GigabitEthernet0
+            client_id: GigabitEthernet0/0
+            enable: true
             hostname: test.com
       ipv6:
         - autoconfig:
             enable: true
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
       name: GigabitEthernet0/2
 
 replaced:
@@ -60,7 +61,7 @@ replaced:
           secondary: true
         - address: 192.0.2.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
       name: GigabitEthernet0/2
@@ -84,14 +85,14 @@ replaced:
             enable: true
       name: GigabitEthernet0/0
     - ipv4:
-        - address: 203.0.114.1 255.255.255.0
+        - address: 203.0.114.1/24
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
-        - address: 2001:db8:1:1::/64
+        - address: 2001:DB8:0:3::/64
       name: GigabitEthernet0/2
 
 overridden:
@@ -110,7 +111,7 @@ overridden:
           secondary: true
         - address: 192.0.2.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
       name: GigabitEthernet0/2
@@ -133,9 +134,9 @@ overridden:
       name: GigabitEthernet0/0
     - name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
           secondary: true
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
       name: GigabitEthernet0/2
 
 deleted:
@@ -154,7 +155,7 @@ deleted:
           secondary: true
         - address: 192.0.2.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
       name: GigabitEthernet0/2
@@ -192,7 +193,7 @@ gathered:
           secondary: true
         - address: 192.0.2.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
       name: GigabitEthernet0/2
@@ -202,16 +203,17 @@ parsed:
     - ipv4:
         - dhcp:
             client_id: GigabitEthernet0/0
+            enable: true
             hostname: test.com
       name: GigabitEthernet0/1
     - ipv4:
-        - address: 198.51.100.1 255.255.255.0
+        - address: 198.51.100.1/24
           secondary: true
-        - address: 198.51.100.2 255.255.255.0
+        - address: 198.51.100.2/24
       ipv6:
         - autoconfig:
             enable: true
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
       name: GigabitEthernet0/2
 
 rtt:
