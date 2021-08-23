@@ -591,7 +591,7 @@ EXAMPLES = """
     config:
     - name: GigabitEthernet0/1
       ipv4:
-      - dhcp: dhcp
+      - dhcp:
           client_id: GigabitEthernet0/0
           hostname: test.com
     - name: GigabitEthernet0/2
