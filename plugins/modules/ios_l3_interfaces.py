@@ -179,12 +179,12 @@ options:
 """
 
 EXAMPLES = """
-# Using merged
-#
+# Using state merged
+
 # Before state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  ip address 10.1.1.1 255.255.255.0
@@ -235,8 +235,8 @@ EXAMPLES = """
 
 # After state:
 # ------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  ip address 10.1.1.1 255.255.255.0
@@ -255,12 +255,12 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.3 255.255.255.0
 
-# Using replaced
-#
+# Using state replaced
+
 # Before state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  ip address 10.1.1.1 255.255.255.0
@@ -313,8 +313,8 @@ EXAMPLES = """
 
 # After state:
 # ------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  ip address 10.1.1.1 255.255.255.0
@@ -332,12 +332,12 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ip address 192.168.0.3 255.255.255.0 secondary
 
-# Using overridden
-#
+# Using state overridden
+
 # Before state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  ip address 10.1.1.1 255.255.255.0
@@ -384,8 +384,8 @@ EXAMPLES = """
 
 # After state:
 # ------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  description Configured by Ansible
 #  no ip address
@@ -402,12 +402,12 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 #  ipv6 address autoconfig
 
-# Using Deleted
-#
+# Using state Deleted
+
 # Before state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  ip address 192.0.2.10 255.255.255.0
 #  shutdown
@@ -443,8 +443,8 @@ EXAMPLES = """
 
 # After state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  ip address 192.0.2.10 255.255.255.0
 #  shutdown
@@ -463,13 +463,13 @@ EXAMPLES = """
 # interface GigabitEthernet0/3.100
 #  encapsulation dot1Q 20
 
-# Using Deleted without any config passed
+# Using state Deleted without any config passed
 #"(NOTE: This will delete all of configured L3 resource module attributes from each configured interface)"
-#
+
 # Before state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  ip address 192.0.2.10 255.255.255.0
 #  shutdown
@@ -507,8 +507,8 @@ EXAMPLES = """
 
 # After state:
 # -------------
-#
-# vios#show running-config | section ^interface
+
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet0/1
 #  no ip address
 #  shutdown
@@ -525,12 +525,12 @@ EXAMPLES = """
 # interface GigabitEthernet0/3.100
 #  encapsulation dot1Q 20
 
-# Using Gathered
-#
+# Using state Gathered
+
 # Before state:
 # -------------
-#
-# vios#sh running-config | section ^interface
+
+# router-ios#sh running-config | section ^interface
 # interface GigabitEthernet0/1
 #  ip address 203.0.113.27 255.255.255.0
 # interface GigabitEthernet0/2
@@ -544,7 +544,7 @@ EXAMPLES = """
 
 # Module Execution Result:
 # ------------------------
-#
+
 # "gathered": [
 #         {
 #             "ipv4": [
@@ -575,8 +575,8 @@ EXAMPLES = """
 
 # After state:
 # ------------
-#
-# vios#sh running-config | section ^interface
+
+# router-ios#sh running-config | section ^interface
 # interface GigabitEthernet0/1
 #  ip address 203.0.113.27 255.255.255.0
 # interface GigabitEthernet0/2
@@ -584,16 +584,16 @@ EXAMPLES = """
 #  ip address 192.0.2.2 255.255.255.0
 #  ipv6 address 2001:DB8:0:3::/64
 
-# Using Rendered
+# Using state Rendered
 
 - name: Render the commands for provided configuration
   cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/1
       ipv4:
-      - address: dhcp
-        dhcp_client: 0
-        dhcp_hostname: test.com
+      - dhcp: dhcp
+          client_id: GigabitEthernet0/0
+          hostname: test.com
     - name: GigabitEthernet0/2
       ipv4:
       - address: 198.51.100.1/24
@@ -605,7 +605,7 @@ EXAMPLES = """
 
 # Module Execution Result:
 # ------------------------
-#
+
 # "rendered": [
 #         "interface GigabitEthernet0/1",
 #         "ip address dhcp client-id GigabitEthernet 0/0 hostname test.com",
@@ -615,17 +615,17 @@ EXAMPLES = """
 #         "ipv6 address 2001:db8:0:3::/64"
 #     ]
 
-# Using Parsed
+# Using state Parsed
+
 # File: parsed.cfg
 # ----------------
 #
 # interface GigabitEthernet0/1
-# ip address dhcp client-id
-# GigabitEthernet 0/0 hostname test.com
+#  ip address dhcp client-id GigabitEthernet 0/0 hostname test.com
 # interface GigabitEthernet0/2
-# ip address 198.51.100.1 255.255.255.0
-# secondary ip address 198.51.100.2 255.255.255.0
-# ipv6 address 2001:db8:0:3::/64
+#  ip address 198.51.100.1 255.255.255.0
+#  ip address 198.51.100.2 255.255.255.0 secondary
+#  ipv6 address 2001:db8:0:3::/64
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l3_interfaces:
@@ -634,14 +634,15 @@ EXAMPLES = """
 
 # Module Execution Result:
 # ------------------------
-#
+
 # "parsed": [
 #         {
 #             "ipv4": [
 #                 {
-#                     "address": "dhcp",
-#                     "dhcp_client": 0,
-#                     "dhcp_hostname": "test.com"
+#                     "dhcp": {
+#                         "client_id": GigabitEthernet0/0,
+#                         "hostname": "test.com"
+#                     }
 #                 }
 #             ],
 #             "name": "GigabitEthernet0/1"
@@ -649,11 +650,11 @@ EXAMPLES = """
 #         {
 #             "ipv4": [
 #                 {
-#                     "address": "198.51.100.1 255.255.255.0",
+#                     "address": "198.51.100.1/24",
 #                     "secondary": true
 #                 },
 #                 {
-#                     "address": "198.51.100.2 255.255.255.0"
+#                     "address": "198.51.100.2/24"
 #                 }
 #             ],
 #             "ipv6": [
@@ -721,11 +722,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l3_interfaces.l3_interfaces import (
     L3_interfaces,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():
