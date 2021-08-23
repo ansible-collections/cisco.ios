@@ -1,8 +1,8 @@
 ---
 merged:
   before:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -10,7 +10,7 @@ merged:
     - name: GigabitEthernet0/1
     - name: GigabitEthernet0/2
   commands:
-    - interface loopback999
+    - interface Loopback999
     - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
     - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
@@ -19,10 +19,10 @@ merged:
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
   after:
-    - name: loopback888
+    - name: Loopback888
     - ipv4:
         - address: 192.0.2.1 255.255.255.0
-      name: loopback999
+      name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -44,8 +44,8 @@ merged:
       name: GigabitEthernet0/2
 replaced:
   before:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -75,8 +75,8 @@ replaced:
     - ip address 198.51.100.2 255.255.255.0
     - ip address 198.51.100.1 255.255.255.0 secondary
   after:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -93,8 +93,8 @@ replaced:
       name: GigabitEthernet0/2
 overridden:
   before:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -122,8 +122,8 @@ overridden:
     - ip address 198.51.100.2 255.255.255.0 secondary
     - ip address 198.51.100.1 255.255.255.0
   after:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -136,8 +136,8 @@ overridden:
       name: GigabitEthernet0/2
 deleted:
   before:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -163,8 +163,8 @@ deleted:
     - no ipv6 address 2001:db8:0:3::/64
     - no ipv6 address autoconfig
   after:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -173,8 +173,8 @@ deleted:
     - name: GigabitEthernet0/2
 gathered:
   config:
-    - name: loopback888
-    - name: loopback999
+    - name: Loopback888
+    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
@@ -217,7 +217,7 @@ rtt:
     - ipv6 address 2001:db8:0:3::/64
 rendered:
   commands:
-    - interface loopback999
+    - interface Loopback999
     - ip address 192.0.2.1 255.255.255.0
     - interface GigabitEthernet0/1
     - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
