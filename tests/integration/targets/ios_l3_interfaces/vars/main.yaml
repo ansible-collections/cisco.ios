@@ -193,7 +193,7 @@ gathered:
           secondary: true
         - address: 192.0.2.2/24
       ipv6:
-        - address: 2001:db8:0:3::/64
+        - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
       name: GigabitEthernet0/2
