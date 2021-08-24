@@ -73,7 +73,7 @@ class TestIosFactsModule(TestIosModule):
 
             for command in commands:
                 filename = (
-                    str(command).split(" | ", maxsplit=1)[0].replace(" ", "_")
+                    str(command).split(" | ", 1)[0].replace(" ", "_")
                 )
                 output.append(load_fixture("ios_facts_%s" % filename))
             return output
