@@ -152,11 +152,11 @@ plugin_routing:
     bgp:
       redirect: cisco.ios.ios_bgp
       deprecation:
-        removal_date: "2023-01-27"
+        removal_date: "2023-08-24"
         warning_text: See the plugin documentation for more details
     ios_bgp:
       deprecation:
-        removal_date: "2023-01-27"
+        removal_date: "2023-08-24"
         warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.ios.ios_bgp_global
