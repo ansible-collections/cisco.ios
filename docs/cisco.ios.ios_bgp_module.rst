@@ -16,7 +16,7 @@ Version added: 1.0.0
 
 DEPRECATED
 ----------
-:Removed in collection release after 2023-01-27
+:Removed in collection release after 2023-08-24
 :Why: Newer and updated modules released with more functionality
 :Alternative: ios_bgp_global
 
