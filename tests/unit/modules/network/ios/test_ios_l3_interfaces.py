@@ -103,7 +103,6 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 address fd5d:12c9:2201:1::1/64 cga",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_l3_interfaces_overridden(self):
@@ -311,10 +310,6 @@ class TestIosL3InterfacesModule(TestIosModule):
         ]
 
         result = self.execute_module(changed=False)
-        print(
-            "****************************************************************"
-        )
-        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_l3_interfaces_merged(self):

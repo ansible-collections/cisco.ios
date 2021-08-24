@@ -62,7 +62,6 @@
     - assert:
         that:
           - revert.changed == true
-          # - revert.commands|symmetric_difference(merged.commands) == []
           - "{{ revert['commands'] | symmetric_difference(rtt['commands'])\
             \ | length == 0 }}"
   always:
