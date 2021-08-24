@@ -1,5 +1,4 @@
 plugins/modules/ios_logging.py validate-modules:deprecation-mismatch
-plugins/modules/ios_logging.py validate-modules:invalid-documentation
 plugins/action/ios.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
 plugins/module_utils/network/ios/config/bgp_global/bgp_global.py compile-2.6!skip
 plugins/module_utils/network/ios/config/bgp_address_family/bgp_address_family.py compile-2.6!skip
