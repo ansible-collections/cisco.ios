@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_user fails to add password when configured in separate task with update_password.

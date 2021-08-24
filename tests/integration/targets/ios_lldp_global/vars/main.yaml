@@ -23,8 +23,8 @@ replaced:
     - lldp holdtime 20
     - lldp reinit 5
   after:
-    holdtime: 10
-    reinit: 3
+    holdtime: 20
+    reinit: 5
 deleted:
   before:
     timer: 100
