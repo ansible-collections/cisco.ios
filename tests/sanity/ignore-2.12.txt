@@ -21,5 +21,3 @@ plugins/module_utils/network/ios/config/logging_global/logging_global.py import-
 plugins/module_utils/network/ios/config/prefix_lists/prefix_lists.py import-2.6!skip
 plugins/cliconf/ios.py pylint:arguments-renamed
 tests/unit/mock/loader.py pylint:arguments-renamed
-plugins/module_utils/network/ios/providers/providers.py pylint:consider-using-with
-plugins/module_utils/network/ios/facts/static_routes/static_routes.py pylint:consider-using-dict-items
