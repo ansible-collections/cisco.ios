@@ -2,4 +2,4 @@
 bugfixes:
   - Logging command template fixed supporting Jinja version for centos-8 EEs.
 deprecated_features:
-  - Added ios_bgp_global resource module and deprecated ios_bgp.
+  - Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
