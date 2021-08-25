@@ -5,13 +5,11 @@
   cisco.ios.ios_config:
     lines: hostname switch
     match: none
-    provider: '{{ cli }}'
 
 - name: configure hostname
   register: result
   cisco.ios.ios_system:
     hostname: foo
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -21,7 +19,6 @@
   register: result
   cisco.ios.ios_system:
     hostname: foo
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -31,6 +28,5 @@
   cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
     match: none
-    provider: '{{ cli }}'
 
 - debug: msg="END cli/set_hostname.yaml on connection={{ ansible_connection }}"

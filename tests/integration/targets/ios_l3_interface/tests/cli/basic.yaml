@@ -7,7 +7,6 @@
   cisco.ios.ios_l3_interface:
     name: '{{ test_interface }}'
     state: absent
-    provider: '{{ cli }}'
 
 - name: Setup - Ensure interfaces are switchport
   loop:
@@ -18,7 +17,6 @@
       - no shutdown
     parents:
       - interface {{ item }}
-    provider: '{{ cli }}'
 
 - name: Configure interface ipv4 address
   register: result
@@ -26,7 +24,6 @@
     name: '{{ test_interface }}'
     ipv4: 192.168.20.1/24
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -40,7 +37,6 @@
     name: '{{ test_interface }}'
     ipv4: 192.168.20.1/24
     state: present
-    provider: '{{ cli }}'
 
 - assert: &id002
     that:
@@ -53,7 +49,6 @@
     name: '{{ test_interface2 }}'
     ipv4: 192.168.20.1/24
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -66,7 +61,6 @@
     name: '{{ test_interface }}'
     ipv4: dhcp
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -80,7 +74,6 @@
     name: '{{ test_interface }}'
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -100,7 +93,6 @@
     name: '{{ test_interface }}'
     ipv6: fd5d:12c9:2291:1::1/64
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -127,7 +119,6 @@
     name: '{{ test_interface2 }}'
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -140,7 +131,6 @@
     name: '{{ test_interface }}'
     ipv6: dhcp
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -153,7 +143,6 @@
   cisco.ios.ios_l3_interface:
     name: '{{ test_interface }}'
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -167,7 +156,6 @@
   cisco.ios.ios_l3_interface:
     name: '{{ test_interface }}'
     state: absent
-    provider: '{{ cli }}'
 
 - assert: *id002
 
@@ -176,7 +164,6 @@
   cisco.ios.ios_l3_interface:
     name: '{{ test_interface2 }}'
     state: absent
-    provider: '{{ cli }}'
 
 - name: Configure ipv4 and ipv6 address using aggregate
   register: result
@@ -190,7 +177,6 @@
       - name: '{{ test_interface2 }}'
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -214,7 +200,6 @@
       - name: '{{ test_interface2 }}'
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
-    provider: '{{ cli }}'
 
 - assert: *id002
 
@@ -230,7 +215,6 @@
       - name: '{{ test_interface2 }}'
         ipv4: 192.169.2.2/24
         ipv6: fd5b:12c9:2201:5::5/90
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -251,7 +235,6 @@
 
       - name: '{{ test_interface2 }}'
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -272,7 +255,6 @@
 
       - name: '{{ test_interface2 }}'
     state: absent
-    provider: '{{ cli }}'
 
 - assert: *id002
 

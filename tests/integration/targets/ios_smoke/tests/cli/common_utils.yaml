@@ -13,7 +13,6 @@
   cisco.ios.ios_l3_interface:
     name: "{{ test_interface }}"
     state: absent
-    provider: "{{ cli }}"
   register: result
 
 - name: Setup - Ensure interfaces are switchport
@@ -22,7 +21,6 @@
       - no shutdown
     parents:
       - "interface {{ item }}"
-    provider: "{{ cli }}"
   loop:
     - "{{ test_interface }}"
     - "{{ test_interface2 }}"
@@ -32,7 +30,6 @@
     name: "{{ test_interface }}"
     ipv4: 192.168.20.1/24
     state: present
-    provider: "{{ cli }}"
   register: result
 
 - assert:
@@ -46,7 +43,6 @@
     name: "{{ test_interface }}"
     ipv4: 192.168.20.1/45
     state: present
-    provider: "{{ cli }}"
   register: result
   ignore_errors: true
 
@@ -61,7 +57,6 @@
     aggregate:
       - { name: "{{ test_interface }}", ipv4: 193.167.1.1/8, ipv6: "fd5a:12c9:2201:4::4/32" }
       - { name: "{{ test_interface2 }}", ipv4: 192.169.2.2/24, ipv6: "fd5b:12c9:2201:5::5/90" }
-    provider: "{{ cli }}"
   register: result
 
 - assert:
@@ -80,7 +75,6 @@
       - { name: "{{ test_interface }}" }
       - { name: "{{ test_interface2 }}" }
     state: absent
-    provider: "{{ cli }}"
   register: result
 
 # hit validate_ip_address()
@@ -89,21 +83,18 @@
     dest: host
     name: 172.16.0.1
     state: absent
-    provider: "{{ cli }}"
 
 - name: Remove host logging - teardown
   net_logging:
     dest: host
     name: 172.16.0.1
     state: absent
-    provider: "{{ cli }}"
 
 # hit conditional(), remove_default_spec()
 - name: Check intent arguments
   ios_interface:
     name: "{{ test_interface }}"
     state: up
-    provider: "{{ cli }}"
   register: result
 
 - assert:
@@ -114,7 +105,6 @@
   ios_interface:
     name: "{{ test_interface }}"
     state: down
-    provider: "{{ cli }}"
   ignore_errors: true
   register: result
 
@@ -128,7 +118,6 @@
     name: "{{ test_interface }}"
     enabled: false
     state: down
-    provider: "{{ cli }}"
   register: result
 
 - assert:
@@ -139,7 +128,6 @@
   ios_interface:
     name: "{{ test_interface }}"
     enabled: false
-    provider: "{{ cli }}"
     state: up
   ignore_errors: true
   register: result

@@ -10,7 +10,6 @@
     speed: 1000
     mtu: 1800
     state: present
-    provider: '{{ cli }}'
 
 - name: Configure interface using platform agnostic module
   register: result
@@ -18,7 +17,6 @@
     name: '{{ test_interface }}'
     description: test-interface-initial
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -33,7 +31,6 @@
     description: test-interface
     mtu: 2000
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
