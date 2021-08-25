@@ -688,17 +688,17 @@ commands:
   returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "ip address 192.168.0.3 255.255.255.0"
+    - "ipv6 address dhcp rapid-commit"
+    - "ipv6 address fd5d:12c9:2201:1::1/64 anycast"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when state is I(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "ipv6 address FD5D:12C9:2201:1::1/64"
+    - "ip address 192.168.0.3 255.255.255.0"
+    - "ip address autoconfig"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when state is I(gathered)
