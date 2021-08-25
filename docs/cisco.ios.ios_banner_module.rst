@@ -59,6 +59,22 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>multiline_delimiter</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"@"</div>
+                </td>
+                <td>
+                        <div>Specify the delimiting character than will be used for configuration.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>provider</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -261,7 +277,7 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure the login banner
+    - name: Configure the login banner
       cisco.ios.ios_banner:
         banner: login
         text: |
@@ -270,7 +286,7 @@ Examples
           string
         state: present
 
-    - name: remove the motd banner
+    - name: Remove the motd banner
       cisco.ios.ios_banner:
         banner: motd
         state: absent
@@ -279,6 +295,13 @@ Examples
       cisco.ios.ios_banner:
         banner: motd
         text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+        state: present
+
+    - name: Configure the login banner using delimiter
+      cisco.ios.ios_banner:
+        banner: login
+        multiline_delimiter: x
+        text: this is my login banner
         state: present
 
 

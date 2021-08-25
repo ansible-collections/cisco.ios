@@ -175,7 +175,12 @@ class TestIosVlansModule(TestIosModule):
                         shutdown="disabled",
                         remote_span=True,
                         vlan_id=200,
-                    )
+                    ),
+                    dict(
+                        name="Replace_RemoteIsInMyName",
+                        remote_span=True,
+                        vlan_id=123,
+                    ),
                 ],
                 state="replaced",
             )
@@ -187,6 +192,12 @@ class TestIosVlansModule(TestIosModule):
             "state active",
             "remote-span",
             "no shutdown",
+            "vlan 123",
+            "no state active",
+            "no shutdown",
+            "no mtu 610",
+            "name Replace_RemoteIsInMyName",
+            "remote-span",
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -267,14 +278,24 @@ class TestIosVlansModule(TestIosModule):
                         shutdown="disabled",
                         remote_span=True,
                         vlan_id=200,
-                    )
+                    ),
+                    dict(
+                        name="Override_RemoteIsInMyName",
+                        remote_span=True,
+                        vlan_id=123,
+                    ),
                 ],
                 state="overridden",
             )
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 123",
+            "vlan 123",
+            "no state active",
+            "no shutdown",
+            "no mtu 610",
+            "name Override_RemoteIsInMyName",
+            "remote-span",
             "no vlan 150",
             "no vlan 888",
             "vlan 200",

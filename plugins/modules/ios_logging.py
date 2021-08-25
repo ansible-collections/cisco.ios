@@ -21,12 +21,18 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_logging
 author: Trishna Guha (@trishnaguha)
-short_description: Manage logging on network devices
+short_description: (deprecated, removed after 2023-06-01) Manage logging on network devices
 description:
 - This module provides declarative management of logging on Cisco Ios devices.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_logging_global
+  why: Newer and updated modules released with more functionality.
+  removed_at_date: '2023-06-01'
 notes:
 - Tested against IOS 15.6
+- The 'Default System Message Logging Configuration' of the ios device
+  like facility Local7 or logging on is not subjected to idempotency causes
 options:
   dest:
     description:
@@ -227,7 +233,7 @@ def map_obj_to_commands(updates, module, os_version):
         if state == "absent" and w in have:
             if dest:
                 if dest == "host":
-                    if "12." in os_version:
+                    if os_version.startswith("12."):
                         commands.append("no logging {0}".format(name))
                     else:
                         commands.append("no logging host {0}".format(name))
@@ -251,7 +257,7 @@ def map_obj_to_commands(updates, module, os_version):
                 if not present:
                     commands.append("logging facility {0}".format(facility))
             if dest == "host":
-                if "12." in os_version:
+                if os_version.startswith("12."):
                     commands.append("logging {0}".format(name))
                 else:
                     commands.append("logging host {0}".format(name))

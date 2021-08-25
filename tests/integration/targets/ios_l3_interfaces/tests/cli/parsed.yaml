@@ -3,7 +3,7 @@
     msg: START ios_l3_interfaces parsed integration tests on connection={{ ansible_connection
       }}
 
-- name: Parse the commands for provided configuration
+- name: l3_interface parsed - Parse the commands for provided configuration
   become: true
   register: result
   cisco.ios.ios_l3_interfaces:

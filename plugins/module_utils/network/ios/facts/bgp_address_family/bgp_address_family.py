@@ -14,8 +14,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -35,16 +33,6 @@ class Bgp_AddressFamilyFacts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bgp_AddressFamilyArgs.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_bgp_address_family_data(self, connection):
         return connection.get("sh running-config | section ^router bgp")
@@ -66,7 +54,9 @@ class Bgp_AddressFamilyFacts(object):
             data = self.get_bgp_address_family_data(connection)
 
         # parse native config using the Bgp_address_family template
-        bgp_af_parser = Bgp_AddressFamilyTemplate(lines=data.splitlines())
+        bgp_af_parser = Bgp_AddressFamilyTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = bgp_af_parser.parse()
         objs = utils.remove_empties(objs)
         temp_af = []
@@ -91,21 +81,33 @@ class Bgp_AddressFamilyFacts(object):
                         temp_dict["safi"] = temp[0]
                 neighbor = v.get("neighbor")
                 if neighbor:
+
+                    def _update_neighor_list(neighbor_list, temp):
+                        set = False
+                        temp = utils.remove_empties(temp)
+                        for each in neighbor_list:
+                            if neighbor_identifier == each["address"]:
+                                each.update(temp)
+                                set = True
+                        if not neighbor_list or not set:
+                            neighbor_list.append(temp)
+
                     neighbor_list = []
-                    temp_slow_peer = []
+                    temp_param_list = []
                     temp = {}
+                    temp_param = None
                     neighbor_identifier = None
                     for each in neighbor:
+                        if temp_param and not each.get(temp_param) and temp:
+                            temp.update({temp_param: temp_param_list})
+                            _update_neighor_list(neighbor_list, temp)
+                            temp_param_list = []
+                            temp = {}
                         if (
                             each.get("address")
                             or each.get("ipv6_address")
                             or each.get("tag")
                         ) != neighbor_identifier:
-                            if temp:
-                                if temp_slow_peer:
-                                    temp.update({"slow_peer": temp_slow_peer})
-                                neighbor_list.append(temp)
-                                temp = {}
                             neighbor_identifier = (
                                 each.get("address")
                                 or each.get("ipv6_address")
@@ -117,16 +119,22 @@ class Bgp_AddressFamilyFacts(object):
                                 temp["ipv6_address"] = neighbor_identifier
                             else:
                                 temp["tag"] = neighbor_identifier
-                        for every in ["address", "ipv6_address", "tag"]:
-                            if every in each:
-                                each.pop(every)
                         temp.update(each)
-                        slow_peer_val = each.get("slow_peer")
-                        if slow_peer_val:
-                            temp_slow_peer.append(slow_peer_val[0])
+                        for param in [
+                            "prefix_lists",
+                            "route_maps",
+                            "slow_peer",
+                        ]:
+                            param_val = each.get(param)
+                            if param_val:
+                                temp_param_list.append(param_val[0])
+                                temp_param = param
+                                break
                     if temp:
-                        temp.update({"slow_peer": temp_slow_peer})
-                        neighbor_list.append(temp)
+                        if temp_param:
+                            temp.update({temp_param: temp_param_list})
+                        _update_neighor_list(neighbor_list, temp)
+                        temp_param_list = []
                         temp = {}
                     v["neighbor"] = neighbor_list
                 v.update(temp_dict)
@@ -142,7 +150,9 @@ class Bgp_AddressFamilyFacts(object):
             )
 
             params = utils.remove_empties(
-                utils.validate_config(self.argument_spec, {"config": objs})
+                bgp_af_parser.validate_config(
+                    self.argument_spec, {"config": objs}, redact=True
+                )
             )
 
             facts["bgp_address_family"] = params["config"]

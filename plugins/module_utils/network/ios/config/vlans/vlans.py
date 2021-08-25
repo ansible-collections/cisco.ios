@@ -273,32 +273,72 @@ class Vlans(ConfigBase):
         commands = []
         vlan = "vlan {0}".format(want.get("vlan_id"))
 
+        def negate_have_config(want_diff, have_diff, vlan, commands):
+            name = dict(have_diff).get("name")
+            if name and not dict(want_diff).get("name"):
+                self.remove_command_from_config_list(
+                    vlan, "name {0}".format(name), commands
+                )
+            state = dict(have_diff).get("state")
+            if state and not dict(want_diff).get("state"):
+                self.remove_command_from_config_list(
+                    vlan, "state {0}".format(state), commands
+                )
+            shutdown = dict(have_diff).get("shutdown")
+            if shutdown and not dict(want_diff).get("shutdown"):
+                self.remove_command_from_config_list(
+                    vlan, "shutdown", commands
+                )
+            mtu = dict(have_diff).get("mtu")
+            if mtu and not dict(want_diff).get("mtu"):
+                self.remove_command_from_config_list(
+                    vlan, "mtu {0}".format(mtu), commands
+                )
+            remote_span = dict(have_diff).get("remote_span")
+            if remote_span and not dict(want_diff).get("remote_span"):
+                self.remove_command_from_config_list(
+                    vlan, "remote-span", commands
+                )
+
         # Get the diff b/w want n have
         want_dict = dict_to_set(want)
         have_dict = dict_to_set(have)
         diff = want_dict - have_dict
+        have_diff = have_dict - want_dict
 
         if diff:
+            if have_diff and (
+                self.state == "replaced" or self.state == "overridden"
+            ):
+                negate_have_config(diff, have_diff, vlan, commands)
+
             name = dict(diff).get("name")
             state = dict(diff).get("state")
             shutdown = dict(diff).get("shutdown")
             mtu = dict(diff).get("mtu")
             remote_span = dict(diff).get("remote_span")
             if name:
-                cmd = "name {0}".format(name)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "name {0}".format(name), commands
+                )
             if state:
-                cmd = "state {0}".format(state)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "state {0}".format(state), commands
+                )
             if mtu:
-                cmd = "mtu {0}".format(mtu)
-                self.add_command_to_config_list(vlan, cmd, commands)
+                self.add_command_to_config_list(
+                    vlan, "mtu {0}".format(mtu), commands
+                )
             if remote_span:
                 self.add_command_to_config_list(vlan, "remote-span", commands)
             if shutdown == "enabled":
                 self.add_command_to_config_list(vlan, "shutdown", commands)
             elif shutdown == "disabled":
                 self.add_command_to_config_list(vlan, "no shutdown", commands)
+        elif have_diff and (
+            self.state == "replaced" or self.state == "overridden"
+        ):
+            negate_have_config(diff, have_diff, vlan, commands)
 
         return commands
 

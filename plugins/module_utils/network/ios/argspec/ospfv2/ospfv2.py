@@ -34,13 +34,13 @@ class Ospfv2Args(object):
     """The arg spec for the ios_ospfv2 module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "options": {
                 "processes": {
+                    "mutually_exclusive": [
+                        ("passive_interface", "passive_interfaces")
+                    ],
                     "elements": "dict",
                     "options": {
                         "address_family": {
@@ -442,6 +442,22 @@ class Ospfv2Args(object):
                             "type": "dict",
                         },
                         "passive_interface": {"type": "str"},
+                        "passive_interfaces": {
+                            "options": {
+                                "default": {"type": "bool"},
+                                "interface": {
+                                    "options": {
+                                        "set_interface": {"type": "bool"},
+                                        "name": {
+                                            "type": "list",
+                                            "elements": "str",
+                                        },
+                                    },
+                                    "type": "dict",
+                                },
+                            },
+                            "type": "dict",
+                        },
                         "prefix_suppression": {"type": "bool"},
                         "priority": {"type": "int"},
                         "process_id": {"required": True, "type": "int"},

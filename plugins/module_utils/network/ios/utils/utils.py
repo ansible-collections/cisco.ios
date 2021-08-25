@@ -306,6 +306,8 @@ def normalize_interface(name):
 
     if name.lower().startswith("gi"):
         if_type = "GigabitEthernet"
+    elif name.lower().startswith("twe"):
+        if_type = "TwentyFiveGigE"
     elif name.lower().startswith("tw"):
         if_type = "TwoGigabitEthernet"
     elif name.lower().startswith("te"):
@@ -326,14 +328,14 @@ def normalize_interface(name):
         if_type = "Port-channel"
     elif name.lower().startswith("nv"):
         if_type = "nve"
-    elif name.lower().startswith("twe"):
-        if_type = "TwentyFiveGigE"
     elif name.lower().startswith("hu"):
         if_type = "HundredGigE"
     elif name.lower().startswith("virtual-te"):
         if_type = "Virtual-Template"
     elif name.lower().startswith("tu"):
         if_type = "Tunnel"
+    elif name.lower().startswith("se"):
+        if_type = "Serial"
     else:
         if_type = None
 
@@ -385,5 +387,7 @@ def get_interface_type(interface):
         return "Virtual-Template"
     elif interface.upper().startswith("TU"):
         return "Tunnel"
+    elif interface.upper().startswith("SE"):
+        return "Serial"
     else:
         return "unknown"

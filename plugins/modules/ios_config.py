@@ -31,8 +31,8 @@ extends_documentation_fragment:
 - cisco.ios.ios
 notes:
 - Tested against IOS 15.6
-- Abbreviated commands are NOT idempotent, see L
-  (Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- Abbreviated commands are NOT idempotent, see
+  U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands)
 - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
   appear if present in the running configuration on device including the indentation.
 options:
@@ -476,13 +476,6 @@ def main():
         if module.params["backup"]:
             result["__backup__"] = contents
     if any((module.params["lines"], module.params["src"])):
-        msg = (
-            "To ensure idempotency and correct diff the input configuration lines should be"
-            " similar to how they appear if present in the running configuration on device"
-        )
-        if module.params["src"]:
-            msg += " including the indentation"
-        warnings.append(msg)
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]
@@ -586,6 +579,22 @@ def main():
                         "diff": {"before": str(before), "after": str(after)},
                     }
                 )
+
+    if result.get("changed") and any(
+        (module.params["src"], module.params["lines"])
+    ):
+        msg = (
+            "To ensure idempotency and correct diff the input configuration lines should be"
+            " similar to how they appear if present in"
+            " the running configuration on device"
+        )
+        if module.params["src"]:
+            msg += " including the indentation"
+        if "warnings" in result:
+            result["warnings"].append(msg)
+        else:
+            result["warnings"] = msg
+
     module.exit_json(**result)
 
 

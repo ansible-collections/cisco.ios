@@ -10,7 +10,6 @@
     speed: 1000
     mtu: 1800
     state: present
-    provider: '{{ cli }}'
 
 - name: Configure interface
   register: result
@@ -18,7 +17,6 @@
     name: '{{ test_interface }}'
     description: test-interface-initial
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -32,7 +30,6 @@
     name: '{{ test_interface }}'
     description: test-interface-initial
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -45,7 +42,6 @@
     description: test-interface
     mtu: 2000
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -61,7 +57,6 @@
     description: test-interface-1
     mtu: 1800
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -75,7 +70,6 @@
   cisco.ios.ios_interface:
     name: '{{ test_interface }}'
     enabled: false
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -88,7 +82,6 @@
   cisco.ios.ios_interface:
     name: '{{ test_interface }}'
     enabled: true
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -104,7 +97,6 @@
     speed: 1000
     mtu: 1800
     state: present
-    provider: '{{ cli }}'
 
 - name: Add interface aggregate
   register: result
@@ -120,7 +112,6 @@
         description: test-interface-2
     speed: 1000
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -145,7 +136,6 @@
         description: test-interface-2
     speed: 1000
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -161,7 +151,6 @@
       - name: '{{ test_interface2 }}'
     enabled: false
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -181,7 +170,6 @@
       - name: '{{ test_interface2 }}'
     enabled: true
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -199,7 +187,6 @@
 
       - name: Loopback10
     state: absent
-    provider: '{{ cli }}'
 
 - name: Create loopback interface aggregate
   register: result
@@ -210,7 +197,6 @@
 
       - name: Loopback10
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -227,7 +213,6 @@
 
       - name: Loopback10
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -244,7 +229,6 @@
 
       - name: Loopback10
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:

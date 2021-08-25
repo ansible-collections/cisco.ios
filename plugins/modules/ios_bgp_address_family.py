@@ -547,8 +547,21 @@ options:
                     description: Only give warning message when limit is exceeded
                     type: bool
               next_hop_self:
-                description: Disable the next hop calculation for this neighbor
+                description:
+                  - Disable the next hop calculation for this neighbor
+                  - This option is DEPRECATED and is replaced with nexthop_self which
+                    accepts dict as input this attribute will be removed after 2023-06-01.
                 type: bool
+              nexthop_self:
+                description: Disable the next hop calculation for this neighbor
+                type: dict
+                suboptions:
+                  set:
+                    description: set the next hop self
+                    type: bool
+                  all:
+                    description: Enable next-hop-self for both eBGP and iBGP received paths
+                    type: bool
               next_hop_unchanged:
                 description: Propagate next hop unchanged for iBGP paths to this neighbor
                 type: bool
@@ -615,8 +628,25 @@ options:
                 description: Member of the peer-group
                 type: bool
               prefix_list:
-                description: Filter updates to/from this neighbor
+                description:
+                  - Filter updates to/from this neighbor
+                  - This option is DEPRECATED and is replaced with prefix_lists which
+                    accepts list of dict as input
                 type: dict
+                suboptions:
+                  name:
+                    description: Name of a prefix list
+                    type: str
+                  in:
+                    description: Filter incoming updates
+                    type: bool
+                  out:
+                    description: Filter outgoing updates
+                    type: bool
+              prefix_lists:
+                description: Filter updates to/from this neighbor
+                type: list
+                elements: dict
                 suboptions:
                   name:
                     description: Name of a prefix list
@@ -646,8 +676,25 @@ options:
                     description: Replace all private AS numbers with local AS
                     type: bool
               route_map:
-                description: Apply route map to neighbor
+                description:
+                  - Apply route map to neighbor
+                  - This option is DEPRECATED and is replaced with route_maps which
+                    accepts list of dict as input
                 type: dict
+                suboptions:
+                  name:
+                    description: Name of route map
+                    type: str
+                  in:
+                    description: Apply map to incoming routes
+                    type: bool
+                  out:
+                    description: Apply map to outbound routes
+                    type: bool
+              route_maps:
+                description: Apply route map to neighbor
+                type: list
+                elements: dict
                 suboptions:
                   name:
                     description: Name of route map
@@ -1208,8 +1255,10 @@ EXAMPLES = """
                     threshold: 150
               remote_as: 10
               route_map:
-                name: test-route
-                out: true
+                - name: test-route-out
+                  out: true
+                - name: test-route-in
+                  in: true
               route_server_client: true
           network:
             - address: 198.51.110.10
@@ -1393,9 +1442,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 10
-              route_map:
-                name: test-replaced-route
-                out: true
+              route_maps:
+                - name: test-replaced-route
+                  out: true
               route_server_client: true
           network:
             - address: 198.51.110.10
@@ -1558,9 +1607,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 100
-              route_map:
-                name: test-override-route
-                out: true
+              route_maps:
+                - name: test-override-route
+                  out: true
               route_server_client: true
               version: 4
           network:
@@ -1846,10 +1895,10 @@ EXAMPLES = """
 #                           }
 #                       },
 #                       "remote_as": 10,
-#                       "route_map": {
+#                       "route_maps": [{
 #                           "name": "test-route",
 #                           "out": true
-#                       },
+#                       }],
 #                       "route_server_client": true,
 #                       "slow_peer": [
 #                           {
@@ -1926,7 +1975,7 @@ EXAMPLES = """
 
 # Using Rendered
 
-- name: Rendered the provided configuration with the exisiting running configuration
+- name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_bgp_address_family:
     config:
       as_number: 65000
@@ -1961,9 +2010,9 @@ EXAMPLES = """
                 - detection:
                     threshold: 150
               remote_as: 10
-              route_map:
-                name: test-route
-                out: true
+              route_maps:
+                - name: test-route
+                  out: true
               route_server_client: true
           network:
             - address: 198.51.110.10

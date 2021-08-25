@@ -1,3 +1,5 @@
+plugins/modules/ios_bgp.py validate-modules:deprecation-mismatch
+plugins/modules/ios_bgp.py validate-modules:invalid-documentation
 plugins/modules/ios_interface.py validate-modules:deprecation-mismatch
 plugins/modules/ios_interface.py validate-modules:invalid-documentation
 plugins/modules/ios_l2_interface.py validate-modules:deprecation-mismatch
@@ -8,12 +10,24 @@ plugins/modules/ios_static_route.py validate-modules:deprecation-mismatch
 plugins/modules/ios_static_route.py validate-modules:invalid-documentation
 plugins/modules/ios_vlan.py validate-modules:deprecation-mismatch
 plugins/modules/ios_vlan.py validate-modules:invalid-documentation
+plugins/modules/ios_logging.py validate-modules:deprecation-mismatch
+plugins/modules/ios_logging.py validate-modules:invalid-documentation
 plugins/action/ios.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
 plugins/module_utils/network/ios/config/bgp_global/bgp_global.py compile-2.6!skip
 plugins/module_utils/network/ios/config/bgp_address_family/bgp_address_family.py compile-2.6!skip
 plugins/module_utils/network/ios/config/ospf_interfaces/ospf_interfaces.py compile-2.6!skip
 plugins/module_utils/network/ios/config/ospfv3/ospfv3.py compile-2.6!skip
+plugins/module_utils/network/ios/config/route_maps/route_maps.py compile-2.6!skip
+plugins/module_utils/network/ios/config/logging_global/logging_global.py compile-2.6!skip
+plugins/module_utils/network/ios/config/prefix_lists/prefix_lists.py compile-2.6!skip
+plugins/modules/ios_route_maps.py import-2.6!skip
+plugins/modules/ios_logging_global.py import-2.6!skip
+plugins/modules/ios_prefix_lists.py import-2.6!skip
+plugins/modules/ios_bgp_address_family.py import-2.6!skip
 plugins/module_utils/network/ios/config/bgp_global/bgp_global.py import-2.6!skip
 plugins/module_utils/network/ios/config/bgp_address_family/bgp_address_family.py import-2.6!skip
 plugins/module_utils/network/ios/config/ospf_interfaces/ospf_interfaces.py import-2.6!skip
 plugins/module_utils/network/ios/config/ospfv3/ospfv3.py import-2.6!skip
+plugins/module_utils/network/ios/config/route_maps/route_maps.py import-2.6!skip
+plugins/module_utils/network/ios/config/logging_global/logging_global.py import-2.6!skip
+plugins/module_utils/network/ios/config/prefix_lists/prefix_lists.py import-2.6!skip

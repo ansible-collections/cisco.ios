@@ -399,7 +399,11 @@ def map_obj_to_commands(updates, module):
             add_ssh(commands, want, want["sshkey"])
         if needs_update(want, have, "configured_password"):
             if update_password == "always" or not have:
-                if have and password_type != have["password_type"]:
+                if (
+                    have
+                    and have["password_type"]
+                    and password_type != have["password_type"]
+                ):
                     module.fail_json(
                         msg="Can not have both a user password and a user secret."
                         + " Please choose one or the other."
@@ -566,7 +570,7 @@ def main():
         password_type=dict(default="secret", choices=["secret", "password"]),
         privilege=dict(type="int"),
         view=dict(aliases=["role"]),
-        sshkey=dict(type="list", elements="str"),
+        sshkey=dict(type="list", elements="str", no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
     )
     aggregate_spec = deepcopy(element_spec)

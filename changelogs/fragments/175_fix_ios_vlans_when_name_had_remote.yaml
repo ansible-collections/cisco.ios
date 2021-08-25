@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix ios_vlans traceback bug when the name had Remote in it(https://github.com/ansible-collections/cisco.ios/issues/175).

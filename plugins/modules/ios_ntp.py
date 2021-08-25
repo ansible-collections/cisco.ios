@@ -365,7 +365,7 @@ def main():
         acl=dict(),
         logging=dict(type="bool", default=False),
         auth=dict(type="bool", default=False),
-        auth_key=dict(),
+        auth_key=dict(no_log=True),
         key_id=dict(),
         state=dict(choices=["absent", "present"], default="present"),
         vrf=dict(),

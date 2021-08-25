@@ -4,21 +4,19 @@
     - login
     - exec
   cisco.ios.ios_banner:
-    banner: '{{ item }}'
+    banner: "{{ item }}"
     text: "this is my login banner\nthat as a multiline\nstring\n"
     state: present
-    provider: '{{ cli }}'
 
 - name: Set login
   register: result
   cisco.ios.ios_banner:
     banner: login
-    text: "this is my login banner\nthat as a multiline\nstring\n"
+    text: "this is my login banner\nthat as a multiline\nstring"
     state: present
-    provider: '{{ cli }}'
 
 - debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:
@@ -29,12 +27,11 @@
   register: result
   cisco.ios.ios_banner:
     banner: exec
-    text: "this is my login banner\nthat as a multiline\nstring\n"
+    text: "this is my login banner\nthat as a multiline\nstring"
     state: present
-    provider: '{{ cli }}'
 
 - debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:

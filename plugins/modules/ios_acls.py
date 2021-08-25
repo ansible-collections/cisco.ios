@@ -339,7 +339,7 @@ options:
                     description: Source network address.
                     type: str
                   wildcard_bits:
-                    description: Destination wildcard bits, valid with IPV4 address.
+                    description: Source wildcard bits, valid with IPV4 address.
                     type: str
                   any:
                     description: Match any source address.
@@ -347,9 +347,12 @@ options:
                   host:
                     description: A single source host
                     type: str
+                  object_group:
+                    description: Source network object group
+                    type: str
                   port_protocol:
                     description:
-                    - Specify the destination port along with protocol.
+                    - Specify the source port along with protocol.
                     - Note, Valid with TCP/UDP protocol_options
                     type: dict
                     suboptions:
@@ -390,6 +393,9 @@ options:
                     type: bool
                   host:
                     description: A single destination host
+                    type: str
+                  object_group:
+                    description: Destination network object group
                     type: str
                   port_protocol:
                     description:
@@ -612,6 +618,10 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
+      - The states I(merged) is the default state which merges the want and have config, but
+        for ACL module as the IOS platform doesn't allow update of ACE over an pre-existing ACE
+        sequence in ACL, same way ACLs resource module will error out for respective scenario
+        and only addition of new ACE over new sequence will be allowed with merge state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -631,6 +641,33 @@ options:
 """
 EXAMPLES = """
 # Using merged
+
+# Before state:
+# -------------
+#
+# vios#sh access-lists
+# Extended IP access list 100
+#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_acls:
+    config:
+    - afi: ipv4
+      acls:
+      - name: 100
+        aces:
+        - sequence: 10
+          protocol_options:
+            icmp:
+              traceroute: true
+    state: merged
+
+# After state:
+# ------------
+#
+# Play Execution fails, with error:
+# Cannot update existing sequence 10 of ACLs 100 with state merged.
+# Please use state replaced or overridden.
 
 # Before state:
 # -------------
@@ -746,7 +783,6 @@ EXAMPLES = """
 # - deny 192.168.1.200
 # - deny 192.168.2.0 0.0.0.255
 # - ip access-list extended 110
-# - no 10
 # - 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
 # - deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # - ip access-list extended test
@@ -764,6 +800,8 @@ EXAMPLES = """
 # Standard IP access list std_acl
 #    10 deny   192.168.1.200
 #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+# Extended IP access list 100
+#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 # Extended IP access list 110
 #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
 #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
@@ -1271,7 +1309,7 @@ EXAMPLES = """
 
 # Using Rendered
 
-- name: Rendered the provided configuration with the exisiting running configuration
+- name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_acls:
     config:
     - afi: ipv4

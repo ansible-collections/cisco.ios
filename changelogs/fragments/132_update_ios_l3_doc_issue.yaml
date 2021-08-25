@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To update the IOS L3 doc issue raised in issue(https://github.com/ansible-collections/cisco.ios/issue/132).

@@ -30,6 +30,7 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+- This RM works only with Cisco IOS L2 switch.
 options:
   config:
     description: A dictionary of VLANs options
@@ -138,7 +139,7 @@ EXAMPLES = """
       vlan_id: 10
       state: active
       shutdown: disabled
-      remote_span: 10
+      remote_span: true
     - name: Vlan_20
       vlan_id: 20
       mtu: 610
@@ -226,11 +227,21 @@ EXAMPLES = """
 # vios_l2#show vlan
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
+# 1    default                          active    Gi0/1, Gi0/2
 # 10   Vlan_10                          active
+# 1002 fddi-default                     act/unsup
+# 1003 token-ring-default               act/unsup
+# 1004 fddinet-default                  act/unsup
+# 1005 trnet-default                    act/unsup
 #
 # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+# 1    enet  100001     1500  -      -      -        -    -        0      0
 # 10   enet  100010     1000  -      -      -        -    -        0      0
+# 1002 fddi  101002     1500  -      -      -        -    -        0      0
+# 1003 tr    101003     1500  -      -      -        -    -        0      0
+# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+# 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 # Using replaced
 
@@ -285,7 +296,7 @@ EXAMPLES = """
 # 1    default                          active    Gi0/1, Gi0/2
 # 10   vlan_10                          active
 # 20   Test_VLAN20                      active
-# 30   Test_VLAN30                      sus/lshut
+# 30   Test_VLAN30                      active
 # 1002 fddi-default                     act/unsup
 # 1003 token-ring-default               act/unsup
 # 1004 fddinet-default                  act/unsup
@@ -562,7 +573,7 @@ EXAMPLES = """
       vlan_id: 10
       state: active
       shutdown: disabled
-      remote_span: 10
+      remote_span: true
     - name: Vlan_20
       vlan_id: 20
       mtu: 610

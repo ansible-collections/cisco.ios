@@ -1,3 +1,0 @@
----
-bugfixes:
-  - To fix the issue of ios_l2_interfaces range of allowed and pruning vlans (https://github.com/ansible-collections/cisco.ios/issues/245).

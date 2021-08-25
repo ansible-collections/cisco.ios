@@ -51,12 +51,15 @@ Name | Description
 [cisco.ios.ios_lldp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_module.rst)|Manage LLDP configuration on Cisco IOS network devices.
 [cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_global_module.rst)|LLDP resource module
 [cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_interfaces_module.rst)|LLDP interfaces resource module
-[cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|Manage logging on network devices
+[cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|(deprecated, removed after 2023-06-01) Manage logging on network devices
+[cisco.ios.ios_logging_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_global_module.rst)|Logging resource module
 [cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_module.rst)|Manages core NTP configuration.
 [cisco.ios.ios_ospf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospf_interfaces_module.rst)|OSPF_Interfaces resource module
 [cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv2_module.rst)|OSPFv2 resource module
 [cisco.ios.ios_ospfv3](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv3_module.rst)|OSPFv3 resource module
 [cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from Cisco IOS network devices
+[cisco.ios.ios_prefix_lists](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_prefix_lists_module.rst)|Prefix Lists resource module
+[cisco.ios.ios_route_maps](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_route_maps_module.rst)|Route maps resource module
 [cisco.ios.ios_static_route](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_route_module.rst)|(deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Static routes resource module
 [cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Manage the system attributes on Cisco IOS devices
@@ -118,7 +121,7 @@ We welcome community contributions to this collection. If you find problems, ple
 
 You can also join us on:
 
-- Freenode IRC - ``#ansible-network`` Freenode channel
+- IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
@@ -130,7 +133,7 @@ Please read and familiarize yourself with this document.
 
 ## Release notes
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
-Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/changelogs/CHANGELOG.rst).
+Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/CHANGELOG.rst).
 
 ## Roadmap
 

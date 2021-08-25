@@ -3661,10 +3661,113 @@ Parameters
                 <td>
                 </td>
                 <td>
+                        <div>passive_interface param is deprecated and a newer param passive_interfaces with added functionality&#x27;s is introduced, please meke use of the new available passive_interfaces instead.</div>
                         <div>Suppress routing updates on an interface (GigabitEthernet A/B)</div>
                         <div>Interface name with respective interface number</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>passive_interfaces</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppress routing updates on an interface</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>default</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Suppress routing updates on all interfaces</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppress/Un-Suppress routing updates on interface</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Name of interface (GigabitEthernet A/B)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set_interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Suppress/Un-Suppress routing updates</div>
+                </td>
+            </tr>
+
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -4616,6 +4719,13 @@ Examples
               area: 5
             default_information:
               originate: true
+            passive_interfaces:
+              default: true
+              interface:
+                set_interface: False
+                name:
+                  - GigabitEthernet0/1
+                  - GigabitEthernet0/2
           - process_id: 200
             vrf: blue
             domain_id:
@@ -4661,6 +4771,8 @@ Examples
     #         "area 10 filter-list prefix test_prefix_in in",
     #         "area 5 authentication",
     #         "area 5 capability default-exclusion"
+    #         "passive-interface default"
+    #         "no passive-interface GigabitEthernet0/1"
     #     ]
 
     # After state:
@@ -4683,6 +4795,9 @@ Examples
     #  area 10 filter-list prefix test_prefix_out out
     #  network 198.51.100.0 0.0.0.255 area 5
     #  default-information originate
+    #  passive-interface default
+    #  no passive-interface GigabitEthernet0/1
+    #  no passive-interface GigabitEthernet0/2
 
     # Using overridden
 
@@ -5135,7 +5250,7 @@ Examples
     #  area 5 nssa translate type7 suppress-fa
     #  area 5 nssa default-information-originate metric 10
 
-    - name: Parse the provided configuration with the exisiting running configuration
+    - name: Parse the provided configuration with the existing running configuration
       cisco.ios.ios_ospfv2:
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed

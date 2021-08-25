@@ -44,9 +44,9 @@
                     - detection:
                         threshold: 150
                   remote_as: 100
-                  route_map:
-                    name: test-override-route
-                    out: true
+                  route_maps:
+                    - name: test-override-route
+                      out: true
                   route_server_client: true
                   version: 4
               network:

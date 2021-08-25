@@ -43,7 +43,14 @@ class VlansFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_vlans_data(self, connection):
-        return connection.get("show vlan")
+        try:
+            return connection.get("show vlan")
+        except Exception as ex:
+            self._module.fail_json(
+                "'show vlan' doesn't seems to be supported on the IOS box and failed with error: {0}. Please make sure it's an L2 switch".format(
+                    ex
+                )
+            )
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for vlans
@@ -82,10 +89,17 @@ class VlansFacts(object):
             elif "VLAN AREHops" in conf or "STEHops" in conf:
                 vlan_info = "Hops"
                 vlan_name = False
+            elif "Primary Secondary" in conf:
+                vlan_info = "Primary"
+                vlan_name = False
             if temp:
                 conf = temp
                 temp = ""
-            if conf and " " not in filter(None, conf.split("-")):
+            if (
+                conf
+                and " " not in filter(None, conf.split("-"))
+                and not conf.split(" ")[0] == ""
+            ):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
                     mtu_objs.append(obj)

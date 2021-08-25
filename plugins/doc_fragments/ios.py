@@ -15,7 +15,7 @@ class ModuleDocFragment(object):
     description:
     - B(Deprecated)
     - 'Starting with Ansible 2.5 we recommend using C(connection: network_cli).'
-    - For more information please see the L(IOS Platform Options guide, ../network/user_guide/platform_ios.html).
+    - For more information please see the U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html).
     - HORIZONTALLINE
     - A dict object containing connection details.
     type: dict

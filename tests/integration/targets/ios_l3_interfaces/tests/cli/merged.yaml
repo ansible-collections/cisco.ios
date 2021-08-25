@@ -7,7 +7,7 @@
 
 - block:
 
-    - name: Merge provided configuration with device configuration
+    - name: l3_interface merged - Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -16,9 +16,12 @@
               - address: 192.0.2.1/24
           - name: GigabitEthernet0/1
             ipv4:
-              - address: dhcp
-                dhcp_client: 0
-                dhcp_hostname: test.com
+              - dhcp:
+                  client_id: GigabitEthernet0/0
+                  hostname: test.com
+            ipv6:
+              - autoconfig:
+                  enable: true
           - name: GigabitEthernet0/2
             ipv4:
               - address: 198.51.100.1/24
@@ -28,29 +31,29 @@
               - address: 2001:db8:0:3::/64
         state: merged
 
-    - name: Assert that correct set of commands were generated
+    - name: l3_interface merged - Assert that correct set of commands were generated
       assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
             \ length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
+    - name: l3_interface merged - Assert that before dicts are correctly generated
       assert:
         that:
           - "{{ merged['before'] | symmetric_difference(result['before']) | length\
             \ == 0 }}"
 
-    - name: Assert that after dict is correctly generated
+    - name: l3_interface merged - Assert that after dict is correctly generated
       assert:
         that:
           - "{{ merged['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: l3_interface merged - Merge provided configuration with device configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
 
-    - name: Assert that the previous task was idempotent
+    - name: l3_interface merged - Assert that the previous task was idempotent
       assert:
         that:
           - result['changed'] == false

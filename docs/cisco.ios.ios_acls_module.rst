@@ -170,6 +170,25 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>object_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Destination network object group</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>port_protocol</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -3189,6 +3208,25 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>object_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source network object group</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>port_protocol</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -3198,7 +3236,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify the destination port along with protocol.</div>
+                        <div>Specify the source port along with protocol.</div>
                         <div>Note, Valid with TCP/UDP protocol_options</div>
                 </td>
             </tr>
@@ -3362,7 +3400,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Destination wildcard bits, valid with IPV4 address.</div>
+                        <div>Source wildcard bits, valid with IPV4 address.</div>
                 </td>
             </tr>
 
@@ -3796,6 +3834,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
+                        <div>The states <em>merged</em> is the default state which merges the want and have config, but for ACL module as the IOS platform doesn&#x27;t allow update of ACE over an pre-existing ACE sequence in ACL, same way ACLs resource module will error out for respective scenario and only addition of new ACE over new sequence will be allowed with merge state.</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
@@ -3820,6 +3859,33 @@ Examples
 .. code-block:: yaml
 
     # Using merged
+
+    # Before state:
+    # -------------
+    #
+    # vios#sh access-lists
+    # Extended IP access list 100
+    #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_acls:
+        config:
+        - afi: ipv4
+          acls:
+          - name: 100
+            aces:
+            - sequence: 10
+              protocol_options:
+                icmp:
+                  traceroute: true
+        state: merged
+
+    # After state:
+    # ------------
+    #
+    # Play Execution fails, with error:
+    # Cannot update existing sequence 10 of ACLs 100 with state merged.
+    # Please use state replaced or overridden.
 
     # Before state:
     # -------------
@@ -3935,7 +4001,6 @@ Examples
     # - deny 192.168.1.200
     # - deny 192.168.2.0 0.0.0.255
     # - ip access-list extended 110
-    # - no 10
     # - 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     # - deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
     # - ip access-list extended test
@@ -3953,6 +4018,8 @@ Examples
     # Standard IP access list std_acl
     #    10 deny   192.168.1.200
     #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+    # Extended IP access list 100
+    #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
     # Extended IP access list 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
@@ -4460,7 +4527,7 @@ Examples
 
     # Using Rendered
 
-    - name: Rendered the provided configuration with the exisiting running configuration
+    - name: Rendered the provided configuration with the existing running configuration
       cisco.ios.ios_acls:
         config:
         - afi: ipv4

@@ -43,6 +43,11 @@ options:
     - incoming
     - slip-ppp
     type: str
+  multiline_delimiter:
+    description:
+    - Specify the delimiting character than will be used for configuration.
+    default: '@'
+    type: str
   text:
     description:
     - The banner text that should be present in the remote device running configuration.  This
@@ -59,7 +64,7 @@ options:
     - absent
 """
 EXAMPLES = """
-- name: configure the login banner
+- name: Configure the login banner
   cisco.ios.ios_banner:
     banner: login
     text: |
@@ -68,7 +73,7 @@ EXAMPLES = """
       string
     state: present
 
-- name: remove the motd banner
+- name: Remove the motd banner
   cisco.ios.ios_banner:
     banner: motd
     state: absent
@@ -77,6 +82,13 @@ EXAMPLES = """
   cisco.ios.ios_banner:
     banner: motd
     text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+    state: present
+
+- name: Configure the login banner using delimiter
+  cisco.ios.ios_banner:
+    banner: login
+    multiline_delimiter: x
+    text: this is my login banner
     state: present
 """
 RETURN = """
@@ -105,14 +117,19 @@ def map_obj_to_commands(updates, module):
     commands = list()
     want, have = updates
     state = module.params["state"]
+    multiline_delimiter = module.params.get("multiline_delimiter")
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
-        if want["text"] and (want["text"] != have.get("text")):
+        if have.get("text") and len(have.get("text")) > 1:
+            haved = have.get("text")[:-1]
+        else:
+            haved = ""
+        if want["text"] and (want["text"] != haved):
             banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " @\n"
+            banner_cmd += " {0}\n".format(multiline_delimiter)
             banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n@"
+            banner_cmd += "\n{0}".format(multiline_delimiter)
             commands.append(banner_cmd)
     return commands
 
@@ -147,6 +164,7 @@ def map_params_to_obj(module):
     return {
         "banner": module.params["banner"],
         "text": text,
+        "multiline_delimiter": module.params["multiline_delimiter"],
         "state": module.params["state"],
     }
 
@@ -159,6 +177,7 @@ def main():
             required=True,
             choices=["login", "motd", "exec", "incoming", "slip-ppp"],
         ),
+        multiline_delimiter=dict(default="@"),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )

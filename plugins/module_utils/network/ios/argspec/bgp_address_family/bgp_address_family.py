@@ -31,9 +31,6 @@ class Bgp_AddressFamilyArgs(object):
     """The arg spec for the cisco.ios_bgp_address_family module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "type": "dict",
@@ -341,8 +338,15 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "next_hop_self": {"type": "bool"},
+                                "nexthop_self": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "all": {"type": "bool"},
+                                    },
+                                },
                                 "next_hop_unchanged": {"type": "bool"},
-                                "password": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
                                 "path_attribute": {
                                     "type": "dict",
                                     "options": {
@@ -381,6 +385,15 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
+                                "prefix_lists": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
+                                    },
+                                },
                                 "prefix_list": {
                                     "type": "dict",
                                     "options": {
@@ -396,6 +409,15 @@ class Bgp_AddressFamilyArgs(object):
                                         "set": {"type": "bool"},
                                         "all": {"type": "bool"},
                                         "replace_as": {"type": "bool"},
+                                    },
+                                },
+                                "route_maps": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "in": {"type": "bool"},
+                                        "out": {"type": "bool"},
                                     },
                                 },
                                 "route_map": {
