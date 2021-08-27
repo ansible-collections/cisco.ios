@@ -336,6 +336,7 @@ releases:
     - ios_l3_interfaces_module_rm_implimentation.yaml
     - ios_logging_command_template.yaml
     - ios_logging_doc_update_test_fix.yaml
+    - ios_ntp_foc_update.yaml
     - provider_testing.yaml
     - sample_commands_added_l3_interface.yaml
     release_date: '2021-08-27'
