@@ -317,6 +317,21 @@ Parameters
                         <div>Manage the state of the resource.</div>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vrf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VRF configuration for NTP servers</div>
+                </td>
+            </tr>
     </table>
     <br/>
 
@@ -341,26 +356,24 @@ Examples
         source_int: Loopback0
         logging: false
         state: present
-
     # Remove NTP ACL and logging
     - cisco.ios.ios_ntp:
         acl: NTP_ACL
         logging: true
         state: absent
-
     # Set NTP authentication
     - cisco.ios.ios_ntp:
         key_id: 10
         auth_key: 15435A030726242723273C21181319000A
         auth: true
         state: present
-
     # Set new NTP configuration
     - cisco.ios.ios_ntp:
         server: 10.0.255.10
         source_int: Loopback0
         acl: NTP_ACL
         logging: true
+        vrf: mgmt
         key_id: 10
         auth_key: 15435A030726242723273C21181319000A
         auth: true
@@ -409,3 +422,4 @@ Authors
 ~~~~~~~
 
 - Federico Olivieri (@Federico87)
+- Joanie Sylvain (@JoanieAda)
