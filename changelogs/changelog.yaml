@@ -316,3 +316,26 @@ releases:
     - doc_broken_link.yaml
     - ios_user_issue.yaml
     release_date: '2021-07-27'
+  2.4.0:
+    changes:
+      bugfixes:
+      - Logging command template fixed supporting Jinja version for centos-8 EEs.
+      - Updated ios_l3_interface as the newer Resource Module implementation and added
+        features.
+      deprecated_features:
+      - Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
+      - Remove testing with provider for ansible-test integration jobs. This helps
+        prepare us to move to network-ee integration tests.
+      doc_changes:
+      - Sample commands added for l3_interfaces.
+      - Updated ios_logging_global Resource Module documentation with proper examples.
+      minor_changes:
+      - Add support for VRF configuration under NTP server.
+    fragments:
+    - 291_add_vrf_support_ios_ntp.yaml
+    - ios_l3_interfaces_module_rm_implimentation.yaml
+    - ios_logging_command_template.yaml
+    - ios_logging_doc_update_test_fix.yaml
+    - provider_testing.yaml
+    - sample_commands_added_l3_interface.yaml
+    release_date: '2021-08-27'

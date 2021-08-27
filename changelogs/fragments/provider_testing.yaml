@@ -1,3 +1,0 @@
----
-deprecated_features:
-  - Remove testing with provider for ansible-test integration jobs. This helps prepare us to move to network-ee integration tests.
