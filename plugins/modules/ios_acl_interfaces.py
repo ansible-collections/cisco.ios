@@ -160,7 +160,6 @@ EXAMPLES = """
 #  ipv6 traffic-filter temp_v6 in
 # interface GigabitEthernet0/2
 #  ip access-group 100 in
-#  ip access-group 123 out
 
 
 # After state:
