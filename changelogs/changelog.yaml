@@ -122,15 +122,19 @@ releases:
     release_date: '2020-08-03'
   1.0.2:
     changes:
-      release_summary:
-      - Re-releasing 1.0.1 with updated changelog.
+      release_summary: Re-releasing 1.0.1 with updated changelog.
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
   1.0.3:
     changes:
-      release_summary:
-      - Releasing 1.0.3 with updated readme with changelog link, galaxy description, and bugfix.
+      bugfixes:
+      - To fix IOS l2 interfaces for traceback error and merge operation not working
+        as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+      - To fix the issue where ios acls was complaining in absence of protocol option
+        value (https://github.com/ansible-collections/cisco.ios/pull/124).
+      release_summary: Releasing 1.0.3 with updated readme with changelog link, galaxy
+        description, and bugfix.
     release_date: '2020-08-28'
   1.1.0:
     changes:
@@ -235,6 +239,10 @@ releases:
         resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
       security_fixes:
       - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
+    modules:
+    - description: Route Maps resource module.
+      name: ios_route_maps
+      namespace: ''
     release_date: '2021-04-27'
   2.2.0:
     changes:
@@ -296,3 +304,39 @@ releases:
     - depricated_next_hop_self_bgpAddFamilt.yaml
     - readme_freenode_to_liberachat.yml
     release_date: '2021-06-23'
+  2.3.1:
+    changes:
+      bugfixes:
+      - Updated ios_command module doc example section with appropriate punctuation.
+      - ios_user fails to add password when configured in separate task with update_password.
+      doc_changes:
+      - Broken link in documentation fixed.
+    fragments:
+    - 166_ios_command_doc_fix.yaml
+    - doc_broken_link.yaml
+    - ios_user_issue.yaml
+    release_date: '2021-07-27'
+  2.4.0:
+    changes:
+      bugfixes:
+      - Logging command template fixed supporting Jinja version for centos-8 EEs.
+      - Updated ios_l3_interface as the newer Resource Module implementation and added
+        features.
+      deprecated_features:
+      - Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
+      - Remove testing with provider for ansible-test integration jobs. This helps
+        prepare us to move to network-ee integration tests.
+      doc_changes:
+      - Sample commands added for l3_interfaces.
+      - Updated ios_logging_global Resource Module documentation with proper examples.
+      minor_changes:
+      - Add support for VRF configuration under NTP server.
+    fragments:
+    - 291_add_vrf_support_ios_ntp.yaml
+    - ios_l3_interfaces_module_rm_implimentation.yaml
+    - ios_logging_command_template.yaml
+    - ios_logging_doc_update_test_fix.yaml
+    - ios_ntp_foc_update.yaml
+    - provider_testing.yaml
+    - sample_commands_added_l3_interface.yaml
+    release_date: '2021-08-27'

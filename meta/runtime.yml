@@ -151,6 +151,13 @@ plugin_routing:
       redirect: cisco.ios.ios_banner
     bgp:
       redirect: cisco.ios.ios_bgp
+      deprecation:
+        removal_date: "2023-08-24"
+        warning_text: See the plugin documentation for more details
+    ios_bgp:
+      deprecation:
+        removal_date: "2023-08-24"
+        warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.ios.ios_bgp_global
     command:
@@ -208,6 +215,10 @@ plugin_routing:
       redirect: cisco.ios.ios_lldp_interfaces
     logging:
       redirect: cisco.ios.ios_logging
+      deprecation:
+        removal_date: "2023-06-01"
+        warning_text: See the plugin documentation for more details
+    ios_logging:
       deprecation:
         removal_date: "2023-06-01"
         warning_text: See the plugin documentation for more details

@@ -7,13 +7,13 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-    - name: Gather the provided configuration with the existing running configuration
+    - name: l3_interface gathered - Gather the provided configuration
       register: result
       cisco.ios.ios_l3_interfaces:
         config:
         state: gathered
 
-    - name: Assert
+    - name: l3_interface gathered - Assert
       assert:
         that:
           - gathered['config'] | symmetric_difference(result.gathered) == []

@@ -31,7 +31,7 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ merged['before'] == result['before'] }}"
+          - "{{ merged['after'] == result['after'] }}"
 
     - name: Merge provided configuration Global LLDP (IDEMPOTENT)
       register: result

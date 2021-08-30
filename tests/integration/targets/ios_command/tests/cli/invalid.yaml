@@ -6,7 +6,6 @@
   ignore_errors: true
   cisco.ios.ios_command:
     commands: show foo
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -19,7 +18,6 @@
     commands:
       - show version
       - show foo
-    provider: '{{ cli }}'
 
 - assert:
     that:

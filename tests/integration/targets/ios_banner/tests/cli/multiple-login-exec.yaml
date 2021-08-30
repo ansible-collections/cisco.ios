@@ -7,7 +7,6 @@
     banner: "{{ item }}"
     text: "this is my login banner\nthat as a multiline\nstring\n"
     state: present
-    provider: "{{ cli }}"
 
 - name: Set login
   register: result
@@ -15,7 +14,6 @@
     banner: login
     text: "this is my login banner\nthat as a multiline\nstring"
     state: present
-    provider: "{{ cli }}"
 
 - debug:
     msg: "{{ result }}"
@@ -31,7 +29,6 @@
     banner: exec
     text: "this is my login banner\nthat as a multiline\nstring"
     state: present
-    provider: "{{ cli }}"
 
 - debug:
     msg: "{{ result }}"

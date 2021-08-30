@@ -16,7 +16,6 @@
 
       - name: ansibletest6
     state: absent
-    provider: '{{ cli }}'
 
 - name: Create user (SetUp)
   become: true
@@ -26,7 +25,6 @@
     privilege: 15
     role: network-operator
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -43,7 +41,6 @@
       - name: ansibletest2
 
       - name: ansibletest3
-    provider: '{{ cli }}'
     state: present
     view: network-admin
 
@@ -61,7 +58,6 @@
     privilege: 15
     role: network-operator
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -77,7 +73,6 @@
       - name: ansibletest2
 
       - name: ansibletest3
-    provider: '{{ cli }}'
     state: present
     view: network-admin
 
@@ -93,7 +88,6 @@
     name: ansibleuser4
     password_type: password
     configured_password: testpass
-    provider: '{{ cli }}'
     state: present
 
 - assert:
@@ -108,7 +102,6 @@
     name: ansibleuser5
     password_type: secret
     configured_password: testpass
-    provider: '{{ cli }}'
     state: present
 
 - assert:
@@ -124,7 +117,6 @@
     hashed_password:
       type: 5
       value: $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
-    provider: '{{ cli }}'
     state: present
 
 - assert:
@@ -150,7 +142,6 @@
 
       - name: ansibletest6
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:

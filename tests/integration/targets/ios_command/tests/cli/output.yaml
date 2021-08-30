@@ -6,7 +6,6 @@
   cisco.ios.ios_command:
     commands:
       - show version
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -19,7 +18,6 @@
     commands:
       - show version
       - show interfaces
-    provider: '{{ cli }}'
 
 - assert:
     that:

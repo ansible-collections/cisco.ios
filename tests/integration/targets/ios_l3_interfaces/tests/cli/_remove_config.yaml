@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: l3_interface - Remove Config
   vars:
     lines: "interface Loopback 999\nno ip address\ninterface GigabitEthernet 0/1\nno ip address\nno ipv6 address\ninterface\
       \ GigabitEthernet 0/2\nno ip address\nno ipv6 address\n"

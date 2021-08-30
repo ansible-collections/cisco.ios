@@ -10,13 +10,11 @@
     parents:
       - interface Loopback999
     match: none
-    provider: "{{ cli }}"
 
 - name: configure device with defaults included
   cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
-    provider: "{{ cli }}"
   register: result
 
 - name: run ios commands to test command_timeout
