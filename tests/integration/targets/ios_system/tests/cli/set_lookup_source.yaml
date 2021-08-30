@@ -8,13 +8,11 @@
       - no ip domain lookup source-interface Loopback888
       - vrf definition ansible
     match: none
-    provider: '{{ cli }}'
 
 - name: configure lookup_source
   register: result
   cisco.ios.ios_system:
     lookup_source: Loopback888
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -25,7 +23,6 @@
   register: result
   cisco.ios.ios_system:
     lookup_source: Loopback888
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -35,7 +32,6 @@
   register: result
   cisco.ios.ios_system:
     lookup_enabled: false
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -46,7 +42,6 @@
   register: result
   cisco.ios.ios_system:
     lookup_enabled: true
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -60,7 +55,6 @@
       - no ip domain lookup source-interface Loopback888
       - no vrf definition ansible
     match: none
-    provider: '{{ cli }}'
 
 - debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection
     }}"

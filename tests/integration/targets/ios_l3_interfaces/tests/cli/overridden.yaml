@@ -9,7 +9,7 @@
 
 - block:
 
-    - name: Override device configuration of all interfaces with provided configuration
+    - name: l3_interface overridden - Override device configuration of all interfaces with provided configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -17,7 +17,8 @@
           - name: GigabitEthernet0/0
             ipv4:
 
-              - address: dhcp
+              - dhcp:
+                  enable: true
 
           - name: GigabitEthernet0/2
             ipv4:
@@ -28,30 +29,30 @@
                 secondary: true
         state: overridden
 
-    - name: Assert that correct set of commands were generated
+    - name: l3_interface overridden - Assert that correct set of commands were generated
       assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
+    - name: l3_interface overridden - Assert that before dicts are correctly generated
       assert:
         that:
           - "{{ overridden['before'] | symmetric_difference(result['before']) |\
             \ length == 0 }}"
 
-    - name: Assert that after dict is correctly generated
+    - name: l3_interface overridden - Assert that after dict is correctly generated
       assert:
         that:
           - "{{ overridden['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Override device configuration of all interfaces with provided configuration
+    - name: l3_interface overridden - Override device configuration of all interfaces with provided configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
 
-    - name: Assert that task was idempotent
+    - name: l3_interface overridden - Assert that task was idempotent
       assert:
         that:
           - result['changed'] == false

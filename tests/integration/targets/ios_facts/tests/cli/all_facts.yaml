@@ -6,7 +6,6 @@
   cisco.ios.ios_facts:
     gather_subset:
       - all
-    provider: "{{ cli }}"
 
 - assert:
     that:
@@ -52,7 +51,6 @@
   register: result
   cisco.ios.ios_facts:
     available_network_resources: true
-    provider: "{{ cli }}"
 
 - name: Assert that correct available_network_resources returned
   assert:

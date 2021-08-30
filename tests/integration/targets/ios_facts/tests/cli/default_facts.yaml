@@ -4,7 +4,6 @@
 - name: test getting default facts
   register: result
   cisco.ios.ios_facts:
-    provider: '{{ cli }}'
 
 - assert:
     that:

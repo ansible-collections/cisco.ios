@@ -9,7 +9,7 @@
 
 - block:
 
-    - name: Replaces device configuration of listed interfaces with provided configuration
+    - name: l3_interface replaced - Replaces device configuration of listed interfaces with provided configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -31,30 +31,30 @@
               - address: 2001:db8:1:1::/64
         state: replaced
 
-    - name: Assert that correct set of commands were generated
+    - name: l3_interface replaced - Assert that correct set of commands were generated
       assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
             \ | length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
+    - name: l3_interface replaced - Assert that before dicts are correctly generated
       assert:
         that:
           - "{{ replaced['before'] | symmetric_difference(result['before']) | length\
             \ == 0 }}"
 
-    - name: Assert that after dict is correctly generated
+    - name: l3_interface replaced - Assert that after dict is correctly generated
       assert:
         that:
           - "{{ replaced['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Replaces device configuration of listed interfaces with provided configuration
+    - name: l3_interface replaced - Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
 
-    - name: Assert that task was idempotent
+    - name: l3_interface replaced - Assert that task was idempotent
       assert:
         that:
           - result['changed'] == false

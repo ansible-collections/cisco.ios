@@ -12,7 +12,6 @@
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: absent
-    provider: '{{ cli }}'
 
 - block:
 
@@ -22,7 +21,6 @@
         server: 10.75.32.5
         source_int: '{{ test_interface }}'
         state: present
-        provider: '{{ cli }}'
 
     - assert: &id002
         that:
@@ -42,7 +40,6 @@
         lines:
           - 10 permit ip host 192.0.2.1 any log
         parents: ip access-list extended NTP_ACL
-        provider: '{{ cli }}'
 
     - assert: *id002
 
@@ -52,7 +49,6 @@
         acl: NTP_ACL
         logging: true
         state: present
-        provider: '{{ cli }}'
 
     - assert: *id002
 
@@ -68,8 +64,8 @@
         key_id: 10
         auth_key: 15435A030726242723273C21181319000A
         auth: true
+        vrf: my_mgmt_vrf
         state: present
-        provider: '{{ cli }}'
 
     - assert: *id002
 
@@ -85,7 +81,6 @@
         acl: NTP_ACL
         logging: true
         state: absent
-        provider: '{{ cli }}'
 
     - assert: *id002
 
@@ -103,4 +98,3 @@
       cisco.ios.ios_config:
         lines:
           - no ip access-list extended NTP_ACL
-        provider: '{{ cli }}'

@@ -64,6 +64,7 @@ class TestIosNtpModule(TestIosModule):
                 auth=True,
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
+                vrf="my_mgmt_vrf",
                 state="present",
             )
         )
@@ -96,11 +97,12 @@ class TestIosNtpModule(TestIosModule):
                 auth=True,
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
+                vrf="my_mgmt_vrf",
                 state="absent",
             )
         )
         commands = [
-            "no ntp server 10.75.32.5",
+            "no ntp server vrf my_mgmt_vrf 10.75.32.5",
             "no ntp source Loopback0",
             "no ntp access-group peer NTP_ACL",
             "no ntp logging",

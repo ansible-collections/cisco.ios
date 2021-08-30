@@ -5,6 +5,32 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
+Minor Changes
+-------------
+
+- Add support for VRF configuration under NTP server.
+
+Deprecated Features
+-------------------
+
+- Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
+- Remove testing with provider for ansible-test integration jobs. This helps prepare us to move to network-ee integration tests.
+
+Bugfixes
+--------
+
+- Logging command template fixed supporting Jinja version for centos-8 EEs.
+- Updated ios_l3_interface as the newer Resource Module implementation and added features.
+
+Documentation Changes
+---------------------
+
+- Sample commands added for l3_interfaces.
+- Updated ios_logging_global Resource Module documentation with proper examples.
+
 v2.3.1
 ======
 

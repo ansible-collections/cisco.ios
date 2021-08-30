@@ -7,7 +7,6 @@
     dest: host
     name: 172.16.0.1
     state: absent
-    provider: '{{ cli }}'
 
 - name: Set up host logging using platform agnostic module
   register: result
@@ -16,7 +15,6 @@
     name: 172.16.0.1
     facility: local7
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -29,6 +27,5 @@
     dest: host
     name: 172.16.0.1
     state: absent
-    provider: '{{ cli }}'
 
 - debug: msg="END ios cli/net_logging.yaml on connection={{ ansible_connection }}"

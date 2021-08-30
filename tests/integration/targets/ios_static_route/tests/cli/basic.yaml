@@ -16,7 +16,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: absent
-    provider: '{{ cli }}'
 
 - name: create static route
   register: result
@@ -25,7 +24,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -40,7 +38,6 @@
     next_hop: 10.0.0.8
     admin_distance: 1
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -54,7 +51,6 @@
     next_hop: 10.0.0.8
     admin_distance: 2
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -76,7 +72,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -89,7 +84,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: absent
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -115,7 +109,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
@@ -137,7 +130,6 @@
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: present
-    provider: '{{ cli }}'
 
 - assert:
     that:
