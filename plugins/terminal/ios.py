@@ -65,18 +65,18 @@ class TerminalModule(TerminalBase):
             result = self._exec_cli_command(
                 to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
             )
-
-            prompt = self.privilege_level_re.match(result)
-            if not prompt:
-                raise AnsibleConnectionFailure(
-                    "unable to check privilege level [%s]" % result
-                )
-
-            return int(prompt.group(1))
         except AnsibleConnectionFailure as e:
             raise AnsibleConnectionFailure(
                 "unable to fetch privilege, with error: %s" % (e.message)
             )
+
+        prompt = self.privilege_level_re.match(result)
+        if not prompt:
+            raise AnsibleConnectionFailure(
+                "unable to check privilege level [%s]" % result
+            )
+
+        return int(prompt.group(1))
 
     def on_open_shell(self):
         try:
