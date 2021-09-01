@@ -122,8 +122,7 @@ class TerminalModule(TerminalBase):
                 or self.get_privilege_level() != 15
             ):
                 raise AnsibleConnectionFailure(
-                    "failed to elevate privilege to enable mode still at prompt [%s]"
-                    % prompt
+                    "failed to elevate privilege to enable mode still at prompt"
                 )
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
