@@ -206,7 +206,7 @@ options:
                   stream: *stream
                   filtered: *filtered
                   port:
-                    description: Specify the TCP port number (default=601) (1 - 65535)
+                    description: Specify the UDP port number (default=514) (1 - 65535)
                     type: int
                   sequence_num_session: *sequence_num_session
                   session_id: *session_id
