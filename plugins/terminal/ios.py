@@ -96,7 +96,10 @@ class TerminalModule(TerminalBase):
             )
 
     def on_become(self, passwd=None):
-        if self._get_prompt().endswith(b"#") and self.get_privilege_level() == 15:
+        if (
+            self._get_prompt().endswith(b"#")
+            and self.get_privilege_level() == 15
+        ):
             return
 
         cmd = {u"command": u"enable"}
@@ -121,7 +124,11 @@ class TerminalModule(TerminalBase):
                 % (prompt, e.message)
             )
 
-        if prompt is None or not prompt.endswith(b"#") or privilege_level != 15:
+        if (
+            prompt is None
+            or not prompt.endswith(b"#")
+            or privilege_level != 15
+        ):
             raise AnsibleConnectionFailure(
                 "failed to elevate privilege to enable mode, still at level [%d] and prompt [%s]"
                 % (privilege_level, prompt)
