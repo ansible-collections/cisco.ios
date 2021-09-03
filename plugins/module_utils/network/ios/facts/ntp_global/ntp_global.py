@@ -53,13 +53,13 @@ class Ntp_globalFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_ntp_data(connection)
 
         # parse native config using the Ntp_global template
         ntp_global_parser = Ntp_globalTemplate(
             lines=data.splitlines(), module=self._module
         )
-        objs = list(ntp_global_parser.parse().values())
+        objs = ntp_global_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("ntp_global", None)
 

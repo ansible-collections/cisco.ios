@@ -37,7 +37,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ peer }}",
+            "setval": "ntp access-group peer {{ access_group.peer.access_list }}", # TODO
             "result": {
                 "access_group": {
                     "peer": [
@@ -46,7 +46,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "kod": "{{ not not kod }}",
                             "ipv4": "{{ not not ipv4 }}",
                             "ipv6": "{{ not not ipv6 }}",
-                        }
+                        },
                     ],
                 }
             },
@@ -62,7 +62,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ peer }}",
+            "setval": "ntp access-group query-only {{ access_group.query_only.access_list }}", # TODO
             "result": {
                 "access_group": {
                     "query_only": [
@@ -71,7 +71,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "kod": "{{ not not kod }}",
                             "ipv4": "{{ not not ipv4 }}",
                             "ipv6": "{{ not not ipv6 }}",
-                        }
+                        },
                     ],
                 }
             },
@@ -87,7 +87,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ peer }}",
+            "setval": "ntp access-group serve {{ access_group.serve.access_list }}", # TODO
             "result": {
                 "access_group": {
                     "serve": [
@@ -96,7 +96,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "kod": "{{ not not kod }}",
                             "ipv4": "{{ not not ipv4 }}",
                             "ipv6": "{{ not not ipv6 }}",
-                        }
+                        },
                     ],
                 }
             },
@@ -112,7 +112,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ peer }}",
+            "setval": "ntp access-group serve-only {{ access_group.serve_only.access_list }}", # TODO
             "result": {
                 "access_group": {
                     "serve_only": [
@@ -121,7 +121,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "kod": "{{ not not kod }}",
                             "ipv4": "{{ not not ipv4 }}",
                             "ipv6": "{{ not not ipv6 }}",
-                        }
+                        },
                     ],
                 }
             },
@@ -225,7 +225,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "setval": "ntp master",
             "result": {
                 "master":{
-                    "enabled": "{{ master }}",
+                    "enabled": "{{ not not master }}",
                 }
             },
         },
@@ -261,7 +261,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp maxdistance {{ max_distance }}",
             "result": {
-                "max_associations": "{{ max_distance }}",
+                "max_distance": "{{ max_distance }}",
             },
         },
         {
@@ -327,7 +327,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": "ntp peer 10.0.2.11 key 2 minpoll 5 prefer version 2",
+            "setval": "ntp peer 10.0.2.11 key 2 minpoll 5 prefer version 2", # TODO
             "result": {
                 "peers": [
                     {
@@ -367,7 +367,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": "ntp server 10.0.2.11 key 2 minpoll 5 prefer version 2",
+            "setval": "ntp server 10.0.2.11 key 2 minpoll 5 prefer version 2", # TODO
             "result": {
                 "servers": [
                     {
@@ -384,6 +384,25 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "prefer": "{{ not not prefer }}",
                         "source": "{{ source }}",
                         "version": "{{ version }}",
+                    }
+                ]
+            },
+        },
+        {
+            "name": "trusted_keys",
+            "getval": re.compile(
+                r"""
+                ^ntp\strusted-key
+                \s((?P<range_start>\d+))
+                (\s\-\s)?
+                ((?P<range_end>\d+))?
+                $""", re.VERBOSE),
+            "setval": "ntp trusted-key {{ range_start }} - {{ range_end }}",
+            "result": {
+                "trusted_keys": [
+                    {
+                        "range_start":"{{ range_start }}",
+                        "range_end":"{{ range_end }}",
                     }
                 ]
             },

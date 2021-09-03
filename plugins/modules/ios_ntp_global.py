@@ -108,7 +108,6 @@ options:
           key:
             description: Password
             type: str
-            no_log: True
           encryption:
             description: Authentication key encryption type
             type: int
@@ -328,6 +327,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
     Ntp_global,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():
