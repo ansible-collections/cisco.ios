@@ -1,0 +1,3 @@
+---
+trivial:
+  - fix ios_user intergration tests with network-ee.
