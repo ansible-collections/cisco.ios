@@ -18,7 +18,7 @@
           - show version
       vars:
         ansible_user: auth_user
-        ansible_ssh_pass: pass123
+        ansible_ssh_password: pass123
         ansible_private_key_file: ""
 
     - name: reset connection with {{ ansible_user }}
@@ -32,7 +32,7 @@
       register: results
       vars:
         ansible_user: auth_user
-        ansible_ssh_pass: badpass
+        ansible_ssh_password: badpass
         ansible_private_key_file: ""
 
     - name: check that attempt failed
