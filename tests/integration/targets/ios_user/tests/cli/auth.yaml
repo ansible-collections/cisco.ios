@@ -80,6 +80,7 @@
       cisco.ios.ios_command:
         commands:
           - show version
+      ignore_errors: true
       vars:
         ansible_user: ssh_user
         ansible_private_key_file: "{{ role_path }}/files/test_rsa"
