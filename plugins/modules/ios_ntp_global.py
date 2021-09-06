@@ -26,7 +26,7 @@ notes:
 options:
   config:
     description: A dictionary of ntp options
-    elements: dict
+    type: dict
     suboptions:
       access_group:
         description: Control NTP access
@@ -79,7 +79,6 @@ options:
       allow:
         description: Allow processing of packets
         type: dict
-        elements: dict
         suboptions:
           control:
             description: Allow processing control mode packets
@@ -123,7 +122,6 @@ options:
       master:
         description: Act as NTP master clock
         type: dict
-        elements: dict
         suboptions:
           enabled:
             description: Enable master clock
@@ -327,11 +325,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
     Ntp_global,
 )
-
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():

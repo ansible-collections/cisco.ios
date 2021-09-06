@@ -48,7 +48,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "ipv6": "{{ not not ipv6 }}",
                         },
                     ],
-                }
+                },
             },
         },
         {
@@ -73,7 +73,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "ipv6": "{{ not not ipv6 }}",
                         },
                     ],
-                }
+                },
             },
         },
         {
@@ -98,7 +98,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "ipv6": "{{ not not ipv6 }}",
                         },
                     ],
-                }
+                },
             },
         },
         {
@@ -123,7 +123,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                             "ipv6": "{{ not not ipv6 }}",
                         },
                     ],
-                }
+                },
             },
         },
         {
@@ -137,8 +137,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 "allow": {
                     "control": {
                         "rate_limit": "{{ rate_limit }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -151,7 +151,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "result": {
                 "allow": {
                     "private": "{{ not not private }}",
-                }
+                },
             },
         },
         {
@@ -169,7 +169,10 @@ class Ntp_globalTemplate(NetworkTemplate):
             "name": "authentication_keys",
             "getval": re.compile(
                 r"""
-                ^ntp\sauthentication-key\s(?P<id>\d+)\s(?P<algorithm>\S+)\s(?P<key>\S+)\s(?P<encryption>\d+)
+                ^ntp\sauthentication-key\s(?P<id>\d+)
+                \s(?P<algorithm>\S+)
+                \s(?P<key>\S+)
+                \s(?P<encryption>\d+)
                 $""", re.VERBOSE),
             "setval": "ntp authentication-key {{ id }} {{ algorithm }} {{ key }} {{ encryption }}",
             "result": {
@@ -180,7 +183,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "key": "{{ key }}",
                         "encryption": "{{ encryption }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -226,7 +229,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "result": {
                 "master":{
                     "enabled": "{{ not not master }}",
-                }
+                },
             },
         },
         {
@@ -239,7 +242,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "result": {
                 "master":{
                     "stratum_number": "{{ stratum_number }}",
-                }
+                },
             },
         },
         {
@@ -344,8 +347,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "prefer": "{{ not not prefer }}",
                         "source": "{{ source }}",
                         "version": "{{ version }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -384,8 +387,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "prefer": "{{ not not prefer }}",
                         "source": "{{ source }}",
                         "version": "{{ version }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -403,8 +406,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                     {
                         "range_start":"{{ range_start }}",
                         "range_end":"{{ range_end }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {

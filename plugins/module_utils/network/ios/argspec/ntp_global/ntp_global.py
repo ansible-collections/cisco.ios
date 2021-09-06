@@ -33,7 +33,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
-            "elements": "dict",
+            "type": "dict",
             "options": {
                 "access_group": {
                     "type": "dict",
@@ -82,7 +82,6 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "allow": {
                     "type": "dict",
-                    "elements": "dict",
                     "options": {
                         "control": {
                             "type": "dict",
@@ -98,7 +97,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                     "options": {
                         "id": {"type": "int"},
                         "algorithm": {"type": "str"},
-                        "key": {"type": "str", "no_log": True},
+                        "key": {"type": "str"},
                         "encryption": {"type": "int"},
                     },
                 },
@@ -107,7 +106,6 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "logging": {"type": "bool"},
                 "master": {
                     "type": "dict",
-                    "elements": "dict",
                     "options": {
                         "enabled": {"type": "bool"},
                         "stratum_number": {"type": "int"},
