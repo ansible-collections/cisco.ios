@@ -47,7 +47,7 @@ class Ntp_global(ResourceModule):
             resource="ntp_global",
             tmplt=Ntp_globalTemplate(),
         )
-        self._state_set = ("replaced", "deleted", "overridden")
+        self.negate_states = ["replaced", "deleted", "overridden"]
         self.parsers = [
             "allow.control.rate_limit",
             "allow.private",
@@ -115,17 +115,17 @@ class Ntp_global(ResourceModule):
     def _compare_lists(self, want, have):
         """Compare list of dict"""
         for _parser in self.complex_parser:
-            if "." in _parser:
+            if "." in _parser:  # access_group
                 _p = _parser.split(".", 1)
                 i_want = want.get(_p[0]).get(_p[1], {}) if want.get(_p[0]) else {}
                 i_have = have.get(_p[0]).get(_p[1], {}) if have.get(_p[0]) else {}
-            else:
+            else:  # other list attrs
                 i_want = want.get(_parser, {})
                 i_have = have.get(_parser, {})
             for key, wanting in iteritems(i_want):
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
-                    if self.state in self._state_set:
+                    if self.state in self.negate_states:  # fix me
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
             for key, haveing in iteritems(i_have):
@@ -133,8 +133,7 @@ class Ntp_global(ResourceModule):
 
     def _ntp_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
-        tmp = deepcopy(data)
-        pkey = {
+        p_key = {
             "servers": "server",
             "peers": "peer",
             "authentication_keys": "id",
@@ -145,9 +144,10 @@ class Ntp_global(ResourceModule):
             "trusted_keys": "range_start",
             "access_group": True,
         }
-        for k in pkey.keys():
-            if k in tmp and k != "access_group":
-                tmp[k] = {str(i[pkey[k]]): i for i in tmp[k]}
-            elif tmp.get("access_group") and k == "access_group":
-                tmp[k] = self._ntp_list_to_dict(tmp.get("access_group"))
-        return tmp
+        tmp_data = deepcopy(data)
+        for k in p_key.keys():
+            if k in tmp_data and k != "access_group":
+                tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
+            elif tmp_data.get("access_group") and k == "access_group":
+                tmp_data[k] = self._ntp_list_to_dict(tmp_data.get("access_group"))
+        return tmp_data
