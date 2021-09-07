@@ -115,6 +115,7 @@ class Ntp_global(ResourceModule):
     def _compare_lists(self, want, have):
         """Compare list of dict"""
         for _parser in self.complex_parser:
+            _negate = True
             if "." in _parser:  # access_group
                 _p = _parser.split(".", 1)
                 i_want = want.get(_p[0]).get(_p[1], {}) if want.get(_p[0]) else {}
@@ -126,7 +127,9 @@ class Ntp_global(ResourceModule):
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
                     if self.state in self.negate_states:  # fix me
-                        self.addcmd(haveing, _parser, negate=True)
+                        if _negate:
+                            self.addcmd(haveing, _parser, negate=True)
+                        _negate = False
                     self.addcmd(wanting, _parser)
             for key, haveing in iteritems(i_have):
                 self.addcmd(haveing, _parser, negate=True)

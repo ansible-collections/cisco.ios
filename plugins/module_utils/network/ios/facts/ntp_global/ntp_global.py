@@ -36,9 +36,27 @@ class Ntp_globalFacts(object):
         self._module = module
         self.argument_spec = Ntp_globalArgs.argument_spec
 
+    def sort_dicts(self, objs):
+        p_key = {
+            "servers": "server",
+            "peers": "peer",
+            "authentication_keys": "id",
+            "peer": "access_list",
+            "query_only": "access_list",
+            "serve": "access_list",
+            "serve_only": "access_list",
+            "trusted_keys": "range_start",
+            "access_group": True,
+        }
+        for k in p_key.keys():
+            if k in objs and k != "access_group":
+                objs[k] = sorted(objs[k], key=lambda _k: str(_k[p_key[k]]))
+            elif objs.get("access_group") and k == "access_group":
+                objs[k] = self.sort_dicts(objs.get("access_group"))
+        return objs
+
     def get_ntp_data(self, connection):
         return connection.get("show running-config | section ^ntp")
-        # return "ntp server 10.0.2.10 version 2\nntp server ipv6 ceeck.com\nntp source GigabitEthernet0/1\nntp server 10.0.2.15 source GigabitEthernet0/1\nntp access-group ipv4 peer DHCP-Server kod\nntp access-group ipv6 peer preauth_ipv6_acl kod\nntp access-group peer 2 kod\nntp access-group query-only 10\nntp allow mode control 4\nntp allow mode private\nntp authenticate\nntp authentication-key 2 md5 wew 22\nntp broadcastdelay 22\nntp clock-period 5\nntp logging\nntp master 4\nntp max-associations 34\nntp maxdistance 3\nntp mindistance 10\nntp orphan 4\nntp panic update\nntp trusted-key 3 - 3\nntp trusted-key 21 - 41\nntp peer 10.0.2.10 version 2\nntp peer 10.0.2.11 key 2 minpoll 5 prefer version 2\nntp peer ip abc.com prefer\nntp peer ipv6 ipv6abc.com\nntp peer ipv6 avipv6.com prefer"
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Ntp_global network resource
@@ -62,6 +80,9 @@ class Ntp_globalFacts(object):
         )
         objs = ntp_global_parser.parse()
 
+        if objs:
+            objs = self.sort_dicts(objs)
+
         ansible_facts["ansible_network_resources"].pop("ntp_global", None)
 
         params = utils.remove_empties(
@@ -70,7 +91,7 @@ class Ntp_globalFacts(object):
             )
         )
 
-        facts["ntp_global"] = params["config"]
+        facts["ntp_global"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
