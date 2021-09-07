@@ -47,7 +47,34 @@ class Ntp_global(ResourceModule):
             resource="ntp_global",
             tmplt=Ntp_globalTemplate(),
         )
+        self._state_set = ("replaced", "deleted", "overridden")
         self.parsers = [
+            "allow.control.rate_limit",
+            "allow.private",
+            "authenticate",
+            "broadcast_delay",
+            "clock_period",
+            "logging",
+            "master.enabled",
+            "master.stratum_number",
+            "max_associations",
+            "max_distance",
+            "min_distance",
+            "orphan",
+            "panic_update",
+            "passive",
+            "source",
+            "update_calendar",
+        ]
+        self.complex_parser = [
+            "access_group.peer",
+            "access_group.query_only",
+            "access_group.serve",
+            "access_group.serve_only",
+            "authentication_keys",
+            "peers",
+            "servers",
+            "trusted_keys",
         ]
 
     def execute_module(self):
@@ -65,28 +92,16 @@ class Ntp_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = self._ntp_list_to_dict(self.want)
+        haved = self._ntp_list_to_dict(self.have)
 
-        # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
             wantd = {}
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
-
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -95,3 +110,44 @@ class Ntp_global(ResourceModule):
            for the Ntp_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want, have)
+
+    def _compare_lists(self, want, have):
+        """Compare list of dict"""
+        for _parser in self.complex_parser:
+            if "." in _parser:
+                _p = _parser.split(".", 1)
+                i_want = want.get(_p[0]).get(_p[1], {}) if want.get(_p[0]) else {}
+                i_have = have.get(_p[0]).get(_p[1], {}) if have.get(_p[0]) else {}
+            else:
+                i_want = want.get(_parser, {})
+                i_have = have.get(_parser, {})
+            for key, wanting in iteritems(i_want):
+                haveing = i_have.pop(key, {})
+                if wanting != haveing:
+                    if self.state in self._state_set:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser)
+            for key, haveing in iteritems(i_have):
+                self.addcmd(haveing, _parser, negate=True)
+
+    def _ntp_list_to_dict(self, data):
+        """Convert all list of dicts to dicts of dicts"""
+        tmp = deepcopy(data)
+        pkey = {
+            "servers": "server",
+            "peers": "peer",
+            "authentication_keys": "id",
+            "peer": "access_list",
+            "query_only": "access_list",
+            "serve": "access_list",
+            "serve_only": "access_list",
+            "trusted_keys": "range_start",
+            "access_group": True,
+        }
+        for k in pkey.keys():
+            if k in tmp and k != "access_group":
+                tmp[k] = {str(i[pkey[k]]): i for i in tmp[k]}
+            elif tmp.get("access_group") and k == "access_group":
+                tmp[k] = self._ntp_list_to_dict(tmp.get("access_group"))
+        return tmp

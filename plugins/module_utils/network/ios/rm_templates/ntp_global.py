@@ -20,6 +20,48 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _tmplt_common(cmd, conf):
+    if conf.get("vrf"):
+        cmd += " vrf {vrf}".format(vrf=conf["vrf"])
+    if conf.get("use_ipv4"):
+        cmd += " ip"
+    if conf.get("use_ipv6"):
+        cmd += " ipv6"
+    if conf.get("server"):
+        cmd += " {server}".format(server=conf["server"])
+    if conf.get("peer"):
+        cmd += " {peer}".format(peer=conf["peer"])
+    if conf.get("burst"):
+        cmd += " burst"
+    if conf.get("iburst"):
+        cmd += " iburst"
+    if conf.get("key"):
+        cmd += " key {key}".format(key=conf["key"])
+    if conf.get("minpoll"):
+        cmd += " minpoll {minpoll}".format(minpoll=conf["key"])
+    if conf.get("maxpoll"):
+        cmd += " maxpoll {maxpoll}".format(maxpoll=conf["key"])
+    if conf.get("normal_sync"):
+        cmd += " normal_sync"
+    if conf.get("prefer"):
+        cmd += " prefer"
+    if conf.get("source"):
+        cmd += " source {source}".format(source=conf["source"])
+    if conf.get("version"):
+        cmd += " version {version}".format(version=conf["version"])
+    return cmd
+
+
+def _tmplt_server(config_data):
+    cmd = "ntp server"
+    return _tmplt_common(cmd, config_data)
+
+
+def _tmplt_peer(config_data):
+    cmd = "ntp peer"
+    return _tmplt_common(cmd, config_data)
+
+
 class Ntp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Ntp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -37,7 +79,12 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ access_group.peer.access_list }}", # TODO
+            "setval": "ntp access-group"
+                      "{{ ' ipv4' if ipv4 is defined else '' }}"
+                      "{{ ' ipv6' if ipv6 is defined else '' }}"
+                      " peer "
+                      "{{ access_list }}"
+                      "{{ ' kod' if kod is defined else '' }}",
             "result": {
                 "access_group": {
                     "peer": [
@@ -62,7 +109,12 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group query-only {{ access_group.query_only.access_list }}", # TODO
+            "setval": "ntp access-group"
+                      "{{ ' ipv4' if ipv4 is defined else '' }}"
+                      "{{ ' ipv6' if ipv6 is defined else '' }}"
+                      " query-only "
+                      "{{ access_list }}"
+                      "{{ ' kod' if kod is defined else '' }}",
             "result": {
                 "access_group": {
                     "query_only": [
@@ -87,7 +139,12 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group serve {{ access_group.serve.access_list }}", # TODO
+            "setval": "ntp access-group"
+                      "{{ ' ipv4' if ipv4 is defined else '' }}"
+                      "{{ ' ipv6' if ipv6 is defined else '' }}"
+                      " serve "
+                      "{{ access_list }}"
+                      "{{ ' kod' if kod is defined else '' }}",
             "result": {
                 "access_group": {
                     "serve": [
@@ -112,7 +169,12 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
                 $""", re.VERBOSE),
-            "setval": "ntp access-group serve-only {{ access_group.serve_only.access_list }}", # TODO
+            "setval": "ntp access-group"
+                      "{{ ' ipv4' if ipv4 is defined else '' }}"
+                      "{{ ' ipv6' if ipv6 is defined else '' }}"
+                      " serve-only "
+                      "{{ access_list }}"
+                      "{{ ' kod' if kod is defined else '' }}",
             "result": {
                 "access_group": {
                     "serve_only": [
@@ -238,7 +300,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 r"""
                 ^ntp\smaster\s(?P<stratum_number>\d+)
                 $""", re.VERBOSE),
-            "setval": "ntp master {{ stratum_number }}",
+            "setval": "ntp master {{ master.stratum_number }}",
             "result": {
                 "master":{
                     "stratum_number": "{{ stratum_number }}",
@@ -330,7 +392,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": "ntp peer 10.0.2.11 key 2 minpoll 5 prefer version 2", # TODO
+            "setval": _tmplt_peer,
             "result": {
                 "peers": [
                     {
@@ -370,7 +432,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": "ntp server 10.0.2.11 key 2 minpoll 5 prefer version 2", # TODO
+            "setval": _tmplt_server,
             "result": {
                 "servers": [
                     {
@@ -392,25 +454,6 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "trusted_keys",
-            "getval": re.compile(
-                r"""
-                ^ntp\strusted-key
-                \s((?P<range_start>\d+))
-                (\s\-\s)?
-                ((?P<range_end>\d+))?
-                $""", re.VERBOSE),
-            "setval": "ntp trusted-key {{ range_start }} - {{ range_end }}",
-            "result": {
-                "trusted_keys": [
-                    {
-                        "range_start":"{{ range_start }}",
-                        "range_end":"{{ range_end }}",
-                    },
-                ],
-            },
-        },
-        {
             "name": "source",
             "getval": re.compile(
                 r"""
@@ -419,6 +462,26 @@ class Ntp_globalTemplate(NetworkTemplate):
             "setval": "ntp source {{ source }}",
             "result": {
                 "source": "{{ source }}",
+            },
+        },
+        {
+            "name": "trusted_keys",
+            "getval": re.compile(
+                r"""
+                ^ntp\strusted-key
+                \s((?P<range_start>\d+))
+                (\s\-\s)?
+                ((?P<range_end>\d+))?
+                $""", re.VERBOSE),
+            "setval": "ntp trusted-key {{ range_start }}"
+                      "{{ (' - ' + range_end|string) if range_end is defined else '' }}",
+            "result": {
+                "trusted_keys": [
+                    {
+                        "range_start":"{{ range_start }}",
+                        "range_end":"{{ range_end }}",
+                    },
+                ],
             },
         },
         {

@@ -255,6 +255,8 @@ options:
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is
         not required.
+      - The states I(replaced) and I(overridden) have identical
+        behaviour for this module.
       - The state I(gathered) will fetch the running configuration from device and transform
         it into structured data in the format as per the resource module argspec and
         the value is returned in the I(gathered) key within the result.
@@ -262,7 +264,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command
-        I(show running-config | section ^interface) executed on device. For state I(parsed) active
+        I(show running-config | section ^ntp) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
 """
@@ -291,17 +293,17 @@ commands:
   returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2"
+    - "ntp access-group ipv4 peer DHCP-Server kod"
+    - "ntp trusted-key 9 - 96"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when state is I(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "ntp server ip testserver.com prefer"
+    - "ntp authentication-key 2 md5 testpass 22"
+    - "ntp allow mode control 4"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when state is I(gathered)
@@ -325,6 +327,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
     Ntp_global,
 )
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():
