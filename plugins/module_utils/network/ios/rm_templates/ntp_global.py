@@ -20,48 +20,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_common(cmd, conf):
-    if conf.get("vrf"):
-        cmd += " vrf {vrf}".format(vrf=conf["vrf"])
-    if conf.get("use_ipv4"):
-        cmd += " ip"
-    if conf.get("use_ipv6"):
-        cmd += " ipv6"
-    if conf.get("server"):
-        cmd += " {server}".format(server=conf["server"])
-    if conf.get("peer"):
-        cmd += " {peer}".format(peer=conf["peer"])
-    if conf.get("burst"):
-        cmd += " burst"
-    if conf.get("iburst"):
-        cmd += " iburst"
-    if conf.get("key"):
-        cmd += " key {key}".format(key=conf["key"])
-    if conf.get("minpoll"):
-        cmd += " minpoll {minpoll}".format(minpoll=conf["key"])
-    if conf.get("maxpoll"):
-        cmd += " maxpoll {maxpoll}".format(maxpoll=conf["key"])
-    if conf.get("normal_sync"):
-        cmd += " normal_sync"
-    if conf.get("prefer"):
-        cmd += " prefer"
-    if conf.get("source"):
-        cmd += " source {source}".format(source=conf["source"])
-    if conf.get("version"):
-        cmd += " version {version}".format(version=conf["version"])
-    return cmd
-
-
-def _tmplt_server(config_data):
-    cmd = "ntp server"
-    return _tmplt_common(cmd, config_data)
-
-
-def _tmplt_peer(config_data):
-    cmd = "ntp peer"
-    return _tmplt_common(cmd, config_data)
-
-
 class Ntp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Ntp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -406,7 +364,6 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ ' prefer ' if prefer is defined else ''}}"
                       "{{ (' source ' + source) if source is defined else '' }}"
                       "{{ (' version ' + version|string) if version is defined else '' }}",
-            # "setval": _tmplt_peer,
             "result": {
                 "peers": [
                     {
