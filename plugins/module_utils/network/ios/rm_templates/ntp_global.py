@@ -69,7 +69,7 @@ class Ntp_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "access_group.peer",
+            "name": "peer",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group
@@ -99,7 +99,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "access_group.query_only",
+            "name": "query_only",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group
@@ -129,7 +129,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "access_group.serve",
+            "name": "serve",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group
@@ -159,7 +159,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "access_group.serve_only",
+            "name": "serve_only",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group
@@ -392,7 +392,21 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": _tmplt_peer,
+            "setval": "ntp peer"
+                      "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
+                      "{{ ' ip' if use_ipv4 is defined else ''}}"
+                      "{{ ' ipv6' if use_ipv6 is defined else ''}}"
+                      "{{ ( ' '  + peer ) if peer is defined else '' }}"
+                      "{{ ' burst ' if burst is defined else ''}}"
+                      "{{ ' iburst ' if iburst is defined else ''}}"
+                      "{{ (' key ' + key|string) if key is defined else '' }}"
+                      "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
+                      "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
+                      "{{ ' normal-sync ' if normal_sync is defined else ''}}"
+                      "{{ ' prefer ' if prefer is defined else ''}}"
+                      "{{ (' source ' + source) if source is defined else '' }}"
+                      "{{ (' version ' + version|string) if version is defined else '' }}",
+            # "setval": _tmplt_peer,
             "result": {
                 "peers": [
                     {
@@ -432,7 +446,20 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
                 $""", re.VERBOSE),
-            "setval": _tmplt_server,
+            "setval": "ntp server"
+                      "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
+                      "{{ ' ip' if use_ipv4 is defined else ''}}"
+                      "{{ ' ipv6' if use_ipv6 is defined else ''}}"
+                      "{{ ( ' '  + server ) if server is defined else '' }}"
+                      "{{ ' burst ' if burst is defined else ''}}"
+                      "{{ ' iburst ' if iburst is defined else ''}}"
+                      "{{ (' key ' + key|string) if key is defined else '' }}"
+                      "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
+                      "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
+                      "{{ ' normal-sync ' if normal_sync is defined else ''}}"
+                      "{{ ' prefer ' if prefer is defined else ''}}"
+                      "{{ (' source ' + source) if source is defined else '' }}"
+                      "{{ (' version ' + version|string) if version is defined else '' }}",
             "result": {
                 "servers": [
                     {

@@ -47,7 +47,6 @@ class Ntp_global(ResourceModule):
             resource="ntp_global",
             tmplt=Ntp_globalTemplate(),
         )
-        self.negate_states = ["replaced", "deleted", "overridden"]
         self.parsers = [
             "allow.control.rate_limit",
             "allow.private",
@@ -67,10 +66,10 @@ class Ntp_global(ResourceModule):
             "update_calendar",
         ]
         self.complex_parser = [
-            "access_group.peer",
-            "access_group.query_only",
-            "access_group.serve",
-            "access_group.serve_only",
+            "peer",
+            "query_only",
+            "serve",
+            "serve_only",
             "authentication_keys",
             "peers",
             "servers",
@@ -110,27 +109,39 @@ class Ntp_global(ResourceModule):
            for the Ntp_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
-        self._compare_lists(want, have)
+        self._compare_access_groups(want, have)
+        self._compare_lists_attrs(want, have)
 
-    def _compare_lists(self, want, have):
+    def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
-        for _parser in self.complex_parser:
-            _negate = True
-            if "." in _parser:  # access_group
-                _p = _parser.split(".", 1)
-                i_want = want.get(_p[0]).get(_p[1], {}) if want.get(_p[0]) else {}
-                i_have = have.get(_p[0]).get(_p[1], {}) if have.get(_p[0]) else {}
-            else:  # other list attrs
-                i_want = want.get(_parser, {})
-                i_have = have.get(_parser, {})
+        for _parser in self.complex_parser[4:8]:  # other list attrs
+            i_want = want.get(_parser, {})
+            i_have = have.get(_parser, {})
             for key, wanting in iteritems(i_want):
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
-                    if self.state in self.negate_states:  # fix me
-                        if _negate:
-                            self.addcmd(haveing, _parser, negate=True)
-                        _negate = False
+                    if (
+                        _parser != "authentication_keys"
+                        and haveing
+                        and self.state in ["overridden", "replaced"]
+                    ):
+                        self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
+            for key, haveing in iteritems(i_have):
+                self.addcmd(haveing, _parser, negate=True)
+
+    def _compare_access_groups(self, want, have):
+        w = want.get("access_group", {})
+        h = have.get("access_group", {})
+        for _parser in self.complex_parser[0:4]:  # access_group
+            i_want = w.get(_parser, {})
+            i_have = h.get(_parser, {})
+
+            for key, wanting in iteritems(i_want):
+                haveing = i_have.pop(key, {})
+                if wanting != haveing:
+                    self.addcmd(wanting, _parser)
+
             for key, haveing in iteritems(i_have):
                 self.addcmd(haveing, _parser, negate=True)
 
