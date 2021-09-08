@@ -22,7 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class Ntp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Ntp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Ntp_globalTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [

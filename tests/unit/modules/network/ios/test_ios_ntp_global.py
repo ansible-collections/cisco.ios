@@ -10,7 +10,9 @@ __metaclass__ = type
 from textwrap import dedent
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_ntp_global
-from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
+from ansible_collections.cisco.ios.tests.unit.modules.utils import (
+    set_module_args,
+)
 from .ios_module import TestIosModule
 
 
@@ -106,7 +108,11 @@ class TestIosNtpGlobalModule(TestIosModule):
                     access_group=dict(
                         peer=[
                             dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+                            dict(
+                                access_list="preauth_ipv6_acl",
+                                ipv6=True,
+                                kod=True,
+                            ),
                         ]
                     ),
                     allow=dict(control=dict(rate_limit=4)),
@@ -130,18 +136,32 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                        dict(
+                            peer="testPeerDomainIpv6.com",
+                            prefer=True,
+                            use_ipv6=True,
+                        ),
                     ],
                     servers=[
                         dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                        dict(
+                            server="172.16.1.13", source="GigabitEthernet0/1"
+                        ),
+                        dict(
+                            server="checkServerDomainIpv6.com", use_ipv6=True
+                        ),
                     ],
                     source="GigabitEthernet0/1",
                     trusted_keys=[
@@ -170,7 +190,11 @@ class TestIosNtpGlobalModule(TestIosModule):
                     access_group=dict(
                         peer=[
                             dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+                            dict(
+                                access_list="preauth_ipv6_acl",
+                                ipv6=True,
+                                kod=True,
+                            ),
                         ]
                     ),
                     allow=dict(control=dict(rate_limit=4)),
@@ -194,18 +218,32 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                        dict(
+                            peer="testPeerDomainIpv6.com",
+                            prefer=True,
+                            use_ipv6=True,
+                        ),
                     ],
                     servers=[
                         dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                        dict(
+                            server="172.16.1.13", source="GigabitEthernet0/1"
+                        ),
+                        dict(
+                            server="checkServerDomainIpv6.com", use_ipv6=True
+                        ),
                     ],
                     source="GigabitEthernet0/1",
                     trusted_keys=[
@@ -366,7 +404,11 @@ class TestIosNtpGlobalModule(TestIosModule):
                     access_group=dict(
                         peer=[
                             dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+                            dict(
+                                access_list="preauth_ipv6_acl",
+                                ipv6=True,
+                                kod=True,
+                            ),
                         ]
                     ),
                     allow=dict(control=dict(rate_limit=4)),
@@ -390,18 +432,32 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                        dict(
+                            peer="testPeerDomainIpv6.com",
+                            prefer=True,
+                            use_ipv6=True,
+                        ),
                     ],
                     servers=[
                         dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                        dict(
+                            server="172.16.1.13", source="GigabitEthernet0/1"
+                        ),
+                        dict(
+                            server="checkServerDomainIpv6.com", use_ipv6=True
+                        ),
                     ],
                     source="GigabitEthernet0/1",
                     trusted_keys=[
@@ -469,7 +525,11 @@ class TestIosNtpGlobalModule(TestIosModule):
                     access_group=dict(
                         peer=[
                             dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+                            dict(
+                                access_list="preauth_ipv6_acl",
+                                ipv6=True,
+                                kod=True,
+                            ),
                         ]
                     ),
                     allow=dict(control=dict(rate_limit=4)),
@@ -492,15 +552,25 @@ class TestIosNtpGlobalModule(TestIosModule):
                     panic_update=True,
                     peers=[
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                     ],
                     servers=[
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                        dict(
+                            server="172.16.1.13", source="GigabitEthernet0/1"
+                        ),
+                        dict(
+                            server="checkServerDomainIpv6.com", use_ipv6=True
+                        ),
                     ],
                     source="Loopback888",
                     trusted_keys=[

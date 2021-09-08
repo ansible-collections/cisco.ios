@@ -370,9 +370,9 @@ EXAMPLES = """
 #     "ntp authentication-key 2 md5 SomeSecurePassword 22",
 #     "ntp peer 172.16.1.10 version 2",
 #     "ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2",
-#     "ntp peer ip checkPeerDomainIpv4.com prefer ",
+#     "ntp peer ip checkPeerDomainIpv4.com prefer",
 #     "ntp peer ipv6 checkPeerDomainIpv6.com",
-#     "ntp peer ipv6 testPeerDomainIpv6.com prefer ",
+#     "ntp peer ipv6 testPeerDomainIpv6.com prefer",
 #     "ntp server 172.16.1.12 version 2",
 #     "ntp server ipv6 checkServerDomainIpv6.com",
 #     "ntp server 172.16.1.13 source GigabitEthernet0/1",
@@ -467,10 +467,10 @@ EXAMPLES = """
 #     "no ntp access-group ipv6 peer preauth_ipv6_acl kod",
 #     "no ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7",
 #     "no ntp peer 172.16.1.10 version 2",
-#     "no ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2",
-#     "no ntp peer ip checkPeerDomainIpv4.com prefer ",
+#     "no ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
+#     "no ntp peer ip checkPeerDomainIpv4.com prefer",
 #     "no ntp peer ipv6 checkPeerDomainIpv6.com",
-#     "no ntp peer ipv6 testPeerDomainIpv6.com prefer ",
+#     "no ntp peer ipv6 testPeerDomainIpv6.com prefer",
 #     "no ntp server 172.16.1.12 version 2",
 #     "no ntp server 172.16.1.13 source GigabitEthernet0/1",
 #     "no ntp server ipv6 checkServerDomainIpv6.com",
@@ -530,7 +530,7 @@ EXAMPLES = """
 #       "ntp peer ipv6 ipv6DomainNew.com",
 #       "ntp peer 172.16.1.100 prefer",
 #       "no ntp peer 172.16.1.10 version 2",
-#       "no ntp peer ip checkPeerDomainIpv4.com prefer ",
+#       "no ntp peer ip checkPeerDomainIpv4.com prefer",
 #       "no ntp server 172.16.1.12 version 2",
 #       "no ntp server ipv6 checkServerDomainIpv6.com",
 #       "no ntp trusted-key 21",
@@ -585,7 +585,7 @@ EXAMPLES = """
 #        "ntp mindistance 10",
 #        "ntp orphan 4",
 #        "no ntp access-group ipv6 peer DHCP-Server",
-#        "no ntp peer 172.16.1.100 prefer ",
+#        "no ntp peer 172.16.1.100 prefer",
 #        "no ntp peer ipv6 ipv6DomainNew.com"
 #     ],
 
@@ -860,10 +860,10 @@ EXAMPLES = """
 #       "ntp access-group query-only 10",
 #       "ntp authentication-key 2 md5 SomeSecurePassword 22",
 #       "ntp peer 172.16.1.10 version 2",
-#       "ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2",
-#       "ntp peer ip checkPeerDomainIpv4.com prefer ",
+#       "ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
+#       "ntp peer ip checkPeerDomainIpv4.com prefer",
 #       "ntp peer ipv6 checkPeerDomainIpv6.com",
-#       "ntp peer ipv6 testPeerDomainIpv6.com prefer ",
+#       "ntp peer ipv6 testPeerDomainIpv6.com prefer",
 #       "ntp server 172.16.1.12 version 2",
 #       "ntp server ipv6 checkServerDomainIpv6.com",
 #       "ntp server 172.16.1.13 source GigabitEthernet0/1",
@@ -896,10 +896,10 @@ EXAMPLES = """
 # ntp access-group query-only 10
 # ntp authentication-key 2 md5 SomeSecurePassword 22
 # ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2
-# ntp peer ip checkPeerDomainIpv4.com prefer 
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp peer ip checkPeerDomainIpv4.com prefer
 # ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer 
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
 # ntp server 172.16.1.12 version 2
 # ntp server ipv6 checkServerDomainIpv6.com
 # ntp server 172.16.1.13 source GigabitEthernet0/1
@@ -1003,7 +1003,6 @@ EXAMPLES = """
 #     ],
 #     "update_calendar": true
 # }
-
 """
 
 RETURN = """
@@ -1060,11 +1059,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
     Ntp_global,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():
