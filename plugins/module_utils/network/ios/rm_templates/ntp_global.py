@@ -249,7 +249,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp master",
             "result": {
-                "master":{
+                "master": {
                     "enabled": "{{ not not master }}",
                 },
             },
@@ -262,7 +262,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp master {{ master.stratum_number }}",
             "result": {
-                "master":{
+                "master": {
                     "stratum_number": "{{ stratum_number }}",
                 },
             },
@@ -464,8 +464,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "result": {
                 "trusted_keys": [
                     {
-                        "range_start":"{{ range_start }}",
-                        "range_end":"{{ range_end }}",
+                        "range_start": "{{ range_start }}",
+                        "range_end": "{{ range_end }}",
                     },
                 ],
             },

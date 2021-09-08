@@ -32,34 +32,25 @@ options:
         description: Control NTP access
         type: dict
         suboptions:
-          peer: 
+          peer:
             description: Provide full access
             type: list
             elements: dict
             suboptions:
               access_list: &access_group_acl
-                description:  name or number of access list
+                description: name or number of access list
                 type: str
               kod: &kod
                 description: Send a Kiss-o-Death packet for failing peers
                 type: bool
               ipv4: &ipv4
-                description:  ipv4 access lists (Default not idempotent)
+                description: ipv4 access lists (Default not idempotent)
                 type: bool
               ipv6: &ipv6
-                description:  ipv6 access lists (Default not idempotent)
+                description: ipv6 access lists (Default not idempotent)
                 type: bool
-          query_only: 
-            description:  Allow only control queries
-            type: list
-            elements: dict
-            suboptions: 
-              access_list: *access_group_acl
-              kod: *kod
-              ipv4: *ipv4
-              ipv6: *ipv6
-          serve: 
-            description:  Provide server and query access
+          query_only:
+            description: Allow only control queries
             type: list
             elements: dict
             suboptions:
@@ -67,8 +58,17 @@ options:
               kod: *kod
               ipv4: *ipv4
               ipv6: *ipv6
-          serve_only: 
-            description:  Provide only server access
+          serve:
+            description: Provide server and query access
+            type: list
+            elements: dict
+            suboptions:
+              access_list: *access_group_acl
+              kod: *kod
+              ipv4: *ipv4
+              ipv6: *ipv6
+          serve_only:
+            description: Provide only server access
             type: list
             elements: dict
             suboptions:
