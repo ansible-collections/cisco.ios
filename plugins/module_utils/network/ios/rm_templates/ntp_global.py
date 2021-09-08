@@ -361,7 +361,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
                       "{{ ' normal-sync ' if normal_sync is defined else ''}}"
-                      "{{ ' prefer ' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer is defined else ''}}"
                       "{{ (' source ' + source) if source is defined else '' }}"
                       "{{ (' version ' + version|string) if version is defined else '' }}",
             "result": {
@@ -414,7 +414,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
                       "{{ ' normal-sync ' if normal_sync is defined else ''}}"
-                      "{{ ' prefer ' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer is defined else ''}}"
                       "{{ (' source ' + source) if source is defined else '' }}"
                       "{{ (' version ' + version|string) if version is defined else '' }}",
             "result": {
