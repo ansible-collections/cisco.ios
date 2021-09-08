@@ -1,4 +1,5 @@
 boto3
+botocore
 placebo
 pycrypto
 passlib
@@ -40,3 +41,4 @@ httmock
 
 # requirment for kubevirt modules
 openshift ; python_version >= '2.7'
+
