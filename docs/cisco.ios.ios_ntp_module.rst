@@ -14,6 +14,13 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 
+:Why: 
+:Alternative: 
+
+
 
 Synopsis
 --------
