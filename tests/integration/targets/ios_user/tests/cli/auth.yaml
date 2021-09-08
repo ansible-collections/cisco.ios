@@ -12,15 +12,6 @@
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
 
-    # - name: test login for {{ ansible_user }} user with password
-    #   cisco.ios.ios_command:
-    #     commands:
-    #       - show version
-    #   vars:
-    #     ansible_user: auth_user
-    #     ansible_ssh_pass: pass123
-    #     ansible_private_key_file: ""
-
     - name: test login for {{ ansible_user }} user with password
       expect:
         command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
@@ -80,7 +71,6 @@
       cisco.ios.ios_command:
         commands:
           - show version
-      ignore_errors: true
       vars:
         ansible_user: ssh_user
         ansible_private_key_file: "{{ role_path }}/files/test_rsa"
