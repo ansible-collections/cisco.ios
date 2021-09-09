@@ -1553,7 +1553,7 @@ Examples
     # -------------
 
     # router-ios#show running-config | section ^ntp
-    --------------------- EMPTY -------------------
+    # --------------------- EMPTY -----------------
 
     # Merged play:
     # ------------
@@ -1759,7 +1759,7 @@ Examples
     # ------------
 
     # router-ios#show running-config | section ^ntp
-    --------------------- EMPTY -------------------
+    # --------------------- EMPTY -----------------
 
     # Using state: overridden
 

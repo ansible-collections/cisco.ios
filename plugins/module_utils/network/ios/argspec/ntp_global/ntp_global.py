@@ -94,10 +94,11 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "authentication_keys": {
                     "type": "list",
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "id": {"type": "int"},
                         "algorithm": {"type": "str"},
-                        "key": {"type": "str"},
+                        "key": {"type": "str", "no_log": True},
                         "encryption": {"type": "int"},
                     },
                 },
@@ -127,7 +128,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                         "vrf": {"type": "str"},
                         "burst": {"type": "bool"},
                         "iburst": {"type": "bool"},
-                        "key": {"type": "int"},
+                        "key": {"type": "int", "no_log": True},
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "normal_sync": {"type": "bool"},
@@ -146,7 +147,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                         "vrf": {"type": "str"},
                         "burst": {"type": "bool"},
                         "iburst": {"type": "bool"},
-                        "key": {"type": "int"},
+                        "key": {"type": "int", "no_log": True},
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "normal_sync": {"type": "bool"},
@@ -159,6 +160,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "trusted_keys": {
                     "type": "list",
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "range_start": {"type": "int"},
                         "range_end": {"type": "int"},

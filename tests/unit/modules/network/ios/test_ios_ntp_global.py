@@ -584,5 +584,4 @@ class TestIosNtpGlobalModule(TestIosModule):
         )
         commands = []
         result = self.execute_module(changed=False)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))

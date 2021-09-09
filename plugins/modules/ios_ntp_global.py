@@ -276,7 +276,7 @@ EXAMPLES = """
 # -------------
 
 # router-ios#show running-config | section ^ntp
---------------------- EMPTY -------------------
+# --------------------- EMPTY -----------------
 
 # Merged play:
 # ------------
@@ -482,7 +482,7 @@ EXAMPLES = """
 # ------------
 
 # router-ios#show running-config | section ^ntp
---------------------- EMPTY -------------------
+# --------------------- EMPTY -----------------
 
 # Using state: overridden
 

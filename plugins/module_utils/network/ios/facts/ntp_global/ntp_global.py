@@ -45,7 +45,7 @@ class Ntp_globalFacts(object):
             "trusted_keys": "range_start",
             "access_group": True,
         }
-        for k in p_key.keys():
+        for k, _v in p_key.items():
             if k in objs and k != "access_group":
                 objs[k] = sorted(objs[k], key=lambda _k: str(_k[p_key[k]]))
             elif objs.get("access_group") and k == "access_group":
