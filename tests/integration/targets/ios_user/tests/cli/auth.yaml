@@ -67,19 +67,13 @@
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
 
-    - name: test login for {{ ansible_user }} user with password
-      expect:
-        command: ssh ssh_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
-          }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no 
-          -i {{ role_path }}/files/test_rsa -o PubkeyAuthentication=no show version
-
-    # - name: test sshkey login for {{ ansible_user }} user
-    #   cisco.ios.ios_command:
-    #     commands:
-    #       - show version
-    #   vars:
-    #     ansible_user: ssh_user
-    #     ansible_private_key_file: "{{ role_path }}/files/test_rsa"
+    - name: test sshkey login for {{ ansible_user }} user
+      cisco.ios.ios_command:
+        commands:
+          - show version
+      vars:
+        ansible_user: ssh_user
+        ansible_private_key_file: "{{ role_path }}/files/test_rsa"
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
