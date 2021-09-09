@@ -1,0 +1,3 @@
+---
+trivial:
+  - set allow_duplicates to true in prepare_ios_tests to support network-ee.
