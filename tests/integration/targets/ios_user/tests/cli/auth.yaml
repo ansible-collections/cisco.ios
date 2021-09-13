@@ -73,9 +73,9 @@
     - name: test sshkey login for {{ ansible_user }} user
       register: result
       ansible.builtin.command:
-        cmd: ssh -i {{ role_path }}/files/test_rsa ssh_user@{{ ansible_ssh_host }} 
+        cmd: ssh -i {{ role_path }}/files/test_rsa ssh_user@{{ original_host }} 
           -p {{ ansible_ssh_port|default(22) }} show version
-      delegate_to: "{{ original_host }}"
+      delegate_to: localhost
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
