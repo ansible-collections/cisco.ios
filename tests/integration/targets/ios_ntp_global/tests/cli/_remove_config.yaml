@@ -1,0 +1,5 @@
+---
+- name: Remove All CONFIG ntp_global
+  cisco.ios.ios_ntp_global:
+    config:
+    state: deleted

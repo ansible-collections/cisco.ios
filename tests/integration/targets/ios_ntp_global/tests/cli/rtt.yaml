@@ -1,0 +1,48 @@
+---
+- debug:
+    msg: START ios_ntp_global round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+
+    - name: ios_ntp_global rtt - Play (Base config)
+      register: result
+      cisco.ios.ios_ntp_global:
+        config:
+          min_distance: 10
+          orphan: 4
+          panic_update: true
+        state: merged
+
+    - name: ios_ntp_global rtt - Gather ntp facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - ntp_global
+
+    - name: ios_ntp_global rtt - Apply the provided configuration (config to be reverted)
+      cisco.ios.ios_ntp_global:
+        config:
+          max_distance: 3
+          min_distance: 10
+          orphan: 4
+          panic_update: true
+        state: replaced
+
+    - name: ios_ntp_global rtt - Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_ntp_global:
+        config: "{{ ansible_facts['network_resources']['ntp_global'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - revert.changed == true
+          - revert['commands'] == rtt['commands']
+
+  always:
+    - include_tasks: _remove_config.yaml

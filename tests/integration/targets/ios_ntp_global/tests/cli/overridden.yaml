@@ -1,0 +1,45 @@
+---
+- debug:
+    msg: START Overridden ios_ntp_global state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: ios_ntp_global overridden - Play
+      register: result
+      cisco.ios.ios_ntp_global: &id001
+        config:
+          broadcast_delay: 113
+          orphan: 10
+        state: overridden
+
+    - name: ios_ntp_global overridden - Assert commands
+      assert:
+        that:
+          - overridden['commands'] == result['commands']
+
+    - name: ios_ntp_global overridden - Assert before
+      assert:
+        that:
+          - overridden['before'] == result['before']
+
+    - name: ios_ntp_global overridden - Assert after
+      assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: ios_ntp_global overridden - Play (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_ntp_global: *id001
+
+    - name: ios_ntp_global overridden - Assert above task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml
