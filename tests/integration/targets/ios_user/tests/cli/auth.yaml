@@ -68,12 +68,10 @@
       meta: reset_connection
 
     - name: test sshkey login for {{ ansible_user }} user
-      cisco.ios.ios_command:
-        commands:
-          - show version
-      vars:
-        ansible_user: ssh_user
-        ansible_private_key_file: "{{ role_path }}/files/test_rsa"
+      register: result
+      ansible.builtin.command:
+        cmd: ssh -i {{ role_path }}/files/test_rsa ssh_user@{{ ansible_ssh_host }} 
+          -p {{ ansible_ssh_port|default(22) }} show version
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
