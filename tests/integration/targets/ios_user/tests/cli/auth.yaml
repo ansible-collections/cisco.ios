@@ -64,6 +64,9 @@
         state: present
         sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
+    - set_fact:
+        original_host: "{{ ansible_ssh_host }}"
+
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
 
@@ -72,6 +75,7 @@
       ansible.builtin.command:
         cmd: ssh -i {{ role_path }}/files/test_rsa ssh_user@{{ ansible_ssh_host }} 
           -p {{ ansible_ssh_port|default(22) }} show version
+      delegate_to: "{{ original_host }}"
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
