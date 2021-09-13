@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: prepare_iosxe_tests
+    when: ansible_network_os == 'ansible.netcommon.restconf'

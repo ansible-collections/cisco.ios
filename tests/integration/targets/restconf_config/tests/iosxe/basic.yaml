@@ -1,0 +1,106 @@
+---
+- debug: msg="START restconf_config iosxe/basic.yaml on connection={{ ansible_connection }} for network_os={{ ansible_network_os }}"
+
+- name: set interface variables
+  set_fact:
+    new_interfaces:
+      interface:
+        - name: "Loopback42518"
+          type: "iana-if-type:softwareLoopback"
+          enabled: true
+          ietf-ip:ipv4:
+            address:
+              - ip: "192.168.1.1"
+                netmask: "255.255.255.255"
+
+- name: "Setup - delete IETF YANG interface Loopback42518 if present"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces/interface=Loopback42518"
+    method: delete
+  register: result
+  ignore_errors: true
+
+- name: "Create IETF YANG interface Loopback42518"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces"
+    content: "{{ new_interfaces | to_json }}"
+    method: post
+  register: result
+
+- assert:
+    that:
+      - result.changed == true
+
+- name: get interface details
+  ansible.netcommon.restconf_get:
+    path: "/data/ietf-interfaces:interfaces/interface=Loopback42518"
+  register: result
+
+- assert:
+    that:
+      - result.changed == false
+      - result['response']['ietf-interfaces:interface']['enabled'] == true
+      - result['response']['ietf-interfaces:interface']['ietf-ip:ipv4']['address'][0]['ip'] == '192.168.1.1'
+      - result['response']['ietf-interfaces:interface']['ietf-ip:ipv4']['address'][0]['netmask'] == '255.255.255.255'
+      - result['response']['ietf-interfaces:interface']['name'] == 'Loopback42518'
+      - result['response']['ietf-interfaces:interface']['type'] == 'iana-if-type:softwareLoopback'
+
+- name: "Ensure post fail if interface resource is present"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces"
+    content: "{{ new_interfaces | to_json }}"
+    method: post
+  register: result
+  ignore_errors: true
+
+- assert:
+    that:
+      - result.failed == true
+      - "'object already exists' in result.msg"
+
+- name: update interface variables
+  set_fact:
+    updated_interfaces:
+      interface:
+        - name: "Loopback42518"
+          type: "iana-if-type:softwareLoopback"
+          enabled: true
+          ietf-ip:ipv4:
+            address:
+              - ip: "192.168.1.2"
+                netmask: "255.255.255.255"
+
+- name: "Update IETF YANG interface Loopback42518"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces/interface=Loopback42518"
+    content: "{{ updated_interfaces | to_json }}"
+    method: put
+  register: result
+
+- assert:
+    that:
+      - result.changed == true
+      - result['running']['ietf-interfaces:interface']['ietf-ip:ipv4']['address'][0]['ip'] == '192.168.1.1'
+      - result['candidate']['interface'][0]['ietf-ip:ipv4']['address'][0]['ip'] == '192.168.1.2'
+
+- name: "delete IETF YANG interface Loopback42518 if present"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces/interface=Loopback42518"
+    method: delete
+  register: result
+
+- assert:
+    that:
+      - result.changed == true
+
+- name: "Idempotent - delete IETF YANG interface Loopback42518 if present"
+  ansible.netcommon.restconf_config:
+    path: "/data/ietf-interfaces:interfaces/interface=Loopback42518"
+    method: delete
+  register: result
+
+- assert:
+    that:
+      - result.changed == false
+
+- debug: msg="END restconf_config iosxe/basic.yaml on connection={{ ansible_connection }} for network_os={{ ansible_network_os }}"
