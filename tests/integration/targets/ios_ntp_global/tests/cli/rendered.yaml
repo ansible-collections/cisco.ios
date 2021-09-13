@@ -13,7 +13,7 @@
           clock_period: 5
           logging: true
           master:
-            stratum_number: 4
+            stratum: 4
           max_associations: 34
           max_distance: 3
           min_distance: 10

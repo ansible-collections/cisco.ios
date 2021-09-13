@@ -7,7 +7,7 @@ merged:
     - ntp mindistance 10
   after:
     master:
-      stratum_number: 4
+      stratum: 4
     max_associations: 34
     max_distance: 3
     min_distance: 10
@@ -17,7 +17,7 @@ overridden:
     broadcast_delay: 22
     logging: true
     master:
-      stratum_number: 4
+      stratum: 4
     max_associations: 34
     max_distance: 3
     min_distance: 10
@@ -45,7 +45,7 @@ deleted:
     broadcast_delay: 22
     logging: true
     master:
-      stratum_number: 4
+      stratum: 4
     max_associations: 34
     max_distance: 3
     min_distance: 10
@@ -70,7 +70,7 @@ parsed:
     broadcast_delay: 22
     logging: true
     master:
-      stratum_number: 4
+      stratum: 4
     max_associations: 34
     max_distance: 3
     min_distance: 10

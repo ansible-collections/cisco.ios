@@ -255,15 +255,15 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "master.stratum_number",
+            "name": "master.stratum",
             "getval": re.compile(
                 r"""
-                ^ntp\smaster\s(?P<stratum_number>\d+)
+                ^ntp\smaster\s(?P<stratum>\d+)
                 $""", re.VERBOSE),
-            "setval": "ntp master {{ master.stratum_number }}",
+            "setval": "ntp master {{ master.stratum }}",
             "result": {
                 "master": {
-                    "stratum_number": "{{ stratum_number }}",
+                    "stratum": "{{ stratum }}",
                 },
             },
         },

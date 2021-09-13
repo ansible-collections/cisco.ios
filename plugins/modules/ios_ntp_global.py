@@ -126,7 +126,7 @@ options:
           enabled:
             description: Enable master clock
             type: bool
-          stratum_number:
+          stratum:
             description: Stratum number
             type: int
       max_associations:
@@ -310,7 +310,7 @@ EXAMPLES = """
       clock_period: 5
       logging: true
       master:
-        stratum_number: 4
+        stratum: 4
       max_associations: 34
       max_distance: 3
       min_distance: 10
@@ -565,7 +565,7 @@ EXAMPLES = """
       clock_period: 5
       logging: true
       master:
-        stratum_number: 4
+        stratum: 4
       max_associations: 34
       max_distance: 3
       min_distance: 10
@@ -674,7 +674,7 @@ EXAMPLES = """
 #   "broadcast_delay": 22,
 #   "logging": true,
 #   "master": {
-#       "stratum_number": 4
+#       "stratum": 4
 #   },
 #   "max_associations": 34,
 #   "max_distance": 3,
@@ -799,7 +799,7 @@ EXAMPLES = """
       clock_period: 5
       logging: true
       master:
-        stratum_number: 4
+        stratum: 4
       max_associations: 34
       max_distance: 3
       min_distance: 10
@@ -960,7 +960,7 @@ EXAMPLES = """
 #     "clock_period": 5,
 #     "logging": true,
 #     "master": {
-#         "stratum_number": 4
+#         "stratum": 4
 #     },
 #     "max_associations": 34,
 #     "max_distance": 3,
@@ -1008,7 +1008,7 @@ EXAMPLES = """
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: dict
   sample: >
     This output will always be in the same format as the
@@ -1022,30 +1022,36 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - "ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2"
-    - "ntp access-group ipv4 peer DHCP-Server kod"
-    - "ntp trusted-key 9 - 96"
+    - ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2
+    - ntp access-group ipv4 peer DHCP-Server kod
+    - ntp trusted-key 9 - 96
+    - ntp master stratum 2
+    - ntp orphan 4
+    - ntp panic update
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when state is I(rendered)
   type: list
   sample:
-    - "ntp server ip testserver.com prefer"
-    - "ntp authentication-key 2 md5 testpass 22"
-    - "ntp allow mode control 4"
+    - ntp master stratum 2
+    - ntp server ip testserver.com prefer
+    - ntp authentication-key 2 md5 testpass 22
+    - ntp allow mode control 4
+    - ntp max-associations 34
+    - ntp broadcastdelay 22
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when state is I(gathered)
+  returned: when I(state) is C(gathered)
   type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 parsed:
   description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
-  returned: when state is I(parsed)
+  returned: when I(state) is C(parsed)
   type: list
   sample: >
     This output will always be in the same format as the

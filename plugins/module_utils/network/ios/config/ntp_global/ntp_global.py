@@ -55,7 +55,7 @@ class Ntp_global(ResourceModule):
             "clock_period",
             "logging",
             "master.enabled",
-            "master.stratum_number",
+            "master.stratum",
             "max_associations",
             "max_distance",
             "min_distance",

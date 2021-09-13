@@ -751,7 +751,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>stratum_number</b>
+                    <b>stratum</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -1587,7 +1587,7 @@ Examples
           clock_period: 5
           logging: true
           master:
-            stratum_number: 4
+            stratum: 4
           max_associations: 34
           max_distance: 3
           min_distance: 10
@@ -1842,7 +1842,7 @@ Examples
           clock_period: 5
           logging: true
           master:
-            stratum_number: 4
+            stratum: 4
           max_associations: 34
           max_distance: 3
           min_distance: 10
@@ -1951,7 +1951,7 @@ Examples
     #   "broadcast_delay": 22,
     #   "logging": true,
     #   "master": {
-    #       "stratum_number": 4
+    #       "stratum": 4
     #   },
     #   "max_associations": 34,
     #   "max_distance": 3,
@@ -2076,7 +2076,7 @@ Examples
           clock_period: 5
           logging: true
           master:
-            stratum_number: 4
+            stratum: 4
           max_associations: 34
           max_distance: 3
           min_distance: 10
@@ -2237,7 +2237,7 @@ Examples
     #     "clock_period": 5,
     #     "logging": true,
     #     "master": {
-    #         "stratum_number": 4
+    #         "stratum": 4
     #     },
     #     "max_associations": 34,
     #     "max_distance": 3,
@@ -2321,7 +2321,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">dictionary</span>
                     </div>
                 </td>
-                <td>when state is <em>merged</em>, <em>replaced</em>, <em>overridden</em>, <em>deleted</em> or <em>purged</em></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The configuration prior to the module execution.</div>
                     <br/>
@@ -2338,12 +2338,12 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when state is <em>merged</em>, <em>replaced</em>, <em>overridden</em>, <em>deleted</em> or <em>purged</em></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2&#x27;, &#x27;ntp access-group ipv4 peer DHCP-Server kod&#x27;, &#x27;ntp trusted-key 9 - 96&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2&#x27;, &#x27;ntp access-group ipv4 peer DHCP-Server kod&#x27;, &#x27;ntp trusted-key 9 - 96&#x27;, &#x27;ntp master stratum 2&#x27;, &#x27;ntp orphan 4&#x27;, &#x27;ntp panic update&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -2355,7 +2355,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when state is <em>gathered</em></td>
+                <td>when <em>state</em> is <code>gathered</code></td>
                 <td>
                             <div>Facts about the network resource gathered from the remote device as structured data.</div>
                     <br/>
@@ -2372,7 +2372,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when state is <em>parsed</em></td>
+                <td>when <em>state</em> is <code>parsed</code></td>
                 <td>
                             <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
                     <br/>
@@ -2394,7 +2394,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ntp server ip testserver.com prefer&#x27;, &#x27;ntp authentication-key 2 md5 testpass 22&#x27;, &#x27;ntp allow mode control 4&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ntp master stratum 2&#x27;, &#x27;ntp server ip testserver.com prefer&#x27;, &#x27;ntp authentication-key 2 md5 testpass 22&#x27;, &#x27;ntp allow mode control 4&#x27;, &#x27;ntp max-associations 34&#x27;, &#x27;ntp broadcastdelay 22&#x27;]</div>
                 </td>
             </tr>
     </table>
