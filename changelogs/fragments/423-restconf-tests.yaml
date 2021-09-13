@@ -1,0 +1,3 @@
+---
+trivial:
+  - Move restconf_* integration tests to iosxe
