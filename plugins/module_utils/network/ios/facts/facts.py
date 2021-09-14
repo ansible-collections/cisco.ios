@@ -77,6 +77,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix_lists.prefix_lists import (
     Prefix_listsFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global import (
+    Ntp_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -110,6 +113,7 @@ FACT_RESOURCE_SUBSETS = dict(
     logging_global=Logging_globalFacts,
     route_maps=Route_mapsFacts,
     prefix_lists=Prefix_listsFacts,
+    ntp_global=Ntp_globalFacts,
 )
 
 

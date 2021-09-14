@@ -54,6 +54,7 @@ Name | Description
 [cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|(deprecated, removed after 2023-06-01) Manage logging on network devices
 [cisco.ios.ios_logging_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_global_module.rst)|Logging resource module
 [cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_module.rst)|Manages core NTP configuration.
+[cisco.ios.ios_ntp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_global_module.rst)|ntp_global resource module
 [cisco.ios.ios_ospf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospf_interfaces_module.rst)|OSPF_Interfaces resource module
 [cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv2_module.rst)|OSPFv2 resource module
 [cisco.ios.ios_ospfv3](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv3_module.rst)|OSPFv3 resource module

@@ -1,0 +1,17 @@
+---
+- name: POPULATE CONFIG ntp_global
+  cisco.ios.ios_ntp_global:
+    config:
+      broadcast_delay: 22
+      logging: true
+      master:
+        stratum: 4
+      max_associations: 34
+      max_distance: 3
+      min_distance: 10
+      orphan: 4
+      panic_update: true
+      peers:
+        - peer: 172.16.1.10
+          version: 2
+    state: merged

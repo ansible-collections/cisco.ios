@@ -94,6 +94,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     logging_global:
       redirect: cisco.ios.ios
+    ios_ntp_global:
+      redirect: cisco.ios.ios
+    ntp_global:
+      redirect: cisco.ios.ios
     ios_ntp:
       redirect: cisco.ios.ios
     ntp:
@@ -226,6 +230,15 @@ plugin_routing:
       redirect: cisco.ios.ios_logging_global
     ntp:
       redirect: cisco.ios.ios_ntp
+      deprecation:
+        removal_date: "2024-01-01"
+        warning_text: See the plugin documentation for more details
+    ios_ntp:
+      deprecation:
+        removal_date: "2024-01-01"
+        warning_text: See the plugin documentation for more details
+    ntp_global:
+      redirect: cisco.ios.ios_ntp_global
     ospfv2:
       redirect: cisco.ios.ios_ospfv2
     ping:

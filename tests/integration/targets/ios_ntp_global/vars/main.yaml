@@ -1,0 +1,98 @@
+---
+merged:
+  commands:
+    - ntp master 4
+    - ntp max-associations 34
+    - ntp maxdistance 3
+    - ntp mindistance 10
+  after:
+    master:
+      stratum: 4
+    max_associations: 34
+    max_distance: 3
+    min_distance: 10
+
+overridden:
+  before:
+    broadcast_delay: 22
+    logging: true
+    master:
+      stratum: 4
+    max_associations: 34
+    max_distance: 3
+    min_distance: 10
+    orphan: 4
+    panic_update: true
+    peers:
+      - peer: 172.16.1.10
+        version: 2
+  commands:
+    - ntp broadcastdelay 113
+    - no ntp logging
+    - no ntp master 4
+    - no ntp max-associations 34
+    - no ntp maxdistance 3
+    - no ntp mindistance 10
+    - ntp orphan 10
+    - no ntp panic update
+    - no ntp peer 172.16.1.10 version 2
+  after:
+    broadcast_delay: 113
+    orphan: 10
+
+deleted:
+  before:
+    broadcast_delay: 22
+    logging: true
+    master:
+      stratum: 4
+    max_associations: 34
+    max_distance: 3
+    min_distance: 10
+    orphan: 4
+    panic_update: true
+    peers:
+      - peer: 172.16.1.10
+        version: 2
+  commands:
+    - no ntp broadcastdelay 22
+    - no ntp logging
+    - no ntp master 4
+    - no ntp max-associations 34
+    - no ntp maxdistance 3
+    - no ntp mindistance 10
+    - no ntp orphan 4
+    - no ntp panic update
+    - no ntp peer 172.16.1.10 version 2
+
+parsed:
+  config:
+    broadcast_delay: 22
+    logging: true
+    master:
+      stratum: 4
+    max_associations: 34
+    max_distance: 3
+    min_distance: 10
+    orphan: 4
+    panic_update: true
+    peers:
+      - peer: 172.16.1.10
+        version: 2
+
+rtt:
+  commands:
+    - no ntp maxdistance 3
+
+rendered:
+  commands:
+    - ntp broadcastdelay 22
+    - ntp clock-period 5
+    - ntp logging
+    - ntp master 4
+    - ntp max-associations 34
+    - ntp maxdistance 3
+    - ntp mindistance 10
+    - ntp orphan 4
+    - ntp panic update
+    - ntp peer 172.16.1.10 version 2

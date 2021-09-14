@@ -26,6 +26,10 @@ short_description: Manages core NTP configuration.
 description:
 - Manages core NTP configuration.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_ntp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2024-01-01'
 author:
 - Federico Olivieri (@Federico87)
 - Joanie Sylvain (@JoanieAda)

@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - Added ios_ntp_global resource module.
+deprecated_features:
+  - Deprecated ios_ntp modules.
