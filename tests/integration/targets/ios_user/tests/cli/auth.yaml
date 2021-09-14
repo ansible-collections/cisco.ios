@@ -64,18 +64,17 @@
         state: present
         sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
-    - set_fact:
-        original_host: "{{ ansible_ssh_host }}"
-
-    - name: reset connection with {{ ansible_user }}
+    - name: reset connection with {{ ansible_user }
       meta: reset_connection
 
     - name: test sshkey login for {{ ansible_user }} user
-      register: result
-      ansible.builtin.command:
-        cmd: ssh -i {{ role_path }}/files/test_rsa ssh_user@{{ original_host }} 
-          -p {{ ansible_ssh_port|default(22) }} show version
-      delegate_to: localhost
+      cisco.ios.ios_command:
+        commands:
+          - show version
+      ignore_errors: true
+      vars:
+        ansible_user: ssh_user
+        ansible_private_key_file: "{{ role_path }}/files/test_rsa"
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
