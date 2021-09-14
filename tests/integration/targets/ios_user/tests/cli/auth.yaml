@@ -71,10 +71,10 @@
       cisco.ios.ios_command:
         commands:
           - show version
-      ignore_errors: true
+      # ignore_errors: true
       vars:
-        ansible_user: ssh_user
-        ansible_private_key_file: "{{ role_path }}/files/test_rsa"
+        ansible_ssh_user: ssh_user
+        ansible_ssh_private_key_file: "{{ role_path }}/files/test_rsa"
 
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
