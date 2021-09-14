@@ -27,9 +27,9 @@ description:
 - Manages core NTP configuration.
 version_added: 1.0.0
 deprecated:
-￼  alternative: ios_ntp_global
-￼  why: Updated module released with more functionality.
-￼  removed_at_date: '2024-01-01'
+  alternative: ios_ntp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2024-01-01'
 author:
 - Federico Olivieri (@Federico87)
 - Joanie Sylvain (@JoanieAda)
@@ -128,9 +128,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 def parse_server(line, dest):
     if dest == "server":
         match = re.search(
-            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)?(\\d+\\.\\d+\\.\\d+\\.\\d+)",
-            line,
-            re.M,
+            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)?(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M
         )
 
         if match.group(2) and match.group(3):
@@ -294,9 +292,7 @@ def map_obj_to_commands(want, have, module):
 
             if server_have and (vrf, server) in server_have:
                 if vrf is not None:
-                    commands.append(
-                        "no ntp server vrf {0} {1}".format(vrf, server)
-                    )
+                    commands.append("no ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("no ntp server {0}".format(server))
 
@@ -326,9 +322,7 @@ def map_obj_to_commands(want, have, module):
 
             if server is not None and (vrf, server) not in server_have:
                 if vrf is not None:
-                    commands.append(
-                        "ntp server vrf {0} {1}".format(vrf, server)
-                    )
+                    commands.append("ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("ntp server {0}".format(server))
 
@@ -338,11 +332,7 @@ def map_obj_to_commands(want, have, module):
             if acl is not None and acl != acl_have:
                 commands.append("ntp access-group peer {0}".format(acl))
 
-            if (
-                logging is not None
-                and logging != logging_have
-                and logging is not False
-            ):
+            if logging is not None and logging != logging_have and logging is not False:
                 commands.append("ntp logging")
 
             if auth is not None and auth != auth_have and auth is not False:
@@ -354,9 +344,7 @@ def map_obj_to_commands(want, have, module):
             if auth_key is not None and auth_key != auth_key_have:
                 if key_id is not None:
                     commands.append(
-                        "ntp authentication-key {0} md5 {1} 7".format(
-                            key_id, auth_key
-                        )
+                        "ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key)
                     )
     return commands
 
@@ -377,9 +365,7 @@ def main():
 
     argument_spec.update(ios_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     result = {"changed": False}
 
