@@ -233,6 +233,10 @@ plugin_routing:
       deprecation:
         removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
+    ios_ntp:
+      deprecation:
+        removal_date: "2024-01-01"
+        warning_text: See the plugin documentation for more details
     ntp_global:
       redirect: cisco.ios.ios_ntp_global
     ospfv2:
