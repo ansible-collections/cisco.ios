@@ -46,6 +46,7 @@
       - bgp_address_family
       - route_maps
       - prefix_lists
+      - ntp_global
 
 - name: Collect list of available network resources for ios
   register: result
