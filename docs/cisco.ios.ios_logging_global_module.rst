@@ -61,7 +61,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Set buffered logging parameters.</div>
+                        <div>Set buffered logging parameters</div>
                 </td>
             </tr>
                                 <tr>

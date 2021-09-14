@@ -30,7 +30,7 @@ options:
     type: dict
     suboptions:
       buffered:
-        description: Set buffered logging parameters.
+        description: Set buffered logging parameters
         type: dict
         suboptions:
           size: &size
