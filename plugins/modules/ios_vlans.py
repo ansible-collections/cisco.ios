@@ -728,6 +728,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
     Vlans,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
+
+
+def check_device(module):
+    connection = get_connection(module)
+    check_me = connection.get_device_info()
+    if check_me.get("network_os_type") == "L3":
+        return False
+    return True
 
 
 def main():
@@ -751,8 +762,13 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-    result = Vlans(module).execute_module()
-    module.exit_json(**result)
+    if check_device(module):
+        result = Vlans(module).execute_module()
+        module.exit_json(**result)
+    else:
+        module.fail_json(
+            "'show vlan' doesn't seems to be supported on the IOS box. Please make sure it's an L2 switch"
+        )
 
 
 if __name__ == "__main__":

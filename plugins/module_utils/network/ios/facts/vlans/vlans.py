@@ -42,15 +42,11 @@ class VlansFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
-    def get_vlans_data(self, connection):
-        try:
-            return connection.get("show vlan")
-        except Exception as ex:
-            self._module.fail_json(
-                "'show vlan' doesn't seems to be supported on the IOS box and failed with error: {0}. Please make sure it's an L2 switch".format(
-                    ex
-                )
-            )
+    def get_vlans_data(self, connection, ansible_facts):
+        check_me = connection.get_device_info()
+        if check_me.get("network_os_type") == "L3":  # will not work
+            return ""
+        return connection.get("show vlan")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for vlans
@@ -66,7 +62,7 @@ class VlansFacts(object):
         remote_objs = []
         final_objs = []
         if not data:
-            data = self.get_vlans_data(connection)
+            data = self.get_vlans_data(connection, ansible_facts)
         # operate on a collection of resource x
         config = data.split("\n")
         # Get individual vlan configs separately
