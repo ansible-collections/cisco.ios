@@ -772,8 +772,7 @@ def main():
         module.exit_json(**result)
     else:
         module.fail_json(
-            """Resource vlan is not supported for devices other than l2 switches.
-          As command 'show vlan' is not a valid command for the device."""
+            """Resource VLAN is not valid for the target device."""
         )
 
 

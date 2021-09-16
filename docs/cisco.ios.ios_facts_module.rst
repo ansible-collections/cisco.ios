@@ -644,4 +644,3 @@ Authors
 
 - Peter Sprygada (@privateip)
 - Sumit Jaiswal (@justjais)
-- Sagar Paul (@KB-perByte)
