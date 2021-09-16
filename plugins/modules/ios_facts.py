@@ -23,6 +23,7 @@ module: ios_facts
 author:
 - Peter Sprygada (@privateip)
 - Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)
 short_description: Collect facts from remote devices running Cisco IOS
 description:
 - Collects a base set of device facts from a remote device that is running IOS.  This
@@ -34,6 +35,8 @@ extends_documentation_fragment:
 - cisco.ios.ios
 notes:
 - Tested against IOS 15.6
+- Facts gathering for L3 devices are supposed to produce blank output for unsupported
+  resources like vlan.
 options:
   gather_subset:
     description:

@@ -733,10 +733,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 )
 
 
-def check_device(module):
+def _is_l2_device(module):
+    """ fails module if device is L3.
+    """
     connection = get_connection(module)
-    check_me = connection.get_device_info()
-    if check_me.get("network_os_type") == "L3":
+    check_os_type = connection.get_device_info()
+    if check_os_type.get("network_os_type") == "L3":
         return False
     return True
 
@@ -762,12 +764,16 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-    if check_device(module):
+    if _is_l2_device(module) or module.params.get("state") in [
+        "rendered",
+        "parsed",
+    ]:
         result = Vlans(module).execute_module()
         module.exit_json(**result)
     else:
         module.fail_json(
-            "'show vlan' doesn't seems to be supported on the IOS box. Please make sure it's an L2 switch"
+            """Resource vlan is not supported for devices other than l2 switches.
+          As command 'show vlan' is not a valid command for the device."""
         )
 
 

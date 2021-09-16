@@ -42,9 +42,12 @@ class VlansFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
-    def get_vlans_data(self, connection, ansible_facts):
-        check_me = connection.get_device_info()
-        if check_me.get("network_os_type") == "L3":  # will not work
+    def get_vlans_data(self, connection):
+        """ Checks device is L2/L3 and returns
+        facts gracefully. Does not fail module.
+        """
+        check_os_type = connection.get_device_info()
+        if check_os_type.get("network_os_type") == "L3":
             return ""
         return connection.get("show vlan")
 
@@ -62,7 +65,7 @@ class VlansFacts(object):
         remote_objs = []
         final_objs = []
         if not data:
-            data = self.get_vlans_data(connection, ansible_facts)
+            data = self.get_vlans_data(connection)
         # operate on a collection of resource x
         config = data.split("\n")
         # Get individual vlan configs separately

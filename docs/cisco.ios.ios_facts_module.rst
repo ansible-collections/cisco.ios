@@ -249,6 +249,7 @@ Notes
 
 .. note::
    - Tested against IOS 15.6
+   - Facts gathering for L3 devices are supposed to produce blank output for unsupported resources like vlan.
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
@@ -643,3 +644,4 @@ Authors
 
 - Peter Sprygada (@privateip)
 - Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)

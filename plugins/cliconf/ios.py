@@ -282,7 +282,7 @@ class Cliconf(CliconfBase):
         device_type = "L2"
         try:
             self.get(command="show vlan")
-        except Exception as e:
+        except Exception:
             device_type = "L3"
         return device_type
 

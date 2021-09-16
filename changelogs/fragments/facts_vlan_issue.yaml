@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - facts fixed for handling l2 devices.
