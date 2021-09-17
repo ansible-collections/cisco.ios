@@ -30,7 +30,8 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
-- This RM works only with Cisco IOS L2 switch.
+- Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
+  not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
 options:
   config:
     description: A dictionary of VLANs options
@@ -764,6 +765,7 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
+
     if _is_l2_device(module) or module.params.get("state") in [
         "rendered",
         "parsed",
