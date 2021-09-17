@@ -84,6 +84,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
             "network_os_version": "16.06.01",
             "network_os_hostname": "an-csr-01",
             "network_os_image": "bootflash:packages.conf",
+            "network_os_type": "L2",
         }
 
         self.assertEqual(device_info, mock_device_info)
@@ -125,6 +126,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
                 "network_os_model": "CSR1000V",
                 "network_os_version": "16.06.01",
                 "network_os": "ios",
+                "network_os_type": "L2",
             },
             "format": ["text"],
             "diff_match": ["line", "strict", "exact", "none"],
