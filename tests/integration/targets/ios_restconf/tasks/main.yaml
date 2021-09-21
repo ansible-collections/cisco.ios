@@ -1,4 +1,13 @@
 ---
+- name: Test for restconf support
+  connection: ansible.netcommon.network_cli
+  become: true
+  register: result
+  cisco.ios.ios_command:
+    commands:
+      - show version
+
 - include: restconf.yaml
+  when: "'Cisco IOS-XE' in result.stdout[0]"
   tags:
     - restconf
