@@ -1,5 +1,0 @@
----
-- include: restconf.yaml
-  when: ansible_network_os == 'ansible.netcommon.restconf'
-  tags:
-    - restconf

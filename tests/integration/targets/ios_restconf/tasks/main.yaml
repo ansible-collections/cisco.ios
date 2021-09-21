@@ -1,0 +1,4 @@
+---
+- include: restconf.yaml
+  tags:
+    - restconf

@@ -1,7 +1,7 @@
 ---
 - name: Collect all cli test cases
   find:
-    paths: '{{ role_path }}/tests/iosxe'
+    paths: '{{ role_path }}/tests/restconf_*'
     patterns: '{{ testcase }}.yaml'
     use_regex: true
   register: test_cases
