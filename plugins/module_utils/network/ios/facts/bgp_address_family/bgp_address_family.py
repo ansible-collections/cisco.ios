@@ -82,7 +82,7 @@ class Bgp_AddressFamilyFacts(object):
                 neighbor = v.get("neighbor")
                 if neighbor:
 
-                    def _update_neighor_list(neighbor_list, temp):
+                    def _update_neighor_list(neighbor_list, temp, alter=None):
                         set = False
                         temp = utils.remove_empties(temp)
                         for each in neighbor_list:
@@ -90,13 +90,17 @@ class Bgp_AddressFamilyFacts(object):
                                 each.update(temp)
                                 set = True
                         if not neighbor_list or not set:
-                            neighbor_list.append(temp)
+                            if alter:
+                                neighbor_list.extend(list(alter.values()))
+                            else:
+                                neighbor_list.append(temp)
 
                     neighbor_list = []
                     temp_param_list = []
                     temp = {}
                     temp_param = None
                     neighbor_identifier = None
+                    al = {}
                     for each in neighbor:
                         if temp_param and not each.get(temp_param) and temp:
                             temp.update({temp_param: temp_param_list})
@@ -120,6 +124,10 @@ class Bgp_AddressFamilyFacts(object):
                             else:
                                 temp["tag"] = neighbor_identifier
                         temp.update(each)
+                        if not al.get(each.get("address")):
+                            al[each.get("address")] = each
+                        else:
+                            al.get(each.get("address")).update(each)
                         for param in [
                             "prefix_lists",
                             "route_maps",
@@ -133,7 +141,7 @@ class Bgp_AddressFamilyFacts(object):
                     if temp:
                         if temp_param:
                             temp.update({temp_param: temp_param_list})
-                        _update_neighor_list(neighbor_list, temp)
+                        _update_neighor_list(neighbor_list, temp, al)
                         temp_param_list = []
                         temp = {}
                     v["neighbor"] = neighbor_list

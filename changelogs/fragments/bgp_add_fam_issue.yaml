@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed bgp_address_family, for rendering multiple neighbours when available in config.
