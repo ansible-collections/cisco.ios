@@ -174,8 +174,6 @@ options:
                 description: Nexthop triggering
                 type: list
                 elements: dict
-                aliases:
-                  - slow_peers
                 suboptions:
                   detection:
                     description: Slow-peer detection
@@ -237,8 +235,6 @@ options:
             description: Specify a neighbor router
             type: list
             elements: dict
-            aliases:
-              - neighbors
             suboptions:
               address:
                 description: Neighbor address (A.B.C.D)
@@ -736,8 +732,6 @@ options:
                 description: Configure slow-peer
                 type: list
                 elements: dict
-                aliases:
-                  - slow_peers
                 suboptions:
                   detection:
                     description: Configure slow-peer
@@ -842,8 +836,6 @@ options:
             description: Specify a network to announce via BGP
             type: list
             elements: dict
-            aliases:
-              - networks
             suboptions:
               address:
                 description: Network number (A.B.C.D)
@@ -1207,7 +1199,6 @@ options:
 """
 
 EXAMPLES = """
-
 # Using merged
 
 # Before state:
@@ -2137,6 +2128,7 @@ EXAMPLES = """
 #       ],
 #       "as_number": "65000"
 #   }
+
 
 """
 

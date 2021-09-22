@@ -128,7 +128,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "slow_peer": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "aliases": ["slow_peers"],
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -164,7 +163,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                         "neighbor": {
                             "type": "list",
                             "elements": "dict",
-                            "aliases": ["neighbors"],
                             "options": {
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
@@ -450,7 +448,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "slow_peer": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "aliases": ["slow_peers"],
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -521,7 +518,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                         "network": {
                             "type": "list",
                             "elements": "dict",
-                            "aliases": ["networks"],
                             "options": {
                                 "address": {"type": "str"},
                                 "mask": {"type": "str"},
