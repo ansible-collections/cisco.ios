@@ -19,20 +19,20 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
     utils,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
-    Bgp_AddressFamilyTemplate,
+    Bgp_address_familyTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
-    Bgp_AddressFamilyArgs,
+    Bgp_address_familyArgs,
 )
 
 
-class Bgp_AddressFamilyFacts(object):
+class Bgp_address_familyFacts(object):
     """ The cisco.ios_bgp_address_family facts class
     """
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Bgp_AddressFamilyArgs.argument_spec
+        self.argument_spec = Bgp_address_familyArgs.argument_spec
 
     def get_bgp_address_family_data(self, connection):
         return connection.get("sh running-config | section ^router bgp")
@@ -156,7 +156,7 @@ class Bgp_AddressFamilyFacts(object):
             data = self.get_bgp_address_family_data(connection)
 
         # parse native config using the Bgp_address_family template
-        bgp_af_parser = Bgp_AddressFamilyTemplate(
+        bgp_af_parser = Bgp_address_familyTemplate(
             lines=data.splitlines(), module=self._module
         )
         objs = bgp_af_parser.parse()

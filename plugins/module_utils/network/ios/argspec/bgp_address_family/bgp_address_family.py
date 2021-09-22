@@ -23,12 +23,12 @@ __metaclass__ = type
 #############################################
 
 """
-The arg spec for the cisco.ios_bgp_address_family module
+The arg spec for the ios_bgp_address_family module
 """
 
 
-class Bgp_AddressFamilyArgs(object):
-    """The arg spec for the cisco.ios_bgp_address_family module
+class Bgp_address_familyArgs(object):  # pylint: disable=R0903
+    """The arg spec for the ios_bgp_address_family module
     """
 
     argument_spec = {
@@ -160,9 +160,10 @@ class Bgp_AddressFamilyArgs(object):
                                 "local": {"type": "int"},
                             },
                         },
-                        "neighbor": {
+                        "neighbors": {
                             "type": "list",
                             "elements": "dict",
+                            "aliases": ["neighbor"],
                             "options": {
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
@@ -515,9 +516,10 @@ class Bgp_AddressFamilyArgs(object):
                                 "weight": {"type": "int"},
                             },
                         },
-                        "network": {
+                        "networks": {
                             "type": "list",
                             "elements": "dict",
+                            "aliases": ["network"],
                             "options": {
                                 "address": {"type": "str"},
                                 "mask": {"type": "str"},
@@ -730,16 +732,16 @@ class Bgp_AddressFamilyArgs(object):
         },
         "running_config": {"type": "str"},
         "state": {
-            "type": "str",
             "choices": [
                 "merged",
                 "replaced",
                 "overridden",
                 "deleted",
                 "gathered",
-                "parsed",
                 "rendered",
+                "parsed",
             ],
             "default": "merged",
+            "type": "str",
         },
-    }
+    }  # pylint: disable=C0301

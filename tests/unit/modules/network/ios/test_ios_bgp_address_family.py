@@ -56,7 +56,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
-            "Bgp_AddressFamilyFacts.get_bgp_address_family_data"
+            "Bgp_address_familyFacts.get_bgp_address_family_data"
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 

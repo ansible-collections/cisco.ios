@@ -1,26 +1,17 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2021 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_bgp_address_family
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_bgp_address_family
 short_description: BGP Address family resource module
@@ -240,10 +231,12 @@ options:
               local:
                 description: Distance for local routes
                 type: int
-          neighbor:
+          neighbors:
             description: Specify a neighbor router
             type: list
             elements: dict
+            aliases:
+              - neighbor
             suboptions:
               address:
                 description: Neighbor address (A.B.C.D)
@@ -841,10 +834,12 @@ options:
               weight:
                 description: Set default weight for routes from this neighbor
                 type: int
-          network:
+          networks:
             description: Specify a network to announce via BGP
             type: list
             elements: dict
+            aliases:
+              - network
             suboptions:
               address:
                 description: Network number (A.B.C.D)
@@ -1260,7 +1255,7 @@ EXAMPLES = """
                 - name: test-route-in
                   in: true
               route_server_client: true
-          network:
+          networks:
             - address: 198.51.110.10
               mask: 255.255.255.255
               backdoor: true
@@ -1292,7 +1287,7 @@ EXAMPLES = """
             external: 10
             internal: 10
             local: 100
-          network:
+          networks:
             - address: 198.51.111.11
               mask: 255.255.255.255
               route_map: test
@@ -1446,7 +1441,7 @@ EXAMPLES = """
                 - name: test-replaced-route
                   out: true
               route_server_client: true
-          network:
+          networks:
             - address: 198.51.110.10
               mask: 255.255.255.255
               backdoor: true
@@ -1462,7 +1457,7 @@ EXAMPLES = """
             slow_peer:
               - detection:
                   threshold: 200
-          network:
+          networks:
             - address: 192.0.2.1
               mask: 255.255.255.255
               route_map: test
@@ -2143,57 +2138,84 @@ EXAMPLES = """
 
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: [
-    "router bgp 65000",
-    "address-family ipv4 multicast",
-    "table-map test_tableMap filter",
-    "network 1.1.1.1 mask 255.255.255.255 route-map test",
-    "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
-  ]
+  sample:
+    - router bgp 65000
+    - address-family ipv4 multicast
+    - table-map test_tableMap filter
+    - network 1.1.1.1 mask 255.255.255.255 route-map test
+    - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - router bgp 65000
+    - address-family ipv4 multicast
+    - table-map test_tableMap filter
+    - network 1.1.1.1 mask 255.255.255.255 route-map test
+    - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
-    Bgp_AddressFamilyArgs,
+    Bgp_address_familyArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
-    Bgp_AddressFamily,
+    Bgp_address_family,
 )
 
 
 def main():
     """
     Main entry point for module execution
+
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
-        argument_spec=Bgp_AddressFamilyArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        argument_spec=Bgp_address_familyArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
-    result = Bgp_AddressFamily(module).execute_module()
+
+    result = Bgp_address_family(module).execute_module()
     module.exit_json(**result)
 
 
