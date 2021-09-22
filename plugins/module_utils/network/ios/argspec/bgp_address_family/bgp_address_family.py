@@ -386,17 +386,17 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
-                                "prefix_lists": {
-                                    "type": "list",
-                                    "elements": "dict",
+                                "prefix_list": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
                                         "out": {"type": "bool"},
                                     },
                                 },
-                                "prefix_list": {
-                                    "type": "dict",
+                                "prefix_lists": {
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
@@ -412,17 +412,17 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "replace_as": {"type": "bool"},
                                     },
                                 },
-                                "route_maps": {
-                                    "type": "list",
-                                    "elements": "dict",
+                                "route_map": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
                                         "out": {"type": "bool"},
                                     },
                                 },
-                                "route_map": {
-                                    "type": "dict",
+                                "route_maps": {
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
