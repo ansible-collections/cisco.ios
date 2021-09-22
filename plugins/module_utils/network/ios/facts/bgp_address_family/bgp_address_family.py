@@ -37,32 +37,15 @@ class Bgp_AddressFamilyFacts(object):
     def get_bgp_address_family_data(self, connection):
         return connection.get("sh running-config | section ^router bgp")
 
-    def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_address_family network resource
-
-        :param connection: the device connection
-        :param ansible_facts: Facts dictionary
-        :param data: previously collected conf
-
-        :rtype: dictionary
-        :returns: facts
+    def _process_facts(self, objs):
+        """ makes data as per the facts after data obtained from parsers
         """
-        facts = {}
-        objs = []
-
-        if not data:
-            data = self.get_bgp_address_family_data(connection)
-
-        # parse native config using the Bgp_address_family template
-        bgp_af_parser = Bgp_AddressFamilyTemplate(
-            lines=data.splitlines(), module=self._module
-        )
-        objs = bgp_af_parser.parse()
-        objs = utils.remove_empties(objs)
         temp_af = []
         if objs.get("address_family"):
             for k, v in iteritems(objs["address_family"]):
-                if k == "__":
+                if (
+                    k == "__"
+                ):  # prepare dicts keys to operate on post spliting the keys
                     continue
                 temp_dict = {}
                 temp = [every for every in k.split("_") if every != ""]
@@ -80,6 +63,7 @@ class Bgp_AddressFamilyFacts(object):
                     else:
                         temp_dict["safi"] = temp[0]
                 neighbor = v.get("neighbor")
+
                 if neighbor:
 
                     def _update_neighor_list(neighbor_list, temp, alter=None):
@@ -95,12 +79,10 @@ class Bgp_AddressFamilyFacts(object):
                             else:
                                 neighbor_list.append(temp)
 
-                    neighbor_list = []
-                    temp_param_list = []
-                    temp = {}
-                    temp_param = None
-                    neighbor_identifier = None
-                    al = {}
+                    neighbor_list, temp_param_list = [], []
+                    temp, al = {}, {}
+                    temp_param, neighbor_identifier = None, None
+
                     for each in neighbor:
                         if temp_param and not each.get(temp_param) and temp:
                             temp.update({temp_param: temp_param_list})
@@ -124,7 +106,9 @@ class Bgp_AddressFamilyFacts(object):
                             else:
                                 temp["tag"] = neighbor_identifier
                         temp.update(each)
-                        if not al.get(each.get("address")):
+                        if not al.get(
+                            each.get("address")
+                        ):  # adds multiple nighbors
                             al[each.get("address")] = each
                         else:
                             al.get(each.get("address")).update(each)
@@ -149,9 +133,35 @@ class Bgp_AddressFamilyFacts(object):
                 temp_af.append(v)
 
             objs["address_family"] = temp_af
+
             objs["address_family"] = sorted(
                 objs["address_family"], key=lambda k, sk="afi": k[sk]
             )
+        return objs
+
+    def populate_facts(self, connection, ansible_facts, data=None):
+        """ Populate the facts for Bgp_address_family network resource
+
+        :param connection: the device connection
+        :param ansible_facts: Facts dictionary
+        :param data: previously collected conf
+
+        :rtype: dictionary
+        :returns: facts
+        """
+        facts = {}
+        objs = []
+
+        if not data:
+            data = self.get_bgp_address_family_data(connection)
+
+        # parse native config using the Bgp_address_family template
+        bgp_af_parser = Bgp_AddressFamilyTemplate(
+            lines=data.splitlines(), module=self._module
+        )
+        objs = bgp_af_parser.parse()
+        objs = utils.remove_empties(objs)
+        objs = self._process_facts(objs)
         if objs:
             ansible_facts["ansible_network_resources"].pop(
                 "bgp_address_family", None
