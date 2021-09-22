@@ -6681,7 +6681,7 @@ Examples
                     - name: test-route-in
                       in: true
                   route_server_client: true
-              networks:
+              network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
                   backdoor: true
@@ -6713,7 +6713,7 @@ Examples
                 external: 10
                 internal: 10
                 local: 100
-              networks:
+              network:
                 - address: 198.51.111.11
                   mask: 255.255.255.255
                   route_map: test
@@ -6867,7 +6867,7 @@ Examples
                     - name: test-replaced-route
                       out: true
                   route_server_client: true
-              networks:
+              network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
                   backdoor: true
@@ -6883,7 +6883,7 @@ Examples
                 slow_peer:
                   - detection:
                       threshold: 200
-              networks:
+              network:
                 - address: 192.0.2.1
                   mask: 255.255.255.255
                   route_map: test
