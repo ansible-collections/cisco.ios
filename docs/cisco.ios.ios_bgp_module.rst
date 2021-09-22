@@ -1132,7 +1132,7 @@ Status
 ------
 
 
-- This module will be removed in version . *[deprecated]*
+- This module will be removed in a release after 2023-08-24. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 
