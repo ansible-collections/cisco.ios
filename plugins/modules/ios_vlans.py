@@ -30,7 +30,8 @@ version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
 - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
-- This RM works only with Cisco IOS L2 switch.
+- Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
+  not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
 options:
   config:
     description: A dictionary of VLANs options
@@ -728,6 +729,19 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
     Vlans,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
+
+
+def _is_l2_device(module):
+    """ fails module if device is L3.
+    """
+    connection = get_connection(module)
+    check_os_type = connection.get_device_info()
+    if check_os_type.get("network_os_type") == "L3":
+        return False
+    return True
 
 
 def main():
@@ -751,8 +765,17 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-    result = Vlans(module).execute_module()
-    module.exit_json(**result)
+
+    if _is_l2_device(module) or module.params.get("state") in [
+        "rendered",
+        "parsed",
+    ]:
+        result = Vlans(module).execute_module()
+        module.exit_json(**result)
+    else:
+        module.fail_json(
+            """Resource VLAN is not valid for the target device."""
+        )
 
 
 if __name__ == "__main__":

@@ -34,6 +34,8 @@ extends_documentation_fragment:
 - cisco.ios.ios
 notes:
 - Tested against IOS 15.6
+- Facts gathering for L3 devices are supposed to produce blank output for unsupported
+  resources like vlan.
 options:
   gather_subset:
     description:
