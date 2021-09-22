@@ -174,6 +174,8 @@ options:
                 description: Nexthop triggering
                 type: list
                 elements: dict
+                aliases:
+                  - slow_peers
                 suboptions:
                   detection:
                     description: Slow-peer detection
@@ -231,12 +233,12 @@ options:
               local:
                 description: Distance for local routes
                 type: int
-          neighbors:
+          neighbor:
             description: Specify a neighbor router
             type: list
             elements: dict
             aliases:
-              - neighbor
+              - neighbors
             suboptions:
               address:
                 description: Neighbor address (A.B.C.D)
@@ -734,6 +736,8 @@ options:
                 description: Configure slow-peer
                 type: list
                 elements: dict
+                aliases:
+                  - slow_peers
                 suboptions:
                   detection:
                     description: Configure slow-peer
@@ -834,12 +838,12 @@ options:
               weight:
                 description: Set default weight for routes from this neighbor
                 type: int
-          networks:
+          network:
             description: Specify a network to announce via BGP
             type: list
             elements: dict
             aliases:
-              - network
+              - networks
             suboptions:
               address:
                 description: Network number (A.B.C.D)

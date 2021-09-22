@@ -128,6 +128,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "slow_peer": {
                                     "type": "list",
                                     "elements": "dict",
+                                    "aliases": ["slow_peers"],
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -160,10 +161,10 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "local": {"type": "int"},
                             },
                         },
-                        "neighbors": {
+                        "neighbor": {
                             "type": "list",
                             "elements": "dict",
-                            "aliases": ["neighbor"],
+                            "aliases": ["neighbors"],
                             "options": {
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
@@ -449,6 +450,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "slow_peer": {
                                     "type": "list",
                                     "elements": "dict",
+                                    "aliases": ["slow_peers"],
                                     "options": {
                                         "detection": {
                                             "type": "dict",
@@ -516,10 +518,10 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "weight": {"type": "int"},
                             },
                         },
-                        "networks": {
+                        "network": {
                             "type": "list",
                             "elements": "dict",
-                            "aliases": ["network"],
+                            "aliases": ["networks"],
                             "options": {
                                 "address": {"type": "str"},
                                 "mask": {"type": "str"},

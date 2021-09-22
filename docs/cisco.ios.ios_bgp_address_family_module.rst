@@ -800,6 +800,7 @@ Parameters
                 </td>
                 <td>
                         <div>Nexthop triggering</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: slow_peers</div>
                 </td>
             </tr>
                                 <tr>
@@ -1121,7 +1122,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>neighbors</b>
+                    <b>neighbor</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -1132,7 +1133,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify a neighbor router</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: neighbor</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: neighbors</div>
                 </td>
             </tr>
                                 <tr>
@@ -3962,6 +3963,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure slow-peer</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: slow_peers</div>
                 </td>
             </tr>
                                 <tr>
@@ -4588,7 +4590,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>networks</b>
+                    <b>network</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -4599,7 +4601,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify a network to announce via BGP</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: network</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: networks</div>
                 </td>
             </tr>
                                 <tr>
