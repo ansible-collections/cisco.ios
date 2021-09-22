@@ -160,9 +160,11 @@ class Bgp_AddressFamilyFacts(object):
             lines=data.splitlines(), module=self._module
         )
         objs = bgp_af_parser.parse()
-        objs = utils.remove_empties(objs)
-        objs = self._process_facts(objs)
+
         if objs:
+
+            objs = self._process_facts(utils.remove_empties(objs))
+
             ansible_facts["ansible_network_resources"].pop(
                 "bgp_address_family", None
             )
