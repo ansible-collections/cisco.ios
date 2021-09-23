@@ -289,3 +289,20 @@ deleted_all:
 
   after:
     as_number: "65000"
+
+parsed:
+  config:
+    address_family:
+      - afi: ipv4
+        neighbor:
+          - activate: true
+            address: 198.51.110.212
+            soft_reconfiguration: true
+          - activate: true
+            address: 198.51.110.206
+            soft_reconfiguration: true
+        network:
+          - address: 192.0.2.0
+          - address: 192.0.3.0
+          - address: 192.0.4.0
+    as_number: '65536'

@@ -12,3 +12,4 @@
 - assert:
     that:
       - result.changed == false
+      - parsed['config'] == result['parsed']
