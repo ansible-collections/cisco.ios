@@ -1,5 +1,0 @@
----
-bugfixes:
-  - ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
-  - ios_vlans - for playbook execution module fails with an error when target device
-    does not support VLANs, The offline states rendered and parsed will work as expected.

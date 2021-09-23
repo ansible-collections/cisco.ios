@@ -340,3 +340,36 @@ releases:
     - provider_testing.yaml
     - sample_commands_added_l3_interface.yaml
     release_date: '2021-08-27'
+  2.5.0:
+    changes:
+      bugfixes:
+      - Fixed bgp_address_family, for rendering multiple neighbors when available
+        in config.
+      - fixed become functionality on privilege level not 15.
+      - ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
+      - ios_vlans - for playbook execution module fails with an error when target
+        device does not support VLANs, The offline states rendered and parsed will
+        work as expected.
+      deprecated_features:
+      - Deprecated ios_ntp modules.
+      doc_changes:
+      - Doc fix for ios_acl_interfaces.
+      - Doc fix for ios_logging_global.
+      minor_changes:
+      - Added ios_ntp_global resource module.
+    fragments:
+    - 199_become_not_working.yaml
+    - add_ios_ntp_global.yaml
+    - added_entry_galaxy.yaml
+    - bgp_add_fam_issue.yaml
+    - ee_migration.yaml
+    - facts_vlan_issue.yaml
+    - ios_acl_interfaces_doc_fix.yaml
+    - ios_logging_global_doc_fix.yaml
+    - ios_user_test_fix.yaml
+    - set_allow_duplicates.yaml
+    modules:
+    - description: ntp_global resource module
+      name: ios_ntp_global
+      namespace: ''
+    release_date: '2021-09-24'
