@@ -357,7 +357,6 @@ releases:
       - Doc fix for ios_logging_global.
       minor_changes:
       - Added ios_ntp_global resource module.
-      - Terminal plugin to support IOS device running in SD-WAN mode.
     fragments:
     - 199_become_not_working.yaml
     - add_ios_ntp_global.yaml
@@ -368,7 +367,6 @@ releases:
     - ios_acl_interfaces_doc_fix.yaml
     - ios_logging_global_doc_fix.yaml
     - ios_user_test_fix.yaml
-    - sd_wan_support.yaml
     - set_allow_duplicates.yaml
     modules:
     - description: ntp_global resource module
