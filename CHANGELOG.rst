@@ -12,6 +12,7 @@ Minor Changes
 -------------
 
 - Added ios_ntp_global resource module.
+- Terminal plugin to support IOS device running in SD-WAN mode.
 
 Deprecated Features
 -------------------
