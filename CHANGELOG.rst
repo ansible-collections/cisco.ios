@@ -5,6 +5,39 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.5.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_ntp_global resource module.
+- Terminal plugin to support IOS device running in SD-WAN mode.
+
+Deprecated Features
+-------------------
+
+- Deprecated ios_ntp modules.
+
+Bugfixes
+--------
+
+- Fixed bgp_address_family, for rendering multiple neighbors when available in config.
+- fixed become functionality on privilege level not 15.
+- ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
+- ios_vlans - for playbook execution module fails with an error when target device does not support VLANs, The offline states rendered and parsed will work as expected.
+
+Documentation Changes
+---------------------
+
+- Doc fix for ios_acl_interfaces.
+- Doc fix for ios_logging_global.
+
+New Modules
+-----------
+
+- ios_ntp_global - ntp_global resource module
+
 v2.4.0
 ======
 
