@@ -110,7 +110,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-from re import search, match, M
+from re import match, M
 
 
 def map_obj_to_commands(updates, module):
