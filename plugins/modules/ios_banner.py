@@ -110,7 +110,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-from re import match, M
+from re import search, M
 
 
 def map_obj_to_commands(updates, module):
@@ -122,7 +122,7 @@ def map_obj_to_commands(updates, module):
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
         if have.get("text") and len(have.get("text")) > 1:
-            haved = have.get("text")[:-1]
+            haved = have.get("text").rstrip("\n")
         else:
             haved = ""
         if want["text"] and (want["text"] != haved):
@@ -145,8 +145,9 @@ def map_config_to_obj(module):
         module, flags="| begin banner %s" % module.params["banner"]
     )
     if out:
-        regex = match("banner " + module.params["banner"] + " \^C{1,}", out).group()
+        regex = search("banner " + "login" + " \\^C{1,}\n", out, M)
         if regex:
+            regex = regex.group()
             output = str((out.split(regex))[1].split("^C\n")[0])
         else:
             output = None
