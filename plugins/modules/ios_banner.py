@@ -110,7 +110,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
 )
-from re import search, M
+from re import search, match, M
 
 
 def map_obj_to_commands(updates, module):
@@ -145,8 +145,8 @@ def map_config_to_obj(module):
         module, flags="| begin banner %s" % module.params["banner"]
     )
     if out:
-        regex = "banner " + module.params["banner"] + " ^C\n"
-        if search("banner " + module.params["banner"], out, M):
+        regex = match("banner " + module.params["banner"] + " \^C{1,}", out).group()
+        if regex:
             output = str((out.split(regex))[1].split("^C\n")[0])
         else:
             output = None
