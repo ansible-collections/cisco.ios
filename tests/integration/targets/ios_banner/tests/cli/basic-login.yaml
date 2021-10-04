@@ -37,7 +37,7 @@
   cisco.ios.ios_banner:
     multiline_delimiter: "x"
     banner: login
-    text: "this is my login banner\nthat has a multiline\nstring\n"
+    text: "this is my login banner\nthat has a multiline\nstring\nand a non-default multiline_delimiter"
     state: present
 
 - debug:
@@ -46,5 +46,6 @@
 - assert:
     that:
       - result.changed == True
-      - "'banner login x\nthis is my login banner\nthat has a multiline\nstring\nx'
+      - "'banner login x\nthis is my login banner\nthat has a multiline\nstring\nand a non-default multiline_delimiter\nx'
         in result.commands"
+
