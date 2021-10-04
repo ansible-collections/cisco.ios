@@ -1,0 +1,3 @@
+---
+trivial:
+  - Remove python26 skips from ignore-2.13 as those tests no longer run
