@@ -48,4 +48,3 @@
       - result.changed == True
       - "'banner login x\nthis is my login banner\nthat has a multiline\nstring\nand a non-default multiline_delimiter\nx'
         in result.commands"
-
