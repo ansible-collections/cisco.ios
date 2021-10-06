@@ -335,7 +335,6 @@ class L2_Interfaces(ConfigBase):
             diff = set(tuple(dict(want_dict).get("trunk"))) - set(
                 tuple(dict(have_dict).get("trunk"))
             )
-        if want_dict - have_dict:
             _want_dict = dict(want_dict)
             _have_dict = dict(have_dict)
             if _want_dict.get("trunk"):
@@ -345,6 +344,8 @@ class L2_Interfaces(ConfigBase):
             _want_dict = dict_to_set(_want_dict)
             _have_dict = dict_to_set(_have_dict)
             diff.update(_want_dict - _have_dict)
+        else:
+            diff = want_dict - have_dict
 
         if diff:
             diff = dict(diff)
