@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - l2_interfaces unable to set switchport mode properly.

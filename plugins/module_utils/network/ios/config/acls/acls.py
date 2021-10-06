@@ -54,7 +54,7 @@ class Acls(ResourceModule):
         """ Execute the module
 
         :rtype: A dictionary
-        :returns: The result from moduel execution
+        :returns: The result from module execution
         """
         self.gen_config()
         self.run_commands()

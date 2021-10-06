@@ -61,7 +61,7 @@ class Acl_Interfaces(ConfigBase):
     def execute_module(self):
         """ Execute the module
         :rtype: A dictionary
-        :returns: The result from moduel execution
+        :returns: The result from module execution
         """
         result = {"changed": False}
         commands = list()
@@ -115,7 +115,7 @@ class Acl_Interfaces(ConfigBase):
             collect the current configuration (as a dict from facts)
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         want = self._module.params["config"]
         if want:
@@ -132,7 +132,7 @@ class Acl_Interfaces(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 
@@ -164,7 +164,7 @@ class Acl_Interfaces(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 
