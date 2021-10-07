@@ -136,7 +136,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2,
+                            key_id=2,
                             minpoll=5,
                             peer="172.16.1.11",
                             prefer=True,
@@ -552,7 +552,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     panic_update=True,
                     peers=[
                         dict(
-                            key=2,
+                            key_id=2,
                             minpoll=5,
                             peer="172.16.1.11",
                             prefer=True,
