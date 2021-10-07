@@ -238,6 +238,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     ],
                     servers=[
                         dict(server="172.16.1.12", version=2),
+                        dict(server="172.16.1.110", key_id=2),
                         dict(
                             server="172.16.1.13", source="GigabitEthernet0/1"
                         ),
@@ -276,6 +277,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             "ntp peer ipv6 checkPeerDomainIpv6.com",
             "ntp peer ipv6 testPeerDomainIpv6.com prefer",
             "ntp server 172.16.1.12 version 2",
+            "ntp server 172.16.1.110 key 2",
             "ntp server 172.16.1.13 source GigabitEthernet0/1",
             "ntp server ipv6 checkServerDomainIpv6.com",
             "ntp trusted-key 21",
