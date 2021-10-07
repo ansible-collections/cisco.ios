@@ -767,6 +767,244 @@ EXAMPLES = """
 # ntp peer ipv6 testPeerDomainIpv6.com prefer
 # ntp server ipv6 checkServerDomainIpv6.com
 
+# Using state: rendered
+
+# Rendered play:
+# --------------
+
+- name: Render the commands for provided configuration
+  cisco.ios.ios_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: DHCP-Server
+            ipv4: true
+            kod: true
+          - access_list: preauth_ipv6_acl
+            ipv6: true
+            kod: true
+          - access_list: '2'
+            kod: true
+        query_only:
+          - access_list: '10'
+      allow:
+        control:
+          rate_limit: 4
+        private: true
+      authenticate: true
+      authentication_keys:
+        - algorithm: md5
+          encryption: 22
+          id: 2
+          key: SomeSecurePassword
+      broadcast_delay: 22
+      clock_period: 5
+      logging: true
+      master:
+        stratum: 4
+      max_associations: 34
+      max_distance: 3
+      min_distance: 10
+      orphan: 4
+      panic_update: true
+      peers:
+        - peer: 172.16.1.10
+          version: 2
+        - key: 2
+          minpoll: 5
+          peer: 172.16.1.11
+          prefer: true
+          version: 2
+        - peer: checkPeerDomainIpv4.com
+          prefer: true
+          use_ipv4: true
+        - peer: checkPeerDomainIpv6.com
+          use_ipv6: true
+        - peer: testPeerDomainIpv6.com
+          prefer: true
+          use_ipv6: true
+      servers:
+        - server: 172.16.1.12
+          version: 2
+        - server: checkServerDomainIpv6.com
+          use_ipv6: true
+        - server: 172.16.1.13
+          source: GigabitEthernet0/1
+      source: GigabitEthernet0/1
+      trusted_keys:
+        - range_end: 3
+          range_start: 10
+        - range_start: 21
+      update_calendar: True
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+
+# "rendered": [
+#       "ntp allow mode control 4",
+#       "ntp allow mode private",
+#       "ntp authenticate",
+#       "ntp broadcastdelay 22",
+#       "ntp clock-period 5",
+#       "ntp logging",
+#       "ntp master 4",
+#       "ntp max-associations 34",
+#       "ntp maxdistance 3",
+#       "ntp mindistance 10",
+#       "ntp orphan 4",
+#       "ntp panic update",
+#       "ntp source GigabitEthernet0/1",
+#       "ntp update-calendar",
+#       "ntp access-group ipv4 peer DHCP-Server kod",
+#       "ntp access-group ipv6 peer preauth_ipv6_acl kod",
+#       "ntp access-group peer 2 kod",
+#       "ntp access-group query-only 10",
+#       "ntp authentication-key 2 md5 SomeSecurePassword 22",
+#       "ntp peer 172.16.1.10 version 2",
+#       "ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
+#       "ntp peer ip checkPeerDomainIpv4.com prefer",
+#       "ntp peer ipv6 checkPeerDomainIpv6.com",
+#       "ntp peer ipv6 testPeerDomainIpv6.com prefer",
+#       "ntp server 172.16.1.12 version 2",
+#       "ntp server ipv6 checkServerDomainIpv6.com",
+#       "ntp server 172.16.1.13 source GigabitEthernet0/1",
+#       "ntp trusted-key 3 - 3",
+#       "ntp trusted-key 21"
+#     ]
+
+# Using state: parsed
+
+# File: parsed.cfg
+# ----------------
+
+# ntp allow mode control 4
+# ntp allow mode private
+# ntp authenticate
+# ntp broadcastdelay 22
+# ntp clock-period 5
+# ntp logging
+# ntp master 4
+# ntp max-associations 34
+# ntp maxdistance 3
+# ntp mindistance 10
+# ntp orphan 4
+# ntp panic update
+# ntp source GigabitEthernet0/1
+# ntp update-calendar
+# ntp access-group ipv4 peer DHCP-Server kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp access-group peer 2 kod
+# ntp access-group query-only 10
+# ntp authentication-key 2 md5 SomeSecurePassword 22
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server 172.16.1.12 version 2
+# ntp server ipv6 checkServerDomainIpv6.com
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp trusted-key 3 - 13
+# ntp trusted-key 21
+
+# Parsed play:
+# ------------
+
+- name: Parse the provided configuration with the existing running configuration
+  cisco.ios.ios_ntp_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+
+# "parsed": {
+#     "access_group": {
+#         "peer": [
+#             {
+#                 "access_list": "2",
+#                 "kod": true
+#             },
+#             {
+#                 "access_list": "DHCP-Server",
+#                 "ipv4": true,
+#                 "kod": true
+#             },
+#             {
+#                 "access_list": "preauth_ipv6_acl",
+#                 "ipv6": true,
+#                 "kod": true
+#             }
+#         ],
+#         "query_only": [
+#             {
+#                 "access_list": "10"
+#             }
+#         ]
+#     },
+#     "allow": {
+#         "control": {
+#             "rate_limit": 4
+#         },
+#         "private": true
+#     },
+#     "authenticate": true,
+#     "authentication_keys": [
+#         {
+#             "algorithm": "md5",
+#             "encryption": 22,
+#             "id": 2,
+#             "key": "SomeSecurePassword"
+#         }
+#     ],
+#     "broadcast_delay": 22,
+#     "clock_period": 5,
+#     "logging": true,
+#     "master": {
+#         "stratum": 4
+#     },
+#     "max_associations": 34,
+#     "max_distance": 3,
+#     "min_distance": 10,
+#     "orphan": 4,
+#     "panic_update": true,
+#     "peers": [
+#         {
+#             "peer": "172.16.1.10",
+#             "version": 2
+#         },
+#         {
+#             "peer": "checkPeerDomainIpv6.com",
+#             "use_ipv6": true
+#         }
+#     ],
+#     "servers": [
+#         {
+#             "server": "172.16.1.12",
+#             "version": 2
+#         },
+#         {
+#             "server": "172.16.1.13",
+#             "source": "GigabitEthernet0/1"
+#         },
+#         {
+#             "server": "checkServerDomainIpv6.com",
+#             "use_ipv6": true
+#         }
+#     ],
+#     "source": "GigabitEthernet0/1",
+#     "trusted_keys": [
+#         {
+#             "range_start": 21
+#         },
+#         {
+#             "range_end": 13,
+#             "range_start": 3
+#         }
+#     ],
+#     "update_calendar": true
+# }
 """
 
 RETURN = """
@@ -789,17 +1027,23 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ntp peer 20.18.11.3 key 6 minpoll 15 prefer version 2
+    - ntp access-group ipv4 peer DHCP-Server kod
+    - ntp trusted-key 9 - 96
+    - ntp master stratum 2
+    - ntp orphan 4
+    - ntp panic update
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when I(state) is C(rendered)
+  returned: when state is I(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ntp master stratum 2
+    - ntp server ip testserver.com prefer
+    - ntp authentication-key 2 md5 testpass 22
+    - ntp allow mode control 4
+    - ntp max-associations 34
+    - ntp broadcastdelay 22
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
