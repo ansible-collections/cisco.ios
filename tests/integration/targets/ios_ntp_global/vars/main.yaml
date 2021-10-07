@@ -79,6 +79,9 @@ parsed:
     peers:
       - peer: 172.16.1.10
         version: 2
+    servers:
+      - server: 172.16.1.11
+        key_id: 2
 
 rtt:
   commands:
