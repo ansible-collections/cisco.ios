@@ -33,9 +33,11 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
-- Facts gathering for L3 devices are supposed to produce blank output for unsupported
-  resources like vlan.
+  - Tested against IOS 15.6
+  - Facts gathering for L3 devices are supposed to produce blank output for unsupported
+    resources like vlan.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   gather_subset:
     description:

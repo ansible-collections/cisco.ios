@@ -29,7 +29,9 @@ description:
   from the configuration that are not explicitly defined.
 version_added: 1.0.0
 notes:
-- Tested against IOS 15.6
+  - Tested against IOS 15.6
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   aggregate:
     description:

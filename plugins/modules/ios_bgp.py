@@ -31,7 +31,7 @@ deprecated:
   why: Newer and updated modules released with more functionality
   removed_at_date: '2023-08-24'
 notes:
-- Tested against Cisco IOS Version 15.6(3)M2
+  - Tested against Cisco IOS Version 15.6(3)M2
 options:
   config:
     description:

@@ -32,7 +32,9 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
+  - Tested against IOS 15.6
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   commands:
     description:
@@ -114,7 +116,7 @@ EXAMPLES = r"""
       answer: 'y'
     - command: 'clear counters GigabitEthernet0/2'
       prompt: '[confirm]'
-      answer: '\r'
+      answer: "\r"
 """
 RETURN = """
 stdout:
@@ -175,9 +177,7 @@ def main():
         interval=dict(default=1, type="int"),
     )
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
@@ -205,9 +205,7 @@ def main():
         failed_conditions = [item.raw for item in conditionals]
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
-    result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
-    )
+    result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
     module.exit_json(**result)
 
 

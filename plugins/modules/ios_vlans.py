@@ -29,9 +29,11 @@ description: This module provides declarative management of VLANs on Cisco IOS n
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
-- Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
-  not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
+  - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+  - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
+    not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of VLANs options
