@@ -630,7 +630,7 @@ Status
 ------
 
 
-- This module will be removed in version . *[deprecated]*
+- This module will be removed a release after 2022-06-01. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 
