@@ -16,7 +16,7 @@
     - name: ios_ntp_global gather - Assert
       assert:
         that:
-          - parsed['config'] == result['gathered']
+          - gathered['config'] == result['gathered']
           - result['changed'] == false
   always:
     - include_tasks: _remove_config.yaml

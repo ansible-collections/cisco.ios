@@ -161,6 +161,10 @@ class Ntp_global(ResourceModule):
         tmp_data = deepcopy(data)
         for k, _v in p_key.items():
             if k in tmp_data and k != "access_group":
+                if k in ["servers", "peers"]:
+                    for i in tmp_data[k]:
+                        if i.get("key"):
+                            del i["key"]
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("access_group") and k == "access_group":
                 tmp_data[k] = self._ntp_list_to_dict(
