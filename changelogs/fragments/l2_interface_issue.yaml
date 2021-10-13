@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_l2_interfaces` - fix unable to set switchport mode properly."

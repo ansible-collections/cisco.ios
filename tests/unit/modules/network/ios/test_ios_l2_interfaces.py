@@ -268,7 +268,9 @@ class TestIosL2InterfacesModule(TestIosModule):
                 state="replaced",
             )
         )
-        self.execute_module(changed=False, commands=[])
+        result = self.execute_module(changed=False)
+        commands = []
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_overridden(self):
         set_module_args(
@@ -464,3 +466,23 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["rendered"], commands)
+
+    def test_ios_l2_interfaces_merged_mode_change(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        access=dict(vlan=20),
+                        mode="trunk",
+                        name="TwoGigabitEthernet1/0/1",
+                    )
+                ],
+                state="merged",
+            )
+        )
+        commands = [
+            "interface TwoGigabitEthernet1/0/1",
+            "switchport mode trunk",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)

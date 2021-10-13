@@ -77,7 +77,7 @@ class L2_Interfaces(ConfigBase):
     def execute_module(self):
         """ Execute the module
         :rtype: A dictionary
-        :returns: The result from moduel execution
+        :returns: The result from module execution
         """
         result = {"changed": False}
         commands = []
@@ -127,7 +127,7 @@ class L2_Interfaces(ConfigBase):
             collect the current configuration (as a dict from facts)
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
 
         config = self._module.params.get("config")
@@ -147,7 +147,7 @@ class L2_Interfaces(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 
@@ -179,7 +179,7 @@ class L2_Interfaces(ConfigBase):
         :param interface_type: interface type
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 
@@ -326,6 +326,7 @@ class L2_Interfaces(ConfigBase):
                         )
 
         # Get the diff b/w want and have
+        diff = set()
         want_dict = dict_to_set(want)
         have_dict = dict_to_set(have)
         want_trunk = dict(want_dict).get("trunk")
@@ -334,6 +335,15 @@ class L2_Interfaces(ConfigBase):
             diff = set(tuple(dict(want_dict).get("trunk"))) - set(
                 tuple(dict(have_dict).get("trunk"))
             )
+            _want_dict = dict(want_dict)
+            _have_dict = dict(have_dict)
+            if _want_dict.get("trunk"):
+                del _want_dict["trunk"]
+            if _have_dict.get("trunk"):
+                del _have_dict["trunk"]
+            _want_dict = dict_to_set(_want_dict)
+            _have_dict = dict_to_set(_have_dict)
+            diff.update(_want_dict - _have_dict)
         else:
             diff = want_dict - have_dict
 
