@@ -36,9 +36,13 @@ overridden:
     - ntp orphan 10
     - no ntp panic update
     - no ntp peer 172.16.1.10 version 2
+    - ntp server 172.16.1.15 key 2
   after:
     broadcast_delay: 113
     orphan: 10
+    servers:
+      - server: 172.16.1.15
+        key_id: 2
 
 deleted:
   before:
@@ -66,6 +70,24 @@ deleted:
     - no ntp peer 172.16.1.10 version 2
 
 parsed:
+  config:
+    broadcast_delay: 22
+    logging: true
+    master:
+      stratum: 4
+    max_associations: 34
+    max_distance: 3
+    min_distance: 10
+    orphan: 4
+    panic_update: true
+    peers:
+      - peer: 172.16.1.10
+        version: 2
+    servers:
+      - server: 172.16.1.11
+        key_id: 2
+
+gathered:
   config:
     broadcast_delay: 22
     logging: true

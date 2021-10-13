@@ -44,7 +44,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
                       " peer "
                       "{{ access_list }}"
-                      "{{ ' kod' if kod is defined else '' }}",
+                      "{{ ' kod' if kod|d(False) else '' }}",
             "result": {
                 "access_group": {
                     "peer": [
@@ -74,7 +74,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
                       " query-only "
                       "{{ access_list }}"
-                      "{{ ' kod' if kod is defined else '' }}",
+                      "{{ ' kod' if kod|d(False) else '' }}",
             "result": {
                 "access_group": {
                     "query_only": [
@@ -104,7 +104,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
                       " serve "
                       "{{ access_list }}"
-                      "{{ ' kod' if kod is defined else '' }}",
+                      "{{ ' kod' if kod|d(False) else '' }}",
             "result": {
                 "access_group": {
                     "serve": [
@@ -134,7 +134,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
                       " serve-only "
                       "{{ access_list }}"
-                      "{{ ' kod' if kod is defined else '' }}",
+                      "{{ ' kod' if kod|d(False) else '' }}",
             "result": {
                 "access_group": {
                     "serve_only": [
@@ -354,16 +354,16 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp peer"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
-                      "{{ ' ip' if use_ipv4 is defined else ''}}"
-                      "{{ ' ipv6' if use_ipv6 is defined else ''}}"
+                      "{{ ' ip' if use_ipv4|d(False) else ''}}"
+                      "{{ ' ipv6' if use_ipv6|d(False) else ''}}"
                       "{{ ( ' '  + peer ) if peer is defined else '' }}"
-                      "{{ ' burst ' if burst is defined else ''}}"
-                      "{{ ' iburst ' if iburst is defined else ''}}"
-                      "{{ (' key ' + key|string) if key is defined else '' }}"
+                      "{{ ' burst ' if burst|d(False) else ''}}"
+                      "{{ ' iburst ' if iburst|d(False) else ''}}"
+                      "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
                       "{{ ' normal-sync ' if normal_sync is defined else ''}}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' source ' + source) if source is defined else '' }}"
                       "{{ (' version ' + version|string) if version is defined else '' }}",
             "result": {
@@ -375,7 +375,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "vrf": "{{ vrf }}",
                         "burst": "{{ not not burst }}",
                         "iburst": "{{ not not iburst }}",
-                        "key": "{{ key }}",
+                        "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
                         "normal_sync": "{{ not not normal_sync }}",
@@ -407,16 +407,16 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp server"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
-                      "{{ ' ip' if use_ipv4 is defined else ''}}"
-                      "{{ ' ipv6' if use_ipv6 is defined else ''}}"
+                      "{{ ' ip' if use_ipv4|d(False) else ''}}"
+                      "{{ ' ipv6' if use_ipv6|d(False) else ''}}"
                       "{{ ( ' '  + server ) if server is defined else '' }}"
-                      "{{ ' burst ' if burst is defined else ''}}"
-                      "{{ ' iburst ' if iburst is defined else ''}}"
-                      "{{ (' key ' + key|string) if key is defined else '' }}"
+                      "{{ ' burst ' if burst|d(False) else ''}}"
+                      "{{ ' iburst ' if iburst|d(False) else ''}}"
+                      "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}"
                       "{{ ' normal-sync ' if normal_sync is defined else ''}}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' source ' + source) if source is defined else '' }}"
                       "{{ (' version ' + version|string) if version is defined else '' }}",
             "result": {
@@ -428,7 +428,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "vrf": "{{ vrf }}",
                         "burst": "{{ not not burst }}",
                         "iburst": "{{ not not iburst }}",
-                        "key": "{{ key }}",
+                        "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
                         "normal_sync": "{{ not not normal_sync }}",

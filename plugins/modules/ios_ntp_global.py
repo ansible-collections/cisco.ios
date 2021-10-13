@@ -170,9 +170,11 @@ options:
           iburst: &iburst
             description: Send a burst when peer is unreachable (Default)
             type: bool
-          key: &key
+          key_id: &key
             description: Configure peer authentication key
             type: int
+            aliases:
+              - key
           maxpoll: &maxpoll
             description: Maximum poll interval Poll value in Log2
             type: int
@@ -204,7 +206,7 @@ options:
           vrf: *vrf
           burst: *burst
           iburst: *iburst
-          key: *key
+          key_id: *key
           maxpoll: *maxpoll
           minpoll: *minpoll
           normal_sync: *normal_sync
