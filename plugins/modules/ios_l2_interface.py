@@ -187,6 +187,7 @@ def get_interface_type(interface):
         "FA",
         "TE",
         "FO",
+        "FI",
         "HU",
         "TWE",
         "TW",
