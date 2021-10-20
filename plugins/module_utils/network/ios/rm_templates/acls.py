@@ -51,16 +51,11 @@ def _tmplt_access_list_entries(config_data):
             elif config_data[type].get("host"):
                 command += " host {host}".format(**config_data[type])
             elif config_data[type].get("object_group"):
-                command += " object-group {object_group}".format(
-                    **config_data[type]
-                )
+                command += " object-group {object_group}".format(**config_data[type])
             if config_data[type].get("port_protocol"):
-                port_proto_type = list(
-                    config_data[type]["port_protocol"].keys()
-                )[0]
+                port_proto_type = list(config_data[type]["port_protocol"].keys())[0]
                 command += " {0} {1}".format(
-                    port_proto_type,
-                    config_data[type]["port_protocol"][port_proto_type],
+                    port_proto_type, config_data[type]["port_protocol"][port_proto_type]
                 )
             return command
 
@@ -86,9 +81,7 @@ def _tmplt_access_list_entries(config_data):
                 command += "{grant}".format(**aces)
             if aces.get("protocol_options"):
                 if "protocol_number" in aces["protocol_options"]:
-                    command += " {protocol_number}".format(
-                        **aces["protocol_options"]
-                    )
+                    command += " {protocol_number}".format(**aces["protocol_options"])
                 else:
                     command += " {0}".format(list(aces["protocol_options"])[0])
                     proto_option = aces["protocol_options"].get(
@@ -97,13 +90,9 @@ def _tmplt_access_list_entries(config_data):
             elif aces.get("protocol"):
                 command += " {protocol}".format(**aces)
             if aces.get("source"):
-                command = source_destination_common_config(
-                    aces, command, "source"
-                )
+                command = source_destination_common_config(aces, command, "source")
             if aces.get("destination"):
-                command = source_destination_common_config(
-                    aces, command, "destination"
-                )
+                command = source_destination_common_config(aces, command, "destination")
             if proto_option:
                 command += " {0}".format(list(proto_option.keys())[0])
             if aces.get("dscp"):
@@ -161,7 +150,7 @@ class AclsTemplate(NetworkTemplate):
                     \s*(?P<afi>IP|IPv6)*
                     \s*access*
                     \s*list*
-                    \s*(?P<acl_name>\S+)*
+                    \s*(?P<acl_name>.+)*
                     $""",
                 re.VERBOSE,
             ),
@@ -177,6 +166,42 @@ class AclsTemplate(NetworkTemplate):
                 }
             },
             "shared": True,
+        },
+        {
+            "name": "_acls_name",
+            "getval": re.compile(
+                r"""^(ip|ipv6)
+                    \s*(access-list)*
+                    \s*(standard|extended)*
+                    \s*(?P<acl_name_r>\S+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "compval": "name",
+            "result": {},
+            "shared": True,
+        },
+        {
+            "name": "remarks",
+            "getval": re.compile(
+                r"""\s+remark
+                    \s*(?P<remarks>.+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "result": {"{{ acl_name_r|d() }}": ["{{ remarks }}"]},
+        },
+        {
+            "name": "remarks_type_2",
+            "getval": re.compile(
+                r"""^(access-list)
+                    \s*(?P<acl_name_type2>\S+)*
+                    \s*\s+remark
+                    \s*(?P<remarks>.+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "result": {"{{ acl_name_type2|d() }}": ["{{ remarks }}"]},
         },
         {
             "name": "aces",
@@ -216,7 +241,6 @@ class AclsTemplate(NetworkTemplate):
                                 "sequence": "{% if sequence is defined %}{{ sequence \
                                     }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6.split('sequence ')[1] }}{% endif %}",
                                 "grant": "{{ grant }}",
-                                "remark": "{{ remark.split('remark ')[1] if remark is defined }}",
                                 "evaluate": "{{ evaluate.split(' ')[1] if evaluate is defined }}",
                                 "protocol": "{{ protocol if protocol is defined }}",
                                 "protocol_number": "{{ protocol_num if protocol_num is defined }}",
