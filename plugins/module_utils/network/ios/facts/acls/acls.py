@@ -66,7 +66,9 @@ class AclsFacts(object):
         rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
         current = rmmod.parse()
 
-        if remarks_data:  # remarks being fetched with a different command call to parse
+        if (
+            remarks_data
+        ):  # remarks being fetched with a different command call to parse
             rem_dt = NetworkTemplate(
                 lines=remarks_data.splitlines(), tmplt=AclsTemplate()
             )
@@ -100,9 +102,9 @@ class AclsFacts(object):
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {
-                                    each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                        "-", "_"
-                                    ): True
+                                    each_ace.pop(
+                                        "icmp_igmp_tcp_protocol"
+                                    ).replace("-", "_"): True
                                 }
                             }
                         if each_ace.get("std_source") == {}:
@@ -116,9 +118,9 @@ class AclsFacts(object):
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {
-                                    each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                        "-", "_"
-                                    ): True
+                                    each_ace.pop(
+                                        "icmp_igmp_tcp_protocol"
+                                    ).replace("-", "_"): True
                                 }
                             }
 
@@ -131,7 +133,9 @@ class AclsFacts(object):
         facts = {}
         if objs:
             facts["acls"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["acls"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)

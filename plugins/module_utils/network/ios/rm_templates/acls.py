@@ -51,11 +51,16 @@ def _tmplt_access_list_entries(config_data):
             elif config_data[type].get("host"):
                 command += " host {host}".format(**config_data[type])
             elif config_data[type].get("object_group"):
-                command += " object-group {object_group}".format(**config_data[type])
+                command += " object-group {object_group}".format(
+                    **config_data[type]
+                )
             if config_data[type].get("port_protocol"):
-                port_proto_type = list(config_data[type]["port_protocol"].keys())[0]
+                port_proto_type = list(
+                    config_data[type]["port_protocol"].keys()
+                )[0]
                 command += " {0} {1}".format(
-                    port_proto_type, config_data[type]["port_protocol"][port_proto_type]
+                    port_proto_type,
+                    config_data[type]["port_protocol"][port_proto_type],
                 )
             return command
 
@@ -81,7 +86,9 @@ def _tmplt_access_list_entries(config_data):
                 command += "{grant}".format(**aces)
             if aces.get("protocol_options"):
                 if "protocol_number" in aces["protocol_options"]:
-                    command += " {protocol_number}".format(**aces["protocol_options"])
+                    command += " {protocol_number}".format(
+                        **aces["protocol_options"]
+                    )
                 else:
                     command += " {0}".format(list(aces["protocol_options"])[0])
                     proto_option = aces["protocol_options"].get(
@@ -90,9 +97,13 @@ def _tmplt_access_list_entries(config_data):
             elif aces.get("protocol"):
                 command += " {protocol}".format(**aces)
             if aces.get("source"):
-                command = source_destination_common_config(aces, command, "source")
+                command = source_destination_common_config(
+                    aces, command, "source"
+                )
             if aces.get("destination"):
-                command = source_destination_common_config(aces, command, "destination")
+                command = source_destination_common_config(
+                    aces, command, "destination"
+                )
             if proto_option:
                 command += " {0}".format(list(proto_option.keys())[0])
             if aces.get("dscp"):
