@@ -48,7 +48,6 @@ class AclsFacts(object):
         return connection.get(
             "show running-config | include ip(v6)* access-list|remark"
         )
-        return None
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
@@ -84,14 +83,22 @@ class AclsFacts(object):
             for k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4":
                     del v["afi"]
-                    if rem_par.get(k):  # add v4 remarks as per acl
-                        v["remark"] = rem_par.get(k)
+                    if rem_par.get(k) and v.get(
+                        "aces"
+                    ):  # add v4 remarks as per acl
+                        v["aces"].append({"remarks": rem_par.get(k)})
+                    elif rem_par.get(k) and not v.get("aces"):
+                        v["aces"] = [{"remarks": rem_par.get(k)}]
                     temp_v4.append(v)
 
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
-                    if rem_par.get(k):  # add v6 remarks as per acl
-                        v["remark"] = rem_par.get(k)
+                    if rem_par.get(k) and v.get(
+                        "aces"
+                    ):  # add v6 remarks as per acl
+                        v["aces"].append({"remarks": rem_par.get(k)})
+                    elif rem_par.get(k) and not v.get("aces"):
+                        v["aces"] = [{"remarks": rem_par.get(k)}]
                     temp_v6.append(v)
 
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
@@ -101,8 +108,6 @@ class AclsFacts(object):
                 aces_ipv4 = each.get("aces")
                 if aces_ipv4:
                     for each_ace in each.get("aces"):
-                        # if each["acl_type"] == "standard":
-                        #     each_ace["source"] = each_ace.pop("std_source")
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {
@@ -111,15 +116,11 @@ class AclsFacts(object):
                                     ).replace("-", "_"): True
                                 }
                             }
-                        # if each_ace.get("std_source") == {}:
-                        #     del each_ace["std_source"]
 
             for each in temp_v6:
                 aces_ipv6 = each.get("aces")
                 if aces_ipv6:
                     for each_ace in each.get("aces"):
-                        # if each_ace.get("std_source") == {}:
-                        #     del each_ace["std_source"]
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {
