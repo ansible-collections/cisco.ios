@@ -33,46 +33,104 @@ class AclsArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
-            "type": "list",
             "elements": "dict",
             "options": {
-                "afi": {
-                    "required": True,
-                    "type": "str",
-                    "choices": ["ipv4", "ipv6"],
-                },
                 "acls": {
-                    "type": "list",
                     "elements": "dict",
                     "options": {
-                        "name": {"required": True, "type": "str"},
-                        "remark": {"type": "list", "elements": "str"},
-                        "acl_type": {
-                            "type": "str",
-                            "choices": ["extended", "standard"],
-                        },
                         "aces": {
                             "elements": "dict",
-                            "type": "list",
                             "options": {
-                                "grant": {
-                                    "type": "str",
-                                    "choices": ["permit", "deny"],
+                                "destination": {
+                                    "options": {
+                                        "address": {"type": "str"},
+                                        "any": {"type": "bool"},
+                                        "host": {"type": "str"},
+                                        "object_group": {"type": "str"},
+                                        "port_protocol": {
+                                            "options": {
+                                                "eq": {"type": "str"},
+                                                "gt": {"type": "str"},
+                                                "lt": {"type": "str"},
+                                                "neq": {"type": "str"},
+                                                "range": {
+                                                    "options": {
+                                                        "end": {"type": "int"},
+                                                        "start": {
+                                                            "type": "int"
+                                                        },
+                                                    },
+                                                    "type": "dict",
+                                                },
+                                            },
+                                            "type": "dict",
+                                        },
+                                        "wildcard_bits": {"type": "str"},
+                                    },
+                                    "type": "dict",
                                 },
-                                "sequence": {"type": "int"},
+                                "dscp": {"type": "str"},
                                 "evaluate": {"type": "str"},
+                                "fragments": {"type": "str"},
+                                "grant": {
+                                    "choices": ["permit", "deny"],
+                                    "type": "str",
+                                },
+                                "log": {
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                    "type": "dict",
+                                },
+                                "log_input": {
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "user_cookie": {"type": "str"},
+                                    },
+                                    "type": "dict",
+                                },
+                                "option": {
+                                    "options": {
+                                        "add_ext": {"type": "bool"},
+                                        "any_options": {"type": "bool"},
+                                        "com_security": {"type": "bool"},
+                                        "dps": {"type": "bool"},
+                                        "encode": {"type": "bool"},
+                                        "eool": {"type": "bool"},
+                                        "ext_ip": {"type": "bool"},
+                                        "ext_security": {"type": "bool"},
+                                        "finn": {"type": "bool"},
+                                        "imitd": {"type": "bool"},
+                                        "lsr": {"type": "bool"},
+                                        "mtup": {"type": "bool"},
+                                        "mtur": {"type": "bool"},
+                                        "no_op": {"type": "bool"},
+                                        "nsapa": {"type": "bool"},
+                                        "record_route": {"type": "bool"},
+                                        "router_alert": {"type": "bool"},
+                                        "sdb": {"type": "bool"},
+                                        "security": {"type": "bool"},
+                                        "ssr": {"type": "bool"},
+                                        "stream_id": {"type": "bool"},
+                                        "timestamp": {"type": "bool"},
+                                        "traceroute": {"type": "bool"},
+                                        "ump": {"type": "bool"},
+                                        "visa": {"type": "bool"},
+                                        "zsu": {"type": "bool"},
+                                    },
+                                    "type": "dict",
+                                },
+                                "precedence": {"type": "int"},
                                 "protocol": {"type": "str"},
                                 "protocol_options": {
-                                    "type": "dict",
                                     "options": {
-                                        "protocol_number": {"type": "int"},
                                         "ahp": {"type": "bool"},
                                         "eigrp": {"type": "bool"},
                                         "esp": {"type": "bool"},
                                         "gre": {"type": "bool"},
                                         "hbh": {"type": "bool"},
                                         "icmp": {
-                                            "type": "dict",
                                             "options": {
                                                 "administratively_prohibited": {
                                                     "type": "bool"
@@ -197,9 +255,9 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                     "type": "bool"
                                                 },
                                             },
+                                            "type": "dict",
                                         },
                                         "igmp": {
-                                            "type": "dict",
                                             "options": {
                                                 "dvmrp": {"type": "bool"},
                                                 "host_query": {"type": "bool"},
@@ -224,18 +282,18 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                     "type": "bool"
                                                 },
                                             },
+                                            "type": "dict",
                                         },
                                         "ip": {"type": "bool"},
-                                        "ipv6": {"type": "bool"},
                                         "ipinip": {"type": "bool"},
+                                        "ipv6": {"type": "bool"},
                                         "nos": {"type": "bool"},
                                         "ospf": {"type": "bool"},
                                         "pcp": {"type": "bool"},
                                         "pim": {"type": "bool"},
+                                        "protocol_number": {"type": "int"},
                                         "sctp": {"type": "bool"},
-                                        "udp": {"type": "bool"},
                                         "tcp": {
-                                            "type": "dict",
                                             "options": {
                                                 "ack": {"type": "bool"},
                                                 "established": {
@@ -247,146 +305,88 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                 "syn": {"type": "bool"},
                                                 "urg": {"type": "bool"},
                                             },
+                                            "type": "dict",
                                         },
+                                        "udp": {"type": "bool"},
                                     },
+                                    "type": "dict",
                                 },
+                                "remarks": {"elements": "str", "type": "list"},
+                                "sequence": {"type": "int"},
                                 "source": {
-                                    "type": "dict",
                                     "options": {
                                         "address": {"type": "str"},
-                                        "wildcard_bits": {"type": "str"},
                                         "any": {"type": "bool"},
                                         "host": {"type": "str"},
                                         "object_group": {"type": "str"},
                                         "port_protocol": {
-                                            "type": "dict",
                                             "options": {
                                                 "eq": {"type": "str"},
                                                 "gt": {"type": "str"},
                                                 "lt": {"type": "str"},
                                                 "neq": {"type": "str"},
                                                 "range": {
-                                                    "type": "dict",
                                                     "options": {
+                                                        "end": {"type": "int"},
                                                         "start": {
                                                             "type": "int"
                                                         },
-                                                        "end": {"type": "int"},
                                                     },
+                                                    "type": "dict",
                                                 },
                                             },
-                                        },
-                                    },
-                                },
-                                "destination": {
-                                    "type": "dict",
-                                    "options": {
-                                        "address": {"type": "str"},
-                                        "wildcard_bits": {"type": "str"},
-                                        "any": {"type": "bool"},
-                                        "host": {"type": "str"},
-                                        "object_group": {"type": "str"},
-                                        "port_protocol": {
                                             "type": "dict",
-                                            "options": {
-                                                "eq": {"type": "str"},
-                                                "gt": {"type": "str"},
-                                                "lt": {"type": "str"},
-                                                "neq": {"type": "str"},
-                                                "range": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "start": {
-                                                            "type": "int"
-                                                        },
-                                                        "end": {"type": "int"},
-                                                    },
-                                                },
-                                            },
                                         },
+                                        "wildcard_bits": {"type": "str"},
                                     },
-                                },
-                                "dscp": {"type": "str"},
-                                "fragments": {"type": "str"},
-                                "log": {
                                     "type": "dict",
-                                    "options": {
-                                        "set": {"type": "bool"},
-                                        "user_cookie": {"type": "str"},
-                                    },
                                 },
-                                "log_input": {
-                                    "type": "dict",
-                                    "options": {
-                                        "set": {"type": "bool"},
-                                        "user_cookie": {"type": "str"},
-                                    },
-                                },
-                                "option": {
-                                    "type": "dict",
-                                    "options": {
-                                        "add_ext": {"type": "bool"},
-                                        "any_options": {"type": "bool"},
-                                        "com_security": {"type": "bool"},
-                                        "dps": {"type": "bool"},
-                                        "encode": {"type": "bool"},
-                                        "eool": {"type": "bool"},
-                                        "ext_ip": {"type": "bool"},
-                                        "ext_security": {"type": "bool"},
-                                        "finn": {"type": "bool"},
-                                        "imitd": {"type": "bool"},
-                                        "lsr": {"type": "bool"},
-                                        "mtup": {"type": "bool"},
-                                        "mtur": {"type": "bool"},
-                                        "no_op": {"type": "bool"},
-                                        "nsapa": {"type": "bool"},
-                                        "record_route": {"type": "bool"},
-                                        "router_alert": {"type": "bool"},
-                                        "sdb": {"type": "bool"},
-                                        "security": {"type": "bool"},
-                                        "ssr": {"type": "bool"},
-                                        "stream_id": {"type": "bool"},
-                                        "timestamp": {"type": "bool"},
-                                        "traceroute": {"type": "bool"},
-                                        "ump": {"type": "bool"},
-                                        "visa": {"type": "bool"},
-                                        "zsu": {"type": "bool"},
-                                    },
-                                },
-                                "precedence": {"type": "int"},
                                 "time_range": {"type": "str"},
                                 "tos": {
-                                    "type": "dict",
                                     "options": {
-                                        "service_value": {"type": "int"},
                                         "max_reliability": {"type": "bool"},
                                         "max_throughput": {"type": "bool"},
                                         "min_delay": {"type": "bool"},
                                         "min_monetary_cost": {"type": "bool"},
                                         "normal": {"type": "bool"},
+                                        "service_value": {"type": "int"},
                                     },
+                                    "type": "dict",
                                 },
                                 "ttl": {
-                                    "type": "dict",
                                     "options": {
                                         "eq": {"type": "int"},
                                         "gt": {"type": "int"},
                                         "lt": {"type": "int"},
                                         "neq": {"type": "int"},
                                         "range": {
-                                            "type": "dict",
                                             "options": {
-                                                "start": {"type": "int"},
                                                 "end": {"type": "int"},
+                                                "start": {"type": "int"},
                                             },
+                                            "type": "dict",
                                         },
                                     },
+                                    "type": "dict",
                                 },
                             },
+                            "type": "list",
                         },
+                        "acl_type": {
+                            "choices": ["extended", "standard"],
+                            "type": "str",
+                        },
+                        "name": {"required": True, "type": "str"},
                     },
+                    "type": "list",
+                },
+                "afi": {
+                    "choices": ["ipv4", "ipv6"],
+                    "required": True,
+                    "type": "str",
                 },
             },
+            "type": "list",
         },
         "running_config": {"type": "str"},
         "state": {

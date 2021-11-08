@@ -48,6 +48,7 @@ class AclsFacts(object):
         return connection.get(
             "show running-config | include ip(v6)* access-list|remark"
         )
+        return None
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
@@ -58,7 +59,7 @@ class AclsFacts(object):
         :returns: facts
         """
         remarks_data = None
-
+        rem_par = dict()
         if not data:
             data = self.get_acl_data(connection)
             remarks_data = self.get_acl_remarks_data(connection)
@@ -68,7 +69,7 @@ class AclsFacts(object):
 
         if (
             remarks_data
-        ):  # remarks being fetched with a different command call to parse
+        ):  # remarks being fetched with a different command, call to parse
             rem_dt = NetworkTemplate(
                 lines=remarks_data.splitlines(), tmplt=AclsTemplate()
             )
@@ -78,27 +79,30 @@ class AclsFacts(object):
 
         temp_v4 = []
         temp_v6 = []
+
         if current.get("acls"):
             for k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4":
                     del v["afi"]
-                    if rem_par.get(k):
+                    if rem_par.get(k):  # add v4 remarks as per acl
                         v["remark"] = rem_par.get(k)
                     temp_v4.append(v)
 
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
-                    if rem_par.get(k):
+                    if rem_par.get(k):  # add v6 remarks as per acl
                         v["remark"] = rem_par.get(k)
                     temp_v6.append(v)
+
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
             temp_v6 = sorted(temp_v6, key=lambda i: str(i["name"]))
+
             for each in temp_v4:
                 aces_ipv4 = each.get("aces")
                 if aces_ipv4:
                     for each_ace in each.get("aces"):
-                        if each["acl_type"] == "standard":
-                            each_ace["source"] = each_ace.pop("std_source")
+                        # if each["acl_type"] == "standard":
+                        #     each_ace["source"] = each_ace.pop("std_source")
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {
@@ -107,14 +111,15 @@ class AclsFacts(object):
                                     ).replace("-", "_"): True
                                 }
                             }
-                        if each_ace.get("std_source") == {}:
-                            del each_ace["std_source"]
+                        # if each_ace.get("std_source") == {}:
+                        #     del each_ace["std_source"]
+
             for each in temp_v6:
                 aces_ipv6 = each.get("aces")
                 if aces_ipv6:
                     for each_ace in each.get("aces"):
-                        if each_ace.get("std_source") == {}:
-                            del each_ace["std_source"]
+                        # if each_ace.get("std_source") == {}:
+                        #     del each_ace["std_source"]
                         if each_ace.get("icmp_igmp_tcp_protocol"):
                             each_ace["protocol_options"] = {
                                 each_ace["protocol"]: {

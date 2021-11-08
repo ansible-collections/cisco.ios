@@ -13,82 +13,204 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
+author:
+  - Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
+description: This module configures and manages the named or numbered ACLs on IOS platforms.
 module: ios_acls
-short_description: ACLs resource module
-description: This module configures and manages the named or numbered ACLs on IOS
-  platforms.
-version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSv Version 15.2 on VIRL
 options:
   config:
     description: A dictionary of ACL options.
-    type: list
     elements: dict
     suboptions:
-      afi:
-        description:
-        - The Address Family Indicator (AFI) for the Access Control Lists (ACL).
-        required: true
-        type: str
-        choices:
-        - ipv4
-        - ipv6
       acls:
         description:
-        - A list of Access Control Lists (ACL).
-        type: list
+          - A list of Access Control Lists (ACL).
         elements: dict
         suboptions:
-          name:
-            description: The name or the number of the ACL.
-            required: true
-            type: str
-          remark:
-            description: The remarks/description of the ACL.
-            type: list
-            elements: str
-          acl_type:
-            description:
-            - ACL type
-            - Note, it's mandatory and required for Named ACL, but for Numbered ACL
-              it's not mandatory.
-            type: str
-            choices:
-            - extended
-            - standard
           aces:
             description: The entries within the ACL.
             elements: dict
-            type: list
             suboptions:
-              grant:
-                description: Specify the action.
+              destination:
+                description: Specify the packet destination.
+                suboptions:
+                  address:
+                    description: Host address to match, or any single host address.
+                    type: str
+                  any:
+                    description: Match any source address.
+                    type: bool
+                  host:
+                    description: A single destination host
+                    type: str
+                  object_group:
+                    description: Destination network object group
+                    type: str
+                  port_protocol:
+                    description:
+                      - Specify the destination port along with protocol.
+                      - Note, Valid with TCP/UDP protocol_options
+                    suboptions:
+                      eq:
+                        description: Match only packets on a given port number.
+                        type: str
+                      gt:
+                        description: Match only packets with a greater port number.
+                        type: str
+                      lt:
+                        description: Match only packets with a lower port number.
+                        type: str
+                      neq:
+                        description: Match only packets not on a given port number.
+                        type: str
+                      range:
+                        description: Port group.
+                        suboptions:
+                          end:
+                            description: Specify the end of the port range.
+                            type: int
+                          start:
+                            description: Specify the start of the port range.
+                            type: int
+                        type: dict
+                    type: dict
+                  wildcard_bits:
+                    description: Destination wildcard bits, valid with IPV4 address.
+                    type: str
+                type: dict
+              dscp:
+                description: Match packets with given dscp value.
                 type: str
-                choices:
-                - permit
-                - deny
-              sequence:
-                description:
-                - Sequence Number for the Access Control Entry(ACE).
-                - Refer to vendor documentation for valid values.
-                type: int
               evaluate:
                 description: Evaluate an access list
                 type: str
+              fragments:
+                description: Check non-initial fragments.
+                type: str
+              grant:
+                choices:
+                  - permit
+                  - deny
+                description: Specify the action.
+                type: str
+              log:
+                description: Log matches against this entry.
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
+                type: dict
+              log_input:
+                description: Log matches against this entry, including input interface.
+                suboptions:
+                  set:
+                    description: Enable Log matches against this entry, including input interface.
+                    type: bool
+                  user_cookie:
+                    description: User defined cookie (max of 64 char)
+                    type: str
+                type: dict
+              option:
+                description:
+                  - Match packets with given IP Options value.
+                  - Valid only for named acls.
+                suboptions:
+                  add_ext:
+                    description: Match packets with Address Extension Option (147).
+                    type: bool
+                  any_options:
+                    description: Match packets with ANY Option.
+                    type: bool
+                  com_security:
+                    description: Match packets with Commercial Security Option (134).
+                    type: bool
+                  dps:
+                    description: Match packets with Dynamic Packet State Option (151).
+                    type: bool
+                  encode:
+                    description: Match packets with Encode Option (15).
+                    type: bool
+                  eool:
+                    description: Match packets with End of Options (0).
+                    type: bool
+                  ext_ip:
+                    description: Match packets with Extended IP Option (145).
+                    type: bool
+                  ext_security:
+                    description: Match packets with Extended Security Option (133).
+                    type: bool
+                  finn:
+                    description: Match packets with Experimental Flow Control Option (205).
+                    type: bool
+                  imitd:
+                    description: Match packets with IMI Traffic Desriptor Option (144).
+                    type: bool
+                  lsr:
+                    description: Match packets with Loose Source Route Option (131).
+                    type: bool
+                  mtup:
+                    description: Match packets with MTU Probe Option (11).
+                    type: bool
+                  mtur:
+                    description: Match packets with MTU Reply Option (12).
+                    type: bool
+                  no_op:
+                    description: Match packets with No Operation Option (1).
+                    type: bool
+                  nsapa:
+                    description: Match packets with NSAP Addresses Option (150).
+                    type: bool
+                  record_route:
+                    description: Match packets with Record Route Option (7).
+                    type: bool
+                  router_alert:
+                    description: Match packets with Router Alert Option (148).
+                    type: bool
+                  sdb:
+                    description: Match packets with Selective Directed Broadcast Option (149).
+                    type: bool
+                  security:
+                    description: Match packets with Basic Security Option (130).
+                    type: bool
+                  ssr:
+                    description: Match packets with Strict Source Routing Option (137).
+                    type: bool
+                  stream_id:
+                    description: Match packets with Stream ID Option (136).
+                    type: bool
+                  timestamp:
+                    description: Match packets with Time Stamp Option (68).
+                    type: bool
+                  traceroute:
+                    description: Match packets with Trace Route Option (82).
+                    type: bool
+                  ump:
+                    description: Match packets with Upstream Multicast Packet Option (152).
+                    type: bool
+                  visa:
+                    description: Match packets with Experimental Access Control Option (142).
+                    type: bool
+                  zsu:
+                    description: Match packets with Experimental Measurement Option (10).
+                    type: bool
+                type: dict
+              precedence:
+                description: Match packets with given precedence value.
+                type: int
               protocol:
                 description:
-                - Specify the protocol to match.
-                - Refer to vendor documentation for valid values.
+                  - Specify the protocol to match.
+                  - Refer to vendor documentation for valid values.
                 type: str
               protocol_options:
                 description: protocol type.
-                type: dict
                 suboptions:
-                  protocol_number:
-                    description: An IP protocol number
-                    type: int
                   ahp:
                     description: Authentication Header Protocol.
                     type: bool
@@ -106,7 +228,6 @@ options:
                     type: bool
                   icmp:
                     description: Internet Control Message Protocol.
-                    type: dict
                     suboptions:
                       administratively_prohibited:
                         description: Administratively prohibited
@@ -240,9 +361,9 @@ options:
                       unreachable:
                         description: All unreachables
                         type: bool
+                    type: dict
                   igmp:
                     description: Internet Gateway Message Protocol.
-                    type: dict
                     suboptions:
                       dvmrp:
                         description: Distance Vector Multicast Routing Protocol(2)
@@ -274,14 +395,15 @@ options:
                       v3host_report:
                         description: IGMPv3 Membership Report(9)
                         type: bool
+                    type: dict
                   ip:
                     description: Any Internet Protocol.
                     type: bool
-                  ipv6:
-                    description: Any IPv6.
-                    type: bool
                   ipinip:
                     description: IP in IP tunneling.
+                    type: bool
+                  ipv6:
+                    description: Any IPv6.
                     type: bool
                   nos:
                     description: KA9Q NOS compatible IP over IP tunneling.
@@ -295,15 +417,14 @@ options:
                   pim:
                     description: Protocol Independent Multicast.
                     type: bool
+                  protocol_number:
+                    description: An IP protocol number
+                    type: int
                   sctp:
                     description: Stream Control Transmission Protocol.
                     type: bool
-                  udp:
-                    description: User Datagram Protocol.
-                    type: bool
                   tcp:
                     description: Match TCP packet flags
-                    type: dict
                     suboptions:
                       ack:
                         description: Match on the ACK bit
@@ -326,15 +447,25 @@ options:
                       urg:
                         description: Match on the URG bit
                         type: bool
+                    type: dict
+                  udp:
+                    description: User Datagram Protocol.
+                    type: bool
+                type: dict
+              remarks:
+                description: The remarks/description of the ACL.
+                elements: str
+                type: list
+              sequence:
+                description:
+                  - Sequence Number for the Access Control Entry(ACE).
+                  - Refer to vendor documentation for valid values.
+                type: int
               source:
                 description: Specify the packet source.
-                type: dict
                 suboptions:
                   address:
                     description: Source network address.
-                    type: str
-                  wildcard_bits:
-                    description: Source wildcard bits, valid with IPV4 address.
                     type: str
                   any:
                     description: Match any source address.
@@ -347,9 +478,8 @@ options:
                     type: str
                   port_protocol:
                     description:
-                    - Specify the source port along with protocol.
-                    - Note, Valid with TCP/UDP protocol_options
-                    type: dict
+                      - Specify the source port along with protocol.
+                      - Note, Valid with TCP/UDP protocol_options
                     suboptions:
                       eq:
                         description: Match only packets on a given port number.
@@ -365,191 +495,27 @@ options:
                         type: str
                       range:
                         description: Port group.
-                        type: dict
                         suboptions:
-                          start:
-                            description: Specify the start of the port range.
-                            type: int
                           end:
                             description: Specify the end of the port range.
                             type: int
-              destination:
-                description: Specify the packet destination.
-                type: dict
-                suboptions:
-                  address:
-                    description: Host address to match, or any single host address.
-                    type: str
+                          start:
+                            description: Specify the start of the port range.
+                            type: int
+                        type: dict
+                    type: dict
                   wildcard_bits:
-                    description: Destination wildcard bits, valid with IPV4 address.
+                    description: Source wildcard bits, valid with IPV4 address.
                     type: str
-                  any:
-                    description: Match any source address.
-                    type: bool
-                  host:
-                    description: A single destination host
-                    type: str
-                  object_group:
-                    description: Destination network object group
-                    type: str
-                  port_protocol:
-                    description:
-                    - Specify the destination port along with protocol.
-                    - Note, Valid with TCP/UDP protocol_options
-                    type: dict
-                    suboptions:
-                      eq:
-                        description: Match only packets on a given port number.
-                        type: str
-                      gt:
-                        description: Match only packets with a greater port number.
-                        type: str
-                      lt:
-                        description: Match only packets with a lower port number.
-                        type: str
-                      neq:
-                        description: Match only packets not on a given port number.
-                        type: str
-                      range:
-                        description: Port group.
-                        type: dict
-                        suboptions:
-                          start:
-                            description: Specify the start of the port range.
-                            type: int
-                          end:
-                            description: Specify the end of the port range.
-                            type: int
-              dscp:
-                description: Match packets with given dscp value.
-                type: str
-              fragments:
-                description: Check non-initial fragments.
-                type: str
-              log:
-                description: Log matches against this entry.
                 type: dict
-                suboptions:
-                  set:
-                    description: Enable Log matches against this entry
-                    type: bool
-                  user_cookie:
-                    description: User defined cookie (max of 64 char)
-                    type: str
-              log_input:
-                description: Log matches against this entry, including input interface.
-                type: dict
-                suboptions:
-                  set:
-                    description: Enable Log matches against this entry, including input interface.
-                    type: bool
-                  user_cookie:
-                    description: User defined cookie (max of 64 char)
-                    type: str
-              option:
-                description:
-                - Match packets with given IP Options value.
-                - Valid only for named acls.
-                type: dict
-                suboptions:
-                  add_ext:
-                    description: Match packets with Address Extension Option (147).
-                    type: bool
-                  any_options:
-                    description: Match packets with ANY Option.
-                    type: bool
-                  com_security:
-                    description: Match packets with Commercial Security Option (134).
-                    type: bool
-                  dps:
-                    description: Match packets with Dynamic Packet State Option (151).
-                    type: bool
-                  encode:
-                    description: Match packets with Encode Option (15).
-                    type: bool
-                  eool:
-                    description: Match packets with End of Options (0).
-                    type: bool
-                  ext_ip:
-                    description: Match packets with Extended IP Option (145).
-                    type: bool
-                  ext_security:
-                    description: Match packets with Extended Security Option (133).
-                    type: bool
-                  finn:
-                    description: Match packets with Experimental Flow Control Option
-                      (205).
-                    type: bool
-                  imitd:
-                    description: Match packets with IMI Traffic Desriptor Option (144).
-                    type: bool
-                  lsr:
-                    description: Match packets with Loose Source Route Option (131).
-                    type: bool
-                  mtup:
-                    description: Match packets with MTU Probe Option (11).
-                    type: bool
-                  mtur:
-                    description: Match packets with MTU Reply Option (12).
-                    type: bool
-                  no_op:
-                    description: Match packets with No Operation Option (1).
-                    type: bool
-                  nsapa:
-                    description: Match packets with NSAP Addresses Option (150).
-                    type: bool
-                  record_route:
-                    description: Match packets with Record Route Option (7).
-                    type: bool
-                  router_alert:
-                    description: Match packets with Router Alert Option (148).
-                    type: bool
-                  sdb:
-                    description: Match packets with Selective Directed Broadcast Option
-                      (149).
-                    type: bool
-                  security:
-                    description: Match packets with Basic Security Option (130).
-                    type: bool
-                  ssr:
-                    description: Match packets with Strict Source Routing Option (137).
-                    type: bool
-                  stream_id:
-                    description: Match packets with Stream ID Option (136).
-                    type: bool
-                  timestamp:
-                    description: Match packets with Time Stamp Option (68).
-                    type: bool
-                  traceroute:
-                    description: Match packets with Trace Route Option (82).
-                    type: bool
-                  ump:
-                    description: Match packets with Upstream Multicast Packet Option
-                      (152).
-                    type: bool
-                  visa:
-                    description: Match packets with Experimental Access Control Option
-                      (142).
-                    type: bool
-                  zsu:
-                    description: Match packets with Experimental Measurement Option
-                      (10).
-                    type: bool
-              precedence:
-                description: Match packets with given precedence value.
-                type: int
               time_range:
                 description: Specify a time-range.
                 type: str
               tos:
                 description:
-                - Match packets with given TOS value.
-                - Note, DSCP and TOS are mutually exclusive
-                type: dict
+                  - Match packets with given TOS value.
+                  - Note, DSCP and TOS are mutually exclusive
                 suboptions:
-                  service_value:
-                    description: Type of service value
-                    type: int
                   max_reliability:
                     description: Match packets with max reliable TOS (2).
                     type: bool
@@ -565,9 +531,12 @@ options:
                   normal:
                     description: Match packets with normal TOS (0).
                     type: bool
+                  service_value:
+                    description: Type of service value
+                    type: int
+                type: dict
               ttl:
                 description: Match packets with given TTL value.
-                type: dict
                 suboptions:
                   eq:
                     description: Match only packets on a given TTL number.
@@ -583,56 +552,64 @@ options:
                     type: int
                   range:
                     description: Match only packets in the range of TTLs.
-                    type: dict
                     suboptions:
-                      start:
-                        description: Specify the start of the port range.
-                        type: int
                       end:
                         description: Specify the end of the port range.
                         type: int
+                      start:
+                        description: Specify the start of the port range.
+                        type: int
+                    type: dict
+                type: dict
+            type: list
+          acl_type:
+            choices:
+              - extended
+              - standard
+            description:
+              - ACL type
+              - Note, it's mandatory and required for Named ACL, but for Numbered ACL it's not mandatory.
+            type: str
+          name:
+            description: The name or the number of the ACL.
+            required: true
+            type: str
+        type: list
+      afi:
+        choices:
+          - ipv4
+          - ipv6
+        description:
+          - The Address Family Indicator (AFI) for the Access Control Lists (ACL).
+        required: true
+        type: str
+    type: list
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS
-        device by executing the command B(sh access-list).
-      - The state I(parsed) reads the configuration from C(running_config)
-        option and transforms it into Ansible structured data as per the
-        resource module's argspec and the value is then returned in the
-        I(parsed) key within the result.
+      - The value of this option should be the output received from the IOS device by executing the command B(sh access-list).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - rendered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - rendered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
-      - The states I(merged) is the default state which merges the want and have config, but
-        for ACL module as the IOS platform doesn't allow update of ACE over an pre-existing ACE
-        sequence in ACL, same way ACLs resource module will error out for respective scenario
-        and only addition of new ACE over new sequence will be allowed with merge state.
-      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
-        on the device.
-      - The state I(rendered) will transform the configuration in C(config) option to
-        platform specific CLI commands which will be returned in the I(rendered) key
-        within the result. For state I(rendered) active connection to remote host is
-        not required.
-      - The state I(gathered) will fetch the running configuration from device and transform
-        it into structured data in the format as per the resource module argspec and
-        the value is returned in the I(gathered) key within the result.
-      - The state I(parsed) reads the configuration from C(running_config) option and
-        transforms it into JSON format as per the resource module parameters and the
-        value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
-        connection to remote host is not required.
+      - The states I(merged) is the default state which merges the want and have config, but for ACL module as the IOS platform doesn't allow update of ACE over an pre-existing ACE sequence in ACL, same way ACLs resource module will error out for respective scenario and only addition of new ACE over new sequence will be allowed with merge state.
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any change on the device.
+      - The state I(rendered) will transform the configuration in C(config) option to platform specific CLI commands which will be returned in the I(rendered) key within the result. For state I(rendered) active connection to remote host is not required.
+      - The state I(gathered) will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms it into JSON format as per the resource module parameters and the value is returned in the I(parsed) key within the result. The value of C(running_config) option should be the same format as the output of command I(show running-config | include ip route|ipv6 route) executed on device. For state I(parsed) active connection to remote host is not required.
     type: str
+short_description: ACLs resource module
+version_added: 1.0.0
 """
 
 EXAMPLES = """
@@ -1457,6 +1434,53 @@ parsed:
     module argspec.
 """
 
+RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: list
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+"""
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
@@ -1464,11 +1488,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import (
     Acls,
 )
-
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():
