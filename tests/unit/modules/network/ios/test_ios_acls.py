@@ -68,7 +68,14 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_data"
         )
+        self.mock_execute_show_rem_command = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
+            "AclsFacts.get_acl_remarks_data"
+        )
         self.execute_show_command = self.mock_execute_show_command.start()
+        self.execute_show_rem_command = (
+            self.mock_execute_show_rem_command.start()
+        )
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -78,14 +85,17 @@ class TestIosAclsModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
+        self.mock_execute_show_rem_command.stop()
 
     def load_fixtures(self, commands=None, transport="cli"):
         def load_from_file(*args, **kwargs):
             return load_fixture("ios_acls_config.cfg")
 
+        self.execute_show_rem_command.side_effect = None
         self.execute_show_command.side_effect = load_from_file
 
     def test_ios_acls_merged(self):
+        # self.execute_show_rem_command.side_effect = None
         set_module_args(
             dict(
                 config=[
@@ -168,6 +178,7 @@ class TestIosAclsModule(TestIosModule):
             )
         )
         result = self.execute_module(changed=True)
+
         commands = [
             "ip access-list standard std_acl",
             "deny 192.0.2.0 0.0.0.255",
@@ -601,6 +612,7 @@ class TestIosAclsModule(TestIosModule):
                         acls=[
                             dict(
                                 name="110",
+                                acl_type="extended",
                                 aces=[
                                     dict(
                                         grant="deny",

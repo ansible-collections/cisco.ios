@@ -155,7 +155,7 @@ class AclsTemplate(NetworkTemplate):
 
     PARSERS = [
         {
-            "name": "name",
+            "name": "acls_name",
             "getval": re.compile(
                 r"""^(?P<acl_type>Standard|Extended)*
                     \s*(?P<afi>IP|IPv6)*
@@ -200,6 +200,7 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
+            "setval": "remark {{ remarks }}",
             "result": {"{{ acl_name_r|d() }}": ["{{ remarks }}"]},
         },
         {
