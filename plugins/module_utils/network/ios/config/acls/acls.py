@@ -105,9 +105,7 @@ class Acls(ResourceModule):
                 self._compare(want=want, have=haved.pop(k, {}))
 
         if self.state in ["replaced", "overridden"] and self.commands:
-            self.commands = self._rearrange_replace_overridden_config_cmd(
-                self.commands
-            )
+            self.commands = self._rearrange_replace_overridden_config_cmd(self.commands)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -126,89 +124,110 @@ class Acls(ResourceModule):
                         cmd_len = len(self.commands)
                         have_acl = have["acls"].pop(acl_name, {})
                         if have_acl:
-                            for key, val in acl_data.get("aces").items():
-                                have_ace = have_acl["aces"].pop(key, {})
-                                if val.get("protocol_options"):
-                                    if not val.get("protocol") and (
-                                        list(val.get("protocol_options"))[0]
+                            for want_ace_name, want_ace in acl_data.get("aces").items():
+                                have_ace = have_acl["aces"].pop(want_ace_name, {})
+
+                                if want_ace.get("protocol_options"):
+                                    if not want_ace.get("protocol") and (
+                                        list(want_ace.get("protocol_options"))[0]
                                         == have_ace.get("protocol")
                                     ):
                                         have_ace.pop("protocol")
-                                if have_ace and val != have_ace:
+
+                                if have_ace and want_ace != have_ace:
                                     if self.state == "merged" and have_ace.get(
                                         "sequence"
-                                    ) == val.get("sequence"):
+                                    ) == want_ace.get(
+                                        "sequence"
+                                    ):  # fail if merged and trying update operation
                                         self._module.fail_json(
                                             "Cannot update existing sequence {0} of ACLs {1} with state merged.".format(
-                                                val.get("sequence"), acl_name
+                                                want_ace.get("sequence"), acl_name
                                             )
                                             + " Please use state replaced or overridden."
                                         )
-                                    self.compare(
-                                        parsers="aces",
-                                        want=dict(),
-                                        have={"aces": have_ace, "afi": afi},
-                                    )
-                                    self.compare(
-                                        parsers="aces",
-                                        want={
-                                            "aces": val,
-                                            "afi": afi,
-                                            "acl_type": acl_data.get(
-                                                "acl_type"
-                                            ),
-                                        },
-                                        have={"aces": have_ace, "afi": afi},
-                                    )
+                                    if want_ace.get("remarks"):
+                                        for remark in want_ace.get("remarks"):
+                                            if remark not in have_ace.get(
+                                                want_ace_name, {}
+                                            ):  # if remark present and more to add
+                                                self.addcmd(
+                                                    {"remarks": remark}, "remarks"
+                                                )
+                                    else:
+                                        self.compare(
+                                            parsers="aces",
+                                            want=dict(),
+                                            have={"aces": have_ace, "afi": afi},
+                                        )
+                                        self.compare(
+                                            parsers="aces",
+                                            want={
+                                                "aces": want_ace,
+                                                "afi": afi,
+                                                "acl_type": acl_data.get("acl_type"),
+                                            },
+                                            have={"aces": have_ace, "afi": afi},
+                                        )
                                 elif not have_ace:
-                                    self.compare(
-                                        parsers="aces",
-                                        want={"aces": val, "afi": afi},
-                                        have=dict(),
-                                    )
-                        if (
-                            self.state == "overridden"
-                            or self.state == "replaced"
-                        ):
+                                    if want_ace.get("remarks"):
+                                        for remark in want_ace.get("remarks"):
+                                            self.addcmd({"remarks": remark}, "remarks")
+                                    else:
+                                        self.compare(
+                                            parsers="aces",
+                                            want={"aces": want_ace, "afi": afi},
+                                            have=dict(),
+                                        )
+
+                        if self.state == "overridden" or self.state == "replaced":
                             if have_acl.get("aces"):
-                                for key, val in have_acl["aces"].items():
-                                    self.compare(
-                                        parsers="aces",
-                                        want=dict(),
-                                        have={"aces": val, "afi": afi},
-                                    )
+                                for h_key, h_val in have_acl["aces"].items():
+                                    if h_val.get("remarks"):
+                                        for remark in h_val.get("remarks"):
+                                            self.addcmd(
+                                                {"remarks": remark}, "remarks", True
+                                            )
+                                    else:
+                                        self.compare(
+                                            parsers="aces",
+                                            want=dict(),
+                                            have={"aces": h_val, "afi": afi},
+                                        )
+
                         if cmd_len != len(self.commands):
-                            command = self.acl_name_config_cmd(
+                            command = self.acl_name_cmd(
                                 name=acl_name,
                                 afi=afi,
                                 acl_type=acl_data.get("acl_type"),
-                            )
+                            )  # generate & add acl name at proper position
                             self.commands.insert(cmd_len, command)
+
                     else:  # for new acl
                         cmd_len = len(self.commands)
-                        for k, val in acl_data.get("aces").items():
-                            if val.get("remarks"):
-                                for remark in val.get("remarks"):
+                        for k, w_val in acl_data.get("aces").items():
+                            if w_val.get("remarks"):
+                                for remark in w_val.get("remarks"):
                                     self.addcmd({"remarks": remark}, "remarks")
                             else:
                                 self.compare(
                                     parsers="aces",
                                     want={
-                                        "aces": val,
+                                        "aces": w_val,
                                         "afi": afi,
                                         "acl_type": acl_data.get("acl_type"),
                                     },
                                     have=dict(),
                                 )
                         if cmd_len != self.commands:
-                            command = self.acl_name_config_cmd(
+                            command = self.acl_name_cmd(
                                 name=acl_name,
                                 afi=afi,
                                 acl_type=acl_data.get("acl_type"),
-                            )
+                            )  # generate & add acl name at proper position
                             self.commands.insert(cmd_len, command)
 
-    def acl_name_config_cmd(self, name, afi, acl_type):
+    def acl_name_cmd(self, name, afi, acl_type):
         if afi == "ipv4":
             if not acl_type:
                 try:
@@ -263,12 +282,8 @@ class Acls(ResourceModule):
                     for acl in each.get("acls"):  # check each acl for aces
                         temp_aces = {}
                         if acl.get("aces"):
-                            temp_rem = (
-                                []
-                            )  # holds remarks if defined within a ace
-                            for ace in acl.get(
-                                "aces"
-                            ):  # each ace turned to dict
+                            temp_rem = []  # holds remarks if defined within a ace
+                            for ace in acl.get("aces"):  # each ace turned to dict
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
                                         if ks not in [
@@ -289,21 +304,15 @@ class Acls(ResourceModule):
                                     temp_rem.extend(ace.pop("remarks"))
 
                                 if ace.get("sequence"):
-                                    temp_aces.update(
-                                        {ace.get("sequence"): ace}
-                                    )
+                                    temp_aces.update({ace.get("sequence"): ace})
                                 elif ace:
                                     count += 1
                                     temp_aces.update({"_" + str(count): ace})
 
                             if temp_rem:  # add remarks to the temp ace
-                                temp_aces.update(
-                                    {en_name: {"remarks": temp_rem}}
-                                )
+                                temp_aces.update({en_name: {"remarks": temp_rem}})
 
-                        if acl.get(
-                            "acl_type"
-                        ):  # update acl dict with req info
+                        if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
                                 {
                                     acl.get("name"): {
@@ -313,9 +322,7 @@ class Acls(ResourceModule):
                                 }
                             )
                         else:  # if no acl type then here eg: ipv6
-                            temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces}}
-                            )
+                            temp_acls.update({acl.get("name"): {"aces": temp_aces}})
                 each["acls"] = temp_acls
                 temp.update({each["afi"]: {"acls": temp_acls}})
             return temp
