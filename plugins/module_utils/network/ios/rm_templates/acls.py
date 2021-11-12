@@ -219,7 +219,7 @@ class AclsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""\s*(?P<sequence>\d+)*
                         \s(?P<grant>deny|permit)?
-                        (\s(?P<address>(?!ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp)\S+|\S+,))?
+                        (\s+(?P<address>(?!ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp)\S+|\S+,))?
                         (\s*(?P<any>any))?
                         (\shost\s(?P<host>\S+))?
                         (,\swildcard\sbits\s(?P<wildcard>\S+))?
