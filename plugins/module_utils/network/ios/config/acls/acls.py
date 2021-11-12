@@ -186,7 +186,7 @@ class Acls(ResourceModule):
                             self.commands.insert(cmd_len, command)
                     else:  # for new acl
                         cmd_len = len(self.commands)
-                        for _, val in acl_data.get("aces").items():
+                        for k, val in acl_data.get("aces").items():
                             if val.get("remarks"):
                                 for remark in val.get("remarks"):
                                     self.addcmd({"remarks": remark}, "remarks")

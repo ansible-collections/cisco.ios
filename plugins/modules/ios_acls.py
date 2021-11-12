@@ -587,8 +587,11 @@ options:
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device by executing the command B(sh access-list).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result.
+      - The value of this option should be the output received from
+        the IOS device by executing the command B(sh access-list).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+          and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -602,11 +605,26 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
-      - The states I(merged) is the default state which merges the want and have config, but for ACL module as the IOS platform doesn't allow update of ACE over an pre-existing ACE sequence in ACL, same way ACLs resource module will error out for respective scenario and only addition of new ACE over new sequence will be allowed with merge state.
-      - The states I(rendered), I(gathered) and I(parsed) does not perform any change on the device.
-      - The state I(rendered) will transform the configuration in C(config) option to platform specific CLI commands which will be returned in the I(rendered) key within the result. For state I(rendered) active connection to remote host is not required.
-      - The state I(gathered) will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the I(gathered) key within the result.
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms it into JSON format as per the resource module parameters and the value is returned in the I(parsed) key within the result. The value of C(running_config) option should be the same format as the output of command I(show running-config | include ip route|ipv6 route) executed on device. For state I(parsed) active connection to remote host is not required.
+      - The states I(merged) is the default state which merges the want and
+        have config, but for ACL module as the IOS platform doesn't allow
+        update of ACE over an pre-existing ACE sequence in ACL, same way ACLs
+        resource module will error out for respective scenario and only addition
+        of new ACE over new sequence will be allowed with merge state.
+      - The states I(rendered), I(gathered) and I(parsed) does not perform any
+        change on the device.
+      - The state I(rendered) will transform the configuration in C(config)
+        option to platform specific CLI commands which will be returned in
+        the I(rendered) key within the result. For state I(rendered) active
+        connection to remote host is not required.
+      - The state I(gathered) will fetch the running configuration from device
+        and transform it into structured data in the format as per the resource
+        module argspec and the value is returned in the I(gathered) key within the result.
+      - The state I(parsed) reads the configuration from C(running_config) option
+        and transforms it into JSON format as per the resource module parameters
+        and the value is returned in the I(parsed) key within the result. The
+        value of C(running_config) option should be the same format as the output
+        of command I(show running-config | include ip route|ipv6 route) executed on
+        device. For state I(parsed) active connection to remote host is not required.
     type: str
 short_description: ACLs resource module
 version_added: 1.0.0
