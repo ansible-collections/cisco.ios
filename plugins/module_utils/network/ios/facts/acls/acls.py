@@ -41,13 +41,14 @@ class AclsFacts(object):
 
     def get_acl_data(self, connection):
         # Get the access-lists from the ios router
-        return connection.get("sh access-list")
-
-    def get_acl_remarks_data(self, connection):
         # Get the remarks on access-lists from the ios router
-        return connection.get(
+        _acl_data = connection.get("sh access-list")
+        _remarks_data = connection.get(
             "show running-config | include ip(v6)* access-list|remark"
         )
+        if _remarks_data:
+            _acl_data += "\n" + _remarks_data
+        return _acl_data
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
@@ -57,24 +58,12 @@ class AclsFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        remarks_data = None
-        rem_par = dict()
+
         if not data:
             data = self.get_acl_data(connection)
-            remarks_data = self.get_acl_remarks_data(connection)
 
         rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
         current = rmmod.parse()
-
-        if (
-            remarks_data
-        ):  # remarks being fetched with a different command, call to parse
-            rem_dt = NetworkTemplate(
-                lines=remarks_data.splitlines(), tmplt=AclsTemplate()
-            )
-            rem_par = rem_dt.parse()
-            if rem_par.get("acls"):
-                del rem_par["acls"]
 
         temp_v4 = []
         temp_v6 = []
@@ -83,22 +72,10 @@ class AclsFacts(object):
             for k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4":
                     del v["afi"]
-                    if rem_par.get(k) and v.get(
-                        "aces"
-                    ):  # add v4 remarks as per acl
-                        v["aces"].append({"remarks": rem_par.get(k)})
-                    elif rem_par.get(k) and not v.get("aces"):
-                        v["aces"] = [{"remarks": rem_par.get(k)}]
                     temp_v4.append(v)
 
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
-                    if rem_par.get(k) and v.get(
-                        "aces"
-                    ):  # add v6 remarks as per acl
-                        v["aces"].append({"remarks": rem_par.get(k)})
-                    elif rem_par.get(k) and not v.get("aces"):
-                        v["aces"] = [{"remarks": rem_par.get(k)}]
                     temp_v6.append(v)
 
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
