@@ -73,7 +73,7 @@
                     ttl:
                       eq: 10
         state: overridden
-      check_mode: true
+
     - assert:
         that:
           - result.commands|length == 9

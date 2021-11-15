@@ -1452,53 +1452,6 @@ parsed:
     module argspec.
 """
 
-RETURN = """
-before:
-  description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-after:
-  description: The resulting configuration after module execution.
-  returned: when changed
-  type: dict
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-commands:
-  description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: list
-  sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
-rendered:
-  description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when I(state) is C(rendered)
-  type: list
-  sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
-gathered:
-  description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when I(state) is C(gathered)
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-parsed:
-  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
-  returned: when I(state) is C(parsed)
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-"""
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
@@ -1506,11 +1459,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import (
     Acls,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():

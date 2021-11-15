@@ -42,6 +42,8 @@ class AclsFacts(object):
     def get_acl_data(self, connection):
         # Get the access-lists from the ios router
         # Get the remarks on access-lists from the ios router
+        # alternate command 'sh run partition access-list' but has a lot of ordering issues
+        # and incomplete ACLs are not viewed correctly
         _acl_data = connection.get("sh access-list")
         _remarks_data = connection.get(
             "show running-config | include ip(v6)* access-list|remark"
@@ -73,7 +75,6 @@ class AclsFacts(object):
                 if v.get("afi") == "ipv4":
                     del v["afi"]
                     temp_v4.append(v)
-
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
                     temp_v6.append(v)
@@ -93,6 +94,12 @@ class AclsFacts(object):
                                     ).replace("-", "_"): True
                                 }
                             }
+                        if each_ace.get("protocol_number"):
+                            each_ace["protocol_options"] = {
+                                "protocol_number": each_ace.pop(
+                                    "protocol_number"
+                                )
+                            }
 
             for each in temp_v6:
                 aces_ipv6 = each.get("aces")
@@ -105,6 +112,12 @@ class AclsFacts(object):
                                         "icmp_igmp_tcp_protocol"
                                     ).replace("-", "_"): True
                                 }
+                            }
+                        if each_ace.get("protocol_number"):
+                            each_ace["protocol_options"] = {
+                                "protocol_number": each_ace.pop(
+                                    "protocol_number"
+                                )
                             }
 
         objs = []
