@@ -82,43 +82,30 @@ class AclsFacts(object):
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
             temp_v6 = sorted(temp_v6, key=lambda i: str(i["name"]))
 
+            def process_protocol_options(each):
+                for each_ace in each.get("aces"):
+                    if each_ace.get("icmp_igmp_tcp_protocol"):
+                        each_ace["protocol_options"] = {
+                            each_ace["protocol"]: {
+                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
+                                    "-", "_"
+                                ): True
+                            }
+                        }
+                    if each_ace.get("protocol_number"):
+                        each_ace["protocol_options"] = {
+                            "protocol_number": each_ace.pop("protocol_number")
+                        }
+
             for each in temp_v4:
                 aces_ipv4 = each.get("aces")
                 if aces_ipv4:
-                    for each_ace in each.get("aces"):
-                        if each_ace.get("icmp_igmp_tcp_protocol"):
-                            each_ace["protocol_options"] = {
-                                each_ace["protocol"]: {
-                                    each_ace.pop(
-                                        "icmp_igmp_tcp_protocol"
-                                    ).replace("-", "_"): True
-                                }
-                            }
-                        if each_ace.get("protocol_number"):
-                            each_ace["protocol_options"] = {
-                                "protocol_number": each_ace.pop(
-                                    "protocol_number"
-                                )
-                            }
+                    process_protocol_options(each)
 
             for each in temp_v6:
                 aces_ipv6 = each.get("aces")
                 if aces_ipv6:
-                    for each_ace in each.get("aces"):
-                        if each_ace.get("icmp_igmp_tcp_protocol"):
-                            each_ace["protocol_options"] = {
-                                each_ace["protocol"]: {
-                                    each_ace.pop(
-                                        "icmp_igmp_tcp_protocol"
-                                    ).replace("-", "_"): True
-                                }
-                            }
-                        if each_ace.get("protocol_number"):
-                            each_ace["protocol_options"] = {
-                                "protocol_number": each_ace.pop(
-                                    "protocol_number"
-                                )
-                            }
+                    process_protocol_options(each)
 
         objs = []
         if temp_v4:

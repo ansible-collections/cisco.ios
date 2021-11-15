@@ -20,6 +20,7 @@ description: This module configures and manages the named or numbered ACLs on IO
 module: ios_acls
 notes:
   - Tested against Cisco IOSv Version 15.2 on VIRL
+  - Module behavior is not idempotent when sequence for aces are not mentioned
 options:
   config:
     description: A dictionary of ACL options.
@@ -719,6 +720,9 @@ EXAMPLES = """
             eq: 10
       - name: 123
         aces:
+        - remarks:
+          - "remarks for extended ACL 1"
+          - "check ACL"
         - grant: deny
           protocol_options:
             tcp:
@@ -781,6 +785,8 @@ EXAMPLES = """
 # - ip access-list extended 123
 # - deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
 # - deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+# - remark remarks for extended ACL 1
+# - remark check ACL
 # - ipv6 access-list R1_TRAFFIC
 # - deny tcp any eq www any eq telnet ack dscp af11
 
