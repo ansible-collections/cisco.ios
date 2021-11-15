@@ -189,8 +189,10 @@ class AclsTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "compval": "name",
-            "setval": "",
-            "result": {},
+            "setval": "ip access-list",
+            "result": {
+                "acls": {"{{ acl_name_r|d() }}": {"name": "{{ acl_name_r }}"}}
+            },
             "shared": True,
         },
         {
@@ -202,7 +204,6 @@ class AclsTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "remark {{ remarks }}",
-            # "result": {"{{ acl_name_r|d() }}": ["{{ remarks }}"]},
             "result": {
                 "acls": {
                     "{{ acl_name_r|d() }}": {
@@ -221,8 +222,7 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "",
-            # "result": {"{{ acl_name_linear|d() }}": ["{{ remarks }}"]},
+            "setval": "remark {{ remarks }}",
             "result": {
                 "acls": {
                     "{{ acl_name_linear|d() }}": {
