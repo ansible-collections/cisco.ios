@@ -190,9 +190,7 @@ class AclsTemplate(NetworkTemplate):
             ),
             "compval": "name",
             "setval": "ip access-list",
-            "result": {
-                "acls": {"{{ acl_name_r|d() }}": {"name": "{{ acl_name_r }}"}}
-            },
+            "result": {},
             "shared": True,
         },
         {
@@ -272,7 +270,7 @@ class AclsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""\s*(?P<sequence>\d+)*
                         \s*(?P<grant>deny|permit)*
-                        (\s(?P<evaluate>evaluate\s\S+))?
+                        (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp))?
                         (\s(?P<protocol_num>\d+))?
                         (\s(?P<source>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
@@ -307,10 +305,10 @@ class AclsTemplate(NetworkTemplate):
                                 "sequence": "{% if sequence is defined %}{{ sequence \
                                     }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6 }}{% endif %}",
                                 "grant": "{{ grant }}",
-                                "evaluate": "{{ evaluate.split(' ')[1] if evaluate is defined }}",
+                                "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol if icmp_igmp_tcp_protocol is defined }}",
+                                "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
                                     "address": "{% if source is defined and '.' in source and 'host' not in source %}{{\
                                         source.split(' ')[0] }}{% elif source is defined and '::' in source %}{{ source }}{% endif %}",
@@ -349,7 +347,7 @@ class AclsTemplate(NetworkTemplate):
                                     "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
                                 },
                                 "option": {
-                                    "{{ option if option is defined }}": "{{ True if option is defined }}"
+                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}"
                                 },
                                 "precedence": "{{ precedence }}",
                                 "time_range": "{{ time_range }}",
