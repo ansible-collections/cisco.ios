@@ -43,9 +43,7 @@ def tmplt_host(config_data):
             session_id = verb.get("session_id")
             changed = True
             if session_id.get("text"):
-                cmd += " session-id string {text}".format(
-                    text=session_id["text"]
-                )
+                cmd += " session-id string {text}".format(text=session_id["text"])
             elif session_id.get("tag"):
                 cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
@@ -106,9 +104,7 @@ def tmplt_host_transport(config_data):
             if verb.get("session_id"):
                 session_id = verb.get("session_id")
                 if session_id.get("text"):
-                    cmd += " session-id string {text}".format(
-                        text=session_id["text"]
-                    )
+                    cmd += " session-id string {text}".format(text=session_id["text"])
                 elif session_id.get("tag"):
                     cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
@@ -183,9 +179,7 @@ def tmplt_message_counter(verb):
     cmd = "logging message-counter"
 
     if verb.get("message_counter"):
-        cmd += " {message_counter}".format(
-            message_counter=verb["message_counter"]
-        )
+        cmd += " {message_counter}".format(message_counter=verb["message_counter"])
     return cmd
 
 
@@ -236,9 +230,7 @@ def tmplt_common(verb, cmd):
         if verb.get("severity"):
             cmd += " {severity}".format(severity=verb["severity"])
         if verb.get("except_severity"):
-            cmd += " except {exceptSev}".format(
-                exceptSev=verb["except_severity"]
-            )
+            cmd += " except {exceptSev}".format(exceptSev=verb["except_severity"])
         if verb.get("tag"):
             cmd += " {tag}".format(tag=verb["tag"])
         if verb.get("text"):
@@ -301,22 +293,20 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host,
             "remval": tmplt_host_del,
             "result": {
-                "logging": {
-                    "hosts": [{
-                        "hostname": "{{ hostname }}",
-                        "ipv6": "{{ ipv6 }}",
-                        "discriminator": "{{ discriminator }}",
-                        "vrf": "{{ vrf }}",
-                        "xml": "{{ True if xml is defined }}",
-                        "filtered": "{{ True if filtered is defined }}",
-                        "sequence_num_session": "{{ True if sequence_num_session is defined }}",
-                        "stream": "{{ stream }}",
-                        "session_id": {
-                            "tag": "{{ tag }}",
-                            "text": "{{ text }}",
-                        }
-                    }]
-                }
+                "hosts": [{
+                    "hostname": "{{ hostname }}",
+                    "ipv6": "{{ ipv6 }}",
+                    "discriminator": "{{ discriminator }}",
+                    "vrf": "{{ vrf }}",
+                    "xml": "{{ True if xml is defined }}",
+                    "filtered": "{{ True if filtered is defined }}",
+                    "sequence_num_session": "{{ True if sequence_num_session is defined }}",
+                    "stream": "{{ stream }}",
+                    "session_id": {
+                        "tag": "{{ tag }}",
+                        "text": "{{ text }}",
+                    }
+                }]
             },
         },
         {
@@ -342,28 +332,26 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_host_transport,
             "remval": tmplt_host_transport_del,
             "result": {
-                "logging": {
-                    "hosts": [{
-                        "hostname": "{{ hostname }}",
-                        "ipv6": "{{ ipv6 }}",
-                        "vrf": "{{ vrf if transport is defined }}",
-                        "transport": {
-                            "{{ transport }}": {
-                                "audit": "{{ True if audit is defined }}",
-                                "sequence_num_session": "{{ True if sequence_num_session is defined }}",
-                                "xml": "{{ True if xml is defined }}",
-                                "discriminator": "{{ discriminator }}",
-                                "port": "{{ port }}",
-                                "session_id": {
-                                    "tag": "{{ tag }}",
-                                    "text": "{{ text }}",
-                                },
-                                "filtered": "{{ True if filtered is defined }}",
-                                "stream": "{{ stream }}",
-                            }
+                "hosts": [{
+                    "hostname": "{{ hostname }}",
+                    "ipv6": "{{ ipv6 }}",
+                    "vrf": "{{ vrf if transport is defined }}",
+                    "transport": {
+                        "{{ transport }}": {
+                            "audit": "{{ True if audit is defined }}",
+                            "sequence_num_session": "{{ True if sequence_num_session is defined }}",
+                            "xml": "{{ True if xml is defined }}",
+                            "discriminator": "{{ discriminator }}",
+                            "port": "{{ port }}",
+                            "session_id": {
+                                "tag": "{{ tag }}",
+                                "text": "{{ text }}",
+                            },
+                            "filtered": "{{ True if filtered is defined }}",
+                            "stream": "{{ stream }}",
                         }
-                    }]
-                }
+                    }
+                }]
             },
         },
         {
@@ -379,14 +367,12 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_buffered,
             "result": {
-                "logging": {
-                    "buffered": {
-                        "filtered": "{{ True if filtered is defined }}",
-                        "xml": "{{ True if xml is defined }}",
-                        "severity": "{{ severity }}",
-                        "size": "{{ size }}",
-                        "discriminator": "{{ discriminator }}",
-                    }
+                "buffered": {
+                    "filtered": "{{ True if filtered is defined }}",
+                    "xml": "{{ True if xml is defined }}",
+                    "severity": "{{ severity }}",
+                    "size": "{{ size }}",
+                    "discriminator": "{{ discriminator }}",
                 }
             },
         },
@@ -398,9 +384,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging buginf",
             "result": {
-                "logging": {
-                    "buginf": "{{ True if buginf is defined }}"
-                }
+                "buginf": "{{ True if buginf is defined }}"
             },
         },
         {
@@ -412,9 +396,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging cns-events {{ cns_events }}",
             "result": {
-                "logging": {
-                    "cns_events": "{{ severity }}"
-                }
+                "cns_events": "{{ severity }}"
             },
         },
         {
@@ -429,13 +411,11 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_console,
             "result": {
-                "logging": {
-                    "console": {
-                        "severity": "{{ severity }}",
-                        "discriminator": "{{ discriminator }}",
-                        "filtered": "{{ True if filtered is defined }}",
-                        "xml": "{{ True if xml is defined }}",
-                    }
+                "console": {
+                    "severity": "{{ severity }}",
+                    "discriminator": "{{ discriminator }}",
+                    "filtered": "{{ True if filtered is defined }}",
+                    "xml": "{{ True if xml is defined }}",
                 }
             },
         },
@@ -447,9 +427,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging count",
             "result": {
-                "logging": {
-                    "count": "{{ True if count is defined }}"
-                }
+                "count": "{{ True if count is defined }}"
             },
         },
         {
@@ -460,10 +438,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging delimiter tcp",
             "result": {
-                "logging": {
-                    "delimiter": {
-                        "tcp": "{{ True if tcp is defined }}"
-                    }
+                "delimiter": {
+                    "tcp": "{{ True if tcp is defined }}"
                 }
             },
         },
@@ -475,9 +451,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging discriminator {{ discriminator }}",
             "result": {
-                "logging": {
-                    "discriminator": ["{{ discriminator }}", ]
-                }
+                "discriminator": ["{{ discriminator }}", ]
             },
         },
         {
@@ -489,10 +463,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging dmvpn rate-limit {{ dmvpn.rate_limit }}",
             "result": {
-                "logging": {
-                    "dmvpn": {
-                        "rate_limit": "{{ rate }}",
-                    }
+                "dmvpn": {
+                    "rate_limit": "{{ rate }}",
                 }
             },
         },
@@ -504,10 +476,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging esm config",
             "result": {
-                "logging": {
-                    "esm": {
-                        "config": "{{ True if config is defined }}"
-                    }
+                "esm": {
+                    "config": "{{ True if config is defined }}"
                 }
             },
         },
@@ -520,9 +490,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging exception {{ exception }}",
             "result": {
-                "logging": {
                     "exception": "{{ exception }}"
-                }
             },
         },
         {
@@ -534,9 +502,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging facility {{ facility }}",
             "result": {
-                "logging": {
-                    "facility": "{{ facility }}"
-                }
+                "facility": "{{ facility }}"
             },
         },
         {
@@ -550,13 +516,11 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_filter,
             "result": {
-                "logging": {
-                    "filter": [{
-                        "url": "{{ url }}",
-                        "order": "{{ order }}",
-                        "args": "{{ args }}",
-                    }]
-                }
+                "filter": [{
+                    "url": "{{ url }}",
+                    "order": "{{ order }}",
+                    "args": "{{ args }}",
+                }]
             },
         },
         {
@@ -569,11 +533,9 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_history,
             "result": {
-                "logging": {
-                    "history": {
-                        "severity": "{{ severity }}",
-                        "size": "{{ size }}",
-                    }
+                "history": {
+                    "severity": "{{ severity }}",
+                    "size": "{{ size }}",
                 }
             },
         },
@@ -586,9 +548,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_message_counter,
             "result": {
-                "logging": {
-                    "message_counter": ["{{ counter }}", ]
-                }
+                "message_counter": ["{{ counter }}", ]
             },
         },
         {
@@ -603,13 +563,11 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_monitor,
             "result": {
-                "logging": {
-                    "monitor": {
-                        "filtered": "{{ True if filtered is defined }}",
-                        "xml": "{{ True if xml is defined }}",
-                        "severity": "{{ severity }}",
-                        "discriminator": "{{ discriminator }}",
-                    }
+                "monitor": {
+                    "filtered": "{{ True if filtered is defined }}",
+                    "xml": "{{ True if xml is defined }}",
+                    "severity": "{{ severity }}",
+                    "discriminator": "{{ discriminator }}",
                 }
             },
         },
@@ -624,9 +582,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "setval": tmplt_logging_on,
             "remval": "logging on",
             "result": {
-                "logging": {
-                    "logging_on": "{{ 'disable' if negate is defined else 'enable' }}",
-                }
+                "logging_on": "{{ 'disable' if negate is defined else 'enable' }}",
             },
         },
         {
@@ -639,11 +595,9 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_origin_id,
             "result": {
-                "logging": {
-                    "origin_id": {
-                        "tag": "{{ tag }}",
-                        "text": "{{ text }}",
-                    }
+                "origin_id": {
+                    "tag": "{{ tag }}",
+                    "text": "{{ text }}",
                 }
             },
         },
@@ -663,17 +617,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_persistent,
             "result": {
-                "logging": {
-                    "persistent": {
-                        "batch": "{{ batch }}",
-                        "filesize": "{{ filesize }}",
-                        "immediate": "{{ True if immediate is defined }}",
-                        "notify": "{{ True if notify is defined }}",
-                        "protected": "{{ True if protected is defined }}",
-                        "size": "{{ size }}",
-                        "threshold": "{{ threshold }}",
-                        "url": "{{ url }}",
-                    }
+                "persistent": {
+                    "batch": "{{ batch }}",
+                    "filesize": "{{ filesize }}",
+                    "immediate": "{{ True if immediate is defined }}",
+                    "notify": "{{ True if notify is defined }}",
+                    "protected": "{{ True if protected is defined }}",
+                    "size": "{{ size }}",
+                    "threshold": "{{ threshold }}",
+                    "url": "{{ url }}",
                 }
             },
         },
@@ -686,10 +638,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging policy-firewall rate-limit {{ policy_firewall.rate_limit }}",
             "result": {
-                "logging": {
-                    "policy_firewall": {
-                        "rate_limit": "{{ rate }}",
-                    }
+                "policy_firewall": {
+                    "rate_limit": "{{ rate }}",
                 }
             },
         },
@@ -704,12 +654,10 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_queue_limit,
             "result": {
-                "logging": {
-                    "queue_limit": {
-                        "size": "{{ size }}",
-                        "esm": "{{ esm }}",
-                        "trap": "{{ trap }}",
-                    }
+                "queue_limit": {
+                    "size": "{{ size }}",
+                    "esm": "{{ esm }}",
+                    "trap": "{{ trap }}",
                 }
             },
         },
@@ -724,13 +672,11 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_rate_limit,
             "result": {
-                "logging": {
-                    "rate_limit": {
-                        "size": "{{ size }}",
-                        "all": "{{ True if option == 'all' }}",
-                        "console": "{{ True if option == 'console' }}",
-                        "except_severity": "{{ except_severity }}",
-                    }
+                "rate_limit": {
+                    "size": "{{ size }}",
+                    "all": "{{ True if option == 'all' }}",
+                    "console": "{{ True if option == 'console' }}",
+                    "except_severity": "{{ except_severity }}",
                 }
             },
         },
@@ -745,11 +691,9 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_reload,
             "result": {
-                "logging": {
-                    "reload": {
-                        "severity": "{{ severity }}",
-                        "message_limit": "{{ message_limit }}",
-                    }
+                "reload": {
+                    "severity": "{{ severity }}",
+                    "message_limit": "{{ message_limit }}",
                 }
             },
         },
@@ -762,10 +706,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging server-arp",
             "result": {
-                "logging": {
-                    "server_arp": "{{ True if server_arp is defined }}"
-                }
-            },
+                "server_arp": "{{ True if server_arp is defined }}"
+            }
         },
         {
             "name": "snmp_trap",
@@ -776,9 +718,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging snmp-trap {{ snmp_trap }}",
             "result": {
-                "logging": {
                     "snmp_trap": ["{{ severity }}", ]
-                }
             },
         },
         {
@@ -791,12 +731,10 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": tmplt_source_interface,
             "result": {
-                "logging": {
-                    "source_interface": [{
-                        "interface": "{{ interface }}",
-                        "vrf": "{{ vrf }}",
-                    }]
-                }
+                "source_interface": [{
+                    "interface": "{{ interface }}",
+                    "vrf": "{{ vrf }}",
+                }]
             },
         },
         {
@@ -808,9 +746,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging trap {{ trap }}",
             "result": {
-                "logging": {
-                    "trap": "{{ severity }}",
-                }
+                "trap": "{{ severity }}",
             },
         },
         {
@@ -821,9 +757,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging userinfo",
             "result": {
-                "logging": {
-                    "userinfo": "{{ True if userinfo is defined }}"
-                }
+                "userinfo": "{{ True if userinfo is defined }}"
             },
         },
     ]

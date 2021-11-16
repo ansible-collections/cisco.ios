@@ -56,15 +56,11 @@ class Logging_globalFacts(object):
         logging_global_parser = Logging_globalTemplate(
             lines=data.splitlines(), module=self._module
         )
-        objs = list(logging_global_parser.parse().values())
-        objFinal = objs[0] if len(objs) >= 1 else {}
+        objFinal = logging_global_parser.parse()
+
         if objFinal:
             for k, v in iteritems(objFinal):
-                if type(v) == list and k not in [
-                    "hosts",
-                    "source_interface",
-                    "filter",
-                ]:
+                if type(v) == list and k not in ["hosts", "source_interface", "filter"]:
                     v.sort()
                     objFinal[k] = v
                 elif type(v) == list and k == "hosts":
@@ -79,9 +75,7 @@ class Logging_globalFacts(object):
                         objFinal[k], key=lambda item: item["interface"]
                     )
                 elif type(v) == list and k == "filter":
-                    objFinal[k] = sorted(
-                        objFinal[k], key=lambda item: item["url"]
-                    )
+                    objFinal[k] = sorted(objFinal[k], key=lambda item: item["url"])
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
@@ -89,9 +83,8 @@ class Logging_globalFacts(object):
                 self.argument_spec, {"config": objFinal}, redact=True
             )
         )
-        if not objFinal:
-            params["config"] = {}
-        facts["logging_global"] = params["config"]
+
+        facts["logging_global"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
