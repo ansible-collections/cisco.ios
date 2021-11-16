@@ -333,7 +333,6 @@ class TestIosAclsModule(TestIosModule):
             )
         )
         result = self.execute_module(changed=True)
-        print(result["commands"])
         commands = [
             "ip access-list extended replace_acl",
             "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
@@ -342,7 +341,7 @@ class TestIosAclsModule(TestIosModule):
             "no remark remark check 1",
             "no remark some random remark 2",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -475,7 +474,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -597,7 +596,7 @@ class TestIosAclsModule(TestIosModule):
             "no ip access-list extended 110",
             "no ip access-list standard test_acl",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_deleted_acl_based(self):
         self.execute_show_command.return_value = dedent(
@@ -676,7 +675,7 @@ class TestIosAclsModule(TestIosModule):
             "no ip access-list extended 110",
             "no ipv6 access-list R1_TRAFFIC",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_rendered(self):
         set_module_args(
@@ -726,7 +725,7 @@ class TestIosAclsModule(TestIosModule):
             "remark remark for acl 110",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["rendered"], commands)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_acls_parsed(self):
         set_module_args(
@@ -881,7 +880,7 @@ class TestIosAclsModule(TestIosModule):
             "remark ipv6 remarks one",
             "remark ipv6 remarks test 2",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden_option(self):
         self.execute_show_command.return_value = dedent(
@@ -987,7 +986,7 @@ class TestIosAclsModule(TestIosModule):
             "no remark remark check 1",
             "no remark some random remark 2",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden_clear(self):
         self.execute_show_command.return_value = dedent(
@@ -1046,7 +1045,6 @@ class TestIosAclsModule(TestIosModule):
             )
         )
         result = self.execute_module(changed=True)
-        print(result["commands"])
         commands = [
             "ip access-list extended 113",
             "deny 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 fragments 10 tos max-reliability",
@@ -1055,7 +1053,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list standard 23",
             "remark check remark here",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_delete_acl(self):
         self.execute_show_command.return_value = dedent(
