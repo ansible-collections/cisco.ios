@@ -105,7 +105,9 @@ def _tmplt_access_list_entries(config_data):
                     aces, command, "destination"
                 )
             if proto_option:
-                command += " {0}".format(list(proto_option.keys())[0])
+                command += " {0}".format(
+                    list(proto_option.keys())[0].replace("_", "-")
+                )
             if aces.get("dscp"):
                 command += " dscp {dscp}".format(**aces)
             if aces.get("sequence") and config_data.get("afi") == "ipv6":

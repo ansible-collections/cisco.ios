@@ -315,9 +315,7 @@ class Acls(ResourceModule):
                     for acl in each.get("acls"):  # check each acl for aces
                         temp_aces = {}
                         if acl.get("aces"):
-                            temp_rem = (
-                                []
-                            )  # holds remarks if defined within a ace
+                            temp_rem = []  # remarks if defined in an ace
                             for ace in acl.get(
                                 "aces"
                             ):  # each ace turned to dict
