@@ -47,7 +47,6 @@ class Logging_globalFacts(object):
         :returns: facts
         """
         facts = {}
-        objs = []
 
         if not data:
             data = self.get_logging_data(connection)
@@ -60,7 +59,11 @@ class Logging_globalFacts(object):
 
         if objFinal:
             for k, v in iteritems(objFinal):
-                if type(v) == list and k not in ["hosts", "source_interface", "filter"]:
+                if type(v) == list and k not in [
+                    "hosts",
+                    "source_interface",
+                    "filter",
+                ]:
                     v.sort()
                     objFinal[k] = v
                 elif type(v) == list and k == "hosts":
@@ -75,7 +78,9 @@ class Logging_globalFacts(object):
                         objFinal[k], key=lambda item: item["interface"]
                     )
                 elif type(v) == list and k == "filter":
-                    objFinal[k] = sorted(objFinal[k], key=lambda item: item["url"])
+                    objFinal[k] = sorted(
+                        objFinal[k], key=lambda item: item["url"]
+                    )
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(

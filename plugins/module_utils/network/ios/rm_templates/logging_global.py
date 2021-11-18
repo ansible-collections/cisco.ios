@@ -20,9 +20,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
-def tmplt_host(config_data):
+def tmplt_host(verb):
     cmd = "logging host"
-    verb = config_data.get("hosts")
     changed = True
     if verb.get("transport"):
         changed = False
@@ -43,7 +42,9 @@ def tmplt_host(config_data):
             session_id = verb.get("session_id")
             changed = True
             if session_id.get("text"):
-                cmd += " session-id string {text}".format(text=session_id["text"])
+                cmd += " session-id string {text}".format(
+                    text=session_id["text"]
+                )
             elif session_id.get("tag"):
                 cmd += " session-id {tag}".format(tag=session_id["tag"])
         if verb.get("stream"):
@@ -64,9 +65,8 @@ def tmplt_host(config_data):
     return cmd
 
 
-def tmplt_host_transport(config_data):
+def tmplt_host_transport(verb):
     cmd = "logging host"
-    verb = config_data.get("hosts")
 
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
@@ -104,7 +104,9 @@ def tmplt_host_transport(config_data):
             if verb.get("session_id"):
                 session_id = verb.get("session_id")
                 if session_id.get("text"):
-                    cmd += " session-id string {text}".format(text=session_id["text"])
+                    cmd += " session-id string {text}".format(
+                        text=session_id["text"]
+                    )
                 elif session_id.get("tag"):
                     cmd += " session-id {tag}".format(tag=session_id["tag"])
             if verb.get("sequence_num_session"):
@@ -114,9 +116,8 @@ def tmplt_host_transport(config_data):
     return cmd
 
 
-def tmplt_host_del(config_data):
+def tmplt_host_del(verb):
     cmd = "logging host"
-    verb = config_data.get("hosts")
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
     if verb.get("ipv6"):
@@ -126,9 +127,8 @@ def tmplt_host_del(config_data):
     return cmd
 
 
-def tmplt_host_transport_del(config_data):
+def tmplt_host_transport_del(verb):
     cmd = "logging host"
-    verb = config_data.get("hosts")
     if verb.get("hostname"):
         cmd += " {hostname}".format(hostname=verb["hostname"])
     if verb.get("ipv6"):
@@ -179,13 +179,14 @@ def tmplt_message_counter(verb):
     cmd = "logging message-counter"
 
     if verb.get("message_counter"):
-        cmd += " {message_counter}".format(message_counter=verb["message_counter"])
+        cmd += " {message_counter}".format(
+            message_counter=verb["message_counter"]
+        )
     return cmd
 
 
-def tmplt_filter(config_data):
+def tmplt_filter(verb):
     cmd = "logging filter"
-    verb = config_data.get("filter")
 
     if verb.get("url"):
         cmd += " {url}".format(url=verb["url"])
@@ -196,9 +197,8 @@ def tmplt_filter(config_data):
     return cmd
 
 
-def tmplt_source_interface(config_data):
+def tmplt_source_interface(verb):
     cmd = "logging source-interface"
-    verb = config_data.get("source_interface")
 
     if verb.get("interface"):
         cmd += " {interface}".format(interface=verb["interface"])
@@ -230,7 +230,9 @@ def tmplt_common(verb, cmd):
         if verb.get("severity"):
             cmd += " {severity}".format(severity=verb["severity"])
         if verb.get("except_severity"):
-            cmd += " except {exceptSev}".format(exceptSev=verb["except_severity"])
+            cmd += " except {exceptSev}".format(
+                exceptSev=verb["except_severity"]
+            )
         if verb.get("tag"):
             cmd += " {tag}".format(tag=verb["tag"])
         if verb.get("text"):
@@ -280,13 +282,12 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\shost
                 (\s(?P<hostname>\S+))?
                 (\sipv6\s(?P<ipv6>\S+))?
-                (\svrf\s(?P<vrf>\w+))?
+                (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
                 (\sstream\s(?P<stream>\d+))?
-                (\s(?P<session_id>session-id))?
-                (\s(?P<tag>hostname|ipv4|ipv6))?
-                (\sstring\s(?P<text>\w+))?
+                (\ssession-id\s(?P<tag>hostname|ipv4|ipv6))?
+                (\ssession-id\sstring\s(?P<text>\S+))?
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
@@ -318,15 +319,14 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\sipv6\s(?P<ipv6>\S+))?
                 (\svrf\s(?P<vrf>\w+))?
                 (\stransport\s(?P<transport>tcp|udp))?
-                (\sport\s(?P<port>[1-9][0-9]*))?
+                (\sport\s(?P<port>\d+))?
                 (\s(?P<audit>audit))?
                 (\s(?P<xml>xml))?
                 (\s(?P<filtered>filtered))?
                 (\sdiscriminator\s(?P<discriminator>.+$))?
                 (\sstream\s(?P<stream>\d+))?
-                (\s(?P<session_id>session-id))?
-                (\s(?P<tag>hostname|ipv4|ipv6))?
-                (\sstring\s(?P<text>\w+))?
+                (\ssession-id\s(?P<tag>hostname|ipv4|ipv6))?
+                (\ssession-id\sstring\s(?P<text>\S+))?
                 (\s(?P<sequence_num_session>sequence-num-session))?
                 $""", re.VERBOSE),
             "setval": tmplt_host_transport,
@@ -490,7 +490,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging exception {{ exception }}",
             "result": {
-                    "exception": "{{ exception }}"
+                "exception": "{{ exception }}"
             },
         },
         {
@@ -718,7 +718,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "logging snmp-trap {{ snmp_trap }}",
             "result": {
-                    "snmp_trap": ["{{ severity }}", ]
+                "snmp_trap": ["{{ severity }}", ]
             },
         },
         {

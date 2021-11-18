@@ -70,8 +70,12 @@ class Logging_global(ResourceModule):
             "trap",
             "userinfo",
         ]
-        self.list_parsers = ["hosts", "hosts.transport", "filter", "source_interface"]
-        self.complex_parsers = ["message_counter", "discriminator", "snmp_trap"]
+        self.list_parsers = ["hosts", "filter", "source_interface"]
+        self.complex_parsers = [
+            "message_counter",
+            "discriminator",
+            "snmp_trap",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -108,35 +112,64 @@ class Logging_global(ResourceModule):
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists_attrs(want, have)
+        self._compare_complex_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
-        for _parser in self.list_parsers:
-            i_want = want.get(_parser, {})
-            i_have = have.get(_parser, {})
+        for _par in self.list_parsers:
+            i_want = want.get(_par, {})
+            i_have = have.get(_par, {})
             for key, wanting in iteritems(i_want):
+                _parser = _par
+                if wanting.get("transport") and _parser == "hosts":
+                    _parser = "hosts.transport"
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
                     if haveing and self.state in ["overridden", "replaced"]:
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
             for key, haveing in iteritems(i_have):
+                _parser = _par
+                if haveing.get("transport") and _parser == "hosts":
+                    _parser = "hosts.transport"
                 self.addcmd(haveing, _parser, negate=True)
+
+    def _compare_complex_attrs(self, want, have):
+        """Compare dict of list"""
+        for _par in self.complex_parsers:
+            i_want = want.get(_par, {})
+            i_have = have.get(_par, {})
+            for key, wanting in iteritems(i_want):
+                haveing = i_have.pop(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _par, negate=True)
+                    self.addcmd(wanting, _par)
+            for key, haveing in iteritems(i_have):
+                self.addcmd(haveing, _par, negate=True)
 
     def list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
-        p_key = {"filter": "url", "hosts": "hostname", "source_interface": "interface"}
+        p_key = {
+            "filter": "url",
+            "hosts": "hostname",
+            "source_interface": "interface",
+        }
         list_el = ["message_counter", "discriminator", "snmp_trap"]
         tmp_data = deepcopy(data)
         for k, _v in p_key.items():
             if tmp_data.get(k):
                 tmp_data[k] = {
-                    str(i[p_key[k]]) if i.get(p_key[k]) else str(i.get("ipv6")): i
+                    str(i[p_key[k]])
+                    if i.get(p_key[k])
+                    else str(i.get("ipv6")): i
                     for i in tmp_data[k]
                 }
         for el in list_el:
             if tmp_data.get(el):
-                tmp_data[el] = {self.trim_whitespace(el + i): i for i in tmp_data[el]}
+                tmp_data[el] = {
+                    self.trim_whitespace(el + i): {el: i} for i in tmp_data[el]
+                }
         return tmp_data
 
     def trim_whitespace(self, word):
