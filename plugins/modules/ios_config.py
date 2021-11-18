@@ -311,6 +311,14 @@ EXAMPLES = """
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
+
+# Example ios_template.j2
+# ip access-list extended test
+#  permit ip host 192.0.2.1 any log
+#  permit ip host 192.0.2.2 any log
+#  permit ip host 192.0.2.3 any log
+#  permit ip host 192.0.2.4 any log
+
 """
 RETURN = """
 updates:
