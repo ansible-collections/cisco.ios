@@ -276,7 +276,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp))?
                         (\s(?P<protocol_num>\d+))?
                         (\s(?P<source>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
-                        (\s(?P<source_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
+                        (\s(?P<source_port_protocol>(eq|gts|gt|lt|neq)\s(\S+|\d+)))?
                         (\s(?P<destination>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
                         (\s(?P<dest_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
                         (\s(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo|echo-reply|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg))?
