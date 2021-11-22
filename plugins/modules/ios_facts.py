@@ -227,7 +227,9 @@ def main():
     """
     argument_spec = FactsArgs.argument_spec
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     warnings = []
     if module.params["gather_subset"] == "!config":
         warnings.append(

@@ -150,7 +150,9 @@ def main():
         df_bit=dict(type="bool", default=False),
         size=dict(type="int"),
         source=dict(type="str"),
-        state=dict(type="str", choices=["absent", "present"], default="present"),
+        state=dict(
+            type="str", choices=["absent", "present"], default="present"
+        ),
         vrf=dict(type="str"),
     )
     argument_spec.update(ios_argument_spec)
@@ -186,7 +188,9 @@ def main():
     module.exit_json(**results)
 
 
-def build_ping(dest, count=None, source=None, vrf=None, size=None, df_bit=False):
+def build_ping(
+    dest, count=None, source=None, vrf=None, size=None, df_bit=False
+):
     """
     Function to build the command to send to the terminal for the switch
     to execute. All args come from the module's unique params.
@@ -220,7 +224,12 @@ def parse_ping(ping_stats):
     )
     rate = rate_re.match(ping_stats)
     rtt = rtt_re.match(ping_stats)
-    return (rate.group("pct"), rate.group("rx"), rate.group("tx"), rtt.groupdict())
+    return (
+        rate.group("pct"),
+        rate.group("rx"),
+        rate.group("tx"),
+        rtt.groupdict(),
+    )
 
 
 def validate_results(module, loss, results):
