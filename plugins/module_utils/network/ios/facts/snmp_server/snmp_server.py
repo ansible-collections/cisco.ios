@@ -27,13 +27,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp
     Snmp_serverArgs,
 )
 
+
 class Snmp_serverFacts(object):
     """ The ios snmp_server facts class
     """
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Snmp_serverArgs.argument_spec
+
+    def get_snmp_data(self, connection):
+        return connection.get("show running-config | section ^snmp-server")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Snmp_server network resource
@@ -52,16 +56,20 @@ class Snmp_serverFacts(object):
             data = connection.get()
 
         # parse native config using the Snmp_server template
-        snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
+        snmp_server_parser = Snmp_serverTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = list(snmp_server_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('snmp_server', None)
+        ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
         params = utils.remove_empties(
-            snmp_server_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            snmp_server_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            )
         )
 
-        facts['snmp_server'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["snmp_server"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

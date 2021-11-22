@@ -32,18 +32,9 @@ options:
           command:
             description: For SNMP set commands
             type: str
-          command_default:
-            description: Use the default accounting list
-            type: bool
-          disable_community:
-            description: Disable accounting for a particular community
-            type: str
-          disable_user:
-            description: Disable accounting for a particular user
-            type: str
         type: dict
       cache:
-        description: Enable SNMP cache
+        description: Enable SNMP cache and MIB expiry interval
         type: int
       chassis_id:
         description: String to uniquely identify this chassis (Hexadecimal)
@@ -91,17 +82,18 @@ options:
       engine_id:
         description: Configure a local or remote SNMPv3 engineID
         suboptions:
+        elements: dict
+          id:
+            description: engine ID octet string
+            type: str
           local:
             description: Local SNMP agent
-            type: str
+            type: bool
           remote:
             description: Remote SNMP agent
             suboptions:
               host:
                 description: Hostname or IP address of remote SNMP notification host
-                type: str
-              id:
-                description: engine ID octet string
                 type: str
               udp_port:
                 description: The remote SNMP notification host's UDP port number.
@@ -110,13 +102,17 @@ options:
                 description: The remote notification host's VPN routing instance
                 type: str
             type: dict
-        type: dict
+        type: list
       file_transfer:
         description: File transfer related commands
         suboptions:
           access_group:
             description: Access control for file transfers
             type: str
+          protocol:
+            description: Access control protocol for file transfers
+            type: list
+            elements: str
         type: dict
       groups:
         description: Define a User Security Model group
@@ -143,6 +139,12 @@ options:
             type: str
           write:
             description: View to restrict write access
+            type: str
+          acl_v4:
+            description: specify an access-list associated with this group
+            type: str
+          acl_v6:
+            description: specify an access-list associated with this group
             type: str
         type: list
       hosts:
