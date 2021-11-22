@@ -27,7 +27,8 @@ description:
   This module includes an argument that will cause the module to wait for a specific
   condition before returning or timing out if the condition is not met.
 - This module does not support running commands in configuration mode. Please use
-  M(ios_config) to configure IOS devices.
+  L(ios_config,https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module)
+  to configure IOS devices.
 version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
@@ -177,9 +178,7 @@ def main():
         interval=dict(default=1, type="int"),
     )
     argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
@@ -207,9 +206,7 @@ def main():
         failed_conditions = [item.raw for item in conditionals]
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
-    result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
-    )
+    result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
     module.exit_json(**result)
 
 

@@ -23,9 +23,12 @@ module: ios_ping
 short_description: Tests reachability using ping from Cisco IOS network devices
 description:
 - Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+  module.
+- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+  module instead.
+- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html)
+  module instead.
 version_added: 1.0.0
 author:
 - Jacob McGill (@jmcgill298)
@@ -67,9 +70,11 @@ options:
     - The VRF to use for forwarding.
     type: str
 notes:
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+  module.
+- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+  module instead.
+- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html) module instead.
 """
 EXAMPLES = """
 - name: Test reachability to 10.10.10.10 using default vrf
@@ -145,9 +150,7 @@ def main():
         df_bit=dict(type="bool", default=False),
         size=dict(type="int"),
         source=dict(type="str"),
-        state=dict(
-            type="str", choices=["absent", "present"], default="present"
-        ),
+        state=dict(type="str", choices=["absent", "present"], default="present"),
         vrf=dict(type="str"),
     )
     argument_spec.update(ios_argument_spec)
@@ -183,9 +186,7 @@ def main():
     module.exit_json(**results)
 
 
-def build_ping(
-    dest, count=None, source=None, vrf=None, size=None, df_bit=False
-):
+def build_ping(dest, count=None, source=None, vrf=None, size=None, df_bit=False):
     """
     Function to build the command to send to the terminal for the switch
     to execute. All args come from the module's unique params.
@@ -219,12 +220,7 @@ def parse_ping(ping_stats):
     )
     rate = rate_re.match(ping_stats)
     rtt = rtt_re.match(ping_stats)
-    return (
-        rate.group("pct"),
-        rate.group("rx"),
-        rate.group("tx"),
-        rtt.groupdict(),
-    )
+    return (rate.group("pct"), rate.group("rx"), rate.group("tx"), rtt.groupdict())
 
 
 def validate_results(module, loss, results):

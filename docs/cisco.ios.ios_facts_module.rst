@@ -65,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code><span class='module'>!</span></code> to specify that a specific subset should not be collected. Valid subsets are &#x27;all&#x27;, &#x27;interfaces&#x27;, &#x27;l2_interfaces&#x27;, &#x27;vlans&#x27;, &#x27;lag_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;l3_interfaces&#x27;, &#x27;acl_interfaces&#x27;, &#x27;static_routes&#x27;, &#x27;acls&#x27;.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;all&#x27;, &#x27;interfaces&#x27;, &#x27;l2_interfaces&#x27;, &#x27;vlans&#x27;, &#x27;lag_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;l3_interfaces&#x27;, &#x27;acl_interfaces&#x27;, &#x27;static_routes&#x27;, &#x27;acls&#x27;.</div>
                 </td>
             </tr>
             <tr>
