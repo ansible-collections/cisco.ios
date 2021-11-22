@@ -205,6 +205,124 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "if_index",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\sifindex
+                (\s(?P<if_index>persist))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "if_index": "{{ not not if_index }}",
+            },
+        },
+        {
+            "name": "inform",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\sinform
+                (\spending(?P<pending>\d+))?
+                (\sretries(?P<retries>\d+))?
+                (\stimeout(?P<timeout>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "inform": {
+                    "pending":"{{ pending }}",
+                    "retries":"{{ retries }}",
+                    "timeout":"{{ timeout }}",
+                }
+            },
+        },
+        {
+            "name": "ip",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\sip
+                (\sdscp(?P<dscp>\d+))?
+                (\sprecedence(?P<precedence>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "ip": {
+                    "dscp":"{{ dscp }}",
+                    "precedence":"{{ precedence }}",
+                }
+            },
+        },
+        {
+            "name": "location",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\slocation
+                (\s(?P<location>\S+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "location": "{{ location }}",
+            },
+        },
+        {
+            "name": "manager",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\smanager
+                (\ssession-timeout\s(?P<location>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "manager": "{{ manager }}",
+            },
+        },
+        {
+            "name": "packet_size",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\spacketsize
+                (\s(?P<packet_size>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "packet_size": "{{ packet_size }}",
+            },
+        },
+        {
+            "name": "queue_length",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\squeue-length
+                (\s(?P<queue_length>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "queue_length": "{{ queue_length }}",
+            },
+        },
+        {
+            "name": "system_shutdown",
+            "getval": re.compile(
+                r"""
+                ^snmp-server
+                (\s(?P<system_shutdown>system-shutdown))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "system_shutdown": "{{ not not system_shutdown }}",
+            },
+        },
+        {
+            "name": "trap_timeout",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\strap\stimeout
+                (\s(?P<timeout>\d+))?
+                $""", re.VERBOSE),
+            "setval": "",
+            "result": {
+                "trap_timeout": "{{ timeout }}",
+            },
+        },
+        {
             "name": "key_b",
             "getval": re.compile(
                 r"""

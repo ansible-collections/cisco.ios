@@ -147,7 +147,7 @@ options:
             description: specify an access-list associated with this group
             type: str
         type: list
-      hosts:
+      hosts: #TODO
         description: Specify hosts to receive SNMP notifications
         elements: dict
         suboptions:
@@ -206,7 +206,7 @@ options:
       packet_size:
         description: Largest SNMP packet size
         type: int
-      password_policy:
+      password_policy: #TODO
         description: SNMP v3 users password policy
         elements: dict
         suboptions:
@@ -241,7 +241,7 @@ options:
       queue_length:
         description: Message queue length for each TRAP host
         type: int
-      source_interface:
+      source_interface: #TODO
         description: Source interface to be used for sending out SNMP notifications.
         type: dict
         suboptions:
@@ -257,7 +257,7 @@ options:
       system_shutdown:
         description: Enable use of the SNMP reload command
         type: bool
-      trap_source:
+      trap_source: #CHECK
         description: Assign an interface for the source address of all traps
         type: str
       trap_timeout:
