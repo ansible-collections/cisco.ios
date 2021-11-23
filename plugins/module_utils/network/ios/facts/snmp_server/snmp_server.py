@@ -53,13 +53,13 @@ class Snmp_serverFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_snmp_data(connection)
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(
             lines=data.splitlines(), module=self._module
         )
-        objs = list(snmp_server_parser.parse().values())
+        objs = snmp_server_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 

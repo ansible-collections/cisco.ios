@@ -121,6 +121,13 @@ options:
           context:
             description: Specify a context to associate with the group
             type: str
+          version_option:
+            choices:
+              - auth
+              - noauth
+              - priv
+            description: community name to the host.
+            type: str
           group:
             description: SNMP group for the user
             type: str
@@ -787,6 +794,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
     Snmp_server,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():

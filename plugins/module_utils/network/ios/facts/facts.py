@@ -80,6 +80,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global import (
     Ntp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
+    Snmp_serverFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -114,6 +117,7 @@ FACT_RESOURCE_SUBSETS = dict(
     route_maps=Route_mapsFacts,
     prefix_lists=Prefix_listsFacts,
     ntp_global=Ntp_globalFacts,
+    snmp_server=Snmp_serverFacts,
 )
 
 
@@ -127,9 +131,7 @@ class Facts(FactsBase):
     def __init__(self, module):
         super(Facts, self).__init__(module)
 
-    def get_facts(
-        self, legacy_facts_type=None, resource_facts_type=None, data=None
-    ):
+    def get_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
         """ Collect the facts for ios
         :param legacy_facts_type: List of legacy facts types
         :param resource_facts_type: List of resource fact types
@@ -143,8 +145,6 @@ class Facts(FactsBase):
             )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
-            self.get_network_legacy_facts(
-                FACT_LEGACY_SUBSETS, legacy_facts_type
-            )
+            self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)
 
         return self.ansible_facts, self._warnings

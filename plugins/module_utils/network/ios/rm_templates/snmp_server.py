@@ -178,9 +178,10 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "groups",
             "getval": re.compile(
                 r"""
-                ^snmp-server\sgroup
+                ^snmp-server
                 (\sgroup\s(?P<group>\S+))?
-                (\sversion\s(?P<version>v1|v3|v2c))?
+                (\s(?P<version>v1|v3|v2c))?
+                (\s(?P<version_option>auth|noauth|priv))?
                 (\scontext\s(?P<context>\S+))?
                 (\snotify\s(?P<notify>\S+))?
                 (\sread\s(?P<read>\S+))?
@@ -194,6 +195,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                     {
                         "group": "{{ group }}",
                         "version": "{{ version }}",
+                        "version_option": "{{ version_option }}",
                         "context": "{{ context }}",
                         "notify": "{{ notify }}",
                         "read": "{{ read }}",
@@ -255,7 +257,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\slocation
-                (\s(?P<location>\S+))?
+                (\s(?P<location>\.+))?
                 """, re.VERBOSE),
             "setval": "",
             "result": {
