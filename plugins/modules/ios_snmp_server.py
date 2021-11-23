@@ -147,7 +147,7 @@ options:
             description: specify an access-list associated with this group
             type: str
         type: list
-      hosts: #TODO
+      hosts:
         description: Specify hosts to receive SNMP notifications
         elements: dict
         suboptions:
@@ -157,15 +157,26 @@ options:
           informs:
             description: Use SNMP inform messages.
             type: bool
+          community_string:
+            description: SNMPv1/v2c community string or SNMPv3 user name
+            type: str
           traps:
             description: Use SNMP trap messages
-            type: bool
+            type: list
+            elements: str
           version:
             choices:
               - '1'
               - 2c
               - '3'
             description: Notification message SNMP version.
+            type: str
+          version_option:
+            choices:
+              - auth
+              - noauth
+              - priv
+            description: community name to the host.
             type: str
           vrf:
             description: Specify the VRF in which the host is configured
@@ -206,7 +217,7 @@ options:
       packet_size:
         description: Largest SNMP packet size
         type: int
-      password_policy: #TODO
+      password_policy:
         description: SNMP v3 users password policy
         elements: dict
         suboptions:
@@ -241,23 +252,13 @@ options:
       queue_length:
         description: Message queue length for each TRAP host
         type: int
-      source_interface: #TODO
+      source_interface:
         description: Source interface to be used for sending out SNMP notifications.
-        type: dict
-        suboptions:
-          informs:
-            description: SNMP Inform notifications for which this source interface needs to be used.
-            type: bool
-          traps:
-            description: SNMP Trap notifications for which this source interface needs to be used.
-            type: bool
-          interface:
-            description: Interface Name.
-            type: str
+        type: str
       system_shutdown:
         description: Enable use of the SNMP reload command
         type: bool
-      trap_source: #CHECK
+      trap_source:
         description: Assign an interface for the source address of all traps
         type: str
       trap_timeout:
@@ -764,8 +765,11 @@ options:
         description: Define a user who can access the SNMP engine
         elements: dict
         suboptions:
-          access:
-            description: Access list associated
+          acl_v6:
+            description: Access list ipv6 associated
+            type: str
+          acl_v4:
+            description: Access list ipv4 associated
             type: str
           group:
             description: SNMP group for the user.
@@ -776,7 +780,7 @@ options:
           udp_port:
             description: UDP port used by the remote SNMP system
             type: int
-          user:
+          username:
             description: SNMP user name
             type: str
           version:
@@ -785,6 +789,13 @@ options:
               - v2c
               - v3
             description: SNMP security version
+            type: str
+          version_option:
+            choices:
+              - auth
+              - access
+              - encrypted
+            description: community name to the host.
             type: str
           vrf:
             description: The remote SNMP entity's VPN Routing instance
