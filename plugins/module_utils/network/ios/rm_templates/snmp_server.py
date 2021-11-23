@@ -113,7 +113,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "context": ["{{ contact }}",],
+                "context": ["{{ contact }}", ],
             },
         },
         {
@@ -126,7 +126,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "drop":{
+                "drop": {
                     "vrf_traffic": "{{ not not vrf_traffic }}",
                     "unknown_user": "{{ not not unknown_user }}",
                 }
@@ -145,7 +145,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "engine_id":[
+                "engine_id": [
                     {
                         "id": "'{{ id }}'",
                         "local": "{{ not not local }}",
@@ -168,9 +168,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "file_transfer":{
+                "file_transfer": {
                     "access_group": "{{ access_group }}",
-                    "protocol": ["{{ protocol }}",],
+                    "protocol": ["{{ protocol }}", ],
                 },
             },
         },
@@ -190,7 +190,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "groups":[
+                "groups": [
                     {
                         "group": "{{ group }}",
                         "version": "{{ version }}",
@@ -228,9 +228,9 @@ class Snmp_serverTemplate(NetworkTemplate):
             "setval": "",
             "result": {
                 "inform": {
-                    "pending":"{{ pending }}",
-                    "retries":"{{ retries }}",
-                    "timeout":"{{ timeout }}",
+                    "pending": "{{ pending }}",
+                    "retries": "{{ retries }}",
+                    "timeout": "{{ timeout }}",
                 }
             },
         },
@@ -245,8 +245,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "setval": "",
             "result": {
                 "ip": {
-                    "dscp":"{{ dscp }}",
-                    "precedence":"{{ precedence }}",
+                    "dscp": "{{ dscp }}",
+                    "precedence": "{{ precedence }}",
                 }
             },
         },
@@ -361,7 +361,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "hosts":[
+                "hosts": [
                     {
                         "host": "{{ host }}",
                         "informs": "{{ not not informs }}",
@@ -392,7 +392,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "password_policy":[
+                "password_policy": [
                     {
                         "policy_name": "{{ policy_name }}",
                         "username": "{{ username }}",
@@ -424,7 +424,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "users":[
+                "users": [
                     {
                         "username": "{{ username }}",
                         "group": "{{ group }}",
@@ -451,7 +451,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "users":[
+                "users": [
                     {
                         "name": "{{ name }}",
                         "family_name": "{{ family_name }}",
@@ -461,7 +461,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ]
             },
         },
-        { # only traps
+        {  # only traps
             "name": "traps.auth_framework",
             "getval": re.compile(
                 r"""
@@ -471,7 +471,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "auth_framework": {
                         "enable": "{{ not not auth_framework }}",
                         "sec_violation": "{{ not not excluded }}",
@@ -489,7 +489,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "bfd": {
                         "session_down": "{{ not not session_down }}",
                         "session_up": "{{ not not session_up }}",
@@ -512,17 +512,17 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "bgp": {
                         "cbgp2": "{{ not not cbgp2 }}",
                         "enable": "{{ not not bgp }}",
-                        "state_changes":{
+                        "state_changes": {
                             "enable": "{{ not not state_changes }}",
                             "all": "{{ not not all }}",
                             "backward_trans": "{{ not not backward_trans }}",
                             "limited": "{{ not not limited }}",
                         },
-                        "threshold":{
+                        "threshold": {
                             "prefix": "{{ not not prefix }}",
                         },
                     },
@@ -540,7 +540,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "bridge": {
                         "newroot": "{{ not not newroot }}",
                         "enable": "{{ not not bridge }}",
@@ -558,7 +558,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "casa": "{{ not not casa }}",
                 },
             },
@@ -572,7 +572,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "cnpd": "{{ not not cnpd }}",
                 },
             },
@@ -586,7 +586,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "config": "{{ not not config }}",
                 },
             },
@@ -600,7 +600,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "config_copy": "{{ not not config_copy }}",
                 },
             },
@@ -614,7 +614,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "config_ctid": "{{ not not config_ctid }}",
                 },
             },
@@ -628,7 +628,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "dhcp": "{{ not not dhcp }}",
                 },
             },
@@ -642,7 +642,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "eigrp": "{{ not not eigrp }}",
                 },
             },
@@ -656,7 +656,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "entity": "{{ not not entity }}",
                 },
             },
@@ -670,7 +670,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "event_manager": "{{ not not event_manager }}",
                 },
             },
@@ -684,7 +684,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "flowmon": "{{ not not flowmon }}",
                 },
             },
@@ -698,7 +698,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "fru_ctrl": "{{ not not fru_ctrl }}",
                 },
             },
@@ -712,7 +712,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "hsrp": "{{ not not hsrp }}",
                 },
             },
@@ -726,7 +726,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "ipsla": "{{ not not ipsla }}",
                 },
             },
@@ -740,7 +740,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps msdp",
             "result": {
-                "traps":{
+                "traps": {
                     "msdp": "{{ not not msdp }}",
                 },
             },
@@ -754,7 +754,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps mvpn",
             "result": {
-                "traps":{
+                "traps": {
                     "msdp": "{{ not not mvpn }}",
                 },
             },
@@ -768,7 +768,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps pki",
             "result": {
-                "traps":{
+                "traps": {
                     "pki": "{{ not not pki }}",
                 },
             },
@@ -782,7 +782,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps rsvp",
             "result": {
-                "traps":{
+                "traps": {
                     "rsvp": "{{ not not rsvp }}",
                 },
             },
@@ -796,7 +796,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps syslog",
             "result": {
-                "traps":{
+                "traps": {
                     "syslog": "{{ not not syslog }}",
                 },
             },
@@ -810,7 +810,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps transceiver-all",
             "result": {
-                "traps":{
+                "traps": {
                     "transceiver_all": "{{ not not transceiver-all }}",
                 },
             },
@@ -824,7 +824,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps tty",
             "result": {
-                "traps":{
+                "traps": {
                     "tty": "{{ not not tty }}",
                 },
             },
@@ -838,7 +838,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps vrrp",
             "result": {
-                "traps":{
+                "traps": {
                     "vrrp": "{{ not not vrrp }}",
                 },
             },
@@ -852,7 +852,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "ipmulticast": "{{ not not ipmulticast }}",
                 },
             },
@@ -866,9 +866,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ike policy add",
             "result": {
-                "traps":{
-                    "ike":{
-                        "policy":{
+                "traps": {
+                    "ike": {
+                        "policy": {
                             "add": "{{ not not add }}",
                         },
                     },
@@ -884,9 +884,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ike policy delete",
             "result": {
-                "traps":{
-                    "ike":{
-                        "policy":{
+                "traps": {
+                    "ike": {
+                        "policy": {
                             "delete": "{{ not not delete }}",
                         },
                     },
@@ -902,9 +902,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ike tunnel start",
             "result": {
-                "traps":{
-                    "ike":{
-                        "tunnel":{
+                "traps": {
+                    "ike": {
+                        "tunnel": {
                             "start": "{{ not not start }}",
                         },
                     },
@@ -920,9 +920,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ike tunnel stop",
             "result": {
-                "traps":{
-                    "ike":{
-                        "tunnel":{
+                "traps": {
+                    "ike": {
+                        "tunnel": {
                             "stop": "{{ not not stop }}",
                         },
                     },
@@ -938,9 +938,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec cryptomap add",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "cryptomap":{
+                "traps": {
+                    "ipsec": {
+                        "cryptomap": {
                             "add": "{{ not not add }}",
                         },
                     },
@@ -956,9 +956,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec cryptomap delete",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "cryptomap":{
+                "traps": {
+                    "ipsec": {
+                        "cryptomap": {
                             "delete": "{{ not not delete }}",
                         },
                     },
@@ -974,9 +974,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec cryptomap attach",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "cryptomap":{
+                "traps": {
+                    "ipsec": {
+                        "cryptomap": {
                             "attach": "{{ not not attach }}",
                         },
                     },
@@ -992,9 +992,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec cryptomap detach",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "cryptomap":{
+                "traps": {
+                    "ipsec": {
+                        "cryptomap": {
                             "detach": "{{ not not detach }}",
                         },
                     },
@@ -1010,9 +1010,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec tunnel start",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "tunnel":{
+                "traps": {
+                    "ipsec": {
+                        "tunnel": {
                             "start": "{{ not not start }}",
                         },
                     },
@@ -1028,9 +1028,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec tunnel stop",
             "result": {
-                "traps":{
-                    "ipsec":{
-                        "tunnel":{
+                "traps": {
+                    "ipsec": {
+                        "tunnel": {
                             "stop": "{{ not not stop }}",
                         },
                     },
@@ -1046,8 +1046,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ipsec too-many-sas",
             "result": {
-                "traps":{
-                    "ipsec":{
+                "traps": {
+                    "ipsec": {
                         "too_many_sas": "{{ not not too_many_sas }}",
                     },
                 },
@@ -1062,9 +1062,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific errors",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "error": "{{ not not error }}",
                         },
                     },
@@ -1080,9 +1080,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific retransmit",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "retransmit": "{{ not not retransmit }}",
                         },
                     },
@@ -1098,9 +1098,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific lsa",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "lsa": "{{ not not lsa }}",
                         },
                     },
@@ -1116,9 +1116,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "state_change": {
                                 "nssa_trans_change": "{{ not not nssa_trans_change }}",
                             },
@@ -1136,12 +1136,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific state-change shamlink interface",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "state_change": {
                                 "shamlink": {
-                                    "interface":"{{ not not interface }}",
+                                    "interface": "{{ not not interface }}",
                                 },
                             },
                         },
@@ -1158,12 +1158,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
             "result": {
-                "traps":{
-                    "ospf":{
-                        "cisco_specific":{
+                "traps": {
+                    "ospf": {
+                        "cisco_specific": {
                             "state_change": {
                                 "shamlink": {
-                                    "neighbor":"{{ not not neighbor }}",
+                                    "neighbor": "{{ not not neighbor }}",
                                 },
                             },
                         },
@@ -1180,8 +1180,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf errors",
             "result": {
-                "traps":{
-                    "ospf":{
+                "traps": {
+                    "ospf": {
                         "error": "{{ not not error }}",
                     },
                 },
@@ -1196,8 +1196,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf retransmit",
             "result": {
-                "traps":{
-                    "ospf":{
+                "traps": {
+                    "ospf": {
                         "retransmit": "{{ not not retransmit }}",
                     },
                 },
@@ -1212,8 +1212,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf lsa",
             "result": {
-                "traps":{
-                    "ospf":{
+                "traps": {
+                    "ospf": {
                         "lsa": "{{ not not lsa }}",
                     },
                 },
@@ -1228,8 +1228,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ospf state-change",
             "result": {
-                "traps":{
-                    "ospf":{
+                "traps": {
+                    "ospf": {
                         "state_change": "{{ not not state_change }}",
                     },
                 },
@@ -1244,8 +1244,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps l2tun pseudowire status",
             "result": {
-                "traps":{
-                    "l2tun":{
+                "traps": {
+                    "l2tun": {
                         "pseudowire_status": "{{ not not pseudowire_status }}",
                     },
                 },
@@ -1260,8 +1260,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps l2tun session",
             "result": {
-                "traps":{
-                    "l2tun":{
+                "traps": {
+                    "l2tun": {
                         "session": "{{ not not session }}",
                     },
                 },
@@ -1277,8 +1277,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "cpu":{
+                "traps": {
+                    "cpu": {
                         "enable": "{{ not not cpu }}",
                         "threshold": "{{ not not threshold }}",
                     },
@@ -1295,8 +1295,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "firewall":{
+                "traps": {
+                    "firewall": {
                         "enable": "{{ not not firewall }}",
                         "serverstatus": "{{ not not serverstatus }}",
                     },
@@ -1315,8 +1315,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "pim":{
+                "traps": {
+                    "pim": {
                         "enable": "{{ not not pim }}",
                         "neighbor_change": "{{ not not neighbor_change }}",
                         "rp_mapping_change": "{{ not not rp_mapping_change }}",
@@ -1338,8 +1338,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "snmp":{
+                "traps": {
+                    "snmp": {
                         "authentication": "{{ not not authentication }}",
                         "linkdown": "{{ not not linkdown }}",
                         "linkup": "{{ not not linkup }}",
@@ -1361,8 +1361,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "frame_relay":{
+                "traps": {
+                    "frame_relay": {
                         "enable": "{{ not not firewall }}",
                         "subif": {
                             "enable": "{{ not not subif }}",
@@ -1386,7 +1386,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "bridge": {
                         "enable": "{{ not not cef }}",
                         "inconsistency": "{{ not not inconsistency }}",
@@ -1408,8 +1408,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
-                    "dlsw":{
+                "traps": {
+                    "dlsw": {
                         "enable": "{{ not not dlsw }}",
                         "circuit": "{{ not not circuit }}",
                         "tconn": "{{ not not tconn }}",
@@ -1431,7 +1431,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "",
             "result": {
-                "traps":{
+                "traps": {
                     "ethernet": {
                         "cfm": {
                             "alarm": "{{ not not alarm }}",
