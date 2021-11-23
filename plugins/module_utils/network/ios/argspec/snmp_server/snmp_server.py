@@ -35,12 +35,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
         "config": {
             "options": {
                 "accounting": {
-                    "options": {
-                        "command": {"type": "str"},
-                        "command_default": {"type": "bool"},
-                        "disable_community": {"type": "str"},
-                        "disable_user": {"type": "str"},
-                    },
+                    "options": {"command": {"type": "str"}},
                     "type": "dict",
                 },
                 "cache": {"type": "int"},
@@ -67,22 +62,26 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "engine_id": {
+                    "elements": "dict",
                     "options": {
-                        "local": {"type": "str"},
+                        "id": {"type": "str"},
+                        "local": {"type": "bool"},
                         "remote": {
                             "options": {
                                 "host": {"type": "str"},
-                                "id": {"type": "str"},
                                 "udp_port": {"type": "int"},
                                 "vrf": {"type": "str"},
                             },
                             "type": "dict",
                         },
                     },
-                    "type": "dict",
+                    "type": "list",
                 },
                 "file_transfer": {
-                    "options": {"access_group": {"type": "str"}},
+                    "options": {
+                        "access_group": {"type": "str"},
+                        "protocol": {"type": "list", "elements": "str"},
+                    },
                     "type": "dict",
                 },
                 "groups": {
@@ -94,6 +93,8 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "read": {"type": "str"},
                         "version": {"choices": ["v1", "v3", "v2c"], "type": "str"},
                         "write": {"type": "str"},
+                        "acl_v4": {"type": "str"},
+                        "acl_v6": {"type": "str"},
                     },
                     "type": "list",
                 },
@@ -102,8 +103,13 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "options": {
                         "host": {"type": "str"},
                         "informs": {"type": "bool"},
-                        "traps": {"type": "bool"},
+                        "community_string": {"type": "str"},
+                        "traps": {"type": "list", "elements": "str"},
                         "version": {"choices": ["1", "2c", "3"], "type": "str"},
+                        "version_option": {
+                            "choices": ["auth", "noauth", "priv"],
+                            "type": "str",
+                        },
                         "vrf": {"type": "str"},
                     },
                     "type": "list",
@@ -143,14 +149,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "type": "list",
                 },
                 "queue_length": {"type": "int"},
-                "source_interface": {
-                    "type": "dict",
-                    "options": {
-                        "informs": {"type": "bool"},
-                        "traps": {"type": "bool"},
-                        "interface": {"type": "str"},
-                    },
-                },
+                "source_interface": {"type": "str"},
                 "system_shutdown": {"type": "bool"},
                 "trap_source": {"type": "str"},
                 "trap_timeout": {"type": "int"},
@@ -487,12 +486,17 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                 "users": {
                     "elements": "dict",
                     "options": {
-                        "access": {"type": "str"},
+                        "acl_v6": {"type": "str"},
+                        "acl_v4": {"type": "str"},
                         "group": {"type": "str"},
                         "remote": {"type": "str"},
                         "udp_port": {"type": "int"},
-                        "user": {"type": "str"},
+                        "username": {"type": "str"},
                         "version": {"choices": ["v1", "v2c", "v3"], "type": "str"},
+                        "version_option": {
+                            "choices": ["auth", "access", "encrypted"],
+                            "type": "str",
+                        },
                         "vrf": {"type": "str"},
                     },
                     "type": "list",

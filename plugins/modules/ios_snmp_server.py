@@ -81,8 +81,8 @@ options:
         type: dict
       engine_id:
         description: Configure a local or remote SNMPv3 engineID
-        suboptions:
         elements: dict
+        suboptions:
           id:
             description: engine ID octet string
             type: str
