@@ -47,8 +47,7 @@ class Snmp_server(ResourceModule):
             resource="snmp_server",
             tmplt=Snmp_serverTemplate(),
         )
-        self.parsers = [
-        ]
+        self.parsers = []
 
     def execute_module(self):
         """ Execute the module
@@ -65,8 +64,8 @@ class Snmp_server(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":

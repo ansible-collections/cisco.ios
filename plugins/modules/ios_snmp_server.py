@@ -273,12 +273,9 @@ options:
               sec_violation:
                 description: Mode sec_violation
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable auth framework
-                type: str
+                type: bool
             type: dict
           bfd:
             description: Allow SNMP BFD traps
@@ -296,30 +293,24 @@ options:
               cbgp2:
                 description: Enable BGP MIBv2 traps
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable bgp traps
-                type: str
+                type: bool
               state_changes:
                 description: Traps for FSM state changes
                 suboptions:
                   all:
                     description: CISCO specific trap for all fsm state changes
                     type: bool
-                  backward-trans:
+                  backward_trans:
                     description: CISCO specific trap for backward transition
                     type: bool
                   limited:
                     description: Trap for standard backward transition and established
                     type: bool
-                  state:
-                    choices:
-                      - enable
-                      - disable
+                  enable:
                     description: Enable/disable bgp state_changes traps
-                    type: str
+                    type: bool
                 type: dict
               threshold:
                 description: Mode threshold
@@ -327,12 +318,6 @@ options:
                   prefix:
                     description: Enable/disable bgp threshold traps
                     type: bool
-                  state:
-                    choices:
-                      - enable
-                      - disable
-                    description: Enable/disable bgp threshold traps
-                    type: str
                 type: dict
             type: dict
           bridge:
@@ -341,12 +326,9 @@ options:
               newroot:
                 description: Enable SNMP STP Bridge MIB newroot traps
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable bridge traps
-                type: str
+                type: bool
               topologychange:
                 description: Enable SNMP STP Bridge MIB topologychange traps
                 type: bool
@@ -369,12 +351,9 @@ options:
               resource_failure:
                 description: Enable SNMP CEF Resource Failure traps
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable cef traps
-                type: str
+                type: bool
             type: dict
           cnpd:
             description: Enable SNMP cnpd traps
@@ -391,12 +370,9 @@ options:
           cpu:
             description: Allow CPU related traps
             suboptions:
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable cpu traps
-                type: str
+                type: bool
               threshold:
                 description: Mode threshold
                 type: bool
@@ -410,12 +386,9 @@ options:
               circuit:
                 description: Enable SNMP dlsw circuit traps
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable cef traps
-                type: str
+                type: bool
               tconn:
                 description: Enable SNMP dlsw peer transport connection traps
                 type: bool
@@ -435,38 +408,6 @@ options:
                   alarm:
                     description: Enable SNMP Ethernet CFM fault alarm trap
                     type: bool
-                  cc:
-                    description: Enable SNMP Ethernet CC traps
-                    suboptions:
-                      config:
-                        description: Enable SNMP Ethernet CFM configuration error traps
-                        type: bool
-                      cross_connect:
-                        description: Enable SNMP Ethernet CFM cross-connect traps
-                        type: bool
-                      loop:
-                        description: Enable SNMP Ethernet CFM loop traps
-                        type: bool
-                      mep_down:
-                        description: Enable SNMP Ethernet CFM CC Down traps
-                        type: bool
-                      mep_up:
-                        description: Enable SNMP Ethernet CFM CC Up traps
-                        type: bool
-                    type: dict
-                  crosscheck:
-                    description: Enable SNMP Ethernet CC crosscheck traps
-                    suboptions:
-                      mep-missing:
-                        description: Enable SNMP Ethernet CFM CC crosscheck missing traps
-                        type: bool
-                      mep-unknown:
-                        description: Enable SNMP Ethernet CFM CC crosscheck unknown traps
-                        type: bool
-                      service-up:
-                        description: Enable SNMP Ethernet CFM CC crosscheck service traps
-                        type: bool
-                    type: dict
                 type: dict
               evc:
                 description: Enable SNMP Ethernet EVC traps
@@ -491,12 +432,9 @@ options:
           firewall:
             description: Enable SNMP firewall traps
             suboptions:
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable firewall traps
-                type: str
+                type: bool
               serverstatus:
                 description: Enable firewall server status change trap
                 type: bool
@@ -504,12 +442,9 @@ options:
           frame_relay:
             description: Allow frame-relay traps
             suboptions:
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable frame-relay traps
-                type: str
+                type: bool
               subif:
                 description: Enable SNMP frame-relay subinterface traps
                 suboptions:
@@ -519,12 +454,9 @@ options:
                   interval:
                     description: Interval duration in which to limit the number of traps sent
                     type: int
-                  state:
-                    choices:
-                      - enable
-                      - disable
+                  enable:
                     description: Enable/disable subif traps
-                    type: str
+                    type: bool
                 type: dict
             type: dict
           fru_ctrl:
@@ -620,40 +552,13 @@ options:
                 suboptions:
                   error:
                     description: error traps
-                    suboptions:
-                      config_error:
-                        description: Config mismatch errors on non-virtual interfaces
-                        type: bool
-                      shamlink:
-                        description: Config errors on sham link interfaces
-                        type: bool
-                      virt_config_error:
-                        description: Config mismatch errors on virtual interface
-                        type: bool
-                    type: dict
+                    type: bool
                   lsa:
                     description: Lsa related traps
-                    suboptions:
-                      lsa-maxage:
-                        description: Lsa aged to maxage
-                        type: bool
-                      lsa-originate:
-                        description: New lsa originated
-                        type: bool
-                    type: dict
+                    type: bool
                   retransmit:
                     description: Packet retransmit traps
-                    suboptions:
-                      packets:
-                        description: Packet retransmission on non-virtual interfaces
-                        type: bool
-                      shamlink:
-                        description: Packet retransmission on sham link interfaces
-                        type: bool
-                      virt_packets:
-                        description: Packet retransmission on virtual interfaces
-                        type: bool
-                    type: dict
+                    type: bool
                   state_change:
                     description: state change traps
                     suboptions:
@@ -674,32 +579,13 @@ options:
                 type: dict
               error:
                 description: Enable error traps
-                suboptions:
-                  authentication_failure:
-                    description: Authentication failure on non-virtual interfaces
-                    type: bool
-                  bad_packet:
-                    description: Packet parse failure on non-virtual interfaces
-                    type: bool
-                  config_error:
-                    description: Config mismatch errors on non-virtual interfaces
-                    type: bool
-                  virt_authentication_failure:
-                    description: Authentication failure on virtual interfaces
-                    type: bool
-                  virt_bad_packet:
-                    description: Packet parse failure on virtual interfaces
-                    type: bool
-                  virt_config_error:
-                    description: Config mismatch errors on virtual interfaces
-                    type: bool
-                type: dict
-              state:
-                choices:
-                  - enable
-                  - disable
-                description: Enable/disable ospf traps
-                type: str
+                type: bool
+              retransmit:
+                description: Enable/disable ospf retransmit traps
+                type: bool
+              lsa:
+                description: Enable/disable ospf lsa traps
+                type: bool
               state_change:
                 description: Enable/disable state change traps
                 type: bool
@@ -716,12 +602,9 @@ options:
               rp_mapping_change:
                 description: Enable rp mapping change trap
                 type: bool
-              state:
-                choices:
-                  - enable
-                  - disable
+              enable:
                 description: Enable/disable PIM traps
-                type: str
+                type: bool
             type: dict
           pki:
             description: Enable SNMP pki traps
