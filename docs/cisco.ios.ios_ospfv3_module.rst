@@ -5064,7 +5064,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Disble the feature</div>
+                        <div>Disable the feature</div>
                 </td>
             </tr>
             <tr>
@@ -5125,7 +5125,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Disble the feature</div>
+                        <div>Disable the feature</div>
                 </td>
             </tr>
             <tr>
@@ -6563,6 +6563,7 @@ Notes
 
 .. note::
    - Tested against Cisco IOSv Version 15.2 on VIRL.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 

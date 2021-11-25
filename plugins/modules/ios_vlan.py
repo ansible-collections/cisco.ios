@@ -31,7 +31,7 @@ deprecated:
   why: Newer and updated modules released with more functionality in Ansible 2.9
   removed_at_date: '2022-06-01'
 notes:
-- Tested against IOS 15.2
+  - Tested against IOS 15.2
 options:
   name:
     description:
