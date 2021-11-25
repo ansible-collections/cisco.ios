@@ -150,6 +150,21 @@ class Snmp_serverFacts(object):
             """
         )
 
+    def sort_list_dicts(self, objs):
+        p_key = {
+            "hosts": "host",
+            "groups": "group",
+            "engine_id": "id",
+            "communities": "name",
+            "password_policy": "policy_name",
+            "users": "username",
+            "views": "name",
+        }
+        for k, _v in p_key.items():
+            if k in objs:
+                objs[k] = sorted(objs[k], key=lambda _k: str(_k[p_key[k]]))
+        return objs
+
     def host_traps_string_to_list(self, hosts):
         for element in hosts:
             if element.get("traps", {}):
@@ -178,7 +193,9 @@ class Snmp_serverFacts(object):
         )
         objs = snmp_server_parser.parse()
 
-        self.host_traps_string_to_list(objs.get("hosts"))
+        if objs:
+            self.host_traps_string_to_list(objs.get("hosts"))
+            self.sort_list_dicts(objs)
 
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
