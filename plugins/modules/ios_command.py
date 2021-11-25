@@ -27,12 +27,15 @@ description:
   This module includes an argument that will cause the module to wait for a specific
   condition before returning or timing out if the condition is not met.
 - This module does not support running commands in configuration mode. Please use
-  M(ios_config) to configure IOS devices.
+  L(ios_config,https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module)
+  to configure IOS devices.
 version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
+  - Tested against IOS 15.6
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   commands:
     description:
@@ -114,7 +117,7 @@ EXAMPLES = r"""
       answer: 'y'
     - command: 'clear counters GigabitEthernet0/2'
       prompt: '[confirm]'
-      answer: '\r'
+      answer: "\r"
 """
 RETURN = """
 stdout:

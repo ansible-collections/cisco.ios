@@ -21,6 +21,8 @@ module: ios_acls
 notes:
   - Tested against Cisco IOSv Version 15.2 on VIRL
   - Module behavior is not idempotent when sequence for aces are not mentioned
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of ACL options.

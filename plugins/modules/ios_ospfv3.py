@@ -40,7 +40,9 @@ description: This module configures and manages the Open Shortest Path First (OS
 version_added: 1.1.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL.
+  - Tested against Cisco IOSv Version 15.2 on VIRL.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A list of configurations for ospfv3.
@@ -984,7 +986,7 @@ options:
                     description: The maximum number of retransmissions
                     type: int
                   disable:
-                    description: Disble the feature
+                    description: Disable the feature
                     type: bool
               non_dc:
                 description: Non-demand-circuit retransmissions
@@ -994,7 +996,7 @@ options:
                     description: The maximum number of retransmissions
                     type: int
                   disable:
-                    description: Disble the feature
+                    description: Disable the feature
                     type: bool
           local_rib_criteria:
             description: Enable or disable usage of local RIB as route criteria

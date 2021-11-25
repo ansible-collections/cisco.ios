@@ -3870,6 +3870,7 @@ Notes
 .. note::
    - Tested against Cisco IOSv Version 15.2 on VIRL
    - Module behavior is not idempotent when sequence for aces are not mentioned
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 
