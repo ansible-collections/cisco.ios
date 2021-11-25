@@ -88,13 +88,14 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "context": {"type": "str"},
+                        "version_option": {
+                            "choices": ["auth", "noauth", "priv"],
+                            "type": "str",
+                        },
                         "group": {"type": "str"},
                         "notify": {"type": "str"},
                         "read": {"type": "str"},
-                        "version": {
-                            "choices": ["v1", "v3", "v2c"],
-                            "type": "str",
-                        },
+                        "version": {"choices": ["v1", "v3", "v2c"], "type": "str"},
                         "write": {"type": "str"},
                         "acl_v4": {"type": "str"},
                         "acl_v6": {"type": "str"},
@@ -108,10 +109,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "informs": {"type": "bool"},
                         "community_string": {"type": "str"},
                         "traps": {"type": "list", "elements": "str"},
-                        "version": {
-                            "choices": ["1", "2c", "3"],
-                            "type": "str",
-                        },
+                        "version": {"choices": ["1", "2c", "3"], "type": "str"},
                         "version_option": {
                             "choices": ["auth", "noauth", "priv"],
                             "type": "str",
@@ -403,10 +401,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "remote": {"type": "str"},
                         "udp_port": {"type": "int"},
                         "username": {"type": "str"},
-                        "version": {
-                            "choices": ["v1", "v2c", "v3"],
-                            "type": "str",
-                        },
+                        "version": {"choices": ["v1", "v2c", "v3"], "type": "str"},
                         "version_option": {
                             "choices": ["auth", "access", "encrypted"],
                             "type": "str",
