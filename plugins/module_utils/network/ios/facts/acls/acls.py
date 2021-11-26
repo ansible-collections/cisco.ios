@@ -41,7 +41,16 @@ class AclsFacts(object):
 
     def get_acl_data(self, connection):
         # Get the access-lists from the ios router
-        return connection.get("sh access-list")
+        # Get the remarks on access-lists from the ios router
+        # alternate command 'sh run partition access-list' but has a lot of ordering issues
+        # and incomplete ACLs are not viewed correctly
+        _acl_data = connection.get("sh access-list")
+        _remarks_data = connection.get(
+            "show running-config | include ip(v6)* access-list|remark"
+        )
+        if _remarks_data:
+            _acl_data += "\n" + _remarks_data
+        return _acl_data
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
@@ -60,6 +69,7 @@ class AclsFacts(object):
 
         temp_v4 = []
         temp_v6 = []
+
         if current.get("acls"):
             for k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4":
@@ -68,38 +78,34 @@ class AclsFacts(object):
                 elif v.get("afi") == "ipv6":
                     del v["afi"]
                     temp_v6.append(v)
+
             temp_v4 = sorted(temp_v4, key=lambda i: str(i["name"]))
             temp_v6 = sorted(temp_v6, key=lambda i: str(i["name"]))
+
+            def process_protocol_options(each):
+                for each_ace in each.get("aces"):
+                    if each_ace.get("icmp_igmp_tcp_protocol"):
+                        each_ace["protocol_options"] = {
+                            each_ace["protocol"]: {
+                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
+                                    "-", "_"
+                                ): True
+                            }
+                        }
+                    if each_ace.get("protocol_number"):
+                        each_ace["protocol_options"] = {
+                            "protocol_number": each_ace.pop("protocol_number")
+                        }
+
             for each in temp_v4:
                 aces_ipv4 = each.get("aces")
                 if aces_ipv4:
-                    for each_ace in each.get("aces"):
-                        if each["acl_type"] == "standard":
-                            each_ace["source"] = each_ace.pop("std_source")
-                        if each_ace.get("icmp_igmp_tcp_protocol"):
-                            each_ace["protocol_options"] = {
-                                each_ace["protocol"]: {
-                                    each_ace.pop(
-                                        "icmp_igmp_tcp_protocol"
-                                    ).replace("-", "_"): True
-                                }
-                            }
-                        if each_ace.get("std_source") == {}:
-                            del each_ace["std_source"]
+                    process_protocol_options(each)
+
             for each in temp_v6:
                 aces_ipv6 = each.get("aces")
                 if aces_ipv6:
-                    for each_ace in each.get("aces"):
-                        if each_ace.get("std_source") == {}:
-                            del each_ace["std_source"]
-                        if each_ace.get("icmp_igmp_tcp_protocol"):
-                            each_ace["protocol_options"] = {
-                                each_ace["protocol"]: {
-                                    each_ace.pop(
-                                        "icmp_igmp_tcp_protocol"
-                                    ).replace("-", "_"): True
-                                }
-                            }
+                    process_protocol_options(each)
 
         objs = []
         if temp_v4:

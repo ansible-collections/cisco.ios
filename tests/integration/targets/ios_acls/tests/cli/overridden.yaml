@@ -38,6 +38,7 @@
               - name: 123
                 aces:
                   - grant: deny
+                    sequence: 10
                     protocol_options:
                       tcp:
                         ack: true
@@ -54,6 +55,7 @@
               - name: 150
                 aces:
                   - grant: deny
+                    sequence: 10
                     protocol_options:
                       tcp:
                         syn: true
