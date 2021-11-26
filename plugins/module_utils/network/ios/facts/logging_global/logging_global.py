@@ -47,6 +47,7 @@ class Logging_globalFacts(object):
         :returns: facts
         """
         facts = {}
+        objFinal = []
 
         if not data:
             data = self.get_logging_data(connection)

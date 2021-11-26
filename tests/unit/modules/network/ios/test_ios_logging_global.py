@@ -762,8 +762,8 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging history notifications
             logging origin-id hostname
             logging source-interface GigabitEthernet0 vrf Mgmt-intf
-            logging host 10.54.224.192 transport udp port 10000
-            logging host 10.45.6.1
+            logging host 172.16.0.1 transport udp port 10000
+            logging host 172.16.0.2
             """
         )
         playbook = {
@@ -771,9 +771,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 "buffered": {"size": 64000},
                 "history": {"severity": "notifications"},
                 "hosts": [
-                    {"hostname": "10.54.224.192", "vrf": "Mgmt-intf"},
-                    {"hostname": "10.52.249.14", "vrf": "Mgmt-intf"},
-                    {"hostname": "10.204.6.13", "vrf": "Mgmt-intf"},
+                    {"hostname": "172.16.0.1", "vrf": "Mgmt-intf"},
+                    {"hostname": "172.16.0.3", "vrf": "Mgmt-intf"},
+                    {"hostname": "172.16.0.4", "vrf": "Mgmt-intf"},
                 ],
                 "origin_id": {"tag": "hostname"},
                 "rate_limit": {
@@ -790,10 +790,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
         replaced = [
             "logging rate-limit console 10 except errors",
             "logging trap informational",
-            "logging host 10.54.224.192 vrf Mgmt-intf",
-            "logging host 10.52.249.14 vrf Mgmt-intf",
-            "logging host 10.204.6.13 vrf Mgmt-intf",
-            "no logging host 10.45.6.1",
+            "logging host 172.16.0.1 vrf Mgmt-intf",
+            "logging host 172.16.0.3 vrf Mgmt-intf",
+            "logging host 172.16.0.4 vrf Mgmt-intf",
+            "no logging host 172.16.0.2",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
