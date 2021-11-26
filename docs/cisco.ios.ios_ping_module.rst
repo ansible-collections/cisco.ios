@@ -18,9 +18,9 @@ Version added: 1.0.0
 Synopsis
 --------
 - Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the :ref:`net_ping <net_ping_module>` module.
-- For Windows targets, use the :ref:`win_ping <win_ping_module>` module instead.
-- For targets running Python, use the :ref:`ping <ping_module>` module instead.
+- For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
+- For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
+- For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.
 
 
 
@@ -100,7 +100,7 @@ Parameters
                 <td>
                         <div><b>Deprecated</b></div>
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
-                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>IOS Platform Options guide</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -310,9 +310,9 @@ Notes
 -----
 
 .. note::
-   - For a general purpose network module, see the :ref:`net_ping <net_ping_module>` module.
-   - For Windows targets, use the :ref:`win_ping <win_ping_module>` module instead.
-   - For targets running Python, use the :ref:`ping <ping_module>` module instead.
+   - For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
+   - For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
+   - For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 

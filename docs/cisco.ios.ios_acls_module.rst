@@ -3109,6 +3109,25 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>remarks</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The remarks/description of the ACL.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>sequence</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -3838,7 +3857,7 @@ Parameters
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
-                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | include ip route|ipv6 route</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show access-list</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
                 </td>
             </tr>
     </table>
@@ -3850,6 +3869,8 @@ Notes
 
 .. note::
    - Tested against Cisco IOSv Version 15.2 on VIRL
+   - Module behavior is not idempotent when sequence for aces are not mentioned
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 
@@ -3946,6 +3967,9 @@ Examples
                 eq: 10
           - name: 123
             aces:
+            - remarks:
+              - "remarks for extended ACL 1"
+              - "check ACL"
             - grant: deny
               protocol_options:
                 tcp:
@@ -4008,6 +4032,8 @@ Examples
     # - ip access-list extended 123
     # - deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     # - deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+    # - remark remarks for extended ACL 1
+    # - remark check ACL
     # - ipv6 access-list R1_TRAFFIC
     # - deny tcp any eq www any eq telnet ack dscp af11
 
@@ -4651,15 +4677,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>after</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when changed</td>
                 <td>
-                            <div>The configuration as structured data after module completion.</div>
+                            <div>The resulting configuration after module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -4668,15 +4694,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>before</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The configuration as structured data prior to module invocation.</div>
+                            <div>The configuration prior to the module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -4688,12 +4714,63 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The set of commands pushed to the remote device</div>
+                            <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list extended 110&#x27;, &#x27;deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list extended 110&#x27;, &#x27;deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10&#x27;, &#x27;permit ip host 2.2.2.2 host 3.3.3.3&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list extended test&#x27;, &#x27;permit ip host 2.2.2.2 host 3.3.3.3&#x27;, &#x27;permit tcp host 1.1.1.1 host 5.5.5.5 eq www&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -4708,3 +4785,4 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)

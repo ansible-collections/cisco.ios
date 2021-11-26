@@ -183,9 +183,9 @@
 
     - assert:
         that:
-          - result.commands|length == 9
+          - result.commands|length == 11
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
+          - result.commands|symmetric_difference(rtt_overriden.commands) == []
 
     - name: Revert back to base config using facts round trip
       register: revert
