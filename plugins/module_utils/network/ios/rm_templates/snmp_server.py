@@ -35,7 +35,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\saccounting\scommands
                 (\s(?P<command>\S+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server accounting commands {{ accounting.command }}",
             "result": {
                 "accounting": {
                     "command": "{{ command }}",
@@ -49,7 +49,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\scache\sinterval
                 (\s(?P<interval>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server cache interval {{ cache }}",
             "result": {
                 "cache": "{{ interval }}",
             },
@@ -61,7 +61,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\schassis-id
                 (\s(?P<uqString>.+$))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server chassis-id {{ chassis_id }}",
             "result": {
                 "chassis_id": "{{ uqString }}",
             },
@@ -78,7 +78,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sipv6\s(?P<acl_v6>\S+))?
                 (\s(?P<acl_v4>\S+|\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server community "
+                      "{{ name }}"
+                      "{{ (' view ' + view if view is defined else '' }}"
+                      "{{ ' ro' if ro|d(False) else ''}}"
+                      "{{ ' rw' if rw|d(False) else ''}}"
+                      "{{ (' ipv6 ' + acl_v6 if acl_v6 is defined else '' }}"
+                      "{{ (' ' + acl_v4 if acl_v4 is defined else '' }}",
             "result": {
                 "communities": [
                     {
@@ -99,7 +105,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\scontact
                 (\s(?P<contact>.+$))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server contact {{ contact }}",
             "result": {
                 "contact": "{{ contact }}",
             },
@@ -111,7 +117,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\scontext
                 (\s(?P<context>\S+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server context {{ context }}",
             "result": {
                 "context": ["{{ context }}", ],
             },
@@ -124,7 +130,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<vrf_traffic>vrf-traffic))?
                 (\s(?P<unknown_user>unknown-user))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server drop"
+                      "{{ (' vrf-traffic' + vrf_traffic if vrf_traffic is defined else '' }}"
+                      "{{ (' unknown-user' + unknown_user if unknown_user is defined else '' }}",
             "result": {
                 "drop": {
                     "vrf_traffic": "{{ not not vrf_traffic }}",
@@ -328,7 +336,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\sifindex
                 (\s(?P<if_index>persist))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server ifindex persist",
             "result": {
                 "if_index": "{{ not not if_index }}",
             },
@@ -342,7 +350,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sretries\s(?P<retries>\d+))?
                 (\stimeout\s(?P<timeout>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server inform"
+                      "{{ (' pending ' + pending) if pending is defined else '' }}"
+                      "{{ (' retries ' + retries) if retries is defined else '' }}"
+                      "{{ (' timeout ' + timeout) if timeout is defined else '' }}",
             "result": {
                 "inform": {
                     "pending": "{{ pending }}",
@@ -359,7 +370,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<dscp>\d+))?
                 (\sprecedence(?P<precedence>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server ip dscp"
+                      "{{ (dscp) if dscp is defined else '' }}"
+                      "{{ (' precedence ' + precedence) if precedence is defined else '' }}",
             "result": {
                 "ip": {
                     "dscp": "{{ dscp }}",
@@ -374,7 +387,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\slocation
                 (\s(?P<location>.+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server location {{ location }}",
             "result": {
                 "location": "{{ location }}",
             },
@@ -386,7 +399,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\smanager
                 (\ssession-timeout\s(?P<manager>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server manager session-timeout {{ manager }}",
             "result": {
                 "manager": "{{ manager }}",
             },
@@ -398,7 +411,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\spacketsize
                 (\s(?P<packet_size>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server packetsize {{ packet_size }}",
             "result": {
                 "packet_size": "{{ packet_size }}",
             },
@@ -410,7 +423,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\squeue-length
                 (\s(?P<queue_length>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server queue-length {{ queue_length }}",
             "result": {
                 "queue_length": "{{ queue_length }}",
             },
@@ -423,7 +436,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\strap\stimeout
                 (\s(?P<ttimeout>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server trap timeout {{ trap_timeout }}",
             "result": {
                 "trap_timeout": "{{ ttimeout }}",
             },
