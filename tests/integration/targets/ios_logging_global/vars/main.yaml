@@ -148,19 +148,8 @@ parsed:
 
 rendered:
   commands:
-    - logging discriminator msglog01 severity includes 5
-    - logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
-    - logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
-    - logging host 172.16.1.1
-    - logging host 172.16.1.11 xml
-    - logging host 172.16.1.11 transport tcp port 514
-    - logging host 172.16.1.10 filtered stream 10
-    - logging message-counter log
-    - logging message-counter syslog
-    - logging source-interface GBit1/0
-    - logging source-interface CTunnel2
-    - logging buginf
     - logging buffered xml 5099 notifications
+    - logging buginf
     - logging cns-events warnings
     - logging console xml critical
     - logging count
@@ -171,6 +160,7 @@ rendered:
     - logging facility local5
     - logging history alerts
     - logging monitor warnings
+    - no logging on
     - logging origin-id hostname
     - logging persistent batch 4444
     - logging policy-firewall rate-limit 10
@@ -180,4 +170,13 @@ rendered:
     - logging server-arp
     - logging trap errors
     - logging userinfo
-    - no logging on
+    - logging host 172.16.1.1
+    - logging host 172.16.1.11 transport tcp port 514
+    - logging host 172.16.1.10 filtered stream 10
+    - logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
+    - logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
+    - logging source-interface GBit1/0
+    - logging source-interface CTunnel2
+    - logging message-counter log
+    - logging message-counter syslog
+    - logging discriminator msglog01 severity includes
