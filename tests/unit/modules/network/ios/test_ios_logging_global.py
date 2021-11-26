@@ -799,7 +799,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], replaced)
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def test_ios_logging_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
