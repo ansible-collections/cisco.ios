@@ -20,6 +20,134 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def cmd_option_engine_id(config_data):
+    cmd = ""
+    if config_data:
+        cmd = "snmp-server engineID "
+        if config_data.get("local"):
+            cmd += " local"
+        if config_data.get("remote"):
+            rm = config_data.get("remote")
+            if rm.get("host"):
+                cmd += " remote {host}".format(host=rm.get("host"))
+            if rm.get("udp_port"):
+                cmd += " udp-port {udp_port}".format(
+                    udp_port=rm.get("udp_port")
+                )
+            if rm.get("vrf"):
+                cmd += " vrf {vrf}".format(vrf=rm.get("vrf"))
+        if config_data.get("id"):
+            cmd += " {id}".format(id=config_data.get("id"))
+    return cmd
+
+
+def cmd_option_file_transfer(config_data):  # for loop
+    cmd = ""
+    if config_data.get("file_transfer"):
+        conf = config_data.get("file_transfer")
+        cmd = "snmp-server file-transfer"
+        if conf.get("access_group"):
+            cmd += "access-group {ag}".format(ag=conf.get("access_group"))
+        if conf.get("protocol"):
+            cmd += " protocol"
+            for protocol in conf.get("protocol"):
+                cmd += " {protocol}".format(protocol=protocol)
+    return cmd
+
+
+def cmd_option_context(config_data):  # for loop
+    cmd = ""
+    if config_data.get("context"):
+        conf = config_data.get("context")
+        cmd = "snmp-server context"
+        for protocol in conf:
+            cmd += " {protocol}".format(protocol=protocol)
+    return cmd
+
+
+def cmd_option_groups(config_data):
+    cmd = ""
+    if config_data:
+        cmd = "snmp-server group"
+        if config_data.get("group"):
+            cmd += " {group}".format(group=config_data.get("group"))
+        if config_data.get("version"):
+            cmd += " {version}".format(version=config_data.get("version"))
+        if config_data.get("version_option"):
+            cmd += " {version}".format(
+                version=config_data.get("version_option")
+            )
+        if config_data.get("context"):
+            cmd += " context {context}".format(
+                context=config_data.get("context")
+            )
+        if config_data.get("notify"):
+            cmd += " notify {notify}".format(notify=config_data.get("notify"))
+        if config_data.get("read"):
+            cmd += " read {read}".format(read=config_data.get("read"))
+        if config_data.get("write"):
+            cmd += " write {write}".format(write=config_data.get("write"))
+        if config_data.get("acl_v4"):
+            cmd += " access {acl_v4}".format(acl_v4=config_data.get("acl_v4"))
+        if config_data.get("acl_v6"):
+            cmd += " access  ipv6 {acl_v6}".format(
+                acl_v6=config_data.get("acl_v6")
+            )
+    return cmd
+
+
+def cmd_option_hosts(config_data):  # for loop
+    cmd = ""
+    if config_data:
+        cmd = "snmp-server host"
+        if config_data.get("host"):
+            cmd += " {host}".format(host=config_data.get("host"))
+        if config_data.get("informs"):
+            cmd += " informs"
+        if config_data.get("version"):
+            cmd += " version {version}".format(
+                version=config_data.get("version")
+            )
+        if config_data.get("version_option"):
+            cmd += " {version}".format(
+                version=config_data.get("version_option")
+            )
+        if config_data.get("vrf"):
+            cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
+        if config_data.get("community_string"):
+            cmd += " {community_string}".format(
+                community_string=config_data.get("community_string")
+            )
+        if config_data.get("traps"):
+            for protocol in config_data.get("traps"):
+                cmd += " {protocol}".format(protocol=protocol)
+    return cmd
+
+
+def cmd_option_trap_bgp(config_data):
+    cmd = ""
+    conf = config_data.get("traps", {}).get("bgp", {})
+    if conf:
+        if conf.get("enable"):
+            cmd += "snmp-server enable traps bgp"
+        if conf.get("cbgp2"):
+            cmd += " cbgp2"
+        if conf.get("state_changes"):
+            if conf.get("state_changes").get("enable"):
+                cmd += " state-changes"
+            if conf.get("state_changes").get("all"):
+                cmd += " all"
+            if conf.get("state_changes").get("backward_trans"):
+                cmd += " backward-trans"
+            if conf.get("state_changes").get("limited"):
+                cmd += " limited"
+        if conf.get("threshold"):
+            cmd += " threshold"
+            if conf.get("threshold").get("prefix"):
+                cmd += " prefix"
+    return cmd
+
+
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Snmp_serverTemplate, self).__init__(
@@ -80,11 +208,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server community "
                       "{{ name }}"
-                      "{{ (' view ' + view if view is defined else '' }}"
+                      "{{ (' view ' + view) if view is defined else '' }}"
                       "{{ ' ro' if ro|d(False) else ''}}"
                       "{{ ' rw' if rw|d(False) else ''}}"
-                      "{{ (' ipv6 ' + acl_v6 if acl_v6 is defined else '' }}"
-                      "{{ (' ' + acl_v4 if acl_v4 is defined else '' }}",
+                      "{{ (' ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
+                      "{{ (' ' + acl_v4) if acl_v4 is defined else '' }}",
             "result": {
                 "communities": [
                     {
@@ -117,7 +245,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\scontext
                 (\s(?P<context>\S+))?
                 """, re.VERBOSE),
-            "setval": "snmp-server context {{ context }}",
+            "setval": cmd_option_context,
             "result": {
                 "context": ["{{ context }}", ],
             },
@@ -131,8 +259,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<unknown_user>unknown-user))?
                 """, re.VERBOSE),
             "setval": "snmp-server drop"
-                      "{{ (' vrf-traffic' + vrf_traffic if vrf_traffic is defined else '' }}"
-                      "{{ (' unknown-user' + unknown_user if unknown_user is defined else '' }}",
+                      "{{ ' vrf-traffic' if vrf_traffic is defined else '' }}"
+                      "{{ ' unknown-user' if unknown_user is defined else '' }}",
             "result": {
                 "drop": {
                     "vrf_traffic": "{{ not not vrf_traffic }}",
@@ -151,7 +279,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<id>\S+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": cmd_option_engine_id,
             "result": {
                 "engine_id": [
                     {
@@ -174,7 +302,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\saccess-group\s(?P<access_group>\S+))?
                 (\sprotocol\s(?P<protocol>ftp|rcp|tftp))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": cmd_option_file_transfer,
             "result": {
                 "file_transfer": {
                     "access_group": "{{ access_group }}",
@@ -197,7 +325,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\saccess\s(?P<acl_v4>\S+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": cmd_option_groups,
             "result": {
                 "groups": [
                     {
@@ -227,7 +355,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<community_string>\w+))?
                 (\s+(?P<traps>.+$))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": cmd_option_hosts,
             "result": {
                 "hosts": [
                     {
@@ -258,7 +386,17 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sdigits\s(?P<digits>\d+))?
                 (\schange\s(?P<change>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server password-policy "
+                      "{{ policy_name if policy_name is defined else '' }}"
+                      "{{ 'define' if define is defined else '' }}"
+                      "{{ (' user ' + username) if username is defined else '' }}"
+                      "{{ (' min-len ' + min_len|string) if min_len is defined else '' }}"
+                      "{{ (' max-len ' + max_len|string) if max_len is defined else '' }}"
+                      "{{ (' upper-case ' + upper_case|string) if upper_case is defined else '' }}"
+                      "{{ (' lower-case ' + lower_case|string) if lower_case is defined else '' }}"
+                      "{{ (' special-char ' + special_char|string) if special_char is defined else '' }}"
+                      "{{ (' digits ' + digits|string) if digits is defined else '' }}"
+                      "{{ (' change ' + change|string) if change is defined else '' }}",
             "result": {
                 "password_policy": [
                     {
@@ -290,7 +428,16 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server user "
+                      "{{ username if username is defined else '' }}"
+                      "{{ (' ' + group) if group is defined else '' }}"
+                      "{{ (' remote ' + remote) if remote is defined else '' }}"
+                      "{{ (' udp-port ' + udp_port|string) if udp_port is defined else '' }}"
+                      "{{ (' ' + version) if version is defined else '' }}"
+                      "{{ (' ' + version_option) if version_option is defined else '' }}"
+                      "{{ (' access ' + acl_v4|string) if acl_v4 is defined else '' }}"
+                      "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
+                      "{{ (' vrf ' + vrf) if vrf is defined else '' }}",
             "result": {
                 "users": [
                     {
@@ -317,7 +464,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<excluded>excluded))?
                 (\s(?P<included>included))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server view "
+                      "{{ name if name is defined else '' }}"
+                      "{{ (' ' + family_name) if family_name is defined else '' }}"
+                      "{{ ' excluded' if excluded is defined else '' }}"
+                      "{{ ' included' if included is defined else '' }}",
             "result": {
                 "users": [
                     {
@@ -428,7 +579,6 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "queue_length": "{{ queue_length }}",
             },
         },
-
         {
             "name": "trap_timeout",
             "getval": re.compile(
@@ -473,7 +623,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sauth-framework
                 (\s(?P<sec_violation>sec-violation))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server enable traps"
+                      "{{ (' auth-framework') if traps.auth_framework.enable is defined else '' }}"
+                      "{{ (' sec-violation') if traps.auth_framework.sec_violation is defined else '' }}",
             "result": {
                 "traps": {
                     "auth_framework": {
@@ -491,7 +643,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<session_down>session-down))?
                 (\s(?P<session_up>session-up))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server enable traps bfd"
+                      "{{ (' session-down') if traps.bfd.session_down is defined else '' }}"
+                      "{{ (' session-up') if traps.bfd.session_up is defined else '' }}",
             "result": {
                 "traps": {
                     "bfd": {
@@ -513,7 +667,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<limited>limited))?
                 (\sthreshold(?P<prefix>prefix))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": cmd_option_trap_bgp,
             "result": {
                 "traps": {
                     "bgp": {
@@ -540,7 +694,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<newroot>newroot))?
                 (\s(?P<topologychange>topologychange))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps bridge' if traps.bridge.enable is defined else '' }}"
+                      "{{ (' newroot') if traps.bridge.newroot|d(False) is defined else '' }}"
+                      "{{ (' topologychange') if traps.bridge.topologychange|d(False) is defined else '' }}",
             "result": {
                 "traps": {
                     "bridge": {
@@ -1229,10 +1385,11 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.cpu",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\traps\scpu
+                ^snmp-server\senable\straps\scpu
                 (\s(?P<threshold>threshold))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps cpu' if traps.cpu.enable is defined else '' }}"
+                      "{{ ' threshold' if traps.cpu.threshold is defined else '' }}",
             "result": {
                 "traps": {
                     "cpu": {
@@ -1249,7 +1406,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sfirewall
                 (\s(?P<serverstatus>serverstatus))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps firewall' if traps.firewall.enable is defined else '' }}"
+                      "{{ ' serverstatus' if traps.firewall.serverstatus|d(False) else ''}}",
             "result": {
                 "traps": {
                     "firewall": {
@@ -1268,7 +1426,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<rp_mapping_change>rp-mapping-change))?
                 (\s(?P<invalid_pim_message>invalid-pim-message))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps pim' if traps.pim.enable is defined else '' }}"
+                      "{{ ' neighbor-change' if traps.pim.neighbor_change|d(False) else ''}}"
+                      "{{ ' rp-mapping-change' if traps.pim.rp_mapping_change|d(False) else ''}}"
+                      "{{ ' invalid-pim-message' if traps.pim.invalid_pim_message|d(False) else ''}}",
             "result": {
                 "traps": {
                     "pim": {
@@ -1291,7 +1452,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<coldstart>coldstart))?
                 (\s(?P<warmstart>warmstart))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server enable traps snmp"
+                      "{{ ' authentication' if traps.snmp.authentication is defined else '' }}"
+                      "{{ ' linkdown' if traps.snmp.linkdown|d(False) else ''}}"
+                      "{{ ' linkup' if traps.snmp.linkup|d(False) else ''}}"
+                      "{{ ' warmstart' if traps.snmp.warmstart|d(False) else ''}}"
+                      "{{ ' coldstart' if traps.snmp.coldstart|d(False) else ''}}",
             "result": {
                 "traps": {
                     "snmp": {
@@ -1313,7 +1479,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\scount(?P<count>\d+))?
                 (\sinterval(?P<interval>\d+))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ ' snmp-server enable traps frame-relay' if traps.frame_relay.enable is defined else '' }}"
+                      "{{ ' subif' if traps.frame_relay.subif is defined else '' }}"
+                      "{{ (' count ' + count|string) if traps.frame_relay.count else '' }}"
+                      "{{ (' interval ' + interval|string) if traps.frame_relay.interval else '' }}",
             "result": {
                 "traps": {
                     "frame_relay": {
@@ -1337,7 +1506,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<peer_fib_state_change>peer-fib-state-change))?
                 (\s(?P<inconsistency>inconsistency))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps cef' if traps.cef.enable is defined else '' }}"
+                      "{{ ' resource-failure' if traps.cef.resource_failure|d(False) else ''}}"
+                      "{{ ' peer-state-change' if traps.cef.peer_state_change|d(False) else ''}}"
+                      "{{ ' peer-fib-state-change' if traps.cef.peer_fib_state_change|d(False) else ''}}"
+                      "{{ ' inconsistency' if traps.cef.inconsistency|d(False) else ''}}",
             "result": {
                 "traps": {
                     "cef": {
@@ -1358,7 +1531,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<circuit>circuit))?
                 (\s(?P<tconn>tconn))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "{{ 'snmp-server enable traps dlsw' if traps.dlsw.enable is defined else '' }}"
+                      "{{ ' circuit' if traps.dlsw.circuit|d(False) else ''}}"
+                      "{{ ' tconn' if traps.dlsw.tconn|d(False) else ''}}",
             "result": {
                 "traps": {
                     "dlsw": {
@@ -1381,7 +1556,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<delete>delete))?
                 (\s(?P<status>status))?
                 """, re.VERBOSE),
-            "setval": "",
+            "setval": "snmp-server enable traps ethernet"
+                      "{{ ' alarm' if traps.ethernet.cfm.alarm|d(False) is defined else '' }}"
+                      "{{ ' create' if traps.ethernet.evc.create|d(False) else ''}}"
+                      "{{ ' delete' if traps.ethernet.evc.delete|d(False) else ''}}"
+                      "{{ ' status' if traps.ethernet.evc.status|d(False) else ''}}",
             "result": {
                 "traps": {
                     "ethernet": {
