@@ -679,6 +679,9 @@ options:
           isis:
             description: Enable SNMP isis traps
             type: bool
+          pw_vc:
+            description: Enable SNMP pw vc traps
+            type: bool
           snmp:
             description: Enable SNMP traps
             suboptions:

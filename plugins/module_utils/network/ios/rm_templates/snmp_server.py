@@ -658,6 +658,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sthreshold(?P<prefix>prefix))?
                 """, re.VERBOSE),
             "setval": cmd_option_trap_bgp,
+            "remval": "snmp-server enable traps bgp",
             "result": {
                 "traps": {
                     "bgp": {
@@ -902,6 +903,19 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "traps": {
                     "msdp": True,
+                },
+            },
+        },
+        {
+            "name": "traps.pw_vc",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\spw\svc$
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps pw vc",
+            "result": {
+                "traps": {
+                    "pw_vc": True,
                 },
             },
         },

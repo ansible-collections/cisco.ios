@@ -95,10 +95,12 @@ class Snmp_server(ResourceModule):
             "traps.fru_ctrl",
             "traps.hsrp",
             "traps.ipsla",
+            "traps.isis",
             "traps.msdp",
             "traps.mvpn",
             "traps.mpls_vpn",
             "traps.pki",
+            "traps.pw_vc",
             "traps.rsvp",
             "traps.syslog",
             "traps.transceiver_all",
@@ -167,16 +169,8 @@ class Snmp_server(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            # haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
-        # # remove superfluous config for overridden and deleted
-        # if self.state in ["overridden", "deleted"]:
-        #     for k, have in iteritems(haved):
-        #         if k not in wantd:
-        #             self._compare(want={}, have=have)
-
-        # for k, want in iteritems(wantd):
         self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):

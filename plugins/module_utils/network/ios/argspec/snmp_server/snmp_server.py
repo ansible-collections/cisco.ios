@@ -420,6 +420,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "pki": {"type": "bool"},
                         "rsvp": {"type": "bool"},
                         "isis": {"type": "bool"},
+                        "pw_vc": {"type": "bool"},
                         "snmp": {
                             "options": {
                                 "authentication": {"type": "bool"},
