@@ -47,7 +47,7 @@ class Logging_globalFacts(object):
         :returns: facts
         """
         facts = {}
-        objs = []
+        objFinal = []
 
         if not data:
             data = self.get_logging_data(connection)
@@ -56,8 +56,8 @@ class Logging_globalFacts(object):
         logging_global_parser = Logging_globalTemplate(
             lines=data.splitlines(), module=self._module
         )
-        objs = list(logging_global_parser.parse().values())
-        objFinal = objs[0] if len(objs) >= 1 else {}
+        objFinal = logging_global_parser.parse()
+
         if objFinal:
             for k, v in iteritems(objFinal):
                 if type(v) == list and k not in [
@@ -89,9 +89,8 @@ class Logging_globalFacts(object):
                 self.argument_spec, {"config": objFinal}, redact=True
             )
         )
-        if not objFinal:
-            params["config"] = {}
-        facts["logging_global"] = params["config"]
+
+        facts["logging_global"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

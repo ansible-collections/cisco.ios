@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`ios_logging_global` - fix wrong ordering of commands fired on replaced state."
+  - "`ios_logging_global` - fix host ipv6 commands not parsed correctly."
