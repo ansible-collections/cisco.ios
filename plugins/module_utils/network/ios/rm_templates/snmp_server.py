@@ -858,7 +858,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.msdp",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\smsdp
+                ^snmp-server\senable\straps\smsdp$
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps msdp",
             "result": {
@@ -876,7 +876,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "setval": "snmp-server enable traps mvpn",
             "result": {
                 "traps": {
-                    "msdp": True,
+                    "mvpn": True,
                 },
             },
         },
@@ -1538,7 +1538,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.ethernet.evc",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\sethernet\secv
+                ^snmp-server\senable\straps\sethernet\sevc
                 (\s(?P<status>status))?
                 (\s(?P<create>create))?
                 (\s(?P<delete>delete))?
@@ -1630,7 +1630,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "traps": {
                     "ethernet": {
                         "cfm": {
-                            "alarm": "{{ not not alarm }}",
+                            "alarm": True,
                         },
                     },
                 },

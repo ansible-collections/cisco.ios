@@ -184,6 +184,7 @@ class Snmp_serverFacts(object):
         """
         facts = {}
         objs = []
+        params = {}
 
         if not data:
             data = self.get_snmp_data(connection)
@@ -206,7 +207,7 @@ class Snmp_serverFacts(object):
             )
         )
 
-        facts["snmp_server"] = params["config"]
+        facts["snmp_server"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

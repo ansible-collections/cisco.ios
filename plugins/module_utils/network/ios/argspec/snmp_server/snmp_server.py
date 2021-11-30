@@ -168,6 +168,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         },
                         "bfd": {
                             "options": {
+                                "enable": {"type": "bool"},
                                 "session_down": {"type": "bool"},
                                 "session_up": {"type": "bool"},
                             },
