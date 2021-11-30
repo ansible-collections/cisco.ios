@@ -31,7 +31,9 @@ def cmd_option_engine_id(config_data):
             if rm.get("host"):
                 cmd += "remote {host}".format(host=rm.get("host"))
             if rm.get("udp_port"):
-                cmd += " udp-port {udp_port}".format(udp_port=rm.get("udp_port"))
+                cmd += " udp-port {udp_port}".format(
+                    udp_port=rm.get("udp_port")
+                )
             if rm.get("vrf"):
                 cmd += " vrf {vrf}".format(vrf=rm.get("vrf"))
         if config_data.get("id"):
@@ -62,9 +64,13 @@ def cmd_option_groups(config_data):
         if config_data.get("version"):
             cmd += " {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
-            cmd += " {version}".format(version=config_data.get("version_option"))
+            cmd += " {version}".format(
+                version=config_data.get("version_option")
+            )
         if config_data.get("context"):
-            cmd += " context {context}".format(context=config_data.get("context"))
+            cmd += " context {context}".format(
+                context=config_data.get("context")
+            )
         if config_data.get("notify"):
             cmd += " notify {notify}".format(notify=config_data.get("notify"))
         if config_data.get("read"):
@@ -74,7 +80,9 @@ def cmd_option_groups(config_data):
         if config_data.get("acl_v4"):
             cmd += " access {acl_v4}".format(acl_v4=config_data.get("acl_v4"))
         if config_data.get("acl_v6"):
-            cmd += " access  ipv6 {acl_v6}".format(acl_v6=config_data.get("acl_v6"))
+            cmd += " access  ipv6 {acl_v6}".format(
+                acl_v6=config_data.get("acl_v6")
+            )
     return cmd
 
 
@@ -87,9 +95,13 @@ def cmd_option_hosts(config_data):  # for loop
         if config_data.get("informs"):
             cmd += " informs"
         if config_data.get("version"):
-            cmd += " version {version}".format(version=config_data.get("version"))
+            cmd += " version {version}".format(
+                version=config_data.get("version")
+            )
         if config_data.get("version_option"):
-            cmd += " {version}".format(version=config_data.get("version_option"))
+            cmd += " {version}".format(
+                version=config_data.get("version_option")
+            )
         if config_data.get("vrf"):
             cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
@@ -790,6 +802,19 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "traps.energywise",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senergywise$
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps energywise",
+            "result": {
+                "traps": {
+                    "energywise": True,
+                },
+            },
+        },
+        {
             "name": "traps.event_manager",
             "getval": re.compile(
                 r"""
@@ -877,6 +902,19 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "traps": {
                     "mvpn": True,
+                },
+            },
+        },
+        {
+            "name": "traps.mpls_vpn",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\smpls\svpn
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps mpls vpn",
+            "result": {
+                "traps": {
+                    "mpls_vpn": True,
                 },
             },
         },
@@ -1415,6 +1453,32 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "neighbor_change": "{{ not not neighbor_change }}",
                         "rp_mapping_change": "{{ not not rp_mapping_change }}",
                         "invalid_pim_message": "{{ not not invalid_pim_message }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.vrfmib",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\svrfmib
+                (\s(?P<vrf_up>vrf-up))?
+                (\s(?P<vrf_down>vrf-down))?
+                (\s(?P<vnet_trunk_up>vnet-trunk-up))?
+                (\s(?P<vnet_trunk_down>vnet-trunk-down))?
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps vrfmib"
+                      "{{ ' vrf-up' if traps.vrfmib.vrf_up|d(False) else ''}}"
+                      "{{ ' vrf-down' if traps.vrfmib.vrf_down|d(False) else ''}}"
+                      "{{ ' vnet-trunk-up' if traps.vrfmib.vnet_trunk_up|d(False) else ''}}"
+                      "{{ ' vnet-trunk-down' if traps.vrfmib.vnet_trunk_down|d(False) else ''}}",
+            "result": {
+                "traps": {
+                    "vrfmib": {
+                        "vrf_up": "{{ not not vrf_up }}",
+                        "vrf_down": "{{ not not vrf_down }}",
+                        "vnet_trunk_up": "{{ not not vnet_trunk_up }}",
+                        "vnet_trunk_down": "{{ not not vnet_trunk_down }}",
                     },
                 },
             },

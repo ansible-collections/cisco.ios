@@ -409,6 +409,9 @@ options:
           entity:
             description: Enable SNMP entity traps
             type: bool
+          energywise:
+            description: Enable SNMP energywise traps
+            type: bool
           ethernet:
             description: Allow ethernet traps
             suboptions:
@@ -586,6 +589,9 @@ options:
           mvpn:
             description: Enable SNMP mvpn traps
             type: bool
+          mpls_vpn:
+            description: Enable SNMP mpls traps
+            type: bool
           ospf:
             description: Allow ospf related traps
             suboptions:
@@ -646,6 +652,22 @@ options:
                 type: bool
               enable:
                 description: Enable/disable PIM traps
+                type: bool
+            type: dict
+          vrfmib:
+            description: Allow vrfmib traps
+            suboptions:
+              vrf_up:
+                description: Enable vrf-up trap
+                type: bool
+              vrf_down:
+                description: Enable vrf-down trap
+                type: bool
+              vnet_trunk_up:
+                description: Enable vnet-trunk-up trap
+                type: bool
+              vnet_trunk_down:
+                description: Enable vnet-trunk-down traps
                 type: bool
             type: dict
           pki:

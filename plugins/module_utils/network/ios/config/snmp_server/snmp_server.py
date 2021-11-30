@@ -89,6 +89,7 @@ class Snmp_server(ResourceModule):
             "traps.dhcp",
             "traps.eigrp",
             "traps.entity",
+            "traps.energywise",
             "traps.event_manager",
             "traps.flowmon",
             "traps.fru_ctrl",
@@ -96,12 +97,14 @@ class Snmp_server(ResourceModule):
             "traps.ipsla",
             "traps.msdp",
             "traps.mvpn",
+            "traps.mpls_vpn",
             "traps.pki",
             "traps.rsvp",
             "traps.syslog",
             "traps.transceiver_all",
             "traps.tty",
             "traps.vrrp",
+            "traps.vrfmib",
             "traps.ipmulticast",
             "traps.ike.policy.add",
             "traps.ike.policy.delete",
@@ -227,5 +230,7 @@ class Snmp_server(ResourceModule):
                 elif k == "context":
                     tmp_data[k] = {i: {"context": i} for i in tmp_data[k]}
                 else:
-                    tmp_data[k] = {str(i[p_key.get(k)]): i for i in tmp_data[k]}
+                    tmp_data[k] = {
+                        str(i[p_key.get(k)]): i for i in tmp_data[k]
+                    }
         return tmp_data
