@@ -166,10 +166,11 @@ class Snmp_serverFacts(object):
         return objs
 
     def host_traps_string_to_list(self, hosts):
-        for element in hosts:
-            if element.get("traps", {}):
-                element["traps"] = list(element.get("traps").split())
-        return hosts
+        if hosts:
+            for element in hosts:
+                if element.get("traps", {}):
+                    element["traps"] = list(element.get("traps").split())
+            return hosts
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Snmp_server network resource

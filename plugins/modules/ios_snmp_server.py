@@ -287,6 +287,9 @@ options:
           bfd:
             description: Allow SNMP BFD traps
             suboptions:
+              enable:
+                description: Enable/disable bfd
+                type: bool
               session_down:
                 description: Enable BFD session down traps
                 type: bool

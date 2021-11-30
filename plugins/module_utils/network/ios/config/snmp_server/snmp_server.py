@@ -131,6 +131,7 @@ class Snmp_server(ResourceModule):
             "traps.pim",
             "traps.snmp",
             "traps.frame_relay",
+            "traps.frame_relay.subif",
             "traps.cef",
             "traps.dlsw",
             "traps.ethernet.evc",
@@ -226,7 +227,5 @@ class Snmp_server(ResourceModule):
                 elif k == "context":
                     tmp_data[k] = {i: {"context": i} for i in tmp_data[k]}
                 else:
-                    tmp_data[k] = {
-                        str(i[p_key.get(k)]): i for i in tmp_data[k]
-                    }
+                    tmp_data[k] = {str(i[p_key.get(k)]): i for i in tmp_data[k]}
         return tmp_data

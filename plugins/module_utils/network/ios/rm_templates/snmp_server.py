@@ -31,9 +31,7 @@ def cmd_option_engine_id(config_data):
             if rm.get("host"):
                 cmd += "remote {host}".format(host=rm.get("host"))
             if rm.get("udp_port"):
-                cmd += " udp-port {udp_port}".format(
-                    udp_port=rm.get("udp_port")
-                )
+                cmd += " udp-port {udp_port}".format(udp_port=rm.get("udp_port"))
             if rm.get("vrf"):
                 cmd += " vrf {vrf}".format(vrf=rm.get("vrf"))
         if config_data.get("id"):
@@ -64,13 +62,9 @@ def cmd_option_groups(config_data):
         if config_data.get("version"):
             cmd += " {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
-            cmd += " {version}".format(
-                version=config_data.get("version_option")
-            )
+            cmd += " {version}".format(version=config_data.get("version_option"))
         if config_data.get("context"):
-            cmd += " context {context}".format(
-                context=config_data.get("context")
-            )
+            cmd += " context {context}".format(context=config_data.get("context"))
         if config_data.get("notify"):
             cmd += " notify {notify}".format(notify=config_data.get("notify"))
         if config_data.get("read"):
@@ -80,9 +74,7 @@ def cmd_option_groups(config_data):
         if config_data.get("acl_v4"):
             cmd += " access {acl_v4}".format(acl_v4=config_data.get("acl_v4"))
         if config_data.get("acl_v6"):
-            cmd += " access  ipv6 {acl_v6}".format(
-                acl_v6=config_data.get("acl_v6")
-            )
+            cmd += " access  ipv6 {acl_v6}".format(acl_v6=config_data.get("acl_v6"))
     return cmd
 
 
@@ -95,13 +87,9 @@ def cmd_option_hosts(config_data):  # for loop
         if config_data.get("informs"):
             cmd += " informs"
         if config_data.get("version"):
-            cmd += " version {version}".format(
-                version=config_data.get("version")
-            )
+            cmd += " version {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
-            cmd += " {version}".format(
-                version=config_data.get("version_option")
-            )
+            cmd += " {version}".format(version=config_data.get("version_option"))
         if config_data.get("vrf"):
             cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
@@ -587,7 +575,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\ssource-interface
                 (\sinforms\s(?P<interface>\S+))?
                 """, re.VERBOSE),
-            "setval": "snmp-server source-interface informs Loopback999",
+            "setval": "snmp-server source-interface informs {{ source_interface }}",
             "result": {
                 "source_interface": "{{ interface }}",
             },
@@ -599,7 +587,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\strap-source
                 (\s(?P<interface>\S+))?
                 """, re.VERBOSE),
-            "setval": "snmp-server source-interface informs trap GigabitEthernet0/0",
+            "setval": "snmp-server trap-source {{ trap_source }}",
             "result": {
                 "trap_source": "{{ interface }}",
             },
@@ -632,12 +620,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<session_down>session-down))?
                 (\s(?P<session_up>session-up))?
                 """, re.VERBOSE),
-            "setval": "snmp-server enable traps bfd"
+            "setval": "{{ 'snmp-server enable traps bfd' if traps.bfd.enable is defined else '' }}"
                       "{{ (' session-down') if traps.bfd.session_down is defined else '' }}"
                       "{{ (' session-up') if traps.bfd.session_up is defined else '' }}",
             "result": {
                 "traps": {
                     "bfd": {
+                        "enable": True,
                         "session_down": "{{ not not session_down }}",
                         "session_up": "{{ not not session_up }}",
                     },
@@ -1463,19 +1452,31 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.frame_relay",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\sframe-relay
-                (\s(?P<subif>subif))?
+                ^snmp-server\senable\straps\sframe-relay$
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps frame-relay",
+            "result": {
+                "traps": {
+                    "frame_relay": {
+                        "enable": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.frame_relay.subif",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\sframe-relay\ssubif
                 (\scount(?P<count>\d+))?
                 (\sinterval(?P<interval>\d+))?
                 """, re.VERBOSE),
-            "setval": "{{ ' snmp-server enable traps frame-relay' if traps.frame_relay.enable is defined else '' }}"
-                      "{{ ' subif' if traps.frame_relay.subif is defined else '' }}"
+            "setval": "snmp-server enable traps frame-relay subif"
                       "{{ (' count ' + count|string) if traps.frame_relay.count else '' }}"
                       "{{ (' interval ' + interval|string) if traps.frame_relay.interval else '' }}",
             "result": {
                 "traps": {
                     "frame_relay": {
-                        "enable": True,
                         "subif": {
                             "enable": "{{ not not subif }}",
                             "interval": "{{ interval }}",
@@ -1538,9 +1539,9 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sethernet\secv
+                (\s(?P<status>status))?
                 (\s(?P<create>create))?
                 (\s(?P<delete>delete))?
-                (\s(?P<status>status))?
                 """, re.VERBOSE),
             "setval": "snmp-server enable traps ethernet evc"
                       "{{ ' create' if traps.ethernet.evc.create|d(False) else ''}}"
@@ -1600,7 +1601,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<mep_unknown>mep-unknown))?
                 (\s(?P<service_up>service-up))?
                 """, re.VERBOSE),
-            "setval": "snmp-server enable traps ethernet cfm cc"
+            "setval": "snmp-server enable traps ethernet cfm crosscheck"
                       "{{ ' mep-missing' if traps.ethernet.cfm.crosscheck.mep_missing|d(False) else ''}}"
                       "{{ ' mep-unknown' if traps.ethernet.cfm.crosscheck.mep_unknown|d(False) else ''}}"
                       "{{ ' service-up' if traps.ethernet.cfm.crosscheck.service_up|d(False) else ''}}",
