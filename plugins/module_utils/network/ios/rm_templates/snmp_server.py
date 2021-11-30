@@ -737,6 +737,19 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "traps.isis",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\sisis$
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps isis",
+            "result": {
+                "traps": {
+                    "isis": True,
+                },
+            },
+        },
+        {
             "name": "traps.config_copy",
             "getval": re.compile(
                 r"""

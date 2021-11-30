@@ -676,6 +676,9 @@ options:
           rsvp:
             description: Enable SNMP RSVP traps
             type: bool
+          isis:
+            description: Enable SNMP isis traps
+            type: bool
           snmp:
             description: Enable SNMP traps
             suboptions:
