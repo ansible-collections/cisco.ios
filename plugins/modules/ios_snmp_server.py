@@ -415,6 +415,38 @@ options:
                   alarm:
                     description: Enable SNMP Ethernet CFM fault alarm trap
                     type: bool
+                  cc:
+                    description: Enable SNMP Ethernet CC trap
+                    type: dict
+                    suboptions:
+                      config:
+                        description: Enable SNMP Ethernet CFM configuration error traps
+                        type: bool
+                      cross_connect:
+                        description: Enable SNMP Ethernet CFM cross-connect traps
+                        type: bool
+                      loop:
+                        description: Enable SNMP Ethernet CFM loop traps
+                        type: bool
+                      mep_down:
+                        description: Enable SNMP Ethernet CFM CC Down traps
+                        type: bool
+                      mep_up:
+                        description: Enable SNMP Ethernet CFM CC Up traps
+                        type: bool
+                  crosscheck:
+                    description: Enable SNMP Ethernet CC crosscheck trap
+                    type: dict
+                    suboptions:
+                      mep_missing:
+                        description: Enable SNMP Ethernet CC crosscheck missing trap
+                        type: bool
+                      mep_unknown:
+                        description: Enable SNMP Ethernet CC crosscheck unknown traps
+                        type: bool
+                      service_up:
+                        description: Enable SNMP Ethernet CC crosscheck service traps
+                        type: bool
                 type: dict
               evc:
                 description: Enable SNMP Ethernet EVC traps

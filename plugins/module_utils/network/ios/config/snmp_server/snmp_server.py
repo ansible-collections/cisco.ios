@@ -52,7 +52,6 @@ class Snmp_server(ResourceModule):
             "cache",
             "chassis_id",
             "contact",
-            "context",
             "drop",
             "file_transfer",
             "if_index",
@@ -72,6 +71,7 @@ class Snmp_server(ResourceModule):
             "groups",
             "engine_id",
             "communities",
+            "context",
             "password_policy",
             "users",
             "views",
@@ -133,7 +133,10 @@ class Snmp_server(ResourceModule):
             "traps.frame_relay",
             "traps.cef",
             "traps.dlsw",
-            "traps.ethernet",
+            "traps.ethernet.evc",
+            "traps.ethernet.cfm.alarm",
+            "traps.ethernet.cfm.cc",
+            "traps.ethernet.cfm.crosscheck",
         ]
 
     def execute_module(self):
@@ -203,6 +206,7 @@ class Snmp_server(ResourceModule):
             "groups": "group",
             "engine_id": "id",
             "communities": "name",
+            "context": True,
             "password_policy": "policy_name",
             "users": "username",
             "views": "name",
@@ -210,16 +214,19 @@ class Snmp_server(ResourceModule):
         tmp_data = deepcopy(data)
         for k, _v in p_key.items():
             if k in tmp_data:
-                uq_key = p_key[k]
                 if k == "hosts":
                     tmp_data[k] = {
                         str(
-                            i[uq_key]
+                            i[p_key.get(k)]
                             + i.get("version", "")
                             + i.get("community_string", "")
                         ): i
                         for i in tmp_data[k]
                     }
+                elif k == "context":
+                    tmp_data[k] = {i: {"context": i} for i in tmp_data[k]}
                 else:
-                    tmp_data[k] = {str(i[uq_key]): i for i in tmp_data[k]}
+                    tmp_data[k] = {
+                        str(i[p_key.get(k)]): i for i in tmp_data[k]
+                    }
         return tmp_data

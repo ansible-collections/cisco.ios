@@ -25,11 +25,11 @@ def cmd_option_engine_id(config_data):
     if config_data:
         cmd = "snmp-server engineID "
         if config_data.get("local"):
-            cmd += " local"
+            cmd += "local"
         if config_data.get("remote"):
             rm = config_data.get("remote")
             if rm.get("host"):
-                cmd += " remote {host}".format(host=rm.get("host"))
+                cmd += "remote {host}".format(host=rm.get("host"))
             if rm.get("udp_port"):
                 cmd += " udp-port {udp_port}".format(
                     udp_port=rm.get("udp_port")
@@ -47,21 +47,11 @@ def cmd_option_file_transfer(config_data):  # for loop
         conf = config_data.get("file_transfer")
         cmd = "snmp-server file-transfer"
         if conf.get("access_group"):
-            cmd += "access-group {ag}".format(ag=conf.get("access_group"))
+            cmd += " access-group {ag}".format(ag=conf.get("access_group"))
         if conf.get("protocol"):
             cmd += " protocol"
             for protocol in conf.get("protocol"):
                 cmd += " {protocol}".format(protocol=protocol)
-    return cmd
-
-
-def cmd_option_context(config_data):  # for loop
-    cmd = ""
-    if config_data.get("context"):
-        conf = config_data.get("context")
-        cmd = "snmp-server context"
-        for protocol in conf:
-            cmd += " {protocol}".format(protocol=protocol)
     return cmd
 
 
@@ -245,7 +235,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\scontext
                 (\s(?P<context>\S+))?
                 """, re.VERBOSE),
-            "setval": cmd_option_context,
+            "setval": "snmp-server context {{ context }}",
             "result": {
                 "context": ["{{ context }}", ],
             },
@@ -259,8 +249,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<unknown_user>unknown-user))?
                 """, re.VERBOSE),
             "setval": "snmp-server drop"
-                      "{{ ' vrf-traffic' if vrf_traffic is defined else '' }}"
-                      "{{ ' unknown-user' if unknown_user is defined else '' }}",
+                      "{{ ' vrf-traffic' if drop.vrf_traffic is defined else '' }}"
+                      "{{ ' unknown-user' if drop.unknown_user is defined else '' }}",
             "result": {
                 "drop": {
                     "vrf_traffic": "{{ not not vrf_traffic }}",
@@ -388,8 +378,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE),
             "setval": "snmp-server password-policy "
                       "{{ policy_name if policy_name is defined else '' }}"
-                      "{{ 'define' if define is defined else '' }}"
-                      "{{ (' user ' + username) if username is defined else '' }}"
+                      "{{ (' user ' + username) if username is defined else ' define' }}"
                       "{{ (' min-len ' + min_len|string) if min_len is defined else '' }}"
                       "{{ (' max-len ' + max_len|string) if max_len is defined else '' }}"
                       "{{ (' upper-case ' + upper_case|string) if upper_case is defined else '' }}"
@@ -502,9 +491,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\stimeout\s(?P<timeout>\d+))?
                 """, re.VERBOSE),
             "setval": "snmp-server inform"
-                      "{{ (' pending ' + pending) if pending is defined else '' }}"
-                      "{{ (' retries ' + retries) if retries is defined else '' }}"
-                      "{{ (' timeout ' + timeout) if timeout is defined else '' }}",
+                      "{{ (' pending ' + inform.pending|string) if inform.pending is defined else '' }}"
+                      "{{ (' retries ' + inform.retries|string) if inform.retries is defined else '' }}"
+                      "{{ (' timeout ' + inform.timeout|string) if inform.timeout is defined else '' }}",
             "result": {
                 "inform": {
                     "pending": "{{ pending }}",
@@ -521,9 +510,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<dscp>\d+))?
                 (\sprecedence(?P<precedence>\d+))?
                 """, re.VERBOSE),
-            "setval": "snmp-server ip dscp"
-                      "{{ (dscp) if dscp is defined else '' }}"
-                      "{{ (' precedence ' + precedence) if precedence is defined else '' }}",
+            "setval": "snmp-server ip dscp "
+                      "{{ (ip.dscp|string) if ip.dscp is defined else '' }}"
+                      "{{ (' precedence ' + ip.precedence) if ip.precedence is defined else '' }}",
             "result": {
                 "ip": {
                     "dscp": "{{ dscp }}",
@@ -1545,32 +1534,102 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "traps.ethernet",
+            "name": "traps.ethernet.evc",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\sethernet
-                (\s(?P<cfm>cfm))?
-                (\s(?P<alarm>alarm))?
-                (\s(?P<evc>evc))?
+                ^snmp-server\senable\straps\sethernet\secv
                 (\s(?P<create>create))?
                 (\s(?P<delete>delete))?
                 (\s(?P<status>status))?
                 """, re.VERBOSE),
-            "setval": "snmp-server enable traps ethernet"
-                      "{{ ' alarm' if traps.ethernet.cfm.alarm|d(False) is defined else '' }}"
+            "setval": "snmp-server enable traps ethernet evc"
                       "{{ ' create' if traps.ethernet.evc.create|d(False) else ''}}"
                       "{{ ' delete' if traps.ethernet.evc.delete|d(False) else ''}}"
                       "{{ ' status' if traps.ethernet.evc.status|d(False) else ''}}",
             "result": {
                 "traps": {
                     "ethernet": {
-                        "cfm": {
-                            "alarm": "{{ not not alarm }}",
-                        },
                         "evc": {
                             "create": "{{ not not create }}",
                             "delete": "{{ not not delete }}",
                             "status": "{{ not not status }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.ethernet.cfm.cc",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\sethernet\scfm\scc
+                (\s(?P<mep_up>mep-up))?
+                (\s(?P<mep_down>mep-down))?
+                (\s(?P<cross_connect>cross-connect))?
+                (\s(?P<loop>loop))?
+                (\s(?P<config>config))?
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps ethernet cfm cc"
+                      "{{ ' mep-up' if traps.ethernet.cfm.cc.mep_up|d(False) else ''}}"
+                      "{{ ' mep-down' if traps.ethernet.cfm.cc.mep_down|d(False) else ''}}"
+                      "{{ ' cross-connect' if traps.ethernet.cfm.cc.cross_connect|d(False) else ''}}"
+                      "{{ ' loop' if traps.ethernet.cfm.cc.loop|d(False) else ''}}"
+                      "{{ ' config' if traps.ethernet.cfm.cc.config|d(False) else ''}}",
+            "result": {
+                "traps": {
+                    "ethernet": {
+                        "cfm": {
+                            "cc": {
+                                "mep_up": "{{ not not mep_up }}",
+                                "mep_down": "{{ not not mep_down }}",
+                                "cross_connect": "{{ not not cross_connect }}",
+                                "loop": "{{ not not loop }}",
+                                "config": "{{ not not config }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.ethernet.cfm.crosscheck",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\sethernet\scfm\scrosscheck
+                (\s(?P<mep_missing>mep-missing))?
+                (\s(?P<mep_unknown>mep-unknown))?
+                (\s(?P<service_up>service-up))?
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps ethernet cfm cc"
+                      "{{ ' mep-missing' if traps.ethernet.cfm.crosscheck.mep_missing|d(False) else ''}}"
+                      "{{ ' mep-unknown' if traps.ethernet.cfm.crosscheck.mep_unknown|d(False) else ''}}"
+                      "{{ ' service-up' if traps.ethernet.cfm.crosscheck.service_up|d(False) else ''}}",
+            "result": {
+                "traps": {
+                    "ethernet": {
+                        "cfm": {
+                            "crosscheck": {
+                                "mep_missing": "{{ not not mep_missing }}",
+                                "mep_unknown": "{{ not not mep_unknown }}",
+                                "service_up": "{{ not not service_up }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.ethernet.cfm.alarm",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\sethernet\scfm\salarm
+                """, re.VERBOSE),
+            "setval": "snmp-server enable traps ethernet cfm alarm",
+            "result": {
+                "traps": {
+                    "ethernet": {
+                        "cfm": {
+                            "alarm": "{{ not not alarm }}",
                         },
                     },
                 },
