@@ -68,25 +68,22 @@ class TestIosSnmpServerModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def test_ios_logging_global_merged_idempotent(self):
-        """
-        passing all commands as have and expecting [] commands
-        """
+    def test_ios_snmp_server_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             snmp-server engineID local AB0C5342FA0A
-            snmp-server engineID remote 10.0.0.2 udp-port 23 AB0C5342FAAB
-            snmp-server engineID remote 10.0.0.1 udp-port 22 AB0C5342FAAA
-            snmp-server user paux fox v1 access 24
-            snmp-server user paul familypaul2 v3 access ipv6 ipv6acl
-            snmp-server user relaplacing relaplacing v3
-            snmp-server group www v3 auth
-            snmp-server group grp1 v1 notify me access 2
-            snmp-server group newtera v3 priv
-            snmp-server group relaplacing v3 noauth
-            snmp-server community test view terst1 RO ipv6 te
-            snmp-server community wete RO 1322
-            snmp-server community weteww RW paul
+            snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+            snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
+            snmp-server user newuser newfamily v1 access 24
+            snmp-server user paul familypaul v3 access ipv6 ipv6acl
+            snmp-server user replaceUser replaceUser v3
+            snmp-server group group0 v3 auth
+            snmp-server group group1 v1 notify me access 2
+            snmp-server group group2 v3 priv
+            snmp-server group replaceUser v3 noauth
+            snmp-server community commu1 view view1 RO ipv6 te
+            snmp-server community commu2 RO 1322
+            snmp-server community commu3 RW paul
             snmp-server trap timeout 2
             snmp-server trap-source GigabitEthernet0/0
             snmp-server source-interface informs Loopback999
@@ -94,8 +91,8 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server queue-length 2
             snmp-server location thi sis a good location
             snmp-server ip dscp 2
-            snmp-server contact this is s good contact again
-            snmp-server chassis-id this is a unique string
+            snmp-server contact this is contact string
+            snmp-server chassis-id this is a chassis id string
             snmp-server system-shutdown
             snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
             snmp-server enable traps flowmon
@@ -120,16 +117,9 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps l2tun session
             snmp-server enable traps l2tun pseudowire status
             snmp-server enable traps ether-oam
-            snmp-server enable traps mpls rfc ldp
-            snmp-server enable traps mpls ldp
-            snmp-server enable traps mpls rfc traffic-eng
-            snmp-server enable traps mpls traffic-eng
             snmp-server enable traps ethernet evc status create delete
             snmp-server enable traps bridge newroot topologychange
-            snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
             snmp-server enable traps vtp
-            snmp-server enable traps vlancreate
-            snmp-server enable traps vlandelete
             snmp-server enable traps ike policy add
             snmp-server enable traps ike policy delete
             snmp-server enable traps ike tunnel start
@@ -163,15 +153,15 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps ethernet cfm alarm
             snmp-server enable traps mpls vpn
             snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-            snmp-server host 10.0.2.99 informs version 2c check  msdp stun
-            snmp-server host 10.0.2.99 check  slb pki
-            snmp-server host 10.0.2.99 checktrap  isis hsrp
-            snmp-server host 10.0.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 10.0.2.1 version 3 noauth relaplacing  slb pki
-            snmp-server host 10.0.2.1 version 2c trapsac  tty bgp
-            snmp-server host 10.0.1.1 version 3 auth www  tty bgp
-            snmp-server context bad
-            snmp-server context good
+            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+            snmp-server host 172.16.2.99 check  slb pki
+            snmp-server host 172.16.2.99 checktrap  isis hsrp
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+            snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server context contextWord1
+            snmp-server context contextWord2
             snmp-server file-transfer access-group testAcl protocol ftp
             snmp-server file-transfer access-group testAcl protocol rcp
             snmp-server cache interval 2
@@ -180,625 +170,1580 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
-        """
+            """
         )
 
-        playbook = dict(
-            config=dict(
-                logging_on="enable",
-                buffered=dict(size=5099, severity="notifications", xml=True),
-                buginf=True,
-                cns_events="warnings",
-                console=dict(severity="critical", xml=True),
-                count=True,
-                delimiter=dict(tcp=True),
-                discriminator=["msglog01 severity includes 5"],
-                dmvpn=dict(rate_limit=10),
-                esm=dict(config=True),
-                exception=4099,
-                facility="local5",
-                filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+        playbook = {
+            "config": {
+                "accounting": {"command": "default"},
+                "cache": 2,
+                "chassis_id": "this is a chassis id string",
+                "communities": [
+                    {
+                        "acl_v6": "te",
+                        "name": "commu1",
+                        "ro": True,
+                        "view": "view1",
+                    },
+                    {"acl_v4": "1322", "name": "commu2", "ro": True},
+                    {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
-                history=dict(severity="alerts"),
-                hosts=[
-                    dict(hostname="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                "contact": "this is contact string",
+                "context": ["contextWord2", "contextWord1"],
+                "engine_id": [
+                    {"id": "AB0C5342FA0A", "local": True},
+                    {
+                        "id": "AB0C5342FAAA",
+                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                    },
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
                 ],
-                message_counter=["log", "debug"],
-                monitor=dict(severity="warnings"),
-                origin_id=dict(tag="hostname"),
-                persistent=dict(batch=4444),
-                policy_firewall=dict(rate_limit=10),
-                queue_limit=dict(esm=150),
-                rate_limit=dict(all=True, size=2, except_severity="warnings"),
-                reload=dict(severity="alerts"),
-                server_arp=True,
-                snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
+                "groups": [
+                    {
+                        "group": "group0",
+                        "version": "v3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "acl_v4": "2",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
+                    {
+                        "group": "group2",
+                        "version": "v3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
                 ],
-                trap="errors",
-                userinfo=True,
-            )
-        )
+                "hosts": [
+                    {
+                        "community_string": "group0",
+                        "host": "172.16.1.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "community_string": "newtera",
+                        "host": "172.16.2.1",
+                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "version": "3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "community_string": "replaceUser",
+                        "host": "172.16.2.1",
+                        "traps": ["slb", "pki"],
+                        "version": "3",
+                        "version_option": "noauth",
+                    },
+                    {
+                        "community_string": "trapsac",
+                        "host": "172.16.2.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "informs": True,
+                        "traps": ["msdp", "stun"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb", "pki"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis", "hsrp"],
+                    },
+                ],
+                "inform": {"pending": 2},
+                "ip": {"dscp": 2},
+                "location": "thi sis a good location",
+                "packet_size": 500,
+                "password_policy": [
+                    {
+                        "change": 3,
+                        "digits": 23,
+                        "lower_case": 12,
+                        "max_len": 24,
+                        "policy_name": "policy1",
+                        "special_char": 32,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 9,
+                        "min_len": 12,
+                        "policy_name": "policy2",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 11,
+                        "digits": 23,
+                        "max_len": 12,
+                        "min_len": 12,
+                        "policy_name": "policy3",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
+                ],
+                "queue_length": 2,
+                "source_interface": "Loopback999",
+                "system_shutdown": True,
+                "trap_source": "GigabitEthernet0/0",
+                "trap_timeout": 2,
+                "traps": {
+                    "auth_framework": {"enable": True},
+                    "bfd": {"enable": True},
+                    "bgp": {"cbgp2": True, "enable": True},
+                    "bridge": {
+                        "enable": True,
+                        "newroot": True,
+                        "topologychange": True,
+                    },
+                    "casa": True,
+                    "cef": {
+                        "enable": True,
+                        "inconsistency": True,
+                        "peer_fib_state_change": True,
+                        "peer_state_change": True,
+                        "resource_failure": True,
+                    },
+                    "dlsw": {"enable": True},
+                    "eigrp": True,
+                    "energywise": True,
+                    "ethernet": {
+                        "cfm": {
+                            "alarm": True,
+                            "cc": {
+                                "config": True,
+                                "cross_connect": True,
+                                "loop": True,
+                                "mep_down": True,
+                                "mep_up": True,
+                            },
+                            "crosscheck": {
+                                "mep_missing": True,
+                                "mep_unknown": True,
+                                "service_up": True,
+                            },
+                        },
+                        "evc": {
+                            "create": True,
+                            "delete": True,
+                            "status": True,
+                        },
+                    },
+                    "event_manager": True,
+                    "flowmon": True,
+                    "frame_relay": {"enable": True},
+                    "hsrp": True,
+                    "ike": {
+                        "policy": {"add": True, "delete": True},
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipmulticast": True,
+                    "ipsec": {
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
+                        "too_many_sas": True,
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipsla": True,
+                    "isis": True,
+                    "l2tun": {"pseudowire_status": True, "session": True},
+                    "mpls_vpn": True,
+                    "msdp": True,
+                    "mvpn": True,
+                    "ospf": {
+                        "cisco_specific": {
+                            "error": True,
+                            "lsa": True,
+                            "retransmit": True,
+                            "state_change": {
+                                "nssa_trans_change": True,
+                                "shamlink": {
+                                    "interface": True,
+                                    "neighbor": True,
+                                },
+                            },
+                        },
+                        "error": True,
+                        "lsa": True,
+                        "retransmit": True,
+                        "state_change": True,
+                    },
+                    "pim": {
+                        "enable": True,
+                        "invalid_pim_message": True,
+                        "neighbor_change": True,
+                        "rp_mapping_change": True,
+                    },
+                    "pki": True,
+                    "pw_vc": True,
+                    "rsvp": True,
+                    "snmp": {
+                        "authentication": True,
+                        "coldstart": True,
+                        "linkdown": True,
+                        "linkup": True,
+                        "warmstart": True,
+                    },
+                    "syslog": True,
+                    "tty": True,
+                    "vrfmib": {
+                        "vnet_trunk_down": True,
+                        "vnet_trunk_up": True,
+                        "vrf_down": True,
+                        "vrf_up": True,
+                    },
+                },
+                "users": [
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
+                    {
+                        "acl_v4": "ipv6",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
+                ],
+            }
+        }
         merged = []
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module()
 
-        self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
-    def test_ios_logging_global_deleted(self):
+    def test_ios_snmp_server_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            logging on
-            logging count
-            logging buginf
-            logging buffered xml 5099 notifications
-            logging console xml critical
-            logging delimiter tcp
-            logging dmvpn rate-limit 10
-            logging esm config
-            logging exception 4099
-            logging facility local5
-            logging history alerts
-            logging monitor warnings
-            logging origin-id hostname
-            logging persistent batch 4444
-            logging policy-firewall rate-limit 10
-            logging queue-limit esm 150
-            logging rate-limit all 2 except warnings
-            logging server-arp
-            logging reload alerts
-            logging userinfo
-            logging trap errors
+            snmp-server engineID local AB0C5342FA0A
+            snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+            snmp-server enable traps casa
+            snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+            snmp-server enable traps ospf cisco-specific state-change shamlink interface
+            snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+            snmp-server enable traps ospf cisco-specific errors
+            snmp-server enable traps ospf cisco-specific retransmit
+            snmp-server enable traps ospf cisco-specific lsa
+            snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+            snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+            snmp-server enable traps auth-framework sec-violation
+            snmp-server enable traps ethernet cfm alarm
+            snmp-server enable traps mpls vpn
+            snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+            snmp-server context contextWord1
+            snmp-server cache interval 2
+            snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+            snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
+            snmp-server inform pending 2
             """
         )
-        playbook = dict(
-            config=dict(
-                logging_on="enable",
-                count=True,
-                buffered=dict(size=5099, severity="notifications", xml=True),
-                buginf=True,
-                console=dict(severity="critical", xml=True),
-                delimiter=dict(tcp=True),
-                dmvpn=dict(rate_limit=10),
-                esm=dict(config=True),
-                exception=4099,
-                facility="local5",
-                history=dict(severity="alerts"),
-                monitor=dict(severity="warnings"),
-                origin_id=dict(tag="hostname"),
-                persistent=dict(batch=4444),
-                policy_firewall=dict(rate_limit=10),
-                queue_limit=dict(esm=150),
-                rate_limit=dict(all=True, size=2, except_severity="warnings"),
-                reload=dict(severity="alerts"),
-                server_arp=True,
-                trap="errors",
-                userinfo=True,
-            )
-        )
-        deleted = [
-            "no logging on",
-            "no logging count",
-            "no logging buginf",
-            "no logging buffered xml 5099 notifications",
-            "no logging console xml critical",
-            "no logging delimiter tcp",
-            "no logging dmvpn rate-limit 10",
-            "no logging esm config",
-            "no logging exception 4099",
-            "no logging facility local5",
-            "no logging history alerts",
-            "no logging monitor warnings",
-            "no logging origin-id hostname",
-            "no logging persistent batch 4444",
-            "no logging policy-firewall rate-limit 10",
-            "no logging queue-limit esm 150",
-            "no logging rate-limit all 2 except warnings",
-            "no logging server-arp",
-            "no logging reload alerts",
-            "no logging userinfo",
-            "no logging trap errors",
-        ]
-        playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
-
-    def test_ios_logging_global_deleted_list(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging discriminator msglog01 severity includes 5
-            logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
-            logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
-            logging host 172.16.1.1
-            logging host 172.16.1.11 xml
-            logging host 172.16.1.25 filtered
-            logging host 172.16.1.10 filtered stream 10
-            logging host 172.16.1.13 transport tcp port 514
-            logging message-counter log
-            logging message-counter debug
-            logging snmp-trap errors
-            logging source-interface GBit1/0
-            logging source-interface CTunnel2
-            """
-        )
-        playbook = dict(
-            config=dict(
-                discriminator=["msglog01 severity includes 5"],
-                filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+        playbook = {
+            "config": {
+                "accounting": {"command": "default"},
+                "cache": 2,
+                "chassis_id": "this is a chassis id string",
+                "communities": [
+                    {
+                        "acl_v6": "te",
+                        "name": "commu1",
+                        "ro": True,
+                        "view": "view1",
+                    },
+                    {"acl_v4": "1322", "name": "commu2", "ro": True},
+                    {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
-                hosts=[
-                    dict(hostname="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                "contact": "this is contact string",
+                "context": ["contextWord2", "contextWord1"],
+                "engine_id": [
+                    {"id": "AB0C5342FA0A", "local": True},
+                    {
+                        "id": "AB0C5342FAAA",
+                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                    },
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
                 ],
-                message_counter=["log", "debug"],
-                snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
+                "groups": [
+                    {
+                        "group": "group0",
+                        "version": "v3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "acl_v4": "2",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
+                    {
+                        "group": "group2",
+                        "version": "v3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
                 ],
-            )
-        )
-        deleted = [
-            "no logging discriminator msglog01 severity includes 5",
-            "no logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2",
-            "no logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst",
-            "no logging host 172.16.1.1",
-            "no logging host 172.16.1.11",
-            "no logging host 172.16.1.25",
-            "no logging host 172.16.1.10",
-            "no logging host 172.16.1.13",
-            "no logging message-counter log",
-            "no logging message-counter debug",
-            "no logging snmp-trap errors",
-            "no logging source-interface GBit1/0",
-            "no logging source-interface CTunnel2",
-        ]
-        playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
-
-    def test_ios_logging_global_overridden(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging on
-            logging count
-            logging buginf
-            logging buffered xml 5099 notifications
-            logging console xml critical
-            logging delimiter tcp
-            logging dmvpn rate-limit 10
-            logging esm config
-            logging exception 4099
-            logging facility local5
-            logging history alerts
-            logging monitor warnings
-            logging origin-id hostname
-            logging persistent batch 4444
-            logging policy-firewall rate-limit 10
-            logging queue-limit esm 150
-            logging rate-limit all 2 except warnings
-            logging server-arp
-            logging reload alerts
-            logging userinfo
-            logging trap errors
-            """
-        )
-        playbook = dict(
-            config=dict(
-                discriminator=["msglog01 severity includes 5"],
-                filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+                "hosts": [
+                    {
+                        "community_string": "group0",
+                        "host": "172.16.1.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "community_string": "newtera",
+                        "host": "172.16.2.1",
+                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "version": "3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "community_string": "replaceUser",
+                        "host": "172.16.2.1",
+                        "traps": ["slb", "pki"],
+                        "version": "3",
+                        "version_option": "noauth",
+                    },
+                    {
+                        "community_string": "trapsac",
+                        "host": "172.16.2.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "informs": True,
+                        "traps": ["msdp", "stun"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb", "pki"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis", "hsrp"],
+                    },
                 ],
-                hosts=[
-                    dict(hostname="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                "inform": {"pending": 2},
+                "ip": {"dscp": 2},
+                "location": "thi sis a good location",
+                "packet_size": 500,
+                "password_policy": [
+                    {
+                        "change": 3,
+                        "digits": 23,
+                        "lower_case": 12,
+                        "max_len": 24,
+                        "policy_name": "policy1",
+                        "special_char": 32,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 9,
+                        "min_len": 12,
+                        "policy_name": "policy2",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 11,
+                        "digits": 23,
+                        "max_len": 12,
+                        "min_len": 12,
+                        "policy_name": "policy3",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
                 ],
-                message_counter=["log", "debug"],
-                snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
+                "queue_length": 2,
+                "source_interface": "Loopback999",
+                "system_shutdown": True,
+                "trap_source": "GigabitEthernet0/0",
+                "trap_timeout": 2,
+                "traps": {
+                    "auth_framework": {"enable": True},
+                    "bfd": {"enable": True},
+                    "bgp": {"cbgp2": True, "enable": True},
+                    "bridge": {
+                        "enable": True,
+                        "newroot": True,
+                        "topologychange": True,
+                    },
+                    "casa": True,
+                    "cef": {
+                        "enable": True,
+                        "inconsistency": True,
+                        "peer_fib_state_change": True,
+                        "peer_state_change": True,
+                        "resource_failure": True,
+                    },
+                    "dlsw": {"enable": True},
+                    "eigrp": True,
+                    "energywise": True,
+                    "ethernet": {
+                        "cfm": {
+                            "alarm": True,
+                            "cc": {
+                                "config": True,
+                                "cross_connect": True,
+                                "loop": True,
+                                "mep_down": True,
+                                "mep_up": True,
+                            },
+                            "crosscheck": {
+                                "mep_missing": True,
+                                "mep_unknown": True,
+                                "service_up": True,
+                            },
+                        },
+                        "evc": {
+                            "create": True,
+                            "delete": True,
+                            "status": True,
+                        },
+                    },
+                    "event_manager": True,
+                    "flowmon": True,
+                    "frame_relay": {"enable": True},
+                    "hsrp": True,
+                    "ike": {
+                        "policy": {"add": True, "delete": True},
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipmulticast": True,
+                    "ipsec": {
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
+                        "too_many_sas": True,
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipsla": True,
+                    "isis": True,
+                    "l2tun": {"pseudowire_status": True, "session": True},
+                    "mpls_vpn": True,
+                    "msdp": True,
+                    "mvpn": True,
+                    "ospf": {
+                        "cisco_specific": {
+                            "error": True,
+                            "lsa": True,
+                            "retransmit": True,
+                            "state_change": {
+                                "nssa_trans_change": True,
+                                "shamlink": {
+                                    "interface": True,
+                                    "neighbor": True,
+                                },
+                            },
+                        },
+                        "error": True,
+                        "lsa": True,
+                        "retransmit": True,
+                        "state_change": True,
+                    },
+                    "pim": {
+                        "enable": True,
+                        "invalid_pim_message": True,
+                        "neighbor_change": True,
+                        "rp_mapping_change": True,
+                    },
+                    "pki": True,
+                    "pw_vc": True,
+                    "rsvp": True,
+                    "snmp": {
+                        "authentication": True,
+                        "coldstart": True,
+                        "linkdown": True,
+                        "linkup": True,
+                        "warmstart": True,
+                    },
+                    "syslog": True,
+                    "tty": True,
+                    "vrfmib": {
+                        "vnet_trunk_down": True,
+                        "vnet_trunk_up": True,
+                        "vrf_down": True,
+                        "vrf_up": True,
+                    },
+                },
+                "users": [
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
+                    {
+                        "acl_v4": "ipv6",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
                 ],
-            )
-        )
-        overridden = [
-            "no logging on",
-            "no logging count",
-            "no logging buginf",
-            "no logging buffered xml 5099 notifications",
-            "no logging console xml critical",
-            "no logging delimiter tcp",
-            "no logging dmvpn rate-limit 10",
-            "no logging esm config",
-            "no logging exception 4099",
-            "no logging facility local5",
-            "no logging history alerts",
-            "no logging monitor warnings",
-            "no logging origin-id hostname",
-            "no logging persistent batch 4444",
-            "no logging policy-firewall rate-limit 10",
-            "no logging queue-limit esm 150",
-            "no logging rate-limit all 2 except warnings",
-            "no logging server-arp",
-            "no logging reload alerts",
-            "no logging userinfo",
-            "no logging trap errors",
-            "logging discriminator msglog01 severity includes 5",
-            "logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2",
-            "logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst",
-            "logging host 172.16.1.1",
-            "logging host 172.16.1.11 xml",
-            "logging host 172.16.1.25 filtered",
-            "logging host 172.16.1.10 filtered stream 10",
-            "logging host 172.16.1.13 transport tcp port 514",
-            "logging message-counter log",
-            "logging message-counter debug",
-            "logging snmp-trap errors",
-            "logging source-interface GBit1/0",
-            "logging source-interface CTunnel2",
-        ]
-        playbook["state"] = "overridden"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
-
-    def test_ios_logging_global_overridden_idempotent(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging host 172.16.1.11 xml
-            logging monitor critical
-            logging buffered xml 5099 warnings
-            logging facility local6
-            """
-        )
-        playbook = dict(
-            config=dict(
-                buffered=dict(size=5099, severity="warnings", xml=True),
-                facility="local6",
-                hosts=[dict(hostname="172.16.1.11", xml=True)],
-                monitor=dict(severity="critical"),
-            )
-        )
-        overridden = []
-        playbook["state"] = "overridden"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
-
-    def test_ios_logging_global_merged(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging host 172.16.1.1
-            """
-        )
-        playbook = dict(
-            config=dict(
-                hosts=[
-                    dict(hostname="172.16.2.15", session_id=dict(text="Test")),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7304",
-                        discriminator="msglog01 severity includes 5",
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314",
-                        sequence_num_session=True,
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7324",
-                        vrf="vpn1",
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-                        stream=10,
-                        filtered=True,
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7344",
-                        session_id=dict(tag="ipv4"),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7354",
-                        transport=dict(tcp=dict(port=514, xml=True)),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7374",
-                        vrf="Apn2",
-                        transport=dict(
-                            udp=dict(
-                                discriminator="msglog01 severity includes 5"
-                            )
-                        ),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7384",
-                        transport=dict(udp=dict(sequence_num_session=True)),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
-                        transport=dict(
-                            tcp=dict(
-                                audit=True,
-                                filtered=True,
-                                stream=10,
-                                session_id=dict(text="Test"),
-                            )
-                        ),
-                    ),
-                ]
-            )
-        )
+            }
+        }
         merged = [
-            "logging host 172.16.2.15 session-id string Test",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7304 discriminator msglog01 severity includes 5",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7314 sequence-num-session",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7324 vrf vpn1",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7334 filtered stream 10",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7344 session-id ipv4",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7354 transport tcp port 514 xml",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp audit filtered stream 10 session-id string Test",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7374 vrf Apn2 transport udp discriminator msglog01 severity includes 5",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7384 transport udp sequence-num-session",
+            "snmp-server accounting commands default",
+            "snmp-server chassis-id this is a chassis id string",
+            "snmp-server contact this is contact string",
+            "snmp-server file-transfer access-group testAcl protocol ftp rcp",
+            "snmp-server ip dscp 2",
+            "snmp-server location thi sis a good location",
+            "snmp-server packetsize 500",
+            "snmp-server queue-length 2",
+            "snmp-server trap timeout 2",
+            "snmp-server source-interface informs Loopback999",
+            "snmp-server trap-source GigabitEthernet0/0",
+            "snmp-server system-shutdown",
+            "snmp-server enable traps bfd",
+            "snmp-server enable traps bgp cbgp2",
+            "snmp-server enable traps bridge newroot topologychange",
+            "snmp-server enable traps eigrp",
+            "snmp-server enable traps energywise",
+            "snmp-server enable traps event-manager",
+            "snmp-server enable traps flowmon",
+            "snmp-server enable traps hsrp",
+            "snmp-server enable traps ipsla",
+            "snmp-server enable traps isis",
+            "snmp-server enable traps msdp",
+            "snmp-server enable traps mvpn",
+            "snmp-server enable traps pki",
+            "snmp-server enable traps pw vc",
+            "snmp-server enable traps rsvp",
+            "snmp-server enable traps syslog",
+            "snmp-server enable traps tty",
+            "snmp-server enable traps ipmulticast",
+            "snmp-server enable traps ike policy add",
+            "snmp-server enable traps ike policy delete",
+            "snmp-server enable traps ike tunnel start",
+            "snmp-server enable traps ike tunnel stop",
+            "snmp-server enable traps ipsec cryptomap add",
+            "snmp-server enable traps ipsec cryptomap delete",
+            "snmp-server enable traps ipsec cryptomap attach",
+            "snmp-server enable traps ipsec cryptomap detach",
+            "snmp-server enable traps ipsec tunnel start",
+            "snmp-server enable traps ipsec tunnel stop",
+            "snmp-server enable traps ipsec too-many-sas",
+            "snmp-server enable traps ospf errors",
+            "snmp-server enable traps ospf retransmit",
+            "snmp-server enable traps ospf lsa",
+            "snmp-server enable traps ospf state-change",
+            "snmp-server enable traps l2tun pseudowire status",
+            "snmp-server enable traps l2tun session",
+            "snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message",
+            "snmp-server enable traps snmp authentication linkdown linkup warmstart coldstart",
+            "snmp-server enable traps frame-relay",
+            "snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+            "snmp-server enable traps dlsw",
+            "snmp-server enable traps ethernet evc create delete status",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
+            "snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
+            "snmp-server host 172.16.2.99 check slb pki",
+            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server group group0 v3 auth",
+            "snmp-server group group1 v1 notify me access 2",
+            "snmp-server group group2 v3 priv",
+            "snmp-server group replaceUser v3 noauth",
+            "snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
+            "snmp-server community commu1 view view1 ro ipv6 te",
+            "snmp-server community commu2 ro 1322",
+            "snmp-server community commu3 rw paul",
+            "snmp-server context contextWord2",
+            "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+            "snmp-server user newuser newfamily v1 access 24",
+            "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server user replaceUser replaceUser v3",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
 
-        self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
-    def test_ios_logging_global_parsed(self):
+    def test_ios_snmp_server_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server engineID local AB0C5342FA0A
+            snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+            snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
+            snmp-server user newuser newfamily v1 access 24
+            snmp-server user paul familypaul v3 access ipv6 ipv6acl
+            snmp-server user replaceUser replaceUser v3
+            snmp-server group group0 v3 auth
+            snmp-server group group1 v1 notify me access 2
+            snmp-server group group2 v3 priv
+            snmp-server group replaceUser v3 noauth
+            snmp-server community commu1 view view1 RO ipv6 te
+            snmp-server community commu2 RO 1322
+            snmp-server community commu3 RW paul
+            snmp-server trap timeout 2
+            snmp-server trap-source GigabitEthernet0/0
+            snmp-server source-interface informs Loopback999
+            snmp-server packetsize 500
+            snmp-server queue-length 2
+            snmp-server location thi sis a good location
+            snmp-server ip dscp 2
+            snmp-server contact this is contact string
+            snmp-server chassis-id this is a chassis id string
+            snmp-server system-shutdown
+            snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+            snmp-server enable traps flowmon
+            snmp-server enable traps tty
+            snmp-server enable traps eigrp
+            snmp-server enable traps casa
+            snmp-server enable traps ospf state-change
+            snmp-server enable traps ospf errors
+            snmp-server enable traps ospf retransmit
+            snmp-server enable traps ospf lsa
+            snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+            snmp-server enable traps ospf cisco-specific state-change shamlink interface
+            snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+            snmp-server enable traps ospf cisco-specific errors
+            snmp-server enable traps ospf cisco-specific retransmit
+            snmp-server enable traps ospf cisco-specific lsa
+            snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+            snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+            snmp-server enable traps auth-framework sec-violation
+            snmp-server enable traps energywise
+            snmp-server enable traps pw vc
+            snmp-server enable traps l2tun session
+            snmp-server enable traps l2tun pseudowire status
+            snmp-server enable traps ether-oam
+            snmp-server enable traps ethernet evc status create delete
+            snmp-server enable traps bridge newroot topologychange
+            snmp-server enable traps vtp
+            snmp-server enable traps ike policy add
+            snmp-server enable traps ike policy delete
+            snmp-server enable traps ike tunnel start
+            snmp-server enable traps ike tunnel stop
+            snmp-server enable traps ipsec cryptomap add
+            snmp-server enable traps ipsec cryptomap delete
+            snmp-server enable traps ipsec cryptomap attach
+            snmp-server enable traps ipsec cryptomap detach
+            snmp-server enable traps ipsec tunnel start
+            snmp-server enable traps ipsec tunnel stop
+            snmp-server enable traps ipsec too-many-sas
+            snmp-server enable traps bfd
+            snmp-server enable traps bgp
+            snmp-server enable traps bgp cbgp2
+            snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+            snmp-server enable traps dlsw
+            snmp-server enable traps frame-relay
+            snmp-server enable traps frame-relay subif
+            snmp-server enable traps hsrp
+            snmp-server enable traps ipmulticast
+            snmp-server enable traps isis
+            snmp-server enable traps msdp
+            snmp-server enable traps mvpn
+            snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+            snmp-server enable traps rsvp
+            snmp-server enable traps ipsla
+            snmp-server enable traps slb real virtual csrp
+            snmp-server enable traps syslog
+            snmp-server enable traps event-manager
+            snmp-server enable traps pki
+            snmp-server enable traps ethernet cfm alarm
+            snmp-server enable traps mpls vpn
+            snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+            snmp-server host 172.16.2.99 check  slb pki
+            snmp-server host 172.16.2.99 checktrap  isis hsrp
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+            snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server context contextWord1
+            snmp-server context contextWord2
+            snmp-server cache interval 2
+            snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+            snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
+            snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
+            snmp-server accounting commands default
+            snmp-server inform pending 2
+            """
+        )
+        playbook = {"config": {}}
+        deleted = [
+            "no snmp-server accounting commands default",
+            "no snmp-server cache interval 2",
+            "no snmp-server chassis-id this is a chassis id string",
+            "no snmp-server contact this is contact string",
+            "no snmp-server inform pending 2",
+            "no snmp-server ip dscp 2",
+            "no snmp-server location thi sis a good location",
+            "no snmp-server packetsize 500",
+            "no snmp-server queue-length 2",
+            "no snmp-server trap timeout 2",
+            "no snmp-server source-interface informs Loopback999",
+            "no snmp-server trap-source GigabitEthernet0/0",
+            "no snmp-server system-shutdown",
+            "no snmp-server enable traps auth-framework",
+            "no snmp-server enable traps bfd",
+            "no snmp-server enable traps bgp",
+            "no snmp-server enable traps bridge newroot topologychange",
+            "no snmp-server enable traps casa",
+            "no snmp-server enable traps eigrp",
+            "no snmp-server enable traps energywise",
+            "no snmp-server enable traps event-manager",
+            "no snmp-server enable traps flowmon",
+            "no snmp-server enable traps hsrp",
+            "no snmp-server enable traps ipsla",
+            "no snmp-server enable traps isis",
+            "no snmp-server enable traps msdp",
+            "no snmp-server enable traps mvpn",
+            "no snmp-server enable traps mpls vpn",
+            "no snmp-server enable traps pki",
+            "no snmp-server enable traps pw vc",
+            "no snmp-server enable traps rsvp",
+            "no snmp-server enable traps syslog",
+            "no snmp-server enable traps tty",
+            "no snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down",
+            "no snmp-server enable traps ipmulticast",
+            "no snmp-server enable traps ike policy add",
+            "no snmp-server enable traps ike policy delete",
+            "no snmp-server enable traps ike tunnel start",
+            "no snmp-server enable traps ike tunnel stop",
+            "no snmp-server enable traps ipsec cryptomap add",
+            "no snmp-server enable traps ipsec cryptomap delete",
+            "no snmp-server enable traps ipsec cryptomap attach",
+            "no snmp-server enable traps ipsec cryptomap detach",
+            "no snmp-server enable traps ipsec tunnel start",
+            "no snmp-server enable traps ipsec tunnel stop",
+            "no snmp-server enable traps ipsec too-many-sas",
+            "no snmp-server enable traps ospf cisco-specific errors",
+            "no snmp-server enable traps ospf cisco-specific retransmit",
+            "no snmp-server enable traps ospf cisco-specific lsa",
+            "no snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+            "no snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+            "no snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+            "no snmp-server enable traps ospf errors",
+            "no snmp-server enable traps ospf retransmit",
+            "no snmp-server enable traps ospf lsa",
+            "no snmp-server enable traps ospf state-change",
+            "no snmp-server enable traps l2tun pseudowire status",
+            "no snmp-server enable traps l2tun session",
+            "no snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message",
+            "no snmp-server enable traps snmp authentication linkdown linkup warmstart coldstart",
+            "no snmp-server enable traps frame-relay",
+            "no snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+            "no snmp-server enable traps dlsw",
+            "no snmp-server enable traps ethernet evc create delete status",
+            "no snmp-server enable traps ethernet cfm alarm",
+            "no snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
+            "no snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
+            "no snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
+            "no snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
+            "no snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
+            "no snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
+            "no snmp-server host 172.16.2.99 informs version 2c check msdp stun",
+            "no snmp-server host 172.16.2.99 check slb pki",
+            "no snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "no snmp-server group group0 v3 auth",
+            "no snmp-server group group1 v1 notify me access 2",
+            "no snmp-server group group2 v3 priv",
+            "no snmp-server group replaceUser v3 noauth",
+            "no snmp-server engineID local AB0C5342FA0A",
+            "no snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
+            "no snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
+            "no snmp-server community commu1 view view1 ro ipv6 te",
+            "no snmp-server community commu2 ro 1322",
+            "no snmp-server community commu3 rw paul",
+            "no snmp-server context contextWord1",
+            "no snmp-server context contextWord2",
+            "no snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+            "no snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
+            "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+            "no snmp-server user newuser newfamily v1 access 24",
+            "no snmp-server user paul familypaul v3 access ipv6",
+            "no snmp-server user replaceUser replaceUser v3",
+        ]
+        playbook["state"] = "deleted"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+
+    def test_ios_snmp_server_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+            snmp-server user newuser newfamily v1 access 24
+            snmp-server user replaceUser replaceUser v3
+            snmp-server group group2 v3 priv
+            snmp-server group replaceUser v3 noauth
+            snmp-server community commu3 RW paul
+            snmp-server trap timeout 2
+            snmp-server source-interface informs Loopback999
+            snmp-server packetsize 500
+            snmp-server queue-length 2
+            snmp-server location thi sis a good location
+            snmp-server ip dscp 2
+            snmp-server contact this is contact string
+            snmp-server chassis-id this is a chassis id string
+            snmp-server system-shutdown
+            snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+            snmp-server enable traps ospf state-change
+            snmp-server enable traps ospf errors
+            snmp-server enable traps ospf retransmit
+            snmp-server enable traps ospf lsa
+            snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+            snmp-server enable traps ospf cisco-specific state-change shamlink interface
+            snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+            snmp-server enable traps ospf cisco-specific errors
+            snmp-server enable traps ospf cisco-specific retransmit
+            snmp-server enable traps ospf cisco-specific lsa
+            snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+            snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+            snmp-server enable traps auth-framework sec-violation
+            snmp-server enable traps energywise
+            snmp-server enable traps ethernet evc status create delete
+            snmp-server enable traps bridge newroot topologychange
+            snmp-server enable traps vtp
+            snmp-server enable traps ike policy add
+            snmp-server enable traps ike policy delete
+            snmp-server enable traps ike tunnel start
+            snmp-server enable traps ike tunnel stop
+            snmp-server enable traps ipsec cryptomap add
+            snmp-server enable traps ipsec cryptomap delete
+            snmp-server enable traps ipsec cryptomap attach
+            snmp-server enable traps ipsec cryptomap detach
+            snmp-server enable traps ipsec tunnel start
+            snmp-server enable traps ipsec tunnel stop
+            snmp-server enable traps ipsec too-many-sas
+            snmp-server enable traps bfd
+            snmp-server enable traps bgp
+            snmp-server enable traps bgp cbgp2
+            snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+            snmp-server enable traps dlsw
+            snmp-server enable traps frame-relay
+            snmp-server enable traps frame-relay subif
+            snmp-server enable traps hsrp
+            snmp-server enable traps ipmulticast
+            snmp-server enable traps mpls vpn
+            snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+            snmp-server host 172.16.2.99 check  slb pki
+            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server context contextWord1
+            snmp-server context contextBAD
+            snmp-server file-transfer access-group testAcl protocol ftp
+            snmp-server file-transfer access-group testAcl protocol rcp
+            snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
+            snmp-server accounting commands default
+            snmp-server inform pending 2
+            """
+        )
+
+        playbook = {
+            "config": {
+                "accounting": {"command": "default"},
+                "cache": 2,
+                "chassis_id": "this is a chassis id string",
+                "communities": [
+                    {
+                        "acl_v6": "te",
+                        "name": "commu1",
+                        "ro": True,
+                        "view": "view1",
+                    },
+                    {"acl_v4": "1322", "name": "commu2", "ro": True},
+                    {"acl_v4": "paul", "name": "commu3", "rw": True},
+                ],
+                "contact": "this is contact string",
+                "context": ["contextWord2", "contextWord1"],
+                "engine_id": [
+                    {"id": "AB0C5342FA0A", "local": True},
+                    {
+                        "id": "AB0C5342FAAA",
+                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                    },
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
+                ],
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
+                "groups": [
+                    {
+                        "group": "group0",
+                        "version": "v3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "acl_v4": "2",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
+                    {
+                        "group": "group2",
+                        "version": "v3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
+                ],
+                "hosts": [
+                    {
+                        "community_string": "group0",
+                        "host": "172.16.1.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "community_string": "newtera",
+                        "host": "172.16.2.1",
+                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "version": "3",
+                        "version_option": "priv",
+                    },
+                    {
+                        "community_string": "replaceUser",
+                        "host": "172.16.2.1",
+                        "traps": ["slb", "pki"],
+                        "version": "3",
+                        "version_option": "noauth",
+                    },
+                    {
+                        "community_string": "trapsac",
+                        "host": "172.16.2.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "informs": True,
+                        "traps": ["msdp", "stun"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb", "pki"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis", "hsrp"],
+                    },
+                ],
+                "inform": {"pending": 2},
+                "ip": {"dscp": 2},
+                "location": "thi sis a good location",
+                "packet_size": 500,
+                "password_policy": [
+                    {
+                        "change": 3,
+                        "digits": 23,
+                        "lower_case": 12,
+                        "max_len": 24,
+                        "policy_name": "policy1",
+                        "special_char": 32,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 9,
+                        "min_len": 12,
+                        "policy_name": "policy2",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
+                    {
+                        "change": 11,
+                        "digits": 23,
+                        "max_len": 12,
+                        "min_len": 12,
+                        "policy_name": "policy3",
+                        "special_char": 22,
+                        "upper_case": 12,
+                    },
+                ],
+                "queue_length": 2,
+                "source_interface": "Loopback999",
+                "system_shutdown": True,
+                "trap_source": "GigabitEthernet0/0",
+                "trap_timeout": 2,
+                "traps": {
+                    "auth_framework": {"enable": True},
+                    "bfd": {"enable": True},
+                    "bgp": {"cbgp2": True, "enable": True},
+                    "bridge": {
+                        "enable": True,
+                        "newroot": True,
+                        "topologychange": True,
+                    },
+                    "casa": True,
+                    "cef": {
+                        "enable": True,
+                        "inconsistency": True,
+                        "peer_fib_state_change": True,
+                        "peer_state_change": True,
+                        "resource_failure": True,
+                    },
+                    "dlsw": {"enable": True},
+                    "eigrp": True,
+                    "energywise": True,
+                    "ethernet": {
+                        "cfm": {
+                            "alarm": True,
+                            "cc": {
+                                "config": True,
+                                "cross_connect": True,
+                                "loop": True,
+                                "mep_down": True,
+                                "mep_up": True,
+                            },
+                            "crosscheck": {
+                                "mep_missing": True,
+                                "mep_unknown": True,
+                                "service_up": True,
+                            },
+                        },
+                        "evc": {
+                            "create": True,
+                            "delete": True,
+                            "status": True,
+                        },
+                    },
+                    "event_manager": True,
+                    "flowmon": True,
+                    "frame_relay": {"enable": True},
+                    "hsrp": True,
+                    "ike": {
+                        "policy": {"add": True, "delete": True},
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipmulticast": True,
+                    "ipsec": {
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
+                        "too_many_sas": True,
+                        "tunnel": {"start": True, "stop": True},
+                    },
+                    "ipsla": True,
+                    "isis": True,
+                    "l2tun": {"pseudowire_status": True, "session": True},
+                    "mpls_vpn": True,
+                    "msdp": True,
+                    "mvpn": True,
+                    "ospf": {
+                        "cisco_specific": {
+                            "error": True,
+                            "lsa": True,
+                            "retransmit": True,
+                            "state_change": {
+                                "nssa_trans_change": True,
+                                "shamlink": {
+                                    "interface": True,
+                                    "neighbor": True,
+                                },
+                            },
+                        },
+                        "error": True,
+                        "lsa": True,
+                        "retransmit": True,
+                        "state_change": True,
+                    },
+                    "pim": {
+                        "enable": True,
+                        "invalid_pim_message": True,
+                        "neighbor_change": True,
+                        "rp_mapping_change": True,
+                    },
+                    "pki": True,
+                    "pw_vc": True,
+                    "rsvp": True,
+                    "snmp": {
+                        "authentication": True,
+                        "coldstart": True,
+                        "linkdown": True,
+                        "linkup": True,
+                        "warmstart": True,
+                    },
+                    "syslog": True,
+                    "tty": True,
+                    "vrfmib": {
+                        "vnet_trunk_down": True,
+                        "vnet_trunk_up": True,
+                        "vrf_down": True,
+                        "vrf_up": True,
+                    },
+                },
+                "users": [
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
+                    {
+                        "acl_v4": "ipv6",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
+                ],
+            }
+        }
+        overridden = [
+            "snmp-server cache interval 2",
+            "snmp-server trap-source GigabitEthernet0/0",
+            "snmp-server enable traps casa",
+            "snmp-server enable traps eigrp",
+            "snmp-server enable traps event-manager",
+            "snmp-server enable traps flowmon",
+            "snmp-server enable traps ipsla",
+            "snmp-server enable traps isis",
+            "snmp-server enable traps msdp",
+            "snmp-server enable traps mvpn",
+            "snmp-server enable traps pki",
+            "snmp-server enable traps pw vc",
+            "snmp-server enable traps rsvp",
+            "snmp-server enable traps syslog",
+            "snmp-server enable traps tty",
+            "snmp-server enable traps l2tun pseudowire status",
+            "snmp-server enable traps l2tun session",
+            "snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message",
+            "snmp-server enable traps ethernet cfm alarm",
+            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
+            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
+            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server group group0 v3 auth",
+            "snmp-server group group1 v1 notify me access 2",
+            "snmp-server engineID local AB0C5342FA0A",
+            "snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
+            "snmp-server community commu1 view view1 ro ipv6 te",
+            "snmp-server community commu2 ro 1322",
+            "snmp-server context contextWord2",
+            "no snmp-server context contextBAD",
+            "snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+            "snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
+            "snmp-server user paul familypaul v3 access ipv6",
+        ]
+        playbook["state"] = "overridden"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
+    def test_ios_snmp_server_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+            snmp-server host 172.16.2.99 check  slb pki
+            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            """
+        )
+        playbook = {
+            "config": {
+                "hosts": [
+                    {
+                        "community_string": "group0",
+                        "host": "172.16.1.1",
+                        "traps": ["tty", "bgp"],
+                        "version": "3",
+                        "version_option": "auth",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "informs": True,
+                        "traps": ["msdp", "stun"],
+                        "version": "2c",
+                    },
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb", "pki"],
+                    },
+                ]
+            }
+        }
+        overridden = []
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
+    ####################
+
+    def test_ios_snmp_server_parsed(self):
         set_module_args(
             dict(
                 running_config=dedent(
                     """\
-                    logging on
-                    logging buffered xml 5099 notifications
-                    logging buginf
-                    logging cns-events warnings
-                    logging console xml critical
-                    logging count
-                    logging delimiter tcp
+                    snmp-server engineID local AB0C5342FA0A
+                    snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+                    snmp-server user paul familypaul v3 access ipv6 ipv6acl
+                    snmp-server enable traps ospf state-change
+                    snmp-server enable traps ospf errors
+                    snmp-server enable traps ospf retransmit
+                    snmp-server enable traps ospf lsa
+                    snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+                    snmp-server enable traps ospf cisco-specific state-change shamlink interface
+                    snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+                    snmp-server enable traps ospf cisco-specific errors
+                    snmp-server enable traps ospf cisco-specific retransmit
+                    snmp-server enable traps ospf cisco-specific lsa
+                    snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
+                    snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
+                    snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+                    snmp-server host 172.16.2.99 check  slb pki
+                    snmp-server host 172.16.2.99 checktrap  isis hsrp
+                    snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+                    snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+                    snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+                    snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
                     """
                 ),
                 state="parsed",
             )
         )
-        parsed = dict(
-            logging_on="enable",
-            buffered=dict(size=5099, severity="notifications", xml=True),
-            buginf=True,
-            cns_events="warnings",
-            console=dict(severity="critical", xml=True),
-            count=True,
-            delimiter=dict(tcp=True),
-        )
+        parsed = {
+            "engine_id": [
+                {"id": "AB0C5342FA0A", "local": True},
+                {
+                    "id": "AB0C5342FAAB",
+                    "remote": {"host": "172.16.0.2", "udp_port": 23},
+                },
+            ],
+            "users": [
+                {
+                    "username": "paul",
+                    "group": "familypaul",
+                    "version": "v3",
+                    "acl_v4": "ipv6",
+                }
+            ],
+            "traps": {
+                "ospf": {
+                    "state_change": True,
+                    "error": True,
+                    "retransmit": True,
+                    "lsa": True,
+                    "cisco_specific": {
+                        "state_change": {
+                            "nssa_trans_change": True,
+                            "shamlink": {"interface": True, "neighbor": True},
+                        },
+                        "error": True,
+                        "retransmit": True,
+                        "lsa": True,
+                    },
+                },
+                "ethernet": {
+                    "cfm": {
+                        "cc": {
+                            "mep_up": True,
+                            "mep_down": True,
+                            "cross_connect": True,
+                            "loop": True,
+                            "config": True,
+                        },
+                        "crosscheck": {
+                            "mep_missing": True,
+                            "mep_unknown": True,
+                            "service_up": True,
+                        },
+                    }
+                },
+            },
+            "hosts": [
+                {
+                    "host": "172.16.1.1",
+                    "community_string": "group0",
+                    "traps": ["tty", "bgp"],
+                    "version": "3",
+                    "version_option": "auth",
+                },
+                {
+                    "host": "172.16.2.1",
+                    "community_string": "newtera",
+                    "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                    "version": "3",
+                    "version_option": "priv",
+                },
+                {
+                    "host": "172.16.2.1",
+                    "community_string": "replaceUser",
+                    "traps": ["slb", "pki"],
+                    "version": "3",
+                    "version_option": "noauth",
+                },
+                {
+                    "host": "172.16.2.1",
+                    "community_string": "trapsac",
+                    "traps": ["tty", "bgp"],
+                    "version": "2c",
+                },
+                {
+                    "host": "172.16.2.99",
+                    "informs": True,
+                    "community_string": "check",
+                    "traps": ["msdp", "stun"],
+                    "version": "2c",
+                },
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "check",
+                    "traps": ["slb", "pki"],
+                },
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "checktrap",
+                    "traps": ["isis", "hsrp"],
+                },
+            ],
+        }
         result = self.execute_module(changed=False)
-
         self.maxDiff = None
         self.assertEqual(sorted(result["parsed"]), sorted(parsed))
 
-    def test_ios_logging_global_gathered(self):
+    def test_ios_snmp_server_gathered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            logging persistent notify
+            snmp-server host 172.16.2.99 checktrap  isis hsrp
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
             """
         )
         set_module_args(dict(state="gathered"))
-        gathered = dict(persistent=dict(notify=True))
-        result = self.execute_module(changed=False)
-
-        self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
-
-    def test_ios_logging_global_gathered_host(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging host 172.16.1.1 vrf vpn1 transport tcp audit
-            """
-        )
-        set_module_args(dict(state="gathered"))
-        gathered = dict(
-            hosts=[
-                dict(
-                    hostname="172.16.1.1",
-                    vrf="vpn1",
-                    transport=dict(tcp=dict(audit=True)),
-                )
+        gathered = {
+            "hosts": [
+                {
+                    "host": "172.16.2.1",
+                    "community_string": "newtera",
+                    "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                    "version": "3",
+                    "version_option": "priv",
+                },
+                {
+                    "host": "172.16.2.1",
+                    "community_string": "replaceUser",
+                    "traps": ["slb", "pki"],
+                    "version": "3",
+                    "version_option": "noauth",
+                },
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "checktrap",
+                    "traps": ["isis", "hsrp"],
+                },
             ]
-        )
+        }
         result = self.execute_module(changed=False)
-
         self.maxDiff = None
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
 
-    def test_ios_logging_global_rendered(self):
+    def test_ios_snmp_server_rendered(self):
         set_module_args(
-            dict(
-                config=dict(
-                    rate_limit=dict(
-                        console=True, size=2, except_severity="warnings"
-                    ),
-                    reload=dict(message_limit=10, severity="alerts"),
-                    persistent=dict(
-                        url="flash0:172.16.0.1",
-                        threshold=2,
-                        immediate=True,
-                        protected=True,
-                        notify=True,
-                    ),
-                    queue_limit=dict(trap=1000),
-                    buffered=dict(
-                        discriminator="notifications", filtered=True
-                    ),
-                    hosts=[
-                        dict(
-                            ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
-                            transport=dict(
-                                tcp=dict(session_id=dict(tag="hostname"))
-                            ),
-                        )
+            {
+                "config": {
+                    "engine_id": [
+                        {"id": "AB0C5342FA0A", "local": True},
+                        {
+                            "id": "AB0C5342FAAB",
+                            "remote": {"host": "172.16.0.2", "udp_port": 23},
+                        },
                     ],
-                ),
-                state="rendered",
-            )
+                    "users": [
+                        {
+                            "username": "paul",
+                            "group": "familypaul",
+                            "version": "v3",
+                            "acl_v4": "ipv6",
+                        }
+                    ],
+                    "traps": {
+                        "ospf": {
+                            "state_change": True,
+                            "error": True,
+                            "retransmit": True,
+                            "lsa": True,
+                            "cisco_specific": {
+                                "state_change": {
+                                    "nssa_trans_change": True,
+                                    "shamlink": {
+                                        "interface": True,
+                                        "neighbor": True,
+                                    },
+                                },
+                                "error": True,
+                                "retransmit": True,
+                                "lsa": True,
+                            },
+                        },
+                        "ethernet": {
+                            "cfm": {
+                                "cc": {
+                                    "mep_up": True,
+                                    "mep_down": True,
+                                    "cross_connect": True,
+                                    "loop": True,
+                                    "config": True,
+                                },
+                                "crosscheck": {
+                                    "mep_missing": True,
+                                    "mep_unknown": True,
+                                    "service_up": True,
+                                },
+                            }
+                        },
+                    },
+                    "hosts": [
+                        {
+                            "host": "172.16.1.1",
+                            "community_string": "group0",
+                            "traps": ["tty", "bgp"],
+                            "version": "3",
+                            "version_option": "auth",
+                        },
+                        {
+                            "host": "172.16.2.1",
+                            "community_string": "newtera",
+                            "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                            "version": "3",
+                            "version_option": "priv",
+                        },
+                        {
+                            "host": "172.16.2.1",
+                            "community_string": "replaceUser",
+                            "traps": ["slb", "pki"],
+                            "version": "3",
+                            "version_option": "noauth",
+                        },
+                        {
+                            "host": "172.16.2.1",
+                            "community_string": "trapsac",
+                            "traps": ["tty", "bgp"],
+                            "version": "2c",
+                        },
+                        {
+                            "host": "172.16.2.99",
+                            "informs": True,
+                            "community_string": "check",
+                            "traps": ["msdp", "stun"],
+                            "version": "2c",
+                        },
+                        {
+                            "host": "172.16.2.99",
+                            "community_string": "check",
+                            "traps": ["slb", "pki"],
+                        },
+                        {
+                            "host": "172.16.2.99",
+                            "community_string": "checktrap",
+                            "traps": ["isis", "hsrp"],
+                        },
+                    ],
+                },
+                "state": "rendered",
+            }
         )
         rendered = [
-            "logging reload message-limit 10 alerts",
-            "logging rate-limit console 2 except warnings",
-            "logging buffered discriminator notifications filtered",
-            "logging persistent url flash0:172.16.0.1 threshold 2 immediate protected notify",
-            "logging queue-limit trap 1000",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp session-id hostname",
+            "snmp-server enable traps ospf cisco-specific errors",
+            "snmp-server enable traps ospf cisco-specific retransmit",
+            "snmp-server enable traps ospf cisco-specific lsa",
+            "snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+            "snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+            "snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+            "snmp-server enable traps ospf errors",
+            "snmp-server enable traps ospf retransmit",
+            "snmp-server enable traps ospf lsa",
+            "snmp-server enable traps ospf state-change",
+            "snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
+            "snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
+            "snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
+            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
+            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
+            "snmp-server host 172.16.2.99 informs version 2c check msdp stun",
+            "snmp-server host 172.16.2.99 check slb pki",
+            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server engineID local AB0C5342FA0A",
+            "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
+            "snmp-server user paul familypaul v3 access ipv6",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
-
-    def test_ios_logging_global_deleted_empty(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging rate-limit all 2 except warnings
-            logging server-arp
-            logging origin-id string Test
-            logging reload alerts
-            logging userinfo
-            logging trap errors
-            logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7324
-            logging persistent size 1000 filesize 1000
-            logging source-interface Gbit0/1 vrf vpn1
-            logging filter flash:172.16.1.1 1 args Test
-            """
-        )
-        playbook = dict(config=dict())
-        deleted = [
-            "no logging rate-limit all 2 except warnings",
-            "no logging server-arp",
-            "no logging origin-id string Test",
-            "no logging reload alerts",
-            "no logging userinfo",
-            "no logging trap errors",
-            "no logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7324",
-            "no logging persistent size 1000 filesize 1000",
-            "no logging source-interface Gbit0/1 vrf vpn1",
-            "no logging filter flash:172.16.1.1 1 args Test",
-        ]
-        playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
-
-    def test_ios_logging_global_deleted_idempotent(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            no logging exception
-            no logging buffered
-            no logging reload
-            no logging rate-limit
-            no logging console
-            no logging monitor
-            no logging cns-events
-            no logging trap
-            """
-        )
-        playbook = dict(config=dict())
-        deleted = []
-        playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
-
-        self.maxDiff = None
-        self.assertEqual(result["commands"], deleted)
-
-    def test_ios_logging_global_replaced(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging host 172.16.1.1
-            """
-        )
-        playbook = dict(
-            config=dict(
-                hosts=[
-                    dict(hostname="172.16.2.15", session_id=dict(text="Test"))
-                ]
-            )
-        )
-        replaced = [
-            "no logging host 172.16.1.1",
-            "logging host 172.16.2.15 session-id string Test",
-        ]
-        playbook["state"] = "replaced"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
-
-    def test_ios_logging_global_replaced_idempotent(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            logging host 172.16.2.15
-            """
-        )
-        playbook = dict(config=dict(hosts=[dict(hostname="172.16.2.15")]))
-        replaced = []
-        playbook["state"] = "replaced"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
-
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))

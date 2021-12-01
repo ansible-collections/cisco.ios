@@ -41,7 +41,7 @@ def cmd_option_engine_id(config_data):
     return cmd
 
 
-def cmd_option_file_transfer(config_data):  # for loop
+def cmd_option_file_transfer(config_data):  # contain sub list attr
     cmd = ""
     if config_data.get("file_transfer"):
         conf = config_data.get("file_transfer")
@@ -50,43 +50,12 @@ def cmd_option_file_transfer(config_data):  # for loop
             cmd += " access-group {ag}".format(ag=conf.get("access_group"))
         if conf.get("protocol"):
             cmd += " protocol"
-            for protocol in conf.get("protocol"):
+            for protocol in list(conf.get("protocol").keys()):
                 cmd += " {protocol}".format(protocol=protocol)
     return cmd
 
 
-def cmd_option_groups(config_data):
-    cmd = ""
-    if config_data:
-        cmd = "snmp-server group"
-        if config_data.get("group"):
-            cmd += " {group}".format(group=config_data.get("group"))
-        if config_data.get("version"):
-            cmd += " {version}".format(version=config_data.get("version"))
-        if config_data.get("version_option"):
-            cmd += " {version}".format(
-                version=config_data.get("version_option")
-            )
-        if config_data.get("context"):
-            cmd += " context {context}".format(
-                context=config_data.get("context")
-            )
-        if config_data.get("notify"):
-            cmd += " notify {notify}".format(notify=config_data.get("notify"))
-        if config_data.get("read"):
-            cmd += " read {read}".format(read=config_data.get("read"))
-        if config_data.get("write"):
-            cmd += " write {write}".format(write=config_data.get("write"))
-        if config_data.get("acl_v4"):
-            cmd += " access {acl_v4}".format(acl_v4=config_data.get("acl_v4"))
-        if config_data.get("acl_v6"):
-            cmd += " access  ipv6 {acl_v6}".format(
-                acl_v6=config_data.get("acl_v6")
-            )
-    return cmd
-
-
-def cmd_option_hosts(config_data):  # for loop
+def cmd_option_hosts(config_data):  # contain sub list attr
     cmd = ""
     if config_data:
         cmd = "snmp-server host"
@@ -109,7 +78,7 @@ def cmd_option_hosts(config_data):  # for loop
                 community_string=config_data.get("community_string")
             )
         if config_data.get("traps"):
-            for protocol in config_data.get("traps"):
+            for protocol in list(config_data.get("traps").keys()):
                 cmd += " {protocol}".format(protocol=protocol)
     return cmd
 
@@ -315,7 +284,16 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\saccess\s(?P<acl_v4>\S+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 """, re.VERBOSE),
-            "setval": cmd_option_groups,
+            "setval": "snmp-server group "
+                      "{{ group if group is defined else '' }}"
+                      "{{ (' ' + version) if version is defined else '' }}"
+                      "{{ (' ' + version_option) if version_option is defined else '' }}"
+                      "{{ (' context ' + context) if context is defined else '' }}"
+                      "{{ (' notify ' + notify) if notify is defined else '' }}"
+                      "{{ (' read ' + read) if read is defined else '' }}"
+                      "{{ (' write ' + write) if write is defined else '' }}"
+                      "{{ (' access ' + acl_v4) if acl_v4 is defined else '' }}"
+                      "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}",
             "result": {
                 "groups": [
                     {

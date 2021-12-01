@@ -206,6 +206,7 @@ class Snmp_server(ResourceModule):
             "communities": "name",
             "context": True,
             "password_policy": "policy_name",
+            "file_transfer": True,
             "users": "username",
             "views": "name",
         }
@@ -213,16 +214,32 @@ class Snmp_server(ResourceModule):
         for k, _v in p_key.items():
             if k in tmp_data:
                 if k == "hosts":
-                    tmp_data[k] = {
-                        str(
-                            i[p_key.get(k)]
-                            + i.get("version", "")
-                            + i.get("community_string", "")
-                        ): i
-                        for i in tmp_data[k]
-                    }
+                    tmp_host = dict()
+                    for i in tmp_data[k]:
+                        tmp = dict()
+                        if i.get("traps"):
+                            for t in i.get("traps"):
+                                tmp.update({t: t})
+                            i["traps"] = tmp
+                        tmp_host.update(
+                            {
+                                str(
+                                    i[p_key.get(k)]
+                                    + i.get("version", "")
+                                    + i.get("community_string", "")
+                                ): i
+                            }
+                        )
+                    tmp_data[k] = tmp_host
                 elif k == "context":
                     tmp_data[k] = {i: {"context": i} for i in tmp_data[k]}
+                elif k == "file_transfer":
+                    if tmp_data.get(k):
+                        if tmp_data[k].get("protocol"):
+                            tmp = dict()
+                            for t in tmp_data[k].get("protocol"):
+                                tmp.update({t: t})
+                            tmp_data[k]["protocol"] = tmp
                 else:
                     tmp_data[k] = {
                         str(i[p_key.get(k)]): i for i in tmp_data[k]
