@@ -29,12 +29,14 @@
     - name: ios_snmp_server overridden - Assert before
       assert:
         that:
-          - overridden['before'] == result['before']
+          - "{{ overridden['before'] | symmetric_difference(result['before']) |\
+            \ length == 0 }}"
 
     - name: ios_snmp_server overridden - Assert after
       assert:
         that:
-          - overridden['after'] == result['after']
+          - "{{ overridden['after'] | symmetric_difference(result['after']) |\
+            \ length == 0 }}"
 
     - name: ios_snmp_server overridden - Play (IDEMPOTENT)
       register: result

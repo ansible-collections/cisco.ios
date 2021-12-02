@@ -31,7 +31,8 @@
     - name: ios_snmp_server merged - Assert after
       assert:
         that:
-          - merged['after'] == result['after']
+          - "{{ merged['after'] | symmetric_difference(result['after']) |\
+            \ length == 0 }}"
 
     - name: ios_snmp_server merged - Play (IDEMPOTENT)
       register: result

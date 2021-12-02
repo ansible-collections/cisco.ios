@@ -10,9 +10,7 @@ __metaclass__ = type
 from textwrap import dedent
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_snmp_server
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 from .ios_module import TestIosModule
 
 
@@ -153,13 +151,13 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps ethernet cfm alarm
             snmp-server enable traps mpls vpn
             snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-            snmp-server host 172.16.2.99 check  slb pki
-            snmp-server host 172.16.2.99 checktrap  isis hsrp
-            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
-            snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
-            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server host 172.16.2.99 informs version 2c check  msdp
+            snmp-server host 172.16.2.99 check  slb
+            snmp-server host 172.16.2.99 checktrap  isis
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb
+            snmp-server host 172.16.2.1 version 2c trapsac  tty
+            snmp-server host 172.16.1.1 version 3 auth group0  tty
             snmp-server context contextWord1
             snmp-server context contextWord2
             snmp-server file-transfer access-group testAcl protocol ftp
@@ -179,12 +177,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -206,22 +199,9 @@ class TestIosSnmpServerModule(TestIosModule):
                     "protocol": ["ftp", "rcp"],
                 },
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
                     {
                         "group": "replaceUser",
                         "version": "v3",
@@ -232,46 +212,46 @@ class TestIosSnmpServerModule(TestIosModule):
                     {
                         "community_string": "group0",
                         "host": "172.16.1.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "3",
                         "version_option": "auth",
                     },
                     {
                         "community_string": "newtera",
                         "host": "172.16.2.1",
-                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "traps": ["rsrb"],
                         "version": "3",
                         "version_option": "priv",
                     },
                     {
                         "community_string": "replaceUser",
                         "host": "172.16.2.1",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                         "version": "3",
                         "version_option": "noauth",
                     },
                     {
                         "community_string": "trapsac",
                         "host": "172.16.2.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
                         "informs": True,
-                        "traps": ["msdp", "stun"],
+                        "traps": ["msdp"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                     },
                     {
                         "community_string": "checktrap",
                         "host": "172.16.2.99",
-                        "traps": ["isis", "hsrp"],
+                        "traps": ["isis"],
                     },
                 ],
                 "inform": {"pending": 2},
@@ -314,11 +294,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "auth_framework": {"enable": True},
                     "bfd": {"enable": True},
                     "bgp": {"cbgp2": True, "enable": True},
-                    "bridge": {
-                        "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
-                    },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -346,11 +322,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -384,10 +356,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -466,9 +435,9 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps ethernet cfm alarm
             snmp-server enable traps mpls vpn
             snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+            snmp-server host 172.16.2.99 informs version 2c check  msdp
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb
             snmp-server context contextWord1
             snmp-server cache interval 2
             snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
@@ -483,12 +452,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -498,7 +462,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"id": "AB0C5342FA0A", "local": True},
                     {
                         "id": "AB0C5342FAAA",
-                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                        "remote": {"host": "172.16.0.1", "udp_port": 22, "vrf": "mgmt"},
                     },
                     {
                         "id": "AB0C5342FAAB",
@@ -510,22 +474,9 @@ class TestIosSnmpServerModule(TestIosModule):
                     "protocol": ["ftp", "rcp"],
                 },
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
                     {
                         "group": "replaceUser",
                         "version": "v3",
@@ -536,46 +487,46 @@ class TestIosSnmpServerModule(TestIosModule):
                     {
                         "community_string": "group0",
                         "host": "172.16.1.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "3",
                         "version_option": "auth",
                     },
                     {
                         "community_string": "newtera",
                         "host": "172.16.2.1",
-                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "traps": ["rsrb"],
                         "version": "3",
                         "version_option": "priv",
                     },
                     {
                         "community_string": "replaceUser",
                         "host": "172.16.2.1",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                         "version": "3",
                         "version_option": "noauth",
                     },
                     {
                         "community_string": "trapsac",
                         "host": "172.16.2.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
                         "informs": True,
-                        "traps": ["msdp", "stun"],
+                        "traps": ["msdp"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                     },
                     {
                         "community_string": "checktrap",
                         "host": "172.16.2.99",
-                        "traps": ["isis", "hsrp"],
+                        "traps": ["isis"],
                     },
                 ],
                 "inform": {"pending": 2},
@@ -617,12 +568,18 @@ class TestIosSnmpServerModule(TestIosModule):
                 "traps": {
                     "auth_framework": {"enable": True},
                     "bfd": {"enable": True},
-                    "bgp": {"cbgp2": True, "enable": True},
-                    "bridge": {
+                    "bgp": {
+                        "cbgp2": True,
                         "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
+                        "threshold": {"prefix": True},
+                        "state_changes": {
+                            "enable": True,
+                            "all": True,
+                            "limited": True,
+                            "backward_trans": True,
+                        },
                     },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -650,11 +607,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -688,10 +641,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -759,7 +709,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server trap-source GigabitEthernet0/0",
             "snmp-server system-shutdown",
             "snmp-server enable traps bfd",
-            "snmp-server enable traps bgp cbgp2",
+            "snmp-server enable traps bgp cbgp2 state-changes all backward-trans limited threshold prefix",
             "snmp-server enable traps bridge newroot topologychange",
             "snmp-server enable traps eigrp",
             "snmp-server enable traps energywise",
@@ -799,15 +749,15 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
             "snmp-server enable traps dlsw",
             "snmp-server enable traps ethernet evc create delete status",
-            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
-            "snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
-            "snmp-server host 172.16.2.99 check slb pki",
-            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty",
+            "snmp-server host 172.16.1.1 version 3 auth group0 tty",
+            "snmp-server host 172.16.2.99 check slb",
+            "snmp-server host 172.16.2.99 checktrap isis",
             "snmp-server group group0 v3 auth",
             "snmp-server group group1 v1 notify me access 2",
             "snmp-server group group2 v3 priv",
             "snmp-server group replaceUser v3 noauth",
-            "snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
+            "snmp-server engineID remote 172.16.0.1 udp-port 22 vrf mgmt AB0C5342FAAA",
             "snmp-server community commu1 view view1 ro ipv6 te",
             "snmp-server community commu2 ro 1322",
             "snmp-server community commu3 rw paul",
@@ -908,13 +858,13 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps ethernet cfm alarm
             snmp-server enable traps mpls vpn
             snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-            snmp-server host 172.16.2.99 check  slb pki
-            snmp-server host 172.16.2.99 checktrap  isis hsrp
-            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
-            snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
-            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server host 172.16.2.99 informs version 2c check  msdp
+            snmp-server host 172.16.2.99 check  slb
+            snmp-server host 172.16.2.99 checktrap  isis
+            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb
+            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb
+            snmp-server host 172.16.2.1 version 2c trapsac  tty
+            snmp-server host 172.16.1.1 version 3 auth group0  tty
             snmp-server context contextWord1
             snmp-server context contextWord2
             snmp-server cache interval 2
@@ -994,13 +944,13 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server enable traps ethernet cfm alarm",
             "no snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
             "no snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
-            "no snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
-            "no snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
-            "no snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
-            "no snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
-            "no snmp-server host 172.16.2.99 informs version 2c check msdp stun",
-            "no snmp-server host 172.16.2.99 check slb pki",
-            "no snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "no snmp-server host 172.16.1.1 version 3 auth group0 tty",
+            "no snmp-server host 172.16.2.1 version 3 priv newtera rsrb",
+            "no snmp-server host 172.16.2.1 version 3 noauth replaceUser slb",
+            "no snmp-server host 172.16.2.1 version 2c trapsac tty",
+            "no snmp-server host 172.16.2.99 informs version 2c check msdp",
+            "no snmp-server host 172.16.2.99 check slb",
+            "no snmp-server host 172.16.2.99 checktrap isis",
             "no snmp-server group group0 v3 auth",
             "no snmp-server group group1 v1 notify me access 2",
             "no snmp-server group group2 v3 priv",
@@ -1083,9 +1033,9 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server enable traps ipmulticast
             snmp-server enable traps mpls vpn
             snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-            snmp-server host 172.16.2.99 check  slb pki
-            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server host 172.16.2.99 informs version 2c check  msdp
+            snmp-server host 172.16.2.99 check  slb
+            snmp-server host 172.16.1.1 version 3 auth group0  tty
             snmp-server context contextWord1
             snmp-server context contextBAD
             snmp-server file-transfer access-group testAcl protocol ftp
@@ -1102,12 +1052,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -1129,22 +1074,9 @@ class TestIosSnmpServerModule(TestIosModule):
                     "protocol": ["ftp", "rcp"],
                 },
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
                     {
                         "group": "replaceUser",
                         "version": "v3",
@@ -1155,46 +1087,46 @@ class TestIosSnmpServerModule(TestIosModule):
                     {
                         "community_string": "group0",
                         "host": "172.16.1.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "3",
                         "version_option": "auth",
                     },
                     {
                         "community_string": "newtera",
                         "host": "172.16.2.1",
-                        "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                        "traps": ["rsrb"],
                         "version": "3",
                         "version_option": "priv",
                     },
                     {
                         "community_string": "replaceUser",
                         "host": "172.16.2.1",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                         "version": "3",
                         "version_option": "noauth",
                     },
                     {
                         "community_string": "trapsac",
                         "host": "172.16.2.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
                         "informs": True,
-                        "traps": ["msdp", "stun"],
+                        "traps": ["msdp"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                     },
                     {
                         "community_string": "checktrap",
                         "host": "172.16.2.99",
-                        "traps": ["isis", "hsrp"],
+                        "traps": ["isis"],
                     },
                 ],
                 "inform": {"pending": 2},
@@ -1237,11 +1169,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "auth_framework": {"enable": True},
                     "bfd": {"enable": True},
                     "bgp": {"cbgp2": True, "enable": True},
-                    "bridge": {
-                        "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
-                    },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -1269,11 +1197,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -1307,10 +1231,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -1384,10 +1305,10 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server enable traps l2tun session",
             "snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message",
             "snmp-server enable traps ethernet cfm alarm",
-            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
-            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
-            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
-            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb",
+            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty",
+            "snmp-server host 172.16.2.99 checktrap isis",
             "snmp-server group group0 v3 auth",
             "snmp-server group group1 v1 notify me access 2",
             "snmp-server engineID local AB0C5342FA0A",
@@ -1408,9 +1329,9 @@ class TestIosSnmpServerModule(TestIosModule):
     def test_ios_snmp_server_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-            snmp-server host 172.16.2.99 check  slb pki
-            snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+            snmp-server host 172.16.2.99 informs version 2c check  msdp
+            snmp-server host 172.16.2.99 check  slb
+            snmp-server host 172.16.1.1 version 3 auth group0  tty
             """
         )
         playbook = {
@@ -1419,7 +1340,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {
                         "community_string": "group0",
                         "host": "172.16.1.1",
-                        "traps": ["tty", "bgp"],
+                        "traps": ["tty"],
                         "version": "3",
                         "version_option": "auth",
                     },
@@ -1427,13 +1348,13 @@ class TestIosSnmpServerModule(TestIosModule):
                         "community_string": "check",
                         "host": "172.16.2.99",
                         "informs": True,
-                        "traps": ["msdp", "stun"],
+                        "traps": ["msdp"],
                         "version": "2c",
                     },
                     {
                         "community_string": "check",
                         "host": "172.16.2.99",
-                        "traps": ["slb", "pki"],
+                        "traps": ["slb"],
                     },
                 ]
             }
@@ -1643,10 +1564,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "cisco_specific": {
                                 "state_change": {
                                     "nssa_trans_change": True,
-                                    "shamlink": {
-                                        "interface": True,
-                                        "neighbor": True,
-                                    },
+                                    "shamlink": {"interface": True, "neighbor": True},
                                 },
                                 "error": True,
                                 "retransmit": True,
@@ -1674,46 +1592,47 @@ class TestIosSnmpServerModule(TestIosModule):
                         {
                             "host": "172.16.1.1",
                             "community_string": "group0",
-                            "traps": ["tty", "bgp"],
+                            "traps": ["tty"],
                             "version": "3",
                             "version_option": "auth",
+                            "vrf": "mgmt",
                         },
                         {
                             "host": "172.16.2.1",
                             "community_string": "newtera",
-                            "traps": ["rsrb", "pim", "rsvp", "slb", "pki"],
+                            "traps": ["rsrb"],
                             "version": "3",
                             "version_option": "priv",
                         },
                         {
                             "host": "172.16.2.1",
                             "community_string": "replaceUser",
-                            "traps": ["slb", "pki"],
+                            "traps": ["slb"],
                             "version": "3",
                             "version_option": "noauth",
                         },
                         {
                             "host": "172.16.2.1",
                             "community_string": "trapsac",
-                            "traps": ["tty", "bgp"],
+                            "traps": ["tty"],
                             "version": "2c",
                         },
                         {
                             "host": "172.16.2.99",
                             "informs": True,
                             "community_string": "check",
-                            "traps": ["msdp", "stun"],
+                            "traps": ["msdp"],
                             "version": "2c",
                         },
                         {
                             "host": "172.16.2.99",
                             "community_string": "check",
-                            "traps": ["slb", "pki"],
+                            "traps": ["slb"],
                         },
                         {
                             "host": "172.16.2.99",
                             "community_string": "checktrap",
-                            "traps": ["isis", "hsrp"],
+                            "traps": ["isis"],
                         },
                     ],
                 },
@@ -1733,13 +1652,13 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server enable traps ospf state-change",
             "snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
             "snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
-            "snmp-server host 172.16.1.1 version 3 auth group0 tty bgp",
-            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
-            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb pki",
-            "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
-            "snmp-server host 172.16.2.99 informs version 2c check msdp stun",
-            "snmp-server host 172.16.2.99 check slb pki",
-            "snmp-server host 172.16.2.99 checktrap isis hsrp",
+            "snmp-server host 172.16.1.1 version 3 auth vrf mgmt group0 tty",
+            "snmp-server host 172.16.2.1 version 3 priv newtera rsrb",
+            "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb",
+            "snmp-server host 172.16.2.1 version 2c trapsac tty",
+            "snmp-server host 172.16.2.99 informs version 2c check msdp",
+            "snmp-server host 172.16.2.99 check slb",
+            "snmp-server host 172.16.2.99 checktrap isis",
             "snmp-server engineID local AB0C5342FA0A",
             "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
             "snmp-server user paul familypaul v3 access ipv6",
