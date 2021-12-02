@@ -796,7 +796,7 @@ options:
       - Refer to examples for more details.
     type: str
 short_description: snmp_server resource module
-version_added: 2.5.0
+version_added: 2.6.0
 """
 
 EXAMPLES = """
