@@ -45,6 +45,7 @@
       - bgp_global
       - bgp_address_family
       - route_maps
+      - snmp_server
       - prefix_lists
       - ntp_global
 
