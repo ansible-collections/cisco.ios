@@ -12,5 +12,4 @@
 - assert:
     that:
       - result.changed == false
-      - "{{ parsed['config'] | symmetric_difference(result['parsed']) |\
-        \ length == 0 }}"
+      - parsed['config'] == result['parsed']

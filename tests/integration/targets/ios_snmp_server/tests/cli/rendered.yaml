@@ -26,20 +26,6 @@
               remote:
                 host: 172.16.0.12
                 udp_port: 25
-          hosts:
-            - community_string: integrationComm
-              host: 172.16.0.9
-              informs: true
-              traps:
-                - msdp
-                - stun
-                - pki
-              version: 2c
-            - community_string: integrationComm
-              host: 172.16.0.9
-              traps:
-                - slb
-                - pki
         state: rendered
 
     - assert:

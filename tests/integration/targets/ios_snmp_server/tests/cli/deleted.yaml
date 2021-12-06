@@ -18,14 +18,12 @@
     - name: ios_snmp_server deleted - Assert commands
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - deleted['commands'] == result['commands']
 
     - name: ios_snmp_server deleted - Assert before
       assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) |\
-            \ length == 0 }}"
+          - deleted['before'] == result['before']
 
     - name: ios_snmp_server deleted - Play (IDEMPOTENT)
       register: result

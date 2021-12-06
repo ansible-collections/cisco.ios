@@ -22,19 +22,6 @@ merged:
           udp_port: 25
     hosts:
       - community_string: integrationComm
-        host: 172.16.0.9
-        informs: true
-        traps:
-          - msdp
-          - stun
-          - pki
-        version: 2c
-      - community_string: integrationComm
-        host: 172.16.0.9
-        traps:
-          - slb
-          - pki
-      - community_string: integrationComm
         host: 172.16.0.10
         informs: true
         traps:
@@ -60,27 +47,11 @@ overridden:
         remote:
           host: 172.16.0.12
           udp_port: 25
-    hosts:
-      - community_string: integrationComm
-        host: 172.16.0.9
-        informs: true
-        traps:
-          - msdp
-          - stun
-          - pki
-        version: 2c
-      - community_string: integrationComm
-        host: 172.16.0.9
-        traps:
-          - slb
-          - pki
   commands:
     - no snmp-server contact contact updated using play
     - no snmp-server inform pending 2
     - no snmp-server ip dscp 2
     - no snmp-server system-shutdown
-    - no snmp-server host 10.0.2.9 informs version 2c integrationComm msdp stun pki
-    - no snmp-server host 10.0.2.9 integrationComm slb pki
     - no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
     - snmp-server community communityOvverriden rw acl_uq
     - no snmp-server community integrationComm rw test_Acl
@@ -111,20 +82,6 @@ deleted:
         remote:
           host: 172.16.0.12
           udp_port: 25
-    hosts:
-      - community_string: integrationComm
-        host: 172.16.0.9
-        informs: true
-        traps:
-          - msdp
-          - stun
-          - pki
-        version: 2c
-      - community_string: integrationComm
-        host: 172.16.0.9
-        traps:
-          - slb
-          - pki
   commands:
     - no snmp-server contact contact updated using play
     - no snmp-server inform pending 2
@@ -132,8 +89,6 @@ deleted:
     - no snmp-server location location entry for snmp
     - no snmp-server packetsize 500
     - no snmp-server system-shutdown
-    - no snmp-server host 172.16.0.9 informs version 2c integrationComm msdp stun pki
-    - no snmp-server host 172.16.0.9 integrationComm slb pki
     - no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
     - no snmp-server community integrationComm rw test_Acl
 
@@ -164,20 +119,6 @@ gathered:
         remote:
           host: 172.16.0.12
           udp_port: 25
-    hosts:
-      - community_string: integrationComm
-        host: 172.16.0.9
-        informs: true
-        traps:
-          - msdp
-          - stun
-          - pki
-        version: 2c
-      - community_string: integrationComm
-        host: 172.16.0.9
-        traps:
-          - slb
-          - pki
 
 rendered:
   commands:
@@ -187,7 +128,5 @@ rendered:
     - snmp-server location location entry for snmp
     - snmp-server packetsize 500
     - snmp-server system-shutdown
-    - snmp-server host 172.16.0.9 informs version 2c integrationComm msdp stun pki
-    - snmp-server host 172.16.0.9 integrationComm slb pki
     - snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
     - snmp-server community integrationComm rw test_Acl
