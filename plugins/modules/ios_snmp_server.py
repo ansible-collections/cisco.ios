@@ -814,90 +814,90 @@ EXAMPLES = """
 # ------------
 
 - name: Apply the provided configuration
-      cisco.ios.ios_snmp_server:
-        config:
-          communities:
-          -   acl_v4: testACL
-              name: mergedComm
-              rw: true
-          contact: contact updated using merged
-          engine_id:
-          -   id: AB0C5342FF0F
-              remote:
-                  host: 172.16.0.12
-                  udp_port: 25
-          groups:
-          -   group: mergedGroup
-              version: v3
-              version_option: auth
-          file_transfer:
-                 access_group: test
-                 protocol:
-                 - ftp
-          hosts:
-          -   community_string: mergedComm
-              host: 172.16.2.9
-              informs: true
-              traps:
-              - msdp
-              - stun
-              - pki
-              version: 2c
-          -   community_string: mergedComm
-              host: 172.16.2.9
-              traps:
-              - slb
-              - pki
-          password_policy:
-          -   change: 3
-              digits: 23
-              lower_case: 12
-              max_len: 24
-              policy_name: MergedPolicy
-              special_char: 32
-              upper_case: 12
-          -   change: 43
-              min_len: 12
-              policy_name: MergedPolicy2
-              special_char: 22
-              upper_case: 12
-          -   change: 11
-              digits: 23
-              max_len: 12
-              min_len: 12
-              policy_name: policy3
-              special_char: 22
-              upper_case: 12
+  cisco.ios.ios_snmp_server:
+    config:
+      communities:
+      -   acl_v4: testACL
+          name: mergedComm
+          rw: true
+      contact: contact updated using merged
+      engine_id:
+      -   id: AB0C5342FF0F
+          remote:
+              host: 172.16.0.12
+              udp_port: 25
+      groups:
+      -   group: mergedGroup
+          version: v3
+          version_option: auth
+      file_transfer:
+              access_group: test
+              protocol:
+              - ftp
+      hosts:
+      -   community_string: mergedComm
+          host: 172.16.2.9
+          informs: true
           traps:
-              cef:
-                  enable: true
-                  inconsistency: true
-                  peer_fib_state_change: true
-                  peer_state_change: true
-                  resource_failure: true
-              msdp: true
-              ospf:
-                  cisco_specific:
-                      error: true
-                      lsa: true
-                      retransmit: true
-                      state_change:
-                          nssa_trans_change: true
-                          shamlink:
-                              interface: true
-                              neighbor: true
+          - msdp
+          - stun
+          - pki
+          version: 2c
+      -   community_string: mergedComm
+          host: 172.16.2.9
+          traps:
+          - slb
+          - pki
+      password_policy:
+      -   change: 3
+          digits: 23
+          lower_case: 12
+          max_len: 24
+          policy_name: MergedPolicy
+          special_char: 32
+          upper_case: 12
+      -   change: 43
+          min_len: 12
+          policy_name: MergedPolicy2
+          special_char: 22
+          upper_case: 12
+      -   change: 11
+          digits: 23
+          max_len: 12
+          min_len: 12
+          policy_name: policy3
+          special_char: 22
+          upper_case: 12
+      traps:
+          cef:
+              enable: true
+              inconsistency: true
+              peer_fib_state_change: true
+              peer_state_change: true
+              resource_failure: true
+          msdp: true
+          ospf:
+              cisco_specific:
                   error: true
                   lsa: true
                   retransmit: true
-                  state_change: true
-              syslog: true
-              tty: true
-          users:
-          -   acl_v4: '24'
-              group: dev
-              username: userPaul
-              version: v1
-        state: merged
+                  state_change:
+                      nssa_trans_change: true
+                      shamlink:
+                          interface: true
+                          neighbor: true
+              error: true
+              lsa: true
+              retransmit: true
+              state_change: true
+          syslog: true
+          tty: true
+      users:
+      -   acl_v4: '24'
+          group: dev
+          username: userPaul
+          version: v1
+    state: merged
 
 # Commands Fired:
 # ---------------
@@ -928,7 +928,7 @@ EXAMPLES = """
 #         "snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43",
 #         "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
 #         "snmp-server user userPaul dev v1 access 24"
-#     ],
+# ],
 
 
 # After state:
@@ -1202,8 +1202,8 @@ EXAMPLES = """
 # Gathered play:
 # --------------
 
-- name: Gather listed ntp config
-  cisco.ios.ios_ntp_global:
+- name: Gather listed snmp config
+  cisco.ios.ios_snmp_server:
     state: gathered
 
 # Module Execution Result:
@@ -1672,36 +1672,36 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 
-snmp-server engineID local AB0C5342FA0A
-snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
-snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
-snmp-server user newuser newfamily v1 access 24
-snmp-server user paul familypaul v3 access ipv6 ipv6acl
-snmp-server user replaceUser replaceUser v3
-snmp-server group group0 v3 auth
-snmp-server group group1 v1 notify me access 2
-snmp-server group group2 v3 priv
-snmp-server group replaceUser v3 noauth
-snmp-server community commu1 view view1 RO ipv6 te
-snmp-server community commu2 RO 1322
-snmp-server community commu3 RW paul
-snmp-server trap timeout 2
-snmp-server trap-source GigabitEthernet0/0
-snmp-server source-interface informs Loopback999
-snmp-server packetsize 500
-snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
-snmp-server host 172.16.2.99 informs version 2c check  msdp stun
-snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
-snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
-snmp-server context contextWord1
-snmp-server context contextWord2
-snmp-server file-transfer access-group testAcl protocol ftp
-snmp-server file-transfer access-group testAcl protocol rcp
-snmp-server cache interval 2
-snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
-snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
-snmp-server accounting commands default
-snmp-server inform pending 2
+# snmp-server engineID local AB0C5342FA0A
+# snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+# snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
+# snmp-server user newuser newfamily v1 access 24
+# snmp-server user paul familypaul v3 access ipv6 ipv6acl
+# snmp-server user replaceUser replaceUser v3
+# snmp-server group group0 v3 auth
+# snmp-server group group1 v1 notify me access 2
+# snmp-server group group2 v3 priv
+# snmp-server group replaceUser v3 noauth
+# snmp-server community commu1 view view1 RO ipv6 te
+# snmp-server community commu2 RO 1322
+# snmp-server community commu3 RW paul
+# snmp-server trap timeout 2
+# snmp-server trap-source GigabitEthernet0/0
+# snmp-server source-interface informs Loopback999
+# snmp-server packetsize 500
+# snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+# snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+# snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+# snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+# snmp-server context contextWord1
+# snmp-server context contextWord2
+# snmp-server file-transfer access-group testAcl protocol ftp
+# snmp-server file-transfer access-group testAcl protocol rcp
+# snmp-server cache interval 2
+# snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
+# snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
+# snmp-server accounting commands default
+# snmp-server inform pending 2
 
 # Parsed play:
 # ------------
