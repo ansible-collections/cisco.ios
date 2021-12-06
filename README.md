@@ -61,6 +61,7 @@ Name | Description
 [cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from Cisco IOS network devices
 [cisco.ios.ios_prefix_lists](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_prefix_lists_module.rst)|Prefix Lists resource module
 [cisco.ios.ios_route_maps](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_route_maps_module.rst)|Route maps resource module
+[cisco.ios.ios_snmp_server](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_snmp_server_module.rst)|snmp_server resource module
 [cisco.ios.ios_static_route](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_route_module.rst)|(deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Static routes resource module
 [cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Manage the system attributes on Cisco IOS devices

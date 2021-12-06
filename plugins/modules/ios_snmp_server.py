@@ -807,213 +807,234 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-# router-ios#show running-config | section ^ntp
+# router-ios#show running-config | section ^snmp-server
 # --------------------- EMPTY -----------------
 
 # Merged play:
 # ------------
 
 - name: Apply the provided configuration
-  cisco.ios.ios_ntp_global:
-    config:
-      access_group:
-        peer:
-          - access_list: DHCP-Server
-            ipv4: true
-            kod: true
-          - access_list: preauth_ipv6_acl
-            ipv6: true
-            kod: true
-          - access_list: '2'
-            kod: true
-        query_only:
-          - access_list: '10'
-      allow:
-        control:
-          rate_limit: 4
-        private: true
-      authenticate: true
-      authentication_keys:
-        - algorithm: md5
-          encryption: 22
-          id: 2
-          key: SomeSecurePassword
-      broadcast_delay: 22
-      clock_period: 5
-      logging: true
-      master:
-        stratum: 4
-      max_associations: 34
-      max_distance: 3
-      min_distance: 10
-      orphan: 4
-      panic_update: true
-      peers:
-        - peer: 172.16.1.10
-          version: 2
-        - key: 2
-          minpoll: 5
-          peer: 172.16.1.11
-          prefer: true
-          version: 2
-        - peer: checkPeerDomainIpv4.com
-          prefer: true
-          use_ipv4: true
-        - peer: checkPeerDomainIpv6.com
-          use_ipv6: true
-        - peer: testPeerDomainIpv6.com
-          prefer: true
-          use_ipv6: true
-      servers:
-        - server: 172.16.1.12
-          version: 2
-        - server: checkServerDomainIpv6.com
-          use_ipv6: true
-        - server: 172.16.1.13
-          source: GigabitEthernet0/1
-      source: GigabitEthernet0/1
-      trusted_keys:
-        - range_end: 3
-          range_start: 3
-        - range_start: 21
-    state: merged
+      cisco.ios.ios_snmp_server:
+        config:
+          communities:
+          -   acl_v4: testACL
+              name: mergedComm
+              rw: true
+          contact: contact updated using merged
+          engine_id:
+          -   id: AB0C5342FF0F
+              remote:
+                  host: 172.16.0.12
+                  udp_port: 25
+          groups:
+          -   group: mergedGroup
+              version: v3
+              version_option: auth
+          file_transfer:
+                 access_group: test
+                 protocol:
+                 - ftp
+          hosts:
+          -   community_string: mergedComm
+              host: 172.16.2.9
+              informs: true
+              traps:
+              - msdp
+              - stun
+              - pki
+              version: 2c
+          -   community_string: mergedComm
+              host: 172.16.2.9
+              traps:
+              - slb
+              - pki
+          password_policy:
+          -   change: 3
+              digits: 23
+              lower_case: 12
+              max_len: 24
+              policy_name: MergedPolicy
+              special_char: 32
+              upper_case: 12
+          -   change: 43
+              min_len: 12
+              policy_name: MergedPolicy2
+              special_char: 22
+              upper_case: 12
+          -   change: 11
+              digits: 23
+              max_len: 12
+              min_len: 12
+              policy_name: policy3
+              special_char: 22
+              upper_case: 12
+          traps:
+              cef:
+                  enable: true
+                  inconsistency: true
+                  peer_fib_state_change: true
+                  peer_state_change: true
+                  resource_failure: true
+              msdp: true
+              ospf:
+                  cisco_specific:
+                      error: true
+                      lsa: true
+                      retransmit: true
+                      state_change:
+                          nssa_trans_change: true
+                          shamlink:
+                              interface: true
+                              neighbor: true
+                  error: true
+                  lsa: true
+                  retransmit: true
+                  state_change: true
+              syslog: true
+              tty: true
+          users:
+          -   acl_v4: '24'
+              group: dev
+              username: userPaul
+              version: v1
+        state: merged
 
 # Commands Fired:
 # ---------------
 
 # "commands": [
-#     "ntp allow mode control 4",
-#     "ntp allow mode private",
-#     "ntp authenticate",
-#     "ntp broadcastdelay 22",
-#     "ntp clock-period 5",
-#     "ntp logging",
-#     "ntp master 4",
-#     "ntp max-associations 34",
-#     "ntp maxdistance 3",
-#     "ntp mindistance 10",
-#     "ntp orphan 4",
-#     "ntp panic update",
-#     "ntp source GigabitEthernet0/1",
-#     "ntp access-group ipv4 peer DHCP-Server kod",
-#     "ntp access-group ipv6 peer preauth_ipv6_acl kod",
-#     "ntp access-group peer 2 kod",
-#     "ntp access-group query-only 10",
-#     "ntp authentication-key 2 md5 SomeSecurePassword 22",
-#     "ntp peer 172.16.1.10 version 2",
-#     "ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2",
-#     "ntp peer ip checkPeerDomainIpv4.com prefer",
-#     "ntp peer ipv6 checkPeerDomainIpv6.com",
-#     "ntp peer ipv6 testPeerDomainIpv6.com prefer",
-#     "ntp server 172.16.1.12 version 2",
-#     "ntp server ipv6 checkServerDomainIpv6.com",
-#     "ntp server 172.16.1.13 source GigabitEthernet0/1",
-#     "ntp trusted-key 3 - 3",
-#     "ntp trusted-key 21"
-# ],
+#         "snmp-server contact contact updated using merged",
+#         "snmp-server file-transfer access-group test protocol ftp",
+#         "snmp-server enable traps msdp",
+#         "snmp-server enable traps syslog",
+#         "snmp-server enable traps tty",
+#         "snmp-server enable traps ospf cisco-specific errors",
+#         "snmp-server enable traps ospf cisco-specific retransmit",
+#         "snmp-server enable traps ospf cisco-specific lsa",
+#         "snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+#         "snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+#         "snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+#         "snmp-server enable traps ospf errors",
+#         "snmp-server enable traps ospf retransmit",
+#         "snmp-server enable traps ospf lsa",
+#         "snmp-server enable traps ospf state-change",
+#         "snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+#         "snmp-server host 172.16.2.9 informs version 2c mergedComm msdp stun pki",
+#         "snmp-server host 172.16.2.9 mergedComm slb pki",
+#         "snmp-server group mergedGroup v3 auth",
+#         "snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F",
+#         "snmp-server community mergedComm rw testACL",
+#         "snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+#         "snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43",
+#         "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+#         "snmp-server user userPaul dev v1 access 24"
+#     ],
 
 
 # After state:
 # ------------
 
-# router-ios#show running-config | section ^ntp
-# ntp max-associations 34
-# ntp logging
-# ntp allow mode control 4
-# ntp panic update
-# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
-# ntp authenticate
-# ntp trusted-key 3 - 3
-# ntp trusted-key 21
-# ntp orphan 4
-# ntp mindistance 10
-# ntp maxdistance 3
-# ntp broadcastdelay 22
-# ntp source GigabitEthernet0/1
-# ntp access-group peer 2 kod
-# ntp access-group ipv6 peer preauth_ipv6_acl kod
-# ntp master 4
-# ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
-# ntp server 172.16.1.12 version 2
-# ntp server 172.16.1.13 source GigabitEthernet0/1
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer
-# ntp server ipv6 checkServerDomainIpv6.com
+# router-ios#show running-config | section ^snmp-server
+# snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+# snmp-server user userPaul dev v1 access 24
+# snmp-server group mergedGroup v3 auth
+# snmp-server community mergedComm RW testACL
+# snmp-server contact contact updated using merged
+# snmp-server enable traps tty
+# snmp-server enable traps ospf state-change
+# snmp-server enable traps ospf errors
+# snmp-server enable traps ospf retransmit
+# snmp-server enable traps ospf lsa
+# snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+# snmp-server enable traps ospf cisco-specific state-change shamlink interface
+# snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+# snmp-server enable traps ospf cisco-specific errors
+# snmp-server enable traps ospf cisco-specific retransmit
+# snmp-server enable traps ospf cisco-specific lsa
+# snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+# snmp-server enable traps msdp
+# snmp-server enable traps syslog
+# snmp-server host 172.16.2.9 informs version 2c mergedComm  msdp stun pki
+# snmp-server host 172.16.2.9 mergedComm  slb pki
+# snmp-server file-transfer access-group test protocol ftp
+# snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+# snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43
+# snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
 
 # Using state: deleted
 
 # Before state:
 # -------------
 
-# router-ios#show running-config | section ^ntp
-# ntp max-associations 34
-# ntp logging
-# ntp allow mode control 4
-# ntp panic update
-# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
-# ntp authenticate
-# ntp trusted-key 3 - 3
-# ntp trusted-key 21
-# ntp orphan 4
-# ntp mindistance 10
-# ntp maxdistance 3
-# ntp broadcastdelay 22
-# ntp source GigabitEthernet0/1
-# ntp access-group peer 2 kod
-# ntp access-group ipv6 peer preauth_ipv6_acl kod
-# ntp master 4
-# ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
-# ntp server 172.16.1.12 version 2
-# ntp server 172.16.1.13 source GigabitEthernet0/1
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer
-# ntp server ipv6 checkServerDomainIpv6.com
+# router-ios#show running-config | section ^snmp-server
+# snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+# snmp-server user userPaul dev v1 access 24
+# snmp-server group mergedGroup v3 auth
+# snmp-server community mergedComm RW testACL
+# snmp-server contact contact updated using merged
+# snmp-server enable traps tty
+# snmp-server enable traps ospf state-change
+# snmp-server enable traps ospf errors
+# snmp-server enable traps ospf retransmit
+# snmp-server enable traps ospf lsa
+# snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+# snmp-server enable traps ospf cisco-specific state-change shamlink interface
+# snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+# snmp-server enable traps ospf cisco-specific errors
+# snmp-server enable traps ospf cisco-specific retransmit
+# snmp-server enable traps ospf cisco-specific lsa
+# snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+# snmp-server enable traps msdp
+# snmp-server enable traps syslog
+# snmp-server host 172.16.2.9 informs version 2c mergedComm  msdp stun pki
+# snmp-server host 172.16.2.9 mergedComm  slb pki
+# snmp-server file-transfer access-group test protocol ftp
+# snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+# snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43
+# snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
 
 # Deleted play:
 # -------------
 
 - name: Remove all existing configuration
-  cisco.ios.ios_ntp_global:
+  cisco.ios.ios_snmp_server:
     state: deleted
 
 # Commands Fired:
 # ---------------
 
 # "commands": [
-#     "no ntp allow mode control 4",
-#     "no ntp authenticate",
-#     "no ntp broadcastdelay 22",
-#     "no ntp logging",
-#     "no ntp master 4",
-#     "no ntp max-associations 34",
-#     "no ntp maxdistance 3",
-#     "no ntp mindistance 10",
-#     "no ntp orphan 4",
-#     "no ntp panic update",
-#     "no ntp source GigabitEthernet0/1",
-#     "no ntp access-group peer 2 kod",
-#     "no ntp access-group ipv6 peer preauth_ipv6_acl kod",
-#     "no ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7",
-#     "no ntp peer 172.16.1.10 version 2",
-#     "no ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
-#     "no ntp peer ip checkPeerDomainIpv4.com prefer",
-#     "no ntp peer ipv6 checkPeerDomainIpv6.com",
-#     "no ntp peer ipv6 testPeerDomainIpv6.com prefer",
-#     "no ntp server 172.16.1.12 version 2",
-#     "no ntp server 172.16.1.13 source GigabitEthernet0/1",
-#     "no ntp server ipv6 checkServerDomainIpv6.com",
-#     "no ntp trusted-key 21",
-#     "no ntp trusted-key 3 - 3"
+#     "no snmp-server contact contact updated using merged",
+#     "no snmp-server file-transfer access-group test protocol ftp",
+#     "no snmp-server enable traps msdp",
+#     "no snmp-server enable traps syslog",
+#     "no snmp-server enable traps tty",
+#     "no snmp-server enable traps ospf cisco-specific errors",
+#     "no snmp-server enable traps ospf cisco-specific retransmit",
+#     "no snmp-server enable traps ospf cisco-specific lsa",
+#     "no snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+#     "no snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+#     "no snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+#     "no snmp-server enable traps ospf errors",
+#     "no snmp-server enable traps ospf retransmit",
+#     "no snmp-server enable traps ospf lsa",
+#     "no snmp-server enable traps ospf state-change",
+#     "no snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+#     "no snmp-server host 172.16.2.9 informs version 2c mergedComm msdp stun pki",
+#     "no snmp-server host 172.16.2.9 mergedComm slb pki",
+#     "no snmp-server group mergedGroup v3 auth",
+#     "no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F",
+#     "no snmp-server community mergedComm rw testACL",
+#     "no snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+#     "no snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43",
+#     "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+#     "no snmp-server user userPaul dev v1 access 24"
 # ],
 
 # After state:
 # ------------
 
-# router-ios#show running-config | section ^ntp
+# router-ios#show running-config | section ^snmp-server
 # --------------------- EMPTY -----------------
 
 # Using state: overridden
@@ -1021,149 +1042,162 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-# router-ios#show running-config | section ^ntp
-# ntp panic update
-# ntp authentication-key 2 md5 00371C0B01680E051A33497E080A16001D1908 7
-# ntp authenticate
-# ntp trusted-key 3 - 4
-# ntp trusted-key 21
-# ntp source GigabitEthernet0/1
-# ntp peer 172.16.1.10 version 2
-# ntp server 172.16.1.12 version 2
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp server ipv6 checkServerDomainIpv6.com
+# router-ios#show running-config | section ^snmp-server
+# snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+# snmp-server user userPaul dev v1 access 24
+# snmp-server group mergedGroup v3 auth
+# snmp-server community mergedComm RW testACL
+# snmp-server contact contact updated using merged
+# snmp-server enable traps tty
+# snmp-server enable traps ospf state-change
+# snmp-server enable traps ospf errors
+# snmp-server enable traps ospf retransmit
+# snmp-server enable traps ospf lsa
+# snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+# snmp-server enable traps ospf cisco-specific state-change shamlink interface
+# snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+# snmp-server enable traps ospf cisco-specific errors
+# snmp-server enable traps ospf cisco-specific retransmit
+# snmp-server enable traps ospf cisco-specific lsa
+# snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+# snmp-server enable traps msdp
+# snmp-server enable traps syslog
+# snmp-server host 172.16.2.9 informs version 2c mergedComm  msdp stun pki
+# snmp-server host 172.16.2.9 mergedComm  slb pki
+# snmp-server file-transfer access-group test protocol ftp
+# snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+# snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43
+# snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
 
 # Overridden play:
 # ----------------
 
 - name: Override commands with provided configuration
-  cisco.ios.ios_ntp_global:
+  cisco.ios.ios_snmp_server:
     config:
-      peers:
-        - peer: ipv6DomainNew.com
-          use_ipv6: true
-        - peer: 172.16.1.100
-          prefer: true
-          use_ipv4: true
-      access_group:
-        peer:
-        - access_list: DHCP-Server
-          ipv6: true
+      location: 'location entry for snmp'
+      packet_size: 500
+      communities:
+        - acl_v4: acl_uq
+          name: communityOverriden
+          rw: true
     state: overridden
+
 
 # Commands Fired:
 # ---------------
 # "commands": [
-#       "no ntp authenticate",
-#       "no ntp panic update",
-#       "no ntp source GigabitEthernet0/1",
-#       "ntp access-group ipv6 peer DHCP-Server",
-#       "no ntp authentication-key 2 md5 00371C0B01680E051A33497E080A16001D1908 7",
-#       "ntp peer ipv6 ipv6DomainNew.com",
-#       "ntp peer 172.16.1.100 prefer",
-#       "no ntp peer 172.16.1.10 version 2",
-#       "no ntp peer ip checkPeerDomainIpv4.com prefer",
-#       "no ntp server 172.16.1.12 version 2",
-#       "no ntp server ipv6 checkServerDomainIpv6.com",
-#       "no ntp trusted-key 21",
-#       "no ntp trusted-key 3 - 4"
+#       "no snmp-server contact contact updated using merged",
+#       "no snmp-server file-transfer access-group test protocol ftp",
+#       "snmp-server location location entry for snmp",
+#       "snmp-server packetsize 500",
+#       "no snmp-server enable traps msdp",
+#       "no snmp-server enable traps syslog",
+#       "no snmp-server enable traps tty",
+#       "no snmp-server enable traps ospf cisco-specific errors",
+#       "no snmp-server enable traps ospf cisco-specific retransmit",
+#       "no snmp-server enable traps ospf cisco-specific lsa",
+#       "no snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+#       "no snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+#       "no snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+#       "no snmp-server enable traps ospf errors",
+#       "no snmp-server enable traps ospf retransmit",
+#       "no snmp-server enable traps ospf lsa",
+#       "no snmp-server enable traps ospf state-change",
+#       "no snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+#       "no snmp-server host 172.16.2.9 informs version 2c mergedComm msdp stun pki",
+#       "no snmp-server host 172.16.2.9 mergedComm slb pki",
+#       "no snmp-server group mergedGroup v3 auth",
+#       "no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F",
+#       "snmp-server community communityOvverriden rw acl_uq",
+#       "no snmp-server community mergedComm rw testACL",
+#       "no snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+#       "no snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43",
+#       "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+#       "no snmp-server user userPaul dev v1 access 24"
 #     ],
 
 # After state:
 # ------------
 
-# router-ios#show running-config | section ^ntp
-# ntp access-group ipv6 peer DHCP-Server
-# ntp peer ipv6 ipv6DomainNew.com
-# ntp peer 172.16.1.100 prefer
+# router-ios#show running-config | section ^snmp-server
+# snmp-server community communityOverriden RW acl_uq
+# snmp-server packetsize 500
+# snmp-server location location entry for snmp
 
 # Using state: replaced
 
 # Before state:
 # -------------
 
-# router-ios#show running-config | section ^ntp
-# ntp access-group ipv6 peer DHCP-Server
-# ntp peer ipv6 ipv6DomainNew.com
-# ntp peer 172.16.1.100 prefer
+# router-ios#show running-config | section ^snmp-server
+# snmp-server community communityOverriden RW acl_uq
+# snmp-server packetsize 500
+# snmp-server location location entry for snmp
 
 # Replaced play:
 # --------------
 
 - name: Replace commands with provided configuration
-  cisco.ios.ios_ntp_global:
+  cisco.ios.ios_snmp_server:
     config:
-      broadcast_delay: 22
-      clock_period: 5
-      logging: true
-      master:
-        stratum: 4
-      max_associations: 34
-      max_distance: 3
-      min_distance: 10
-      orphan: 4
+      location: 'updated location entry'
+      packet_size: 500
+      communities:
+        - acl_v4: acl_uq
+          name: communityOverriden
+          rw: true
     state: replaced
 
 # Commands Fired:
 # ---------------
 
 # "commands": [
-#        "ntp broadcastdelay 22",
-#        "ntp clock-period 5",
-#        "ntp logging",
-#        "ntp master 4",
-#        "ntp max-associations 34",
-#        "ntp maxdistance 3",
-#        "ntp mindistance 10",
-#        "ntp orphan 4",
-#        "no ntp access-group ipv6 peer DHCP-Server",
-#        "no ntp peer 172.16.1.100 prefer",
-#        "no ntp peer ipv6 ipv6DomainNew.com"
+#     "snmp-server location updated location entry"
 #     ],
 
 # After state:
 # ------------
 
-# router-ios#show running-config | section ^ntp
-# ntp max-associations 34
-# ntp logging
-# ntp orphan 4
-# ntp mindistance 10
-# ntp maxdistance 3
-# ntp broadcastdelay 22
-# ntp master 4
+# router-ios#show running-config | section ^snmp-server
+# snmp-server community communityOverriden RW acl_uq
+# snmp-server packetsize 500
+# snmp-server location updated location entry
 
 # Using state: gathered
 
 # Before state:
 # -------------
 
-#router-ios#show running-config | section ^ntp
-# ntp max-associations 34
-# ntp logging
-# ntp allow mode control 4
-# ntp panic update
-# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
-# ntp authenticate
-# ntp trusted-key 3 - 3
-# ntp trusted-key 21
-# ntp orphan 4
-# ntp mindistance 10
-# ntp maxdistance 3
-# ntp broadcastdelay 22
-# ntp source GigabitEthernet0/1
-# ntp access-group peer 2 kod
-# ntp access-group ipv6 peer preauth_ipv6_acl kod
-# ntp master 4
-# ntp update-calendar
-# ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
-# ntp server 172.16.1.12 version 2
-# ntp server 172.16.1.13 source GigabitEthernet0/1
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer
-# ntp server ipv6 checkServerDomainIpv6.com
+#router-ios#show running-config | section ^snmp-server
+# snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+# snmp-server user userPaul dev v1 access 24
+# snmp-server group mergedGroup v3 auth
+# snmp-server community communityOvverriden RW acl_uq
+# snmp-server community mergedComm RW testACL
+# snmp-server packetsize 500
+# snmp-server location updated location entry
+# snmp-server contact contact updated using merged
+# snmp-server enable traps tty
+# snmp-server enable traps ospf state-change
+# snmp-server enable traps ospf errors
+# snmp-server enable traps ospf retransmit
+# snmp-server enable traps ospf lsa
+# snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+# snmp-server enable traps ospf cisco-specific state-change shamlink interface
+# snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+# snmp-server enable traps ospf cisco-specific errors
+# snmp-server enable traps ospf cisco-specific retransmit
+# snmp-server enable traps ospf cisco-specific lsa
+# snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+# snmp-server enable traps msdp
+# snmp-server enable traps syslog
+# snmp-server host 172.16.2.9 informs version 2c mergedComm  msdp stun pki
+# snmp-server host 172.16.2.9 mergedComm  slb pki
+# snmp-server file-transfer access-group test protocol ftp
+# snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+# snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43
+# snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
 
 # Gathered play:
 # --------------
@@ -1175,127 +1209,131 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 
-# "gathered": {
-#   "access_group": {
-#       "peer": [
-#           {
-#               "access_list": "2",
-#               "kod": true
-#           },
-#           {
-#               "access_list": "preauth_ipv6_acl",
-#               "ipv6": true,
-#               "kod": true
-#           }
-#       ]
-#   },
-#   "allow": {
-#       "control": {
-#           "rate_limit": 4
-#       }
-#   },
-#   "authenticate": true,
-#   "authentication_keys": [
-#       {
-#           "algorithm": "md5",
-#           "encryption": 7,
-#           "id": 2,
-#           "key": "0635002C497D0C1A1005173B0D17393C2B3A37"
-#       }
-#   ],
-#   "broadcast_delay": 22,
-#   "logging": true,
-#   "master": {
-#       "stratum": 4
-#   },
-#   "max_associations": 34,
-#   "max_distance": 3,
-#   "min_distance": 10,
-#   "orphan": 4,
-#   "panic_update": true,
-#   "peers": [
-#       {
-#           "peer": "172.16.1.10",
-#           "version": 2
-#       },
-#       {
-#           "key": 2,
-#           "minpoll": 5,
-#           "peer": "172.16.1.11",
-#           "prefer": true,
-#           "version": 2
-#       },
-#       {
-#           "peer": "checkPeerDomainIpv4.com",
-#           "prefer": true,
-#           "use_ipv4": true
-#       },
-#       {
-#           "peer": "checkPeerDomainIpv6.com",
-#           "use_ipv6": true
-#       },
-#       {
-#           "peer": "testPeerDomainIpv6.com",
-#           "prefer": true,
-#           "use_ipv6": true
-#       }
-#   ],
-#   "servers": [
-#       {
-#           "server": "172.16.1.12",
-#           "version": 2
-#       },
-#       {
-#           "server": "172.16.1.13",
-#           "source": "GigabitEthernet0/1"
-#       },
-#       {
-#           "server": "checkServerDomainIpv6.com",
-#           "use_ipv6": true
-#       }
-#   ],
-#   "source": "GigabitEthernet0/1",
-#   "trusted_keys": [
-#       {
-#           "range_start": 21
-#       },
-#       {
-#           "range_end": 3,
-#           "range_start": 3
-#       }
-#   ],
-#   "update_calendar": true
-# },
-
-# After state:
-# -------------
-
-# router-ios#show running-config | section ^ntp
-# ntp max-associations 34
-# ntp logging
-# ntp allow mode control 4
-# ntp panic update
-# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
-# ntp authenticate
-# ntp trusted-key 3 - 3
-# ntp trusted-key 21
-# ntp orphan 4
-# ntp mindistance 10
-# ntp maxdistance 3
-# ntp broadcastdelay 22
-# ntp source GigabitEthernet0/1
-# ntp access-group peer 2 kod
-# ntp access-group ipv6 peer preauth_ipv6_acl kod
-# ntp master 4
-# ntp update-calendar
-# ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
-# ntp server 172.16.1.12 version 2
-# ntp server 172.16.1.13 source GigabitEthernet0/1
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer
-# ntp server ipv6 checkServerDomainIpv6.com
+#   "gathered": {
+#         "communities": [
+#             {
+#                 "acl_v4": "acl_uq",
+#                 "name": "communityOvverriden",
+#                 "rw": true
+#             },
+#             {
+#                 "acl_v4": "testACL",
+#                 "name": "mergedComm",
+#                 "rw": true
+#             }
+#         ],
+#         "contact": "contact updated using merged",
+#         "engine_id": [
+#             {
+#                 "id": "AB0C5342FF0F",
+#                 "remote": {
+#                     "host": "172.16.0.12",
+#                     "udp_port": 25
+#                 }
+#             }
+#         ],
+#         "file_transfer": {
+#             "access_group": "test",
+#             "protocol": [
+#                 "ftp"
+#             ]
+#         },
+#         "groups": [
+#             {
+#                 "group": "mergedGroup",
+#                 "version": "v3",
+#                 "version_option": "auth"
+#             }
+#         ],
+#         "hosts": [
+#             {
+#                 "community_string": "mergedComm",
+#                 "host": "172.16.2.9",
+#                 "informs": true,
+#                 "traps": [
+#                     "msdp",
+#                     "stun",
+#                     "pki"
+#                 ],
+#                 "version": "2c"
+#             },
+#             {
+#                 "community_string": "mergedComm",
+#                 "host": "172.16.2.9",
+#                 "traps": [
+#                     "slb",
+#                     "pki"
+#                 ]
+#             }
+#         ],
+#         "location": "updated location entry",
+#         "packet_size": 500,
+#         "password_policy": [
+#             {
+#                 "change": 3,
+#                 "digits": 23,
+#                 "lower_case": 12,
+#                 "max_len": 24,
+#                 "policy_name": "MergedPolicy",
+#                 "special_char": 32,
+#                 "upper_case": 12
+#             },
+#             {
+#                 "change": 43,
+#                 "min_len": 12,
+#                 "policy_name": "MergedPolicy2",
+#                 "special_char": 22,
+#                 "upper_case": 12
+#             },
+#             {
+#                 "change": 11,
+#                 "digits": 23,
+#                 "max_len": 12,
+#                 "min_len": 12,
+#                 "policy_name": "policy3",
+#                 "special_char": 22,
+#                 "upper_case": 12
+#             }
+#         ],
+#         "traps": {
+#             "cef": {
+#                 "enable": true,
+#                 "inconsistency": true,
+#                 "peer_fib_state_change": true,
+#                 "peer_state_change": true,
+#                 "resource_failure": true
+#             },
+#             "msdp": true,
+#             "ospf": {
+#                 "cisco_specific": {
+#                     "error": true,
+#                     "lsa": true,
+#                     "retransmit": true,
+#                     "state_change": {
+#                         "nssa_trans_change": true,
+#                         "shamlink": {
+#                             "interface": true,
+#                             "neighbor": true
+#                         }
+#                     }
+#                 },
+#                 "error": true,
+#                 "lsa": true,
+#                 "retransmit": true,
+#                 "state_change": true
+#             },
+#             "syslog": true,
+#             "tty": true
+#         },
+#         "users": [
+#             {
+#                 "acl_v4": "24",
+#                 "group": "dev",
+#                 "username": "userPaul",
+#                 "version": "v1"
+#             }
+#         ]
+#     },
 
 # Using state: rendered
 
@@ -1303,237 +1341,539 @@ EXAMPLES = """
 # --------------
 
 - name: Render the commands for provided configuration
-  cisco.ios.ios_ntp_global:
+  cisco.ios.ios_snmp_server:
     config:
-      access_group:
-        peer:
-          - access_list: DHCP-Server
-            ipv4: true
-            kod: true
-          - access_list: preauth_ipv6_acl
-            ipv6: true
-            kod: true
-          - access_list: '2'
-            kod: true
-        query_only:
-          - access_list: '10'
-      allow:
-        control:
-          rate_limit: 4
-        private: true
-      authenticate: true
-      authentication_keys:
-        - algorithm: md5
-          encryption: 22
-          id: 2
-          key: SomeSecurePassword
-      broadcast_delay: 22
-      clock_period: 5
-      logging: true
-      master:
-        stratum: 4
-      max_associations: 34
-      max_distance: 3
-      min_distance: 10
-      orphan: 4
-      panic_update: true
-      peers:
-        - peer: 172.16.1.10
-          version: 2
-        - key: 2
-          minpoll: 5
-          peer: 172.16.1.11
-          prefer: true
-          version: 2
-        - peer: checkPeerDomainIpv4.com
-          prefer: true
-          use_ipv4: true
-        - peer: checkPeerDomainIpv6.com
-          use_ipv6: true
-        - peer: testPeerDomainIpv6.com
-          prefer: true
-          use_ipv6: true
-      servers:
-        - server: 172.16.1.12
-          version: 2
-        - server: checkServerDomainIpv6.com
-          use_ipv6: true
-        - server: 172.16.1.13
-          source: GigabitEthernet0/1
-      source: GigabitEthernet0/1
-      trusted_keys:
-        - range_end: 3
-          range_start: 10
-        - range_start: 21
-      update_calendar: True
+      accounting:
+          command: default
+      cache: 2
+      chassis_id: entry for chassis id
+      communities:
+      -   acl_v6: te
+          name: test
+          ro: true
+          view: terst1
+      -   acl_v4: '1322'
+          name: wete
+          ro: true
+      -   acl_v4: paul
+          name: weteww
+          rw: true
+      contact: details contact
+      context:
+      - contextA
+      - contextB
+      engine_id:
+      -   id: AB0C5342FA0A
+          local: true
+      -   id: AB0C5342FAAB
+          remote:
+              host: 172.16.0.2
+              udp_port: 23
+      -   id: AB0C5342FAAA
+          remote:
+              host: 172.16.0.1
+              udp_port: 22
+      file_transfer:
+          access_group: testAcl
+          protocol:
+          - ftp
+          - rcp
+      groups:
+      -   group: grpFamily
+          version: v3
+          version_option: auth
+      -   context: mycontext
+          group: grpFamily
+          version: v1
+      -   acl_v4: '2'
+          group: grp1
+          notify: me
+          version: v1
+      -   group: newtera
+          version: v3
+          version_option: priv
+      -   group: relaplacing
+          version: v3
+          version_option: noauth
+      hosts:
+      -   community_string: check
+          host: 172.16.2.99
+          informs: true
+          traps:
+          - msdp
+          - stun
+          version: 2c
+      -   community_string: check
+          host: 172.16.2.99
+          traps:
+          - slb
+          - pki
+      -   community_string: checktrap
+          host: 172.16.2.99
+          traps:
+          - isis
+          - hsrp
+      -   community_string: newtera
+          host: 172.16.2.1
+          traps:
+          - rsrb
+          - pim
+          - rsvp
+          - slb
+          - pki
+          version: '3'
+          version_option: priv
+      -   community_string: relaplacing
+          host: 172.16.2.1
+          traps:
+          - slb
+          - pki
+          version: '3'
+          version_option: noauth
+      -   community_string: trapsac
+          host: 172.16.2.1
+          traps:
+          - tty
+          - bgp
+          version: 2c
+      -   community_string: www
+          host: 172.16.1.1
+          traps:
+          - tty
+          - bgp
+          version: '3'
+          version_option: auth
+      inform:
+          pending: 2
+      ip:
+          dscp: 2
+      location: 'entry for snmp location'
+      packet_size: 500
+      password_policy:
+      -   change: 3
+          digits: 23
+          lower_case: 12
+          max_len: 24
+          policy_name: policy1
+          special_char: 32
+          upper_case: 12
+      -   change: 9
+          min_len: 12
+          policy_name: policy2
+          special_char: 22
+          upper_case: 12
+      -   change: 11
+          digits: 23
+          max_len: 12
+          min_len: 12
+          policy_name: policy3
+          special_char: 22
+          upper_case: 12
+      queue_length: 2
+      source_interface: Loopback999
+      system_shutdown: true
+      trap_source: GigabitEthernet0/0
+      trap_timeout: 2
+      traps:
+          auth_framework:
+              enable: true
+          bgp:
+              cbgp2: true
+              enable: true
+          bfd:
+              enable: true
+              session_down: true
+              session_up: true
+          bridge:
+              enable: true
+              newroot: true
+              topologychange: true
+          casa: true
+          cef:
+              enable: true
+              inconsistency: true
+              peer_fib_state_change: true
+              peer_state_change: true
+              resource_failure: true
+          dlsw:
+              enable: true
+          eigrp: true
+          ethernet:
+              cfm:
+                  alarm: true
+              evc:
+                  status: true
+          event_manager: true
+          flowmon: true
+          frame_relay:
+              enable: true
+              subif:
+                  enable: true
+          hsrp: true
+          ike:
+              policy:
+                  add: true
+                  delete: true
+              tunnel:
+                  start: true
+                  stop: true
+          ipmulticast: true
+          ipsec:
+              cryptomap:
+                  add: true
+                  attach: true
+                  delete: true
+                  detach: true
+              too_many_sas: true
+              tunnel:
+                  start: true
+                  stop: true
+          ipsla: true
+          l2tun:
+              pseudowire_status: true
+              session: true
+          msdp: true
+          ospf:
+              cisco_specific:
+                  error: true
+                  lsa: true
+                  retransmit: true
+                  state_change:
+                      nssa_trans_change: true
+                      shamlink:
+                          interface: true
+                          neighbor: true
+              error: true
+              lsa: true
+              retransmit: true
+              state_change: true
+          pim:
+              enable: true
+              invalid_pim_message: true
+              neighbor_change: true
+              rp_mapping_change: true
+          pki: true
+          rsvp: true
+          snmp:
+              authentication: true
+              coldstart: true
+              linkdown: true
+              linkup: true
+              warmstart: true
+          syslog: true
+          tty: true
+      users:
+      -   acl_v4: '24'
+          group: groupFamily
+          username: paul
+          version: v1
+      -   acl_v4: ipv6
+          group: groupFamily
+          username: domnic
+          version: v3
+      -   group: relaplacing
+          username: relaplacing
+          version: v3
     state: rendered
 
 # Module Execution Result:
 # ------------------------
 
 # "rendered": [
-#       "ntp allow mode control 4",
-#       "ntp allow mode private",
-#       "ntp authenticate",
-#       "ntp broadcastdelay 22",
-#       "ntp clock-period 5",
-#       "ntp logging",
-#       "ntp master 4",
-#       "ntp max-associations 34",
-#       "ntp maxdistance 3",
-#       "ntp mindistance 10",
-#       "ntp orphan 4",
-#       "ntp panic update",
-#       "ntp source GigabitEthernet0/1",
-#       "ntp update-calendar",
-#       "ntp access-group ipv4 peer DHCP-Server kod",
-#       "ntp access-group ipv6 peer preauth_ipv6_acl kod",
-#       "ntp access-group peer 2 kod",
-#       "ntp access-group query-only 10",
-#       "ntp authentication-key 2 md5 SomeSecurePassword 22",
-#       "ntp peer 172.16.1.10 version 2",
-#       "ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
-#       "ntp peer ip checkPeerDomainIpv4.com prefer",
-#       "ntp peer ipv6 checkPeerDomainIpv6.com",
-#       "ntp peer ipv6 testPeerDomainIpv6.com prefer",
-#       "ntp server 172.16.1.12 version 2",
-#       "ntp server ipv6 checkServerDomainIpv6.com",
-#       "ntp server 172.16.1.13 source GigabitEthernet0/1",
-#       "ntp trusted-key 3 - 3",
-#       "ntp trusted-key 21"
-#     ]
+#     "snmp-server accounting commands default",
+#     "snmp-server cache interval 2",
+#     "snmp-server chassis-id entry for chassis id",
+#     "snmp-server contact details contact",
+#     "snmp-server file-transfer access-group testAcl protocol ftp rcp",
+#     "snmp-server inform pending 2",
+#     "snmp-server ip dscp 2",
+#     "snmp-server location entry for snmp location",
+#     "snmp-server packetsize 500",
+#     "snmp-server queue-length 2",
+#     "snmp-server trap timeout 2",
+#     "snmp-server source-interface informs Loopback999",
+#     "snmp-server trap-source GigabitEthernet0/0",
+#     "snmp-server system-shutdown",
+#     "snmp-server enable traps auth-framework",
+#     "snmp-server enable traps bfd session-down session-up",
+#     "snmp-server enable traps bgp cbgp2",
+#     "snmp-server enable traps bridge newroot topologychange",
+#     "snmp-server enable traps casa",
+#     "snmp-server enable traps eigrp",
+#     "snmp-server enable traps event-manager",
+#     "snmp-server enable traps flowmon",
+#     "snmp-server enable traps hsrp",
+#     "snmp-server enable traps ipsla",
+#     "snmp-server enable traps msdp",
+#     "snmp-server enable traps pki",
+#     "snmp-server enable traps rsvp",
+#     "snmp-server enable traps syslog",
+#     "snmp-server enable traps tty",
+#     "snmp-server enable traps ipmulticast",
+#     "snmp-server enable traps ike policy add",
+#     "snmp-server enable traps ike policy delete",
+#     "snmp-server enable traps ike tunnel start",
+#     "snmp-server enable traps ike tunnel stop",
+#     "snmp-server enable traps ipsec cryptomap add",
+#     "snmp-server enable traps ipsec cryptomap delete",
+#     "snmp-server enable traps ipsec cryptomap attach",
+#     "snmp-server enable traps ipsec cryptomap detach",
+#     "snmp-server enable traps ipsec tunnel start",
+#     "snmp-server enable traps ipsec tunnel stop",
+#     "snmp-server enable traps ipsec too-many-sas",
+#     "snmp-server enable traps ospf cisco-specific errors",
+#     "snmp-server enable traps ospf cisco-specific retransmit",
+#     "snmp-server enable traps ospf cisco-specific lsa",
+#     "snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
+#     "snmp-server enable traps ospf cisco-specific state-change shamlink interface",
+#     "snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
+#     "snmp-server enable traps ospf errors",
+#     "snmp-server enable traps ospf retransmit",
+#     "snmp-server enable traps ospf lsa",
+#     "snmp-server enable traps ospf state-change",
+#     "snmp-server enable traps l2tun pseudowire status",
+#     "snmp-server enable traps l2tun session",
+#     "snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message",
+#     "snmp-server enable traps snmp authentication linkdown linkup warmstart coldstart",
+#     "snmp-server enable traps frame-relay",
+#     "snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency",
+#     "snmp-server enable traps dlsw",
+#     "snmp-server enable traps ethernet evc status",
+#     "snmp-server enable traps ethernet cfm alarm",
+#     "snmp-server host 172.16.2.99 informs version 2c check msdp stun",
+#     "snmp-server host 172.16.2.99 check slb pki",
+#     "snmp-server host 172.16.2.99 checktrap isis hsrp",
+#     "snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki",
+#     "snmp-server host 172.16.2.1 version 3 noauth relaplacing slb pki",
+#     "snmp-server host 172.16.2.1 version 2c trapsac tty bgp",
+#     "snmp-server host 172.16.1.1 version 3 auth www tty bgp",
+#     "snmp-server group grpFamily v1 context mycontext",
+#     "snmp-server group grp1 v1 notify me access 2",
+#     "snmp-server group newtera v3 priv",
+#     "snmp-server group relaplacing v3 noauth",
+#     "snmp-server engineID local AB0C5342FA0A",
+#     "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
+#     "snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
+#     "snmp-server community test view terst1 ro ipv6 te",
+#     "snmp-server community wete ro 1322",
+#     "snmp-server community weteww rw paul",
+#     "snmp-server context contextA",
+#     "snmp-server context contextB",
+#     "snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
+#     "snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
+#     "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
+#     "snmp-server user paul groupFamily v1 access 24",
+#     "snmp-server user domnic groupFamily v3 access ipv6",
+#     "snmp-server user relaplacing relaplacing v3"
+# ]
 
 # Using state: parsed
 
 # File: parsed.cfg
 # ----------------
 
-# ntp allow mode control 4
-# ntp allow mode private
-# ntp authenticate
-# ntp broadcastdelay 22
-# ntp clock-period 5
-# ntp logging
-# ntp master 4
-# ntp max-associations 34
-# ntp maxdistance 3
-# ntp mindistance 10
-# ntp orphan 4
-# ntp panic update
-# ntp source GigabitEthernet0/1
-# ntp update-calendar
-# ntp access-group ipv4 peer DHCP-Server kod
-# ntp access-group ipv6 peer preauth_ipv6_acl kod
-# ntp access-group peer 2 kod
-# ntp access-group query-only 10
-# ntp authentication-key 2 md5 SomeSecurePassword 22
-# ntp peer 172.16.1.10 version 2
-# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
-# ntp peer ip checkPeerDomainIpv4.com prefer
-# ntp peer ipv6 checkPeerDomainIpv6.com
-# ntp peer ipv6 testPeerDomainIpv6.com prefer
-# ntp server 172.16.1.12 version 2
-# ntp server ipv6 checkServerDomainIpv6.com
-# ntp server 172.16.1.13 source GigabitEthernet0/1
-# ntp trusted-key 3 - 13
-# ntp trusted-key 21
+snmp-server engineID local AB0C5342FA0A
+snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
+snmp-server user newuser newfamily v1 access 24
+snmp-server user paul familypaul v3 access ipv6 ipv6acl
+snmp-server user replaceUser replaceUser v3
+snmp-server group group0 v3 auth
+snmp-server group group1 v1 notify me access 2
+snmp-server group group2 v3 priv
+snmp-server group replaceUser v3 noauth
+snmp-server community commu1 view view1 RO ipv6 te
+snmp-server community commu2 RO 1322
+snmp-server community commu3 RW paul
+snmp-server trap timeout 2
+snmp-server trap-source GigabitEthernet0/0
+snmp-server source-interface informs Loopback999
+snmp-server packetsize 500
+snmp-server enable traps vrfmib vrf-up vrf-down vnet-trunk-up vnet-trunk-down
+snmp-server host 172.16.2.99 informs version 2c check  msdp stun
+snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
+snmp-server context contextWord1
+snmp-server context contextWord2
+snmp-server file-transfer access-group testAcl protocol ftp
+snmp-server file-transfer access-group testAcl protocol rcp
+snmp-server cache interval 2
+snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
+snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
+snmp-server accounting commands default
+snmp-server inform pending 2
 
 # Parsed play:
 # ------------
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_ntp_global:
+  cisco.ios.ios_snmp_server:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
 # Module Execution Result:
 # ------------------------
 
-# "parsed": {
-#     "access_group": {
-#         "peer": [
-#             {
-#                 "access_list": "2",
-#                 "kod": true
-#             },
-#             {
-#                 "access_list": "DHCP-Server",
-#                 "ipv4": true,
-#                 "kod": true
-#             },
-#             {
-#                 "access_list": "preauth_ipv6_acl",
-#                 "ipv6": true,
-#                 "kod": true
+#  "parsed": {
+#     "accounting": {
+#         "command": "default"
+#     },
+#     "cache": 2,
+#     "communities": [
+#         {
+#             "acl_v6": "te",
+#             "name": "commu1",
+#             "ro": true,
+#             "view": "view1"
+#         },
+#         {
+#             "acl_v4": "1322",
+#             "name": "commu2",
+#             "ro": true
+#         },
+#         {
+#             "acl_v4": "paul",
+#             "name": "commu3",
+#             "rw": true
+#         }
+#     ],
+#     "context": [
+#         "contextWord1",
+#         "contextWord2"
+#     ],
+#     "engine_id": [
+#         {
+#             "id": "AB0C5342FA0A",
+#             "local": true
+#         },
+#         {
+#             "id": "AB0C5342FAAA",
+#             "remote": {
+#                 "host": "172.16.0.1",
+#                 "udp_port": 22
 #             }
-#         ],
-#         "query_only": [
-#             {
-#                 "access_list": "10"
+#         },
+#         {
+#             "id": "AB0C5342FAAB",
+#             "remote": {
+#                 "host": "172.16.0.2",
+#                 "udp_port": 23
 #             }
+#         }
+#     ],
+#     "file_transfer": {
+#         "access_group": "testAcl",
+#         "protocol": [
+#             "rcp",
+#             "ftp"
 #         ]
 #     },
-#     "allow": {
-#         "control": {
-#             "rate_limit": 4
+#     "groups": [
+#         {
+#             "group": "group0",
+#             "version": "v3",
+#             "version_option": "auth"
 #         },
-#         "private": true
+#         {
+#             "acl_v4": "2",
+#             "group": "group1",
+#             "notify": "me",
+#             "version": "v1"
+#         },
+#         {
+#             "group": "group2",
+#             "version": "v3",
+#             "version_option": "priv"
+#         },
+#         {
+#             "group": "replaceUser",
+#             "version": "v3",
+#             "version_option": "noauth"
+#         }
+#     ],
+#     "hosts": [
+#         {
+#             "community_string": "group0",
+#             "host": "172.16.1.1",
+#             "traps": [
+#                 "tty",
+#                 "bgp"
+#             ],
+#             "version": "3",
+#             "version_option": "auth"
+#         },
+#         {
+#             "community_string": "trapsac",
+#             "host": "172.16.2.1",
+#             "traps": [
+#                 "tty",
+#                 "bgp"
+#             ],
+#             "version": "2c"
+#         },
+#         {
+#             "community_string": "check",
+#             "host": "172.16.2.99",
+#             "informs": true,
+#             "traps": [
+#                 "msdp",
+#                 "stun"
+#             ],
+#             "version": "2c"
+#         }
+#     ],
+#     "inform": {
+#         "pending": 2
 #     },
-#     "authenticate": true,
-#     "authentication_keys": [
+#     "packet_size": 500,
+#     "password_policy": [
 #         {
-#             "algorithm": "md5",
-#             "encryption": 22,
-#             "id": 2,
-#             "key": "SomeSecurePassword"
+#             "change": 9,
+#             "min_len": 12,
+#             "policy_name": "policy2",
+#             "special_char": 22,
+#             "upper_case": 12
+#         },
+#         {
+#             "change": 11,
+#             "digits": 23,
+#             "max_len": 12,
+#             "min_len": 12,
+#             "policy_name": "policy3",
+#             "special_char": 22,
+#             "upper_case": 12
 #         }
 #     ],
-#     "broadcast_delay": 22,
-#     "clock_period": 5,
-#     "logging": true,
-#     "master": {
-#         "stratum": 4
+#     "source_interface": "Loopback999",
+#     "trap_source": "GigabitEthernet0/0",
+#     "trap_timeout": 2,
+#     "traps": {
+#         "vrfmib": {
+#             "vnet_trunk_down": true,
+#             "vnet_trunk_up": true,
+#             "vrf_down": true,
+#             "vrf_up": true
+#         }
 #     },
-#     "max_associations": 34,
-#     "max_distance": 3,
-#     "min_distance": 10,
-#     "orphan": 4,
-#     "panic_update": true,
-#     "peers": [
+#     "users": [
 #         {
-#             "peer": "172.16.1.10",
-#             "version": 2
+#             "acl_v4": "24",
+#             "group": "newfamily",
+#             "username": "newuser",
+#             "version": "v1"
 #         },
 #         {
-#             "peer": "checkPeerDomainIpv6.com",
-#             "use_ipv6": true
+#             "acl_v4": "ipv6",
+#             "group": "familypaul",
+#             "username": "paul",
+#             "version": "v3"
+#         },
+#         {
+#             "group": "replaceUser",
+#             "username": "replaceUser",
+#             "version": "v3"
 #         }
-#     ],
-#     "servers": [
-#         {
-#             "server": "172.16.1.12",
-#             "version": 2
-#         },
-#         {
-#             "server": "172.16.1.13",
-#             "source": "GigabitEthernet0/1"
-#         },
-#         {
-#             "server": "checkServerDomainIpv6.com",
-#             "use_ipv6": true
-#         }
-#     ],
-#     "source": "GigabitEthernet0/1",
-#     "trusted_keys": [
-#         {
-#             "range_start": 21
-#         },
-#         {
-#             "range_end": 13,
-#             "range_start": 3
-#         }
-#     ],
-#     "update_calendar": true
+#     ]
 # }
 """
 
@@ -1557,17 +1897,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server host 172.16.2.99 informs version 2c check msdp stun
+    - snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+    - snmp-server group grp1 v1 notify me access 2
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server enable traps ipsec cryptomap attach
+    - snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+    - snmp-server cache interval 2
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
