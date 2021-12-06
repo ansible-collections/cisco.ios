@@ -18,7 +18,7 @@ Version added: 1.0.0
 Synopsis
 --------
 - Sends arbitrary commands to an ios node and returns the results read from the device. This module includes an argument that will cause the module to wait for a specific condition before returning or timing out if the condition is not met.
-- This module does not support running commands in configuration mode. Please use :ref:`ios_config <ios_config_module>` to configure IOS devices.
+- This module does not support running commands in configuration mode. Please use `ios_config <https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module>`_ to configure IOS devices.
 
 
 
@@ -100,7 +100,7 @@ Parameters
                 <td>
                         <div><b>Deprecated</b></div>
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
-                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>IOS Platform Options guide</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -280,6 +280,7 @@ Notes
 
 .. note::
    - Tested against IOS 15.6
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
@@ -322,7 +323,7 @@ Examples
           answer: 'y'
         - command: 'clear counters GigabitEthernet0/2'
           prompt: '[confirm]'
-          answer: '\r'
+          answer: "\r"
 
 
 

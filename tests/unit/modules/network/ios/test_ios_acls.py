@@ -1,5 +1,5 @@
 #
-# (c) 2019, Ansible by Red Hat, inc
+# (c) 2021, Ansible by Red Hat, inc
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
 
@@ -7,24 +7,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import sys
-
-import pytest
-
-# These tests and/or the module under test are unstable on Python 3.5.
-# See: https://app.shippable.com/github/ansible/ansible/runs/161331/15/tests
-# This is most likely due to CPython 3.5 not maintaining dict insertion order.
-pytestmark = pytest.mark.skipif(
-    sys.version_info[:2] == (3, 5),
-    reason="Tests and/or module are unstable on Python 3.5.",
-)
-
+from textwrap import dedent
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_acls
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
-from .ios_module import TestIosModule, load_fixture
+from .ios_module import TestIosModule
 
 
 class TestIosAclsModule(TestIosModule):
@@ -79,13 +68,18 @@ class TestIosAclsModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None, transport="cli"):
-        def load_from_file(*args, **kwargs):
-            return load_fixture("ios_acls_config.cfg")
-
-        self.execute_show_command.side_effect = load_from_file
-
     def test_ios_acls_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -168,6 +162,7 @@ class TestIosAclsModule(TestIosModule):
             )
         )
         result = self.execute_module(changed=True)
+
         commands = [
             "ip access-list standard std_acl",
             "deny 192.0.2.0 0.0.0.255",
@@ -181,6 +176,17 @@ class TestIosAclsModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -272,6 +278,21 @@ class TestIosAclsModule(TestIosModule):
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_acls_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ip access-list standard test_acl
+                remark remark check 1
+                remark some random remark 2
+            """
+        )
+
         set_module_args(
             dict(
                 config=[
@@ -296,10 +317,15 @@ class TestIosAclsModule(TestIosModule):
                                             wildcard_bits="0.0.0.255",
                                             port_protocol=dict(eq="telnet"),
                                         ),
-                                        tos=dict(service_value=12),
+                                        tos=dict(min_monetary_cost=True),
                                     )
                                 ],
-                            )
+                            ),
+                            dict(
+                                name="test_acl",
+                                acl_type="standard",
+                                aces=[dict(remarks=["Another remark here"])],
+                            ),
                         ],
                     )
                 ],
@@ -309,11 +335,26 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=True)
         commands = [
             "ip access-list extended replace_acl",
-            "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12",
+            "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
+            "ip access-list standard test_acl",
+            "remark Another remark here",
+            "no remark remark check 1",
+            "no remark some random remark 2",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -379,6 +420,17 @@ class TestIosAclsModule(TestIosModule):
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_acls_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -422,9 +474,20 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -516,15 +579,37 @@ class TestIosAclsModule(TestIosModule):
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_acls_deleted_afi_based(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
         result = self.execute_module(changed=True)
         commands = [
             "no ip access-list extended 110",
             "no ip access-list standard test_acl",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_deleted_acl_based(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            IPv6 access list R1_TRAFFIC
+                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            """
+        )
         set_module_args(
             dict(
                 config=[
@@ -590,7 +675,7 @@ class TestIosAclsModule(TestIosModule):
             "no ip access-list extended 110",
             "no ipv6 access-list R1_TRAFFIC",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_rendered(self):
         set_module_args(
@@ -601,10 +686,15 @@ class TestIosAclsModule(TestIosModule):
                         acls=[
                             dict(
                                 name="110",
+                                acl_type="extended",
                                 aces=[
                                     dict(
                                         grant="deny",
                                         sequence="10",
+                                        remarks=[
+                                            "check for remark",
+                                            "remark for acl 110",
+                                        ],
                                         protocol_options=dict(
                                             tcp=dict(syn="true")
                                         ),
@@ -631,9 +721,11 @@ class TestIosAclsModule(TestIosModule):
         commands = [
             "ip access-list extended 110",
             "10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10",
+            "remark check for remark",
+            "remark remark for acl 110",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["rendered"], commands)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_acls_parsed(self):
         set_module_args(
@@ -671,3 +763,405 @@ class TestIosAclsModule(TestIosModule):
             }
         ]
         self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_acls_overridden_remark(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Extended IP access list 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            access-list 110 remark test ab.
+            access-list 110 remark test again ab.
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(acl_type="standard", name="test_acl"),
+                            dict(
+                                name="110",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        log=dict(user_cookie="testLog"),
+                                        protocol="tcp",
+                                        sequence="10",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            any=True,
+                                            port_protocol=dict(eq="22"),
+                                        ),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            icmp=dict(echo="true")
+                                        ),
+                                        sequence="20",
+                                        source=dict(
+                                            address="192.0.2.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="192.0.3.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            icmp=dict(echo="true")
+                                        ),
+                                        sequence="30",
+                                        source=dict(
+                                            object_group="test_network_og"
+                                        ),
+                                        destination=dict(any=True),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    dict(
+                        afi="ipv6",
+                        acls=[
+                            dict(
+                                name="R1_TRAFFIC",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            tcp=dict(ack="true")
+                                        ),
+                                        sequence="10",
+                                        source=dict(
+                                            any="true",
+                                            port_protocol=dict(eq="www"),
+                                        ),
+                                        destination=dict(
+                                            any="true",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        dscp="af11",
+                                    ),
+                                    dict(
+                                        remarks=[
+                                            "ipv6 remarks one",
+                                            "ipv6 remarks test 2",
+                                        ]
+                                    ),
+                                ],
+                            )
+                        ],
+                    ),
+                ],
+                state="overridden",
+            )
+        )
+        result = self.execute_module(changed=True, sort=True)
+        commands = [
+            "ip access-list extended 110",
+            "no remark test ab.",
+            "no remark test again ab.",
+            "ipv6 access-list R1_TRAFFIC",
+            "deny tcp any eq www any eq telnet ack dscp af11 sequence 10",
+            "remark ipv6 remarks one",
+            "remark ipv6 remarks test 2",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_acls_overridden_option(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            ip access-list standard test_acl
+                remark remark check 1
+                remark some random remark 2
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="113",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            tcp=dict(ack="true")
+                                        ),
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        tos=dict(min_monetary_cost=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        protocol_options=dict(
+                                            protocol_number=433
+                                        ),
+                                        source=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        log=dict(user_cookie="check"),
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.103.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        precedence=10,
+                                        tos=dict(normal=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.105.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.106.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        time_range=20,
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="test_acl",
+                                acl_type="standard",
+                                aces=[dict(remarks=["Another remark here"])],
+                            ),
+                        ],
+                    )
+                ],
+                state="overridden",
+            )
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended 113",
+            "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
+            "permit 198.51.102.0 0.0.0.255 198.51.103.0 0.0.0.255 precedence 10 tos normal",
+            "permit 433 198.51.101.0 0.0.0.255 198.51.102.0 0.0.0.255 eq telnet log check tos max-throughput",
+            "permit 198.51.105.0 0.0.0.255 198.51.106.0 0.0.0.255 time-range 20 tos max-throughput",
+            "ip access-list standard test_acl",
+            "remark Another remark here",
+            "no remark remark check 1",
+            "no remark some random remark 2",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_acls_overridden_clear(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="113",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        tos=dict(max_reliability=True),
+                                        fragments=10,
+                                    ),
+                                    dict(
+                                        remarks=["extended ACL remark"],
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        log=dict(user_cookie="check"),
+                                        tos=dict(service_value="119"),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="23",
+                                acl_type="standard",
+                                aces=[dict(remarks=["check remark here"])],
+                            ),
+                        ],
+                    )
+                ],
+                state="overridden",
+            )
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended 113",
+            "deny 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 fragments 10 tos max-reliability",
+            "permit 198.51.101.0 0.0.0.255 198.51.102.0 0.0.0.255 log check tos 119",
+            "remark extended ACL remark",
+            "ip access-list standard 23",
+            "remark check remark here",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_delete_acl(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list 2
+                30 permit 172.16.1.11
+                20 permit 172.16.1.10 log
+                10 permit 172.16.1.2
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="2",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=10,
+                                    )
+                                ],
+                            )
+                        ],
+                    )
+                ],
+                state="deleted",
+            )
+        )
+
+        result = self.execute_module(changed=True)
+        commands = ["no ip access-list standard 2"]
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_failed_extra_param_standard_acl(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            ip access-list standard test_acl
+                remark remark check 1
+                remark some random remark 2
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="test_acl",
+                                acl_type="standard",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        sequence=10,
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(any="True"),
+                                    )
+                                ],
+                            )
+                        ],
+                    )
+                ],
+                state="overridden",
+            )
+        )
+        result = self.execute_module(failed=True)
+        self.assertEqual(result, {"failed": True})
+
+    def test_ios_failed_update_with_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+                30 permit 172.16.1.11
+                20 permit 172.16.1.10 log
+                10 permit 172.16.1.2
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="test_acl",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=10,
+                                    )
+                                ],
+                            )
+                        ],
+                    )
+                ],
+                state="merged",
+            )
+        )
+
+        result = self.execute_module(failed=True)
+        self.assertEqual(result, {"failed": True})

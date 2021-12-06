@@ -23,9 +23,12 @@ module: ios_ping
 short_description: Tests reachability using ping from Cisco IOS network devices
 description:
 - Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+  module.
+- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+  module instead.
+- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html)
+  module instead.
 version_added: 1.0.0
 author:
 - Jacob McGill (@jmcgill298)
@@ -67,9 +70,11 @@ options:
     - The VRF to use for forwarding.
     type: str
 notes:
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+  module.
+- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+  module instead.
+- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html) module instead.
 """
 EXAMPLES = """
 - name: Test reachability to 10.10.10.10 using default vrf

@@ -16,8 +16,10 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
+from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
+from ansible.module_utils._text import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
@@ -46,22 +48,17 @@ class Logging_global(ResourceModule):
             tmplt=Logging_globalTemplate(),
         )
         self.parsers = [
-            "hosts",
-            "hosts.transport",
             "buffered",
             "buginf",
             "cns_events",
             "console",
             "count",
             "delimiter",
-            "discriminator",
             "dmvpn",
             "esm",
             "exception",
             "facility",
-            "filter",
             "history",
-            "message_counter",
             "monitor",
             "logging_on",
             "origin_id",
@@ -71,13 +68,15 @@ class Logging_global(ResourceModule):
             "rate_limit",
             "reload",
             "server_arp",
-            "snmp_trap",
-            "source_interface",
             "trap",
             "userinfo",
         ]
-
-        self.exclude = {"want": [], "have": []}
+        self.list_parsers = ["hosts", "filter", "source_interface"]
+        self.complex_parsers = [
+            "message_counter",
+            "discriminator",
+            "snmp_trap",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -94,41 +93,17 @@ class Logging_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        if self.want:
-            wantd = self.list_to_dict(self.want, "want")
-        else:
-            wantd = dict()
-        if self.have:
-            haved = self.list_to_dict(self.have, "have")
-        else:
-            haved = dict()
 
-        # if state is merged, merge want onto have and then compare
+        wantd = self.list_to_dict(self.want)
+        haved = self.list_to_dict(self.have)
+
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
             wantd = {}
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
-
-        # replaced state for handling list type attrs
-        if self.state == "replaced":
-            for k, have in iteritems(haved):
-                if list(have.keys())[0] in self.exclude["want"]:
-                    if k not in wantd:
-                        self._compare(want={}, have=have)
-
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -137,85 +112,66 @@ class Logging_global(ResourceModule):
            for the Logging_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists_attrs(want, have)
+        self._compare_complex_attrs(want, have)
 
-    def list_to_dict(self, param, op):
-        """Converts a dict that contains list to a dict of dict
-            The linear structure of the logging configuration
-            converts every logging configuration to dict with unique key
+    def _compare_lists_attrs(self, want, have):
+        """Compare list of dict"""
+        for _par in self.list_parsers:
+            i_want = want.get(_par, {})
+            i_have = have.get(_par, {})
+            for key, wanting in iteritems(i_want):
+                _parser = _par
+                if wanting.get("transport") and _parser == "hosts":
+                    _parser = "hosts.transport"
+                haveing = i_have.pop(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser)
+            for key, haveing in iteritems(i_have):
+                _parser = _par
+                if haveing.get("transport") and _parser == "hosts":
+                    _parser = "hosts.transport"
+                self.addcmd(haveing, _parser, negate=True)
 
-        Args:
-            param (dict): The have or want
+    def _compare_complex_attrs(self, want, have):
+        """Compare dict of list"""
+        for _par in self.complex_parsers:
+            i_want = want.get(_par, {})
+            i_have = have.get(_par, {})
+            for key, wanting in iteritems(i_want):
+                haveing = i_have.pop(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _par, negate=True)
+                    self.addcmd(wanting, _par)
+            for key, haveing in iteritems(i_have):
+                self.addcmd(haveing, _par, negate=True)
 
-        Returns:
-            dict: for any defined configuration dict contains unique keys
-        """
-
-        _temp_param = {}
-        for element, val in iteritems(param):
-            if element == "message_counter":
-                _temp = {}
-                for ctr in val:
-                    _temp.update({ctr: {"message_counter": ctr}})
-                _temp_param.update(_temp)
-                self.exclude[op].append("message_counter")
-            if element == "discriminator":
-                _temp = {}
-                for ctr in val:
-                    _temp.update(
-                        {
-                            self.trim_whitespace("discriminator_" + ctr): {
-                                "discriminator": ctr
-                            }
-                        }
-                    )
-                _temp_param.update(_temp)
-                self.exclude[op].append("discriminator")
-            if element == "snmp_trap":
-                _temp = {}
-                for ctr in val:
-                    _temp.update(
-                        {
-                            self.trim_whitespace("snmp_trap_" + ctr): {
-                                "snmp_trap": ctr
-                            }
-                        }
-                    )
-                _temp_param.update(_temp)
-                self.exclude[op].append("snmp_trap")
-            if element == "source_interface":
-                _temp = {}
-                for interface in val:
-                    _temp.update(
-                        {
-                            interface.get("interface"): {
-                                "source_interface": interface
-                            }
-                        }
-                    )
-                _temp_param.update(_temp)
-                self.exclude[op].append("source_interface")
-            if element == "filter":
-                _temp = {}
-                for url in val:
-                    _temp.update({url.get("url"): {"filter": url}})
-                _temp_param.update(_temp)
-                self.exclude[op].append("filter")
-            if element == "hosts":
-                _temp = {}
-                for host in val:
-                    if host.get("hostname"):
-                        _temp.update({host.get("hostname"): {"hosts": host}})
-                    elif host.get("ipv6"):
-                        _temp.update({host.get("ipv6"): {"hosts": host}})
-                _temp_param.update(_temp)
-                self.exclude[op].append("hosts")
-
-        for k, v in iteritems(param):
-            if k not in self.exclude.get(op):
-                _temp_param.update({k: {k: v}})
-
-        param = _temp_param
-        return param
+    def list_to_dict(self, data):
+        """Convert all list of dicts to dicts of dicts"""
+        p_key = {
+            "filter": "url",
+            "hosts": "hostname",
+            "source_interface": "interface",
+        }
+        list_el = ["message_counter", "discriminator", "snmp_trap"]
+        tmp_data = deepcopy(data)
+        for k, _v in p_key.items():
+            if tmp_data.get(k):
+                tmp_data[k] = {
+                    str(i[p_key[k]])
+                    if i.get(p_key[k])
+                    else str(i.get("ipv6")): i
+                    for i in tmp_data[k]
+                }
+        for el in list_el:
+            if tmp_data.get(el):
+                tmp_data[el] = {
+                    self.trim_whitespace(el + i): {el: i} for i in tmp_data[el]
+                }
+        return tmp_data
 
     def trim_whitespace(self, word):
-        return word.strip()
+        return to_text(word).strip()
