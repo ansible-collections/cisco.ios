@@ -1,0 +1,22 @@
+---
+- debug:
+    msg:
+      START ios_snmp_server gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: ios_snmp_server gather - Play
+      register: result
+      cisco.ios.ios_snmp_server:
+        config:
+        state: gathered
+
+    - name: ios_snmp_server gather - Assert
+      assert:
+        that:
+          - gathered['config'] == result['gathered']
+          - result['changed'] == false
+  always:
+    - include_tasks: _remove_config.yaml
