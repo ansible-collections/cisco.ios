@@ -145,6 +145,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                 "packet_size": {"type": "int"},
                 "password_policy": {
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "change": {"type": "int"},
                         "digits": {"type": "int"},
