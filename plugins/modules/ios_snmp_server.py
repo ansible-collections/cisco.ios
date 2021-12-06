@@ -794,13 +794,747 @@ options:
     description:
       - The state the configuration should be left in.
       - Refer to examples for more details.
+      - The states I(replaced) and I(overridden) have identical
+        behaviour for this module.
     type: str
 short_description: snmp_server resource module
 version_added: 2.6.0
 """
 
 EXAMPLES = """
+# Using state: merged
 
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^ntp
+# --------------------- EMPTY -----------------
+
+# Merged play:
+# ------------
+
+- name: Apply the provided configuration
+  cisco.ios.ios_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: DHCP-Server
+            ipv4: true
+            kod: true
+          - access_list: preauth_ipv6_acl
+            ipv6: true
+            kod: true
+          - access_list: '2'
+            kod: true
+        query_only:
+          - access_list: '10'
+      allow:
+        control:
+          rate_limit: 4
+        private: true
+      authenticate: true
+      authentication_keys:
+        - algorithm: md5
+          encryption: 22
+          id: 2
+          key: SomeSecurePassword
+      broadcast_delay: 22
+      clock_period: 5
+      logging: true
+      master:
+        stratum: 4
+      max_associations: 34
+      max_distance: 3
+      min_distance: 10
+      orphan: 4
+      panic_update: true
+      peers:
+        - peer: 172.16.1.10
+          version: 2
+        - key: 2
+          minpoll: 5
+          peer: 172.16.1.11
+          prefer: true
+          version: 2
+        - peer: checkPeerDomainIpv4.com
+          prefer: true
+          use_ipv4: true
+        - peer: checkPeerDomainIpv6.com
+          use_ipv6: true
+        - peer: testPeerDomainIpv6.com
+          prefer: true
+          use_ipv6: true
+      servers:
+        - server: 172.16.1.12
+          version: 2
+        - server: checkServerDomainIpv6.com
+          use_ipv6: true
+        - server: 172.16.1.13
+          source: GigabitEthernet0/1
+      source: GigabitEthernet0/1
+      trusted_keys:
+        - range_end: 3
+          range_start: 3
+        - range_start: 21
+    state: merged
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#     "ntp allow mode control 4",
+#     "ntp allow mode private",
+#     "ntp authenticate",
+#     "ntp broadcastdelay 22",
+#     "ntp clock-period 5",
+#     "ntp logging",
+#     "ntp master 4",
+#     "ntp max-associations 34",
+#     "ntp maxdistance 3",
+#     "ntp mindistance 10",
+#     "ntp orphan 4",
+#     "ntp panic update",
+#     "ntp source GigabitEthernet0/1",
+#     "ntp access-group ipv4 peer DHCP-Server kod",
+#     "ntp access-group ipv6 peer preauth_ipv6_acl kod",
+#     "ntp access-group peer 2 kod",
+#     "ntp access-group query-only 10",
+#     "ntp authentication-key 2 md5 SomeSecurePassword 22",
+#     "ntp peer 172.16.1.10 version 2",
+#     "ntp peer 172.16.1.11 key 2 minpoll 5 prefer  version 2",
+#     "ntp peer ip checkPeerDomainIpv4.com prefer",
+#     "ntp peer ipv6 checkPeerDomainIpv6.com",
+#     "ntp peer ipv6 testPeerDomainIpv6.com prefer",
+#     "ntp server 172.16.1.12 version 2",
+#     "ntp server ipv6 checkServerDomainIpv6.com",
+#     "ntp server 172.16.1.13 source GigabitEthernet0/1",
+#     "ntp trusted-key 3 - 3",
+#     "ntp trusted-key 21"
+# ],
+
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^ntp
+# ntp max-associations 34
+# ntp logging
+# ntp allow mode control 4
+# ntp panic update
+# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
+# ntp authenticate
+# ntp trusted-key 3 - 3
+# ntp trusted-key 21
+# ntp orphan 4
+# ntp mindistance 10
+# ntp maxdistance 3
+# ntp broadcastdelay 22
+# ntp source GigabitEthernet0/1
+# ntp access-group peer 2 kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp master 4
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp server 172.16.1.12 version 2
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server ipv6 checkServerDomainIpv6.com
+
+# Using state: deleted
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^ntp
+# ntp max-associations 34
+# ntp logging
+# ntp allow mode control 4
+# ntp panic update
+# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
+# ntp authenticate
+# ntp trusted-key 3 - 3
+# ntp trusted-key 21
+# ntp orphan 4
+# ntp mindistance 10
+# ntp maxdistance 3
+# ntp broadcastdelay 22
+# ntp source GigabitEthernet0/1
+# ntp access-group peer 2 kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp master 4
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp server 172.16.1.12 version 2
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server ipv6 checkServerDomainIpv6.com
+
+# Deleted play:
+# -------------
+
+- name: Remove all existing configuration
+  cisco.ios.ios_ntp_global:
+    state: deleted
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#     "no ntp allow mode control 4",
+#     "no ntp authenticate",
+#     "no ntp broadcastdelay 22",
+#     "no ntp logging",
+#     "no ntp master 4",
+#     "no ntp max-associations 34",
+#     "no ntp maxdistance 3",
+#     "no ntp mindistance 10",
+#     "no ntp orphan 4",
+#     "no ntp panic update",
+#     "no ntp source GigabitEthernet0/1",
+#     "no ntp access-group peer 2 kod",
+#     "no ntp access-group ipv6 peer preauth_ipv6_acl kod",
+#     "no ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7",
+#     "no ntp peer 172.16.1.10 version 2",
+#     "no ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
+#     "no ntp peer ip checkPeerDomainIpv4.com prefer",
+#     "no ntp peer ipv6 checkPeerDomainIpv6.com",
+#     "no ntp peer ipv6 testPeerDomainIpv6.com prefer",
+#     "no ntp server 172.16.1.12 version 2",
+#     "no ntp server 172.16.1.13 source GigabitEthernet0/1",
+#     "no ntp server ipv6 checkServerDomainIpv6.com",
+#     "no ntp trusted-key 21",
+#     "no ntp trusted-key 3 - 3"
+# ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^ntp
+# --------------------- EMPTY -----------------
+
+# Using state: overridden
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^ntp
+# ntp panic update
+# ntp authentication-key 2 md5 00371C0B01680E051A33497E080A16001D1908 7
+# ntp authenticate
+# ntp trusted-key 3 - 4
+# ntp trusted-key 21
+# ntp source GigabitEthernet0/1
+# ntp peer 172.16.1.10 version 2
+# ntp server 172.16.1.12 version 2
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp server ipv6 checkServerDomainIpv6.com
+
+# Overridden play:
+# ----------------
+
+- name: Override commands with provided configuration
+  cisco.ios.ios_ntp_global:
+    config:
+      peers:
+        - peer: ipv6DomainNew.com
+          use_ipv6: true
+        - peer: 172.16.1.100
+          prefer: true
+          use_ipv4: true
+      access_group:
+        peer:
+        - access_list: DHCP-Server
+          ipv6: true
+    state: overridden
+
+# Commands Fired:
+# ---------------
+# "commands": [
+#       "no ntp authenticate",
+#       "no ntp panic update",
+#       "no ntp source GigabitEthernet0/1",
+#       "ntp access-group ipv6 peer DHCP-Server",
+#       "no ntp authentication-key 2 md5 00371C0B01680E051A33497E080A16001D1908 7",
+#       "ntp peer ipv6 ipv6DomainNew.com",
+#       "ntp peer 172.16.1.100 prefer",
+#       "no ntp peer 172.16.1.10 version 2",
+#       "no ntp peer ip checkPeerDomainIpv4.com prefer",
+#       "no ntp server 172.16.1.12 version 2",
+#       "no ntp server ipv6 checkServerDomainIpv6.com",
+#       "no ntp trusted-key 21",
+#       "no ntp trusted-key 3 - 4"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^ntp
+# ntp access-group ipv6 peer DHCP-Server
+# ntp peer ipv6 ipv6DomainNew.com
+# ntp peer 172.16.1.100 prefer
+
+# Using state: replaced
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^ntp
+# ntp access-group ipv6 peer DHCP-Server
+# ntp peer ipv6 ipv6DomainNew.com
+# ntp peer 172.16.1.100 prefer
+
+# Replaced play:
+# --------------
+
+- name: Replace commands with provided configuration
+  cisco.ios.ios_ntp_global:
+    config:
+      broadcast_delay: 22
+      clock_period: 5
+      logging: true
+      master:
+        stratum: 4
+      max_associations: 34
+      max_distance: 3
+      min_distance: 10
+      orphan: 4
+    state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#        "ntp broadcastdelay 22",
+#        "ntp clock-period 5",
+#        "ntp logging",
+#        "ntp master 4",
+#        "ntp max-associations 34",
+#        "ntp maxdistance 3",
+#        "ntp mindistance 10",
+#        "ntp orphan 4",
+#        "no ntp access-group ipv6 peer DHCP-Server",
+#        "no ntp peer 172.16.1.100 prefer",
+#        "no ntp peer ipv6 ipv6DomainNew.com"
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^ntp
+# ntp max-associations 34
+# ntp logging
+# ntp orphan 4
+# ntp mindistance 10
+# ntp maxdistance 3
+# ntp broadcastdelay 22
+# ntp master 4
+
+# Using state: gathered
+
+# Before state:
+# -------------
+
+#router-ios#show running-config | section ^ntp
+# ntp max-associations 34
+# ntp logging
+# ntp allow mode control 4
+# ntp panic update
+# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
+# ntp authenticate
+# ntp trusted-key 3 - 3
+# ntp trusted-key 21
+# ntp orphan 4
+# ntp mindistance 10
+# ntp maxdistance 3
+# ntp broadcastdelay 22
+# ntp source GigabitEthernet0/1
+# ntp access-group peer 2 kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp master 4
+# ntp update-calendar
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp server 172.16.1.12 version 2
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server ipv6 checkServerDomainIpv6.com
+
+# Gathered play:
+# --------------
+
+- name: Gather listed ntp config
+  cisco.ios.ios_ntp_global:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+
+# "gathered": {
+#   "access_group": {
+#       "peer": [
+#           {
+#               "access_list": "2",
+#               "kod": true
+#           },
+#           {
+#               "access_list": "preauth_ipv6_acl",
+#               "ipv6": true,
+#               "kod": true
+#           }
+#       ]
+#   },
+#   "allow": {
+#       "control": {
+#           "rate_limit": 4
+#       }
+#   },
+#   "authenticate": true,
+#   "authentication_keys": [
+#       {
+#           "algorithm": "md5",
+#           "encryption": 7,
+#           "id": 2,
+#           "key": "0635002C497D0C1A1005173B0D17393C2B3A37"
+#       }
+#   ],
+#   "broadcast_delay": 22,
+#   "logging": true,
+#   "master": {
+#       "stratum": 4
+#   },
+#   "max_associations": 34,
+#   "max_distance": 3,
+#   "min_distance": 10,
+#   "orphan": 4,
+#   "panic_update": true,
+#   "peers": [
+#       {
+#           "peer": "172.16.1.10",
+#           "version": 2
+#       },
+#       {
+#           "key": 2,
+#           "minpoll": 5,
+#           "peer": "172.16.1.11",
+#           "prefer": true,
+#           "version": 2
+#       },
+#       {
+#           "peer": "checkPeerDomainIpv4.com",
+#           "prefer": true,
+#           "use_ipv4": true
+#       },
+#       {
+#           "peer": "checkPeerDomainIpv6.com",
+#           "use_ipv6": true
+#       },
+#       {
+#           "peer": "testPeerDomainIpv6.com",
+#           "prefer": true,
+#           "use_ipv6": true
+#       }
+#   ],
+#   "servers": [
+#       {
+#           "server": "172.16.1.12",
+#           "version": 2
+#       },
+#       {
+#           "server": "172.16.1.13",
+#           "source": "GigabitEthernet0/1"
+#       },
+#       {
+#           "server": "checkServerDomainIpv6.com",
+#           "use_ipv6": true
+#       }
+#   ],
+#   "source": "GigabitEthernet0/1",
+#   "trusted_keys": [
+#       {
+#           "range_start": 21
+#       },
+#       {
+#           "range_end": 3,
+#           "range_start": 3
+#       }
+#   ],
+#   "update_calendar": true
+# },
+
+# After state:
+# -------------
+
+# router-ios#show running-config | section ^ntp
+# ntp max-associations 34
+# ntp logging
+# ntp allow mode control 4
+# ntp panic update
+# ntp authentication-key 2 md5 0635002C497D0C1A1005173B0D17393C2B3A37 7
+# ntp authenticate
+# ntp trusted-key 3 - 3
+# ntp trusted-key 21
+# ntp orphan 4
+# ntp mindistance 10
+# ntp maxdistance 3
+# ntp broadcastdelay 22
+# ntp source GigabitEthernet0/1
+# ntp access-group peer 2 kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp master 4
+# ntp update-calendar
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp server 172.16.1.12 version 2
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server ipv6 checkServerDomainIpv6.com
+
+# Using state: rendered
+
+# Rendered play:
+# --------------
+
+- name: Render the commands for provided configuration
+  cisco.ios.ios_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: DHCP-Server
+            ipv4: true
+            kod: true
+          - access_list: preauth_ipv6_acl
+            ipv6: true
+            kod: true
+          - access_list: '2'
+            kod: true
+        query_only:
+          - access_list: '10'
+      allow:
+        control:
+          rate_limit: 4
+        private: true
+      authenticate: true
+      authentication_keys:
+        - algorithm: md5
+          encryption: 22
+          id: 2
+          key: SomeSecurePassword
+      broadcast_delay: 22
+      clock_period: 5
+      logging: true
+      master:
+        stratum: 4
+      max_associations: 34
+      max_distance: 3
+      min_distance: 10
+      orphan: 4
+      panic_update: true
+      peers:
+        - peer: 172.16.1.10
+          version: 2
+        - key: 2
+          minpoll: 5
+          peer: 172.16.1.11
+          prefer: true
+          version: 2
+        - peer: checkPeerDomainIpv4.com
+          prefer: true
+          use_ipv4: true
+        - peer: checkPeerDomainIpv6.com
+          use_ipv6: true
+        - peer: testPeerDomainIpv6.com
+          prefer: true
+          use_ipv6: true
+      servers:
+        - server: 172.16.1.12
+          version: 2
+        - server: checkServerDomainIpv6.com
+          use_ipv6: true
+        - server: 172.16.1.13
+          source: GigabitEthernet0/1
+      source: GigabitEthernet0/1
+      trusted_keys:
+        - range_end: 3
+          range_start: 10
+        - range_start: 21
+      update_calendar: True
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+
+# "rendered": [
+#       "ntp allow mode control 4",
+#       "ntp allow mode private",
+#       "ntp authenticate",
+#       "ntp broadcastdelay 22",
+#       "ntp clock-period 5",
+#       "ntp logging",
+#       "ntp master 4",
+#       "ntp max-associations 34",
+#       "ntp maxdistance 3",
+#       "ntp mindistance 10",
+#       "ntp orphan 4",
+#       "ntp panic update",
+#       "ntp source GigabitEthernet0/1",
+#       "ntp update-calendar",
+#       "ntp access-group ipv4 peer DHCP-Server kod",
+#       "ntp access-group ipv6 peer preauth_ipv6_acl kod",
+#       "ntp access-group peer 2 kod",
+#       "ntp access-group query-only 10",
+#       "ntp authentication-key 2 md5 SomeSecurePassword 22",
+#       "ntp peer 172.16.1.10 version 2",
+#       "ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2",
+#       "ntp peer ip checkPeerDomainIpv4.com prefer",
+#       "ntp peer ipv6 checkPeerDomainIpv6.com",
+#       "ntp peer ipv6 testPeerDomainIpv6.com prefer",
+#       "ntp server 172.16.1.12 version 2",
+#       "ntp server ipv6 checkServerDomainIpv6.com",
+#       "ntp server 172.16.1.13 source GigabitEthernet0/1",
+#       "ntp trusted-key 3 - 3",
+#       "ntp trusted-key 21"
+#     ]
+
+# Using state: parsed
+
+# File: parsed.cfg
+# ----------------
+
+# ntp allow mode control 4
+# ntp allow mode private
+# ntp authenticate
+# ntp broadcastdelay 22
+# ntp clock-period 5
+# ntp logging
+# ntp master 4
+# ntp max-associations 34
+# ntp maxdistance 3
+# ntp mindistance 10
+# ntp orphan 4
+# ntp panic update
+# ntp source GigabitEthernet0/1
+# ntp update-calendar
+# ntp access-group ipv4 peer DHCP-Server kod
+# ntp access-group ipv6 peer preauth_ipv6_acl kod
+# ntp access-group peer 2 kod
+# ntp access-group query-only 10
+# ntp authentication-key 2 md5 SomeSecurePassword 22
+# ntp peer 172.16.1.10 version 2
+# ntp peer 172.16.1.11 key 2 minpoll 5 prefer version 2
+# ntp peer ip checkPeerDomainIpv4.com prefer
+# ntp peer ipv6 checkPeerDomainIpv6.com
+# ntp peer ipv6 testPeerDomainIpv6.com prefer
+# ntp server 172.16.1.12 version 2
+# ntp server ipv6 checkServerDomainIpv6.com
+# ntp server 172.16.1.13 source GigabitEthernet0/1
+# ntp trusted-key 3 - 13
+# ntp trusted-key 21
+
+# Parsed play:
+# ------------
+
+- name: Parse the provided configuration with the existing running configuration
+  cisco.ios.ios_ntp_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+
+# "parsed": {
+#     "access_group": {
+#         "peer": [
+#             {
+#                 "access_list": "2",
+#                 "kod": true
+#             },
+#             {
+#                 "access_list": "DHCP-Server",
+#                 "ipv4": true,
+#                 "kod": true
+#             },
+#             {
+#                 "access_list": "preauth_ipv6_acl",
+#                 "ipv6": true,
+#                 "kod": true
+#             }
+#         ],
+#         "query_only": [
+#             {
+#                 "access_list": "10"
+#             }
+#         ]
+#     },
+#     "allow": {
+#         "control": {
+#             "rate_limit": 4
+#         },
+#         "private": true
+#     },
+#     "authenticate": true,
+#     "authentication_keys": [
+#         {
+#             "algorithm": "md5",
+#             "encryption": 22,
+#             "id": 2,
+#             "key": "SomeSecurePassword"
+#         }
+#     ],
+#     "broadcast_delay": 22,
+#     "clock_period": 5,
+#     "logging": true,
+#     "master": {
+#         "stratum": 4
+#     },
+#     "max_associations": 34,
+#     "max_distance": 3,
+#     "min_distance": 10,
+#     "orphan": 4,
+#     "panic_update": true,
+#     "peers": [
+#         {
+#             "peer": "172.16.1.10",
+#             "version": 2
+#         },
+#         {
+#             "peer": "checkPeerDomainIpv6.com",
+#             "use_ipv6": true
+#         }
+#     ],
+#     "servers": [
+#         {
+#             "server": "172.16.1.12",
+#             "version": 2
+#         },
+#         {
+#             "server": "172.16.1.13",
+#             "source": "GigabitEthernet0/1"
+#         },
+#         {
+#             "server": "checkServerDomainIpv6.com",
+#             "use_ipv6": true
+#         }
+#     ],
+#     "source": "GigabitEthernet0/1",
+#     "trusted_keys": [
+#         {
+#             "range_start": 21
+#         },
+#         {
+#             "range_end": 13,
+#             "range_start": 3
+#         }
+#     ],
+#     "update_calendar": true
+# }
 """
 
 RETURN = """
@@ -857,11 +1591,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
     Snmp_server,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():
