@@ -375,3 +375,35 @@ releases:
       name: ios_ntp_global
       namespace: ''
     release_date: '2021-09-24'
+  2.6.0:
+    changes:
+      bugfixes:
+      - '''ios_banner'' - Bugfix for presence of multiple delimitation chars in the
+        banner''s declaration and idempotence improvement.'
+      - Fix ntp_global - remove no_log for key_id under peer and server attributes.
+      - Fix ntp_global - to handle when attribute value is false.
+      - '`ios_acls` - bugfixes and optimization for ACLs.'
+      - '`ios_l2_interfaces` - fix unable to set switchport mode properly.'
+      - '`ios_logging_global` - fix host ipv6 commands not parsed correctly.'
+      - '`ios_logging_global` - fix wrong ordering of commands fired on replaced state.'
+      doc_changes:
+      - Added connection network_cli in note for missing modules.
+      - Fixed ios_commands module example as per documentation.
+      minor_changes:
+      - '`ios_acls` - feature: Remarks can be configured for ACLs.'
+      - '`ios_snmp_server` - New Resource module added.'
+    fragments:
+    - 0-copy_ignore_txt.yml
+    - acl_refactor.yaml
+    - documentation_update_connection.yaml
+    - ios_banner_deliminters_and_idempotence.yaml
+    - l2_interface_issue.yaml
+    - logging_global_issue.yaml
+    - ntp_global_fix_false.yml
+    - sanity-213.yaml
+    - snmp_server_resource_module.yaml
+    modules:
+    - description: snmp_server resource module
+      name: ios_snmp_server
+      namespace: ''
+    release_date: '2021-12-07'
