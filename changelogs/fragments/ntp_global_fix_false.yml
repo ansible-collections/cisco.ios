@@ -1,4 +1,0 @@
----
-bugfixes:
-  - Fix ntp_global - to handle when attribute value is false.
-  - Fix ntp_global - remove no_log for key_id under peer and server attributes.

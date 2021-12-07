@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "'ios_banner' - Bugfix for presence of multiple delimitation chars in the banner's declaration and idempotence improvement."

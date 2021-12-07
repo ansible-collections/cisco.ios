@@ -5,6 +5,37 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.6.0
+======
+
+Minor Changes
+-------------
+
+- `ios_acls` - feature: Remarks can be configured for ACLs.
+- `ios_snmp_server` - New Resource module added.
+
+Bugfixes
+--------
+
+- 'ios_banner' - Bugfix for presence of multiple delimitation chars in the banner's declaration and idempotence improvement.
+- Fix ntp_global - remove no_log for key_id under peer and server attributes.
+- Fix ntp_global - to handle when attribute value is false.
+- `ios_acls` - bugfixes and optimization for ACLs.
+- `ios_l2_interfaces` - fix unable to set switchport mode properly.
+- `ios_logging_global` - fix host ipv6 commands not parsed correctly.
+- `ios_logging_global` - fix wrong ordering of commands fired on replaced state.
+
+Documentation Changes
+---------------------
+
+- Added connection network_cli in note for missing modules.
+- Fixed ios_commands module example as per documentation.
+
+New Modules
+-----------
+
+- ios_snmp_server - snmp_server resource module
+
 v2.5.0
 ======
 
