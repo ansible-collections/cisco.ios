@@ -1,0 +1,15 @@
+---
+- debug:
+    msg: START ios_snmp_server parsed integration tests on connection={{ ansible_connection
+      }}
+
+- name: ios_snmp_server parsed - Play
+  register: result
+  cisco.ios.ios_snmp_server:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- assert:
+    that:
+      - result.changed == false
+      - parsed['config'] == result['parsed']

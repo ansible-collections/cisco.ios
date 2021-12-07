@@ -932,7 +932,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>key</b>
+                    <b>key_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -942,6 +942,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure peer authentication key</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: key</div>
                 </td>
             </tr>
             <tr>
@@ -1195,7 +1196,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>key</b>
+                    <b>key_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -1205,6 +1206,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure peer authentication key</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: key</div>
                 </td>
             </tr>
             <tr>

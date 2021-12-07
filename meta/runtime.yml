@@ -98,6 +98,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     ntp_global:
       redirect: cisco.ios.ios
+    ios_snmp_server:
+      redirect: cisco.ios.ios
+    snmp_server:
+      redirect: cisco.ios.ios
     ios_ntp:
       redirect: cisco.ios.ios
     ntp:
@@ -239,6 +243,8 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     ntp_global:
       redirect: cisco.ios.ios_ntp_global
+    snmp_server:
+      redirect: cisco.ios.ios_snmp_server
     ospfv2:
       redirect: cisco.ios.ios_ospfv2
     ping:

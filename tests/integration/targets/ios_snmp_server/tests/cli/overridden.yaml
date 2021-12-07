@@ -1,0 +1,49 @@
+---
+- debug:
+    msg: START Overridden ios_snmp_server state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: ios_snmp_server overridden - Play
+      register: result
+      cisco.ios.ios_snmp_server: &id001
+        config:
+          location: 'location entry for snmp'
+          packet_size: 500
+          communities:
+            - acl_v4: acl_uq
+              name: communityOvverriden
+              rw: true
+        state: overridden
+
+    - name: ios_snmp_server overridden - Assert commands
+      assert:
+        that:
+          - overridden['commands'] == result['commands']
+
+    - name: ios_snmp_server overridden - Assert before
+      assert:
+        that:
+          - overridden['before'] == result['before']
+
+    - name: ios_snmp_server overridden - Assert after
+      assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: ios_snmp_server overridden - Play (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_snmp_server: *id001
+
+    - name: ios_snmp_server overridden - Assert above task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml
