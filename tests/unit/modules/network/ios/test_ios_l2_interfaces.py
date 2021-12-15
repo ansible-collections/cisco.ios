@@ -486,3 +486,23 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_fiveGibBit(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        access=dict(vlan=20),
+                        mode="trunk",
+                        name="FiveGigabitEthernet1/0/1",
+                    )
+                ],
+                state="merged",
+            )
+        )
+        commands = [
+            "interface FiveGigabitEthernet1/0/1",
+            "switchport mode trunk",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
