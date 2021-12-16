@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_l2_interfaces` - fix unable to identify FiveGigabitEthernet names on facts gathering."

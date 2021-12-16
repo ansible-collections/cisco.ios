@@ -316,6 +316,8 @@ def normalize_interface(name):
         if_type = "FastEthernet"
     elif name.lower().startswith("fo"):
         if_type = "FortyGigabitEthernet"
+    elif name.lower().startswith("fi"):
+        if_type = "FiveGigabitEthernet"
     elif name.lower().startswith("long"):
         if_type = "LongReachEthernet"
     elif name.lower().startswith("et"):
@@ -367,6 +369,8 @@ def get_interface_type(interface):
         return "FastEthernet"
     elif interface.upper().startswith("FO"):
         return "FortyGigabitEthernet"
+    elif interface.upper().startswith("FI"):
+        return "FiveGigabitEthernet"
     elif interface.upper().startswith("LON"):
         return "LongReachEthernet"
     elif interface.upper().startswith("ET"):
