@@ -50,9 +50,7 @@ class Static_RoutesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_static_routes_data(self, connection):
-        return connection.get(
-            "sh running-config | section ^ip route|ipv6 route"
-        )
+        return connection.get("sh running-config | section ^ip route|ipv6 route")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for static_routes
@@ -72,9 +70,7 @@ class Static_RoutesFacts(object):
         same_dest = self.populate_destination(config)
         for key in same_dest.keys():
             if key:
-                obj = self.render_config(
-                    self.generated_spec, key, same_dest[key]
-                )
+                obj = self.render_config(self.generated_spec, key, same_dest[key])
                 if obj:
                     objs.append(obj)
         facts = {}
@@ -94,9 +90,7 @@ class Static_RoutesFacts(object):
 
         if objs:
             facts["static_routes"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["static_routes"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
@@ -144,9 +138,7 @@ class Static_RoutesFacts(object):
                         same_dest[dest_vrf].append(("vrf " + filter_vrf))
                 else:
                     filter_non_vrf = utils.parse_conf_arg(i, ip_str)
-                    if (
-                        "::" not in filter_non_vrf
-                    ):  # "/" not in filter_non_vrf and
+                    if "::" not in filter_non_vrf:  # "/" not in filter_non_vrf and
                         filter_non_vrf, dest = self.update_netmask_to_cidr(
                             filter_non_vrf, 0, 1
                         )
@@ -184,11 +176,14 @@ class Static_RoutesFacts(object):
         address_family = dict()
         for each in conf_val:
             route = each.split(" ")
+            len_route = len(route)
+
             if "vrf" in conf_val[0]:
                 vrf = route[route.index("vrf") + 1]
                 route_dict["dest"] = conf.split("_")[0]
             else:
                 route_dict["dest"] = conf
+
             if "vrf" in conf_val[0]:
                 hops = {}
                 if "::" in conf:
@@ -201,10 +196,9 @@ class Static_RoutesFacts(object):
                     else:
                         hops["interface"] = route[3]
                         afi["afi"] = "ipv4"
-                        if is_valid_ip(route[4]):
+                        if len_route >= 5 and is_valid_ip(route[4]):
                             hops["forward_router_address"] = route[4]
             else:
-
                 if "::" in conf:
                     if is_valid_ip(route[1]):
                         hops["forward_router_address"] = route[1]
@@ -221,8 +215,9 @@ class Static_RoutesFacts(object):
                     else:
                         hops["interface"] = route[1]
                         afi["afi"] = "ipv4"
-                        if is_valid_ip(route[2]):
+                        if len_route >= 3 and is_valid_ip(route[2]):
                             hops["forward_router_address"] = route[2]
+
             try:
                 temp_list = each.split(" ")
                 if "tag" in temp_list:
