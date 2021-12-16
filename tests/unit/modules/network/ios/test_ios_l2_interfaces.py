@@ -502,6 +502,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         )
         commands = [
             "interface FiveGigabitEthernet1/0/1",
+            "switchport access vlan 20",
             "switchport mode trunk",
         ]
         result = self.execute_module(changed=True)
