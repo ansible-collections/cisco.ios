@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_static_routes` - Fixes static routes unable to identify interface names when supplied with destination attribute."
