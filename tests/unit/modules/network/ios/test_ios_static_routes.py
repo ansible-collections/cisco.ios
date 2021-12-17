@@ -705,3 +705,111 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
+
+    def test_static_route_gathered(self):
+        set_module_args(dict(state="gathered"))
+        gathered = [
+            {
+                "vrf": "ansible_vrf",
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "0.0.0.0/0",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "198.51.101.1",
+                                        "name": "test_vrf_1",
+                                        "tag": 100,
+                                        "track": 150,
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {
+                "vrf": "ansible_vrf",
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "192.0.2.0/24",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "192.0.2.1",
+                                        "name": "test_vrf_2",
+                                        "tag": 50,
+                                        "track": 175,
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {
+                "vrf": "ansible_vrf",
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "192.51.110.0/32",
+                                "next_hops": [
+                                    {
+                                        "interface": "GigabitEthernet0/2",
+                                        "forward_router_address": "192.51.111.1",
+                                        "distance_metric": 10,
+                                        "name": "partner",
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            },
+            {
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "198.51.100.0/24",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "198.51.101.1",
+                                        "distance_metric": 110,
+                                        "name": "route_1",
+                                        "multicast": True,
+                                        "tag": 60,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "routes": [
+                            {
+                                "dest": "2001:DB8:0:3::/64",
+                                "next_hops": [
+                                    {
+                                        "interface": "GigabitEthernet0/2",
+                                        "forward_router_address": "2001:DB8:0:3::2",
+                                        "name": "test_v6",
+                                        "tag": 105,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                ]
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(sorted(result["gathered"]), sorted(gathered))

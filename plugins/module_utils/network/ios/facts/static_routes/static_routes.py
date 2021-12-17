@@ -50,7 +50,9 @@ class Static_RoutesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_static_routes_data(self, connection):
-        return connection.get("sh running-config | section ^ip route|ipv6 route")
+        return connection.get(
+            "sh running-config | section ^ip route|ipv6 route"
+        )
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for static_routes
@@ -70,7 +72,9 @@ class Static_RoutesFacts(object):
         same_dest = self.populate_destination(config)
         for key in same_dest.keys():
             if key:
-                obj = self.render_config(self.generated_spec, key, same_dest[key])
+                obj = self.render_config(
+                    self.generated_spec, key, same_dest[key]
+                )
                 if obj:
                     objs.append(obj)
         facts = {}
@@ -90,7 +94,9 @@ class Static_RoutesFacts(object):
 
         if objs:
             facts["static_routes"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["static_routes"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
@@ -138,7 +144,9 @@ class Static_RoutesFacts(object):
                         same_dest[dest_vrf].append(("vrf " + filter_vrf))
                 else:
                     filter_non_vrf = utils.parse_conf_arg(i, ip_str)
-                    if "::" not in filter_non_vrf:  # "/" not in filter_non_vrf and
+                    if (
+                        "::" not in filter_non_vrf
+                    ):  # "/" not in filter_non_vrf and
                         filter_non_vrf, dest = self.update_netmask_to_cidr(
                             filter_non_vrf, 0, 1
                         )
