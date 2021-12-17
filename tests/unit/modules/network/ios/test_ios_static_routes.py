@@ -13,7 +13,7 @@ from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
-from .ios_module import TestIosModule, load_fixture
+from .ios_module import TestIosModule
 
 
 class TestIosStaticRoutesModule(TestIosModule):
