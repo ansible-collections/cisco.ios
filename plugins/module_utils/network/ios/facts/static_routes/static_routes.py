@@ -184,11 +184,14 @@ class Static_RoutesFacts(object):
         address_family = dict()
         for each in conf_val:
             route = each.split(" ")
+            len_route = len(route)
+
             if "vrf" in conf_val[0]:
                 vrf = route[route.index("vrf") + 1]
                 route_dict["dest"] = conf.split("_")[0]
             else:
                 route_dict["dest"] = conf
+
             if "vrf" in conf_val[0]:
                 hops = {}
                 if "::" in conf:
@@ -201,10 +204,9 @@ class Static_RoutesFacts(object):
                     else:
                         hops["interface"] = route[3]
                         afi["afi"] = "ipv4"
-                        if is_valid_ip(route[4]):
+                        if len_route >= 5 and is_valid_ip(route[4]):
                             hops["forward_router_address"] = route[4]
             else:
-
                 if "::" in conf:
                     if is_valid_ip(route[1]):
                         hops["forward_router_address"] = route[1]
@@ -221,8 +223,9 @@ class Static_RoutesFacts(object):
                     else:
                         hops["interface"] = route[1]
                         afi["afi"] = "ipv4"
-                        if is_valid_ip(route[2]):
+                        if len_route >= 3 and is_valid_ip(route[2]):
                             hops["forward_router_address"] = route[2]
+
             try:
                 temp_list = each.split(" ")
                 if "tag" in temp_list:

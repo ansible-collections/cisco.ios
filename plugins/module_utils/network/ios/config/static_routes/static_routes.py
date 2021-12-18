@@ -167,7 +167,7 @@ class Static_Routes(ConfigBase):
 
         commands = []
 
-        # Drill each iteration of want n have and then based on dest and afi tyoe comparison take config call
+        # Drill each iteration of want n have and then based on dest and afi type comparison take config call
         for w in want:
             for addr_want in w.get("address_families"):
                 for route_want in addr_want.get("routes"):
@@ -294,7 +294,7 @@ class Static_Routes(ConfigBase):
         # performed during override want n have comparison
         temp_want = copy.deepcopy(want)
 
-        # Drill each iteration of want n have and then based on dest and afi tyoe comparison take config call
+        # Drill each iteration of want n have and then based on dest and afi type comparison take config call
         for h in have:
             if h.get("address_families"):
                 for addr_have in h.get("address_families"):
@@ -387,7 +387,7 @@ class Static_Routes(ConfigBase):
         """
         commands = []
 
-        # Drill each iteration of want n have and then based on dest and afi tyoe comparison take config call
+        # Drill each iteration of want n have and then based on dest and afi type comparison take config call
         for w in want:
             for addr_want in w.get("address_families"):
                 for route_want in addr_want.get("routes"):
