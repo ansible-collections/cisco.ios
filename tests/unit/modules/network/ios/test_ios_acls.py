@@ -1015,7 +1015,7 @@ class TestIosAclsModule(TestIosModule):
                                             wildcard_bits="0.0.0.255",
                                         ),
                                         tos=dict(max_reliability=True),
-                                        fragments=10,
+                                        enable_fragments=True,
                                     ),
                                     dict(
                                         remarks=["extended ACL remark"],
@@ -1047,7 +1047,7 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=True)
         commands = [
             "ip access-list extended 113",
-            "deny 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 fragments 10 tos max-reliability",
+            "deny 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 fragments tos max-reliability",
             "permit 198.51.101.0 0.0.0.255 198.51.102.0 0.0.0.255 log check tos 119",
             "remark extended ACL remark",
             "ip access-list standard 23",

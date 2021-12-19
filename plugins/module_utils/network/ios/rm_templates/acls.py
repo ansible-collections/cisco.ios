@@ -55,13 +55,21 @@ def _tmplt_access_list_entries(config_data):
                     **config_data[type]
                 )
             if config_data[type].get("port_protocol"):
-                port_proto_type = list(
-                    config_data[type]["port_protocol"].keys()
-                )[0]
-                command += " {0} {1}".format(
-                    port_proto_type,
-                    config_data[type]["port_protocol"][port_proto_type],
-                )
+                if config_data[type].get("port_protocol").get("range"):
+                    command += " range {0} {1}".format(
+                        config_data[type]["port_protocol"]["range"].get(
+                            "start"
+                        ),
+                        config_data[type]["port_protocol"]["range"].get("end"),
+                    )
+                else:
+                    port_proto_type = list(
+                        config_data[type]["port_protocol"].keys()
+                    )[0]
+                    command += " {0} {1}".format(
+                        port_proto_type,
+                        config_data[type]["port_protocol"][port_proto_type],
+                    )
             return command
 
         command = ""
@@ -112,8 +120,8 @@ def _tmplt_access_list_entries(config_data):
                 command += " dscp {dscp}".format(**aces)
             if aces.get("sequence") and config_data.get("afi") == "ipv6":
                 command += " sequence {sequence}".format(**aces)
-            if aces.get("fragments"):
-                command += " fragments {fragments}".format(**aces)
+            if aces.get("enable_fragments") or aces.get("fragments"):
+                command += " fragments"
             if aces.get("log"):
                 command += " log"
                 if aces["log"].get("user_cookie"):
@@ -281,7 +289,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<dest_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
                         (\s(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo|echo-reply|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg))?
                         (\sdscp\s(?P<dscp>\S+))?
-                        (\sfragments\s(?P<fragment>\S+))?
+                        (\s(?P<enable_fragments>fragments))?
                         (\s(?P<log_input>log-input\s\(tag\s=\s\S+\)|log-input))?
                         (\s(?P<log>log\s\(tag\s=\s\S+\)|log))?
                         (\soption\s(?P<option>\S+|\d+))?
@@ -339,7 +347,7 @@ class AclsTemplate(NetworkTemplate):
                                     },
                                 },
                                 "dscp": "{{ dscp }}",
-                                "fragments": "{{ fragments }}",
+                                "enable_fragments": "{{ True if enable_fragments is defined }}",
                                 "log": {
                                     "set": "{{ True if log is defined and 'tag' not in log }}",
                                     "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log }}",

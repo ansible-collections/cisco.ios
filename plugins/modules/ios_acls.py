@@ -91,8 +91,14 @@ options:
                 description: Evaluate an access list
                 type: str
               fragments:
-                description: Check non-initial fragments.
+                description:
+                  - Check non-initial fragments.
+                  - This option is DEPRECATED and is replaced with enable_fragments which
+                    accepts bool as input this attribute will be removed after 2024-01-01.
                 type: str
+              enable_fragments:
+                description: Enable non-initial fragments.
+                type: bool
               grant:
                 choices:
                   - permit
