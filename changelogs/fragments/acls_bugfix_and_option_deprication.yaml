@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`ios_acls` - Fixes protocol_options not rendering command properly when range is specified."
+  - "`ios_acls` - Deprecated fragment attribute added boolean alternate as enable_fragment."
