@@ -41,34 +41,34 @@ def _tmplt_access_list_entries(config_data):
     if "aces" in config_data:
         command = []
 
-        def source_destination_common_config(config_data, command, type):
-            if config_data[type].get("address"):
-                command += " {address}".format(**config_data[type])
-                if config_data[type].get("wildcard_bits"):
-                    command += " {wildcard_bits}".format(**config_data[type])
-            elif config_data[type].get("any"):
-                command += " any".format(**config_data[type])
-            elif config_data[type].get("host"):
-                command += " host {host}".format(**config_data[type])
-            elif config_data[type].get("object_group"):
+        def source_destination_common_config(config_data, command, attr):
+            if config_data[attr].get("address"):
+                command += " {address}".format(**config_data[attr])
+                if config_data[attr].get("wildcard_bits"):
+                    command += " {wildcard_bits}".format(**config_data[attr])
+            elif config_data[attr].get("any"):
+                command += " any".format(**config_data[attr])
+            elif config_data[attr].get("host"):
+                command += " host {host}".format(**config_data[attr])
+            elif config_data[attr].get("object_group"):
                 command += " object-group {object_group}".format(
-                    **config_data[type]
+                    **config_data[attr]
                 )
-            if config_data[type].get("port_protocol"):
-                if config_data[type].get("port_protocol").get("range"):
+            if config_data[attr].get("port_protocol"):
+                if config_data[attr].get("port_protocol").get("range"):
                     command += " range {0} {1}".format(
-                        config_data[type]["port_protocol"]["range"].get(
+                        config_data[attr]["port_protocol"]["range"].get(
                             "start"
                         ),
-                        config_data[type]["port_protocol"]["range"].get("end"),
+                        config_data[attr]["port_protocol"]["range"].get("end"),
                     )
                 else:
                     port_proto_type = list(
-                        config_data[type]["port_protocol"].keys()
+                        config_data[attr]["port_protocol"].keys()
                     )[0]
                     command += " {0} {1}".format(
                         port_proto_type,
-                        config_data[type]["port_protocol"][port_proto_type],
+                        config_data[attr]["port_protocol"][port_proto_type],
                     )
             return command
 
