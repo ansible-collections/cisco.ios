@@ -332,8 +332,8 @@ class AclsTemplate(NetworkTemplate):
                                         "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
                                             source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}",
                                         "range": {
-                                            "start": "{{ srange_start if srange_start is defined }}",
-                                            "end": "{{ srange_end if srange_end is defined }}",
+                                            "start": "{{ srange_start if srange_start is defined else None }}",
+                                            "end": "{{ srange_end if srange_end is defined else None }}",
                                         },
                                     },
                                 },
@@ -357,13 +357,13 @@ class AclsTemplate(NetworkTemplate):
                                     },
                                 },
                                 "dscp": "{{ dscp }}",
-                                "enable_fragments": "{{ True if enable_fragments is defined }}",
+                                "enable_fragments": "{{ True if enable_fragments is defined else None }}",
                                 "log": {
-                                    "set": "{{ True if log is defined and 'tag' not in log }}",
-                                    "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log }}",
+                                    "set": "{{ True if log is defined and 'tag' not in log else '' }}",
+                                    "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log else '' }}",
                                 },
                                 "log_input": {
-                                    "set": "{{ True if log_input is defined and 'tag' not in log_input }}",
+                                    "set": "{{ True if log_input is defined and 'tag' not in log_input else '' }}",
                                     "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
                                 },
                                 "option": {
@@ -372,12 +372,12 @@ class AclsTemplate(NetworkTemplate):
                                 "precedence": "{{ precedence }}",
                                 "time_range": "{{ time_range }}",
                                 "tos": {
-                                    "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos }}",
-                                    "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos }}",
-                                    "min_delay": "{{ True if tos is defined and 'min-delay' in tos }}",
-                                    "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos }}",
-                                    "normal": "{{ True if tos is defined and 'normal' in tos }}",
-                                    "service_value": "{{ tos if tos is defined }}",
+                                    "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos else '' }}",
+                                    "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos else '' }}",
+                                    "min_delay": "{{ True if tos is defined and 'min-delay' in tos else '' }}",
+                                    "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos else '' }}",
+                                    "normal": "{{ True if tos is defined and 'normal' in tos else '' }}",
+                                    "service_value": "{{ tos if tos is defined else None }}",
                                 },
                                 "ttl": {
                                     "eq": "{{ ttl_eq }}",

@@ -634,7 +634,9 @@ options:
         value of C(running_config) option should be the same format as the output
         of commands I(show access-list) and
         I(show running-config | include ip(v6)* access-list|remark) executed on
-        device. For state I(parsed) active connection to remote host is not required.
+        device. Config data from both the commands should be kept together one after
+        another for the parsers to pick the commands correctly.
+        For state I(parsed) active connection to remote host is not required.
     type: str
 short_description: ACLs resource module
 version_added: 1.0.0
