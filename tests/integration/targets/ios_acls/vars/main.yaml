@@ -148,6 +148,109 @@ gathered:
                   eq: www
           name: R1_TRAFFIC
       afi: ipv6
+
+parsed:
+  config:
+    - acls:
+        - aces:
+            - destination:
+                address: 192.0.3.0
+                wildcard_bits: 0.0.0.255
+              dscp: ef
+              grant: deny
+              protocol: icmp
+              protocol_options:
+                icmp:
+                  echo: true
+              sequence: 10
+              source:
+                address: 192.0.2.0
+                wildcard_bits: 0.0.0.255
+              ttl:
+                eq: 10
+            - remarks:
+                - 'test a remark.'
+          acl_type: extended
+          name: '110'
+        - aces:
+            - destination:
+                address: 198.51.101.0
+                port_protocol:
+                  eq: telnet
+                wildcard_bits: 0.0.0.255
+              grant: deny
+              protocol: tcp
+              protocol_options:
+                tcp:
+                  ack: true
+              sequence: 10
+              source:
+                address: 198.51.100.0
+                wildcard_bits: 0.0.0.255
+              tos:
+                service_value: 12
+            - destination:
+                address: 192.0.4.0
+                port_protocol:
+                  eq: www
+                wildcard_bits: 0.0.0.255
+              dscp: ef
+              grant: deny
+              protocol: tcp
+              protocol_options:
+                tcp:
+                  ack: true
+              sequence: 20
+              source:
+                address: 192.0.3.0
+                wildcard_bits: 0.0.0.255
+              ttl:
+                lt: 20
+          acl_type: extended
+          name: '123'
+        - aces:
+            - destination:
+                address: 192.0.3.0
+                port_protocol:
+                  eq: www
+                wildcard_bits: 0.0.0.255
+              grant: deny
+              option:
+                traceroute: true
+              protocol: tcp
+              protocol_options:
+                tcp:
+                  fin: true
+              sequence: 10
+              source:
+                address: 192.0.2.0
+                wildcard_bits: 0.0.0.255
+              ttl:
+                eq: 10
+          acl_type: extended
+          name: test_acl
+      afi: ipv4
+    - acls:
+        - aces:
+            - destination:
+                any: true
+                port_protocol:
+                  eq: telnet
+              dscp: af11
+              grant: deny
+              protocol: tcp
+              protocol_options:
+                tcp:
+                  ack: true
+              sequence: 10
+              source:
+                any: true
+                port_protocol:
+                  eq: www
+          name: R1_TRAFFIC
+      afi: ipv6
+
+
 rendered:
   commands:
     - ip access-list extended 110
@@ -156,6 +259,7 @@ rendered:
     - ip access-list extended 150
     - deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn
       dscp ef ttl eq 10
+
 rtt_overriden:
   commands:
     - no ipv6 access-list R1_TRAFFIC

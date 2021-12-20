@@ -632,7 +632,8 @@ options:
         and transforms it into JSON format as per the resource module parameters
         and the value is returned in the I(parsed) key within the result. The
         value of C(running_config) option should be the same format as the output
-        of command I(show access-list) executed on
+        of commands I(show access-list) and
+        I(show running-config | include ip(v6)* access-list|remark) executed on
         device. For state I(parsed) active connection to remote host is not required.
     type: str
 short_description: ACLs resource module
