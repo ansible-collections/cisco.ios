@@ -730,7 +730,7 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any eq telnet ack dscp af11 sequence 10",
+                running_config="IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10",
                 state="parsed",
             )
         )
@@ -743,7 +743,9 @@ class TestIosAclsModule(TestIosModule):
                             {
                                 "destination": {
                                     "any": True,
-                                    "port_protocol": {"eq": "telnet"},
+                                    "port_protocol": {
+                                        "range": {"start": 10, "end": 20}
+                                    },
                                 },
                                 "dscp": "af11",
                                 "grant": "deny",
