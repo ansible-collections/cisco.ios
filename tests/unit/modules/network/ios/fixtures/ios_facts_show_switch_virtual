@@ -1,0 +1,6 @@
+Switch mode                  : Virtual Switch
+Virtual switch domain number : 10
+Local switch number          : 1
+Local switch operational role: Virtual Switch Active
+Peer switch number           : 2
+Peer switch operational role : Virtual Switch Standby
