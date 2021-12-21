@@ -41,27 +41,35 @@ def _tmplt_access_list_entries(config_data):
     if "aces" in config_data:
         command = []
 
-        def source_destination_common_config(config_data, command, type):
-            if config_data[type].get("address"):
-                command += " {address}".format(**config_data[type])
-                if config_data[type].get("wildcard_bits"):
-                    command += " {wildcard_bits}".format(**config_data[type])
-            elif config_data[type].get("any"):
-                command += " any".format(**config_data[type])
-            elif config_data[type].get("host"):
-                command += " host {host}".format(**config_data[type])
-            elif config_data[type].get("object_group"):
+        def source_destination_common_config(config_data, command, attr):
+            if config_data[attr].get("address"):
+                command += " {address}".format(**config_data[attr])
+                if config_data[attr].get("wildcard_bits"):
+                    command += " {wildcard_bits}".format(**config_data[attr])
+            elif config_data[attr].get("any"):
+                command += " any".format(**config_data[attr])
+            elif config_data[attr].get("host"):
+                command += " host {host}".format(**config_data[attr])
+            elif config_data[attr].get("object_group"):
                 command += " object-group {object_group}".format(
-                    **config_data[type]
+                    **config_data[attr]
                 )
-            if config_data[type].get("port_protocol"):
-                port_proto_type = list(
-                    config_data[type]["port_protocol"].keys()
-                )[0]
-                command += " {0} {1}".format(
-                    port_proto_type,
-                    config_data[type]["port_protocol"][port_proto_type],
-                )
+            if config_data[attr].get("port_protocol"):
+                if config_data[attr].get("port_protocol").get("range"):
+                    command += " range {0} {1}".format(
+                        config_data[attr]["port_protocol"]["range"].get(
+                            "start"
+                        ),
+                        config_data[attr]["port_protocol"]["range"].get("end"),
+                    )
+                else:
+                    port_proto_type = list(
+                        config_data[attr]["port_protocol"].keys()
+                    )[0]
+                    command += " {0} {1}".format(
+                        port_proto_type,
+                        config_data[attr]["port_protocol"][port_proto_type],
+                    )
             return command
 
         command = ""
@@ -112,8 +120,8 @@ def _tmplt_access_list_entries(config_data):
                 command += " dscp {dscp}".format(**aces)
             if aces.get("sequence") and config_data.get("afi") == "ipv6":
                 command += " sequence {sequence}".format(**aces)
-            if aces.get("fragments"):
-                command += " fragments {fragments}".format(**aces)
+            if aces.get("enable_fragments") or aces.get("fragments"):
+                command += " fragments"
             if aces.get("log"):
                 command += " log"
                 if aces["log"].get("user_cookie"):
@@ -277,11 +285,13 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<protocol_num>\d+))?
                         (\s(?P<source>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
                         (\s(?P<source_port_protocol>(eq|gts|gt|lt|neq)\s(\S+|\d+)))?
+                        (\srange\s(?P<srange_start>\d+)\s(?P<srange_end>\d+))?
                         (\s(?P<destination>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
                         (\s(?P<dest_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
+                        (\srange\s(?P<drange_start>\d+)\s(?P<drange_end>\d+))?
                         (\s(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo|echo-reply|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg))?
                         (\sdscp\s(?P<dscp>\S+))?
-                        (\sfragments\s(?P<fragment>\S+))?
+                        (\s(?P<enable_fragments>fragments))?
                         (\s(?P<log_input>log-input\s\(tag\s=\s\S+\)|log-input))?
                         (\s(?P<log>log\s\(tag\s=\s\S+\)|log))?
                         (\soption\s(?P<option>\S+|\d+))?
@@ -320,7 +330,11 @@ class AclsTemplate(NetworkTemplate):
                                     "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
                                     "port_protocol": {
                                         "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
-                                            source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}"
+                                            source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}",
+                                        "range": {
+                                            "start": "{{ srange_start if srange_start is defined else None }}",
+                                            "end": "{{ srange_end if srange_end is defined else None }}",
+                                        },
                                     },
                                 },
                                 "destination": {
@@ -335,17 +349,21 @@ class AclsTemplate(NetworkTemplate):
                                     "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
                                     "port_protocol": {
                                         "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{\
-                                            dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}"
+                                            dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}",
+                                        "range": {
+                                            "start": "{{ drange_start if drange_start is defined else None }}",
+                                            "end": "{{ drange_end if drange_end is defined else None }}",
+                                        },
                                     },
                                 },
                                 "dscp": "{{ dscp }}",
-                                "fragments": "{{ fragments }}",
+                                "enable_fragments": "{{ True if enable_fragments is defined else None }}",
                                 "log": {
-                                    "set": "{{ True if log is defined and 'tag' not in log }}",
-                                    "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log }}",
+                                    "set": "{{ True if log is defined and 'tag' not in log else '' }}",
+                                    "user_cookie": "{{ log.split(' ')[-1].split(')')[0] if log is defined and 'tag' in log else '' }}",
                                 },
                                 "log_input": {
-                                    "set": "{{ True if log_input is defined and 'tag' not in log_input }}",
+                                    "set": "{{ True if log_input is defined and 'tag' not in log_input else '' }}",
                                     "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
                                 },
                                 "option": {
@@ -354,12 +372,12 @@ class AclsTemplate(NetworkTemplate):
                                 "precedence": "{{ precedence }}",
                                 "time_range": "{{ time_range }}",
                                 "tos": {
-                                    "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos }}",
-                                    "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos }}",
-                                    "min_delay": "{{ True if tos is defined and 'min-delay' in tos }}",
-                                    "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos }}",
-                                    "normal": "{{ True if tos is defined and 'normal' in tos }}",
-                                    "service_value": "{{ tos if tos is defined }}",
+                                    "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos else '' }}",
+                                    "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos else '' }}",
+                                    "min_delay": "{{ True if tos is defined and 'min-delay' in tos else '' }}",
+                                    "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos else '' }}",
+                                    "normal": "{{ True if tos is defined and 'normal' in tos else '' }}",
+                                    "service_value": "{{ tos if tos is defined else None }}",
                                 },
                                 "ttl": {
                                     "eq": "{{ ttl_eq }}",

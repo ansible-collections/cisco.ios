@@ -91,8 +91,14 @@ options:
                 description: Evaluate an access list
                 type: str
               fragments:
-                description: Check non-initial fragments.
+                description:
+                  - Check non-initial fragments.
+                  - This option is DEPRECATED and is replaced with enable_fragments which
+                    accepts bool as input this attribute will be removed after 2024-01-01.
                 type: str
+              enable_fragments:
+                description: Enable non-initial fragments.
+                type: bool
               grant:
                 choices:
                   - permit
@@ -626,8 +632,11 @@ options:
         and transforms it into JSON format as per the resource module parameters
         and the value is returned in the I(parsed) key within the result. The
         value of C(running_config) option should be the same format as the output
-        of command I(show access-list) executed on
-        device. For state I(parsed) active connection to remote host is not required.
+        of commands I(show access-list) and
+        I(show running-config | include ip(v6)* access-list|remark) executed on
+        device. Config data from both the commands should be kept together one after
+        another for the parsers to pick the commands correctly.
+        For state I(parsed) active connection to remote host is not required.
     type: str
 short_description: ACLs resource module
 version_added: 1.0.0
