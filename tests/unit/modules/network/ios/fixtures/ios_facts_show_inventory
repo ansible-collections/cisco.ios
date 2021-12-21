@@ -1,0 +1,101 @@
+NAME: "Switch1 System", DESCR: "Cisco Systems, Inc. WS-C4500X-16 2 slot switch "
+PID:                   , VID:      , SN: JAE19270BQF
+
+NAME: "Switch1 Supervisor 1 (virtual slot 1)", DESCR: "4500X-16 10GE (SFP+)"
+PID: WS-C4500X-16      , VID: V03  , SN: JAE19270BQF
+
+NAME: "TenGigabitEthernet1/1/1", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A14H
+
+NAME: "TenGigabitEthernet1/1/2", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A149
+
+NAME: "TenGigabitEthernet1/1/3", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A0R3
+
+NAME: "TenGigabitEthernet1/1/4", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1822V24L
+
+NAME: "TenGigabitEthernet1/1/5", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0G3
+
+NAME: "TenGigabitEthernet1/1/6", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0FT
+
+NAME: "TenGigabitEthernet1/1/7", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0MY
+
+NAME: "TenGigabitEthernet1/1/8", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V01  , SN: AGD1350Z010
+
+NAME: "TenGigabitEthernet1/1/9", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V01  , SN: AGD1350Z091
+
+NAME: "TenGigabitEthernet1/1/10", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1932V0SN
+
+NAME: "TenGigabitEthernet1/1/11", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1932V17U
+
+NAME: "TenGigabitEthernet1/1/13", DESCR: "SFP-10Gbase-LR"
+PID: SFP-10G-LR        , VID: V02  , SN: F176CO12831
+
+NAME: "TenGigabitEthernet1/1/16", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1822V23U
+
+NAME: "Switch1 Power Supply 1", DESCR: "Power Supply ( AC 750W )"
+PID: C4KX-PWR-750AC-R  , VID: V01  , SN: ART1923X19J
+
+NAME: "Switch1 Power Supply 2", DESCR: "Power Supply ( AC 750W )"
+PID: C4KX-PWR-750AC-R  , VID: V01  , SN: ART1944X1N7
+
+NAME: "Switch2 System", DESCR: "Cisco Systems, Inc. WS-C4500X-16 2 slot switch "
+PID:                   , VID:      , SN: JAE18280APG
+
+NAME: "Switch2 Supervisor 1 (virtual slot 11)", DESCR: "4500X-16 10GE (SFP+)"
+PID: WS-C4500X-16      , VID: V03  , SN: JAE18280APG
+
+NAME: "TenGigabitEthernet2/1/1", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A14H
+
+NAME: "TenGigabitEthernet2/1/2", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A149
+
+NAME: "TenGigabitEthernet2/1/3", DESCR: "10GBase-CU-1M"
+PID: SFP-H10GB-CU1M    , VID: V03  , SN: TED1822A15D
+
+NAME: "TenGigabitEthernet2/1/4", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1822V23L
+
+NAME: "TenGigabitEthernet2/1/5", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1822V1NF
+
+NAME: "TenGigabitEthernet2/1/6", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1822V23R
+
+NAME: "TenGigabitEthernet2/1/7", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0N1
+
+NAME: "TenGigabitEthernet2/1/8", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0G2
+
+NAME: "TenGigabitEthernet2/1/9", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V01  , SN: AGD1350Z08Y
+
+NAME: "TenGigabitEthernet2/1/10", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V03  , SN: AGD1933V20T
+
+NAME: "TenGigabitEthernet2/1/11", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0J9
+
+NAME: "TenGigabitEthernet2/1/12", DESCR: "SFP-10Gbase-LRM"
+PID: SFP-10G-LRM       , VID: V02  , SN: AGD1519V0CC
+
+NAME: "TenGigabitEthernet2/1/13", DESCR: "SFP-10Gbase-LR"
+PID: SFP-10G-LR        , VID: V02  , SN: F176CO12838
+
+NAME: "Switch2 Power Supply 1", DESCR: "Power Supply ( AC 750W )"
+PID: C4KX-PWR-750AC-R  , VID: V01  , SN: ART1828X1NH
+
+NAME: "Switch2 Power Supply 2", DESCR: "Power Supply ( AC 750W )"
+PID: C4KX-PWR-750AC-R  , VID: V01  , SN: ART1828X1NL
