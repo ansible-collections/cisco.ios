@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Fixing Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/471)
+  - Also collect a list of serial numbers comprised in a vss system as virtual_switch_serialnums
