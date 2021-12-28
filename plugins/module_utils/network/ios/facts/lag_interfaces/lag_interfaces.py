@@ -48,6 +48,9 @@ class Lag_interfacesFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_lag_interfaces_data(self, connection):
+        return connection.get("show running-config | section ^interface")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for interfaces
         :param connection: the device connection
@@ -59,7 +62,7 @@ class Lag_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section ^interface")
+            data = self.get_lag_interfaces_data(connection)
         # operate on a collection of resource x
         config = ("\n" + data).split("\ninterface ")
         for conf in config:
@@ -108,7 +111,7 @@ class Lag_interfacesFacts(object):
             return {}
         member_config = {}
         channel_group = utils.parse_conf_arg(conf, "channel-group")
-        if intf.startswith("Gi"):
+        if intf:
             config["name"] = intf
             config["members"] = []
             if channel_group:
