@@ -159,7 +159,7 @@ class VlansFacts(object):
                 config["name"] += " " + conf[i]
             try:
                 if len(conf[state_idx].split("/")) > 1:
-                    _state = len(conf[state_idx].split("/"))[0]
+                    _state = conf[state_idx].split("/")[0]
                     if _state == "sus":
                         config["state"] = "suspend"
                     elif _state == "act":
