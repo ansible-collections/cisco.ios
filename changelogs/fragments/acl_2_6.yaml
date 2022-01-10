@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_acls` - Fixes standard acls getting wrongly parsed in v2.6.0"

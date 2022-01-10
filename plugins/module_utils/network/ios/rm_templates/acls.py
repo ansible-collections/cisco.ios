@@ -248,7 +248,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s+(?P<address>(?!ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp)\S+|\S+,))?
                         (\s*(?P<any>any))?
                         (\shost\s(?P<host>\S+))?
-                        (,\swildcard\sbits\s(?P<wildcard>\S+))?
+                        (\swildcard\sbits\s(?P<wildcard>\S+))?
                         (\s(?P<log>log))?
                     $""",
                 re.VERBOSE,

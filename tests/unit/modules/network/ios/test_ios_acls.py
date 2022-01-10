@@ -774,33 +774,6 @@ class TestIosAclsModule(TestIosModule):
             )
         )
         result = self.execute_module(changed=False)
-        parsed_list2 = [
-            {
-                "name": "R1_TRAFFIC",
-                "acl_type": "standard",
-                "aces": [
-                    {
-                        "sequence": 10,
-                        "source": {
-                            "address": "permit",
-                            "wildcard_bits": "10.11.12.13",
-                        },
-                    },
-                    {
-                        "sequence": 40,
-                        "grant": "permit",
-                        "source": {
-                            "address": "128.0.0.0,",
-                            "wildcard_bits": "wildcard",
-                        },
-                        "destination": {
-                            "address": "bits",
-                            "wildcard_bits": "63.255.255.255",
-                        },
-                    },
-                ],
-            }
-        ]
         parsed_list = [
             {
                 "afi": "ipv4",
@@ -818,8 +791,8 @@ class TestIosAclsModule(TestIosModule):
                                 "sequence": 40,
                                 "grant": "permit",
                                 "source": {
-                                    "address": "128.0.0.0,",
-                                    "wildcard_bits": "wildcard",
+                                    "address": "128.0.0.0",
+                                    "wildcard_bits": "63.255.255.255",
                                 },
                             },
                         ],

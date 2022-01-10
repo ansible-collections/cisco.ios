@@ -57,7 +57,7 @@ class AclsFacts(object):
         for da in data.split("\n"):
             if "matches" in da:
                 mod_da = re.sub(r"\([^()]*\)", "", da)
-                re_data += mod_da + "\n"
+                re_data += mod_da[:-1] + "\n"
             else:
                 re_data += da + "\n"
         return re_data
@@ -73,7 +73,9 @@ class AclsFacts(object):
 
         if not data:
             data = self.get_acl_data(connection)
-        data = self.sanitize_data(data)
+
+        if data:
+            data = self.sanitize_data(data)
 
         rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
         current = rmmod.parse()
@@ -95,6 +97,11 @@ class AclsFacts(object):
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
+                    if each_ace.get("source"):
+                        if each_ace.get("source", {}).get("address"):
+                            addr = each_ace.get("source", {}).get("address")
+                            if addr[-1] == ",":
+                                each_ace["source"]["address"] = addr[:-1]
                     if each_ace.get("icmp_igmp_tcp_protocol"):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
