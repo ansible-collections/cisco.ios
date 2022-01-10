@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-
+import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -52,6 +52,16 @@ class AclsFacts(object):
             _acl_data += "\n" + _remarks_data
         return _acl_data
 
+    def sanitize_data(self, data):
+        re_data = ""
+        for da in data.split("\n"):
+            if "matches" in da:
+                mod_da = re.sub(r"\([^()]*\)", "", da)
+                re_data += mod_da + "\n"
+            else:
+                re_data += da + "\n"
+        return re_data
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
         :param connection: the device connection
@@ -63,6 +73,7 @@ class AclsFacts(object):
 
         if not data:
             data = self.get_acl_data(connection)
+        data = self.sanitize_data(data)
 
         rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
         current = rmmod.parse()
