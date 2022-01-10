@@ -769,7 +769,8 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed_matches(self):
         set_module_args(
             dict(
-                running_config="Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)",
+                running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
+                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)""",
                 state="parsed",
             )
         )
