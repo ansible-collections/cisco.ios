@@ -143,7 +143,7 @@ class Hardware(FactsBase):
                 warnings.append("Unable to gather memory statistics")
             else:
                 processor_line = [
-                    l for l in data.splitlines() if "Processor" in l
+                    line for line in data.splitlines() if "Processor" in line
                 ].pop()
                 match = re.findall(r"\s(\d+)\s", processor_line)
                 if match:
@@ -178,7 +178,8 @@ class Config(FactsBase):
         data = self.responses[0]
         if data:
             data = re.sub(
-                r"^Building configuration...\s+Current configuration : \d+ bytes\n",
+                r"""^Building configuration
+                ...\s+Current configuration : \d+ bytes\n""",
                 "",
                 data,
                 flags=re.MULTILINE,
