@@ -99,7 +99,7 @@ class Default(FactsBase):
         if match:
             self.facts["virtual_switch"] = "VSS"
             self.facts["virtual_switch_domain"] = match.group(1)
-        
+
         match = re.findall(
             r"System\".*?SN:\s*([^\s]+)", data, re.S
         )
