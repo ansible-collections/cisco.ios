@@ -725,7 +725,10 @@ options:
             description: Access list ipv4 associated
             type: str
           authentication:
-            description: Authentication parameters for the user.
+            description:
+              - Authentication parameters for the user.
+              - Effects idempotency of module as configuration applied is not reflected
+                in running-config.
             type: dict
             suboptions:
               algorithm:
@@ -737,7 +740,10 @@ options:
                   - Authentication password for user.
                 type: str
           encryption:
-            description: Encryption parameters for the user.
+            description:
+              - Encryption parameters for the user.
+              - Effects idempotency of module as configuration applied is not reflected
+                in running-config.
             type: dict
             suboptions:
               priv:

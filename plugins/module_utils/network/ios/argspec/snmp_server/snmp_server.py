@@ -445,16 +445,18 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "acl_v6": {"type": "str"},
                         "acl_v4": {"type": "str"},
                         "authentication": {
+                            "no_log": False,
                             "type": "dict",
                             "options": {
                                 "algorithm": {
                                     "type": "str",
                                     "choices": ["md5", "sha"],
                                 },
-                                "password": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
                             },
                         },
                         "encryption": {
+                            "no_log": False,
                             "type": "dict",
                             "options": {
                                 "priv": {
@@ -462,7 +464,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                     "choices": ["3des", "aes", "des"],
                                 },
                                 "priv_option": {"type": "str"},
-                                "password": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
                             },
                         },
                         "group": {"type": "str"},

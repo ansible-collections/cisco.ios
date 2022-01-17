@@ -4274,6 +4274,7 @@ Parameters
                 </td>
                 <td>
                         <div>Authentication parameters for the user.</div>
+                        <div>Effects idempotency of module as configuration applied is not reflected in running-config.</div>
                 </td>
             </tr>
                                 <tr>
@@ -4332,6 +4333,7 @@ Parameters
                 </td>
                 <td>
                         <div>Encryption parameters for the user.</div>
+                        <div>Effects idempotency of module as configuration applied is not reflected in running-config.</div>
                 </td>
             </tr>
                                 <tr>
