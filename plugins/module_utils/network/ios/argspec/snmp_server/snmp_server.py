@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -444,6 +444,27 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "options": {
                         "acl_v6": {"type": "str"},
                         "acl_v4": {"type": "str"},
+                        "authentication": {
+                            "type": "dict",
+                            "options": {
+                                "algorithm": {
+                                    "type": "str",
+                                    "choices": ["md5", "sha"],
+                                },
+                                "password": {"type": "str"},
+                            },
+                        },
+                        "encryption": {
+                            "type": "dict",
+                            "options": {
+                                "priv": {
+                                    "type": "str",
+                                    "choices": ["3des", "aes", "des"],
+                                },
+                                "priv_option": {"type": "str"},
+                                "password": {"type": "str"},
+                            },
+                        },
                         "group": {"type": "str"},
                         "remote": {"type": "str"},
                         "udp_port": {"type": "int"},
@@ -453,7 +474,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "type": "str",
                         },
                         "version_option": {
-                            "choices": ["auth", "access", "encrypted"],
+                            "choices": ["encrypted"],
                             "type": "str",
                         },
                         "vrf": {"type": "str"},

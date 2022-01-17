@@ -402,6 +402,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' udp-port ' + udp_port|string) if udp_port is defined else '' }}"
                       "{{ (' ' + version) if version is defined else '' }}"
                       "{{ (' ' + version_option) if version_option is defined else '' }}"
+                      "{{ (' auth ' + authentication.algorithm) if authentication is defined and authentication.algorithm is defined else '' }}"
+                      "{{ (' ' + authentication.password) if authentication is defined and authentication.password is defined else '' }}"
+                      "{{ (' priv ' + encryption.priv) if encryption is defined and encryption.priv is defined else '' }}"
+                      "{{ (' ' + encryption.priv_option) if encryption is defined and encryption.priv_option is defined else '' }}"
+                      "{{ (' ' + encryption.password) if encryption is defined and encryption.password is defined else '' }}"
                       "{{ (' access ' + acl_v4|string) if acl_v4 is defined else '' }}"
                       "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}",

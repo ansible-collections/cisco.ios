@@ -1036,6 +1036,7 @@ class TestIosSnmpServerModule(TestIosModule):
         ]
         playbook["state"] = "deleted"
         set_module_args(playbook)
+        self.maxDiff = None
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
@@ -1758,6 +1759,37 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server engineID local AB0C5342FA0A",
             "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
             "snmp-server user paul familypaul v3 access ipv6",
+        ]
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+
+    def test_ios_snmp_server_rendered_user_options(self):
+        set_module_args(
+            {
+                "config": {
+                    "users": [
+                        {
+                            "username": "paul",
+                            "group": "familypaul",
+                            "version": "v3",
+                            "authentication": {
+                                "algorithm": "md5",
+                                "password": "somepass",
+                            },
+                            "encryption": {
+                                "priv": "aes",
+                                "priv_option": 128,
+                                "password": "somepass",
+                            },
+                        }
+                    ]
+                },
+                "state": "rendered",
+            }
+        )
+        rendered = [
+            "snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
