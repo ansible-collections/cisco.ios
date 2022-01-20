@@ -17,7 +17,7 @@ module: ios_hostname
 short_description: hostname resource module
 description:
 - This module provides declarative management of hostname on Cisco IOS devices.
-version_added: 2.5.0
+version_added: 2.7.0
 author:
 - Sagar Paul (@KB-perByte)
 notes:
@@ -73,7 +73,186 @@ options:
 """
 
 EXAMPLES = """
+# Using state: merged
 
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^hostname
+# hostname Router
+
+# Merged play:
+# ------------
+
+- name: Apply the provided configuration
+  cisco.ios.ios_hostname:
+    config:
+      hostname: Router1
+    state: merged
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#         "hostname Router1",
+# ],
+
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^hostname
+# hostname Router1
+
+# Using state: deleted
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^hostname
+# hostname RouterTest
+
+# Deleted play:
+# -------------
+
+- name: Remove all existing configuration
+  cisco.ios.ios_hostname:
+    state: deleted
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#     "no hostname RouterTest",
+# ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^hostname
+# hostname Router
+
+# Using state: overridden
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^hostname
+# hostname Router
+
+# Overridden play:
+# ----------------
+
+- name: Override commands with provided configuration
+  cisco.ios.ios_hostname:
+    config:
+      hostname: RouterTest
+    state: overridden
+
+
+# Commands Fired:
+# ---------------
+# "commands": [
+#       "hostname RouterTest",
+#     ],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^hostname
+# hostname RouterTest
+
+
+# Using state: replaced
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^hostname
+# hostname RouterTest
+
+# Replaced play:
+# --------------
+
+- name: Replace commands with provided configuration
+  cisco.ios.ios_hostname:
+    config:
+      hostname: RouterTest
+    state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [],
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section ^hostname
+# hostname RouterTest
+
+# Using state: gathered
+
+# Before state:
+# -------------
+
+#router-ios#show running-config | section ^hostname
+# hostname RouterTest
+
+# Gathered play:
+# --------------
+
+- name: Gather listed hostname config
+  cisco.ios.ios_hostname:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+
+#   "gathered": {
+#      "hostname": "RouterTest"
+#     },
+
+# Using state: rendered
+
+# Rendered play:
+# --------------
+
+- name: Render the commands for provided configuration
+  cisco.ios.ios_hostname:
+    config:
+      hostname: RouterTest
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+
+# "rendered": [
+#     "hostname RouterTest",
+# ]
+
+# Using state: parsed
+
+# File: parsed.cfg
+# ----------------
+
+# hostname RouterTest
+
+
+# Parsed play:
+# ------------
+
+- name: Parse the provided configuration with the existing running configuration
+  cisco.ios.ios_hostname:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+
+#  "parsed": {
+#     "hostname": "RouterTest"
+# }
 """
 
 RETURN = """
@@ -96,17 +275,13 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - hostname Router1
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - hostname Switch1
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -130,11 +305,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.host
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.hostname.hostname import (
     Hostname,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():

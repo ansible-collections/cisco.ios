@@ -38,6 +38,7 @@ Name | Description
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Run commands on remote devices running Cisco IOS
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Manage Cisco IOS configuration sections
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Collect facts from remote devices running Cisco IOS
+[cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|hostname resource module
 [cisco.ios.ios_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Interfaces resource module
 [cisco.ios.ios_l2_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
