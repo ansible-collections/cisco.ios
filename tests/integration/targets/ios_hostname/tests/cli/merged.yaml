@@ -1,0 +1,39 @@
+---
+- debug:
+    msg: START Merged ios_hostname state for integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: ios_hostname merged - Play
+      register: result
+      cisco.ios.ios_hostname: &id001
+        config:
+          hostname: 'boxTest'
+        state: merged
+
+    - name: ios_hostname merged - Assert commands
+      assert:
+        that:
+          - merged['commands'] == result['commands']
+
+    - name: ios_hostname merged - Assert after
+      assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: ios_hostname merged - Play (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_hostname: *id001
+
+    - name: ios_hostname merged - Assert above task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+  always:
+
+    - include_tasks: _remove_config.yaml
