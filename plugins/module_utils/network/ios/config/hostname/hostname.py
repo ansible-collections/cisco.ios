@@ -17,9 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -63,9 +60,6 @@ class Hostname(ResourceModule):
         """
         wantd = self.want
         haved = self.have
-
-        if self.state in ["merged", "overridden", "replaced"]:
-            wantd = dict_merge(haved, wantd)
 
         if self.state == "deleted":
             wantd = {}

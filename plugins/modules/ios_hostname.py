@@ -58,7 +58,7 @@ options:
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is
         not required.
-      - The states I(replaced) and I(overridden) have identical
+      - The states I(merged), I(replaced) and I(overridden) have identical
         behaviour for this module.
       - The state I(gathered) will fetch the running configuration from device and transform
         it into structured data in the format as per the resource module argspec and
