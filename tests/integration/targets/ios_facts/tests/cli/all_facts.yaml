@@ -48,6 +48,7 @@
       - snmp_server
       - prefix_lists
       - ntp_global
+      - hostname
 
 - name: Collect list of available network resources for ios
   register: result
