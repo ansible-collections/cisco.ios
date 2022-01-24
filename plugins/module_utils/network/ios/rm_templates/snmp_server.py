@@ -437,7 +437,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ ' excluded' if excluded is defined else '' }}"
                       "{{ ' included' if included is defined else '' }}",
             "result": {
-                "users": [
+                "views": [
                     {
                         "name": "{{ name }}",
                         "family_name": "{{ family_name }}",
