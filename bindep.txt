@@ -4,3 +4,5 @@
 gcc-c++ [doc test platform:rpm]
 python3-devel [test platform:rpm]
 python3 [test platform:rpm]
+libssh-devel [test platform:rpm]
+libssh-dev [test platform:dpkg]

@@ -72,7 +72,7 @@ class Interfaces(ConfigBase):
         """ Execute the module
 
         :rtype: A dictionary
-        :returns: The result from moduel execution
+        :returns: The result from module execution
         """
         result = {"changed": False}
         commands = list()
@@ -123,7 +123,7 @@ class Interfaces(ConfigBase):
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         config = self._module.params.get("config")
         want = []
@@ -142,7 +142,7 @@ class Interfaces(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 
@@ -175,7 +175,7 @@ class Interfaces(ConfigBase):
         :param interface_type: interface type
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 

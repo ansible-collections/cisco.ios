@@ -1,0 +1,38 @@
+---
+- debug:
+    msg: Start Deleted integration state for ios_snmp_server ansible_connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: ios_snmp_server deleted - Play
+      register: result
+      cisco.ios.ios_snmp_server: &id001
+        config:
+        state: deleted
+
+    - name: ios_snmp_server deleted - Assert commands
+      assert:
+        that:
+          - deleted['commands'] == result['commands']
+
+    - name: ios_snmp_server deleted - Assert before
+      assert:
+        that:
+          - deleted['before'] == result['before']
+
+    - name: ios_snmp_server deleted - Play (IDEMPOTENT)
+      register: result
+      cisco.ios.ios_snmp_server: *id001
+
+    - name: ios_snmp_server deleted - Assert above task was idempotent
+      assert:
+        that:
+          - result.changed == false
+  always:
+
+    - include_tasks: _remove_config.yaml

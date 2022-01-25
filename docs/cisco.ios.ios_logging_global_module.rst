@@ -1165,7 +1165,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify the TCP port number (default=601) (1 - 65535)</div>
+                        <div>Specify the UDP port number (default=514) (1 - 65535)</div>
                 </td>
             </tr>
             <tr>

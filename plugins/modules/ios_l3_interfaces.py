@@ -22,8 +22,10 @@ author:
 - Sagar Paul (@KB-perByte)
 - Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.6.
-- Using deleted state without config will delete all l3 attributes from all the interfaces.
+  - Tested against Cisco IOSv Version 15.6.
+  - Using deleted state without config will delete all l3 attributes from all the interfaces.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of Layer-3 interface options

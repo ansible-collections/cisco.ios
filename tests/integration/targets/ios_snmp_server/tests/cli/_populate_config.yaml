@@ -1,0 +1,22 @@
+---
+- name: PRE POST TASK Populate snmp-server config
+  cisco.ios.ios_snmp_server:
+    config:
+      communities:
+        - acl_v4: test_Acl
+          name: integrationComm
+          rw: true
+      contact: 'contact updated using play'
+      inform:
+        pending: 2
+      ip:
+        dscp: 2
+      location: 'location entry for snmp'
+      packet_size: 500
+      system_shutdown: true
+      engine_id:
+        - id: AB0C5342FF0F
+          remote:
+            host: 172.16.0.12
+            udp_port: 25
+    state: merged

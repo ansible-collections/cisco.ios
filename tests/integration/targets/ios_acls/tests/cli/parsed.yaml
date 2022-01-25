@@ -13,4 +13,4 @@
 - assert:
     that:
       - result.changed == false
-      - gathered['config']|symmetric_difference(result.parsed) == []
+      - parsed['config']|symmetric_difference(result.parsed) == []

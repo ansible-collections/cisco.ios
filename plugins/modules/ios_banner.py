@@ -29,7 +29,9 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
+  - Tested against IOS 15.6
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   banner:
     description:
@@ -122,10 +124,10 @@ def map_obj_to_commands(updates, module):
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
         if have.get("text") and len(have.get("text")) > 1:
-            haved = have.get("text")[:-1]
+            haved = have.get("text").rstrip("\n")
         else:
             haved = ""
-        if want["text"] and (want["text"] != haved):
+        if want["text"] and (want["text"].rstrip("\n") != haved):
             banner_cmd = "banner %s" % module.params["banner"]
             banner_cmd += " {0}\n".format(multiline_delimiter)
             banner_cmd += want["text"].strip("\n")
@@ -145,8 +147,11 @@ def map_config_to_obj(module):
         module, flags="| begin banner %s" % module.params["banner"]
     )
     if out:
-        regex = "banner " + module.params["banner"] + " ^C\n"
-        if search("banner " + module.params["banner"], out, M):
+        regex = search(
+            "banner " + module.params["banner"] + " \\^C{1,}\n", out, M
+        )
+        if regex:
+            regex = regex.group()
             output = str((out.split(regex))[1].split("^C\n")[0])
         else:
             output = None

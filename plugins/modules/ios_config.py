@@ -30,11 +30,13 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
-- Abbreviated commands are NOT idempotent, see
-  U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands)
-- To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
-  appear if present in the running configuration on device including the indentation.
+  - Tested against IOS 15.6
+  - Abbreviated commands are NOT idempotent, see
+    U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands)
+  - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
+    appear if present in the running configuration on device including the indentation.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   lines:
     description:
@@ -309,6 +311,14 @@ EXAMPLES = """
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
+
+# Example ios_template.j2
+# ip access-list extended test
+#  permit ip host 192.0.2.1 any log
+#  permit ip host 192.0.2.2 any log
+#  permit ip host 192.0.2.3 any log
+#  permit ip host 192.0.2.4 any log
+
 """
 RETURN = """
 updates:

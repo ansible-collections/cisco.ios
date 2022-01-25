@@ -31,7 +31,9 @@ description: This module provides declarative management of Layer-2 interface on
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL.
+  - Tested against Cisco IOSv Version 15.2 on VIRL.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of Layer-2 interface options

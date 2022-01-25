@@ -221,6 +221,7 @@ Notes
 
 .. note::
    - Tested against Cisco IOSv Version 15.2 on VIRL
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 
@@ -276,7 +277,6 @@ Examples
     #  ipv6 traffic-filter temp_v6 in
     # interface GigabitEthernet0/2
     #  ip access-group 100 in
-    #  ip access-group 123 out
 
 
     # After state:

@@ -77,7 +77,7 @@ class Lldp_global(ConfigBase):
         """ Execute the module
 
         :rtype: A dictionary
-        :returns: The result from moduel execution
+        :returns: The result from module execution
         """
         result = {"changed": False}
         commands = list()
@@ -127,7 +127,7 @@ class Lldp_global(ConfigBase):
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         want = self._module.params["config"]
         have = existing_lldp_global_facts
@@ -141,7 +141,7 @@ class Lldp_global(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
         if self.state in ("merged", "replaced", "rendered") and not want:
@@ -169,7 +169,7 @@ class Lldp_global(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the deisred configuration
+                  to the desired configuration
         """
         commands = []
 

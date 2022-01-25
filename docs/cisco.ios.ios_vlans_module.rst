@@ -215,7 +215,8 @@ Notes
 
 .. note::
    - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
-   - This RM works only with Cisco IOS L2 switch.
+   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do not support VLANs. The offline states (``rendered`` and ``parsed``) will work as expected.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 

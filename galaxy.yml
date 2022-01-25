@@ -9,6 +9,7 @@ namespace: cisco
 description: Ansible Network Collection for Cisco IOS devices.
 readme: README.md
 repository: https://github.com/ansible-collections/cisco.ios
+issues: https://github.com/ansible-collections/cisco.ios/issues
 tags: [cisco, ios, iosxe, networking]
 # NOTE(pabelanger): We create an empty version key to keep ansible-galaxy
 # happy. We dynamically inject version info based on git information.

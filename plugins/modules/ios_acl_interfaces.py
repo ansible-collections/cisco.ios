@@ -29,7 +29,9 @@ description: This module configures and manages the access-control (ACL) attribu
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-- Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSv Version 15.2 on VIRL
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of ACL interfaces options
@@ -160,7 +162,6 @@ EXAMPLES = """
 #  ipv6 traffic-filter temp_v6 in
 # interface GigabitEthernet0/2
 #  ip access-group 100 in
-#  ip access-group 123 out
 
 
 # After state:

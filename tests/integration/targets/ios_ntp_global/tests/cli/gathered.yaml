@@ -1,0 +1,22 @@
+---
+- debug:
+    msg:
+      START ios_ntp_global gathered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: ios_ntp_global gather - Play
+      register: result
+      cisco.ios.ios_ntp_global:
+        config:
+        state: gathered
+
+    - name: ios_ntp_global gather - Assert
+      assert:
+        that:
+          - gathered['config'] == result['gathered']
+          - result['changed'] == false
+  always:
+    - include_tasks: _remove_config.yaml

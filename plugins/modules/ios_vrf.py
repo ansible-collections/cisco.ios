@@ -30,7 +30,9 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-- Tested against IOS 15.6
+  - Tested against IOS 15.6
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   vrfs:
     description:

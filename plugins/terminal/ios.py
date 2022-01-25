@@ -37,6 +37,8 @@ class TerminalModule(TerminalBase):
         re.compile(br"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$")
     ]
 
+    privilege_level_re = re.compile(r"Current privilege level is (\d+)$")
+
     terminal_stderr_re = [
         re.compile(br"% ?Error"),
         re.compile(br"^% \w+", re.M),
@@ -57,25 +59,60 @@ class TerminalModule(TerminalBase):
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
 
+    def get_privilege_level(self):
+        try:
+            cmd = {u"command": u"show privilege"}
+            result = self._exec_cli_command(
+                to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
+            )
+        except AnsibleConnectionFailure as e:
+            raise AnsibleConnectionFailure(
+                "unable to fetch privilege, with error: %s" % (e.message)
+            )
+
+        prompt = self.privilege_level_re.match(result)
+        if not prompt:
+            raise AnsibleConnectionFailure(
+                "unable to check privilege level [%s]" % result
+            )
+
+        return int(prompt.group(1))
+
     def on_open_shell(self):
+        _is_sdWan = False  # initialize to false for default IOS execution
         try:
             self._exec_cli_command(b"terminal length 0")
         except AnsibleConnectionFailure:
-            raise AnsibleConnectionFailure("unable to set terminal parameters")
-
-        try:
-            self._exec_cli_command(b"terminal width 512")
             try:
-                self._exec_cli_command(b"terminal width 0")
-            except AnsibleConnectionFailure:
-                pass
+                self._exec_cli_command(
+                    b"screen-length 0"
+                )  # support to SD-WAN mode
+                _is_sdWan = True
+            except AnsibleConnectionFailure:  # fails as length required for handling prompt
+                raise AnsibleConnectionFailure(
+                    "unable to set terminal parameters"
+                )
+        try:
+            if _is_sdWan:
+                self._exec_cli_command(
+                    b"screen-width 512"
+                )  # support to SD-WAN mode
+            else:
+                self._exec_cli_command(b"terminal width 512")
+                try:
+                    self._exec_cli_command(b"terminal width 0")
+                except AnsibleConnectionFailure:
+                    pass
         except AnsibleConnectionFailure:
             display.display(
-                "WARNING: Unable to set terminal width, command responses may be truncated"
+                "WARNING: Unable to set terminal/screen width, command responses may be truncated"
             )
 
     def on_become(self, passwd=None):
-        if self._get_prompt().endswith(b"#"):
+        if (
+            self._get_prompt().endswith(b"#")
+            and self.get_privilege_level() == 15
+        ):
             return
 
         cmd = {u"command": u"enable"}
@@ -92,22 +129,31 @@ class TerminalModule(TerminalBase):
                 to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
             )
             prompt = self._get_prompt()
-            if prompt is None or not prompt.endswith(b"#"):
-                raise AnsibleConnectionFailure(
-                    "failed to elevate privilege to enable mode still at prompt [%s]"
-                    % prompt
-                )
+            privilege_level = self.get_privilege_level()
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
             raise AnsibleConnectionFailure(
-                "unable to elevate privilege to enable mode, at prompt [%s] with error: %s"
+                "failed to elevate privilege to enable mode, at prompt [%s] with error: %s"
                 % (prompt, e.message)
+            )
+
+        if (
+            prompt is None
+            or not prompt.endswith(b"#")
+            or privilege_level != 15
+        ):
+            raise AnsibleConnectionFailure(
+                "failed to elevate privilege to enable mode, still at level [%d] and prompt [%s]"
+                % (privilege_level, prompt)
             )
 
     def on_unbecome(self):
         prompt = self._get_prompt()
         if prompt is None:
             # if prompt is None most likely the terminal is hung up at a prompt
+            return
+
+        if self.get_privilege_level() != 15:
             return
 
         if b"(config" in prompt:

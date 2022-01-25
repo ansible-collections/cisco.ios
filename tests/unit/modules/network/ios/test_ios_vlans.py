@@ -57,6 +57,10 @@ class TestIosVlansModule(TestIosModule):
             "VlansFacts.get_vlans_data"
         )
         self.execute_show_command = self.mock_execute_show_command.start()
+        self.mock_l2_device_command = patch(
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlans._is_l2_device"
+        )
+        self._l2_device_command = self.mock_l2_device_command.start()
 
     def tearDown(self):
         super(TestIosVlansModule, self).tearDown()
@@ -66,11 +70,13 @@ class TestIosVlansModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
+        self.mock_l2_device_command.stop()
 
     def load_fixtures(self, commands=None, transport="cli"):
         def load_from_file(*args, **kwargs):
             return load_fixture("ios_vlans_config.cfg")
 
+        self.mock_l2_device_command.side_effect = True
         self.execute_show_command.side_effect = load_from_file
 
     def test_ios_vlans_merged(self):

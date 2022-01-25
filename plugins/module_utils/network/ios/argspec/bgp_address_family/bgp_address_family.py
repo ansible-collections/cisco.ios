@@ -23,12 +23,12 @@ __metaclass__ = type
 #############################################
 
 """
-The arg spec for the cisco.ios_bgp_address_family module
+The arg spec for the ios_bgp_address_family module
 """
 
 
-class Bgp_AddressFamilyArgs(object):
-    """The arg spec for the cisco.ios_bgp_address_family module
+class Bgp_address_familyArgs(object):  # pylint: disable=R0903
+    """The arg spec for the ios_bgp_address_family module
     """
 
     argument_spec = {
@@ -385,17 +385,17 @@ class Bgp_AddressFamilyArgs(object):
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
-                                "prefix_lists": {
-                                    "type": "list",
-                                    "elements": "dict",
+                                "prefix_list": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
                                         "out": {"type": "bool"},
                                     },
                                 },
-                                "prefix_list": {
-                                    "type": "dict",
+                                "prefix_lists": {
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
@@ -411,17 +411,17 @@ class Bgp_AddressFamilyArgs(object):
                                         "replace_as": {"type": "bool"},
                                     },
                                 },
-                                "route_maps": {
-                                    "type": "list",
-                                    "elements": "dict",
+                                "route_map": {
+                                    "type": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
                                         "out": {"type": "bool"},
                                     },
                                 },
-                                "route_map": {
-                                    "type": "dict",
+                                "route_maps": {
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "name": {"type": "str"},
                                         "in": {"type": "bool"},
@@ -730,16 +730,16 @@ class Bgp_AddressFamilyArgs(object):
         },
         "running_config": {"type": "str"},
         "state": {
-            "type": "str",
             "choices": [
                 "merged",
                 "replaced",
                 "overridden",
                 "deleted",
                 "gathered",
-                "parsed",
                 "rendered",
+                "parsed",
             ],
             "default": "merged",
+            "type": "str",
         },
-    }
+    }  # pylint: disable=C0301

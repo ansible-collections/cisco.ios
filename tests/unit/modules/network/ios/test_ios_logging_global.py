@@ -753,6 +753,54 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
+    def test_ios_logging_global_replaced_ordering_host(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            logging buffered 64000
+            no logging console
+            no logging monitor
+            logging history notifications
+            logging origin-id hostname
+            logging source-interface GigabitEthernet0 vrf Mgmt-intf
+            logging host 172.16.0.1 transport udp port 10000
+            logging host 172.16.0.2
+            """
+        )
+        playbook = {
+            "config": {
+                "buffered": {"size": 64000},
+                "history": {"severity": "notifications"},
+                "hosts": [
+                    {"hostname": "172.16.0.1", "vrf": "Mgmt-intf"},
+                    {"hostname": "172.16.0.3", "vrf": "Mgmt-intf"},
+                    {"hostname": "172.16.0.4", "vrf": "Mgmt-intf"},
+                ],
+                "origin_id": {"tag": "hostname"},
+                "rate_limit": {
+                    "console": True,
+                    "except_severity": "errors",
+                    "size": 10,
+                },
+                "source_interface": [
+                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}
+                ],
+                "trap": "informational",
+            }
+        }
+        replaced = [
+            "logging rate-limit console 10 except errors",
+            "logging trap informational",
+            "logging host 172.16.0.1 vrf Mgmt-intf",
+            "logging host 172.16.0.3 vrf Mgmt-intf",
+            "logging host 172.16.0.4 vrf Mgmt-intf",
+            "no logging host 172.16.0.2",
+        ]
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
     def test_ios_logging_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\

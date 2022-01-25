@@ -56,7 +56,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
-            "Bgp_AddressFamilyFacts.get_bgp_address_family_data"
+            "Bgp_address_familyFacts.get_bgp_address_family_data"
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -750,3 +750,108 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "as_number": "65000",
         }
         self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_bgp_address_family_merged_multiple_neighbor(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            neighbor=[
+                                dict(
+                                    address="192.31.39.212",
+                                    soft_reconfiguration=True,
+                                    activate=True,
+                                ),
+                                dict(
+                                    address="192.31.47.206",
+                                    soft_reconfiguration=True,
+                                    activate=True,
+                                ),
+                            ],
+                            network=[
+                                dict(
+                                    address="192.0.3.1", mask="255.255.255.0"
+                                ),
+                                dict(
+                                    address="192.0.2.1", mask="255.255.255.0"
+                                ),
+                                dict(
+                                    address="192.0.4.1", mask="255.255.255.0"
+                                ),
+                            ],
+                        )
+                    ],
+                ),
+                state="merged",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4",
+            "neighbor 192.31.39.212 activate",
+            "neighbor 192.31.39.212 soft-reconfiguration inbound",
+            "neighbor 192.31.47.206 activate",
+            "neighbor 192.31.47.206 soft-reconfiguration inbound",
+            "network 192.0.3.1 mask 255.255.255.0",
+            "network 192.0.2.1 mask 255.255.255.0",
+            "network 192.0.4.1 mask 255.255.255.0",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_overridden_multiple_neighbor(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            neighbor=[
+                                dict(
+                                    address="192.31.39.212",
+                                    soft_reconfiguration=True,
+                                    activate=True,
+                                ),
+                                dict(
+                                    address="192.31.47.206",
+                                    soft_reconfiguration=True,
+                                    activate=True,
+                                ),
+                            ],
+                            network=[
+                                dict(
+                                    address="192.0.3.1", mask="255.255.255.0"
+                                ),
+                                dict(
+                                    address="192.0.2.1", mask="255.255.255.0"
+                                ),
+                                dict(
+                                    address="192.0.4.1", mask="255.255.255.0"
+                                ),
+                            ],
+                        )
+                    ],
+                ),
+                state="overridden",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "no address-family ipv4 multicast",
+            "no address-family ipv4 mdt",
+            "no address-family ipv4 multicast vrf blue",
+            "address-family ipv4",
+            "neighbor 192.31.39.212 activate",
+            "neighbor 192.31.39.212 soft-reconfiguration inbound",
+            "neighbor 192.31.47.206 activate",
+            "neighbor 192.31.47.206 soft-reconfiguration inbound",
+            "network 192.0.3.1 mask 255.255.255.0",
+            "network 192.0.2.1 mask 255.255.255.0",
+            "network 192.0.4.1 mask 255.255.255.0",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

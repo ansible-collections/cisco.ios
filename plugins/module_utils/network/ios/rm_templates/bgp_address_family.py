@@ -729,9 +729,9 @@ def _tmplt_af_table_map(config_data):
         return cmd
 
 
-class Bgp_AddressFamilyTemplate(NetworkTemplate):
+class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Bgp_AddressFamilyTemplate, self).__init__(
+        super(Bgp_address_familyTemplate, self).__init__(
             lines=lines, tmplt=self, module=module
         )
 

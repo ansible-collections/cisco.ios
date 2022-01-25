@@ -278,6 +278,14 @@ class Cliconf(CliconfBase):
             check_all=check_all,
         )
 
+    def check_device_type(self):
+        device_type = "L2"
+        try:
+            self.get(command="show vlan")
+        except Exception:
+            device_type = "L3"
+        return device_type
+
     def get_device_info(self):
         if not self._device_info:
             device_info = {}
@@ -307,7 +315,7 @@ class Cliconf(CliconfBase):
             match = re.search(r'image file is "(.+)"', data)
             if match:
                 device_info["network_os_image"] = match.group(1)
-
+            device_info["network_os_type"] = self.check_device_type()
             self._device_info = device_info
 
         return self._device_info

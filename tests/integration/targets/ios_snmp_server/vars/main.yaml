@@ -1,0 +1,132 @@
+---
+merged:
+  commands:
+    - snmp-server host 172.16.0.10 informs version 2c integrationComm isis
+  after:
+    communities:
+      - acl_v4: test_Acl
+        name: integrationComm
+        rw: true
+    contact: 'contact updated using play'
+    inform:
+      pending: 2
+    ip:
+      dscp: 2
+    location: 'location entry for snmp'
+    packet_size: 500
+    system_shutdown: true
+    engine_id:
+      - id: AB0C5342FF0F
+        remote:
+          host: 172.16.0.12
+          udp_port: 25
+    hosts:
+      - community_string: integrationComm
+        host: 172.16.0.10
+        informs: true
+        traps:
+          - isis
+        version: 2c
+
+overridden:
+  before:
+    communities:
+      - acl_v4: test_Acl
+        name: integrationComm
+        rw: true
+    contact: 'contact updated using play'
+    inform:
+      pending: 2
+    ip:
+      dscp: 2
+    location: 'location entry for snmp'
+    packet_size: 500
+    system_shutdown: true
+    engine_id:
+      - id: AB0C5342FF0F
+        remote:
+          host: 172.16.0.12
+          udp_port: 25
+  commands:
+    - no snmp-server contact contact updated using play
+    - no snmp-server inform pending 2
+    - no snmp-server ip dscp 2
+    - no snmp-server system-shutdown
+    - no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+    - snmp-server community communityOvverriden rw acl_uq
+    - no snmp-server community integrationComm rw test_Acl
+  after:
+    location: 'location entry for snmp'
+    packet_size: 500
+    communities:
+      - acl_v4: acl_uq
+        name: communityOvverriden
+        rw: true
+
+deleted:
+  before:
+    communities:
+      - acl_v4: test_Acl
+        name: integrationComm
+        rw: true
+    contact: 'contact updated using play'
+    inform:
+      pending: 2
+    ip:
+      dscp: 2
+    location: 'location entry for snmp'
+    packet_size: 500
+    system_shutdown: true
+    engine_id:
+      - id: AB0C5342FF0F
+        remote:
+          host: 172.16.0.12
+          udp_port: 25
+  commands:
+    - no snmp-server contact contact updated using play
+    - no snmp-server inform pending 2
+    - no snmp-server ip dscp 2
+    - no snmp-server location location entry for snmp
+    - no snmp-server packetsize 500
+    - no snmp-server system-shutdown
+    - no snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+    - no snmp-server community integrationComm rw test_Acl
+
+parsed:
+  config:
+    engine_id:
+      - id: AB0C5342FAAA
+        remote:
+          host: 172.16.0.1
+          udp_port: 22
+
+gathered:
+  config:
+    communities:
+      - acl_v4: test_Acl
+        name: integrationComm
+        rw: true
+    contact: 'contact updated using play'
+    inform:
+      pending: 2
+    ip:
+      dscp: 2
+    location: 'location entry for snmp'
+    packet_size: 500
+    system_shutdown: true
+    engine_id:
+      - id: AB0C5342FF0F
+        remote:
+          host: 172.16.0.12
+          udp_port: 25
+
+rendered:
+  commands:
+    - snmp-server contact contact updated using play
+    - snmp-server inform pending 2
+    - snmp-server ip dscp 2
+    - snmp-server location location entry for snmp
+    - snmp-server packetsize 500
+    - snmp-server system-shutdown
+    - snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
+    - snmp-server community integrationComm rw test_Acl

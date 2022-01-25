@@ -5,6 +5,70 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.6.0
+======
+
+Minor Changes
+-------------
+
+- `ios_acls` - feature: Remarks can be configured for ACLs.
+- `ios_snmp_server` - New Resource module added.
+
+Bugfixes
+--------
+
+- 'ios_banner' - Bugfix for presence of multiple delimitation chars in the banner's declaration and idempotence improvement.
+- Fix ntp_global - remove no_log for key_id under peer and server attributes.
+- Fix ntp_global - to handle when attribute value is false.
+- `ios_acls` - bugfixes and optimization for ACLs.
+- `ios_l2_interfaces` - fix unable to set switchport mode properly.
+- `ios_logging_global` - fix host ipv6 commands not parsed correctly.
+- `ios_logging_global` - fix wrong ordering of commands fired on replaced state.
+
+Documentation Changes
+---------------------
+
+- Added connection network_cli in note for missing modules.
+- Fixed ios_commands module example as per documentation.
+
+New Modules
+-----------
+
+- ios_snmp_server - snmp_server resource module
+
+v2.5.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_ntp_global resource module.
+- Terminal plugin to support IOS device running in SD-WAN mode.
+
+Deprecated Features
+-------------------
+
+- Deprecated ios_ntp modules.
+
+Bugfixes
+--------
+
+- Fixed bgp_address_family, for rendering multiple neighbors when available in config.
+- fixed become functionality on privilege level not 15.
+- ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
+- ios_vlans - for playbook execution module fails with an error when target device does not support VLANs, The offline states rendered and parsed will work as expected.
+
+Documentation Changes
+---------------------
+
+- Doc fix for ios_acl_interfaces.
+- Doc fix for ios_logging_global.
+
+New Modules
+-----------
+
+- ios_ntp_global - ntp_global resource module
+
 v2.4.0
 ======
 

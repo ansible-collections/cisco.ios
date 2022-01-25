@@ -99,6 +99,7 @@ class L2_InterfacesFacts(object):
         if intf.upper()[:2] in (
             "HU",
             "FO",
+            "FI",
             "TW",
             "TE",
             "GI",

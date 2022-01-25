@@ -1,2 +1,2 @@
 ansible-pylibssh
-paramiko
+paramiko==2.8.1

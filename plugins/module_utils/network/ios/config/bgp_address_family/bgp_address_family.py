@@ -28,11 +28,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
-    Bgp_AddressFamilyTemplate,
+    Bgp_address_familyTemplate,
 )
 
 
-class Bgp_AddressFamily(ResourceModule):
+class Bgp_address_family(ResourceModule):
     """
     The cisco.ios_bgp_address_family config class
     """
@@ -49,12 +49,12 @@ class Bgp_AddressFamily(ResourceModule):
     ]
 
     def __init__(self, module):
-        super(Bgp_AddressFamily, self).__init__(
+        super(Bgp_address_family, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
             resource="bgp_address_family",
-            tmplt=Bgp_AddressFamilyTemplate(),
+            tmplt=Bgp_address_familyTemplate(),
         )
 
     def execute_module(self):
