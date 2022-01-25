@@ -1,0 +1,15 @@
+---
+- debug:
+    msg: START ios_hostname parsed integration tests on connection={{ ansible_connection
+      }}
+
+- name: ios_hostname parsed - Play
+  register: result
+  cisco.ios.ios_hostname:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- assert:
+    that:
+      - result.changed == false
+      - parsed['config'] == result['parsed']

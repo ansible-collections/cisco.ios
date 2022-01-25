@@ -1,0 +1,5 @@
+---
+- name: PRE POST TASK Remove hostname config
+  cisco.ios.ios_hostname:
+    config:
+    state: deleted
