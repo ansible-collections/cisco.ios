@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`ios_vlans` - fix parsing of VLAN names with spaces."
+  - "`ios_vlans` - fix parsing of VLAN ranges under remote span."

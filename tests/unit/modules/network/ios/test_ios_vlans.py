@@ -13,6 +13,7 @@ from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
 from .ios_module import TestIosModule, load_fixture
+from textwrap import dedent
 
 
 class TestIosVlansModule(TestIosModule):
@@ -410,3 +411,190 @@ class TestIosVlansModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
+
+    def test_vlan_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    VLAN Name                             Status    Ports
+                    ---- -------------------------------- --------- -------------------------------
+                    1    default with space               active    Fa0/40, Fa0/41, Fa0/42, Fa0/43, Fa0/44, Fa0/45
+                    2    dummy_NETWORK                    active
+                    3    dummy_RACK_INFRA                 active    Fa0/46, Fa0/47, Fa0/48
+                    1002 dummy-default                    act/unsup
+                    1003 dummy-ring-default               act/unsup
+                    1004 dummy-default                    act/unsup
+                    1005 dummy-t-default                  act/unsup
+                    1101 dummy_1101                       active
+                    1102 dummy_1102                       active
+                    1107 dummy_1107                       active
+
+                    VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+                    ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+                    1    enet  100001     1500  -      -      -        -    -        0      0
+                    2    enet  100002     1500  -      -      -        -    -        0      0
+                    3    enet  100003     1500  -      -      -        -    -        0      0
+                    1002 fddi  101002     1500  -      -      -        -    -        0      0
+                    1003 tr    101003     1500  -      -      -        -    -        0      0
+                    1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+                    1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+                    1101 enet  101101     1500  -      -      -        -    -        0      0
+                    1102 enet  101102     1500  -      -      -        -    -        0      0
+                    1107 enet  101107     1500  -      -      -        -    -        0      0
+
+                    Remote SPAN VLANs
+                    ------------------------------------------------------------------------------
+                    1101-1105,1107
+
+                    Primary Secondary Type              Ports
+                    ------- --------- ----------------- ------------------------------------------
+                    """
+                ),
+                state="parsed",
+            )
+        )
+        parsed = [
+            {
+                "name": "default with space",
+                "vlan_id": 1,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy_NETWORK",
+                "vlan_id": 2,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy_RACK_INFRA",
+                "vlan_id": 3,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy-default",
+                "vlan_id": 1002,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy-ring-default",
+                "vlan_id": 1003,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy-default",
+                "vlan_id": 1004,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy-t-default",
+                "vlan_id": 1005,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "dummy_1101",
+                "vlan_id": 1101,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "remote_span": True,
+            },
+            {
+                "name": "dummy_1102",
+                "vlan_id": 1102,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "remote_span": True,
+            },
+            {
+                "name": "dummy_1107",
+                "vlan_id": 1107,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "remote_span": True,
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_ios_vlans_gathered(self):
+        set_module_args(dict(state="gathered"))
+        gathered = [
+            {
+                "name": "default",
+                "vlan_id": 1,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "RemoteIsInMyName",
+                "vlan_id": 123,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 610,
+            },
+            {
+                "name": "VLAN0150",
+                "vlan_id": 150,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "remote_span": True,
+            },
+            {
+                "name": "a_very_long_vlan_name_a_very_long_vlan_name",
+                "vlan_id": 888,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "fddi-default",
+                "vlan_id": 1002,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "trcrf-default",
+                "vlan_id": 1003,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 4472,
+            },
+            {
+                "name": "fddinet-default",
+                "vlan_id": 1004,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 1500,
+            },
+            {
+                "name": "trbrf-default",
+                "vlan_id": 1005,
+                "state": "active",
+                "shutdown": "enabled",
+                "mtu": 4472,
+            },
+        ]
+        result = self.execute_module(changed=False)
+
+        self.maxDiff = None
+        self.assertEqual(result["gathered"], gathered)
