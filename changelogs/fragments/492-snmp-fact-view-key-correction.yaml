@@ -1,4 +1,4 @@
 ---
 bugfixes:
-  - `ios_snmp_server` - Change key from `users` to `views` in rm template to fix failure when collecting snmp server facts from devices 
-    that have a view defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
+  - "`ios_snmp_server` - Change key from `users` to `views` in rm template to fix failure when collecting snmp server facts from devices
+    that have a view defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491)."
