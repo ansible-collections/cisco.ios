@@ -766,6 +766,44 @@ class TestIosAclsModule(TestIosModule):
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
+    def test_ios_acls_parsed_matches(self):
+        set_module_args(
+            dict(
+                running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
+                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)""",
+                state="parsed",
+            )
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "R1_TRAFFIC",
+                        "acl_type": "standard",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "source": {"address": "10.11.12.13"},
+                            },
+                            {
+                                "sequence": 40,
+                                "grant": "permit",
+                                "source": {
+                                    "address": "128.0.0.0",
+                                    "wildcard_bits": "63.255.255.255",
+                                },
+                            },
+                        ],
+                    }
+                ],
+            }
+        ]
+        print(result)
+        self.assertEqual(parsed_list, result["parsed"])
+
     def test_ios_acls_overridden_remark(self):
         self.execute_show_command.return_value = dedent(
             """\
