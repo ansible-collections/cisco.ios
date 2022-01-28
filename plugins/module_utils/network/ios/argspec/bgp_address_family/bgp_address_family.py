@@ -433,6 +433,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "send_community": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "both": {"type": "bool"},
                                         "extended": {"type": "bool"},
                                         "standard": {"type": "bool"},
@@ -548,6 +549,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "connected": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "metric": {"type": "int"},
                                         "route_map": {"type": "str"},
                                     },

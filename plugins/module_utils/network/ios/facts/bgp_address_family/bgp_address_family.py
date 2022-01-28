@@ -70,9 +70,14 @@ class Bgp_address_familyFacts(object):
                         set = False
                         temp = utils.remove_empties(temp)
                         for each in neighbor_list:
-                            if neighbor_identifier == each["address"]:
-                                each.update(temp)
-                                set = True
+                            for neighbor_type in ["address","ipv6_address","tag"]:
+                                try:
+                                    if neighbor_identifier == each[neighbor_type]:
+                                        each.update(temp)
+                                        set = True
+                                        break
+                                except KeyError:
+                                    continue
                         if not neighbor_list or not set:
                             if alter:
                                 neighbor_list.extend(list(alter.values()))
