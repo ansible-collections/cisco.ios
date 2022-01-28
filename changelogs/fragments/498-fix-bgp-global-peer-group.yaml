@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`ios_bgp_global` - Fix bgp_global error when peer-groups are defined.
+    Fix issue with peer-group neighbors not being found. (https://github.com/ansible-collections/cisco.ios/issues/318)."
