@@ -373,17 +373,25 @@ class Bgp_global(ResourceModule):
                                     for each in self.commands
                                     if "neighbor" not in each
                                 ]
+                                + list(set(
+                                    each
+                                    for each in self.commands
+                                    if each.startswith("neighbor")
+                                    and each.endswith("peer-group")
+                                 )) # make sure that we define the peer-group before other neighbors
                                 + [
                                     each
                                     for each in self.commands
                                     if "remote-as" in each
-                                    and "neighbor" in each
+                                    and each.startswith("neighbor")
+                                    and not each.endswith("peer-group")
                                 ]
                                 + [
                                     each
                                     for each in self.commands
                                     if "remote-as" not in each
-                                    and "neighbor" in each
+                                    and each.startswith("neighbor")
+                                    and not each.endswith("peer-group")
                                 ]
                             )
                         elif every == "redistribute":

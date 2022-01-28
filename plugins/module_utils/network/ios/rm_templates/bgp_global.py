@@ -395,6 +395,7 @@ def _tmplt_neighbor(config_data):
         if "address" in config_data["neighbor"]:
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
+            commands.append("{0} {tag} peer-group".format(cmd, **config_data["neighbor"]))
             cmd += " {tag}".format(**config_data["neighbor"])
         elif "ipv6_adddress" in config_data["neighbor"]:
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
@@ -1597,7 +1598,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                                     'in' in path_attribute %}{{ True }}{% endif %}",
                             },
                         },
-                        "peer_group": "{{ listen.split('peer-group ')[1] if listen is defined and 'peer-group' in listen }}",
+                        "peer_group": "{{ peer_group.split('peer-group ')[1] if peer_group is defined and 'peer-group' in peer_group }}",
                         "remote_as": "{{ remote_as.split('remote-as ')[1] if remote_as is defined }}",
                         "remove_private_as": {
                             "set": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length == 1 }}",

@@ -58,24 +58,34 @@ class Bgp_globalFacts(object):
         objs = bgp_global_parser.parse()
 
         objs = utils.remove_empties(objs)
+        # Loop through all neighbors and combine the facts for each
         if "neighbor" in objs:
             temp_neighbor = []
-            temp = {}
-            temp["address"] = None
-            for each in objs["neighbor"]:
-                if temp["address"] != each["address"]:
-                    if temp["address"]:
-                        temp_neighbor.append(temp)
-                        temp = {}
-                    temp["address"] = each.pop("address")
-                    if each:
-                        temp.update(each)
-                else:
-                    each.pop("address")
-                    temp.update(each)
-            if temp:
-                temp_neighbor.append(temp)
+            for neighbor_type in ["address", "tag", "ipv6_adddress"]:
+                temp = {}
+                temp[neighbor_type] = None
+                for each in objs["neighbor"]:
+                    try:
+                        if temp[neighbor_type] != each[neighbor_type]:
+                            if temp[neighbor_type]:
+                                temp_neighbor.append(temp)
+                                temp = {}
+                            temp[neighbor_type] = each.pop(neighbor_type)
+                            if each:
+                                temp.update(each)
+                        else:
+                            each.pop(neighbor_type)
+                            temp.update(each)
+                    except KeyError:
+                        continue
+                
+                # If temp[neighbor_type] still equals None, don't add it to the list
+                temp = utils.remove_empties(temp)
+                if temp:
+                    temp_neighbor.append(temp)
+            
             objs["neighbor"] = temp_neighbor
+
         if objs:
             ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
