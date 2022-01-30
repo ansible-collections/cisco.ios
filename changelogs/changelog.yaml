@@ -446,4 +446,4 @@ releases:
     - description: hostname resource module
       name: ios_hostname
       namespace: ''
-    release_date: '2022-01-30'
+    release_date: '2022-01-31'
