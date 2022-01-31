@@ -859,7 +859,6 @@ def _tmplt_af_redistribute(config_data):
         return command
 
 
-
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_address_familyTemplate, self).__init__(
@@ -1634,7 +1633,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "application": {
                                     "name": "{{ application.split(' ')[1] if application is defined }}",
                                     "metric": "{{ application.split('metric ')[1].split(' ')[0] if application is defined and 'metric' in application }}",
-                                    "route_map": "{{ application.split('route-map ')[1].split(' ')[0] if application is defined and 'route-map' in application }}",
+                                    "route_map": "{{ application.split('route-map ')[1].split(' ')[0] if application is defined and\
+                                        'route-map' in application }}",
                                 },
                                 "bgp": {
                                     "as_number": "{{ bgp.split(' ')[1] if bgp is defined }}",
