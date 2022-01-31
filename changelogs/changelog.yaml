@@ -407,3 +407,43 @@ releases:
       name: ios_snmp_server
       namespace: ''
     release_date: '2021-12-07'
+  2.7.0:
+    changes:
+      bugfixes:
+      - '`ios_acls` - Fixes protocol_options not rendering command properly when range
+        is specified.'
+      - '`ios_acls` - Fixes standard acls getting wrongly parsed in v2.6.0'
+      - '`ios_l2_interfaces` - fix unable to identify FiveGigabitEthernet names on
+        facts gathering.'
+      - '`ios_snmp_server` - Change key from `users` to `views` in rm template to
+        fix failure when collecting snmp server facts from devices that have a view
+        defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).'
+      - '`ios_static_routes` - Fixes static routes unable to identify interface names
+        when supplied with destination attribute.'
+      - '`ios_vlans` - fix parsing of VLAN names with spaces.'
+      - '`ios_vlans` - fix parsing of VLAN ranges under remote span.'
+      deprecated_features:
+      - '`ios_acls` - Deprecated fragment attribute added boolean alternate as enable_fragment.'
+      doc_changes:
+      - '`ios_acls` - Documentation updated with commands used for fetching remarks
+        data under aces.'
+      minor_changes:
+      - '`ios_acls` - Added enable_fragment attribute to enable fragments under ace.'
+      - '`ios_hostname` - New Resource module added.'
+      - '`ios_snmp_server` - Enables configuration of v3 auth and encryption password
+        for each user.'
+    fragments:
+    - 492-snmp-fact-view-key-correction.yaml
+    - acl_2_6.yaml
+    - acls_bugfix_and_option_deprication.yaml
+    - fix_fiveGigabit_name.yaml
+    - fix_vlan.yaml
+    - hostname_redirects.yaml
+    - hostname_resource_module.yaml
+    - snmp_server_feature_user.yaml
+    - static_route_interface_issue.yaml
+    modules:
+    - description: hostname resource module
+      name: ios_hostname
+      namespace: ''
+    release_date: '2022-01-31'

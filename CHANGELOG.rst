@@ -5,6 +5,42 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.7.0
+======
+
+Minor Changes
+-------------
+
+- `ios_acls` - Added enable_fragment attribute to enable fragments under ace.
+- `ios_hostname` - New Resource module added.
+- `ios_snmp_server` - Enables configuration of v3 auth and encryption password for each user.
+
+Deprecated Features
+-------------------
+
+- `ios_acls` - Deprecated fragment attribute added boolean alternate as enable_fragment.
+
+Bugfixes
+--------
+
+- `ios_acls` - Fixes protocol_options not rendering command properly when range is specified.
+- `ios_acls` - Fixes standard acls getting wrongly parsed in v2.6.0
+- `ios_l2_interfaces` - fix unable to identify FiveGigabitEthernet names on facts gathering.
+- `ios_snmp_server` - Change key from `users` to `views` in rm template to fix failure when collecting snmp server facts from devices that have a view defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
+- `ios_static_routes` - Fixes static routes unable to identify interface names when supplied with destination attribute.
+- `ios_vlans` - fix parsing of VLAN names with spaces.
+- `ios_vlans` - fix parsing of VLAN ranges under remote span.
+
+Documentation Changes
+---------------------
+
+- `ios_acls` - Documentation updated with commands used for fetching remarks data under aces.
+
+New Modules
+-----------
+
+- ios_hostname - hostname resource module
+
 v2.6.0
 ======
 
