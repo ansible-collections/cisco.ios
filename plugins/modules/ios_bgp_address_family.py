@@ -244,7 +244,7 @@ options:
               tag:
                 description: Neighbor tag
                 type: str
-              ipv6_adddress:
+              ipv6_address:
                 description: Neighbor ipv6 address (X:X:X:X::X)
                 type: str
               activate:

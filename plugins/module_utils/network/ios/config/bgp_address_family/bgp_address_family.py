@@ -46,6 +46,7 @@ class Bgp_address_family(ResourceModule):
         "default_metric",
         "distance",
         "table_map",
+        "redistribute",
     ]
 
     def __init__(self, module):
@@ -372,8 +373,8 @@ class Bgp_address_family(ResourceModule):
                     parsers=parsers, want=dict(), have={"neighbor": val}
                 )
             count = 0
-            remote = None
-            activate = None
+            remote = 0
+            activate = 0
             for each in self.commands:
                 if "no" in each and "remote-as" in each:
                     remote = count
@@ -516,6 +517,11 @@ class Bgp_address_family(ResourceModule):
                     for each in val.get("network", []):
                         temp.update({each["address"]: each})
                     val["network"] = temp
+                if "redistribute" in val:
+                    temp = {}
+                    for each in val.get("redistribute", []):
+                        temp.update(each)
+                    val["redistribute"] = temp
 
     def handle_deprecated(self, want_to_validate):
         if want_to_validate.get("next_hop_self") and want_to_validate.get(

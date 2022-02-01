@@ -204,8 +204,8 @@ def _tmplt_af_neighbor(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
+        elif "ipv6_address" in config_data["neighbor"]:
+            cmd += " {ipv6_address}".format(**config_data["neighbor"])
         if "peer_group" in config_data["neighbor"]:
             commands.append(
                 "{0} peer-group {peer_group}".format(
@@ -554,8 +554,8 @@ def _tmplt_neighbor_af_prefix_lists(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
+        elif "ipv6_address" in config_data["neighbor"]:
+            cmd += " {ipv6_address}".format(**config_data["neighbor"])
         cmd = "{0} prefix-list {name}".format(
             cmd, **config_data["neighbor"]["prefix_lists"]
         )
@@ -577,8 +577,8 @@ def _tmplt_neighbor_af_route_maps(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
+        elif "ipv6_address" in config_data["neighbor"]:
+            cmd += " {ipv6_address}".format(**config_data["neighbor"])
         cmd = "{0} route-map".format(cmd)
         if "name" in config_data["neighbor"]["route_maps"]:
             cmd += " {name}".format(**config_data["neighbor"]["route_maps"])
@@ -596,8 +596,8 @@ def _tmplt_neighbor_af_slow_peer(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
+        elif "ipv6_address" in config_data["neighbor"]:
+            cmd += " {ipv6_address}".format(**config_data["neighbor"])
         cmd = "{0} slow-peer".format(cmd)
         if "detection" in config_data["neighbor"]["slow_peer"]:
             cmd += " detection"
@@ -731,6 +731,7 @@ def _tmplt_af_table_map(config_data):
 
 def _tmplt_af_redistribute(config_data):
     if "redistribute" in config_data:
+        commands = []
 
         def common_config(command, param):
             if config_data["redistribute"][param].get("metric"):
@@ -741,122 +742,135 @@ def _tmplt_af_redistribute(config_data):
                 command += " route-map {route_map}".format(
                     **config_data["redistribute"][param]
                 )
-            return command
+            commands.append(command)
 
         command = "redistribute"
         if config_data["redistribute"].get("application"):
-            command += " application {name}".format(
+            cmd = "{0} application {name}".format(
+                command,
                 **config_data["redistribute"]["application"]
             )
-            command = common_config(command, "application")
-        elif config_data["redistribute"].get("bgp"):
-            command += " bgp {as_number}".format(
+            common_config(cmd, "application")
+        if config_data["redistribute"].get("bgp"):
+            cmd = "{0} bgp {as_number}".format(
+                command,
                 **config_data["redistribute"]["bgp"]
             )
-            command = common_config(command, "bgp")
-        elif config_data["redistribute"].get("connected"):
-            command += " connected"
-            command = common_config(command, "connected")
-        elif config_data["redistribute"].get("eigrp"):
-            command += " eigrp {as_number}".format(
+            common_config(cmd, "bgp")
+        if config_data["redistribute"].get("connected"):
+            cmd = "{0} connected".format(command)
+            common_config(cmd, "connected")
+        if config_data["redistribute"].get("eigrp"):
+            cmd = "{0} eigrp {as_number}".format(
+                command,
                 **config_data["redistribute"]["eigrp"]
             )
-            command = common_config(command, "eigrp")
-        elif config_data["redistribute"].get("isis"):
-            command += " isis {area_tag}".format(
+            common_config(cmd, "eigrp")
+        if config_data["redistribute"].get("isis"):
+            cmd = "{0} isis {area_tag}".format(
+                command,
                 **config_data["redistribute"]["isis"]
             )
             if config_data["redistribute"]["isis"].get("clns"):
-                command += " clns"
+                cmd += " clns"
             elif config_data["redistribute"]["isis"].get("ip"):
-                command += " ip"
-            command = common_config(command, "isis")
-        elif config_data["redistribute"].get("iso_igrp"):
-            command += " iso-igrp {area_tag}".format(
+                cmd += " ip"
+            common_config(cmd, "isis")
+        if config_data["redistribute"].get("iso_igrp"):
+            cmd = "{0} iso-igrp {area_tag}".format(
+                command,
                 **config_data["redistribute"]["iso_igrp"]
             )
             if config_data["redistribute"]["iso_igrp"].get("route_map"):
-                command += " route-map {route_map}".format(
+                cmd += " route-map {route_map}".format(
                     **config_data["redistribute"]["iso_igrp"]
                 )
-        elif config_data["redistribute"].get("lisp"):
-            command += " lisp"
-            command = common_config(command, "lisp")
-        elif config_data["redistribute"].get("mobile"):
-            command += " mobile"
-            command = common_config(command, "mobile")
-        elif config_data["redistribute"].get("odr"):
-            command += " odr"
-            command = common_config(command, "odr")
-        elif config_data["redistribute"].get("rip"):
-            command += " rip"
-            command = common_config(command, "rip")
-        elif config_data["redistribute"].get("ospf"):
-            command += " ospf {process_id}".format(
+            common_config(cmd, "iso_igrp")
+        if config_data["redistribute"].get("lisp"):
+            cmd = "{0} lisp".format(command)
+            common_config(cmd, "lisp")
+        if config_data["redistribute"].get("mobile"):
+            cmd = "{0} mobile".format(command)
+            common_config(cmd, "mobile")
+        if config_data["redistribute"].get("odr"):
+            cmd = "{0} odr".format(command)
+            common_config(cmd, "odr")
+        if config_data["redistribute"].get("rip"):
+            cmd = "{0} rip".format(command)
+            common_config(cmd, "rip")
+        if config_data["redistribute"].get("ospf"):
+            cmd = "{0} ospf {process_id}".format(
+                command,
                 **config_data["redistribute"]["ospf"]
             )
+            common_config(cmd, "ospf")
             if config_data["redistribute"]["ospf"].get("match"):
-                command += " match"
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "external"
-                ):
-                    command += " external"
+                external_type = None
+                commands[-1] += " match"
                 if config_data["redistribute"]["ospf"]["match"].get(
                     "internal"
                 ):
-                    command += " internal"
+                    commands[-1] += " internal"
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "external"
+                ):
+                    external_type = " external"
                 if config_data["redistribute"]["ospf"]["match"].get(
                     "nssa_external"
                 ):
-                    command += " nssa-external"
-                if config_data["redistribute"]["ospf"]["match"].get("type_1"):
-                    command += " 1"
-                elif config_data["redistribute"]["ospf"]["match"].get(
+                    external_type = " nssa-external"
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "type_1"
+                ) and external_type:
+                    commands[-1] += "{0} 1".format(external_type)
+                if config_data["redistribute"]["ospf"]["match"].get(
                     "type_2"
-                ):
-                    command += " 2"
+                ) and external_type:
+                    commands[-1] += "{0} 2".format(external_type)
             if config_data["redistribute"]["ospf"].get("vrf"):
-                command += " vrf"
-            command = common_config(command, "ospf")
-        elif config_data["redistribute"].get("ospfv3"):
-            command += " ospfv3 {process_id}".format(
+                commands[-1] += " vrf"
+        if config_data["redistribute"].get("ospfv3"):
+            cmd = "{0} ospfv3 {process_id}".format(
+                command,
                 **config_data["redistribute"]["ospfv3"]
             )
             if config_data["redistribute"]["ospfv3"].get("match"):
-                command += " match"
+                cmd += " match"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
                     "external"
                 ):
-                    command += " external"
+                    cmd += " external"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
                     "internal"
                 ):
-                    command += " internal"
+                    cmd += " internal"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
                     "nssa_external"
                 ):
-                    command += " nssa-external"
+                    cmd += " nssa-external"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
                     "type_1"
                 ):
-                    command += " 1"
+                    cmd += " 1"
                 elif config_data["redistribute"]["ospfv3"]["match"].get(
                     "type_2"
                 ):
-                    command += " 2"
-            command = common_config(command, "ospf")
-        elif config_data["redistribute"].get("static"):
-            command += " static"
-            command = common_config(command, "static")
-        elif config_data["redistribute"].get("vrf"):
+                    cmd += " 2"
+            common_config(cmd, "ospf")
+        if config_data["redistribute"].get("static"):
+            cmd += "{0} static".format(command)
+            common_config(cmd, "static")
+        if config_data["redistribute"].get("vrf"):
             if config_data["redistribute"]["vrf"].get("name"):
-                command += " vrf {name}".format(
+                cmd = "{0} vrf {name}".format(
+                    command,
                     **config_data["redistribute"]["vrf"]
                 )
             elif config_data["redistribute"]["vrf"].get("global"):
-                command += " vrf global"
+                cmd = "{0} vrf global".format(command)
+            common_config(cmd, "vrf")
 
-        return command
+        return commands
 
 
 class Bgp_address_familyTemplate(NetworkTemplate):
@@ -1161,7 +1175,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "prefix_lists": [
                                     {
@@ -1192,7 +1206,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "route_maps": [
                                     {
@@ -1264,7 +1278,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "activate": "{{ True if activate is defined }}",
                                 "additional_paths": {
@@ -1463,7 +1477,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "slow_peer": [
                                     {

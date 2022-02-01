@@ -166,7 +166,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
-                                "ipv6_adddress": {"type": "str"},
+                                "ipv6_address": {"type": "str"},
                                 "activate": {"type": "bool"},
                                 "additional_paths": {
                                     "type": "dict",
