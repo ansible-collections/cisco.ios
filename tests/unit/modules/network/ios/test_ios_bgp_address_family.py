@@ -489,9 +489,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     address_family=[
                         dict(
                             afi="ipv4",
-                            bgp=dict(
-                                redistribute_internal=True,
-                            ),
+                            bgp=dict(redistribute_internal=True),
                             redistribute=[
                                 dict(
                                     connected=dict(set=True),
@@ -501,7 +499,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             internal=True,
                                             type_1=True,
                                             type_2=True,
-                                        ),
+                                        )
                                     ),
                                 )
                             ],
@@ -512,9 +510,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     send_community=dict(set=True),
                                 ),
                                 dict(
-                                    ipv6_address="2001:db8::1",
-                                    activate=True,
-                                )
+                                    ipv6_address="2001:db8::1", activate=True,
+                                ),
                             ],
                         ),
                         dict(

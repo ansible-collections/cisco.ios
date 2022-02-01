@@ -747,14 +747,12 @@ def _tmplt_af_redistribute(config_data):
         command = "redistribute"
         if config_data["redistribute"].get("application"):
             cmd = "{0} application {name}".format(
-                command,
-                **config_data["redistribute"]["application"]
+                command, **config_data["redistribute"]["application"]
             )
             common_config(cmd, "application")
         if config_data["redistribute"].get("bgp"):
             cmd = "{0} bgp {as_number}".format(
-                command,
-                **config_data["redistribute"]["bgp"]
+                command, **config_data["redistribute"]["bgp"]
             )
             common_config(cmd, "bgp")
         if config_data["redistribute"].get("connected"):
@@ -762,14 +760,12 @@ def _tmplt_af_redistribute(config_data):
             common_config(cmd, "connected")
         if config_data["redistribute"].get("eigrp"):
             cmd = "{0} eigrp {as_number}".format(
-                command,
-                **config_data["redistribute"]["eigrp"]
+                command, **config_data["redistribute"]["eigrp"]
             )
             common_config(cmd, "eigrp")
         if config_data["redistribute"].get("isis"):
             cmd = "{0} isis {area_tag}".format(
-                command,
-                **config_data["redistribute"]["isis"]
+                command, **config_data["redistribute"]["isis"]
             )
             if config_data["redistribute"]["isis"].get("clns"):
                 cmd += " clns"
@@ -778,8 +774,7 @@ def _tmplt_af_redistribute(config_data):
             common_config(cmd, "isis")
         if config_data["redistribute"].get("iso_igrp"):
             cmd = "{0} iso-igrp {area_tag}".format(
-                command,
-                **config_data["redistribute"]["iso_igrp"]
+                command, **config_data["redistribute"]["iso_igrp"]
             )
             if config_data["redistribute"]["iso_igrp"].get("route_map"):
                 cmd += " route-map {route_map}".format(
@@ -800,8 +795,7 @@ def _tmplt_af_redistribute(config_data):
             common_config(cmd, "rip")
         if config_data["redistribute"].get("ospf"):
             cmd = "{0} ospf {process_id}".format(
-                command,
-                **config_data["redistribute"]["ospf"]
+                command, **config_data["redistribute"]["ospf"]
             )
             common_config(cmd, "ospf")
             if config_data["redistribute"]["ospf"].get("match"):
@@ -819,20 +813,21 @@ def _tmplt_af_redistribute(config_data):
                     "nssa_external"
                 ):
                     external_type = " nssa-external"
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "type_1"
-                ) and external_type:
+                if (
+                    config_data["redistribute"]["ospf"]["match"].get("type_1")
+                    and external_type
+                ):
                     commands[-1] += "{0} 1".format(external_type)
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "type_2"
-                ) and external_type:
+                if (
+                    config_data["redistribute"]["ospf"]["match"].get("type_2")
+                    and external_type
+                ):
                     commands[-1] += "{0} 2".format(external_type)
             if config_data["redistribute"]["ospf"].get("vrf"):
                 commands[-1] += " vrf"
         if config_data["redistribute"].get("ospfv3"):
             cmd = "{0} ospfv3 {process_id}".format(
-                command,
-                **config_data["redistribute"]["ospfv3"]
+                command, **config_data["redistribute"]["ospfv3"]
             )
             if config_data["redistribute"]["ospfv3"].get("match"):
                 cmd += " match"
@@ -863,8 +858,7 @@ def _tmplt_af_redistribute(config_data):
         if config_data["redistribute"].get("vrf"):
             if config_data["redistribute"]["vrf"].get("name"):
                 cmd = "{0} vrf {name}".format(
-                    command,
-                    **config_data["redistribute"]["vrf"]
+                    command, **config_data["redistribute"]["vrf"]
                 )
             elif config_data["redistribute"]["vrf"].get("global"):
                 cmd = "{0} vrf global".format(command)
@@ -1732,6 +1726,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         ]
                     }
                 }
-            }
+            },
         },
     ]
