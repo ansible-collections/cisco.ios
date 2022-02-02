@@ -510,7 +510,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     send_community=dict(set=True),
                                 ),
                                 dict(
-                                    ipv6_address="2001:db8::1", activate=True,
+                                    ipv6_address="2001:db8::1", activate=True
                                 ),
                             ],
                         ),

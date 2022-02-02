@@ -73,7 +73,7 @@ class Bgp_address_familyFacts(object):
                             for neighbor_type in [
                                 "address",
                                 "ipv6_address",
-                                "tag"
+                                "tag",
                             ]:
                                 try:
                                     if (
