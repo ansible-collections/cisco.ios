@@ -255,7 +255,7 @@ class Bgp_address_family(ResourceModule):
             "neighbor.route_maps",
             "neighbor.slow_peer",
         ]
-        neighbor_key = ["address", "ipv6_address", "tag"]
+        neighbor_key = ["address", "ipv6_adddress", "tag"]
         deprecated = False
         w = want.get("neighbor", {}) if want else {}
         if have:
@@ -508,7 +508,7 @@ class Bgp_address_family(ResourceModule):
                             }
                     val["neighbor"] = {
                         each.get("address")
-                        or each.get("ipv6_address")
+                        or each.get("ipv6_adddress")
                         or each.get("tag"): each
                         for each in val.get("neighbor", [])
                     }

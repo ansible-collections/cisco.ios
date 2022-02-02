@@ -72,7 +72,7 @@ class Bgp_address_familyFacts(object):
                         for each in neighbor_list:
                             for neighbor_type in [
                                 "address",
-                                "ipv6_address",
+                                "ipv6_adddress",
                                 "tag",
                             ]:
                                 try:
@@ -95,7 +95,7 @@ class Bgp_address_familyFacts(object):
                     temp, al = {}, {}
                     temp_param, neighbor_identifier = None, None
 
-                    neighbor_type_list = ["address", "ipv6_address", "tag"]
+                    neighbor_type_list = ["address", "ipv6_adddress", "tag"]
 
                     for each in neighbor:
                         if temp_param and not each.get(temp_param) and temp:

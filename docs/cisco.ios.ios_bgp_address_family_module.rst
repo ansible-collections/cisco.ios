@@ -2542,7 +2542,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_address</b>
+                    <b>ipv6_adddress</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -2552,6 +2552,7 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor ipv6 address (X:X:X:X::X)</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: ipv6_address</div>
                 </td>
             </tr>
             <tr>

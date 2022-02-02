@@ -204,8 +204,8 @@ def _tmplt_af_neighbor(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_address" in config_data["neighbor"]:
-            cmd += " {ipv6_address}".format(**config_data["neighbor"])
+        elif "ipv6_adddress" in config_data["neighbor"]:
+            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         if "peer_group" in config_data["neighbor"]:
             commands.append(
                 "{0} peer-group {peer_group}".format(
@@ -554,8 +554,8 @@ def _tmplt_neighbor_af_prefix_lists(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_address" in config_data["neighbor"]:
-            cmd += " {ipv6_address}".format(**config_data["neighbor"])
+        elif "ipv6_adddress" in config_data["neighbor"]:
+            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         cmd = "{0} prefix-list {name}".format(
             cmd, **config_data["neighbor"]["prefix_lists"]
         )
@@ -577,8 +577,8 @@ def _tmplt_neighbor_af_route_maps(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_address" in config_data["neighbor"]:
-            cmd += " {ipv6_address}".format(**config_data["neighbor"])
+        elif "ipv6_adddress" in config_data["neighbor"]:
+            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         cmd = "{0} route-map".format(cmd)
         if "name" in config_data["neighbor"]["route_maps"]:
             cmd += " {name}".format(**config_data["neighbor"]["route_maps"])
@@ -596,8 +596,8 @@ def _tmplt_neighbor_af_slow_peer(config_data):
             cmd += " {address}".format(**config_data["neighbor"])
         elif "tag" in config_data["neighbor"]:
             cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_address" in config_data["neighbor"]:
-            cmd += " {ipv6_address}".format(**config_data["neighbor"])
+        elif "ipv6_adddress" in config_data["neighbor"]:
+            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         cmd = "{0} slow-peer".format(cmd)
         if "detection" in config_data["neighbor"]["slow_peer"]:
             cmd += " detection"
@@ -1169,7 +1169,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "prefix_lists": [
                                     {
@@ -1200,7 +1200,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "route_maps": [
                                     {
@@ -1272,7 +1272,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "activate": "{{ True if activate is defined }}",
                                 "additional_paths": {
@@ -1471,7 +1471,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "slow_peer": [
                                     {

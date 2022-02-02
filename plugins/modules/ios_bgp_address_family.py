@@ -244,9 +244,11 @@ options:
               tag:
                 description: Neighbor tag
                 type: str
-              ipv6_address:
+              ipv6_adddress:
                 description: Neighbor ipv6 address (X:X:X:X::X)
                 type: str
+                aliases:
+                  - ipv6_address
               activate:
                 description: Enable the Address Family for this Neighbor
                 type: bool
