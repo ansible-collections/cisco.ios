@@ -1,0 +1,4 @@
+---
+major_changes:
+  - "Minimum required ansible.netcommon version is 2.5.0."
+  - "Updated base plugin references to ansible.netcommon."
