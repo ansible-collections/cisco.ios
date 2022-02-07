@@ -12,6 +12,6 @@
       orphan: 4
       panic_update: true
       peers:
-        - peer: 192.0.1.10
+        - peer: 192.0.2.10
           version: 2
     state: merged

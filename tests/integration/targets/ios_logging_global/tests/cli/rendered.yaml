@@ -36,13 +36,13 @@
           history:
             severity: alerts
           hosts:
-            - hostname: 192.0.1.1
-            - hostname: 192.0.1.11
+            - hostname: 192.0.2.1
+            - hostname: 192.0.2.11
               xml: true
               transport:
                 tcp:
                   port: 514
-            - hostname: 192.0.1.10
+            - hostname: 192.0.2.10
               filtered: true
               stream: 10
           message_counter:

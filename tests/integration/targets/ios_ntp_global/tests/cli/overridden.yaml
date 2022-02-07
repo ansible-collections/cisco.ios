@@ -16,7 +16,7 @@
           broadcast_delay: 113
           orphan: 10
           servers:
-            - server: 192.0.1.15
+            - server: 192.0.2.15
               key: 2
         state: overridden
 
