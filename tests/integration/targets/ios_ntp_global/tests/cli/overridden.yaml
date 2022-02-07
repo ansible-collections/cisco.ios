@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Overridden ios_ntp_global state for integration tests on connection={{
+    msg:
+      START Overridden ios_ntp_global state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: ios_ntp_global overridden - Play
       register: result
       cisco.ios.ios_ntp_global: &id001
@@ -16,7 +16,7 @@
           broadcast_delay: 113
           orphan: 10
           servers:
-            - server: 172.16.1.15
+            - server: 192.0.2.15
               key: 2
         state: overridden
 
@@ -44,5 +44,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml
