@@ -11,13 +11,13 @@
         xml: true
       facility: local5
       hosts:
-        - hostname: 172.16.1.12
-        - hostname: 172.16.1.11
+        - hostname: 192.168.1.12
+        - hostname: 192.168.1.11
           xml: true
-        - hostname: 172.16.1.10
+        - hostname: 192.168.1.10
           filtered: true
           stream: 10
-        - hostname: 172.16.1.13
+        - hostname: 192.168.1.13
           transport:
             tcp:
               port: 514
