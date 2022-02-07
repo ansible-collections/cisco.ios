@@ -29,20 +29,20 @@
           exception: 4099
           facility: local5
           filter:
-            - url: tftp://192.168.2.18/ESM/elate.tcl
+            - url: tftp://192.0.2.18/ESM/elate.tcl
               args: TESTInst2
-            - url: tftp://192.168.2.14/ESM/escalate.tcl
+            - url: tftp://192.0.2.14/ESM/escalate.tcl
               args: TESTInst
           history:
             severity: alerts
           hosts:
-            - hostname: 192.168.1.1
-            - hostname: 192.168.1.11
+            - hostname: 192.0.1.1
+            - hostname: 192.0.1.11
               xml: true
               transport:
                 tcp:
                   port: 514
-            - hostname: 192.168.1.10
+            - hostname: 192.0.1.10
               filtered: true
               stream: 10
           message_counter:

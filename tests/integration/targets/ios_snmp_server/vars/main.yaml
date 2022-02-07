@@ -1,7 +1,7 @@
 ---
 merged:
   commands:
-    - snmp-server host 192.168.0.10 informs version 2c integrationComm isis
+    - snmp-server host 192.0.0.10 informs version 2c integrationComm isis
   after:
     communities:
       - acl_v4: test_Acl
@@ -18,11 +18,11 @@ merged:
     engine_id:
       - id: AB0C5342FF0F
         remote:
-          host: 192.168.0.12
+          host: 192.0.0.12
           udp_port: 25
     hosts:
       - community_string: integrationComm
-        host: 192.168.0.10
+        host: 192.0.0.10
         informs: true
         traps:
           - isis
@@ -45,14 +45,14 @@ overridden:
     engine_id:
       - id: AB0C5342FF0F
         remote:
-          host: 192.168.0.12
+          host: 192.0.0.12
           udp_port: 25
   commands:
     - no snmp-server contact contact updated using play
     - no snmp-server inform pending 2
     - no snmp-server ip dscp 2
     - no snmp-server system-shutdown
-    - no snmp-server engineID remote 192.168.0.12 udp-port 25 AB0C5342FF0F
+    - no snmp-server engineID remote 192.0.0.12 udp-port 25 AB0C5342FF0F
     - snmp-server community communityOvverriden rw acl_uq
     - no snmp-server community integrationComm rw test_Acl
   after:
@@ -80,7 +80,7 @@ deleted:
     engine_id:
       - id: AB0C5342FF0F
         remote:
-          host: 192.168.0.12
+          host: 192.0.0.12
           udp_port: 25
   commands:
     - no snmp-server contact contact updated using play
@@ -89,7 +89,7 @@ deleted:
     - no snmp-server location location entry for snmp
     - no snmp-server packetsize 500
     - no snmp-server system-shutdown
-    - no snmp-server engineID remote 192.168.0.12 udp-port 25 AB0C5342FF0F
+    - no snmp-server engineID remote 192.0.0.12 udp-port 25 AB0C5342FF0F
     - no snmp-server community integrationComm rw test_Acl
 
 parsed:
@@ -97,7 +97,7 @@ parsed:
     engine_id:
       - id: AB0C5342FAAA
         remote:
-          host: 192.168.0.1
+          host: 192.0.0.1
           udp_port: 22
 
 gathered:
@@ -117,7 +117,7 @@ gathered:
     engine_id:
       - id: AB0C5342FF0F
         remote:
-          host: 192.168.0.12
+          host: 192.0.0.12
           udp_port: 25
 
 rendered:
@@ -128,5 +128,5 @@ rendered:
     - snmp-server location location entry for snmp
     - snmp-server packetsize 500
     - snmp-server system-shutdown
-    - snmp-server engineID remote 192.168.0.12 udp-port 25 AB0C5342FF0F
+    - snmp-server engineID remote 192.0.0.12 udp-port 25 AB0C5342FF0F
     - snmp-server community integrationComm rw test_Acl

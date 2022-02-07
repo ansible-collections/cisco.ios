@@ -24,7 +24,7 @@ overridden:
     orphan: 4
     panic_update: true
     peers:
-      - peer: 192.168.1.10
+      - peer: 192.0.1.10
         version: 2
   commands:
     - ntp broadcastdelay 113
@@ -35,13 +35,13 @@ overridden:
     - no ntp mindistance 10
     - ntp orphan 10
     - no ntp panic update
-    - no ntp peer 192.168.1.10 version 2
-    - ntp server 192.168.1.15 key 2
+    - no ntp peer 192.0.1.10 version 2
+    - ntp server 192.0.1.15 key 2
   after:
     broadcast_delay: 113
     orphan: 10
     servers:
-      - server: 192.168.1.15
+      - server: 192.0.1.15
         key_id: 2
 
 deleted:
@@ -56,7 +56,7 @@ deleted:
     orphan: 4
     panic_update: true
     peers:
-      - peer: 192.168.1.10
+      - peer: 192.0.1.10
         version: 2
   commands:
     - no ntp broadcastdelay 22
@@ -67,7 +67,7 @@ deleted:
     - no ntp mindistance 10
     - no ntp orphan 4
     - no ntp panic update
-    - no ntp peer 192.168.1.10 version 2
+    - no ntp peer 192.0.1.10 version 2
 
 parsed:
   config:
@@ -81,10 +81,10 @@ parsed:
     orphan: 4
     panic_update: true
     peers:
-      - peer: 192.168.1.10
+      - peer: 192.0.1.10
         version: 2
     servers:
-      - server: 192.168.1.11
+      - server: 192.0.1.11
         key_id: 2
 
 gathered:
@@ -99,7 +99,7 @@ gathered:
     orphan: 4
     panic_update: true
     peers:
-      - peer: 192.168.1.10
+      - peer: 192.0.1.10
         version: 2
 
 rtt:
@@ -117,4 +117,4 @@ rendered:
     - ntp mindistance 10
     - ntp orphan 4
     - ntp panic update
-    - ntp peer 192.168.1.10 version 2
+    - ntp peer 192.0.1.10 version 2

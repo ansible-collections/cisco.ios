@@ -17,8 +17,8 @@
             size: 6025
           facility: local6
           hosts:
-            - hostname: 192.168.1.19
-            - hostname: 192.168.1.10
+            - hostname: 192.0.1.19
+            - hostname: 192.0.1.10
               filtered: true
               stream: 15
         state: replaced
