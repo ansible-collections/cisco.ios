@@ -35,6 +35,7 @@ Documentation Changes
 ---------------------
 
 - `ios_acls` - Documentation updated with commands used for fetching remarks data under aces.
+- fixes fqcn in older module documentation.
 
 New Modules
 -----------
