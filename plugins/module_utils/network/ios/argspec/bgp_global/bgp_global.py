@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -23,12 +23,12 @@ __metaclass__ = type
 #############################################
 
 """
-The arg spec for the cisco.ios_bgp_global module
+The arg spec for the ios_bgp_global module
 """
 
 
 class Bgp_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the cisco.ios_bgp_global module
+    """The arg spec for the ios_bgp_global module
     """
 
     argument_spec = {
@@ -37,7 +37,8 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
             "options": {
                 "as_number": {"type": "str", "required": True},
                 "aggregate_address": {
-                    "type": "dict",
+                    "type": "list",
+                    "elements": "dict",
                     "options": {
                         "address": {"type": "str"},
                         "netmask": {"type": "str"},
@@ -322,7 +323,8 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "distribute_list": {
-                    "type": "dict",
+                    "type": "list",
+                    "elements": "dict",
                     "options": {
                         "acl": {"type": "str"},
                         "in": {"type": "bool"},
@@ -346,13 +348,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "ibgp": {"type": "int"},
                     },
                 },
-                "neighbor": {
+                "neighbors": {
                     "type": "list",
                     "elements": "dict",
                     "options": {
                         "address": {"type": "str"},
                         "tag": {"type": "str"},
-                        "ipv6_adddress": {"type": "str"},
+                        "ipv6_address": {"type": "str"},
                         "activate": {"type": "bool"},
                         "additional_paths": {
                             "type": "dict",
@@ -406,15 +408,11 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                 "poi": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "igp_cost": {
-                                                            "type": "bool"
-                                                        },
+                                                        "igp_cost": {"type": "bool"},
                                                         "pre_bestpath": {
                                                             "type": "bool"
                                                         },
-                                                        "transitive": {
-                                                            "type": "bool"
-                                                        },
+                                                        "transitive": {"type": "bool"},
                                                     },
                                                 },
                                             },
@@ -587,8 +585,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "replace_as": {"type": "bool"},
                             },
                         },
-                        "route_map": {
-                            "type": "dict",
+                        "route_maps": {
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "name": {"type": "str"},
                                 "in": {"type": "bool"},
@@ -843,10 +842,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "address_family": {
                             "type": "dict",
                             "options": {
-                                "afi": {
-                                    "type": "str",
-                                    "choices": ["ipv4", "ipv6"],
-                                },
+                                "afi": {"type": "str", "choices": ["ipv4", "ipv6"]},
                                 "modifier": {
                                     "type": "str",
                                     "choices": ["multicast", "unicast"],
@@ -859,18 +855,12 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "scope": {
                     "type": "dict",
-                    "options": {
-                        "global": {"type": "bool"},
-                        "vrf": {"type": "str"},
-                    },
+                    "options": {"global": {"type": "bool"}, "vrf": {"type": "str"}},
                 },
                 "synchronization": {"type": "bool"},
                 "table_map": {
                     "type": "dict",
-                    "options": {
-                        "name": {"type": "str"},
-                        "filter": {"type": "bool"},
-                    },
+                    "options": {"name": {"type": "str"}, "filter": {"type": "bool"}},
                 },
                 "template": {
                     "type": "dict",
@@ -891,16 +881,16 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
         },
         "running_config": {"type": "str"},
         "state": {
-            "type": "str",
             "choices": [
                 "merged",
                 "replaced",
                 "deleted",
                 "purged",
                 "gathered",
-                "parsed",
                 "rendered",
+                "parsed",
             ],
             "default": "merged",
+            "type": "str",
         },
     }  # pylint: disable=C0301

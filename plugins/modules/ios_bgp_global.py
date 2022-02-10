@@ -1,54 +1,48 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_bgp_global
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_bgp_global
 short_description: Global BGP resource module
 description: This module configures and manages the attributes of global bgp on Cisco IOS.
 version_added: 1.3.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSv Version 15.2.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: A list of configurations for global bgp.
+    description: A dictionary of options for bgp configurations.
     type: dict
     suboptions:
       as_number:
-        description: Autonomous system number.
+        description: Autonomous system number
         type: str
         required: true
       aggregate_address:
         description: Configure BGP aggregate entries
-        type: dict
+        type: list
+        elements: dict
         suboptions:
           address:
-            description: Aggregate address
+            description: Specify aggregate address
             type: str
           netmask:
-            description: Aggregate mask
+            description: Specify aggregate mask
             type: str
           advertise_map:
             description: Set condition to advertise attribute
@@ -122,8 +116,7 @@ options:
             type: bool
           bestpath:
             description: Change the default bestpath selection
-            type: list
-            elements: dict
+            type: dict
             suboptions:
               aigp:
                 description:
@@ -170,7 +163,7 @@ options:
             description:
               - Configure Route-Reflector Cluster-id (peers may reset)
               - A.B.C.D/Please refer vendor documentation for valid Route-Reflector Cluster-id
-            type: bool
+            type: str
           confederation:
             description: AS confederation parameters
             type: dict
@@ -280,7 +273,7 @@ options:
             type: dict
             suboptions:
               neighbors:
-                description: Gracefully shut down all neigbors
+                description: Gracefully shut down all neighbors
                 type: dict
                 suboptions:
                   time:
@@ -289,10 +282,10 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
                   activate:
-                    description: Activate graceful shutdown of all neigbors
+                    description: Activate graceful shutdown of all neighbors
                     type: bool
               vrfs:
-                description: Gracefully shut down all vrf neigbors
+                description: Gracefully shut down all vrf neighbors
                 type: dict
                 suboptions:
                   time:
@@ -301,7 +294,7 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
                   activate:
-                    description: Activate graceful shutdown of all neigbors
+                    description: Activate graceful shutdown of all neighbors
                     type: bool
               community:
                 description:
@@ -315,7 +308,8 @@ options:
                 type: int
           inject_map:
             description: Routemap which specifies prefixes to inject
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               name:
                 description: route-map name
@@ -339,11 +333,10 @@ options:
                 description: Subnet network range
                 type: dict
                 suboptions:
-                  ipv4_with_subnet:
-                    description: IPv4 subnet range(A.B.C.D/nn)
-                    type: str
-                  ipv6_with_subnet:
-                    description: IPv6 subnet range(X:X:X:X::X/<0-128>)
+                  host_with_subnet:
+                    description:
+                    - IPv4 subnet range(A.B.C.D/nn)
+                    - IPv6 subnet range(X:X:X:X::X/<0-128>)
                     type: str
                   peer_group:
                     description: Member of the peer-group
@@ -379,7 +372,7 @@ options:
                 suboptions:
                   delay:
                     description:
-                      - Set the delay to tigger nexthop tracking
+                      - Set the delay to trigger nexthop tracking
                       - Please refer vendor documentation for valid values
                     type: int
                   enable:
@@ -388,8 +381,7 @@ options:
           nopeerup_delay:
             description: Set how long BGP will wait for the first peer to come up before beginning the update delay or
               graceful restart timers (in seconds)
-            type: list
-            elements: dict
+            type: dict
             suboptions:
               cold_boot:
                 description:
@@ -489,12 +481,12 @@ options:
                     type: bool
                   permanent:
                     description: Keep the slow-peer permanently in slow-update group
-                    type: int
+                    type: bool
           snmp:
             description:
               - BGP SNMP options
               - BGP SNMP trap options
-              - Use cbgpPeer2Type as part of index for traps
+              - Use cbgp Peer2Type as part of index for traps
             type: bool
           sso:
             description:
@@ -630,10 +622,17 @@ options:
                   - Distance for local routes
                   - Please refer vendor documentation for valid values
                 type: int
-      distribute_list:
+      distribute_lists:
         description: Filter networks in routing updates
-        type: dict
+        type: list
+        elements: dict
         suboptions:
+          prefix:
+            description: Filtering incoming updates based on gateway
+            type: str
+          gateway:
+            description: Filter prefixes in routing updates
+            type: str
           acl:
             description: IP access list number/name
             type: str
@@ -672,7 +671,7 @@ options:
           ibgp:
             description: iBGP-secondary-multipath
             type: int
-      neighbor:
+      neighbors:
         description: Specify a neighbor router
         type: list
         elements: dict
@@ -683,7 +682,7 @@ options:
           tag:
             description: Neighbor tag
             type: str
-          ipv6_adddress:
+          ipv6_address:
             description: Neighbor ipv6 address (X:X:X:X::X)
             type: str
           activate:
@@ -1079,9 +1078,10 @@ options:
               replace_as:
                 description: Replace all private AS numbers with local AS
                 type: bool
-          route_map:
+          route_maps:
             description: Apply route map to neighbor
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               name:
                 description: Replace all private AS numbers with local AS
@@ -1253,7 +1253,7 @@ options:
             type: int
           unsuppress_map:
             description:
-              - Route-map to selectively unsuppress suppressed routes
+              - Route-map to selectively un-suppress suppressed routes
               - Name of route map
             type: str
           version:
@@ -1570,13 +1570,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - deleted
-    - purged
-    - gathered
-    - rendered
-    - parsed
+      - merged
+      - replaced
+      - deleted
+      - purged
+      - gathered
+      - rendered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -1597,6 +1597,7 @@ options:
         connection to remote host is not required.
     type: str
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -2085,22 +2086,52 @@ EXAMPLES = """
 
 """
 
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ["router bgp 65000", "bgp nopeerup-delay post-boot 10", "bgp advertise-best-external"]
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -2118,20 +2149,19 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
         argument_spec=Bgp_globalArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
+
     result = Bgp_global(module).execute_module()
     module.exit_json(**result)
 
