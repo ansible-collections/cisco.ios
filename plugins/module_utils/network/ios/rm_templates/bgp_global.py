@@ -361,7 +361,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 r"""
                 \s*address-family
                 (\s(?P<afi>ipv4|ipv6))?
-                (\s(?P<modifier>multicast|multicast))?
+                (\s(?P<modifier>multicast|unicast))?
                 (\simport-map\s(?P<import_map>\S+))?
                 $""",
                 re.VERBOSE,
@@ -432,6 +432,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 }
             },
         },
+        # bgp starts
         {
             "name": "bgp.additional_paths",
             "getval": re.compile(
@@ -1191,5 +1192,523 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp upgrade-cli af-mode",
             "result": {"bgp": {"update_group": {"af_mode": True}}},
+        },
+        # bgp ends
+        # neighbor starts
+        {
+            "name": "neighbors.remote_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sremote-as\s(?P<remote_as>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 remote-as 650",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remote_as": "{{ remote_as }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.peer_group",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \speer-group\s(?P<peer_group>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 peer-group 650",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "peer_group": "{{ peer_group }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.bmp_activate",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<bmp_activate>bmp-activate)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 bmp-activate",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "bmp_activate": "{{ not not bmp_activate }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.cluster_id",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<cluster_id>cluster-id)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 cluster-id",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"cluster_id": "{{ not not cluster_id }}"}
+                }
+            },
+        },
+        {
+            "name": "neighbors.description",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<description>description)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 description",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "description": "{{ not not description }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.disable_connected_check",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<disable_connected_check>disable-connected-check)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 disable-connected-check",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "disable_connected_check": "{{ not not disable_connected_check }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.ebgp_multihop",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<enable>ebgp_multihop)
+                (\s(?P<hop_count>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 ebgp-multihop 2",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "ebgp_multihop": {
+                            "enable": "{{ not not enable }}",
+                            "hop_count": "{{ hop_count }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.fall_over.bfd",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sfall-over
+                \s(?P<set>bfd)
+                (\s(?P<multi_hop>multi-hop))?
+                (\s(?P<single_hop>single-hop))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 fall-over bfd",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "fall_over": {
+                            "bfd": {
+                                "set": "{{ not not set }}",
+                                "multi_hop": "{{ not not multi_hop }}",
+                                "single_hop": "{{ not not single_hop }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.fall_over.route_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
+                \s(?P<route_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 route_map map2",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "fall_over": {"route_map": "{{ not not route_map }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.ha_mode",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sha-mode
+                \s(?P<set>graceful-restart)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 ha-mode graceful-restart",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "ha_mode": {
+                            "set": "{{ not not set }}",
+                            "disable": "{{ not not disable }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.inherit",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s(?P<inherit>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 inherit peer-session newsession",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"inherit": "{{ inherit }}"}}
+            },
+        },
+        {
+            "name": "neighbors.local_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
+                (\s(?P<number>\S+))?
+                (\s(?P<dual_as>dual-as))?
+                (\s(?P<no_prepend>no-prepend))?
+                (\s(?P<replace_as>replace-as))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 local-as 65444 no-prepend",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "local_as": {
+                            "set": "{{ not not local_as }}",
+                            "number": "{{ number }}",
+                            "dual_as": "{{ not not dual_as }}",
+                            "no_prepend": {
+                                "set": "{{ not not no_prepend }}",
+                                "replace_as": "{{ not not replace_as }}",
+                            },
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.log_neighbor_changes",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<set>log-neighbor-changes)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 log-neighbor-changes disable",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "log_neighbor_changes": {
+                            "set": "{{ not not set }}",
+                            "disable": "{{ not not disable }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.password",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\spassword
+                \s(?P<encryption>\d+)
+                (\s(?P<pass_key>.$))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 password 5 my pass",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "password": {
+                            "encryption": "{{ encryption }}",
+                            "pass_key": "{{ pass_key }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.path_attribute",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute
+                (\s(?P<attr>)discard|treat-as-withdraw)?
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 path-attribute discard range 23 50 in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "path_attribute": {
+                            "{{ 'discard' if attr=='discard' else 'treat_as_withdraw' }}": {
+                                "type": "{{ type }}",
+                                "range": {"start": "{{ start }}", "end": "{{ end }}"},
+                                "in": "{{ not not in }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.shutdown",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sshutdown
+                (\sgraceful(?P<graceful>)\d+)?
+                (\scommunity(?P<community>\d+))?
+                (\s(?P<local_preference>local-preference))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 shutdown graceful 31 community 22",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "shutdown": {
+                            "set": True,
+                            "graceful": "{{ graceful }}",
+                            "community": "{{ community }}",
+                            "local_preference": "{{ not not local_preference }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.soft_reconfiguration",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 soft-reconfiguration",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"soft_reconfiguration": True}}
+            },
+        },
+        {
+            "name": "neighbors.timers",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stimers
+                (\s(?P<interval>)\d+)?
+                (\s(?P<holdtime>\d+))?
+                (\s(?P<min_holdtime>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 timers 23 5534 22",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "timers": {
+                            "interval": "{{ interval }}",
+                            "holdtime": "{{ holdtime }}",
+                            "min_holdtime": "{{ min_holdtime }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.transport.connection_mode",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\sconnection-mode
+                (\s(?P<active>)active)?
+                (\s(?P<passive>passive))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 transport connection-mode active",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "transport": {
+                            "connection_mode": {
+                                "active": "{{ not not active }}",
+                                "passive": "{{ not not passive }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.transport.multi_session",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\smulti-session
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 transport multi-session",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"transport": {"multi_session": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.transport.path_mtu_discovery",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\spath-mtu-discovery
+                (\s(?P<disable>)disable)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 transport path-mtu-discovery disable",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "transport": {
+                            "path_mtu_discovery": {
+                                "set": True,
+                                "disable": "{{ not not disable }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.ttl_security",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sttl-security
+                (\shops(?P<ttl_security>)\d+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 ttl-security hops 22",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"ttl_security": "{{ ttl_security }}"}
+                }
+            },
+        },
+        {
+            "name": "neighbors.unsuppress_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sunsuppress-map
+                (\s(?P<unsuppress_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 unsuppress-map maphere",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"unsuppress_map": "{{ unsuppress_map }}"}
+                }
+            },
+        },
+        {
+            "name": "neighbors.version",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sversion
+                (\s(?P<version>)\d+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 version 2",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"version": "{{ version }}"}}
+            },
+        },
+        {
+            "name": "neighbors.weight",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sweight
+                (\s(?P<weight>)\d+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 weight 2",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"weight": "{{ weight }}"}}
+            },
+        },
+        # neighbor ends
+        {
+            "name": "neighbors.remote_asTempalte",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sremote-as(?P<remote_as>\S+)
+                (\s(?P<keepalive>\d+))?
+                (\s(?P<holdtime>\d+))?
+                (\s(?P<min_holdtime>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "timers bgp 3 4 5 ",
+            "result": {
+                "timers": {
+                    "keepalive": "{{ keepalive }}",
+                    "holdtime": "{{ holdtime }}",
+                    "min_holdtime": "{{ min_holdtime }}",
+                }
+            },
         },
     ]

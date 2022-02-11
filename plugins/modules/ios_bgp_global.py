@@ -676,14 +676,11 @@ options:
         type: list
         elements: dict
         suboptions:
-          address:
-            description: Neighbor address (A.B.C.D)
-            type: str
-          tag:
-            description: Neighbor tag
-            type: str
-          ipv6_address:
-            description: Neighbor ipv6 address (X:X:X:X::X)
+          neighbor_address:
+            description:
+            - Neighbor address (A.B.C.D)
+            - Neighbor tag
+            - Neighbor ipv6 address (X:X:X:X::X)
             type: str
           activate:
             description: Enable the Address Family for this Neighbor
@@ -1000,7 +997,14 @@ options:
                 type: bool
           password:
             description: Set a password
-            type: str
+            type: dict
+            suboptions:
+              encryption:
+                description: Encryption type (0 to disable encryption, 7 for proprietary)
+                type: int
+              pass_key:
+                description: The password
+                type: str
           path_attribute:
             description: BGP optional attribute filtering
             type: dict
@@ -1146,6 +1150,12 @@ options:
                   - time in seconds
                   - Please refer vendor documentation for valid values
                 type: int
+              community:
+                description: Set Community for Gshut routes
+                type: int
+              local_preference:
+                description: Set Local Preference for Gshut routes
+                type: bool
           slow_peer:
             description: Configure slow-peer
             type: dict
