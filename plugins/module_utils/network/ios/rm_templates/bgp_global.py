@@ -1194,7 +1194,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"bgp": {"update_group": {"af_mode": True}}},
         },
         # bgp ends
-        # neighbor starts
+        # neighbor remote-as starts
         {
             "name": "neighbors.remote_as",
             "getval": re.compile(
@@ -1689,26 +1689,1098 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "neighbors": {"{{ neighbor_address }}": {"weight": "{{ weight }}"}}
             },
         },
-        # neighbor ends
+        # neighbor remote-as ends
+        # neighbor peer-group starts
         {
-            "name": "neighbors.remote_asTempalte",
+            "name": "neighbors.activate",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)
-                \sremote-as(?P<remote_as>\S+)
-                (\s(?P<keepalive>\d+))?
-                (\s(?P<holdtime>\d+))?
-                (\s(?P<min_holdtime>\d+))?
+                \s+neighbor\s(?P<neighbor_address>\S+)\sactivate
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "timers bgp 3 4 5 ",
+            "setval": "neighbor 10.0.2.14 activate",
+            "result": {"neighbors": {"{{ neighbor_address }}": {"activate": True}}},
+        },
+        {
+            "name": "neighbors.additional_paths",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadditional-paths
+                (\s(?P<disable>)disable)?
+                (\s(?P<receive>)receive)?
+                (\s(?P<send>)send)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 additional-paths send",
             "result": {
-                "timers": {
-                    "keepalive": "{{ keepalive }}",
-                    "holdtime": "{{ holdtime }}",
-                    "min_holdtime": "{{ min_holdtime }}",
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "additional_paths": {
+                            "disable": "{{ not not disable }}",
+                            "receive": "{{ not not receive }}",
+                            "send": "{{ not not send }}",
+                        }
+                    }
                 }
             },
         },
+        {
+            "name": "neighbors.advertise.additional_paths",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sadditional-paths
+                (\s(?P<all>)all)?
+                (\sbest\s(?P<receive>)\d+)?
+                (\s(?P<group_best>)group-best)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 advertise additional-paths all best 3",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise": {
+                            "additional_paths": {
+                                "all": "{{ not not all }}",
+                                "best": "{{ receive }}",
+                                "group_best": "{{ not not group_best }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.advertise.best_external",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sbest-external
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 advertise best-external",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"advertise": {"best-external": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.advertise.diverse_path",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sdiverse-path
+                (\s(?P<backup>)backup)?
+                (\s(?P<mpath>)mpath)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 advertise diverse-path mpath",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise": {
+                            "diverse_path": {
+                                "backup": "{{ not not backup }}",
+                                "mpath": "{{ not not mpath }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.advertise_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise-map
+                (\s(?P<name>)\S+)?
+                (\sexist-map\s(?P<exist_map>)\S+)?
+                (\snon-exist-map\s(?P<non_exist_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 advertise-map map1 exist-map map2",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise_map": {
+                            "name": "{{ name }}",
+                            "exist_map": "{{ exist_map }}",
+                            "non_exist_map": "{{ non_exist_map }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.advertisement_interval",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertisement-interval
+                (\s(?P<advertisement_interval>)\d+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 advertisement-interval 22",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertisement_interval": "{{ advertisement_interval }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.aigp",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\saigp
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 aigp",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"aigp": {"enable": True}}}
+            },
+        },
+        {
+            "name": "neighbors.aigp.send.cost_community",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\scost-community
+                (\s(?P<id>)\d+)\spoi
+                (\s(?P<igp_cost>)igp-cost)?
+                (\s(?P<pre_bestpath>)pre-bestpath)?
+                (\s(?P<transitive>)transitive)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 aigp send cost-community 22 poi igp-cost",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "aigp": {
+                            "send": {
+                                "cost_community": {
+                                    "id": "{{ id }}",
+                                    "poi": {
+                                        "igp_cost": "{{ not not igp_cost }}",
+                                        "pre_bestpath": "{{ not not pre_bestpath }}",
+                                        "transitive": "{{ not not transitive }}",
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.aigp.send.med",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\smed
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 aigp send med",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"aigp": {"send": {"med": True}}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.allow_policy",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sallow-policy
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 allow_policy",
+            "result": {"neighbors": {"{{ neighbor_address }}": {"allow_policy": True}}},
+        },
+        {
+            "name": "neighbors.allowas_in",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sallowas-in
+                (\s(?P<allowas_in>)\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 allowas-in 10",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"allowas_in": "{{ allowas_in }}"}
+                }
+            },
+        },
+        {
+            "name": "neighbors.as_override",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sas-override
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 as-override",
+            "result": {"neighbors": {"{{ neighbor_address }}": {"as_override": True}}},
+        },
+        {
+            "name": "neighbors.bmp_activate",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sbmp-activate
+                (\sserver\s(?P<server>)\d+)?
+                (\s(?P<all>)all)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 bmp-activate server 2",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "bmp_activate": {
+                            "server": "{{ server }}",
+                            "all": "{{ not not  all }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.capability",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\scapability\sorf\sprefix-list
+                (\s(?P<both>)both)?
+                (\s(?P<receive>)receive)?
+                (\s(?P<send>)send)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 bmp-activate server 2",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "bmp_activate": {
+                            "server": "{{ server }}",
+                            "all": "{{ not not  all }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.default_originate",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 default-originate",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"default_originate": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.default_originate.route_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                (\sroute-map\s(?P<route_map>)\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 default-originate route-map mp1",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "default-originate": {"route_map": "{{ route_map }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.distribute_list",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdistribute-list
+                (\s(?P<acl>)\S+)
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 distribute-list 31 in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "distribute_list": {
+                            "acl": "{{ acl }}",
+                            "in": "{{ not not in }}",
+                            "out": "{{ not not out }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.dmzlink_bw",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdmzlink-bw
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.1.1 dmzlink-bw",
+            "result": {"neighbors": {"{{ neighbor_address }}": {"dmzlink_bw": True}}},
+        },
+        {
+            "name": "neighbors.filter_list",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sfilter-list
+                (\s(?P<acl>)\S+)
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 distribute-list 31 in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "filter_list": {
+                            "path_acl": "{{ acl }}",
+                            "in": "{{ not not in }}",
+                            "out": "{{ not not out }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.maximum_prefix",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
+                (\s(?P<max_no>)\d+)
+                (\s(?P<threshold_val>)\d+)?
+                (\srestart(?P<restart>\d+))?
+                (\swarning-only(?P<warning_only>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 distribute-list 31 in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "maximum_prefix": {
+                            "max_no": "{{ max_no }}",
+                            "threshold_val": "{{ threshold_val }}",
+                            "restart": "{{ not not restart }}",
+                            "warning_only": "{{ not not warning_only }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.next_hop_self.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 next-hop-self",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_self": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.next_hop_self.all",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 next-hop-self all",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_self": {"all": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.next_hop_unchanged.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 next-hop-unchanged",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_unchanged": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.next_hop_unchanged.allpaths",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged\sallpaths
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 next-hop-unchanged allpaths",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_unchanged": {"allpaths": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.remove_private_as.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 remove-private-as",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"remove_private_as": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.remove_private_as.all",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 remove-private-as all",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"remove_private_as": {"all": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.remove_private_as.replace_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sreplace-as
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 remove-private-as replace-as",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"replace_as": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.route_maps",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-maps
+                (\s(?P<route_maps>)\S+)
+                (\s(?P<in>)in)?
+                (\s(?P<out>)out)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 route-maps mp1 in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "route_maps": [
+                            {
+                                "name": "{{ name }}",
+                                "in": "{{ not not in }}",
+                                "out": "{{ not not out }}",
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.route_reflector_client",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-reflector-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 route-reflector-client",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"route_reflector_client": True}
+                }
+            },
+        },
+        {
+            "name": "neighbors.route_server_client.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 route-server-client",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"route_server_client": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.route_server_client.context",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                (\scontext(?P<context>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 route-server-client context cont1x",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "route_server_client": {"context": "{{ context }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.send_community.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-community",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_community": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.send_community.both",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sboth
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-community both",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_community": {"both": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.send_community.extended",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sextended
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-community extended",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_community": {"extended": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.send_community.standard",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sstandard
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-community standard",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_community": {"standard": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.send_label.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-label
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-label",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"send_label": {"set": True}}}
+            },
+        },
+        {
+            "name": "neighbors.send_label.explicit_null",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sexplicit-null
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 send-label explicit-null",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_label": {"explicit_null": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.slow_peer.detection",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
+                (\s(?P<enable>)enable)?
+                (\s(?P<disable>)disable)?
+                (\sthreshold\s(?P<threshold>)\d+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 slow-peer detection enable",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "slow_peer": {
+                            "detection": {
+                                "enable": "{{ not not enable }}",
+                                "disable": "{{ not not disable }}",
+                                "threshold": "{{ threshold }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.slow_peer.split_update_group",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
+                (\s(?P<static>)static)?
+                (\s(?P<dynamic>)dynamic)?
+                (\s(?P<disable>)disable)?
+                (\s(?P<permanent>)permanent)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 slow-peer split-update-group dynamic",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "slow_peer": {
+                            "split_update_group": {
+                                "static": "{{ not not static }}",
+                                "dynamic": {
+                                    "enable": "{{ not not dynamic }}",
+                                    "disable": "{{ not not disable }}",
+                                    "permanent": "{{ not not permanent }}",
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "neighbors.translate_update.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stranslate_update
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 translate-update",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"translate_update": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "neighbors.translate_update.nlri",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stranslate-update\snlri
+                (\s(?P<multicast>)multicast)?
+                (\s(?P<unicast>)unicast)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 translate-update nlri multicast",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "translate_update": {
+                            "nlri": {
+                                "multicast": "{{ not not multicast }}",
+                                "unicast": "{{ not not unicast }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        # neighbor peer-group ends
+        # redistribute starts
+        {
+            "name": "redistribute.application",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sapplication\s(?P<name>\S+)
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute application app1 metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "application": {
+                            "name": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.bgp",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sbgp\s(?P<name>\S+)
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute bgp 6500.001 metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "bgp": {
+                            "name": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.connected",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sconnected
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute connected metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "connected": {
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.eigrp",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\seigrp\s(?P<name>\S+)
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute eigrp 6500.001 metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "eigrp": {
+                            "as_number": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.isis",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sisis\s(?P<name>\S+)
+                (\s(?P<clns>)clns)?
+                (\s(?P<ip>)ip)?
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute isis namesome clns ip metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "isis": {
+                            "area_tag": "{{ name }}",
+                            "clns": "{{ not not clns }}",
+                            "ip": "{{ not not ip }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.iso_igrp",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\siso-igrp\s(?P<name>\S+)
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute iso-igrp namesome route-map mp1",
+            "result": {
+                "redistribute": [
+                    {"isis": {"area_tag": "{{ name }}", "route_map": "{{ route_map }}"}}
+                ]
+            },
+        },
+        {
+            "name": "redistribute.lisp",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\slisp
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute lisp metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {"lisp": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                ]
+            },
+        },
+        {
+            "name": "redistribute.mobile",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\smobile
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute mobile metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "mobile": {
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.odr",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sodr
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute odr metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {"odr": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                ]
+            },
+        },
+        {
+            "name": "redistribute.ospf",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sospf\s(?P<process_id>\S+)
+                (\s(?P<type_1>)1)?
+                (\s(?P<type_2>)2)?
+                (\s(?P<external>)external)?
+                (\s(?P<internal>)internal)?
+                (\s(?P<nssa_external>)nssa-external)?
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                (\svrf\s(?P<vrf>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute ospf metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "ospf": {
+                            "process_id": "{{ process_id }}",
+                            "match": {
+                                "type_1": "{{ not not type_2 }}",
+                                "type_2": "{{ not not type_2 }}",
+                                "external": "{{ not not external }}",
+                                "internal": "{{ not not internal }}",
+                                "nssa_external": "{{ not not nssa_external }}",
+                            },
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                            "vrf": "{{ vrf }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.ospfv3",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sospfv3\s(?P<process_id>\S+)
+                (\s(?P<type_1>)1)?
+                (\s(?P<type_2>)2)?
+                (\s(?P<external>)external)?
+                (\s(?P<internal>)internal)?
+                (\s(?P<nssa_external>)nssa-external)?
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute ospfv3 metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "ospfv3": {
+                            "process_id": "{{ process_id }}",
+                            "match": {
+                                "type_1": "{{ not not type_2 }}",
+                                "type_2": "{{ not not type_2 }}",
+                                "external": "{{ not not external }}",
+                                "internal": "{{ not not internal }}",
+                                "nssa_external": "{{ not not nssa_external }}",
+                            },
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.rip",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\srip
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute rip metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {"rip": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                ]
+            },
+        },
+        {
+            "name": "redistribute.static",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\sstatic
+                (\s(?P<clns>)clns)?
+                (\s(?P<ip>)ip)?
+                (\smetric\s(?P<metric>)\d+)?
+                (\sroute-map\s(?P<route_map>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute static clns ip metric 100 route-map mp1",
+            "result": {
+                "redistribute": [
+                    {
+                        "static": {
+                            "clns": "{{ not not clns }}",
+                            "ip": "{{ not not ip }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "redistribute.vrf",
+            "getval": re.compile(
+                r"""
+                \s+redistribute\svrf
+                (\s(?P<name>\S+))?
+                (\s(?P<global>)global)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute vrf metric global",
+            "result": {
+                "redistribute": [
+                    {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}}
+                ]
+            },
+        },
+        # redistribute ends
     ]
