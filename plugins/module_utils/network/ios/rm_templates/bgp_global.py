@@ -40,7 +40,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             # "shared": True,
         },
         {
-            "name": "aggregate_address",
+            "name": "aggregate_addresses",
             "getval": re.compile(
                 r"""
                 \s*aggregate-address
@@ -57,7 +57,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                "aggregate_address": [
+                "aggregate_addresses": [
                     {
                         "address": "{{ address }}",
                         "netmask": "{{ netmask }}",
@@ -320,7 +320,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"maximum_secondary_paths": {"ibgp": "{{ ibgp }}"}},
         },
         {
-            "name": "network",
+            "name": "networks",
             "getval": re.compile(
                 r"""
                 \s*network
@@ -333,7 +333,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "network 51.0.0.0 mask 255.255.0.0 route-map map2 backdoor",
             "result": {
-                "network": [
+                "networks": [
                     {
                         "address": "{{ address }}",
                         "netmask": "{{ netmask }}",
@@ -769,7 +769,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "bgp.inject_map",
+            "name": "bgp.inject_maps",
             "getval": re.compile(
                 r"""
                 \s*bgp\sinject-map
@@ -782,7 +782,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "bgp inject-map map2 exist-map mp3 copy-attributes",
             "result": {
                 "bgp": {
-                    "inject_map": [
+                    "inject_maps": [
                         {
                             "name": "{{ name }}",
                             "exist_map_name": "{{ exist_map_name }}",
@@ -2673,7 +2673,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "ospf": {
                             "process_id": "{{ process_id }}",
                             "match": {
-                                "type_1": "{{ not not type_2 }}",
+                                "type_1": "{{ not not type_1 }}",
                                 "type_2": "{{ not not type_2 }}",
                                 "external": "{{ not not external }}",
                                 "internal": "{{ not not internal }}",

@@ -33,7 +33,7 @@ options:
         description: Autonomous system number
         type: str
         required: true
-      aggregate_address:
+      aggregate_addresses:
         description: Configure BGP aggregate entries
         type: list
         elements: dict
@@ -306,7 +306,7 @@ options:
                   - Set Local Preference for Gshut routes
                   - Please refer vendor documentation for valid values
                 type: int
-          inject_map:
+          inject_maps:
             description: Routemap which specifies prefixes to inject
             type: list
             elements: dict
@@ -526,7 +526,7 @@ options:
                 description: Upgrade to AFI mode
                 type: bool
       bmp:
-        description: BGP Monitoring Protocol)
+        description: BGP Monitoring Protocol
         type: dict
         suboptions:
           buffer_size:
@@ -812,7 +812,7 @@ options:
             description:
               - Advertise capability to the peer
               - Advertise ORF capability to the peer
-              - Advertise prefixlist ORF capability to this neighbor
+              - Advertise prefix-list ORF capability to this neighbor
             type: dict
             suboptions:
               both:
@@ -1275,6 +1275,23 @@ options:
           weight:
             description: Set default weight for routes from this neighbor
             type: int
+      networks:
+        description:  Specify a network to announce via BGP
+        type: list
+        elements: dict
+        suboptions:
+          address:
+            description: Specify network address
+            type: str
+          netmask:
+            description: Specify network mask
+            type: str
+          route_map:
+            description: Route-map to modify the attributes
+            type: str
+          backdoor:
+            description:  Specify a BGP backdoor route
+            type: bool
       redistribute:
         description: Redistribute information from another routing protocol
         type: list
