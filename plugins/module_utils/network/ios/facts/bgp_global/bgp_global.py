@@ -51,7 +51,6 @@ class Bgp_globalFacts(object):
         if not data:
             data = self.get_bgp_global_data(connection)
 
-        # data = self._flatten_config(data)
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(
             lines=data.splitlines(), module=self._module
@@ -89,26 +88,3 @@ class Bgp_globalFacts(object):
             ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
-
-    def _flatten_config(self, data):
-        """ Flatten neighbor contexts in
-            the running-config for easier parsing.
-        :param obj: dict
-        :returns: flattened running config
-        """
-        data = data.split("\n")
-        in_nbr_cxt = False
-        cur_nbr = {}
-
-        for x in data:
-            cur_indent = len(x) - len(x.lstrip())
-            if x.strip().startswith("neighbor"):
-                in_nbr_cxt = True
-                cur_nbr["nbr"] = x
-                cur_nbr["indent"] = cur_indent
-            elif cur_nbr and (cur_indent <= cur_nbr["indent"]):
-                in_nbr_cxt = False
-            elif in_nbr_cxt:
-                data[data.index(x)] = cur_nbr["nbr"] + " " + x.strip()
-
-        return "\n".join(data)

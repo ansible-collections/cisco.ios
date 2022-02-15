@@ -549,6 +549,23 @@ options:
               - Server Information
               - Please refer vendor documentation for valid values
             type: int
+          server_options:
+            description: bmp server options
+            type: dict
+            suboptions:
+              activate:
+                description: activate server
+                type: bool
+              address:
+                description: skip all refreshes
+                type: dict
+                suboptions:
+                  host:
+                    description: host address
+                    type: str
+                  port:
+                    description: port number BMP server
+                    type: int
       default_information:
         description:
           - Control distribution of default information

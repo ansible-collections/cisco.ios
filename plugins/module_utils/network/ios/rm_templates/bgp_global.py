@@ -98,19 +98,19 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "bmp.initial_refresh.delay",
             "getval": re.compile(
                 r"""
-                \s*bmp\sbuffer-size\sinitial-refresh\sdelay
+                \s*bmp\sinitial-refresh\sdelay
                 (\s(?P<delay>\d+))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bmp initial-refresh delay",
+            "setval": "bmp initial-refresh delay 100",
             "result": {"bmp": {"initial_refresh": {"delay": "{{ delay }}"}}},
         },
         {
             "name": "bmp.initial_refresh.skip",
             "getval": re.compile(
                 r"""
-                \s*bmp\sbuffer-size\sinitial-refresh\sdelay\sskip
+                \s*bmp\sinitial-refresh\sskip
                 $""",
                 re.VERBOSE,
             ),
@@ -118,16 +118,45 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"bmp": {"initial_refresh": {"skip": True}}},
         },
         {
-            "name": "bmp.initial_refresh.server",
+            "name": "bmp.server",
             "getval": re.compile(
                 r"""
-                \s*bmp\sbuffer-size\sinitial-refresh\sserver
+                \s*bmp\sserver
                 (\s(?P<server>\d+))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bmp server",
-            "result": {"bmp": {"initial_refresh": {"server": "{{ server }}"}}},
+            "setval": "bmp server 10",
+            "result": {"bmp": {"server": "{{ server }}"}},
+        },
+        {
+            "name": "bmp.server_options.activate",
+            "getval": re.compile(
+                r"""
+                \s*activate
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "activate",
+            "result": {"bmp": {"server_options": {"activate": True}}},
+        },
+        {
+            "name": "bmp.server_options.address",
+            "getval": re.compile(
+                r"""
+                \s*address\s(?P<host>\S+)\s
+                (\sport-number(?P<port>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "address 10.0.2.1 port-number 2\nexit-bmp-server-mode",
+            "result": {
+                "bmp": {
+                    "server_options": {
+                        "address": {"host": "{{ host }}", "port": "{{ port }}"}
+                    }
+                }
+            },
         },
         {
             "name": "default_information",
