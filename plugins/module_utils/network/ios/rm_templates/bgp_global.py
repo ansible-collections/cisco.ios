@@ -2084,7 +2084,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor 10.0.2.14 distribute-list 31 in",
+            "setval": "neighbor 10.0.2.14 filter-list 31 in",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
@@ -2109,7 +2109,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor 10.0.2.14 distribute-list 31 in",
+            "setval": "neighbor 10.0.2.14 maximum-prefix 31 restart",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
