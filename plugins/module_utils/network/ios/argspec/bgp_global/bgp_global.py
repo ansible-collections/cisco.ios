@@ -719,6 +719,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         },
                         "ttl_security": {"type": "int"},
                         "unsuppress_map": {"type": "str"},
+                        "update_source": {"type": "str"},
                         "version": {"type": "int"},
                         "weight": {"type": "int"},
                     },

@@ -1283,6 +1283,9 @@ options:
               - Route-map to selectively un-suppress suppressed routes
               - Name of route map
             type: str
+          update_source:
+            description: Source of routing updates
+            type: str
           version:
             description:
               - Set the BGP version to match a neighbor

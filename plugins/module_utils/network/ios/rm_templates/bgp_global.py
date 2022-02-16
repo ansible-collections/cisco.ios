@@ -75,7 +75,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "auto_summary",
             "getval": re.compile(
                 r"""
-                (\s*auto-summary))?
+                ((\s*auto-summary))?
                 $""",
                 re.VERBOSE,
             ),
@@ -145,7 +145,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s*address\s(?P<host>\S+)\s
-                (\sport-number(?P<port>\d+)
+                (\sport-number(?P<port>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -1115,8 +1115,8 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "bgp": {
                     "slow_peer": {
                         "split_update_group": {
-                            "dynamic": "{{ dynamic }}",
-                            "permanent": "{{ permanent }}",
+                            "dynamic": "{{ not not dynamic }}",
+                            "permanent": "{{ not not permanent }}",
                         }
                     }
                 }
@@ -1563,7 +1563,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "neighbors.soft_reconfiguration",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration\sinbound
                 $""",
                 re.VERBOSE,
             ),
@@ -1687,6 +1687,22 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {"unsuppress_map": "{{ unsuppress_map }}"}
+                }
+            },
+        },
+        {
+            "name": "neighbors.update_source",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\supdate-source
+                (\s(?P<update_source>)\S+)?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor 10.0.2.14 update-source Loopback0",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"update_source": "{{ update_source }}"}
                 }
             },
         },
