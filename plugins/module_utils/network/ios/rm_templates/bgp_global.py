@@ -4,7 +4,6 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
-from unicodedata import name
 
 __metaclass__ = type
 
@@ -23,7 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Bgp_globalTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     PARSERS = [
         {
@@ -446,7 +447,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "description {{ route_server_context.description }}",
-            "result": {"route_server_context": {"description": "{{ description }}"}},
+            "result": {
+                "route_server_context": {"description": "{{ description }}"}
+            },
         },
         {
             "name": "synchronization",
@@ -470,7 +473,10 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' ' + name) if name is defined else '' }}"
             "{{ (' filter' ) if filter|d(False) is defined else '' }}",
             "result": {
-                "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"}
+                "table_map": {
+                    "name": "{{ name }}",
+                    "filter": "{{ not not filter }}",
+                }
             },
         },
         {
@@ -527,7 +533,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.advertise_best_external",
-            "getval": re.compile(r"""\s*(bgp advertise-best-external)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp advertise-best-external)""", re.VERBOSE
+            ),
             "setval": "{{ ('bgp advertise-best-external' ) if bgp.advertise_best_external|d(False) is defined else '' }}",
             "result": {"bgp": {"advertise_best_external": True}},
         },
@@ -545,7 +553,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.always_compare_med",
-            "getval": re.compile(r"""\s*(bgp\salways-compare-med)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\salways-compare-med)""", re.VERBOSE
+            ),
             "setval": "{{ ('bgp always-compare-med' ) if bgp.always_compare_med|d(False) is defined else '' }}",
             "result": {"bgp": {"always_compare_med": True}},
         },
@@ -557,7 +567,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.bestpath.aigp",
-            "getval": re.compile(r"""\s*(bgp\sbestpath\saigp\signore)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\sbestpath\saigp\signore)""", re.VERBOSE
+            ),
             "setval": "{{ ('bgp bestpath aigp ignore' ) if bgp.bestpath.aigp|d(False) is defined else '' }}",
             "result": {"bgp": {"bestpath": {"aigp": True}}},
         },
@@ -668,7 +680,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp confederation identifier {{ bgp.confederation.identifier }}",
-            "result": {"bgp": {"confederation": {"identifier": "{{ identifier }}"}}},
+            "result": {
+                "bgp": {"confederation": {"identifier": "{{ identifier }}"}}
+            },
         },
         {
             "name": "bgp.consistency_checker.auto_repair",
@@ -684,7 +698,10 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bgp": {
                     "consistency_checker": {
-                        "auto_repair": {"set": True, "interval": "{{ interval }}"}
+                        "auto_repair": {
+                            "set": True,
+                            "interval": "{{ interval }}",
+                        }
                     }
                 }
             },
@@ -703,7 +720,10 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bgp": {
                     "consistency_checker": {
-                        "error_message": {"set": True, "interval": "{{ interval }}"}
+                        "error_message": {
+                            "set": True,
+                            "interval": "{{ interval }}",
+                        }
                     }
                 }
             },
@@ -741,7 +761,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.deterministic_med",
-            "getval": re.compile(r"""\s*(bgp\sdeterministic-med)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\sdeterministic-med)""", re.VERBOSE
+            ),
             "setval": "bgp deterministic-med",
             "result": {"bgp": {"deterministic_med": True}},
         },
@@ -753,7 +775,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.enforce_first_as",
-            "getval": re.compile(r"""\s*(bgp\senforce-first-as)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\senforce-first-as)""", re.VERBOSE
+            ),
             "setval": "bgp enforce-first-as",
             "result": {"bgp": {"enforce_first_as": True}},
         },
@@ -765,7 +789,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.fast_external_fallover",
-            "getval": re.compile(r"""\s*(bgp\sfast-external-fallover)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\sfast-external-fallover)""", re.VERBOSE
+            ),
             "setval": "bgp fast-external-fallover",
             "result": {"bgp": {"fast_external_fallover": True}},
         },
@@ -802,7 +828,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp graceful-restart restart-time {{ bgp.graceful_restart.restart_time }}",
             "result": {
-                "bgp": {"graceful_restart": {"restart_time": "{{ restart_time }}"}}
+                "bgp": {
+                    "graceful_restart": {"restart_time": "{{ restart_time }}"}
+                }
             },
         },
         {
@@ -816,7 +844,11 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp graceful-restart stalepath-time {{ bgp.graceful_restart.stalepath_time }}",
             "result": {
-                "bgp": {"graceful_restart": {"stalepath_time": "{{ stalepath_time }}"}}
+                "bgp": {
+                    "graceful_restart": {
+                        "stalepath_time": "{{ stalepath_time }}"
+                    }
+                }
             },
         },
         {
@@ -911,7 +943,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.log_neighbor_changes",
-            "getval": re.compile(r"""\s*(bgp\slog-neighbor-changes)""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(bgp\slog-neighbor-changes)""", re.VERBOSE
+            ),
             "setval": "bgp log-neighbor-changes",
             "result": {"bgp": {"log_neighbor_changes": True}},
         },
@@ -937,7 +971,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp maxcommunity-limit {{ bgp.maxcommunity_limit }}",
-            "result": {"bgp": {"maxcommunity_limit": "{{ maxcommunity_limit }}"}},
+            "result": {
+                "bgp": {"maxcommunity_limit": "{{ maxcommunity_limit }}"}
+            },
         },
         {
             "name": "bgp.maxextcommunity_limit",
@@ -949,7 +985,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp maxextcommunity-limit {{ bgp.maxextcommunity_limit }}",
-            "result": {"bgp": {"maxextcommunity_limit": "{{ maxextcommunity_limit }}"}},
+            "result": {
+                "bgp": {"maxextcommunity_limit": "{{ maxextcommunity_limit }}"}
+            },
         },
         {
             "name": "bgp.nexthop.route_map",
@@ -973,7 +1011,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp nexthop trigger delay {{ bgp.nexthop.trigger.delay }}",
-            "result": {"bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}},
+            "result": {
+                "bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}
+            },
         },
         {
             "name": "bgp.nexthop.trigger.enable",
@@ -996,7 +1036,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp nopeerup-delay cold-boot {{ bgp.nopeerup_delay.cold_boot }}",
-            "result": {"bgp": {"nopeerup_delay": {"cold_boot": "{{ cold_boot }}"}}},
+            "result": {
+                "bgp": {"nopeerup_delay": {"cold_boot": "{{ cold_boot }}"}}
+            },
         },
         {
             "name": "bgp.nopeerup_delay.post_boot",
@@ -1008,7 +1050,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp nopeerup-delay post-boot {{ bgp.nopeerup_delay.post_boot }}",
-            "result": {"bgp": {"nopeerup_delay": {"post_boot": "{{ post_boot }}"}}},
+            "result": {
+                "bgp": {"nopeerup_delay": {"post_boot": "{{ post_boot }}"}}
+            },
         },
         {
             "name": "bgp.nopeerup_delay.nsf_switchover",
@@ -1021,7 +1065,11 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp nopeerup-delay nsf-switchover {{ bgp.nopeerup_delay.nsf_switchover }}",
             "result": {
-                "bgp": {"nopeerup_delay": {"nsf_switchover": "{{ nsf_switchover }}"}}
+                "bgp": {
+                    "nopeerup_delay": {
+                        "nsf_switchover": "{{ nsf_switchover }}"
+                    }
+                }
             },
         },
         {
@@ -1035,7 +1083,11 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp nopeerup-delay user-initiated {{ bgp.nopeerup_delay.user_initiated }}",
             "result": {
-                "bgp": {"nopeerup_delay": {"user_initiated": "{{ user_initiated }}"}}
+                "bgp": {
+                    "nopeerup_delay": {
+                        "user_initiated": "{{ user_initiated }}"
+                    }
+                }
             },
         },
         {
@@ -1070,7 +1122,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp refresh max-eor-time {{ bgp.refresh.max_eor_time }}",
-            "result": {"bgp": {"refresh": {"max_eor_time": "{{ max_eor_time }}"}}},
+            "result": {
+                "bgp": {"refresh": {"max_eor_time": "{{ max_eor_time }}"}}
+            },
         },
         {
             "name": "bgp.refresh.stalepath_time",
@@ -1082,7 +1136,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp refresh stalepath-time {{ bgp.refresh.stalepath_time }}",
-            "result": {"bgp": {"refresh": {"stalepath_time": "{{ stalepath_time }}"}}},
+            "result": {
+                "bgp": {"refresh": {"stalepath_time": "{{ stalepath_time }}"}}
+            },
         },
         {
             "name": "bgp.regexp",
@@ -1154,7 +1210,11 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "bgp slow-peer detection threshold {{ bgp.slow_peer.detection.threshold }}",
             "result": {
-                "bgp": {"slow_peer": {"detection": {"threshold": "{{ threshold }}"}}}
+                "bgp": {
+                    "slow_peer": {
+                        "detection": {"threshold": "{{ threshold }}"}
+                    }
+                }
             },
         },
         {
@@ -1312,8 +1372,8 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval":  "neighbor {{ neighbors.neighbor_address }}"
-            "{{ (' remote-as ' + neighbors.peer_group) if neighbors.peer_group|d(False) is defined else '' }}"
+            "setval": "neighbor {{ neighbors.neighbor_address }}"
+            "{{ (' remote-as ' + neighbors.peer_group) if neighbors.peer_group|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
@@ -1353,7 +1413,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }} cluster-id",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"cluster_id": "{{ not not cluster_id }}"}
+                    "{{ neighbor_address }}": {
+                        "cluster_id": "{{ not not cluster_id }}"
+                    }
                 }
             },
         },
@@ -1404,7 +1466,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbors.neighbor_address }} ebgp-multihop"
-                      "{{ (' ' + neighbors.neighbor_address.hop_count) if neighbors.neighbor_address.hop_count is defined else '' }}",
+            "{{ (' ' + neighbors.neighbor_address.hop_count) if neighbors.neighbor_address.hop_count is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
@@ -1499,7 +1561,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }} inherit peer-session"
             "{{ (' ' + neighbors.inherit) if neighbors.inherit is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"inherit": "{{ inherit }}"}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"inherit": "{{ inherit }}"}
+                }
             },
         },
         {
@@ -1584,7 +1648,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "neighbors.path_attribute", # TODO
+            "name": "neighbors.path_attribute",  # TODO
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute
@@ -1602,7 +1666,10 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "path_attribute": {
                             "{{ 'discard' if attr=='discard' else 'treat_as_withdraw' }}": {
                                 "type": "{{ type }}",
-                                "range": {"start": "{{ start }}", "end": "{{ end }}"},
+                                "range": {
+                                    "start": "{{ start }}",
+                                    "end": "{{ end }}",
+                                },
                                 "in": "{{ not not in }}",
                             }
                         }
@@ -1650,7 +1717,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }}"
             "{{ (' soft-reconfiguration inbound') if neighbors.soft_reconfiguration|d(False) is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"soft_reconfiguration": True}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"soft_reconfiguration": True}
+                }
             },
         },
         {
@@ -1717,7 +1786,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }} transport multi-session",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"transport": {"multi_session": True}}
+                    "{{ neighbor_address }}": {
+                        "transport": {"multi_session": True}
+                    }
                 }
             },
         },
@@ -1759,7 +1830,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' hops '+ neighbors.ttl_security) if neighbors.ttl_security is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"ttl_security": "{{ ttl_security }}"}
+                    "{{ neighbor_address }}": {
+                        "ttl_security": "{{ ttl_security }}"
+                    }
                 }
             },
         },
@@ -1776,7 +1849,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' ' + neighbors.unsuppress_map) if neighbors.unsuppress_map is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"unsuppress_map": "{{ unsuppress_map }}"}
+                    "{{ neighbor_address }}": {
+                        "unsuppress_map": "{{ unsuppress_map }}"
+                    }
                 }
             },
         },
@@ -1793,7 +1868,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' ' + neighbors.update_source) if neighbors.update_source is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"update_source": "{{ update_source }}"}
+                    "{{ neighbor_address }}": {
+                        "update_source": "{{ update_source }}"
+                    }
                 }
             },
         },
@@ -1809,7 +1886,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }} version"
             "{{ (' ' + neighbors.version) if neighbors.version is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"version": "{{ version }}"}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"version": "{{ version }}"}
+                }
             },
         },
         {
@@ -1824,7 +1903,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }} weight"
             "{{ (' ' + neighbors.weight) if neighbors.weight is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"weight": "{{ weight }}"}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"weight": "{{ weight }}"}
+                }
             },
         },
         # neighbor remote-as ends
@@ -1839,7 +1920,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "neighbor {{ neighbors.neighbor_address }}"
             "{{ (' activate') if neighbors.activate|d(False) is defined else '' }}",
-            "result": {"neighbors": {"{{ neighbor_address }}": {"activate": True}}},
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"activate": True}}
+            },
         },
         {
             "name": "neighbors.additional_paths",
@@ -1909,7 +1992,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' advertise best-external') if  neighbors.advertise.best_external|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"advertise": {"best-external": True}}
+                    "{{ neighbor_address }}": {
+                        "advertise": {"best-external": True}
+                    }
                 }
             },
         },
@@ -1996,7 +2081,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbors.neighbor_address }}"
             "{{ (' aigp') if neighbors.aigp.enable is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"aigp": {"enable": True}}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"aigp": {"enable": True}}
+                }
             },
         },
         {
@@ -2060,7 +2147,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' allow-policy') if neighbors.allow_policy|d(False) is defined else '' }}",
-            "result": {"neighbors": {"{{ neighbor_address }}": {"allow_policy": True}}},
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"allow_policy": True}}
+            },
         },
         {
             "name": "neighbors.allowas_in",
@@ -2075,7 +2164,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' allowas-in ' + allowas_in) if neighbors.allowas_in is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"allowas_in": "{{ allowas_in }}"}
+                    "{{ neighbor_address }}": {
+                        "allowas_in": "{{ allowas_in }}"
+                    }
                 }
             },
         },
@@ -2089,7 +2180,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "neighbor {{ neighbors.neighbor_address }}"
             "{{ (' as-override') if neighbors.as_override|d(False) is defined else '' }}",
-            "result": {"neighbors": {"{{ neighbor_address }}": {"as_override": True}}},
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"as_override": True}}
+            },
         },
         {
             "name": "neighbors.bmp_activate",
@@ -2153,7 +2246,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' default-originate') if neighbors.default_originate.set|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"default_originate": {"set": True}}
+                    "{{ neighbor_address }}": {
+                        "default_originate": {"set": True}
+                    }
                 }
             },
         },
@@ -2212,7 +2307,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' dmzlink-bw') if neighbors.dmzlink_bw|d(False) is defined else '' }}",
-            "result": {"neighbors": {"{{ neighbor_address }}": {"dmzlink_bw": True}}},
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"dmzlink_bw": True}}
+            },
         },
         {
             "name": "neighbors.filter_list",
@@ -2312,7 +2409,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' next-hop-unchanged') if neighbors.next_hop_unchanged.set|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"next_hop_unchanged": {"set": True}}
+                    "{{ neighbor_address }}": {
+                        "next_hop_unchanged": {"set": True}
+                    }
                 }
             },
         },
@@ -2327,7 +2426,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' next-hop-unchanged allpaths') if neighbors.next_hop_unchanged.allpaths|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"next_hop_unchanged": {"allpaths": True}}
+                    "{{ neighbor_address }}": {
+                        "next_hop_unchanged": {"allpaths": True}
+                    }
                 }
             },
         },
@@ -2342,7 +2443,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' remove-private-as') if neighbors.remove_private_as.set|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"remove_private_as": {"set": True}}
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"set": True}
+                    }
                 }
             },
         },
@@ -2357,7 +2460,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' remove-private-as all') if neighbors.remove_private_as.all|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"remove_private_as": {"all": True}}
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"all": True}
+                    }
                 }
             },
         },
@@ -2433,7 +2538,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' route-server-client') if neighbors.route_server_client.set|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"route_server_client": {"set": True}}
+                    "{{ neighbor_address }}": {
+                        "route_server_client": {"set": True}
+                    }
                 }
             },
         },
@@ -2483,7 +2590,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' both') if neighbors.send_community.both|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"send_community": {"both": True}}
+                    "{{ neighbor_address }}": {
+                        "send_community": {"both": True}
+                    }
                 }
             },
         },
@@ -2499,7 +2608,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' extended') if neighbors.send_community.extended|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"send_community": {"extended": True}}
+                    "{{ neighbor_address }}": {
+                        "send_community": {"extended": True}
+                    }
                 }
             },
         },
@@ -2515,7 +2626,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' standard') if neighbors.send_community.standard|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"send_community": {"standard": True}}
+                    "{{ neighbor_address }}": {
+                        "send_community": {"standard": True}
+                    }
                 }
             },
         },
@@ -2529,7 +2642,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' send-label') if neighbors.send_label.set|d(False) is defined else '' }}",
             "result": {
-                "neighbors": {"{{ neighbor_address }}": {"send_label": {"set": True}}}
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_label": {"set": True}}
+                }
             },
         },
         {
@@ -2544,7 +2659,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' explicit-null') if neighbors.send_label.explicit_null|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"send_label": {"explicit_null": True}}
+                    "{{ neighbor_address }}": {
+                        "send_label": {"explicit_null": True}
+                    }
                 }
             },
         },
@@ -2622,7 +2739,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbors.neighbor_address  + ' translate_update') if neighbors.translate_update.set|d(False) is defined else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"translate_update": {"set": True}}
+                    "{{ neighbor_address }}": {
+                        "translate_update": {"set": True}
+                    }
                 }
             },
         },
@@ -2796,9 +2915,13 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute iso-igrp {{ redistribute.iso_igrp.area_tag }}"
             "{{ (' route-map ' + redistribute.iso_igrp.route_map) if redistribute.iso_igrp.route_map is defined else '' }}",
             "result": {
-            "result": {
                 "redistribute": [
-                    {"iso_igrp": {"area_tag": "{{ name }}", "route_map": "{{ route_map }}"}}
+                    {
+                        "iso_igrp": {
+                            "area_tag": "{{ name }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
                 ]
             },
         },
@@ -2817,7 +2940,12 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' route-map ' + redistribute.lisp.route_map) if redistribute.lisp.route_map is defined else '' }}",
             "result": {
                 "redistribute": [
-                    {"lisp": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                    {
+                        "lisp": {
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
                 ]
             },
         },
@@ -2860,7 +2988,12 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' route-map ' + redistribute.odr.route_map) if redistribute.odr.route_map is defined else '' }}",
             "result": {
                 "redistribute": [
-                    {"odr": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                    {
+                        "odr": {
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
                 ]
             },
         },
@@ -2966,7 +3099,12 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' route-map ' + redistribute.rip.route_map) if redistribute.rip.route_map is defined else '' }}",
             "result": {
                 "redistribute": [
-                    {"rip": {"metric": "{{ metric }}", "route_map": "{{ route_map }}"}}
+                    {
+                        "rip": {
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
                 ]
             },
         },
@@ -3014,7 +3152,12 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' global') if redistribute.vrf.global|d(False) is defined else '' }}",
             "result": {
                 "redistribute": [
-                    {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}}
+                    {
+                        "vrf": {
+                            "name": "{{ name }}",
+                            "global": "{{ not not global }}",
+                        }
+                    }
                 ]
             },
         },
