@@ -91,7 +91,6 @@ class Bgp_global(ResourceModule):
         "bgp.graceful_restart.restart_time",
         "bgp.graceful_restart.stalepath_time",
         "bgp.graceful_shutdown",
-        "bgp.inject_maps",
         "bgp.listen.limit",
         "bgp.listen.range",
         "bgp.log_neighbor_changes",
@@ -194,17 +193,41 @@ class Bgp_global(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Bgp_global network resource.
         """
+        self.generic_list_parsers = [
+            "distribute_lists",
+            "aggregate_addresses",
+            "networks",
+        ]
+        if self._has_bgp_inject_maps(want):
+            self.generic_list_parsers = [
+                "inject_maps",
+                *self.generic_list_parsers,
+            ]
+
         self.compare(parsers=self.parsers, want=want, have=have)
+        for _parse in self.generic_list_parsers:
+            if _parse == "inject_maps":
+                self._compare_generic_lists(
+                    want.get("bgp", {}).get(_parse, {}),
+                    have.get("bgp", {}).get(_parse, {}),
+                    _parse,
+                )
+            else:
+                self._compare_generic_lists(
+                    want.get(_parse, {}), have.get(_parse, {}), _parse
+                )
         self._compare_neighbor_lists(
             want.get("neighbors", {}), have.get("neighbors", {})
         )
         self._compare_redistribute_lists(
             want.get("redistribute", {}), have.get("redistribute", {})
         )
-        for _parse in ["distribute_lists", "aggregate_addresses", "networks"]:
-            self._compare_generic_lists(
-                want.get(_parse, {}), have.get(_parse, {}), _parse
-            )
+
+    def _has_bgp_inject_maps(self, want):
+        if want.get("bgp", {}).get("inject_maps", {}):
+            return True
+        else:
+            return False
 
     def _compare_redistribute_lists(self, want, have):
         redist_parses = [
@@ -301,19 +324,19 @@ class Bgp_global(ResourceModule):
 
         for name, w_neighbor in want.items():
             have_nbr = have.pop(name, {})
-            want_route = (
-                w_neighbor.pop("route_maps", {}) if w_neighbor.get("route_maps") else {}
-            )
-            have_route = (
-                have_nbr.pop("route_maps", {}) if have_nbr.get("route_maps") else {}
-            )
+            want_route = w_neighbor.pop("route_maps", {})
+            have_route = have_nbr.pop("route_maps", {})
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
             if want_route:
                 for k_rmps, w_rmps in want_route.items():
                     have_rmps = have_route.pop(k_rmps, {})
-                    w_rmps["neighbor_address"] = w_neighbor.get("neighbor_address")
+                    w_rmps["neighbor_address"] = w_neighbor.get(
+                        "neighbor_address"
+                    )
                     if have_rmps:
-                        have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
+                        have_rmps["neighbor_address"] = have_nbr.get(
+                            "neighbor_address"
+                        )
                         have_rmps = {"route_maps": have_rmps}
                     self.compare(
                         parsers=["route_maps"],
@@ -344,13 +367,13 @@ class Bgp_global(ResourceModule):
     def _bgp_global_list_to_dict(self, tmp_data):
         """Convert all list of dicts to dicts of dicts"""
         p_key = {
-            "aggregate_addresses": "address",  # self method
+            "aggregate_addresses": "address",
             "inject_maps": "name",
-            "distribute_lists": ["acl", "gateway", "prefix"],  # self method
-            "neighbors": "neighbor_address",  # self method
-            "route_maps": "name",  # self method
-            "networks": "address",  # self method
-            "bgp": None,  # self method
+            "distribute_lists": ["acl", "gateway", "prefix"],
+            "neighbors": "neighbor_address",
+            "route_maps": "name",
+            "networks": "address",
+            "bgp": None,
             "redistribute": [
                 "application",
                 "bgp",
@@ -363,14 +386,19 @@ class Bgp_global(ResourceModule):
             ],
         }
         for k, _v in p_key.items():
-            if tmp_data.get(k) and k not in ["distribute_lists", "redistribute", "bgp"]:
+            if tmp_data.get(k) and k not in [
+                "distribute_lists",
+                "redistribute",
+                "bgp",
+            ]:
                 if k == "neighbors":
                     for neb in tmp_data.get("neighbors"):  # work here
                         neb = self._bgp_global_list_to_dict(neb)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("distribute_lists") and k == "distribute_lists":
                 tmp_data[k] = {
-                    str("".join([i.get(j, "") for j in _v])): i for i in tmp_data[k]
+                    str("".join([i.get(j, "") for j in _v])): i
+                    for i in tmp_data[k]
                 }
             elif tmp_data.get("redistribute") and k == "redistribute":
                 tmp_data[k] = {
