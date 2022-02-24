@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "'ios_acls'- filters out dynamically generated reflexive type acls."

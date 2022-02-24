@@ -484,6 +484,10 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            Reflexive IP access list MIRROR
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """
