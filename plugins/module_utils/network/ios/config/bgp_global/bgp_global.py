@@ -127,74 +127,74 @@ class Bgp_global(ResourceModule):
         "bgp.update_group",
         "bgp.upgrade_cli.set",
         "bgp.upgrade_cli.af_mode",
-        "neighbors.remote_as",
-        "neighbors.peer_group",
-        "neighbors.bmp_activate",
-        "neighbors.cluster_id",
-        "neighbors.description",
-        "neighbors.disable_connected_check",
-        "neighbors.ebgp_multihop",
-        "neighbors.fall_over.bfd",
-        "neighbors.fall_over.route_map",
-        "neighbors.ha_mode",
-        "neighbors.inherit",
-        "neighbors.local_as",
-        "neighbors.log_neighbor_changes",
-        "neighbors.password",
-        "neighbors.path_attribute",
-        "neighbors.shutdown",
-        "neighbors.soft_reconfiguration",
-        "neighbors.timers",
-        "neighbors.transport.connection_mode",
-        "neighbors.transport.multi_session",
-        "neighbors.transport.path_mtu_discovery",
-        "neighbors.ttl_security",
-        "neighbors.unsuppress_map",
-        "neighbors.update_source",
-        "neighbors.version",
-        "neighbors.weight",
-        "neighbors.activate",
-        "neighbors.additional_paths",
-        "neighbors.advertise.additional_paths",
-        "neighbors.advertise.best_external",
-        "neighbors.advertise.diverse_path",
-        "neighbors.advertise_map",
-        "neighbors.advertisement_interval",
-        "neighbors.aigp",
-        "neighbors.aigp.send.cost_community",
-        "neighbors.aigp.send.med",
-        "neighbors.allow_policy",
-        "neighbors.allowas_in",
-        "neighbors.as_override",
-        "neighbors.bmp_activate",
-        "neighbors.capability",
-        "neighbors.default_originate",
-        "neighbors.default_originate.route_map",
-        "neighbors.distribute_list",
-        "neighbors.dmzlink_bw",
-        "neighbors.filter_list",
-        "neighbors.maximum_prefix",
-        "neighbors.next_hop_self.set",
-        "neighbors.next_hop_self.all",
-        "neighbors.next_hop_unchanged.set",
-        "neighbors.next_hop_unchanged.allpaths",
-        "neighbors.remove_private_as.set",
-        "neighbors.remove_private_as.all",
-        "neighbors.remove_private_as.replace_as",
-        "neighbors.route_maps",
-        "neighbors.route_reflector_client",
-        "neighbors.route_server_client.set",
-        "neighbors.route_server_client.context",
-        "neighbors.send_community.set",
-        "neighbors.send_community.both",
-        "neighbors.send_community.extended",
-        "neighbors.send_community.standard",
-        "neighbors.send_label.set",
-        "neighbors.send_label.explicit_null",
-        "neighbors.slow_peer.detection",
-        "neighbors.slow_peer.split_update_group",
-        "neighbors.translate_update.set",
-        "neighbors.translate_update.nlri",
+        "remote_as",  # idx 88 neighbor starts
+        "peer_group",
+        "bmp_activate",
+        "cluster_id",
+        "description",
+        "disable_connected_check",
+        "ebgp_multihop",
+        "fall_over.bfd",
+        "fall_over.route_map",
+        "ha_mode",
+        "inherit",
+        "local_as",
+        "log_neighbor_changes",
+        "password",
+        "path_attribute",
+        "shutdown",
+        "soft_reconfiguration",
+        "timers",
+        "transport.connection_mode",
+        "transport.multi_session",
+        "transport.path_mtu_discovery",
+        "ttl_security",
+        "unsuppress_map",
+        "update_source",
+        "version",
+        "weight",
+        "activate",
+        "additional_paths",
+        "advertise.additional_paths",
+        "advertise.best_external",
+        "advertise.diverse_path",
+        "advertise_map",
+        "advertisement_interval",
+        "aigp",
+        "aigp.send.cost_community",
+        "aigp.send.med",
+        "allow_policy",
+        "allowas_in",
+        "as_override",
+        "bmp_activate",
+        "capability",
+        "default_originate",
+        "default_originate.route_map",
+        "distribute_list",
+        "dmzlink_bw",
+        "filter_list",
+        "maximum_prefix",
+        "next_hop_self.set",
+        "next_hop_self.all",
+        "next_hop_unchanged.set",
+        "next_hop_unchanged.allpaths",
+        "remove_private_as.set",
+        "remove_private_as.all",
+        "remove_private_as.replace_as",
+        "route_maps",
+        "route_reflector_client",
+        "route_server_client.set",
+        "route_server_client.context",
+        "send_community.set",
+        "send_community.both",
+        "send_community.extended",
+        "send_community.standard",
+        "send_label.set",
+        "send_label.explicit_null",
+        "slow_peer.detection",
+        "slow_peer.split_update_group",
+        "translate_update.set",
+        "translate_update.nlri",  # idx 155 neighbor ends
         "redistribute.application",
         "redistribute.bgp",
         "redistribute.connected",
@@ -246,8 +246,8 @@ class Bgp_global(ResourceModule):
                     "configuring new ASN".format(h_asn)
                 )
 
-        if self.state in ["deleted", "replaced"]:
-            self._build_af_data()
+        # if self.state in ["deleted", "replaced"]:
+        #     self._build_af_data()
 
         for each in self.want, self.have:
             self._bgp_global_list_to_dict(each)
@@ -280,6 +280,68 @@ class Bgp_global(ResourceModule):
            for the Bgp_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_neighbor_lists(
+            want.get("neighbors", {}), have.get("neighbors", {})
+        )
+        self._compare_distribute_lists(
+            want.get("distribute_lists", {}), have.get("distribute_lists", {})
+        )
+
+    def _compare_neighbor_lists(self, want, have):
+        """Compare list of dict"""
+        for name, w_neighbor in want.items():
+            have_nbr = have.pop(name, {})
+            want_route = (
+                w_neighbor.pop("route_maps", {})
+                if w_neighbor.get("route_maps")
+                else {}
+            )
+            have_route = (
+                have_nbr.pop("route_maps", {})
+                if have_nbr.get("route_maps")
+                else {}
+            )
+            self.compare(
+                parsers=self.parsers[88:155], want=w_neighbor, have=have_nbr
+            )
+            if want_route:
+                for k_rmps, w_rmps in want_route.items():
+                    have_rmps = have_route.pop(k_rmps, {})
+                    w_rmps["neighbor_address"] = w_neighbor.get(
+                        "neighbor_address"
+                    )
+                    if have_rmps:
+                        have_rmps["neighbor_address"] = have_nbr.get(
+                            "neighbor_address"
+                        )
+                        have_rmps = {"route_maps": have_rmps}
+                    self.compare(
+                        parsers=["route_maps"],
+                        want={"route_maps": w_rmps},
+                        have=have_rmps,
+                    )
+
+        # for key, haveing in want.items():
+        #     have_route = (
+        #         haveing.pop("route_maps", {}) if haveing.get("route_maps") else {}
+        #     )
+        #     self.addcmd(haveing, parsers=self.parsers[88:155], negate=True)
+        #     if have_route:
+        #         for k_rmps, h_rmps in have_route.items():
+        #             self.addcmd(h_rmps, "route_maps", negate=True)
+
+    def _compare_distribute_lists(self, w_attr, h_attr):
+        """Handling of distribute_lists
+           option.
+        """
+
+        for wkey, wentry in iteritems(w_attr):
+            if wentry != h_attr.pop(wkey, {}):
+                self.addcmd(wentry, "distribute_lists", False)
+
+        # remove remaining items in have for replaced
+        for hkey, hentry in iteritems(h_attr):
+            self.addcmd(hentry, "distribute_lists", True)
 
     def _bgp_global_list_to_dict(self, tmp_data):
         """Convert all list of dicts to dicts of dicts"""
@@ -309,9 +371,8 @@ class Bgp_global(ResourceModule):
                 "bgp",
             ]:
                 if k == "neighbors":
-                    pass
-                    # for neb in tmp_data.get("neighbors"):  # work here
-                    #     tmp_data[k] = self._bgp_global_list_to_dict(neb)
+                    for neb in tmp_data.get("neighbors"):  # work here
+                        neb = self._bgp_global_list_to_dict(neb)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("distribute_lists") and k == "distribute_lists":
                 tmp_data[k] = {
