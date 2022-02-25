@@ -35,7 +35,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "as_number": {"type": "str", "required": True},
+                "as_number": {"type": "str"},
                 "aggregate_addresses": {
                     "type": "list",
                     "elements": "dict",

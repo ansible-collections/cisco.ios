@@ -852,11 +852,10 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "bgp.graceful_shutdown",  # TODO
+            "name": "bgp.graceful_shutdown.neighbors",
             "getval": re.compile(
                 r"""
-                \s*bgp\sgraceful-shutdown\sall
-                (\s(?P<placeholder>neighbors|vrfs))?
+                \s*bgp\sgraceful-shutdown\sall\sneighbors
                 (\s(?P<time>\d+))?
                 (\s(?P<activate>activate))?
                 (\slocal-preference\s(?P<local_preference>\d+))?
@@ -864,11 +863,37 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp graceful-shutdown all"
-            "{{ (' neighbors') if bgp.graceful_shutdown.neighbors is defined else '' }}"
-            "{{ (' vrfs') if bgp.graceful_shutdown.vrfs is defined else '' }}"
-            # "{{ (' ' + bgp.graceful_shutdown.neighbors.time|string) if bgp.graceful_shutdown.neighbors.time is defined else '' }}"
-            # "{{ (' activate') if bgp.graceful_shutdown.neighbors.activate|d(False) }}"
+            "setval": "bgp graceful-shutdown all neighbors"
+            "{{ (' ' + bgp.graceful_shutdown.neighbors.time|string) if bgp.graceful_shutdown.neighbors.time is defined else '' }}"
+            "{{ (' activate') if bgp.graceful_shutdown.neighbors.activate|d(False) }}"
+            "{{ (' local-preference ' + bgp.graceful_shutdown.local_preference|string) if bgp.graceful_shutdown.local_preference is defined else '' }}"
+            "{{ (' community ' + bgp.graceful_shutdown.community|string) if bgp.graceful_shutdown.community is defined else '' }}",
+            "result": {
+                "bgp": {
+                    "graceful_shutdown": {
+                        "neighbors": {
+                            "time": "{{ time }}",
+                            "activate": "{{ not not activate }}",
+                        },
+                        "community": "{{ community }}",
+                        "local_preference": "{{ local_preference }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.graceful_shutdown.vrfs",
+            "getval": re.compile(
+                r"""
+                \s*bgp\sgraceful-shutdown\sall\svrfs
+                (\s(?P<time>\d+))?
+                (\s(?P<activate>activate))?
+                (\slocal-preference\s(?P<local_preference>\d+))?
+                (\scommunity\s(?P<community>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp graceful-shutdown all vrfs"
             "{{ (' ' + bgp.graceful_shutdown.vrfs.time|string) if bgp.graceful_shutdown.vrfs.time is defined else '' }}"
             "{{ (' activate') if bgp.graceful_shutdown.vrfs.activate|d(False) }}"
             "{{ (' local-preference ' + bgp.graceful_shutdown.local_preference|string) if bgp.graceful_shutdown.local_preference is defined else '' }}"
@@ -876,7 +901,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bgp": {
                     "graceful_shutdown": {
-                        "{{ placeholder }}": {
+                        "vrfs": {
                             "time": "{{ time }}",
                             "activate": "{{ not not activate }}",
                         },
@@ -1659,23 +1684,50 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "path_attribute",  # TODO
+            "name": "path_attribute.discard",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute
-                (\s(?P<attr>discard|treat-as-withdraw))?
+                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\sdiscard
                 (\s(?P<type>\d+))?
                 (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
                 (\s(?P<in>in))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor {{ neighbor_address }} path-attribute"
-            "{{ ' discard' if path_attribute.discard is defined else ' treat-as-withdraw' }}"
+            "setval": "neighbor {{ neighbor_address }} path-attribute discard"
             "{{ (' ' + type) if path_attribute.discard.type is defined else '' }}"
             "{{ (' range '+ path_attribute.discard.range.start|string) if spath_attribute.discard.range.start is defined else '' }}"
             "{{ (' '+ path_attribute.discard.range.end|string) if spath_attribute.discard.range.end is defined else '' }}"
-            "{{ (' in') if path_attribute.discard.in|d(False) }}"
+            "{{ (' in') if path_attribute.discard.in|d(False) }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "path_attribute": {
+                            "discard": {
+                                "type": "{{ type }}",
+                                "range": {
+                                    "start": "{{ start }}",
+                                    "end": "{{ end }}",
+                                },
+                                "in": "{{ not not in }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "path_attribute.treat_as_withdraw",  # TODO
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\streat-as-withdraw
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} path-attribute treat-as-withdraw"
             "{{ (' ' + type) if path_attribute.treat_as_withdraw.type is defined else '' }}"
             "{{ (' range '+ path_attribute.treat_as_withdraw.range.start|string) if spath_attribute.treat_as_withdraw.range.start is defined else '' }}"
             "{{ (' '+ path_attribute.treat_as_withdraw.range.end|string) if spath_attribute.treat_as_withdraw.range.end is defined else '' }}"
@@ -1684,7 +1736,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "path_attribute": {
-                            "{{ 'discard' if attr=='discard' else 'treat_as_withdraw' }}": {
+                            "treat_as_withdraw": {
                                 "type": "{{ type }}",
                                 "range": {
                                     "start": "{{ start }}",
@@ -2891,7 +2943,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute eigrp {{ eigrp.name }}"
+            "setval": "redistribute eigrp {{ eigrp.name|string }}"
             "{{ (' metric ' + eigrp.metric|string) if eigrp.metric is defined else '' }}"
             "{{ (' route-map ' + eigrp.route_map) if eigrp.route_map is defined else '' }}",
             "result": {

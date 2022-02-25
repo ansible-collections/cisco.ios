@@ -32,7 +32,6 @@ options:
       as_number:
         description: Autonomous system number
         type: str
-        required: true
       aggregate_addresses:
         description: Configure BGP aggregate entries
         type: list
