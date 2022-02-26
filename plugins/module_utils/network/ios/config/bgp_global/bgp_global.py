@@ -69,11 +69,11 @@ class Bgp_global(ResourceModule):
         "bgp.aggregate_timer",
         "bgp.always_compare_med",
         "bgp.asnotation",
-        "bgp.bestpath.aigp",
-        "bgp.bestpath.compare_routerid",
-        "bgp.bestpath.cost_community",
-        "bgp.bestpath.igp_metric",
-        "bgp.bestpath.med",
+        "bgp.bestpath_options.aigp",
+        "bgp.bestpath_options.compare_routerid",
+        "bgp.bestpath_options.cost_community",
+        "bgp.bestpath_options.igp_metric",
+        "bgp.bestpath_options.med",
         "bgp.client_to_client",
         "bgp.cluster_id",
         "bgp.confederation.peer",
@@ -101,10 +101,10 @@ class Bgp_global(ResourceModule):
         "bgp.nexthop.route_map",
         "bgp.nexthop.trigger.delay",
         "bgp.nexthop.trigger.enable",
-        "bgp.nopeerup_delay.cold_boot",
-        "bgp.nopeerup_delay.post_boot",
-        "bgp.nopeerup_delay.nsf_switchover",
-        "bgp.nopeerup_delay.user_initiated",
+        "bgp.nopeerup_delay_options.cold_boot",
+        "bgp.nopeerup_delay_options.post_boot",
+        "bgp.nopeerup_delay_options.nsf_switchover",
+        "bgp.nopeerup_delay_options.user_initiated",
         "bgp.recursion",
         "bgp.redistribute_internal",
         "bgp.refresh.max_eor_time",
@@ -195,7 +195,7 @@ class Bgp_global(ResourceModule):
            for the Bgp_global network resource.
         """
         self.generic_list_parsers = [
-            "distribute_lists",
+            "distributes",
             "aggregate_addresses",
             "networks",
         ]
@@ -356,7 +356,7 @@ class Bgp_global(ResourceModule):
         #             self.addcmd(h_rmps, "route_maps", negate=True)
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
-        """Handling of distribute_lists option.
+        """Handling of gereric list options.
         """
         for wkey, wentry in iteritems(w_attr):
             if wentry != h_attr.pop(wkey, {}):
@@ -371,7 +371,7 @@ class Bgp_global(ResourceModule):
         p_key = {
             "aggregate_addresses": "address",
             "inject_maps": "name",
-            "distribute_lists": ["acl", "gateway", "prefix"],
+            "distributes": ["acl", "gateway", "prefix"],
             "neighbors": "neighbor_address",
             "route_maps": "name",
             "networks": "address",
@@ -389,7 +389,7 @@ class Bgp_global(ResourceModule):
         }
         for k, _v in p_key.items():
             if tmp_data.get(k) and k not in [
-                "distribute_lists",
+                "distributes",
                 "redistribute",
                 "bgp",
             ]:
@@ -397,7 +397,7 @@ class Bgp_global(ResourceModule):
                     for neb in tmp_data.get("neighbors"):  # work here
                         neb = self._bgp_global_list_to_dict(neb)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
-            elif tmp_data.get("distribute_lists") and k == "distribute_lists":
+            elif tmp_data.get("distributes") and k == "distributes":
                 tmp_data[k] = {
                     str("".join([i.get(j, "") for j in _v])): i
                     for i in tmp_data[k]

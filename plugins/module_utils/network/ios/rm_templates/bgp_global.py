@@ -267,7 +267,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "distribute_lists",
+            "name": "distributes",
             "getval": re.compile(
                 r"""
                 \s*distribute-list
@@ -288,7 +288,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' out' ) if out|d(False)  }}"
             "{{ (' ' + interface) if interface is defined else '' }}",
             "result": {
-                "distribute_lists": [
+                "distributes": [
                     {
                         "prefix": "{{ prefix }}",
                         "gateway": "{{ gateway }}",
@@ -566,39 +566,41 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"bgp": {"asnotation": True}},
         },
         {
-            "name": "bgp.bestpath.aigp",
+            "name": "bgp.bestpath_options.aigp",
             "getval": re.compile(
                 r"""\s*(bgp\sbestpath\saigp\signore)""", re.VERBOSE
             ),
-            "setval": "{{ ('bgp bestpath aigp ignore' ) if bgp.bestpath.aigp|d(False) }}",
-            "result": {"bgp": {"bestpath": {"aigp": True}}},
+            "setval": "{{ ('bgp bestpath aigp ignore' ) if bgp.bestpath_options.aigp|d(False) }}",
+            "result": {"bgp": {"bestpath_options": {"aigp": True}}},
         },
         {
-            "name": "bgp.bestpath.compare_routerid",
+            "name": "bgp.bestpath_options.compare_routerid",
             "getval": re.compile(
                 r"""\s*(bgp\sbestpath\scompare-routerid)""", re.VERBOSE
             ),
-            "setval": "{{ ('bgp bestpath compare-routerid' ) if bgp.bestpath.compare_routerid|d(False) }}",
-            "result": {"bgp": {"bestpath": {"compare_routerid": True}}},
+            "setval": "{{ ('bgp bestpath compare-routerid' ) if bgp.bestpath_options.compare_routerid|d(False) }}",
+            "result": {
+                "bgp": {"bestpath_options": {"compare_routerid": True}}
+            },
         },
         {
-            "name": "bgp.bestpath.cost_community",
+            "name": "bgp.bestpath_options.cost_community",
             "getval": re.compile(
                 r"""\s*(bgp\sbestpath\scost-community\signore)""", re.VERBOSE
             ),
-            "setval": "{{ ('bgp bestpath cost-community ignore' ) if bgp.bestpath.cost_community|d(False) }}",
-            "result": {"bgp": {"bestpath": {"cost_community": True}}},
+            "setval": "{{ ('bgp bestpath cost-community ignore' ) if bgp.bestpath_options.cost_community|d(False) }}",
+            "result": {"bgp": {"bestpath_options": {"cost_community": True}}},
         },
         {
-            "name": "bgp.bestpath.igp_metric",
+            "name": "bgp.bestpath_options.igp_metric",
             "getval": re.compile(
                 r"""\s*(bgp\sbestpath\sigp-metric\signore)""", re.VERBOSE
             ),
             "setval": "bgp bestpath igp-metric ignore",
-            "result": {"bgp": {"bestpath": {"igp_metric": True}}},
+            "result": {"bgp": {"bestpath_options": {"igp_metric": True}}},
         },
         {
-            "name": "bgp.bestpath.med",
+            "name": "bgp.bestpath_options.med",
             "getval": re.compile(
                 r"""
                 \s*bgp\sbestpath\smed
@@ -608,11 +610,11 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bgp bestpath med"
-            "{{ (' confed') if bgp.bestpath.med.confed|d(False) }}"
-            "{{ (' missing-as-worst') if bgp.bestpath.med.missing_as_worst|d(False) }}",
+            "{{ (' confed') if bgp.bestpath_options.med.confed|d(False) }}"
+            "{{ (' missing-as-worst') if bgp.bestpath_options.med.missing_as_worst|d(False) }}",
             "result": {
                 "bgp": {
-                    "bestpath": {
+                    "bestpath_options": {
                         "med": {
                             "confed": "{{ not not confed }}",
                             "missing_as_worst": "{{ not not missing_as_worst }}",
@@ -1060,7 +1062,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"bgp": {"nexthop": {"trigger": {"enable": True}}}},
         },
         {
-            "name": "bgp.nopeerup_delay.cold_boot",
+            "name": "bgp.nopeerup_delay_options.cold_boot",
             "getval": re.compile(
                 r"""
                 \s*bgp\snopeerup-delay\scold-boot
@@ -1068,13 +1070,15 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp nopeerup-delay cold-boot {{ bgp.nopeerup_delay.cold_boot|string }}",
+            "setval": "bgp nopeerup-delay cold-boot {{ bgp.nopeerup_delay_options.cold_boot|string }}",
             "result": {
-                "bgp": {"nopeerup_delay": {"cold_boot": "{{ cold_boot }}"}}
+                "bgp": {
+                    "nopeerup_delay_options": {"cold_boot": "{{ cold_boot }}"}
+                }
             },
         },
         {
-            "name": "bgp.nopeerup_delay.post_boot",
+            "name": "bgp.nopeerup_delay_options.post_boot",
             "getval": re.compile(
                 r"""
                 \s*bgp\snopeerup-delay\spost-boot
@@ -1082,13 +1086,15 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp nopeerup-delay post-boot {{ bgp.nopeerup_delay.post_boot|string }}",
+            "setval": "bgp nopeerup-delay post-boot {{ bgp.nopeerup_delay_options.post_boot|string }}",
             "result": {
-                "bgp": {"nopeerup_delay": {"post_boot": "{{ post_boot }}"}}
+                "bgp": {
+                    "nopeerup_delay_options": {"post_boot": "{{ post_boot }}"}
+                }
             },
         },
         {
-            "name": "bgp.nopeerup_delay.nsf_switchover",
+            "name": "bgp.nopeerup_delay_options.nsf_switchover",
             "getval": re.compile(
                 r"""
                 \s*bgp\snopeerup-delay\snsf-switchover
@@ -1096,17 +1102,17 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp nopeerup-delay nsf-switchover {{ bgp.nopeerup_delay.nsf_switchover|string }}",
+            "setval": "bgp nopeerup-delay nsf-switchover {{ bgp.nopeerup_delay_options.nsf_switchover|string }}",
             "result": {
                 "bgp": {
-                    "nopeerup_delay": {
+                    "nopeerup_delay_options": {
                         "nsf_switchover": "{{ nsf_switchover }}"
                     }
                 }
             },
         },
         {
-            "name": "bgp.nopeerup_delay.user_initiated",
+            "name": "bgp.nopeerup_delay_options.user_initiated",
             "getval": re.compile(
                 r"""
                 \s*bgp\snopeerup-delay\suser-initiated
@@ -1114,10 +1120,10 @@ class Bgp_globalTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp nopeerup-delay user-initiated {{ bgp.nopeerup_delay.user_initiated|string }}",
+            "setval": "bgp nopeerup-delay user-initiated {{ bgp.nopeerup_delay_options.user_initiated|string }}",
             "result": {
                 "bgp": {
-                    "nopeerup_delay": {
+                    "nopeerup_delay_options": {
                         "user_initiated": "{{ user_initiated }}"
                     }
                 }
