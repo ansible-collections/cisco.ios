@@ -450,3 +450,10 @@ releases:
       name: ios_hostname
       namespace: ''
     release_date: '2022-01-31'
+  2.7.1:
+    changes:
+      bugfixes:
+      - '''ios_acls''- filters out dynamically generated reflexive type acls.'
+    fragments:
+    - reflexive_acls_fix.yaml
+    release_date: '2022-03-01'
