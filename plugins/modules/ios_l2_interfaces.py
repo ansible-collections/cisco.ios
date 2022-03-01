@@ -45,6 +45,11 @@ options:
         - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
         type: str
         required: true
+      description:
+        description:
+        - Human readable description of the local interface 
+        type: str
+        required: true
       access:
         description:
         - Switchport mode access command to configure the interface as a layer 2 access.
