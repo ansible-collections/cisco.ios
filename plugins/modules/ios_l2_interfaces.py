@@ -47,7 +47,7 @@ options:
         required: true
       description:
         description:
-        - Human readable description of the local interface 
+        - Human readable description of the local interface
         type: str
       access:
         description:
