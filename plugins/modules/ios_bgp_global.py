@@ -36,7 +36,7 @@ options:
         description:
         - Configure BGP aggregate entry
         - This option is DEPRECATED and is replaced with aggregate_addresses which
-          accepts list of dict as input this attribute will be removed after 2024-06-01.
+          accepts list of dict as input, this attribute will be removed after 2024-06-01.
         elements: dict
         suboptions:
           address:
@@ -147,7 +147,7 @@ options:
           bestpath:
             description:
             - Change the default bestpath selection
-            - This option is DEPRECATED and replaced with bestpath_options of type dict
+            - This option is DEPRECATED and replaced with bestpath_options of type dict,
               this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
@@ -375,7 +375,7 @@ options:
             description:
             - Routemap which specifies prefixes to inject
             - This option is DEPRECATED and is updated with inject_maps which is a
-              list of dict this attribute will be removed after 2024-06-01.
+              list of dict, this attribute will be removed after 2024-06-01.
             type: dict
             suboptions:
               name:
@@ -418,7 +418,7 @@ options:
                     description:
                     - IPv4 subnet range(A.B.C.D/nn)
                     - This option is DEPRECATED and is updated with host_with_subnet which is a
-                      common attribute for address this attribute will be removed after 2024-06-01.
+                      common attribute for address, this attribute will be removed after 2024-06-01.
                     type: str
                   ipv6_with_subnet:
                     description:
@@ -475,7 +475,7 @@ options:
             description:
             - Set how long BGP will wait for the first peer to come up before beginning the update delay or
               graceful restart timers (in seconds)
-            - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict
+            - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
               this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
@@ -788,7 +788,7 @@ options:
       distribute_list:
         description:
         - Filter networks in routing updates
-        - This option is DEPRECATED and is replaced with distributes which is of type list of dict
+        - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
           this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
@@ -846,19 +846,19 @@ options:
           address:
             description:
             - Neighbor address (A.B.C.D)
-            - This option is DEPRECATED and replaced with neighbor_address
+            - This option is DEPRECATED and replaced with neighbor_address,
               this attribute will be removed after 2024-06-01.
             type: str
           tag:
             description:
             - Neighbor tag
-            - This option is DEPRECATED and replaced with neighbor_address
+            - This option is DEPRECATED and replaced with neighbor_address,
               this attribute will be removed after 2024-06-01.
             type: str
           ipv6_adddress:
             description:
             - Neighbor ipv6 address (X:X:X:X::X)
-            - This option is DEPRECATED and replaced with neighbor_address
+            - This option is DEPRECATED and replaced with neighbor_address,
               this attribute will be removed after 2024-06-01.
             type: str
           activate:
@@ -1175,7 +1175,13 @@ options:
                 description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
                 type: bool
           password:
-            description: Set a password
+            description:
+            - Set a password
+            - This option is DEPRECATED and is replaced with password_options which
+              accepts dict as input, this attribute will be removed after 2024-06-01.
+            type: str
+          password_options:
+            description: Set a password with encryption type
             type: dict
             suboptions:
               encryption:
@@ -1261,8 +1267,24 @@ options:
               replace_as:
                 description: Replace all private AS numbers with local AS
                 type: bool
+          route_map:
+            description:
+            - Apply route map to neighbor
+            - This option is DEPRECATED and is replaced with route_maps which
+              accepts list of dict as input, this attribute will be removed after 2024-06-01.
+            type: dict
+            suboptions:
+              name:
+                description: Replace all private AS numbers with local AS
+                type: str
+              in:
+                description: Apply map to incoming routes
+                type: bool
+              out:
+                description: Apply map to outbound routes
+                type: bool
           route_maps:
-            description: Apply route map to neighbor
+            description: Apply a list of route maps to neighbor
             type: list
             elements: dict
             suboptions:
@@ -1720,7 +1742,7 @@ options:
       scope:
         description:
         - Enter scope command mode
-        - This option is DEPRECATED as is not valid within the scope of module
+        - This option is DEPRECATED as is not valid within the scope of module,
           this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
@@ -1748,7 +1770,7 @@ options:
       template:
         description:
         - Enter template command mode
-        - This option is DEPRECATED as is not valid within the scope of module
+        - This option is DEPRECATED as is not valid within the scope of module,
           this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
