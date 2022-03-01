@@ -5,6 +5,14 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.7.1
+======
+
+Bugfixes
+--------
+
+- 'ios_acls'- filters out dynamically generated reflexive type acls.
+
 v2.7.0
 ======
 
