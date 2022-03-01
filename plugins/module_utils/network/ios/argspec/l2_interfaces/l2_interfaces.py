@@ -39,6 +39,7 @@ class L2_InterfacesArgs(object):
             "elements": "dict",
             "options": {
                 "name": {"type": "str", "required": True},
+                "description": {"type": "str"},
                 "mode": {"type": "str", "choices": ["access", "trunk"]},
                 "access": {
                     "type": "dict",
