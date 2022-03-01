@@ -109,6 +109,7 @@ class L2_InterfacesFacts(object):
         ):
             # populate the facts from the configuration
             config["name"] = normalize_interface(intf)
+            config["description"] = utils.parse_conf_arg(conf, "description")
             has_mode = utils.parse_conf_arg(conf, "switchport mode")
             if has_mode:
                 config["mode"] = has_mode
