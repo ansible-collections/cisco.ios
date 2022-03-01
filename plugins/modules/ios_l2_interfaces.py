@@ -49,7 +49,6 @@ options:
         description:
         - Human readable description of the local interface 
         type: str
-        required: true
       access:
         description:
         - Switchport mode access command to configure the interface as a layer 2 access.
