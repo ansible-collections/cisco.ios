@@ -37,7 +37,7 @@ options:
         - Configure BGP aggregate entry
         - This option is DEPRECATED and is replaced with aggregate_addresses which
           accepts list of dict as input, this attribute will be removed after 2024-06-01.
-        elements: dict
+        type: dict
         suboptions:
           address:
             description: Specify aggregate address
@@ -1253,7 +1253,7 @@ options:
             description:
               - Specify a BGP neighbor
               - AS of remote neighbor
-            type: int
+            type: str
           remove_private_as:
             description: Remove private AS number from outbound updates
             type: dict

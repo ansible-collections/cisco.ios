@@ -1665,7 +1665,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "password",
+            "name": "password_options",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)\spassword
@@ -1675,13 +1675,13 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} password"
-            "{{ (' '+ password.encryption|string) if password.encryption is defined else '' }}"
-            "{{ (' '+ password.pass_key) if password.pass_key is defined else '' }}",
+            "{{ (' '+ password_options.encryption|string) if password_options.encryption is defined else '' }}"
+            "{{ (' '+ password_options.pass_key) if password_options.pass_key is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
-                        "password": {
+                        "password_options": {
                             "encryption": "{{ encryption }}",
                             "pass_key": "{{ pass_key }}",
                         },
