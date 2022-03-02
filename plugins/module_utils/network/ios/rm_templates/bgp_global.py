@@ -43,7 +43,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "aggregate_addresses",
             "getval": re.compile(
                 r"""
-                \s*aggregate-address
+                \saggregate-address
                 (\s(?P<address>\S+))?
                 (\s(?P<netmask>\S+))?
                 (\s(?P<as_set>as-set))?
@@ -534,7 +534,7 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "bgp.advertise_best_external",
             "getval": re.compile(
-                r"""\s*(bgp advertise-best-external)""", re.VERBOSE
+                r"""\s*(bgp\sadvertise-best-external)""", re.VERBOSE
             ),
             "setval": "{{ ('bgp advertise-best-external' ) if bgp.advertise_best_external|d(False) }}",
             "result": {"bgp": {"advertise_best_external": True}},
@@ -1383,6 +1383,17 @@ class Bgp_globalTemplate(NetworkTemplate):
         # bgp ends
         # neighbor remote-as starts
         {
+            "name": "neighbor_address",
+            "getval": re.compile(
+                r"""
+                \s+neighbordel(?P<neighbor_address>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}",
+            "result": {"del_neighbor": True},
+        },
+        {
             "name": "remote_as",
             "getval": re.compile(
                 r"""
@@ -1463,16 +1474,17 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
-                \s(?P<description>description)
+                \sdescription\s(?P<description>.+$)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor {{ neighbor_address }} description",
+            "setval": "neighbor {{ neighbor_address }} description"
+            "{{ (' ' + description) if description is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
-                        "description": "{{ not not description }}",
+                        "description": "{{ description }}",
                     }
                 }
             },
@@ -1506,7 +1518,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} ebgp-multihop"
-            "{{ (' ' + neighbor_address.hop_count|string) if neighbor_address.hop_count is defined else '' }}",
+            "{{ (' ' + hop_count|string) if hop_count is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
@@ -2575,14 +2587,14 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "route_maps",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-maps
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
                 (\s(?P<route_maps>\S+))
                 (\s(?P<in>in))?
                 (\s(?P<out>out))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor {{ route_maps.neighbor_address }} route-maps"
+            "setval": "neighbor {{ route_maps.neighbor_address }} route-map"
             "{{ (' ' + route_maps.name) if route_maps.name is defined else '' }}"
             "{{ (' in') if route_maps.in|d(False) }}"
             "{{ (' out') if route_maps.out|d(False) }}",

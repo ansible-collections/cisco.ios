@@ -364,15 +364,8 @@ class Bgp_global(ResourceModule):
                         want={"route_maps": w_rmps},
                         have=have_rmps,
                     )
-
-        # for key, haveing in want.items():
-        #     have_route = (
-        #         haveing.pop("route_maps", {}) if haveing.get("route_maps") else {}
-        #     )
-        #     self.addcmd(haveing, parsers=self.parsers[88:155], negate=True)
-        #     if have_route:
-        #         for k_rmps, h_rmps in have_route.items():
-        #             self.addcmd(h_rmps, "route_maps", negate=True)
+        for name, h_neighbor in have.items():
+            self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
         """Handling of gereric list options.
