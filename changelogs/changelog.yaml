@@ -452,8 +452,14 @@ releases:
     release_date: '2022-01-31'
   2.7.1:
     changes:
+      release_summary: Re-releasing 2.7.0 due to Automation Hub uploading issue.
+    fragments:
+    - reflexive_acls_fix.yaml
+    release_date: '2022-02-21'
+  2.7.2:
+    changes:
       bugfixes:
       - '''ios_acls''- filters out dynamically generated reflexive type acls.'
     fragments:
     - reflexive_acls_fix.yaml
-    release_date: '2022-03-01'
+    release_date: '2022-03-02'
