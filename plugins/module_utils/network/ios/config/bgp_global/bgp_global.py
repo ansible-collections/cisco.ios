@@ -263,11 +263,11 @@ class Bgp_global(ResourceModule):
             "vrf",
         ]
         for name, w_redist in want.items():
-            have_nbr = have.get(name, {})
+            have_nbr = have.pop(name, {})
             self.compare(parsers=redist_parses, want=w_redist, have=have_nbr)
 
+        # remove remaining items in have for replaced state
         for name, h_redist in have.items():
-            # have_nbr = have.pop(name, {})
             self.compare(parsers=redist_parses, want={}, have=h_redist)
 
     def _compare_neighbor_lists(self, want, have):

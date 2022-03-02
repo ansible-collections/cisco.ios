@@ -2877,7 +2877,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute application {{ application.name }}"
             "{{ (' metric ' + application.metric|string) if application.metric is defined else '' }}"
             "{{ (' route-map ' + application.route_map) if application.route_map is defined else '' }}",
-            "remval": "no redistribute application {{ application.name }}",
+            "remval": "redistribute application {{ application.name }}",
             "result": {
                 "redistribute": [
                     {
@@ -2903,7 +2903,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute bgp {{ bgp.name }}"
             "{{ (' metric ' + bgp.metric|string) if bgp.metric is defined else '' }}"
             "{{ (' route-map ' + bgp.route_map) if bgp.route_map is defined else '' }}",
-            "remval": "no redistribute bgp {{ bgp.name }}",
+            "remval": "redistribute bgp {{ bgp.name }}",
             "result": {
                 "redistribute": [
                     {
@@ -2929,7 +2929,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute connected"
             "{{ (' metric ' + connected.metric|string) if connected.metric is defined else '' }}"
             "{{ (' route-map ' + connected.route_map) if connected.route_map is defined else '' }}",
-            "remval": "no redistribute connected",
+            "remval": "redistribute connected",
             "result": {
                 "redistribute": [
                     {
@@ -2955,7 +2955,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute eigrp {{ eigrp.name|string }}"
             "{{ (' metric ' + eigrp.metric|string) if eigrp.metric is defined else '' }}"
             "{{ (' route-map ' + eigrp.route_map) if eigrp.route_map is defined else '' }}",
-            "remval": "no redistribute eigrp {{ eigrp.name|string }}",
+            "remval": "redistribute eigrp {{ eigrp.name|string }}",
             "result": {
                 "redistribute": [
                     {
@@ -2985,7 +2985,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' ip') if isis.ip|d(False) }}"
             "{{ (' metric ' + isis.metric|string) if isis.metric is defined else '' }}"
             "{{ (' route-map ' + isis.route_map) if isis.route_map is defined else '' }}",
-            "remval": "no redistribute isis {{ isis.area_tag }}",
+            "remval": "redistribute isis {{ isis.area_tag }}",
             "result": {
                 "redistribute": [
                     {
@@ -3011,7 +3011,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "redistribute iso-igrp {{ iso_igrp.area_tag }}"
             "{{ (' route-map ' + iso_igrp.route_map) if iso_igrp.route_map is defined else '' }}",
-            "remval": "no redistribute iso-igrp {{ iso_igrp.area_tag }}",
+            "remval": "redistribute iso-igrp {{ iso_igrp.area_tag }}",
             "result": {
                 "redistribute": [
                     {
@@ -3036,7 +3036,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute lisp"
             "{{ (' metric ' + lisp.metric|string) if lisp.metric is defined else '' }}"
             "{{ (' route-map ' + lisp.route_map) if lisp.route_map is defined else '' }}",
-            "remval": "no redistribute lisp",
+            "remval": "redistribute lisp",
             "result": {
                 "redistribute": [
                     {
@@ -3062,7 +3062,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute mobile"
             "{{ (' metric ' + mobile.metric|string) if mobile.metric is defined else '' }}"
             "{{ (' route-map ' + mobile.route_map) if mobile.route_map is defined else '' }}",
-            "remval": "no redistribute mobile",
+            "remval": "redistribute mobile",
             "result": {
                 "redistribute": [
                     {
@@ -3088,7 +3088,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute odr"
             "{{ (' metric ' + odr.metric|string) if odr.metric is defined else '' }}"
             "{{ (' route-map ' + odr.route_map) if odr.route_map is defined else '' }}",
-            "remval": "no redistribute odr",
+            "remval": "redistribute odr",
             "result": {
                 "redistribute": [
                     {
@@ -3126,7 +3126,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' metric ' + ospf.metric|string) if ospf.metric is defined else '' }}"
             "{{ (' route-map ' + ospf.route_map) if ospf.route_map is defined else '' }}"
             "{{ (' vrf ' + ospf.vrf) if ospf.vrf is defined else '' }}",
-            "remval": "no redistribute ospf {{ ospf.process_id }}",
+            "remval": "redistribute ospf {{ ospf.process_id }}",
             "result": {
                 "redistribute": [
                     {
@@ -3170,7 +3170,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' nssa-external') if ospfv3.match.nssa_external|d(False) }}"
             "{{ (' metric ' + ospfv3.metric|string) if ospfv3.metric is defined else '' }}"
             "{{ (' route-map ' + ospfv3.route_map) if ospfv3.route_map is defined else '' }}",
-            "remval": "no redistribute ospfv3 {{ ospfv3.process_id }}",
+            "remval": "redistribute ospfv3 {{ ospfv3.process_id }}",
             "result": {
                 "redistribute": [
                     {
@@ -3203,7 +3203,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "redistribute rip"
             "{{ (' metric ' + rip.metric|string) if rip.metric is defined else '' }}"
             "{{ (' route-map ' + rip.route_map) if rip.route_map is defined else '' }}",
-            "remval": "no redistribute rip",
+            "remval": "redistribute rip",
             "result": {
                 "redistribute": [
                     {
@@ -3233,7 +3233,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ (' ip') if static.ip|d(False) }}"
             "{{ (' metric ' + static.metric|string) if static.metric is defined else '' }}"
             "{{ (' route-map ' + static.route_map) if static.route_map is defined else '' }}",
-            "remval": "no redistribute static",
+            "remval": "redistribute static",
             "result": {
                 "redistribute": [
                     {
@@ -3260,7 +3260,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "redistribute vrf {{ vrf.name }}"
             "{{ (' global') if vrf.global|d(False) }}",
-            "remval": "no redistribute vrf {{ vrf.name }}",
+            "remval": "redistribute vrf {{ vrf.name }}",
             "result": {
                 "redistribute": [
                     {
