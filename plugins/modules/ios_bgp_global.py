@@ -1731,7 +1731,10 @@ options:
                 description: global VRF
                 type: bool
       route_server_context:
-        description: Enter route server context command mode
+        description:
+        - Enter route server context command mode
+        - This option is DEPRECATED as it is out of scope of the module,
+          this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           name:

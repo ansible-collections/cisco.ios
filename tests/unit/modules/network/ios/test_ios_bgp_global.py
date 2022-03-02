@@ -136,7 +136,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 198.51.100.1 description merge neighbor",
         ]
         result = self.execute_module(changed=True)
-        print(result)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_merged_idempotent(self):
@@ -162,7 +161,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     bgp=dict(
                         advertise_best_external=True,
                         bestpath_options=dict(compare_routerid=True),
-                        nopeerup_delay_options=[dict(post_boot=10)],
+                        nopeerup_delay_options=dict(post_boot=10),
                     ),
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
@@ -179,40 +178,58 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    # def test_ios_bgp_global_replaced(self):
-    #     set_module_args(
-    #         dict(
-    #             config=dict(
-    #                 as_number="65000",
-    #                 bgp=dict(
-    #                     advertise_best_external=True,
-    #                     bestpath=[dict(compare_routerid=True)],
-    #                     log_neighbor_changes=True,
-    #                     nopeerup_delay=[dict(cold_boot=20), dict(post_boot=10)],
-    #                 ),
-    #                 redistribute=[dict(connected=dict(metric=10))],
-    #                 neighbor=[
-    #                     dict(
-    #                         address="192.0.2.1",
-    #                         remote_as=200,
-    #                         description="replace neighbor",
-    #                     )
-    #                 ],
-    #             ),
-    #             state="replaced",
-    #         )
-    #     )
-    #     commands = [
-    #         "bgp nopeerup-delay cold-boot 20",
-    #         "neighbor 192.0.2.1 description replace neighbor",
-    #         "neighbor 192.0.2.1 remote-as 200",
-    #         "no neighbor 198.51.100.1 remote-as 100",
-    #         "no neighbor 198.51.100.1 route-map test-route out",
-    #         "no timers bgp 100 200 150",
-    #         "router bgp 65000",
-    #     ]
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(sorted(result["commands"]), sorted(commands))
+    def test_ios_bgp_global_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp nopeerup-delay post-boot 10
+             bgp bestpath compare-routerid
+             bgp advertise-best-external
+             timers bgp 100 200 150
+             redistribute connected metric 10
+             neighbor 198.51.100.1 remote-as 100
+             neighbor 198.51.100.1 route-map test-route out
+             address-family ipv4
+              neighbor 172.31.34.28 activate
+              neighbor 172.31.35.140 activate
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    bgp=dict(
+                        advertise_best_external=True,
+                        bestpath_options=dict(compare_routerid=True),
+                        log_neighbor_changes=True,
+                        nopeerup_delay_options=dict(
+                            cold_boot=20, post_boot=10
+                        ),
+                    ),
+                    redistribute=[dict(connected=dict(set=True, metric=10))],
+                    neighbors=[
+                        dict(
+                            address="192.0.2.1",
+                            remote_as=200,
+                            description="replace neighbor",
+                        )
+                    ],
+                ),
+                state="replaced",
+            )
+        )
+        commands = [
+            "router bgp 65000",
+            "no timers bgp 100 200 150",
+            "bgp log-neighbor-changes",
+            "bgp nopeerup-delay cold-boot 20",
+            "neighbor 192.0.2.1 remote-as 200",
+            "neighbor 192.0.2.1 description replace neighbor",
+            "no neighbor 198.51.100.1",
+        ]
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     # def test_ios_bgp_global_replaced_idempotent(self):
     #     set_module_args(
