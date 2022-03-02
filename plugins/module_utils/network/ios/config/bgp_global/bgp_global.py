@@ -38,7 +38,6 @@ class Bgp_global(ResourceModule):
     """
 
     parsers = [
-        "as_number",
         "auto_summary",
         "bmp.buffer_size",
         "bmp.initial_refresh.delay",
@@ -166,14 +165,15 @@ class Bgp_global(ResourceModule):
         for each in self.want, self.have:
             self._bgp_global_list_to_dict(each)
 
-        # if state is deleted, clean up global params
         if self.state == "deleted":
+            # deleted, clean up global params
             if not self.want or (
                 self.have.get("as_number") == self.want.get("as_number")
             ):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
+            # delete as_number takes down whole bgp config
             if not self.want or (
                 self.have.get("as_number") == self.want.get("as_number")
             ):
@@ -181,7 +181,7 @@ class Bgp_global(ResourceModule):
 
         else:
             wantd = self.want
-            # if state is merged, merge want onto have and then compare
+            # if state is merged, merge want with have and then compare
             if self.state == "merged":
                 wantd = dict_merge(self.have, self.want)
 
@@ -204,7 +204,11 @@ class Bgp_global(ResourceModule):
                 *self.generic_list_parsers,
             ]
 
+        cmd_len = len(self.commands)  # holds command length to add as_number
+        # for dict type attributes
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        # for list type attributes
         for _parse in self.generic_list_parsers:
             if _parse == "inject_maps":
                 self._compare_generic_lists(
@@ -216,12 +220,23 @@ class Bgp_global(ResourceModule):
                 self._compare_generic_lists(
                     want.get(_parse, {}), have.get(_parse, {}), _parse
                 )
+
+        # for neighbors
         self._compare_neighbor_lists(
             want.get("neighbors", {}), have.get("neighbors", {})
         )
+
+        # for redistribute
         self._compare_redistribute_lists(
             want.get("redistribute", {}), have.get("redistribute", {})
         )
+
+        # add as_nummber in the begining fo command set if commands generated
+        if len(self.commands) != cmd_len or (not have and want):
+            self.commands = [
+                self._tmplt.render(want or have, "as_number", False),
+                *self.commands,
+            ]
 
     def _has_bgp_inject_maps(self, want):
         if want.get("bgp", {}).get("inject_maps", {}):
@@ -230,6 +245,7 @@ class Bgp_global(ResourceModule):
             return False
 
     def _compare_redistribute_lists(self, want, have):
+        """Compare redistribute list of dict"""
         redist_parses = [
             "application",
             "bgp",
@@ -247,11 +263,15 @@ class Bgp_global(ResourceModule):
             "vrf",
         ]
         for name, w_redist in want.items():
-            have_nbr = have.pop(name, {})
+            have_nbr = have.get(name, {})
             self.compare(parsers=redist_parses, want=w_redist, have=have_nbr)
 
+        for name, h_redist in have.items():
+            # have_nbr = have.pop(name, {})
+            self.compare(parsers=redist_parses, want={}, have=h_redist)
+
     def _compare_neighbor_lists(self, want, have):
-        """Compare list of dict"""
+        """Compare neighbor list of dict"""
         neig_parses = [
             "remote_as",
             "peer_group",

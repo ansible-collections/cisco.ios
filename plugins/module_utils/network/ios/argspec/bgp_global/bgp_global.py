@@ -829,6 +829,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "connected": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "metric": {"type": "int"},
                                 "route_map": {"type": "str"},
                             },
@@ -861,6 +862,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "lisp": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "metric": {"type": "int"},
                                 "route_map": {"type": "str"},
                             },
@@ -868,6 +870,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "mobile": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "metric": {"type": "int"},
                                 "route_map": {"type": "str"},
                             },
@@ -875,6 +878,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "odr": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "metric": {"type": "int"},
                                 "route_map": {"type": "str"},
                             },
@@ -919,6 +923,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "rip": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "metric": {"type": "int"},
                                 "route_map": {"type": "str"},
                             },
@@ -926,6 +931,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "static": {
                             "type": "dict",
                             "options": {
+                                "set": {"type": "bool"},
                                 "clns": {"type": "bool"},
                                 "ip": {"type": "bool"},
                                 "metric": {"type": "int"},

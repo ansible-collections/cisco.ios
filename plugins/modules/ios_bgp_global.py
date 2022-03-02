@@ -1531,6 +1531,9 @@ options:
             description: Connected
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               metric:
                 description: Metric for redistributed routes
                 type: int
@@ -1583,6 +1586,9 @@ options:
             description: Locator ID Separation Protocol (LISP)
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               metric:
                 description: Metric for redistributed routes
                 type: int
@@ -1593,6 +1599,9 @@ options:
             description: Mobile routes
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               metric:
                 description: Metric for redistributed routes
                 type: int
@@ -1603,6 +1612,9 @@ options:
             description: On Demand stub Routes
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               metric:
                 description: Metric for redistributed routes
                 type: int
@@ -1680,6 +1692,9 @@ options:
             description: Routing Information Protocol (RIP)
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               metric:
                 description: Metric for redistributed routes
                 type: int
@@ -1690,6 +1705,9 @@ options:
             description: Static routes
             type: dict
             suboptions:
+              set:
+                description: Set the top level attribute
+                type: bool
               clns:
                 description: Redistribution of OSI static routes
                 type: bool
@@ -1834,6 +1852,7 @@ options:
         connection to remote host is not required.
     type: str
 """
+
 
 EXAMPLES = """
 # Using merged
@@ -2378,11 +2397,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_global.bgp_global import (
     Bgp_global,
 )
-
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():
