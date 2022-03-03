@@ -199,10 +199,7 @@ class Bgp_global(ResourceModule):
             "networks",
         ]
         if self._has_bgp_inject_maps(want):
-            self.generic_list_parsers = [
-                "inject_maps",
-                *self.generic_list_parsers,
-            ]
+            self.generic_list_parsers.insert(0, "inject_maps")
 
         cmd_len = len(self.commands)  # holds command length to add as_number
         # for dict type attributes
@@ -231,12 +228,11 @@ class Bgp_global(ResourceModule):
             want.get("redistribute", {}), have.get("redistribute", {})
         )
 
-        # add as_nummber in the begining fo command set if commands generated
+        # add as_number in the begining fo command set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
-            self.commands = [
-                self._tmplt.render(want or have, "as_number", False),
-                *self.commands,
-            ]
+            self.commands.insert(
+                0, self._tmplt.render(want or have, "as_number", False)
+            )
 
     def _has_bgp_inject_maps(self, want):
         if want.get("bgp", {}).get("inject_maps", {}):
