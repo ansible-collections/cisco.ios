@@ -15,7 +15,7 @@
         config:
           hosts:
             - community_string: integrationComm
-              host: 172.16.0.10
+              host: 192.0.2.10
               informs: true
               traps:
                 - isis

@@ -4,7 +4,6 @@
       ansible_connection }}
 
 - block:
-
     - name: ios_ntp_global render - Play
       register: result
       cisco.ios.ios_ntp_global:
@@ -20,7 +19,7 @@
           orphan: 4
           panic_update: true
           peers:
-            - peer: 172.16.1.10
+            - peer: 192.0.2.10
               version: 2
         state: rendered
 

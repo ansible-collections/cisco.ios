@@ -5,6 +5,22 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.7.2
+======
+
+Bugfixes
+--------
+
+- 'ios_acls'- filters out dynamically generated reflexive type acls.
+
+v2.7.1
+======
+
+Release Summary
+---------------
+
+Re-releasing 2.7.0 due to Automation Hub uploading issue.
+
 v2.7.0
 ======
 
@@ -35,6 +51,7 @@ Documentation Changes
 ---------------------
 
 - `ios_acls` - Documentation updated with commands used for fetching remarks data under aces.
+- fixes fqcn in older module documentation.
 
 New Modules
 -----------

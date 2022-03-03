@@ -427,6 +427,7 @@ releases:
       doc_changes:
       - '`ios_acls` - Documentation updated with commands used for fetching remarks
         data under aces.'
+      - fixes fqcn in older module documentation.
       minor_changes:
       - '`ios_acls` - Added enable_fragment attribute to enable fragments under ace.'
       - '`ios_hostname` - New Resource module added.'
@@ -437,7 +438,9 @@ releases:
     - acl_2_6.yaml
     - acls_bugfix_and_option_deprication.yaml
     - fix_fiveGigabit_name.yaml
+    - fix_ip_ranges.yaml
     - fix_vlan.yaml
+    - fqcn_corrected_doc.yaml
     - hostname_redirects.yaml
     - hostname_resource_module.yaml
     - snmp_server_feature_user.yaml
@@ -447,3 +450,16 @@ releases:
       name: ios_hostname
       namespace: ''
     release_date: '2022-01-31'
+  2.7.1:
+    changes:
+      release_summary: Re-releasing 2.7.0 due to Automation Hub uploading issue.
+    fragments:
+    - reflexive_acls_fix.yaml
+    release_date: '2022-02-21'
+  2.7.2:
+    changes:
+      bugfixes:
+      - '''ios_acls''- filters out dynamically generated reflexive type acls.'
+    fragments:
+    - reflexive_acls_fix.yaml
+    release_date: '2022-03-02'
