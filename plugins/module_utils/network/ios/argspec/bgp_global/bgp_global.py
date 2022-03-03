@@ -619,12 +619,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "allpaths": {"type": "bool"},
                             },
                         },
-                        "password": {"type": "str"},
+                        "password": {"type": "str", "no_log": True},
                         "password_options": {
                             "type": "dict",
+                            "no_log": False,
                             "options": {
                                 "encryption": {"type": "int"},
-                                "pass_key": {"type": "str"},
+                                "pass_key": {"type": "str", "no_log": True},
                             },
                         },
                         "path_attribute": {

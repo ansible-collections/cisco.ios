@@ -16,7 +16,7 @@ from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
-from .ios_module import TestIosModule, load_fixture
+from .ios_module import TestIosModule
 
 
 class TestIosBgpGlobalModule(TestIosModule):
@@ -403,7 +403,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         # self.assertEqual(sorted(result["commands"]), sorted(commands))
         with self.assertRaises(AnsibleFailJson) as error:
-            result = self.execute_module(changed=False, commands=[])
+            self.execute_module(changed=False, commands=[])
         self.assertIn(
             "BGP is already configured with ASN 65000. Please remove it with state: purged before configuring new ASN",
             str(error.exception),
@@ -416,6 +416,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp nopeerup-delay post-boot 10
              bgp bestpath compare-routerid
              bgp advertise-best-external
+             aggregate-address 192.168.0.11 255.255.0.0 attribute-map map1
              timers bgp 100 200 150
              redistribute connected metric 10
              neighbor 198.51.100.1 remote-as 100
@@ -429,6 +430,25 @@ class TestIosBgpGlobalModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
+                    aggregate_address=dict(
+                        dict(
+                            address="192.168.0.11",
+                            attribute_map="map1",
+                            netmask="255.255.0.0",
+                        )
+                    ),
+                    aggregate_addresses=[
+                        dict(
+                            address="192.168.0.1",
+                            attribute_map="map",
+                            netmask="255.255.0.0",
+                        ),
+                        dict(
+                            address="192.168.0.2",
+                            attribute_map="map2",
+                            netmask="255.255.0.0",
+                        ),
+                    ],
                     bgp=dict(
                         advertise_best_external=True,
                         bestpath_options=dict(compare_routerid=True),
@@ -454,6 +474,8 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no timers bgp 100 200 150",
             "bgp log-neighbor-changes",
             "bgp nopeerup-delay cold-boot 20",
+            "aggregate-address 192.168.0.1 255.255.0.0 attribute-map map",
+            "aggregate-address 192.168.0.2 255.255.0.0 attribute-map map2",
             "neighbor 192.0.2.1 remote-as 200",
             "neighbor 192.0.2.1 description replace neighbor",
             "no neighbor 198.51.100.1",
@@ -528,7 +550,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no redistribute connected",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_deleted_empty(self):
@@ -538,7 +559,6 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         set_module_args(dict(config=dict(as_number=65000), state="deleted"))
         result = self.execute_module(changed=False)
-        print(result["commands"])
         self.assertEqual(result["commands"], [])
 
     def test_ios_bgp_global_purged(self):
@@ -818,5 +838,4 @@ class TestIosBgpGlobalModule(TestIosModule):
                 }
             ],
         }
-        print(result["parsed"])
         self.assertEqual(parsed_list, result["parsed"])
