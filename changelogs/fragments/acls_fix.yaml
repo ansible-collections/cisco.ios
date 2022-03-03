@@ -1,0 +1,3 @@
+---
+bugfixes:
+    - acls parser didn't only checked if a variable existed without validating that it was a dictionary before trying to use it as one.
