@@ -3257,11 +3257,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_g
     Bgp_global,
 )
 
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
 
 def main():
     """
@@ -3275,7 +3270,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

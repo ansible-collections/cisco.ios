@@ -37,23 +37,23 @@ merged:
       nopeerup_delay_options:
         post_boot: 10
     neighbors:
-    - aigp:
-        send:
-          cost_community:
-            id: 100
-            poi:
-              igp_cost: true
-              transitive: true
-      description: merge neighbor
-      neighbor_address: 198.0.2.1
-      remote_as: '100'
-      route_maps:
-      - name: test-route
-        out: true
+      - aigp:
+          send:
+            cost_community:
+              id: 100
+              poi:
+                igp_cost: true
+                transitive: true
+        description: merge neighbor
+        neighbor_address: 198.0.2.1
+        remote_as: '100'
+        route_maps:
+          - name: test-route
+            out: true
     redistribute:
-    - connected:
-        metric: 10
-        set: true
+      - connected:
+          metric: 10
+          set: true
     timers:
       holdtime: 200
       keepalive: 100
@@ -80,23 +80,23 @@ gathered:
       nopeerup_delay_options:
         post_boot: 10
     neighbors:
-    - aigp:
-        send:
-          cost_community:
-            id: 100
-            poi:
-              igp_cost: true
-              transitive: true
-      description: merge neighbor
-      neighbor_address: 192.0.2.1
-      remote_as: '100'
-      route_maps:
-      - name: test-route
-        out: true
+      - aigp:
+          send:
+            cost_community:
+              id: 100
+              poi:
+                igp_cost: true
+                transitive: true
+        description: merge neighbor
+        neighbor_address: 192.0.2.1
+        remote_as: '100'
+        route_maps:
+          - name: test-route
+            out: true
     redistribute:
-    - connected:
-        metric: 10
-        set: true
+      - connected:
+          metric: 10
+          set: true
     timers:
       holdtime: 200
       keepalive: 100
@@ -128,16 +128,16 @@ replaced:
         cold_boot: 20
         post_boot: 10
     neighbors:
-    - description: replace neighbor
-      neighbor_address: 192.0.2.2
-      remote_as: '100'
-      slow_peer:
-        detection:
-          disable: true
+      - description: replace neighbor
+        neighbor_address: 192.0.2.2
+        remote_as: '100'
+        slow_peer:
+          detection:
+            disable: true
     redistribute:
-    - connected:
-        metric: 10
-        set: true
+      - connected:
+          metric: 10
+          set: true
 
 parsed:
   after:
@@ -160,23 +160,23 @@ parsed:
       nopeerup_delay_options:
         post_boot: 10
     neighbors:
-    - aigp:
-        send:
-          cost_community:
-            id: 100
-            poi:
-              igp_cost: true
-              transitive: true
-      description: merge neighbor
-      neighbor_address: 198.0.2.1
-      remote_as: '100'
-      route_maps:
-      - name: test-route
-        out: true
+      - aigp:
+          send:
+            cost_community:
+              id: 100
+              poi:
+                igp_cost: true
+                transitive: true
+        description: merge neighbor
+        neighbor_address: 198.0.2.1
+        remote_as: '100'
+        route_maps:
+          - name: test-route
+            out: true
     redistribute:
-    - connected:
-        metric: 10
-        set: true
+      - connected:
+          metric: 10
+          set: true
     timers:
       holdtime: 200
       keepalive: 100
