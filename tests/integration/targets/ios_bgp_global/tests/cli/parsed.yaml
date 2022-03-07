@@ -12,4 +12,4 @@
 - assert:
     that:
       - result.changed == false
-      - merged['after'] == result['parsed']
+      - parsed['after'] == result['parsed']

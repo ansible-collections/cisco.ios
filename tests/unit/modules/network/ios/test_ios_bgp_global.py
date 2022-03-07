@@ -71,12 +71,6 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    # def load_fixtures(self, commands=None):
-    #     def load_from_file(*args, **kwargs):
-    #         return load_fixture("ios_bgp_global.cfg")
-
-    #     self.execute_show_command.side_effect = load_from_file
-
     def test_ios_bgp_global_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -86,10 +80,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -99,18 +93,18 @@ class TestIosBgpGlobalModule(TestIosModule):
                 "config": {
                     "aggregate_addresses": [
                         {
-                            "address": "50.0.0.0",
+                            "address": "192.0.2.3",
                             "attribute_map": "ma",
                             "netmask": "255.255.0.0",
                             "summary_only": True,
                         },
                         {
-                            "address": "1.1.9.0",
+                            "address": "192.0.2.4",
                             "as_set": True,
                             "netmask": "255.255.255.0",
                         },
                         {
-                            "address": "1.1.8.0",
+                            "address": "192.0.2.5",
                             "as_set": True,
                             "netmask": "255.255.255.0",
                         },
@@ -162,7 +156,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         "listen": {
                             "limit": 200,
                             "range": {
-                                "host_with_subnet": "10.0.2.0/24",
+                                "host_with_subnet": "192.0.2.9/24",
                                 "peer_group": "mygrp",
                             },
                         },
@@ -220,10 +214,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "maximum_paths": {"ibgp": 22},
                     "maximum_secondary_paths": {"ibgp": 22, "paths": 12},
                     "neighbors": [
-                        {
-                            "neighbor_address": "192.168.45.3",
-                            "remote_as": "300",
-                        },
+                        {"neighbor_address": "192.0.2.3", "remote_as": "300"},
                         {
                             "aigp": {
                                 "send": {
@@ -236,7 +227,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                     }
                                 }
                             },
-                            "neighbor_address": "192.168.45.4",
+                            "neighbor_address": "192.0.2.4",
                             "remote_as": "100.1",
                         },
                     ],
@@ -280,7 +271,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp graceful-restart stalepath-time 22",
             "bgp graceful-shutdown all neighbors 31 local-preference 23 community 22",
             "bgp listen limit 200",
-            "bgp listen range 10.0.2.0/24 peer-group mygrp",
+            "bgp listen range 192.0.2.9/24 peer-group mygrp",
             "bgp log-neighbor-changes",
             "bgp maxas-limit 2",
             "bgp maxcommunity-limit 3",
@@ -307,12 +298,12 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp inject-map map2 exist-map mp3 copy-attributes",
             "distribute-list prefix workcheck out",
             "distribute-list gateway checkme in",
-            "aggregate-address 50.0.0.0 255.255.0.0 summary-only attribute-map ma",
-            "aggregate-address 1.1.9.0 255.255.255.0 as-set",
-            "aggregate-address 1.1.8.0 255.255.255.0 as-set",
-            "neighbor 192.168.45.4 remote-as 100.1",
-            "neighbor 192.168.45.4 aigp send cost-community 100 poi igp-cost transitive",
-            "neighbor 192.168.45.3 remote-as 300",
+            "aggregate-address 192.0.2.3 255.255.0.0 summary-only attribute-map ma",
+            "aggregate-address 192.0.2.4 255.255.255.0 as-set",
+            "aggregate-address 192.0.2.5 255.255.255.0 as-set",
+            "neighbor 192.0.2.4 remote-as 100.1",
+            "neighbor 192.0.2.4 aigp send cost-community 100 poi igp-cost transitive",
+            "neighbor 192.0.2.3 remote-as 300",
             "redistribute connected metric 22",
             "redistribute application ap112 metric 33 route-map mp1",
             "redistribute application ap1 metric 22",
@@ -332,10 +323,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -351,7 +342,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
                         dict(
-                            address="198.51.100.1",
+                            address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
                         )
@@ -372,10 +363,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -391,7 +382,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
                         dict(
-                            address="198.51.100.1",
+                            address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
                         )
@@ -419,10 +410,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              aggregate-address 192.168.0.11 255.255.0.0 attribute-map map1
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.2 remote-as 100
+             neighbor 192.0.2.2 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -478,7 +469,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "aggregate-address 192.168.0.2 255.255.0.0 attribute-map map2",
             "neighbor 192.0.2.1 remote-as 200",
             "neighbor 192.0.2.1 description replace neighbor",
-            "no neighbor 198.51.100.1",
+            "no neighbor 192.0.2.2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -492,10 +483,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -511,7 +502,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
                         dict(
-                            address="198.51.100.1",
+                            address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
                         )
@@ -532,10 +523,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -546,7 +537,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no bgp advertise-best-external",
             "no bgp bestpath compare-routerid",
             "no bgp nopeerup-delay post-boot 10",
-            "no neighbor 198.51.100.1",
+            "no neighbor 192.0.2.1",
             "no redistribute connected",
         ]
         result = self.execute_module(changed=True)
@@ -570,10 +561,10 @@ class TestIosBgpGlobalModule(TestIosModule):
              bgp advertise-best-external
              timers bgp 100 200 150
              redistribute connected metric 10
-             neighbor 198.51.100.1 remote-as 100
-             neighbor 198.51.100.1 route-map test-route out
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 route-map test-route out
              address-family ipv4
-              neighbor 172.31.34.28 activate
+              neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
             """
         )
@@ -586,7 +577,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             {
                 "config": {
                     "aggregate_address": {
-                        "address": "50.0.0.0",
+                        "address": "192.0.2.3",
                         "attribute_map": "ma",
                         "netmask": "255.255.0.0",
                         "summary_only": True,
@@ -613,7 +604,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         "listen": {
                             "limit": 200,
                             "range": {
-                                "ipv4_with_subnet": "10.0.2.0/24",
+                                "ipv4_with_subnet": "192.0.2.9/24",
                                 "peer_group": "mygrp",
                             },
                         },
@@ -650,35 +641,35 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "neighbors": [
                         {
                             "advertise": {"diverse_path": {"backup": True}},
-                            "neighbor_address": "10.1.1.1",
+                            "neighbor_address": "192.1.1.1",
                             "route_reflector_client": True,
                         },
                         {
-                            "neighbor_address": "10.5.5.5",
+                            "neighbor_address": "192.5.5.5",
                             "remote_as": 64500,
                             "update_source": "Loopback0",
                             "route_map": {"name": "rmp1", "in": True},
                         },
                         {
-                            "neighbor_address": "10.6.6.6",
+                            "neighbor_address": "192.6.6.6",
                             "remote_as": 64500,
                             "update_source": "Loop",
                         },
                         {
                             "activate": True,
-                            "address": "172.16.1.2",
+                            "address": "192.0.1.2",
                             "remote_as": 45000,
                             "send_community": {"extended": True},
-                            "password": "new paswaord",
+                            "password": "new password",
                         },
                         {
                             "activate": True,
                             "neighbor_address": "172.21.1.2",
                             "remote_as": 45000,
                         },
-                        {"neighbor_address": "192.168.45.3", "remote_as": 300},
+                        {"neighbor_address": "192.0.2.3", "remote_as": 300},
                         {
-                            "neighbor_address": "192.168.45.4",
+                            "neighbor_address": "192.0.2.4",
                             "remote_as": 6553601,
                             "shutdown": {
                                 "set": True,
@@ -702,19 +693,19 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                     "networks": [
                         {
-                            "address": "10.0.2.1",
+                            "address": "192.0.2.1",
                             "backdoor": True,
                             "netmask": "55.255.0.0",
                             "route_map": "mp1",
                         },
                         {
-                            "address": "50.0.0.0",
+                            "address": "192.0.2.3",
                             "backdoor": True,
                             "netmask": "255.255.0.0",
                             "route_map": "mp2",
                         },
                         {
-                            "address": "50.0.2.0",
+                            "address": "192.0.2.0",
                             "backdoor": True,
                             "netmask": "255.255.0.0",
                             "route_map": "mp2",
@@ -757,7 +748,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp bestpath compare-routerid",
             "bgp bestpath med confed missing-as-worst",
             "bgp listen limit 200",
-            "bgp listen range 10.0.2.0/24 peer-group mygrp",
+            "bgp listen range 192.0.2.9/24 peer-group mygrp",
             "bgp log-neighbor-changes",
             "bgp nopeerup-delay cold-boot 2",
             "bgp nopeerup-delay post-boot 22",
@@ -765,25 +756,26 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp nopeerup-delay user-initiated 22",
             "bgp inject-map map1 exist-map mp2 copy-attributes",
             "distribute-list 5000 out Loopback0",
-            "aggregate-address 50.0.0.0 255.255.0.0 summary-only attribute-map ma",
-            "network 10.0.2.1 mask 55.255.0.0 route-map mp1 backdoor",
-            "network 50.0.0.0 mask 255.255.0.0 route-map mp2 backdoor",
-            "network 50.0.2.0 mask 255.255.0.0 route-map mp2 backdoor",
-            "neighbor 10.1.1.1 advertise diverse-path backup",
-            "neighbor 10.1.1.1 route-reflector-client",
-            "neighbor 10.5.5.5 remote-as 64500",
-            "neighbor 10.5.5.5 update-source Loopback0",
-            "neighbor 10.5.5.5 route-map rmp1 in",
-            "neighbor 10.6.6.6 remote-as 64500",
-            "neighbor 10.6.6.6 update-source Loop",
-            "neighbor 172.16.1.2 remote-as 45000",
-            "neighbor 172.16.1.2 activate",
-            "neighbor 172.16.1.2 send-community extended",
+            "aggregate-address 192.0.2.3 255.255.0.0 summary-only attribute-map ma",
+            "network 192.0.2.1 mask 55.255.0.0 route-map mp1 backdoor",
+            "network 192.0.2.3 mask 255.255.0.0 route-map mp2 backdoor",
+            "network 192.0.2.0 mask 255.255.0.0 route-map mp2 backdoor",
+            "neighbor 192.1.1.1 advertise diverse-path backup",
+            "neighbor 192.1.1.1 route-reflector-client",
+            "neighbor 192.5.5.5 remote-as 64500",
+            "neighbor 192.5.5.5 update-source Loopback0",
+            "neighbor 192.5.5.5 route-map rmp1 in",
+            "neighbor 192.6.6.6 remote-as 64500",
+            "neighbor 192.6.6.6 update-source Loop",
+            "neighbor 192.0.1.2 remote-as 45000",
+            "neighbor 192.0.1.2 password new password",
+            "neighbor 192.0.1.2 activate",
+            "neighbor 192.0.1.2 send-community extended",
             "neighbor 172.21.1.2 remote-as 45000",
             "neighbor 172.21.1.2 activate",
-            "neighbor 192.168.45.3 remote-as 300",
-            "neighbor 192.168.45.4 remote-as 6553601",
-            "neighbor 192.168.45.4 shutdown graceful 10 community 20",
+            "neighbor 192.0.2.3 remote-as 300",
+            "neighbor 192.0.2.4 remote-as 6553601",
+            "neighbor 192.0.2.4 shutdown graceful 10 community 20",
             "neighbor 2001:DB8::1037 activate",
             "neighbor 2001:DB8::1037 advertise additional-paths group-best",
             "neighbor tagged peer-group 5",
@@ -810,10 +802,10 @@ class TestIosBgpGlobalModule(TestIosModule):
                      bgp advertise-best-external
                      timers bgp 100 200 150
                      redistribute connected metric 10
-                     neighbor 198.51.100.1 remote-as 100
-                     neighbor 198.51.100.1 route-map test-route out
+                     neighbor 192.0.2.1 remote-as 100
+                     neighbor 192.0.2.1 route-map test-route out
                      address-family ipv4
-                      neighbor 172.31.34.28 activate
+                      neighbor 192.0.2.28 activate
                       neighbor 172.31.35.140 activate
                     """
                 ),
@@ -833,7 +825,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbors": [
                 {
                     "remote_as": "100",
-                    "neighbor_address": "198.51.100.1",
+                    "neighbor_address": "192.0.2.1",
                     "route_maps": [{"name": "test-route", "out": True}],
                 }
             ],

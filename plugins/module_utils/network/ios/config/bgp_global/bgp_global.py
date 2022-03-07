@@ -402,7 +402,7 @@ class Bgp_global(ResourceModule):
                 "bgp",
             ]:
                 if k == "neighbors":
-                    for neb in tmp_data.get("neighbors"):  # work here
+                    for neb in tmp_data.get("neighbors"):
                         neb = self._bgp_global_list_to_dict(neb)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("distributes") and k == "distributes":
@@ -516,3 +516,5 @@ class Bgp_global(ResourceModule):
                     want["route_maps"].append(want.pop("route_map"))
                 else:
                     want["route_maps"] = [want.pop("route_map")]
+            if want.get("password"):
+                want["password_options"] = {"pass_key": want.pop("password")}

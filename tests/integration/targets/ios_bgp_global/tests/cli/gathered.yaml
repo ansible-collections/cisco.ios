@@ -18,7 +18,7 @@
       assert:
         that:
           - result.changed == false
-          - merged['after'] == result['gathered']
+          - gathered['after'] == result['gathered']
 
   always:
     - include_tasks: _remove_config.yaml
