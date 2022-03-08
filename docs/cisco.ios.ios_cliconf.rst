@@ -72,7 +72,7 @@ Status
 Authors
 ~~~~~~~
 
-- Ansible Networking Team (@network-team)
+- Ansible Networking Team
 
 
 .. hint::

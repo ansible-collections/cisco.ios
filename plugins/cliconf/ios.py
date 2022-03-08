@@ -22,7 +22,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 author:
-- Ansible Networking Team (@network-team)
+- Ansible Networking Team
 name: ios
 short_description: Use ios cliconf to run command on Cisco IOS platform
 description:
