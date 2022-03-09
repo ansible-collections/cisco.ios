@@ -1108,6 +1108,8 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
+            snmp-server view no-writetest testiso excluded
+            snmp-server view test-view test-test included
             """
         )
 
@@ -1377,6 +1379,18 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v3",
                     },
                 ],
+                "views": [
+                    {
+                        "name": "no-writetest",
+                        "family_name": "testiso",
+                        "excluded": True,
+                    },
+                    {
+                        "name": "newView",
+                        "family_name": "TestFamilyName",
+                        "included": True,
+                    },
+                ],
             }
         }
         overridden = [
@@ -1414,6 +1428,8 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
             "snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
             "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server view newView TestFamilyName included",
+            "no snmp-server view test-view test-test included",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
