@@ -20,3 +20,4 @@ known_issues:
   - "`ios_bgp_global` - Added capability of configure network options."
   - "`ios_bgp_global` - Parsers added for non-implemented attributes."
   - "`ios_bgp_global` - Facts and config code optimized for using rm_templates."
+  - "`ios_bgp_global` - Correct misspelled attributes with alternates/alias."
