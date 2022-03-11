@@ -56,35 +56,23 @@ class Bgp_globalFacts(object):
             lines=data.splitlines(), module=self._module
         )
         objs = bgp_global_parser.parse()
-
-        objs = utils.remove_empties(objs)
-        if "neighbor" in objs:
-            temp_neighbor = []
-            temp = {}
-            temp["address"] = None
-            for each in objs["neighbor"]:
-                if temp["address"] != each["address"]:
-                    if temp["address"]:
-                        temp_neighbor.append(temp)
-                        temp = {}
-                    temp["address"] = each.pop("address")
-                    if each:
-                        temp.update(each)
-                else:
-                    each.pop("address")
-                    temp.update(each)
-            if temp:
-                temp_neighbor.append(temp)
-            objs["neighbor"] = temp_neighbor
-        if objs:
-            ansible_facts["ansible_network_resources"].pop("bgp_global", None)
-
-            params = utils.remove_empties(
-                bgp_global_parser.validate_config(
-                    self.argument_spec, {"config": objs}, redact=True
-                )
+        neighbor_list = objs.get("neighbors", {})
+        if neighbor_list:
+            objs["neighbors"] = sorted(
+                list(neighbor_list.values()),
+                key=lambda k, pk="neighbor_address": k[pk],
             )
-            facts["bgp_global"] = params["config"]
-            ansible_facts["ansible_network_resources"].update(facts)
+
+        obj = utils.remove_empties(objs)
+
+        ansible_facts["ansible_network_resources"].pop("bgp_global", None)
+        params = utils.remove_empties(
+            bgp_global_parser.validate_config(
+                self.argument_spec, {"config": obj}, redact=True
+            )
+        )
+
+        facts["bgp_global"] = params.get("config", {})
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

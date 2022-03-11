@@ -1,0 +1,23 @@
+---
+minor_changes:
+  - "`ios_bgp_global` - Deprecate aggregate_address with aggregate_address which supports list of dict attributes."
+  - "`ios_bgp_global` - Deprecate bestpath with bestpath_options which supports a dict attribute."
+  - "`ios_bgp_global` - Deprecate inject_map with inject_maps which supports list of dict attributes."
+  - "`ios_bgp_global` - Deprecate listen.ipv4_with_subnet/ipv6_with_subnet with host_with_subnet which enables common attribute for facts rendering."
+  - "`ios_bgp_global` - Deprecate nopeerup_delay with nopeerup_delay_options which supports a dict attribute."
+  - "`ios_bgp_global` - Deprecate distribute_list with distributes which supports list of dict attributes."
+  - "`ios_bgp_global` - Deprecate neighbors.address/tag/ipv6_adddress with neighbor_address which enables common attribute for facts rendering."
+  - "`ios_bgp_global` - Deprecate neighbors.password with password_options which allows encryption and password."
+  - "`ios_bgp_global` - Deprecate neighbors.route_map with route_maps which supports list of dict attributes."
+  - "`ios_bgp_global` - Deprecates route_server_context, scope, template as they were not implemented with the scope of the module."
+bugfixes:
+  - "`ios_bgp_global` - client_to_client.cluster_id corrected to take string input."
+  - "`ios_bgp_global` - Added bmp.server_options."
+  - "`ios_bgp_global` - neighbors.path_attribute to support float format."
+known_issues:
+  - "`ios_bgp_global` - Added community and local_preference for route_reflector_client."
+  - "`ios_bgp_global` - Added update_source for neighbors."
+  - "`ios_bgp_global` - Added capability of configure network options."
+  - "`ios_bgp_global` - Parsers added for non-implemented attributes."
+  - "`ios_bgp_global` - Facts and config code optimized for using rm_templates."
+  - "`ios_bgp_global` - Correct misspelled attributes with alternates/alias."

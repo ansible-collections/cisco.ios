@@ -30,7 +30,7 @@
             nopeerup_delay:
               - post_boot: 10
           neighbor:
-            - address: 198.51.100.1
+            - address: 198.0.2.1
               description: merge neighbor
               remote_as: 100
               aigp:
@@ -46,6 +46,7 @@
           redistribute:
             - connected:
                 metric: 10
+                set: true
           timers:
             keepalive: 100
             holdtime: 200
