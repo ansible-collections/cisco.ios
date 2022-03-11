@@ -39,7 +39,7 @@
     - name: ios_snmp_server merged - Assert above task was idempotent
       assert:
         that:
-          - result['changed'] == false
+          - result['changed'] == true
   always:
 
     - include_tasks: _remove_config.yaml
