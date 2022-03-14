@@ -111,11 +111,15 @@ class Static_RoutesFacts(object):
         filter_vrf = " "
         return filter_vrf.join(netmask), dest
 
+    def check_proper_entry(self, route_config):
+        r_config = route_config.split(" ")
+        return "route" in r_config and "ospf" not in r_config
+
     def populate_destination(self, config):
         same_dest = {}
         ip_str = ""
         for i in sorted(config):
-            if i and "ospf" not in i:
+            if i and self.check_proper_entry(i):
                 if "::" in i and "vrf" in i:
                     ip_str = "ipv6 route vrf"
                 elif "::" in i and "vrf" not in i:
