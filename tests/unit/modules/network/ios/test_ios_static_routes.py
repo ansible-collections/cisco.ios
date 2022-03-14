@@ -86,9 +86,6 @@ class TestIosStaticRoutesModule(TestIosModule):
     def test_ios_static_routes_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            ipv6 router eigrp 11
-            match ipv6 route-source prefix-list dirtydata1
-            match ipv6 route-source prefix-list dirtydata2
             ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100
             ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50
             ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner
