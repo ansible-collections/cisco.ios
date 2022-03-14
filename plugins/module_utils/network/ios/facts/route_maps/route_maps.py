@@ -47,7 +47,7 @@ class Route_mapsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_route_maps_data(self, connection):
-        return connection.get("sh running-config | section ^route-map")
+        return connection.get("show running-config | section ^route-map")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Route_maps network resource

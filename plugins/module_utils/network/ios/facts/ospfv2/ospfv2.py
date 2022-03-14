@@ -36,7 +36,7 @@ class Ospfv2Facts(object):
         self.argument_spec = Ospfv2Args.argument_spec
 
     def get_ospfv2_data(self, connection):
-        return connection.get("sh running-config | section ^router ospf")
+        return connection.get("show running-config | section ^router ospf")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for ospfv2
