@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_static_routes` - Consider only config containing routes to render facts."

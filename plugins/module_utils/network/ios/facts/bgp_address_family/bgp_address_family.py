@@ -35,7 +35,7 @@ class Bgp_address_familyFacts(object):
         self.argument_spec = Bgp_address_familyArgs.argument_spec
 
     def get_bgp_address_family_data(self, connection):
-        return connection.get("sh running-config | section ^router bgp")
+        return connection.get("show running-config | section ^router bgp")
 
     def _process_facts(self, objs):
         """ makes data as per the facts after data obtained from parsers

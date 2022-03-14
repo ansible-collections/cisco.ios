@@ -51,7 +51,7 @@ class Static_RoutesFacts(object):
 
     def get_static_routes_data(self, connection):
         return connection.get(
-            "sh running-config | section ^ip route|ipv6 route"
+            "show running-config | include ^ip route .+ |^ipv6 route .+"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):

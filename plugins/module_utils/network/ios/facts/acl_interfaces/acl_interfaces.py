@@ -49,7 +49,7 @@ class Acl_InterfacesFacts(object):
 
     def get_acl_interfaces_data(self, connection):
         return connection.get(
-            "sh running-config | include interface|ip access-group|ipv6 traffic-filter"
+            "show running-config | include interface|ip access-group|ipv6 traffic-filter"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):

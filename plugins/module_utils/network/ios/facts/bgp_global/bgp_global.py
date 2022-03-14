@@ -34,7 +34,7 @@ class Bgp_globalFacts(object):
         self.argument_spec = Bgp_globalArgs.argument_spec
 
     def get_bgp_global_data(self, connection):
-        return connection.get("sh running-config | section ^router bgp")
+        return connection.get("show running-config | section ^router bgp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Bgp_global network resource

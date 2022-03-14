@@ -44,7 +44,7 @@ class AclsFacts(object):
         # Get the remarks on access-lists from the ios router
         # alternate command 'sh run partition access-list' but has a lot of ordering issues
         # and incomplete ACLs are not viewed correctly
-        _acl_data = connection.get("sh access-list")
+        _acl_data = connection.get("show access-list")
         _remarks_data = connection.get(
             "show running-config | include ip(v6)* access-list|remark"
         )
