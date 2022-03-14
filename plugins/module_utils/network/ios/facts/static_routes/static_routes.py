@@ -51,7 +51,7 @@ class Static_RoutesFacts(object):
 
     def get_static_routes_data(self, connection):
         return connection.get(
-            "sh running-config | section ^ip route|^ipv6 route"
+            "show running-config | include ^ip route .+ |^ipv6 route .+"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -111,15 +111,11 @@ class Static_RoutesFacts(object):
         filter_vrf = " "
         return filter_vrf.join(netmask), dest
 
-    def check_proper_entry(self, route_config):
-        r_config = route_config.split(" ")
-        return "route" in r_config and "ospf" not in r_config
-
     def populate_destination(self, config):
         same_dest = {}
         ip_str = ""
         for i in sorted(config):
-            if i and self.check_proper_entry(i):
+            if i and "ospf" not in i:
                 if "::" in i and "vrf" in i:
                     ip_str = "ipv6 route vrf"
                 elif "::" in i and "vrf" not in i:
