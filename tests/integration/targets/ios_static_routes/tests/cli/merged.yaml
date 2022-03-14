@@ -4,8 +4,8 @@
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
-
-- include_tasks: _intial_setup_config.yaml
+- include_tasks: _initial_setup_config.yaml
+- include_tasks: _add_extra_ipv6_data.yaml
 
 - block:
 
@@ -85,5 +85,5 @@
   always:
 
     - include_tasks: _populate_config.yaml
-
     - include_tasks: _remove_config.yaml
+    - include_tasks: _remove_extra_ipv6_data.yaml
