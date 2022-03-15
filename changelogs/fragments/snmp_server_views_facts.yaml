@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_snmp_server` - Fix parsers for views facts collection."
