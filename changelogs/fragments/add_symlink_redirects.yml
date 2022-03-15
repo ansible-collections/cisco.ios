@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Add symlink of modules under plugins/action.
