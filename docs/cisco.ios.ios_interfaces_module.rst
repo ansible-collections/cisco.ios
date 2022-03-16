@@ -5,7 +5,7 @@
 cisco.ios.ios_interfaces
 ************************
 
-**Interfaces resource module**
+**Resource module to configure Interfaces.**
 
 
 Version added: 1.0.0

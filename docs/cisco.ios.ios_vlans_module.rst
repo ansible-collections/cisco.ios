@@ -5,7 +5,7 @@
 cisco.ios.ios_vlans
 *******************
 
-**VLANs resource module**
+**Resource module to configure VLANs.**
 
 
 Version added: 1.0.0

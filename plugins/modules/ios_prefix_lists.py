@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_prefix_lists
-short_description: Prefix Lists resource module
+short_description: Resource module to configure prefix lists.
 description:
   - This module configures and manages the attributes of prefix list on Cisco IOS.
 version_added: 2.2.0

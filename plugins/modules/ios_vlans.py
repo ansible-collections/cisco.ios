@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_vlans
-short_description: VLANs resource module
+short_description: Resource module to configure VLANs.
 description: This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0

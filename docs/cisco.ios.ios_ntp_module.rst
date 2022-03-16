@@ -5,7 +5,7 @@
 cisco.ios.ios_ntp
 *****************
 
-**Manages core NTP configuration.**
+**(deprecated, removed after 2024-01-01) Manages core NTP configuration.**
 
 
 Version added: 1.0.0

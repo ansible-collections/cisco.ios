@@ -20,7 +20,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ping
-short_description: Tests reachability using ping from Cisco IOS network devices
+short_description: Module to tests reachability using ping from network devices.
 description:
 - Tests reachability using ping from switch to a remote destination.
 - For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)

@@ -5,7 +5,7 @@
 cisco.ios.ios_bgp_address_family
 ********************************
 
-**BGP Address family resource module**
+**Resource module to configure BGP Address family.**
 
 
 Version added: 1.2.0

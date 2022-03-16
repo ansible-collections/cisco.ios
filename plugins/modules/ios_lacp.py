@@ -25,7 +25,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_lacp
-short_description: LACP resource module
+short_description: Resource module to configure LACP.
 description: This module provides declarative management of Global LACP on Cisco IOS
   network devices.
 version_added: 1.0.0
