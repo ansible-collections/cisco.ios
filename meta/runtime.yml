@@ -66,6 +66,11 @@ plugin_routing:
       redirect: cisco.ios.ios_lag_interfaces
     linkagg:
       redirect: cisco.ios.ios_linkagg
+    ios_lldp:
+      redirect: cisco.ios.ios_lldp
+      deprecation:
+        removal_date: "2024-06-01"
+        warning_text: See the plugin documentation for more details
     lldp:
       redirect: cisco.ios.ios_lldp
       deprecation:
