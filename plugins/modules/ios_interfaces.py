@@ -24,7 +24,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_interfaces
-short_description: Resource module to configure Interfaces.
+short_description: Resource module to configure interfaces.
 description: This module manages the interface attributes of Cisco IOS network devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)

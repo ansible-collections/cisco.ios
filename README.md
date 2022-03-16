@@ -42,7 +42,7 @@ Name | Description
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
 [cisco.ios.ios_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
-[cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure Interfaces.
+[cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
 [cisco.ios.ios_l2_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
 [cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|Resource Module to configure L2 interfaces.
 [cisco.ios.ios_l3_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-3 interfaces on Cisco IOS network devices.
