@@ -5,7 +5,7 @@
 cisco.ios.ios_system
 ********************
 
-**Manage the system attributes on Cisco IOS devices**
+**Module to manage the system attributes.**
 
 
 Version added: 1.0.0

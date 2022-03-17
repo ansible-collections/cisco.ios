@@ -5,7 +5,7 @@
 cisco.ios.ios_vrf
 *****************
 
-**Manage the collection of VRF definitions on Cisco IOS devices**
+**Module to configure VRF definitions.**
 
 
 Version added: 1.0.0

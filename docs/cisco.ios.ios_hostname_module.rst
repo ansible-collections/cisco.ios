@@ -5,7 +5,7 @@
 cisco.ios.ios_hostname
 **********************
 
-**hostname resource module**
+**Resource module to configure hostname.**
 
 
 Version added: 2.7.0

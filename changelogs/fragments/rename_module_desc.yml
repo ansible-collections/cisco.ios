@@ -1,0 +1,5 @@
+---
+trivial:
+  - Add consistency to module's short description.
+deprecated_features:
+  - Deprecates lldp module.

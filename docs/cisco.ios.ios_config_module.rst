@@ -5,7 +5,7 @@
 cisco.ios.ios_config
 ********************
 
-**Manage Cisco IOS configuration sections**
+**Module to manage configuration sections.**
 
 
 Version added: 1.0.0

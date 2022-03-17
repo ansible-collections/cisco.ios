@@ -5,7 +5,7 @@
 cisco.ios.ios_banner
 ********************
 
-**Manage multiline banners on Cisco IOS devices**
+**Module to configure multiline banners.**
 
 
 Version added: 1.0.0

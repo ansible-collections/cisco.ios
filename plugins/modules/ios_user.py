@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_user
 author: Trishna Guha (@trishnaguha)
-short_description: Manage the aggregate of local users on Cisco IOS device
+short_description: Module to manage the aggregates of local users.
 description:
 - This module provides declarative management of the local usernames configured on
   network devices. It allows playbooks to manage either individual usernames or the
