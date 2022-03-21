@@ -563,17 +563,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "interface GigabitEthernet0/1"
+    - "no ip access-group 123 out"
+    - "no ipv6 traffic-filter test_v6 out"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "interface GigabitEthernet0/1"
+    - "no ip access-group 123 out"
+    - "no ipv6 traffic-filter test_v6 out"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -597,11 +597,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acl_interfaces.acl_interfaces import (
     Acl_interfaces,
 )
-
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():

@@ -723,7 +723,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;sample command 1&#x27;, &#x27;sample command 2&#x27;, &#x27;sample command 3&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet0/1&#x27;, &#x27;no ip access-group 123 out&#x27;, &#x27;no ipv6 traffic-filter test_v6 out&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -774,7 +774,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;sample command 1&#x27;, &#x27;sample command 2&#x27;, &#x27;sample command 3&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet0/1&#x27;, &#x27;no ip access-group 123 out&#x27;, &#x27;no ipv6 traffic-filter test_v6 out&#x27;]</div>
                 </td>
             </tr>
     </table>
