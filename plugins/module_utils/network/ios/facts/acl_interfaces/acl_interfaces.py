@@ -25,7 +25,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_
 )
 
 
-class Acl_InterfacesFacts(object):
+class Acl_interfacesFacts(object):
     """ The ios_acl_interfaces fact class
     """
 

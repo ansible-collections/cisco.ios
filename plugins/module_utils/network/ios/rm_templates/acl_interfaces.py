@@ -53,7 +53,7 @@ class Acl_interfacesTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "setval": "{{ 'ip access-group' if afi == 'ipv4' else 'ipv6 traffic-filter' }} {{ name }} {{ direction }}",
+            "setval": "{{ 'ip access-group' if afi == 'ipv4' else 'ipv6 traffic-filter' }} {{ name|string }} {{ direction }}",
             "result": {
                 "{{ name }}": {
                     "access_groups": {
@@ -61,7 +61,7 @@ class Acl_interfacesTemplate(NetworkTemplate):
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "acls": [
                                 {
-                                    "name": "{{ acl_name if acl_name else acl_name_traffic }}",
+                                    "name": "{{ acl_name|string if acl_name is defined else acl_name_traffic }}",
                                     "direction": "{{ direction }}",
                                 },
                             ],

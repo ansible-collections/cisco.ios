@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-
+from ansible.module_utils._text import to_text
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
     Acl_interfacesTemplate,
 )
@@ -116,7 +116,10 @@ class Acl_interfaces(ResourceModule):
         for item in entry.values():
             for ag in item.get("access_groups", []):
                 ag["acls"] = {
-                    subentry["direction"]: subentry
+                    subentry["direction"]: {
+                        "name": to_text(subentry["name"]),
+                        "direction": subentry["direction"],
+                    }
                     for subentry in ag.get("acls", [])
                 }
             item["access_groups"] = {
