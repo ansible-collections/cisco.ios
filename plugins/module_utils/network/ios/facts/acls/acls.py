@@ -101,6 +101,12 @@ class AclsFacts(object):
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
                     if each_ace.get("source"):
+                        if len(each_ace.get("source")) == 1 and each_ace.get(
+                            "source", {}
+                        ).get("address"):
+                            each_ace["source"]["host"] = each_ace[
+                                "source"
+                            ].pop("address")
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
                             if addr[-1] == ",":
