@@ -1,35 +1,28 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_acl_interfaces
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_acl_interfaces
 short_description: ACL interfaces resource module
 description: This module configures and manages the access-control (ACL) attributes
   of interfaces on IOS platforms.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+ - Sumit Jaiswal (@justjais)
+ - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSv Version 15.2
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -100,8 +93,9 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        option should be the same format as the output of command I(show running-config |
+        include ^interface|ip access-group|ipv6 traffic-filter) executed on device.
+        For state I(parsed) active
         connection to remote host is not required.
     type: str
     choices:
@@ -114,6 +108,7 @@ options:
     - rendered
     default: merged
 """
+
 EXAMPLES = """
 # Using Merged
 
@@ -546,52 +541,89 @@ EXAMPLES = """
 #         }
 #     ]
 """
+
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['interface GigabitEthernet0/1', 'ip access-group 110 in', 'ipv6 traffic-filter test_v6 out']
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_interfaces.acl_interfaces import (
-    Acl_InterfacesArgs,
+    Acl_interfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acl_interfaces.acl_interfaces import (
-    Acl_Interfaces,
+    Acl_interfaces,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():
     """
     Main entry point for module execution
+
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
-        argument_spec=Acl_InterfacesArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        argument_spec=Acl_interfacesArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
-    result = Acl_Interfaces(module).execute_module()
+
+    result = Acl_interfaces(module).execute_module()
     module.exit_json(**result)
 
 
