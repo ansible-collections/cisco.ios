@@ -38,8 +38,8 @@ def _tmplt_access_list_name(config_data):
 
 
 def _tmplt_access_list_entries(config_data):
-    if "aces" in config_data:
-        command = []
+    if config_data:
+        # command = []
 
         def source_destination_common_config(config_data, command, attr):
             if config_data[attr].get("address"):
@@ -74,8 +74,8 @@ def _tmplt_access_list_entries(config_data):
 
         command = ""
         proto_option = None
-        if config_data.get("aces"):
-            aces = config_data["aces"]
+        if config_data:
+            aces = config_data
             if aces.get("sequence") and config_data.get("afi") == "ipv4":
                 command += "{sequence}".format(**aces)
             if (
@@ -216,7 +216,7 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name_r|d() }}": {
                         "name": "{{ acl_name_r }}",
-                        "aces": [{"remarks": ["{{ remarks }}"]}],
+                        "aces": [{"remarks": "{{ remarks }}"}],
                     }
                 }
             },
@@ -235,7 +235,7 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name_linear|d() }}": {
                         "name": "{{ acl_name_linear }}",
-                        "aces": [{"remarks": ["{{ remarks }}"]}],
+                        "aces": [{"remarks": "{{ remarks }}"}],
                     }
                 }
             },
