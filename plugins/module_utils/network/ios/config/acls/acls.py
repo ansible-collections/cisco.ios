@@ -100,6 +100,7 @@ class Acls(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the ACLs network resource.
         """
+
         wplists = want.get("acls", {})
         hplists = have.get("acls", {})
         for wname, wentry in iteritems(wplists):
@@ -109,10 +110,12 @@ class Acls(ResourceModule):
                 if wentry.get("acl_type")
                 else hentry.get("acl_type")
             )
-            begin = len(self.commands)
-            self._compare_seqs(
+            begin = len(
+                self.commands
+            )  # to determine the index for acl command
+            self._compare_aces(
                 wentry.pop("aces", {}), hentry.pop("aces", {}), afi, wname
-            )
+            )  # handle aces
 
             if len(self.commands) != begin or (not have and want):
                 _cmd = self.acl_name_cmd(wname, afi, acl_type)
@@ -124,8 +127,12 @@ class Acls(ResourceModule):
                 _cmd = self.acl_name_cmd(hname, afi, hval.get("acl_type", ""))
                 self.commands.append("no " + _cmd)
 
-    def _compare_seqs(self, want, have, afi, name):
+    def _compare_aces(self, want, have, afi, name):
+        """compares all aces"""
+
         def add_afi(entry, afi):
+            """adds afi needed for
+                setval processing"""
             if entry:
                 entry["afi"] = afi
             return entry
@@ -141,14 +148,39 @@ class Acls(ResourceModule):
                                 hentry.get("sequence", ""), name
                             )
                         )
-                    else:
-                        self.addcmd(add_afi(hentry, afi), "aces", negate=True)
-                self.addcmd(add_afi(wentry, afi), "aces")
+                    else:  # other action states
+                        if hentry.get(
+                            "remarks"
+                        ):  # remove remark if not in want
+                            for rems in hentry.get("remarks"):
+                                if rems not in wentry.get("remarks", {}):
+                                    self.addcmd(
+                                        {"remarks": rems},
+                                        "remarks",
+                                        negate=True,
+                                    )
+                        else:  # remove ace if not in want
+                            self.addcmd(
+                                add_afi(hentry, afi), "aces", negate=True
+                            )
+                if wentry.get("remarks"):  # add remark if not in have
+                    for rems in wentry.get("remarks"):
+                        if rems not in hentry.get("remarks", {}):
+                            self.addcmd({"remarks": rems}, "remarks")
+                else:  # add ace if not in have
+                    self.addcmd(add_afi(wentry, afi), "aces")
+
         # remove remaining entries from have aces list
         for hseq in have.values():
-            self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+            if hseq.get("remarks"):  # remove remarks that are extra in have
+                for rems in hseq.get("remarks"):
+                    self.addcmd({"remarks": rems}, "remarks", negate=True)
+            else:  # remove extra aces
+                self.addcmd(add_afi(hseq, afi), "aces", negate=True)
 
     def acl_name_cmd(self, name, afi, acl_type):
+        """generate parent acl command"""
+
         if afi == "ipv4":
             if not acl_type:
                 try:
@@ -166,6 +198,8 @@ class Acls(ResourceModule):
         return command
 
     def list_to_dict(self, param):
+        """converts list attributes to dict"""
+
         temp, count = dict(), 0
         if param:
             for each in param:  # ipv4 and ipv6 acl
