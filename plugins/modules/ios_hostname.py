@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_hostname
-short_description: hostname resource module
+short_description: Resource module to configure hostname.
 description:
 - This module provides declarative management of hostname on Cisco IOS devices.
 version_added: 2.7.0

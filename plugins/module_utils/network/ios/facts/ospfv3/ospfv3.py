@@ -38,7 +38,7 @@ class Ospfv3Facts(object):
         self.argument_spec = Ospfv3Args.argument_spec
 
     def get_ospfv3_data(self, connection):
-        return connection.get("sh running-config | section ^router ospfv3")
+        return connection.get("show running-config | section ^router ospfv3")
 
     def parse(self, net_template_obj):
         """ Overrided network template parse

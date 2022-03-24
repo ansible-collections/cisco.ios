@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lag_interfaces
-short_description: LAG interfaces resource module
+short_description: Resource module to configure LAG interfaces.
 description: This module manages properties of Link Aggregation Group on Cisco IOS
   devices.
 version_added: 1.0.0

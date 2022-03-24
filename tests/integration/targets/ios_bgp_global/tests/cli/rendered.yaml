@@ -24,10 +24,10 @@
               community: 100
               local_preference: 100
             log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
+            nopeerup_delay_options:
+              post_boot: 10
           neighbor:
-            - address: 198.51.100.1
+            - address: 192.0.2.1
               description: merge neighbor
               remote_as: 100
               aigp:
@@ -52,4 +52,4 @@
     - assert:
         that:
           - result.changed == false
-          - result.rendered|symmetric_difference(merged.commands) == []
+          - result.rendered|symmetric_difference(rendered.commands) == []

@@ -25,7 +25,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_lldp_interfaces
-short_description: LLDP interfaces resource module
+short_description: Resource module to configure LLDP interfaces.
 description: This module manages link layer discovery protocol (LLDP) attributes of
   interfaces on Cisco IOS devices.
 version_added: 1.0.0

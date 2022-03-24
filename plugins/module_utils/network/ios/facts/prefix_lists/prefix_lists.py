@@ -38,7 +38,7 @@ class Prefix_listsFacts(object):
 
     def get_prefix_list_data(self, connection):
         return connection.get(
-            "sh running-config | section ^ip prefix-list|^ipv6 prefix-list"
+            "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):

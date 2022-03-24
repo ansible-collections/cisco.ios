@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_system
 author: Peter Sprygada (@privateip)
-short_description: Manage the system attributes on Cisco IOS devices
+short_description: Module to manage the system attributes.
 description:
 - This module provides declarative management of node system attributes on Cisco IOS
   devices.  It provides an option to configure host system parameters or remove those

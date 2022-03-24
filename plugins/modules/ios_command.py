@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_command
 author: Peter Sprygada (@privateip)
-short_description: Run commands on remote devices running Cisco IOS
+short_description: Module to run commands on remote devices.
 description:
 - Sends arbitrary commands to an ios node and returns the results read from the device.
   This module includes an argument that will cause the module to wait for a specific

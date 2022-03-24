@@ -5,7 +5,7 @@
 cisco.ios.ios_acl_interfaces
 ****************************
 
-**ACL interfaces resource module**
+**Resource module to configure ACL interfaces.**
 
 
 Version added: 1.0.0

@@ -1,5 +1,5 @@
 ---
-- name: Intitial Setup Config
+- name: Initial Setup Config
   vars:
     lines: "vrf definition ansible_temp_vrf\naddress-family ipv4\nip route vrf ansible_temp_vrf\
       \ 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150\nip route\

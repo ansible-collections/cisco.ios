@@ -5,7 +5,7 @@
 cisco.ios.ios_ping
 ******************
 
-**Tests reachability using ping from Cisco IOS network devices**
+**Module to tests reachability using ping from network devices.**
 
 
 Version added: 1.0.0

@@ -167,7 +167,7 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "acls_name",
             "getval": re.compile(
-                r"""^(?P<acl_type>Standard|Extended)*
+                r"""^(?P<acl_type>Standard|Extended|Reflexive)*
                     \s*(?P<afi>IP|IPv6)*
                     \s*access*
                     \s*list*

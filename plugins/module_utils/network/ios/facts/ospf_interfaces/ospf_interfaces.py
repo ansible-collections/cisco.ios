@@ -47,7 +47,7 @@ class Ospf_InterfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_ospf_interfaces_data(self, connection):
-        return connection.get("sh running-config | section ^interface")
+        return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Ospf_interfaces network resource

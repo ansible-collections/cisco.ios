@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_bgp_address_family
-short_description: BGP Address family resource module
+short_description: Resource module to configure BGP Address family.
 description: This module configures and manages the attributes of bgp address family on Cisco IOS.
 version_added: 1.2.0
 author: Sumit Jaiswal (@justjais)

@@ -22,7 +22,7 @@ DOCUMENTATION = """
 module: ios_ntp
 extends_documentation_fragment:
 - cisco.ios.ios
-short_description: Manages core NTP configuration.
+short_description: (deprecated, removed after 2024-01-01) Manages core NTP configuration.
 description:
 - Manages core NTP configuration.
 version_added: 1.0.0

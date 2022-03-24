@@ -5,7 +5,7 @@
 cisco.ios.ios_linkagg
 *********************
 
-**Manage link aggregation groups on Cisco IOS network devices**
+**Module to configure link aggregation groups.**
 
 
 Version added: 1.0.0

@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_l3_interfaces
-short_description: L3 interfaces resource module
+short_description: Resource module to configure L3 interfaces.
 description:
 - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
