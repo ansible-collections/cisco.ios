@@ -139,6 +139,8 @@ class Acls(ResourceModule):
 
         for wseq, wentry in iteritems(want):
             hentry = have.pop(wseq, {})
+            if hentry:
+                hentry = self.sanitize_protocol_options(wentry, hentry)
             if hentry != wentry:
                 if hentry:
                     if self.state == "merged":
@@ -177,6 +179,15 @@ class Acls(ResourceModule):
                     self.addcmd({"remarks": rems}, "remarks", negate=True)
             else:  # remove extra aces
                 self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+
+    def sanitize_protocol_options(self, wace, hace):
+        """ handles protocol and protocol options as optional attribute"""
+        if wace.get("protocol_options"):
+            if not wace.get("protocol") and (
+                list(wace.get("protocol_options"))[0] == hace.get("protocol")
+            ):
+                hace.pop("protocol")
+        return hace
 
     def acl_name_cmd(self, name, afi, acl_type):
         """generate parent acl command"""
