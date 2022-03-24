@@ -222,7 +222,6 @@ class AclsTemplate(NetworkTemplate):
                         (\s*(?P<any>any))?
                         (\swildcard\sbits\s(?P<wildcard>\S+))?
                         (\shost\s(?P<host>\S+))?
-                        (\s(?P<hostx>\S+))?
                         (\s(?P<log>log))?
                     $""",
                 re.VERBOSE,
