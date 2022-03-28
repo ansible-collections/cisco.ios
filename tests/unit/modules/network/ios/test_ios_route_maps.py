@@ -784,6 +784,22 @@ class TestIosRouteMapsModule(TestIosModule):
                             ),
                             dict(
                                 action="deny",
+                                sequence=30,
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=[
+                                                "65512",
+                                                65522,
+                                                "65532",
+                                                65543,
+                                            ]
+                                        )
+                                    )
+                                ),
+                            ),
+                            dict(
+                                action="deny",
                                 sequence=20,
                                 set=dict(
                                     aigp_metric=dict(value=1000),
@@ -839,7 +855,6 @@ class TestIosRouteMapsModule(TestIosModule):
             "match additional-paths advertise-set all",
             "match as-path 100 120",
             "match clns address test_osi",
-            "match mdt-group 25 30",
             "match community 100 99 test_1 test_2 exact-match",
             "match extcommunity 110 130",
             "match interface GigabitEthernet0/1 GigabitEthernet0/2",
@@ -847,14 +862,17 @@ class TestIosRouteMapsModule(TestIosModule):
             "match ipv6 route-source test_ipv6",
             "match length 1000 10000",
             "match local-preference 100",
+            "match mdt-group 25 30",
+            "match metric external 100",
             "match mpls-label",
             "match policy-list ip_policy",
-            "match rpki invalid",
             "match route-type external type-1",
-            "match metric external 100",
+            "match rpki invalid",
             "match source-protocol ospfv3 10000 static",
-            "match track 100",
             "match tag list test_tag",
+            "match track 100",
+            "route-map test_1 deny 30",
+            "set as-path prepend 65512 65522 65532 65543",
             "route-map test_1 deny 20",
             "set aigp-metric 1000",
             "set as-path prepend last-as 10",
@@ -865,14 +883,14 @@ class TestIosRouteMapsModule(TestIosModule):
             "set dampening 10 100 100 10",
             "set extcomm-list test_excomm delete",
             "set extcommunity vpn-distinguisher 192.0.2.1:12",
-            "set weight 100",
-            "set lisp locator-set test_lisp",
             "set interface GigabitEthernet0/1 GigabitEthernet0/2",
-            "set tag 50529027",
+            "set lisp locator-set test_lisp",
             "set local-preference 100",
-            "set mpls-label",
             "set metric-type type-1",
+            "set mpls-label",
+            "set tag 50529027",
             "set traffic-index 10",
+            "set weight 100",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
