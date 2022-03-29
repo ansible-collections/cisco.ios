@@ -31,8 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class Static_RoutesFacts(object):
-    """ The ios_static_routes fact class
-    """
+    """The ios_static_routes fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
 
@@ -55,7 +54,7 @@ class Static_RoutesFacts(object):
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for static_routes
+        """Populate the facts for static_routes
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

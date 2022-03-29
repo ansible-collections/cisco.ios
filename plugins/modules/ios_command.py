@@ -168,8 +168,7 @@ def parse_commands(module, warnings):
 
 
 def main():
-    """main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         commands=dict(type="list", elements="raw", required=True),
         wait_for=dict(type="list", elements="str", aliases=["waitfor"]),

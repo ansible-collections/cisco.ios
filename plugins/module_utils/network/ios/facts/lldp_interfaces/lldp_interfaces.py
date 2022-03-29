@@ -30,8 +30,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp
 
 
 class Lldp_InterfacesFacts(object):
-    """ The ios_lldp_interfaces fact class
-    """
+    """The ios_lldp_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
 
@@ -49,7 +48,7 @@ class Lldp_InterfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for lldp_interfaces
+        """Populate the facts for lldp_interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

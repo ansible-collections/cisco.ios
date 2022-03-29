@@ -31,8 +31,7 @@ The arg spec for the cisco.ios_ospf_interfaces module
 
 
 class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the cisco.ios_ospf_interfaces module
-    """
+    """The arg spec for the cisco.ios_ospf_interfaces module"""
 
     def __init__(self, **kwargs):
         pass

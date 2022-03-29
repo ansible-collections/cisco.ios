@@ -30,8 +30,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 class Ospfv3Facts(object):
-    """ The ios ospfv3 fact class
-    """
+    """The ios ospfv3 fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -41,8 +40,7 @@ class Ospfv3Facts(object):
         return connection.get("show running-config | section ^router ospfv3")
 
     def parse(self, net_template_obj):
-        """ Overrided network template parse
-        """
+        """Overrided network template parse"""
         result = {}
         shared = {}
         temp_pid = None
@@ -85,8 +83,7 @@ class Ospfv3Facts(object):
         return result
 
     def parse_for_address_family(self, current):
-        """ Parsing and Fishing out address family contents
-        """
+        """Parsing and Fishing out address family contents"""
         pid_addr_family_dict = {}
         temp_dict = {}
         temp_pid = None
@@ -118,7 +115,7 @@ class Ospfv3Facts(object):
         return pid_addr_family_dict
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for ospfv3
+        """Populate the facts for ospfv3
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

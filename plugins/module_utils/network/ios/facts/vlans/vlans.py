@@ -25,8 +25,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 
 
 class VlansFacts(object):
-    """ The ios vlans fact class
-    """
+    """The ios vlans fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class VlansFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_vlans_data(self, connection):
-        """ Checks device is L2/L3 and returns
+        """Checks device is L2/L3 and returns
         facts gracefully. Does not fail module.
         """
         check_os_type = connection.get_device_info()
@@ -52,7 +51,7 @@ class VlansFacts(object):
         return connection.get("show vlan")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for vlans
+        """Populate the facts for vlans
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

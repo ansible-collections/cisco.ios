@@ -697,8 +697,7 @@ def check_declarative_intent_params(want, module, result):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         vrfs=dict(type="list", elements="raw"),
         name=dict(),

@@ -61,8 +61,7 @@ def _connection_side_effect(*args, **kwargs):
 
 
 class TestPluginCLIConfIOS(unittest.TestCase):
-    """ Test class for IOS CLI Conf Methods
-    """
+    """Test class for IOS CLI Conf Methods"""
 
     def setUp(self):
         self._mock_connection = MagicMock()
@@ -74,8 +73,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
         pass
 
     def test_get_device_info(self):
-        """ Test get_device_info
-        """
+        """Test get_device_info"""
         device_info = self._cliconf.get_device_info()
 
         mock_device_info = {
@@ -90,8 +88,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
         self.assertEqual(device_info, mock_device_info)
 
     def test_get_capabilities(self):
-        """ Test get_capabilities
-        """
+        """Test get_capabilities"""
         capabilities = json.loads(self._cliconf.get_capabilities())
         mock_capabilities = {
             "network_api": "cliconf",

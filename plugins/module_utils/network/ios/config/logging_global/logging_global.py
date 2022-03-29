@@ -79,7 +79,7 @@ class Logging_global(ResourceModule):
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -90,8 +90,8 @@ class Logging_global(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
 
         wantd = self.list_to_dict(self.want)
@@ -107,9 +107,9 @@ class Logging_global(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Logging_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Logging_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists_attrs(want, have)
