@@ -25,7 +25,7 @@ import json
 
 try:
     from unittest.mock import MagicMock
-except:
+except ImportError:
     from mock import MagicMock
 
 from ansible_collections.cisco.ios.tests.unit.compat import unittest
