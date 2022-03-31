@@ -27,8 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 
 
 class Bgp_address_familyFacts(object):
-    """ The cisco.ios_bgp_address_family facts class
-    """
+    """The cisco.ios_bgp_address_family facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -38,8 +37,7 @@ class Bgp_address_familyFacts(object):
         return connection.get("show running-config | section ^router bgp")
 
     def _process_facts(self, objs):
-        """ makes data as per the facts after data obtained from parsers
-        """
+        """makes data as per the facts after data obtained from parsers"""
         temp_af = []
         if objs.get("address_family"):
             for k, v in iteritems(objs["address_family"]):
@@ -140,7 +138,7 @@ class Bgp_address_familyFacts(object):
         return objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

@@ -472,8 +472,10 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
                 **config_data["mpls"]["traffic_eng"]
             )
         elif "autoroute_exclude" in config_data["mpls"]["traffic_eng"]:
-            command += " autoroute-exclude prefix-list {autoroute_exclude}".format(
-                **config_data["mpls"]["traffic_eng"]
+            command += (
+                " autoroute-exclude prefix-list {autoroute_exclude}".format(
+                    **config_data["mpls"]["traffic_eng"]
+                )
             )
         elif "interface" in config_data["mpls"]["traffic_eng"]:
             command += " interface {int_type}".format(

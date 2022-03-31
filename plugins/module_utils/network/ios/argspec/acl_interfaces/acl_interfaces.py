@@ -32,8 +32,7 @@ __metaclass__ = type
 
 
 class Acl_InterfacesArgs(object):
-    """The arg spec for the ios_acl_interfaces module
-    """
+    """The arg spec for the ios_acl_interfaces module"""
 
     argument_spec = {
         "config": {
