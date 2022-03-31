@@ -784,6 +784,22 @@ class TestIosRouteMapsModule(TestIosModule):
                             ),
                             dict(
                                 action="deny",
+                                sequence=30,
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=[
+                                                "65512",
+                                                65522,
+                                                "65532",
+                                                65543,
+                                            ]
+                                        )
+                                    )
+                                ),
+                            ),
+                            dict(
+                                action="deny",
                                 sequence=20,
                                 set=dict(
                                     aigp_metric=dict(value=1000),
@@ -873,6 +889,8 @@ class TestIosRouteMapsModule(TestIosModule):
             "set mpls-label",
             "set metric-type type-1",
             "set traffic-index 10",
+            "route-map test_1 deny 30",
+            "set as-path prepend 65512 65522 65532 65543",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
