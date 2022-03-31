@@ -132,7 +132,7 @@ class Acls(ResourceModule):
 
         def add_afi(entry, afi):
             """adds afi needed for
-                setval processing"""
+            setval processing"""
             if entry:
                 entry["afi"] = afi
             return entry
@@ -181,7 +181,7 @@ class Acls(ResourceModule):
                 self.addcmd(add_afi(hseq, afi), "aces", negate=True)
 
     def sanitize_protocol_options(self, wace, hace):
-        """ handles protocol and protocol options as optional attribute"""
+        """handles protocol and protocol options as optional attribute"""
         if wace.get("protocol_options"):
             if not wace.get("protocol") and (
                 list(wace.get("protocol_options"))[0] == hace.get("protocol")
