@@ -125,5 +125,3 @@ class Acl_interfaces(ResourceModule):
                 subentry["afi"]: subentry
                 for subentry in item.get("access_groups", [])
             }
-
-        
