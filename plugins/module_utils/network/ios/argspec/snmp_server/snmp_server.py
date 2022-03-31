@@ -28,8 +28,7 @@ The arg spec for the ios_snmp_server module
 
 
 class Snmp_serverArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_snmp_server module
-    """
+    """The arg spec for the ios_snmp_server module"""
 
     argument_spec = {
         "config": {

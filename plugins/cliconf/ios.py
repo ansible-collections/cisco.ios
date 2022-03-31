@@ -38,6 +38,7 @@ options:
       to the device is present in this list, the existing cache is invalidated.
     version_added: 2.0.0
     type: list
+    elements: str
     default: []
     vars:
     - name: ansible_ios_config_commands
@@ -449,9 +450,8 @@ class Cliconf(CliconfBase):
 
             if out is None:
                 raise AnsibleConnectionFailure(
-                    message=u"cli prompt is not identified from the last received"
-                    u" response window: %s"
-                    % self._connection._last_recv_window
+                    message="cli prompt is not identified from the last received"
+                    " response window: %s" % self._connection._last_recv_window
                 )
 
             if re.search(

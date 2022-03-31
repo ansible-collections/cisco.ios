@@ -44,7 +44,7 @@ class Hostname(ResourceModule):
         self.parsers = ["hostname"]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -55,8 +55,8 @@ class Hostname(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = self.want
         haved = self.have
@@ -68,8 +68,8 @@ class Hostname(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Hostname network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Hostname network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)

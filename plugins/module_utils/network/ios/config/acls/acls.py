@@ -43,7 +43,7 @@ class Acls(ResourceModule):
         )
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -54,8 +54,8 @@ class Acls(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         haved, wantd = dict(), dict()
 
@@ -111,9 +111,9 @@ class Acls(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the acls network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the acls network resource.
         """
 
         if want != have and self.state != "deleted":
@@ -279,9 +279,9 @@ class Acls(ResourceModule):
 
     def _rearrange_replace_overridden_config_cmd(self, commands):
         """This function rearranges the config command for replace
-           and overridden state. It'll place all ACL negate cmd first
-           and then will place ACL config cmd with all negated ACE first
-           and then the config ACEs cmds.
+        and overridden state. It'll place all ACL negate cmd first
+        and then will place ACL config cmd with all negated ACE first
+        and then the config ACEs cmds.
         """
         temp_acl_config = []
         acl = 0

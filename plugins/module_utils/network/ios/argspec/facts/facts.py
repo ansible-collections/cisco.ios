@@ -13,8 +13,7 @@ __metaclass__ = type
 
 
 class FactsArgs(object):
-    """ The arg spec for the ios facts module
-    """
+    """The arg spec for the ios facts module"""
 
     def __init__(self, **kwargs):
         pass

@@ -299,8 +299,7 @@ def remove_switchport_config_commands(name, existing, proposed, module):
 
 
 def get_switchport_config_commands(name, existing, proposed, module):
-    """Gets commands required to config a given switchport interface
-    """
+    """Gets commands required to config a given switchport interface"""
     proposed_mode = proposed.get("mode")
     existing_mode = existing.get("mode")
     commands = []
@@ -444,8 +443,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         name=dict(type="str", aliases=["interface"]),
         mode=dict(choices=["access", "trunk"]),

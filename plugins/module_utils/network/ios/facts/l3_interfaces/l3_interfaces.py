@@ -31,8 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_i
 
 
 class L3_InterfacesFacts(object):
-    """ The ios l3 interfaces fact class
-    """
+    """The ios l3 interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -42,7 +41,7 @@ class L3_InterfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for l3 interfaces
+        """Populate the facts for l3 interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

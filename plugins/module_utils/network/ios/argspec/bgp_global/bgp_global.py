@@ -28,8 +28,7 @@ The arg spec for the ios_bgp_global module
 
 
 class Bgp_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bgp_global module
-    """
+    """The arg spec for the ios_bgp_global module"""
 
     argument_spec = {
         "config": {
