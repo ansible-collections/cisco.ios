@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_bgp_global
-short_description: Global BGP resource module
+short_description: Resource module to configure BGP.
 description: This module configures and manages the attributes of global bgp on Cisco IOS.
 version_added: 1.3.0
 author:

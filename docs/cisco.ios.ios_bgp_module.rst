@@ -5,7 +5,7 @@
 cisco.ios.ios_bgp
 *****************
 
-**Configure global BGP protocol settings on Cisco IOS.**
+**Module to configure BGP protocol settings.**
 
 
 Version added: 1.0.0

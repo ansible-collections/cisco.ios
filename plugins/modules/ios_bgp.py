@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_bgp
 author: Nilashish Chakraborty (@NilashishC)
-short_description: Configure global BGP protocol settings on Cisco IOS.
+short_description: Module to configure BGP protocol settings.
 description:
 - This module provides configuration management of global BGP parameters on devices
   running Cisco IOS
@@ -424,8 +424,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cl
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     network_spec = {
         "prefix": dict(required=True),
         "masklen": dict(type="int"),

@@ -5,7 +5,7 @@
 cisco.ios.ios_snmp_server
 *************************
 
-**snmp_server resource module**
+**Resource module to configure snmp server.**
 
 
 Version added: 2.6.0

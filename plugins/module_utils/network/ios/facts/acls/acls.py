@@ -31,8 +31,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 class AclsFacts(object):
-    """ The ios_acls fact class
-    """
+    """The ios_acls fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
 
@@ -64,7 +63,7 @@ class AclsFacts(object):
         return re_data
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for acls
+        """Populate the facts for acls
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

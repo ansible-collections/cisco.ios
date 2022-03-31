@@ -44,7 +44,7 @@ class Acls(ResourceModule):
         )
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -55,8 +55,8 @@ class Acls(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         haved, wantd = dict(), dict()
 
@@ -96,9 +96,9 @@ class Acls(ResourceModule):
 
     def _compare(self, want, have, afi):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the ACLs network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the acls network resource.
         """
 
         wplists = want.get("acls", {})

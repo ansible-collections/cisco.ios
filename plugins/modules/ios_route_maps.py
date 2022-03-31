@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_route_maps
-short_description: Route maps resource module
+short_description: Resource module to configure route maps.
 description:
   - This module configures and manages the attributes of Route maps on Cisco IOS.
 version_added: 2.1.0

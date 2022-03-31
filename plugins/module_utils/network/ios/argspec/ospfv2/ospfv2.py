@@ -31,8 +31,7 @@ __metaclass__ = type
 
 
 class Ospfv2Args(object):
-    """The arg spec for the ios_ospfv2 module
-    """
+    """The arg spec for the ios_ospfv2 module"""
 
     argument_spec = {
         "config": {

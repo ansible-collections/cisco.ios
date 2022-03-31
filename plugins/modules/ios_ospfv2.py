@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_ospfv2
-short_description: OSPFv2 resource module
+short_description: Resource module to configure OSPFv2.
 description: This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0

@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
-short_description: Manage link aggregation groups on Cisco IOS network devices
+short_description: Module to configure link aggregation groups.
 description:
 - This module provides declarative management of link aggregation groups on Cisco
   IOS network devices.
@@ -313,8 +313,7 @@ def map_config_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         group=dict(type="int"),
         mode=dict(choices=["active", "on", "passive", "auto", "desirable"]),

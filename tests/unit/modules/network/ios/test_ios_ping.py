@@ -30,7 +30,7 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosPingModule(TestIosModule):
-    """ Class used for Unit Tests agains ios_ping module """
+    """Class used for Unit Tests agains ios_ping module"""
 
     module = ios_ping
 
@@ -58,33 +58,33 @@ class TestIosPingModule(TestIosModule):
         self.run_commands.side_effect = load_from_file
 
     def test_ios_ping_expected_success(self):
-        """ Test for successful pings when destination should be reachable """
+        """Test for successful pings when destination should be reachable"""
         set_module_args(dict(count=2, dest="8.8.8.8"))
         self.execute_module()
 
     def test_ios_ping_expected_failure(self):
-        """ Test for unsuccessful pings when destination should not be reachable """
+        """Test for unsuccessful pings when destination should not be reachable"""
         set_module_args(dict(count=2, dest="10.255.255.250", state="absent"))
         self.execute_module()
 
     def test_ios_ping_unexpected_success(self):
-        """ Test for successful pings when destination should not be reachable - FAIL. """
+        """Test for successful pings when destination should not be reachable - FAIL."""
         set_module_args(dict(count=2, dest="8.8.8.8", state="absent"))
         self.execute_module(failed=True)
 
     def test_ios_ping_unexpected_failure(self):
-        """ Test for unsuccessful pings when destination should be reachable - FAIL. """
+        """Test for unsuccessful pings when destination should be reachable - FAIL."""
         set_module_args(dict(count=2, dest="10.255.255.250"))
         self.execute_module(failed=True)
 
     def test_ios_ping_with_size(self):
-        """ Test for successful pings using size option. """
+        """Test for successful pings using size option."""
         set_module_args(dict(size=1400, dest="8.8.8.8"))
         commands = ["ping 8.8.8.8 size 1400"]
         self.execute_module(commands=commands)
 
     def test_ios_ping_with_size_df_bit(self):
-        """ Test for successful pings using size and df-bit options. """
+        """Test for successful pings using size and df-bit options."""
         set_module_args(dict(size=1400, df_bit=True, dest="8.8.8.8"))
         commands = ["ping 8.8.8.8 size 1400 df-bit"]
         self.execute_module(commands=commands)

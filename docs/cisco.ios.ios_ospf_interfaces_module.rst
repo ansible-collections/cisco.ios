@@ -5,7 +5,7 @@
 cisco.ios.ios_ospf_interfaces
 *****************************
 
-**OSPF_Interfaces resource module**
+**Resource module to configure OSPF interfaces.**
 
 
 Version added: 1.0.0

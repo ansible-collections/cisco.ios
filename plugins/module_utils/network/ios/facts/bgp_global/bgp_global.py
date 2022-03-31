@@ -26,8 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 
 
 class Bgp_globalFacts(object):
-    """ The cisco.ios bgp_global facts class
-    """
+    """The cisco.ios bgp_global facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -37,7 +36,7 @@ class Bgp_globalFacts(object):
         return connection.get("show running-config | section ^router bgp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_global network resource
+        """Populate the facts for Bgp_global network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

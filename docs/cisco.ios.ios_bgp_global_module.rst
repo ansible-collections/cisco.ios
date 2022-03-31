@@ -5,7 +5,7 @@
 cisco.ios.ios_bgp_global
 ************************
 
-**Global BGP resource module**
+**Resource module to configure BGP.**
 
 
 Version added: 1.3.0

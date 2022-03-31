@@ -28,8 +28,7 @@ The arg spec for the cisco.ios_prefix_lists module
 
 
 class Prefix_listsArgs(object):
-    """The arg spec for the cisco.ios_prefix_lists module
-    """
+    """The arg spec for the cisco.ios_prefix_lists module"""
 
     argument_spec = {
         "config": {

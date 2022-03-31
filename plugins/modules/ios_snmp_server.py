@@ -828,7 +828,7 @@ options:
       - The states I(replaced) and I(overridden) have identical
         behaviour for this module.
     type: str
-short_description: snmp_server resource module
+short_description: Resource module to configure snmp server.
 version_added: 2.6.0
 """
 

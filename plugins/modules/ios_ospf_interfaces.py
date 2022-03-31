@@ -34,7 +34,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_ospf_interfaces
-short_description: OSPF_Interfaces resource module
+short_description: Resource module to configure OSPF interfaces.
 description: This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
