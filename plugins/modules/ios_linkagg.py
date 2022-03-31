@@ -313,8 +313,7 @@ def map_config_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         group=dict(type="int"),
         mode=dict(choices=["active", "on", "passive", "auto", "desirable"]),

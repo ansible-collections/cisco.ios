@@ -46,7 +46,7 @@ class Static_Routes(ConfigBase):
         super(Static_Routes, self).__init__(module)
 
     def get_static_routes_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -62,7 +62,7 @@ class Static_Routes(ConfigBase):
         return static_routes_facts
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -115,7 +115,7 @@ class Static_Routes(ConfigBase):
         return result
 
     def set_config(self, existing_static_routes_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -128,7 +128,7 @@ class Static_Routes(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -158,7 +158,7 @@ class Static_Routes(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -197,9 +197,11 @@ class Static_Routes(ConfigBase):
                                             addr_have, [], have_set, 0
                                         )
                                         # Check if the have dict next_hops value is diff from want dict next_hops
-                                        have_dict = filter_dict_having_none_value(
-                                            route_want.get("next_hops")[0],
-                                            route_have.get("next_hops")[0],
+                                        have_dict = (
+                                            filter_dict_having_none_value(
+                                                route_want.get("next_hops")[0],
+                                                route_have.get("next_hops")[0],
+                                            )
                                         )
                                         # update the have_dict with forward_router_address
                                         have_dict.update(
@@ -282,7 +284,7 @@ class Static_Routes(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -379,7 +381,7 @@ class Static_Routes(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -453,7 +455,7 @@ class Static_Routes(ConfigBase):
         return commands
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -537,9 +539,9 @@ class Static_Routes(ConfigBase):
 
     def prepare_config_commands(self, config_dict, cmd):
         """
-            function to parse the input dict and form the prepare the config commands
-            :rtype: A str
-            :returns: The command necessary to configure the static routes
+        function to parse the input dict and form the prepare the config commands
+        :rtype: A str
+        :returns: The command necessary to configure the static routes
         """
 
         dhcp = config_dict.get("dhcp")
@@ -585,9 +587,9 @@ class Static_Routes(ConfigBase):
         self, want, have, addr_want, route_want, route_have, hops, have_set
     ):
         """
-            Set the interface config based on the want and have config
-            :rtype: A list
-            :returns: The commands necessary to configure the static routes
+        Set the interface config based on the want and have config
+        :rtype: A list
+        :returns: The commands necessary to configure the static routes
         """
 
         commands = []
@@ -643,9 +645,9 @@ class Static_Routes(ConfigBase):
         self, want, have, addr_want, addr_have, route_want, route_have
     ):
         """
-            Delete the interface config based on the want and have config
-            :rtype: A list
-            :returns: The commands necessary to configure the static routes
+        Delete the interface config based on the want and have config
+        :rtype: A list
+        :returns: The commands necessary to configure the static routes
         """
 
         commands = []

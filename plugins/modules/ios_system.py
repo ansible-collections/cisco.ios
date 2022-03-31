@@ -351,8 +351,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ Main entry point for Ansible module execution
-    """
+    """Main entry point for Ansible module execution"""
     argument_spec = dict(
         hostname=dict(),
         domain_name=dict(type="list", elements="raw"),

@@ -134,7 +134,7 @@ class Bgp_global(ResourceModule):
         )
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -145,8 +145,8 @@ class Bgp_global(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         if self.state in ["merged", "replaced"]:
             w_asn = self.want.get("as_number")
@@ -189,9 +189,9 @@ class Bgp_global(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Bgp_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Bgp_global network resource.
         """
         self.generic_list_parsers = [
             "distributes",
@@ -364,8 +364,7 @@ class Bgp_global(ResourceModule):
             self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
-        """Handling of gereric list options.
-        """
+        """Handling of gereric list options."""
         for wkey, wentry in iteritems(w_attr):
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, parser, False)

@@ -114,7 +114,7 @@ class TestIosHostnameModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_hostname_replaced_overridden(self):
-        """ both the replaced and overridden states are supported to have same behaviour """
+        """both the replaced and overridden states are supported to have same behaviour"""
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname

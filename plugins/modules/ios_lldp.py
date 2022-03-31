@@ -81,8 +81,7 @@ def has_lldp(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         state=dict(
             default="present",

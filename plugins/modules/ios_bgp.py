@@ -424,8 +424,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cl
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     network_spec = {
         "prefix": dict(required=True),
         "masklen": dict(type="int"),

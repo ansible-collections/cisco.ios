@@ -44,7 +44,7 @@ class Acl_interfaces(ResourceModule):
         )
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -55,7 +55,7 @@ class Acl_interfaces(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration

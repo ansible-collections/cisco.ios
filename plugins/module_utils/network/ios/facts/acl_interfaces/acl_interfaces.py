@@ -26,8 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_
 
 
 class Acl_interfacesFacts(object):
-    """ The ios_acl_interfaces fact class
-    """
+    """The ios_acl_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -39,7 +38,7 @@ class Acl_interfacesFacts(object):
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for interfaces
+        """Populate the facts for interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

@@ -26,8 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_
 
 
 class Ntp_globalFacts(object):
-    """ The ios ntp_global facts class
-    """
+    """The ios ntp_global facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -56,7 +55,7 @@ class Ntp_globalFacts(object):
         return connection.get("show running-config | section ^ntp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Ntp_global network resource
+        """Populate the facts for Ntp_global network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

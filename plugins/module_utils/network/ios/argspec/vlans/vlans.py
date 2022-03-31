@@ -32,8 +32,7 @@ __metaclass__ = type
 
 
 class VlansArgs(object):
-    """The arg spec for the ios_vlans module
-    """
+    """The arg spec for the ios_vlans module"""
 
     def __init__(self, **kwargs):
         pass

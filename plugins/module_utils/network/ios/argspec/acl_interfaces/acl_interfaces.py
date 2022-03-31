@@ -28,8 +28,7 @@ The arg spec for the ios_acl_interfaces module
 
 
 class Acl_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_acl_interfaces module
-    """
+    """The arg spec for the ios_acl_interfaces module"""
 
     argument_spec = {
         "config": {
