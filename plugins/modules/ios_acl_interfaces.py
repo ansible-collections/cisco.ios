@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_acl_interfaces
-short_description: ACL interfaces resource module
+short_description: Resource module to configure ACL interfaces.
 description: This module configures and manages the access-control (ACL) attributes
   of interfaces on IOS platforms.
 version_added: 1.0.0

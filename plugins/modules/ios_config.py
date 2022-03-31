@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_config
 author: Peter Sprygada (@privateip)
-short_description: Manage Cisco IOS configuration sections
+short_description: Module to manage configuration sections.
 description:
 - Cisco IOS configurations use a simple block indent file syntax for segmenting configuration
   into sections.  This module provides an implementation for working with IOS configuration

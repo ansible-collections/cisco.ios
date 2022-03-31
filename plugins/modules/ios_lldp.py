@@ -21,11 +21,15 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lldp
 author: Ganesh Nalawade (@ganeshrn)
-short_description: Manage LLDP configuration on Cisco IOS network devices.
+short_description: (deprecated, removed after 2024-06-01) Manage LLDP configuration on Cisco IOS network devices.
 description:
 - This module provides declarative management of LLDP service on Cisco IOS network
   devices.
 version_added: 1.0.0
+deprecated:
+  alternative: ios_lldp_global
+  why: Newer and updated modules released with more functionality.
+  removed_at_date: '2024-06-01'
 notes:
   - Tested against IOS 15.2
   - This module works with connection C(network_cli).

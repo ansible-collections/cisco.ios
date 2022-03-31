@@ -5,7 +5,7 @@
 cisco.ios.ios_command
 *********************
 
-**Run commands on remote devices running Cisco IOS**
+**Module to run commands on remote devices.**
 
 
 Version added: 1.0.0

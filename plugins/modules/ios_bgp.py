@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_bgp
 author: Nilashish Chakraborty (@NilashishC)
-short_description: Configure global BGP protocol settings on Cisco IOS.
+short_description: Module to configure BGP protocol settings.
 description:
 - This module provides configuration management of global BGP parameters on devices
   running Cisco IOS

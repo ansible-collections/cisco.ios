@@ -638,7 +638,7 @@ options:
         another for the parsers to pick the commands correctly.
         For state I(parsed) active connection to remote host is not required.
     type: str
-short_description: ACLs resource module
+short_description: Resource module to configure ACLs.
 version_added: 1.0.0
 """
 

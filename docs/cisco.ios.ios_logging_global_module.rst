@@ -5,7 +5,7 @@
 cisco.ios.ios_logging_global
 ****************************
 
-**Logging resource module**
+**Resource module to configure logging.**
 
 
 Version added: 2.2.0

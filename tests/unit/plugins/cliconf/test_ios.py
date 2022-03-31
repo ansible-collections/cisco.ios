@@ -23,7 +23,10 @@ __metaclass__ = type
 from os import path
 import json
 
-from mock import MagicMock
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import MagicMock
 
 from ansible_collections.cisco.ios.tests.unit.compat import unittest
 from ansible_collections.cisco.ios.plugins.cliconf import ios

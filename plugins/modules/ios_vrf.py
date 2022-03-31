@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_vrf
 author: Peter Sprygada (@privateip)
-short_description: Manage the collection of VRF definitions on Cisco IOS devices
+short_description: Module to configure VRF definitions.
 description:
 - This module provides declarative management of VRF definitions on Cisco IOS devices.  It
   allows playbooks to manage individual or the entire VRF collection.  It also supports

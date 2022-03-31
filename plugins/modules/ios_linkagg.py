@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
-short_description: Manage link aggregation groups on Cisco IOS network devices
+short_description: Module to configure link aggregation groups.
 description:
 - This module provides declarative management of link aggregation groups on Cisco
   IOS network devices.

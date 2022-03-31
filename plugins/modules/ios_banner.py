@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_banner
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
-short_description: Manage multiline banners on Cisco IOS devices
+short_description: Module to configure multiline banners.
 description:
 - This will configure both login and motd banners on remote devices running Cisco
   IOS.  It allows playbooks to add or remote banner text from the active running configuration.

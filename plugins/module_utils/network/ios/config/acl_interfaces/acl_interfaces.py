@@ -56,7 +56,6 @@ class Acl_interfaces(ResourceModule):
 
     def generate_commands(self):
         """Select the appropriate function based on the state provided
-
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
@@ -126,3 +125,5 @@ class Acl_interfaces(ResourceModule):
                 subentry["afi"]: subentry
                 for subentry in item.get("access_groups", [])
             }
+
+        

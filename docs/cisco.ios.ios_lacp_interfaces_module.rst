@@ -5,7 +5,7 @@
 cisco.ios.ios_lacp_interfaces
 *****************************
 
-**LACP interfaces resource module**
+**Resource module to configure LACP interfaces.**
 
 
 Version added: 1.0.0

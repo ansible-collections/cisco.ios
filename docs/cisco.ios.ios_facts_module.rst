@@ -5,7 +5,7 @@
 cisco.ios.ios_facts
 *******************
 
-**Collect facts from remote devices running Cisco IOS**
+**Module to collect facts from remote devices.**
 
 
 Version added: 1.0.0

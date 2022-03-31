@@ -5,7 +5,7 @@
 cisco.ios.ios_route_maps
 ************************
 
-**Route maps resource module**
+**Resource module to configure route maps.**
 
 
 Version added: 2.1.0
