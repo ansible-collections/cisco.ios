@@ -38,15 +38,7 @@ deleted:
     - no ipv6 traffic-filter test_v6 out
 gathered:
   config:
-    - name: Loopback0
-    - name: Loopback11
-    - name: Loopback888
-    - name: Loopback111
-    - name: Loopback999
-    - name: Loopback1111
-    - name: Tunnel1
     - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/3
     - access_groups:
         - acls:
             - direction: in
