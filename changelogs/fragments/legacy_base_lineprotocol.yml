@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_facts` - Fix Line protocol to gets render correctly on leagcy facts where state information is present."
