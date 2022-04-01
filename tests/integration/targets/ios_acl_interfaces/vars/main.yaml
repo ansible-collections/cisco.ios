@@ -38,7 +38,6 @@ deleted:
     - no ipv6 traffic-filter test_v6 out
 gathered:
   config:
-    - name: GigabitEthernet0/0
     - access_groups:
         - acls:
             - direction: in
