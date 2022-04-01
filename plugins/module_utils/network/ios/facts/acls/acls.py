@@ -52,6 +52,7 @@ class AclsFacts(object):
         return _acl_data
 
     def sanitize_data(self, data):
+        """removes matches or extra config info that is added on acl match"""
         re_data = ""
         for da in data.split("\n"):
             if "matches" in da:
@@ -100,6 +101,12 @@ class AclsFacts(object):
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
                     if each_ace.get("source"):
+                        if len(each_ace.get("source")) == 1 and each_ace.get(
+                            "source", {}
+                        ).get("address"):
+                            each_ace["source"]["host"] = each_ace[
+                                "source"
+                            ].pop("address")
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
                             if addr[-1] == ",":
@@ -117,14 +124,27 @@ class AclsFacts(object):
                             "protocol_number": each_ace.pop("protocol_number")
                         }
 
+            def collect_remarks(aces):
+                """makes remarks list per ace"""
+                ace_entry = []
+                rem = []
+                for i in aces:
+                    if i.get("remarks"):
+                        rem.append(i.pop("remarks"))
+                    else:
+                        ace_entry.append(i)
+                if rem:
+                    ace_entry.append({"remarks": rem})
+                return ace_entry
+
             for each in temp_v4:
-                aces_ipv4 = each.get("aces")
-                if aces_ipv4:
+                if each.get("aces"):
+                    each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
             for each in temp_v6:
-                aces_ipv6 = each.get("aces")
-                if aces_ipv6:
+                if each.get("aces"):
+                    each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
         objs = []

@@ -15,6 +15,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         syn: true
@@ -33,6 +34,7 @@
               - name: 150
                 aces:
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         syn: true
