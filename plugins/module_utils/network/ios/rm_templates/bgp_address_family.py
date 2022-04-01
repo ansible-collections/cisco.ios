@@ -729,6 +729,144 @@ def _tmplt_af_table_map(config_data):
         return cmd
 
 
+def _tmplt_af_redistribute(config_data):
+    if "redistribute" in config_data:
+        commands = []
+
+        def common_config(command, param):
+            if config_data["redistribute"][param].get("metric"):
+                command += " metric {metric}".format(
+                    **config_data["redistribute"][param]
+                )
+            if config_data["redistribute"][param].get("route_map"):
+                command += " route-map {route_map}".format(
+                    **config_data["redistribute"][param]
+                )
+            commands.append(command)
+
+        command = "redistribute"
+        if config_data["redistribute"].get("application"):
+            cmd = "{0} application {name}".format(
+                command, **config_data["redistribute"]["application"]
+            )
+            common_config(cmd, "application")
+        if config_data["redistribute"].get("bgp"):
+            cmd = "{0} bgp {as_number}".format(
+                command, **config_data["redistribute"]["bgp"]
+            )
+            common_config(cmd, "bgp")
+        if config_data["redistribute"].get("connected"):
+            cmd = "{0} connected".format(command)
+            common_config(cmd, "connected")
+        if config_data["redistribute"].get("eigrp"):
+            cmd = "{0} eigrp {as_number}".format(
+                command, **config_data["redistribute"]["eigrp"]
+            )
+            common_config(cmd, "eigrp")
+        if config_data["redistribute"].get("isis"):
+            cmd = "{0} isis {area_tag}".format(
+                command, **config_data["redistribute"]["isis"]
+            )
+            if config_data["redistribute"]["isis"].get("clns"):
+                cmd += " clns"
+            elif config_data["redistribute"]["isis"].get("ip"):
+                cmd += " ip"
+            common_config(cmd, "isis")
+        if config_data["redistribute"].get("iso_igrp"):
+            cmd = "{0} iso-igrp {area_tag}".format(
+                command, **config_data["redistribute"]["iso_igrp"]
+            )
+            if config_data["redistribute"]["iso_igrp"].get("route_map"):
+                cmd += " route-map {route_map}".format(
+                    **config_data["redistribute"]["iso_igrp"]
+                )
+            common_config(cmd, "iso_igrp")
+        if config_data["redistribute"].get("lisp"):
+            cmd = "{0} lisp".format(command)
+            common_config(cmd, "lisp")
+        if config_data["redistribute"].get("mobile"):
+            cmd = "{0} mobile".format(command)
+            common_config(cmd, "mobile")
+        if config_data["redistribute"].get("odr"):
+            cmd = "{0} odr".format(command)
+            common_config(cmd, "odr")
+        if config_data["redistribute"].get("rip"):
+            cmd = "{0} rip".format(command)
+            common_config(cmd, "rip")
+        if config_data["redistribute"].get("ospf"):
+            cmd = "{0} ospf {process_id}".format(
+                command, **config_data["redistribute"]["ospf"]
+            )
+            common_config(cmd, "ospf")
+            if config_data["redistribute"]["ospf"].get("match"):
+                external_type = None
+                commands[-1] += " match"
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "internal"
+                ):
+                    commands[-1] += " internal"
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "external"
+                ):
+                    external_type = " external"
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "nssa_external"
+                ):
+                    external_type = " nssa-external"
+                if (
+                    config_data["redistribute"]["ospf"]["match"].get("type_1")
+                    and external_type
+                ):
+                    commands[-1] += "{0} 1".format(external_type)
+                if (
+                    config_data["redistribute"]["ospf"]["match"].get("type_2")
+                    and external_type
+                ):
+                    commands[-1] += "{0} 2".format(external_type)
+            if config_data["redistribute"]["ospf"].get("vrf"):
+                commands[-1] += " vrf"
+        if config_data["redistribute"].get("ospfv3"):
+            cmd = "{0} ospfv3 {process_id}".format(
+                command, **config_data["redistribute"]["ospfv3"]
+            )
+            if config_data["redistribute"]["ospfv3"].get("match"):
+                cmd += " match"
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "external"
+                ):
+                    cmd += " external"
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "internal"
+                ):
+                    cmd += " internal"
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "nssa_external"
+                ):
+                    cmd += " nssa-external"
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "type_1"
+                ):
+                    cmd += " 1"
+                elif config_data["redistribute"]["ospfv3"]["match"].get(
+                    "type_2"
+                ):
+                    cmd += " 2"
+            common_config(cmd, "ospf")
+        if config_data["redistribute"].get("static"):
+            cmd += "{0} static".format(command)
+            common_config(cmd, "static")
+        if config_data["redistribute"].get("vrf"):
+            if config_data["redistribute"]["vrf"].get("name"):
+                cmd = "{0} vrf {name}".format(
+                    command, **config_data["redistribute"]["vrf"]
+                )
+            elif config_data["redistribute"]["vrf"].get("global"):
+                cmd = "{0} vrf global".format(command)
+            common_config(cmd, "vrf")
+
+        return commands
+
+
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_address_familyTemplate, self).__init__(
@@ -1031,7 +1169,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "prefix_lists": [
                                     {
@@ -1062,7 +1200,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "route_maps": [
                                     {
@@ -1103,7 +1241,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     \s*(?P<filter_list>filter-list\s\d+\s(in|out))*
                     \s*(?P<ha_mode>ha-mode\s(graceful-restart\sdisable|graceful-restart))*
                     \s*(?P<inherit>inherit\speer-session\s\S+)*
-                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as))*
+                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as|local-as\s\d+))*
                     \s*(?P<log_neighbor_changes>log-neighbor-changes\sdisable|log-neighbor-changes)*
                     \s*(?P<maximum_prefix>maximum-prefix\s(\d+\s\d+\s(restart\s\d+|warning-only)|\d+\s(restart\s\d+|warning-only)))*
                     \s*(?P<nexthop_self>next-hop-self\sall|next-hop-self)*
@@ -1134,7 +1272,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "activate": "{{ True if activate is defined }}",
                                 "additional_paths": {
@@ -1333,7 +1471,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbor": [
                             {
                                 "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
+                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
                                 "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
                                 "slow_peer": [
                                     {
@@ -1468,6 +1606,124 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "name": "{{ name if name is defined }}",
                             "filter": "{{ True if filter is defined }}",
                         }
+                    }
+                }
+            },
+        },
+        {
+            "name": "redistribute",
+            "getval": re.compile(
+                r"""\s*redistribute*
+                        \s*(?P<application>application\s\S+\smetric\s\d+\sroute-map\s\S+|application\s\S+\s(metric\s\d+|route-map\s\S+))*
+                        \s*(?P<bgp>bgp\s\d+\smetric\s\d+\sroute-map\s\S+|bgp\s\d+\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<connected>connected\s(metric\s\d+\sroute-map\s\S+|metric\s\d+)|connected)*
+                        \s*(?P<eigrp>eigrp\s\d+\smetric\s\d+\sroute-map\s\S+|eigrp\s\d+\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<isis>isis\s\S+\sclns\smetric\s\d+\sroute-map\s\S+|isis\s\S+\sip\smetric\s\d+\sroute-map\s\S+|isis\s\S+\s(clns|ip)\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<iso_igrp>iso-igrp\s\S+\sroute-map\s\S+|iso-igrp\s\S+)*
+                        \s*(?P<lisp>lisp\smetric\s\d+\sroute-map\s\S+|lisp\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<mobile>mobile\smetric\s\d+\sroute-map\s\S+|mobile\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<odr>odr\smetric\s\d+\sroute-map\s\S+|odr\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<ospf>ospf\s\d+(\s.*))*
+                        \s*(?P<ospfv3>ospfv3\s\d+(\s.*))*
+                        \s*(?P<rip>rip\smetric\s\d+\sroute-map\s\S+|rip\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<static>static\sclns\smetric\s\d+\sroute-map\s\S+|static\sip\smetric\s\d+\sroute-map\s\S+|static\s(clns|ip)\s(metric\s\d+\sroute-map\s\S+))*
+                        \s*(?P<vrf>vrf\s\S+|vrf\sglobal)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "compval": "redistribute",
+            "setval": _tmplt_af_redistribute,
+            "result": {
+                "address_family": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "redistribute": [
+                            {
+                                "application": {
+                                    "name": "{{ application.split(' ')[1] if application is defined }}",
+                                    "metric": "{{ application.split('metric ')[1].split(' ')[0] if application is defined and 'metric' in application }}",
+                                    "route_map": "{{ application.split('route-map ')[1].split(' ')[0] if application is defined and\
+                                        'route-map' in application }}",
+                                },
+                                "bgp": {
+                                    "as_number": "{{ bgp.split(' ')[1] if bgp is defined }}",
+                                    "metric": "{{ bgp.split('metric ')[1].split(' ')[0] if bgp is defined and 'metric' in bgp }}",
+                                    "route_map": "{{ bgp.split('route-map ')[1].split(' ')[0] if bgp is defined and 'route-map' in bgp }}",
+                                },
+                                "connected": {
+                                    "set": "{{ True if connected is defined and 'connected' in connected }}",
+                                    "metric": "{{ connected.split('metric ')[1].split(' ')[0] if connected is defined and 'metric' in connected }}",
+                                    "route_map": "{{ connected.split('route-map ')[1].split(' ')[0] if connected is defined and 'route-map' in connected }}",
+                                },
+                                "eigrp": {
+                                    "as_number": "{{ eigrp.split(' ')[1] if eigrp is defined }}",
+                                    "metric": "{{ eigrp.split('metric ')[1].split(' ')[0] if eigrp is defined and 'metric' in eigrp }}",
+                                    "route_map": "{{ eigrp.split('route-map ')[1].split(' ')[0] if eigrp is defined and 'route-map' in eigrp }}",
+                                },
+                                "isis": {
+                                    "area_tag": "{{ isis.split(' ')[1] if isis is defined }}",
+                                    "clns": "{{ True if isis is defined and 'clns' in isis }}",
+                                    "ip": "{{ True if isis is defined and 'ip' in isis }}",
+                                    "metric": "{{ isis.split('metric ')[1].split(' ')[0] if isis is defined and 'metric' in isis }}",
+                                    "route_map": "{{ isis.split('route-map ')[1].split(' ')[0] if isis is defined and 'route-map' in isis }}",
+                                },
+                                "iso_igrp": {
+                                    "area_tag": "{{ iso_igrp.split(' ')[1] if iso_igrp is defined }}",
+                                    "route_map": "{{ iso_igrp.split('route-map ')[1].split(' ')[0] if iso_igrp is defined and 'route-map' in iso_igrp }}",
+                                },
+                                "lisp": {
+                                    "metric": "{{ lisp.split('metric ')[1].split(' ')[0] if lisp is defined and 'metric' in lisp }}",
+                                    "route_map": "{{ lisp.split('route-map ')[1].split(' ')[0] if lisp is defined and 'route-map' in lisp }}",
+                                },
+                                "mobile": {
+                                    "metric": "{{ mobile.split('metric ')[1].split(' ')[0] if mobile is defined and 'metric' in mobile }}",
+                                    "route_map": "{{ mobile.split('route-map ')[1].split(' ')[0] if mobile is defined and 'route-map' in mobile }}",
+                                },
+                                "odr": {
+                                    "metric": "{{ odr.split('metric ')[1].split(' ')[0] if odr is defined and 'metric' in odr }}",
+                                    "route_map": "{{ odr.split('route-map ')[1].split(' ')[0] if odr is defined and 'route-map' in odr }}",
+                                },
+                                "ospf": {
+                                    "process_id": "{{ ospf.split(' ')[1] if ospf is defined }}",
+                                    "match": {
+                                        "external": "{{ True if ospf is defined and 'external' in ospf }}",
+                                        "internal": "{{ True if ospf is defined and 'internal' in ospf }}",
+                                        "nssa_external": "{{ True if ospf is defined and 'nssa-external' in ospf }}",
+                                        "type_1": "{{ True if ospf is defined and '1' in ospf }}",
+                                        "type_2": "{{ True if ospf is defined and '2' in ospf }}",
+                                    },
+                                    "metric": "{{ ospf.split('metric ')[1].split(' ')[0] if ospf is defined and 'metric' in ospf }}",
+                                    "route_map": "{{ ospf.split('route-map ')[1].split(' ')[0] if ospf is defined and 'route-map' in ospf }}",
+                                    "vrf": "{{ ospf.split('vrf ')[1].split(' ')[0] if ospf is defined and 'vrf' in ospf }}",
+                                },
+                                "ospfv3": {
+                                    "process_id": "{{ ospfv3.split(' ')[1] if ospf is defined }}",
+                                    "match": {
+                                        "external": "{{ True if ospfv3 is defined and 'external' in ospfv3 }}",
+                                        "internal": "{{ True if ospfv3 is defined and 'internal' in ospfv3 }}",
+                                        "nssa_external": "{{ True if ospfv3 is defined and 'nssa-external' in ospfv3 }}",
+                                        "type_1": "{{ True if ospfv3 is defined and '1' in ospfv3 }}",
+                                        "type_2": "{{ True if ospfv3 is defined and '2' in ospfv3 }}",
+                                    },
+                                    "metric": "{{ ospfv3.split('metric ')[1].split(' ')[0] if ospfv3 is defined and 'metric' in ospfv3 }}",
+                                    "route_map": "{{ ospfv3.split('route-map ')[1].split(' ')[0] if ospfv3 is defined and 'route-map' in ospfv3 }}",
+                                    "vrf": "{{ ospfv3.split('vrf ')[1].split(' ')[0] if ospfv3 is defined and 'vrf' in ospfv3 }}",
+                                },
+                                "rip": {
+                                    "metric": "{{ rip.split('metric ')[1].split(' ')[0] if rip is defined and 'metric' in rip }}",
+                                    "route_map": "{{ rip.split('route-map ')[1].split(' ')[0] if rip is defined and 'route-map' in rip }}",
+                                },
+                                "static": {
+                                    "clns": "{{ True if static is defined and 'clns' in static }}",
+                                    "ip": "{{ True if static is defined and 'ip' in static }}",
+                                    "metric": "{{ static.split('metric ')[1].split(' ')[0] if static is defined and 'metric' in static }}",
+                                    "route_map": "{{ static.split('route-map ')[1].split(' ')[0] if static is defined and 'route-map' in static }}",
+                                },
+                                "vrf": {
+                                    "name": "{{ vrf.split('vrf ')[1].split(' ')[0] if vrf is defined and 'vrf' in vrf and 'global' not in vrf }}",
+                                    "global": "{{ True if vrf is defined and 'vrf' in vrf and 'global' in vrf }}",
+                                },
+                            }
+                        ]
                     }
                 }
             },

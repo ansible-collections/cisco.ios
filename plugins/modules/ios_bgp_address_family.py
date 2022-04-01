@@ -247,6 +247,8 @@ options:
               ipv6_adddress:
                 description: Neighbor ipv6 address (X:X:X:X::X)
                 type: str
+                aliases:
+                  - ipv6_address
               activate:
                 description: Enable the Address Family for this Neighbor
                 type: bool
@@ -708,6 +710,11 @@ options:
                 description: Send Community attribute to this neighbor
                 type: dict
                 suboptions:
+                  set:
+                    description:
+                      - Send Standard Community attribute.
+                      - Maintains backwards compatibility for configurations that do not specify a send-community type.
+                    type: bool
                   both:
                     description: Send Standard and Extended Community attributes
                     type: bool
@@ -886,6 +893,11 @@ options:
                 description: Connected
                 type: dict
                 suboptions:
+                  set:
+                    description:
+                      - Redistribute automatically established IP connected routes.
+                      - This only needs to be set if metric or route_map aren't used.
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int

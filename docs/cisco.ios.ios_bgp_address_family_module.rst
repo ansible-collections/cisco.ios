@@ -2552,6 +2552,7 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor ipv6 address (X:X:X:X::X)</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: ipv6_address</div>
                 </td>
             </tr>
             <tr>

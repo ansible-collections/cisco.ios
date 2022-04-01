@@ -351,11 +351,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         commands = [
             "router bgp 65000",
             "address-family ipv4 multicast vrf blue",
+            "redistribute connected metric 10",
             "no bgp dampening 1 1 1 1",
             "bgp slow-peer detection threshold 200",
             "no neighbor 198.51.100.1 activate",
             "no neighbor 198.51.100.1 next-hop-self all",
             "no neighbor 198.51.100.1 remote-as 10",
+            "no neighbor 198.51.100.1 local-as 20",
             "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
             "no neighbor 198.51.100.1 route-server-client",
             "no neighbor 198.51.100.1 slow-peer detection threshold 150",
@@ -422,6 +424,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
+                                    local_as=dict(number=20),
                                     route_maps=[
                                         dict(name="test-out", out=True)
                                     ],
@@ -486,6 +489,33 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     address_family=[
                         dict(
                             afi="ipv4",
+                            bgp=dict(redistribute_internal=True),
+                            redistribute=[
+                                dict(
+                                    connected=dict(set=True),
+                                    ospf=dict(
+                                        match=dict(
+                                            external=True,
+                                            internal=True,
+                                            type_1=True,
+                                            type_2=True,
+                                        )
+                                    ),
+                                )
+                            ],
+                            neighbor=[
+                                dict(
+                                    tag="TEST-PEER-GROUP",
+                                    nexthop_self=dict(all=True),
+                                    send_community=dict(set=True),
+                                ),
+                                dict(
+                                    ipv6_address="2001:db8::1", activate=True
+                                ),
+                            ],
+                        ),
+                        dict(
+                            afi="ipv4",
                             safi="multicast",
                             vrf="blue",
                             aggregate_address=[
@@ -533,6 +563,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         dict(detection=dict(threshold=150))
                                     ],
                                     remote_as=10,
+                                    local_as=dict(number=20),
                                     route_maps=[
                                         dict(name="test-out", out=True)
                                     ],
@@ -593,6 +624,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         set_module_args(dict(state="deleted"))
         commands = [
             "router bgp 65000",
+            "no address-family ipv4",
             "no address-family ipv4 multicast vrf blue",
             "no address-family ipv4 mdt",
             "no address-family ipv4 multicast",
@@ -845,6 +877,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "no address-family ipv4 mdt",
             "no address-family ipv4 multicast vrf blue",
             "address-family ipv4",
+            "no bgp redistribute-internal",
+            "no redistribute connected",
+            "no redistribute ospf 200 metric 100 match internal external 1 external 2",
+            "no neighbor TEST-PEER-GROUP send-community",
+            "no neighbor TEST-PEER-GROUP next-hop-self all",
+            "no neighbor 2001:db8::1 activate",
             "neighbor 192.31.39.212 activate",
             "neighbor 192.31.39.212 soft-reconfiguration inbound",
             "neighbor 192.31.47.206 activate",
