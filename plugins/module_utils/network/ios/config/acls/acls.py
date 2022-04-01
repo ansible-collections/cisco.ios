@@ -74,6 +74,10 @@ class Acls(ResourceModule):
             haved = {
                 k: v for k, v in iteritems(haved) if k in wantd or not wantd
             }
+            if wantd.get("ipv4") and not haved.get("ipv4"):
+                haved["ipv4"] = {}
+            if wantd.get("ipv6") and not haved.get("ipv6"):
+                haved["ipv6"] = {}
             for key, hvalue in iteritems(haved):
                 wvalue = wantd.pop(key, {})
                 if wvalue:
