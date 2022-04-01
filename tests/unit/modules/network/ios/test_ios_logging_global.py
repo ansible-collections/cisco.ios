@@ -322,9 +322,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     ),
                 ],
                 hosts=[
-                    dict(hostname="172.16.1.1"),
+                    dict(host="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
+                    dict(host="172.16.1.25", filtered=True),
                     dict(hostname="172.16.1.10", stream=10, filtered=True),
                     dict(
                         hostname="172.16.1.13",
@@ -576,6 +576,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     logging console xml critical
                     logging count
                     logging delimiter tcp
+                    logging host 172.16.2.15 session-id string Test
                     """
                 ),
                 state="parsed",

@@ -218,9 +218,11 @@ options:
           ipv6:
             description: Configure IPv6 syslog server
             type: str
-          hostname:
+          host:
             description: IP address of the syslog server
             type: str
+            aliases:
+            - hostname
       message_counter:
         description: Configure log message to include certain counter value
         type: list

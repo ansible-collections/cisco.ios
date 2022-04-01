@@ -245,7 +245,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "vrf": {"type": "str"},
                         "xml": {"type": "bool"},
                         "ipv6": {"type": "str"},
-                        "hostname": {"type": "str"},
+                        "host": {"type": "str", "aliases": ["hostname"]},
                     },
                 },
                 "message_counter": {

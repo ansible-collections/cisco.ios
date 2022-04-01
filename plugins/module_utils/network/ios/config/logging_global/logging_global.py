@@ -153,7 +153,7 @@ class Logging_global(ResourceModule):
         """Convert all list of dicts to dicts of dicts"""
         p_key = {
             "filter": "url",
-            "hosts": "hostname",
+            "hosts": "host",
             "source_interface": "interface",
         }
         list_el = ["message_counter", "discriminator", "snmp_trap"]
