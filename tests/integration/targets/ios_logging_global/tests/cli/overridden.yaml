@@ -20,7 +20,7 @@
             size: 5099
           facility: local6
           hosts:
-            - hostname: 192.0.2.12
+            - host: 192.0.2.12
               xml: true
         state: overridden
 
