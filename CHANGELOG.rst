@@ -45,19 +45,15 @@ Bugfixes
 --------
 
 - `ios_bgp_global` - Added bmp.server_options.
-- `ios_bgp_global` - client_to_client.cluster_id corrected to take string input.
-- `ios_bgp_global` - neighbors.path_attribute to support float format.
-- `ios_static_routes` - Consider only config containing routes to render facts.
-
-Known Issues
-------------
-
 - `ios_bgp_global` - Added capability of configure network options.
 - `ios_bgp_global` - Added community and local_preference for route_reflector_client.
 - `ios_bgp_global` - Added update_source for neighbors.
 - `ios_bgp_global` - Correct misspelled attributes with alternates/alias.
 - `ios_bgp_global` - Facts and config code optimized for using rm_templates.
 - `ios_bgp_global` - Parsers added for non-implemented attributes.
+- `ios_bgp_global` - client_to_client.cluster_id corrected to take string input.
+- `ios_bgp_global` - neighbors.path_attribute to support float format.
+- `ios_static_routes` - Consider only config containing routes to render facts.
 
 v2.7.2
 ======
