@@ -1,8 +1,0 @@
----
-bugfixes:
-  - "`ios_bgp_address_family` - Fix multiple bgp_address_family issues.
-    Add `set` option in `send_community` to allow backwards compatiblity with older configs.
-    Add `set` option in `redistribute.connected` to allow ospf redistribution.
-    Fix issue with ipv6 and peer-group neighbor identification.
-    Add ability to pull `redistribute` information for address families to conform to argspec.
-    Fix issue with not pulling `local_as` when defined for neighbors."

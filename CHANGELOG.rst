@@ -5,6 +5,25 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v2.8.1
+======
+
+Deprecated Features
+-------------------
+
+- Deprecates lldp module.
+
+Bugfixes
+--------
+
+- Add symlink of modules under plugins/action.
+- `ios_acls` - Fix commands sequencing for replaced state.
+- `ios_acls` - Fix remarks breaking idempotent behavior.
+- `ios_bgp_address_family` - Fix multiple bgp_address_family issues. Add `set` option in `send_community` to allow backwards compatibility with older configs. Add `set` option in `redistribute.connected` to allow ospf redistribution. Fix issue with ipv6 and peer-group neighbor identification. Add ability to pull `redistribute` information for address families to conform to argspec. Fix issue with not pulling `local_as` when defined for neighbors.
+- `ios_facts` - Fix Line protocol parser for legacy facts where state information per interface is present.
+- `ios_route_maps` - Fix parsers for correct rendering of as_number as list.
+- `ios_snmp_server` - Fix parsers for views facts collection.
+
 v2.8.0
 ======
 
@@ -26,15 +45,15 @@ Bugfixes
 --------
 
 - `ios_bgp_global` - Added bmp.server_options.
-- `ios_bgp_global` - client_to_client.cluster_id corrected to take string input.
-- `ios_bgp_global` - neighbors.path_attribute to support float format.
-- `ios_static_routes` - Consider only config containing routes to render facts.
 - `ios_bgp_global` - Added capability of configure network options.
 - `ios_bgp_global` - Added community and local_preference for route_reflector_client.
 - `ios_bgp_global` - Added update_source for neighbors.
 - `ios_bgp_global` - Correct misspelled attributes with alternates/alias.
 - `ios_bgp_global` - Facts and config code optimized for using rm_templates.
 - `ios_bgp_global` - Parsers added for non-implemented attributes.
+- `ios_bgp_global` - client_to_client.cluster_id corrected to take string input.
+- `ios_bgp_global` - neighbors.path_attribute to support float format.
+- `ios_static_routes` - Consider only config containing routes to render facts.
 
 v2.7.2
 ======

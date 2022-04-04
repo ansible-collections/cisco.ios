@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_route_maps` - Fix parsers for correct rendering of as_number as list."
