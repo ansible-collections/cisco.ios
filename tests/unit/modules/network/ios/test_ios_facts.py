@@ -96,7 +96,7 @@ class TestIosFactsModule(TestIosModule):
             ["CAT0726R0ZU", "CAT0726R10A", "CAT0732R0M4"],
         )
 
-    def test_ios_facts_tunnel_address(self):
+    def test_ios_facts_tunnel_address_and_lineprotocol(self):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
         self.assertEqual(
@@ -115,6 +115,18 @@ class TestIosFactsModule(TestIosModule):
             result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"][
                 "macaddress"
             ]
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"][
+                "GigabitEthernet1"
+            ]["lineprotocol"],
+            "up",
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"][
+                "TenGigabitEthernet2/5/5"
+            ]["lineprotocol"],
+            "down",
         )
 
     def test_ios_facts_filesystems_info(self):
