@@ -503,3 +503,31 @@ releases:
     - bgp_global_optimization.yaml
     - sanity_fix_docs.yaml
     release_date: '2022-03-15'
+  2.8.1:
+    changes:
+      bugfixes:
+      - Add symlink of modules under plugins/action.
+      - '`ios_acls` - Fix commands sequencing for replaced state.'
+      - '`ios_acls` - Fix remarks breaking idempotent behavior.'
+      - '`ios_bgp_address_family` - Fix multiple bgp_address_family issues. Add `set`
+        option in `send_community` to allow backwards compatibility with older configs.
+        Add `set` option in `redistribute.connected` to allow ospf redistribution.
+        Fix issue with ipv6 and peer-group neighbor identification. Add ability to
+        pull `redistribute` information for address families to conform to argspec.
+        Fix issue with not pulling `local_as` when defined for neighbors.'
+      - '`ios_facts` - Fix Line protocol parser for legacy facts where state information
+        per interface is present.'
+      - '`ios_route_maps` - Fix parsers for correct rendering of as_number as list.'
+      - '`ios_snmp_server` - Fix parsers for views facts collection.'
+      deprecated_features:
+      - Deprecates lldp module.
+    fragments:
+    - 499-fix-bgp-af-issues.yaml
+    - acls_bug_remarks_state.yml
+    - add_symlink_redirects.yml
+    - fix_sanity_trivial.yml
+    - legacy_base_lineprotocol.yml
+    - rename_module_desc.yml
+    - route_maps_as_numbr.yml
+    - snmp_server_views_facts.yaml
+    release_date: '2022-04-04'

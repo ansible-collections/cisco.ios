@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_facts` - Fix Line protocol parser for leagcy facts where state information per interface is present."

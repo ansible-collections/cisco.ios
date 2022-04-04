@@ -1,4 +1,0 @@
----
-bugfixes:
-  - "`ios_acls` - Fix commands sequencing for replaced state."
-  - "`ios_acls` - Fix remarks breaking idempotent behavior."
