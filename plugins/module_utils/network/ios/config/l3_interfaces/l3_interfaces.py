@@ -91,107 +91,67 @@ class L3_interfaces(ResourceModule):
             wantd = dict_merge(haved, wantd)
 
         if self.state == "deleted":
-            temp = {}
-            for k, v in iteritems(haved):
-                if k in wantd or not wantd:
-                    temp.update({k: v})
-            haved = temp
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
+        # remove superfluous config
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd and (have.get("ipv4") or have.get("ipv6")):
-                    self.addcmd(have, "name", False)
-                    self.delete_l3_attributes(have)
+            for k, have in haved.items():
+                if k not in wantd:
+                    self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
-        if self.state == "overridden" or self.state == "replaced":
-            temp = []
-            temp_cmd = []
-            for each in self.commands:
-                if "interface" in each:
-                    if temp_cmd:
-                        temp.extend(sorted(temp_cmd)[::-1])
-                        temp_cmd = []
-                    temp.append(each)
-                if "interface" not in each:
-                    temp_cmd.append(each)
-            if temp_cmd:
-                temp.extend(sorted(temp_cmd)[::-1])
-            self.commands = temp
-
     def _compare(self, want, have):
-        if want != have and self.state != "deleted":
-            self.addcmd(want or have, "name", False)
-            if want.get("ipv4"):
-                for k, v in iteritems(want["ipv4"]):
-                    if have.get("ipv4") and have["ipv4"].get(k):
-                        h_val = have["ipv4"].pop(k)
-                        if v.get("address"):
-                            v["address"] = validate_n_expand_ipv4(
-                                self._module, v
-                            )
-                            h_val["address"] = validate_n_expand_ipv4(
-                                self._module, h_val
-                            )
-                        if v != h_val:
-                            h_val = {}
-                        self.compare(
-                            self.parsers,
-                            want={"ipv4": v},
-                            have={"ipv4": h_val},
-                        )
-                    else:
-                        if v.get("address"):
-                            v["address"] = validate_n_expand_ipv4(
-                                self._module, v
-                            )
-                        self.compare(
-                            self.parsers, want={"ipv4": v}, have=dict()
-                        )
-            if want.get("ipv6"):
-                for k, v in iteritems(want["ipv6"]):
-                    if have.get("ipv6") and have["ipv6"].get(k):
-                        h_val = have["ipv6"].pop(k)
-                        if v.get("address"):
-                            if "/" in v["address"] and "/" in h_val["address"]:
-                                validate_ipv6(v["address"], self._module)
-                                validate_ipv6(h_val["address"], self._module)
-                        if v != h_val:
-                            h_val = {}
-                        self.compare(
-                            self.parsers,
-                            want={"ipv6": v},
-                            have={"ipv6": h_val},
-                        )
-                    else:
-                        if v.get("address"):
-                            if "/" in v["address"]:
-                                validate_ipv6(v["address"], self._module)
-                        self.compare(
-                            self.parsers, want={"ipv6": v}, have=dict()
-                        )
-            if self.state == "replaced" or self.state == "overridden":
-                self.delete_l3_attributes(have)
+        begin = len(self.commands)
+        self._compare_lists(want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "name", False)
+            )
 
-    def delete_l3_attributes(self, have):
-        if have.get("ipv4"):
-            for k, v in iteritems(have["ipv4"]):
-                if v.get("address"):
-                    v["address"] = validate_n_expand_ipv4(self._module, v)
+    def _compare_lists(self, want, have):
+        for afi in ("ipv4", "ipv6"):
+            wacls = want.pop(afi, {})
+            hacls = have.pop(afi, {})
+
+            for key, entry in wacls.items():
+                self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
                 self.compare(
-                    parsers=self.parsers, want=dict(), have={"ipv4": v}
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacls.pop(key, {})},
                 )
-        if have.get("ipv6"):
-            for k, v in iteritems(have["ipv6"]):
-                if v.get("address"):
-                    if "/" in v["address"]:
-                        validate_ipv6(v["address"], self._module)
-                self.compare(
-                    parsers=self.parsers, want=dict(), have={"ipv6": v}
-                )
+            # remove remaining items in have for replaced
+            for key, entry in hacls.items():
+                self.validate_ips(afi, have=entry)
+                self.compare(parsers=self.parsers, want={}, have={afi: entry})
+
+    def validate_ips(self, afi, want=None, have=None):
+        if afi == "ipv4" and want:
+            v4_addr = (
+                validate_n_expand_ipv4(self._module, want)
+                if want.get("address")
+                else {}
+            )
+            if v4_addr:
+                want["address"] = v4_addr
+        elif afi == "ipv6" and want:
+            if want.get("address"):
+                validate_ipv6(want["address"], self._module)
+
+        if afi == "ipv4" and have:
+            v4_addr_h = (
+                validate_n_expand_ipv4(self._module, have)
+                if have.get("address")
+                else {}
+            )
+            if v4_addr_h:
+                have["address"] = v4_addr_h
+        elif afi == "ipv6" and have:
+            if have.get("address"):
+                validate_ipv6(have["address"], self._module)
 
     def list_to_dict(self, param):
         if param:
