@@ -322,9 +322,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     ),
                 ],
                 hosts=[
-                    dict(hostname="172.16.1.1"),
+                    dict(host="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
+                    dict(host="172.16.1.25", filtered=True),
                     dict(hostname="172.16.1.10", stream=10, filtered=True),
                     dict(
                         hostname="172.16.1.13",
@@ -472,7 +472,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             config=dict(
                 buffered=dict(size=5099, severity="warnings", xml=True),
                 facility="local6",
-                hosts=[dict(hostname="172.16.1.11", xml=True)],
+                hosts=[dict(host="172.16.1.11", xml=True)],
                 monitor=dict(severity="critical"),
             )
         )
@@ -576,6 +576,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     logging console xml critical
                     logging count
                     logging delimiter tcp
+                    logging host 172.16.2.15 session-id string Test
                     """
                 ),
                 state="parsed",
@@ -589,9 +590,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
             console=dict(severity="critical", xml=True),
             count=True,
             delimiter=dict(tcp=True),
+            hosts=[dict(host="172.16.2.15", session_id=dict(text="Test"))],
         )
         result = self.execute_module(changed=False)
-
         self.maxDiff = None
         self.assertEqual(sorted(result["parsed"]), sorted(parsed))
 

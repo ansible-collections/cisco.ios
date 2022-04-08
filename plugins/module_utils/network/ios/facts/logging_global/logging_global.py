@@ -70,8 +70,8 @@ class Logging_globalFacts(object):
                 elif type(v) == list and k == "hosts":
                     objFinal[k] = sorted(
                         objFinal[k],
-                        key=lambda item: item["hostname"]
-                        if item.get("hostname")
+                        key=lambda item: item["host"]
+                        if item.get("host")
                         else item.get("ipv6"),
                     )
                 elif type(v) == list and k == "source_interface":
