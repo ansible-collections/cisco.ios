@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "Fix become raises error when exec prompt timestamp is configured."
