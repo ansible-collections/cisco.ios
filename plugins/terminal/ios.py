@@ -70,7 +70,7 @@ class TerminalModule(TerminalBase):
                 "unable to fetch privilege, with error: %s" % (e.message)
             )
 
-        prompt = self.privilege_level_re.match(result)
+        prompt = self.privilege_level_re.search(result)
         if not prompt:
             raise AnsibleConnectionFailure(
                 "unable to check privilege level [%s]" % result

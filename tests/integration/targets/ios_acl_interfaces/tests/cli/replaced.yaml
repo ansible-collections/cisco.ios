@@ -29,7 +29,6 @@
 
     - assert:
         that:
-          - result.commands|length == 5
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 

@@ -35,13 +35,13 @@ merged:
     exception: 4099
     facility: local5
     hosts:
-      - hostname: 192.0.2.10
+      - host: 192.0.2.10
         filtered: true
         stream: 10
-      - hostname: 192.0.2.11
+      - host: 192.0.2.11
         xml: true
-      - hostname: 192.0.2.12
-      - hostname: 192.0.2.13
+      - host: 192.0.2.12
+      - host: 192.0.2.13
         transport:
           tcp:
             port: 514
@@ -80,10 +80,10 @@ replaced:
       size: 6025
     facility: local6
     hosts:
-      - hostname: 192.0.2.10
+      - host: 192.0.2.10
         filtered: true
         stream: 15
-      - hostname: 192.0.2.19
+      - host: 192.0.2.19
 
 overridden:
   commands:
@@ -111,7 +111,7 @@ overridden:
       size: 5099
     facility: local6
     hosts:
-      - hostname: 192.0.2.12
+      - host: 192.0.2.12
         xml: true
     monitor:
       severity: critical

@@ -26,8 +26,8 @@ def tmplt_host(verb):
     if verb.get("transport"):
         changed = False
     if verb:
-        if verb.get("hostname"):
-            cmd += " {hostname}".format(hostname=verb["hostname"])
+        if verb.get("host"):
+            cmd += " {hostname}".format(hostname=verb["host"])
         if verb.get("ipv6"):
             cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
         if verb.get("vrf"):
@@ -68,8 +68,8 @@ def tmplt_host(verb):
 def tmplt_host_transport(verb):
     cmd = "logging host"
 
-    if verb.get("hostname"):
-        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("host"):
+        cmd += " {hostname}".format(hostname=verb["host"])
     if verb.get("ipv6"):
         cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
     if verb.get("vrf"):
@@ -118,8 +118,8 @@ def tmplt_host_transport(verb):
 
 def tmplt_host_del(verb):
     cmd = "logging host"
-    if verb.get("hostname"):
-        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("host"):
+        cmd += " {hostname}".format(hostname=verb["host"])
     if verb.get("ipv6"):
         cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
     if verb.get("transport"):
@@ -129,8 +129,8 @@ def tmplt_host_del(verb):
 
 def tmplt_host_transport_del(verb):
     cmd = "logging host"
-    if verb.get("hostname"):
-        cmd += " {hostname}".format(hostname=verb["hostname"])
+    if verb.get("host"):
+        cmd += " {hostname}".format(hostname=verb["host"])
     if verb.get("ipv6"):
         cmd += " ipv6 {ipv6}".format(ipv6=verb["ipv6"])
     return cmd
@@ -295,7 +295,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "remval": tmplt_host_del,
             "result": {
                 "hosts": [{
-                    "hostname": "{{ hostname }}",
+                    "host": "{{ hostname }}",
                     "ipv6": "{{ ipv6 }}",
                     "discriminator": "{{ discriminator }}",
                     "vrf": "{{ vrf }}",
@@ -333,7 +333,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "remval": tmplt_host_transport_del,
             "result": {
                 "hosts": [{
-                    "hostname": "{{ hostname }}",
+                    "host": "{{ hostname }}",
                     "ipv6": "{{ ipv6 }}",
                     "vrf": "{{ vrf if transport is defined }}",
                     "transport": {
