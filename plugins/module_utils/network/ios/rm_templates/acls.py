@@ -86,7 +86,7 @@ def _tmplt_access_list_entries(aces):
             command = source_destination_common_config(
                 aces, command, "destination"
             )
-        if proto_option:
+        if isinstance(proto_option, dict):
             command += " {0}".format(
                 list(proto_option.keys())[0].replace("_", "-")
             )
