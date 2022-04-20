@@ -233,9 +233,9 @@ def main():
         argument_spec=argument_spec, supports_check_mode=True
     )
     warnings = []
-    if module.params["gather_subset"] == "!config":
+    if module.params["gather_subset"] == "min":
         warnings.append(
-            "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
+            "default value for `gather_subset` is changed to `min` instead of `!config`"
         )
 
     ansible_facts = {}
