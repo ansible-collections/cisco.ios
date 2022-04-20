@@ -1,23 +1,13 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_interfaces
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -113,425 +103,56 @@ options:
 """
 
 EXAMPLES = """
-# Using merged
-
-# Before state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  description Configured by Ansible
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description This is test
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  no ip address
-#  duplex auto
-#  speed auto
-
-- name: Merge provided configuration with device configuration
-  cisco.ios.ios_interfaces:
-    config:
-    - name: GigabitEthernet0/2
-      description: Configured and Merged by Ansible Network
-      enabled: true
-    - name: GigabitEthernet0/3
-      description: Configured and Merged by Ansible Network
-      mtu: 2800
-      enabled: false
-      speed: 100
-      duplex: full
-    state: merged
-
-# After state:
-# ------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  description Configured by Ansible
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured and Merged by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured and Merged by Ansible Network
-#  mtu 2800
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 100
-
-# Using replaced
-
-# Before state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  mtu 2000
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 100
-
-- name: Replaces device configuration of listed interfaces with provided configuration
-  cisco.ios.ios_interfaces:
-    config:
-    - name: GigabitEthernet0/3
-      description: Configured and Replaced by Ansible Network
-      enabled: false
-      duplex: auto
-      mtu: 2500
-      speed: 1000
-    state: replaced
-
-# After state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured and Replaced by Ansible Network
-#  mtu 2500
-#  no ip address
-#  shutdown
-#  duplex auto
-#  speed 1000
-
-# Using overridden
-
-# Before state:
-# -------------
-#
-# vios#show running-config | section ^interface#
-# interface GigabitEthernet0/1
-#  description Configured by Ansible
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description This is test
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured by Ansible
-#  mtu 2800
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 100
-
-- name: Override device configuration of all interfaces with provided configuration
-  cisco.ios.ios_interfaces:
-    config:
-    - name: GigabitEthernet0/2
-      description: Configured and Overridden by Ansible Network
-      speed: 1000
-    - name: GigabitEthernet0/3
-      description: Configured and Overridden by Ansible Network
-      enabled: false
-      duplex: full
-      mtu: 2000
-    state: overridden
-
-# After state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured and Overridden by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured and Overridden by Ansible Network
-#  mtu 2000
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed auto
-
-# Using Deleted
-
-# Before state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured by Ansible Network
-#  mtu 2500
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 1000
-
-- name: "Delete module attributes of given interfaces (Note: This won't delete the interface itself)"
-  cisco.ios.ios_interfaces:
-    config:
-    - name: GigabitEthernet0/2
-    state: deleted
-
-# After state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/3
-#  description Configured by Ansible Network
-#  mtu 2500
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 1000
-
-# Using Deleted without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
-
-# Before state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  description Configured by Ansible Network
-#  no ip address
-#  duplex auto
-#  speed 1000
-# interface GigabitEthernet0/3
-#  description Configured by Ansible Network
-#  mtu 2500
-#  no ip address
-#  shutdown
-#  duplex full
-#  speed 1000
-
-- name: "Delete module attributes of all interfaces (Note: This won't delete the interface itself)"
-  cisco.ios.ios_interfaces:
-    state: deleted
-
-# After state:
-# -------------
-#
-# vios#show running-config | section ^interface
-# interface GigabitEthernet0/1
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/2
-#  no ip address
-#  duplex auto
-#  speed auto
-# interface GigabitEthernet0/3
-#  no ip address
-#  duplex auto
-#  speed auto
-
-# Using Gathered
-
-# Before state:
-# -------------
-#
-# vios#sh running-config | section ^interface
-# interface GigabitEthernet0/1
-#  description this is interface1
-#  mtu 65
-#  duplex auto
-#  speed 10
-# interface GigabitEthernet0/2
-#  description this is interface2
-#  mtu 110
-#  shutdown
-#  duplex auto
-#  speed 100
-
-- name: Gather listed interfaces with provided configurations
-  cisco.ios.ios_interfaces:
-    config:
-    state: gathered
-
-# Module Execution Result:
-# ------------------------
-#
-# "gathered": [
-#         {
-#             "description": "this is interface1",
-#             "duplex": "auto",
-#             "enabled": true,
-#             "mtu": 65,
-#             "name": "GigabitEthernet0/1",
-#             "speed": "10"
-#         },
-#         {
-#             "description": "this is interface2",
-#             "duplex": "auto",
-#             "enabled": false,
-#             "mtu": 110,
-#             "name": "GigabitEthernet0/2",
-#             "speed": "100"
-#         }
-#     ]
-
-# After state:
-# ------------
-#
-# vios#sh running-config | section ^interface
-# interface GigabitEthernet0/1
-#  description this is interface1
-#  mtu 65
-#  duplex auto
-#  speed 10
-# interface GigabitEthernet0/2
-#  description this is interface2
-#  mtu 110
-#  shutdown
-#  duplex auto
-#  speed 100
-
-# Using Rendered
-
-- name: Render the commands for provided  configuration
-  cisco.ios.ios_interfaces:
-    config:
-    - name: GigabitEthernet0/1
-      description: Configured by Ansible-Network
-      mtu: 110
-      enabled: true
-      duplex: half
-    - name: GigabitEthernet0/2
-      description: Configured by Ansible-Network
-      mtu: 2800
-      enabled: false
-      speed: 100
-      duplex: full
-    state: rendered
-
-# Module Execution Result:
-# ------------------------
-#
-# "rendered": [
-#         "interface GigabitEthernet0/1",
-#         "description Configured by Ansible-Network",
-#         "mtu 110",
-#         "duplex half",
-#         "no shutdown",
-#         "interface GigabitEthernet0/2",
-#         "description Configured by Ansible-Network",
-#         "mtu 2800",
-#         "speed 100",
-#         "duplex full",
-#         "shutdown"
-
-# Using Parsed
-
-# File: parsed.cfg
-# ----------------
-#
-# interface GigabitEthernet0/1
-# description interfaces 0/1
-# mtu 110
-# duplex half
-# no shutdown
-# interface GigabitEthernet0/2
-# description interfaces 0/2
-# mtu 2800
-# speed 100
-# duplex full
-# shutdown
-
-- name: Parse the commands for provided configuration
-  cisco.ios.ios_interfaces:
-    running_config: "{{ lookup('file', 'parsed.cfg') }}"
-    state: parsed
-
-# Module Execution Result:
-# ------------------------
-#
-# "parsed": [
-#         {
-#             "description": "interfaces 0/1",
-#             "duplex": "half",
-#             "enabled": true,
-#             "mtu": 110,
-#             "name": "GigabitEthernet0/1"
-#         },
-#         {
-#             "description": "interfaces 0/2",
-#             "duplex": "full",
-#             "enabled": true,
-#             "mtu": 2800,
-#             "name": "GigabitEthernet0/2",
-#             "speed": "100"
-#         }
-#     ]
 
 """
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['interface GigabitEthernet 0/1', 'description This is test', 'speed 100']
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - sample command 1
+    - sample command 2
+    - sample command 3
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
@@ -547,21 +168,19 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
-
     module = AnsibleModule(
         argument_spec=InterfacesArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
+
     result = Interfaces(module).execute_module()
     module.exit_json(**result)
 
