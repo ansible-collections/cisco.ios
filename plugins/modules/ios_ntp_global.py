@@ -14,7 +14,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_ntp_global
-short_description: ntp_global resource module
+short_description: Resource module to configure NTP.
 description:
 - This module provides declarative management of ntp on Cisco IOS devices.
 version_added: 2.5.0

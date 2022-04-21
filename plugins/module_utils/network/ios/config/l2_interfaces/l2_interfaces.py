@@ -59,7 +59,7 @@ class L2_Interfaces(ConfigBase):
     }
 
     def get_l2_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
@@ -75,7 +75,7 @@ class L2_Interfaces(ConfigBase):
         return l2_interfaces_facts
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
         :rtype: A dictionary
         :returns: The result from module execution
         """
@@ -123,7 +123,7 @@ class L2_Interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -142,7 +142,7 @@ class L2_Interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
         :rtype: A list
@@ -173,7 +173,7 @@ class L2_Interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have, module):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
         :param interface_type: interface type
@@ -198,7 +198,7 @@ class L2_Interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have, module):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
         :param want: the desired configuration as a dictionary
         :param obj_in_have: the current configuration as a dictionary
         :rtype: A list
@@ -227,7 +227,7 @@ class L2_Interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, want, have, module):
-        """ The command generator when state is merged
+        """The command generator when state is merged
         :param want: the additive configuration as a dictionary
         :param obj_in_have: the current configuration as a dictionary
         :rtype: A list
@@ -249,7 +249,7 @@ class L2_Interfaces(ConfigBase):
         return commands
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
         :param want: the objects from which the configuration should be removed
         :param obj_in_have: the current configuration as a dictionary
         :param interface_type: interface type
@@ -313,15 +313,17 @@ class L2_Interfaces(ConfigBase):
         if have.get("trunk") and want.get("trunk"):
             for each in ["allowed_vlans", "pruning_vlans"]:
                 if have["trunk"].get(each) and want["trunk"].get(each):
-                    check, want["trunk"][
-                        each
-                    ] = self._expand_vlan_range_if_any(
+                    (
+                        check,
+                        want["trunk"][each],
+                    ) = self._expand_vlan_range_if_any(
                         "want", want["trunk"][each]
                     )
                     if not check:
-                        check, have["trunk"][
-                            each
-                        ] = self._expand_vlan_range_if_any(
+                        (
+                            check,
+                            have["trunk"][each],
+                        ) = self._expand_vlan_range_if_any(
                             "have", have["trunk"][each]
                         )
 

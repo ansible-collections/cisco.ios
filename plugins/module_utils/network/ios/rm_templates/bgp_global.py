@@ -20,1054 +20,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
-def _tmplt_bgp_additional_paths(config_data):
-    if "bgp" in config_data:
-        if "additional_paths" in config_data["bgp"]:
-            cmd = "bgp additional-paths"
-            if "install" in config_data["bgp"]["additional_paths"]:
-                cmd += " install"
-            elif "select" in config_data["bgp"]["additional_paths"]:
-                cmd += " select"
-                if "all" in config_data["bgp"]["additional_paths"]["select"]:
-                    cmd += " all"
-                elif (
-                    "best" in config_data["bgp"]["additional_paths"]["select"]
-                ):
-                    cmd += " best {best}".format(
-                        **config_data["bgp"]["additional_paths"]["select"]
-                    )
-                elif (
-                    "best_external"
-                    in config_data["bgp"]["additional_paths"]["select"]
-                ):
-                    cmd += " best-external"
-                elif (
-                    "group_best"
-                    in config_data["bgp"]["additional_paths"]["select"]
-                ):
-                    cmd += " group-best"
-            if "receive" in config_data["bgp"]["additional_paths"]:
-                cmd += " receive"
-            if "send" in config_data["bgp"]["additional_paths"]:
-                cmd += " send"
-            return cmd
-
-
-def _tmplt_bgp_bestpath(config_data):
-    if "bgp" in config_data and "bestpath" in config_data["bgp"]:
-        commands = []
-        val = config_data["bgp"]["bestpath"]
-        cmd = "bgp bestpath"
-        if val.get("aigp"):
-            commands.append("{0} aigp ignore".format(cmd))
-        elif val.get("compare_routerid"):
-            commands.append("{0} compare-routerid".format(cmd))
-        elif val.get("cost_community"):
-            commands.append("{0} cost-community ignore".format(cmd))
-        elif val.get("igp_metric"):
-            commands.append("{0} igp-metric ignore".format(cmd))
-        elif "med" in val:
-            self_cmd = "{0} med".format(cmd)
-            if "confed" in val["med"]:
-                self_cmd += " confed"
-            elif "missing_as_worst" in val["med"]:
-                self_cmd += " missing-as-worst"
-            commands.append(self_cmd)
-        return commands
-
-
-def _tmplt_bgp_config(config_data):
-    if "bgp" in config_data:
-        cmd = []
-        command = "bgp"
-        if config_data["bgp"].get("advertise_best_external"):
-            cmd.append("bgp advertise-best-external")
-        if config_data["bgp"].get("aggregate_timer"):
-            cmd.append(
-                "bgp aggregate-timer {aggregate_timer}".format(
-                    **config_data["bgp"]
-                )
-            )
-        if config_data["bgp"].get("always_compare_med"):
-            cmd.append("bgp always-compare-med")
-        if config_data["bgp"].get("asnotation"):
-            cmd.append("bgp asnotation dot")
-        if "client_to_client" in config_data["bgp"]:
-            command = "bgp client-to-client reflection"
-            if "all" in config_data["bgp"]["client_to_client"]:
-                command += " all"
-            elif "intra_cluster" in config_data["bgp"]["client_to_client"]:
-                command += " intra-cluster cluster-id {intra_cluster}".format(
-                    **config_data["bgp"]["client_to_client"]
-                )
-            cmd.append(command)
-        if config_data["bgp"].get("cluster_id"):
-            cmd.append(
-                "bgp cluster-id {cluster_id}".format(**config_data["bgp"])
-            )
-        if "confederation" in config_data["bgp"]:
-            command = "bgp confederation"
-            if "identifier" in config_data["bgp"]["confederation"]:
-                command += "bgp identifier {identifier}".format(
-                    **config_data["bgp"]["confederation"]
-                )
-            elif "peers" in config_data["bgp"]["confederation"]:
-                command += "bgp peers {peers}".format(
-                    **config_data["bgp"]["confederation"]
-                )
-            cmd.append(command)
-        if "consistency_checker" in config_data["bgp"]:
-            command = "bgp consistency-checker"
-            if "auto_repair" in config_data["bgp"]["consistency_checker"]:
-                command += " auto-repair"
-                if (
-                    "interval"
-                    in config_data["bgp"]["consistency_checker"]["auto_repair"]
-                ):
-                    command += " interval {interval}".format(
-                        **config_data["bgp"]["consistency_checker"][
-                            "auto_repair"
-                        ]
-                    )
-            elif "error-message" in config_data["bgp"]["consistency_checker"]:
-                command += " error-message"
-                if (
-                    "interval"
-                    in config_data["bgp"]["consistency_checker"][
-                        "error_message"
-                    ]
-                ):
-                    command += " interval {interval}".format(
-                        **config_data["bgp"]["consistency_checker"][
-                            "error_message"
-                        ]
-                    )
-        if config_data["bgp"].get("deterministic_med"):
-            cmd.append("bgp deterministic-med")
-        if config_data["bgp"].get("dmzlink_bw"):
-            cmd.append("bgp dmzlink-bw")
-        if config_data["bgp"].get("enforce_first_as"):
-            cmd.append("bgp enforce-first-as")
-        if config_data["bgp"].get("enhanced_error"):
-            cmd.append("bgp enhanced-error")
-        if config_data["bgp"].get("fast_external_fallover"):
-            cmd.append("bgp fast-external-fallover")
-        if "graceful_restart" in config_data["bgp"]:
-            command = "bgp graceful-restart"
-            if config_data["bgp"]["graceful_restart"].get("extended"):
-                command += " extended"
-            elif config_data["bgp"]["graceful_restart"].get("restart_time"):
-                command += " restart-time {restart_time}".format(
-                    **config_data["bgp"]["graceful_restart"]
-                )
-            elif config_data["bgp"]["graceful_restart"].get("stalepath_time"):
-                command += " stalepath-time {stalepath_time}".format(
-                    **config_data["bgp"]["graceful_restart"]
-                )
-            cmd.append(command)
-        if "inject_map" in config_data["bgp"]:
-            command = "bgp inject-map {name} exist-map {exist_map_name}".format(
-                **config_data["bgp"]["inject_map"]
-            )
-            if config_data["bgp"]["inject_map"].get("copy_attributes"):
-                command += "copy-attributes"
-            cmd.append(command)
-        if "listen" in config_data["bgp"]:
-            command = "bgp listen"
-            if "limit" in config_data["bgp"]["listen"]:
-                command += " limit {limit}".format(
-                    **config_data["bgp"]["listen"]
-                )
-            elif "range" in config_data["bgp"]["listen"]:
-                if config_data["bgp"]["listen"]["range"].get(
-                    "ipv4_with_subnet"
-                ):
-                    command += " range {ipv4_with_subnet}".format(
-                        **config_data["bgp"]["listen"]["range"]
-                    )
-                elif config_data["bgp"]["listen"]["range"].get(
-                    "ipv6_with_subnet"
-                ):
-                    command += " range {ipv6_with_subnet}".format(
-                        **config_data["bgp"]["listen"]["range"]
-                    )
-                if config_data["bgp"]["listen"]["range"].get("peer_group"):
-                    command += " peer-group {peer_group}".format(
-                        **config_data["bgp"]["listen"]["range"]
-                    )
-            cmd.append(command)
-        if config_data["bgp"].get("log_neighbor_changes"):
-            cmd.append("bgp log-neighbor-changes")
-        if config_data["bgp"].get("maxas_limit"):
-            cmd.append(
-                "bgp maxas-limit {maxas_limit}".format(**config_data["bgp"])
-            )
-        if config_data["bgp"].get("maxextcommunity_limit"):
-            cmd.append(
-                "bgp maxextcommunity-limit {maxextcommunity_limit}".format(
-                    **config_data["bgp"]
-                )
-            )
-        if "nexthop" in config_data["bgp"]:
-            command = "bgp nexthop"
-            if "route_map" in config_data["bgp"]["nexthop"]:
-                command += " route-map {route_map}".format(
-                    **config_data["bgp"]["nexthop"]
-                )
-            elif "trigger" in config_data["bgp"]["nexthop"]:
-                if config_data["bgp"]["nexthop"]["trigger"].get("delay"):
-                    command += " trigger delay {delay}".format(
-                        **config_data["bgp"]["nexthop"]["trigger"]
-                    )
-                elif config_data["bgp"]["nexthop"]["trigger"].get("delay"):
-                    command += " trigger enable"
-            cmd.append(command)
-        if config_data["bgp"].get("recursion"):
-            cmd.append("bgp recursion host")
-        if config_data["bgp"].get("redistribute_internal"):
-            cmd.append("bgp redistribute-internal")
-        if "refresh" in config_data["bgp"]:
-            command = "bgp refresh"
-            if "max_eor_time" in config_data["bgp"]["refresh"]:
-                command += " max-eor-time {max_eor_time}".format(
-                    **config_data["bgp"]["refresh"]
-                )
-            elif "stalepath_time" in config_data["bgp"]["refresh"]:
-                command += " stalepath-time {stalepath_time}".format(
-                    **config_data["bgp"]["refresh"]
-                )
-            cmd.append(command)
-        if config_data["bgp"].get("regexp"):
-            cmd.append("bgp regexp deterministic")
-        if config_data["bgp"].get("route_map"):
-            cmd.append("bgp route-map priority")
-        if "router_id" in config_data["bgp"]:
-            command = "bgp router-id"
-            if "address" in config_data["bgp"]["router_id"]:
-                command += " {address}".format(
-                    **config_data["bgp"]["router_id"]
-                )
-            elif "interface" in config_data["bgp"]["router_id"]:
-                command += " interface {interface}".format(
-                    **config_data["bgp"]["router_id"]
-                )
-            elif "vrf" in config_data["bgp"]["router_id"]:
-                command += " vrf auto-assign"
-            cmd.append(command)
-        if config_data["bgp"].get("scan_time"):
-            cmd.append(
-                "bgp scan-time {scan_time}".format(**config_data["bgp"])
-            )
-        if "slow_peer" in config_data["bgp"]:
-            command = "bgp slow-peer"
-            if "detection" in config_data["bgp"]["slow_peer"]:
-                command += " detection"
-                if "threshold" in config_data["bgp"]["slow_peer"]["detection"]:
-                    command += " threshold {threshold}".format(
-                        **config_data["bgp"]["slow_peer"]["detection"]
-                    )
-            elif "split_update_group" in config_data["bgp"]["slow_peer"]:
-                if (
-                    "dynamic"
-                    in config_data["bgp"]["slow_peer"]["split_update_group"]
-                ):
-                    command += " dynamic"
-                    if (
-                        "permanent"
-                        in config_data["bgp"]["slow_peer"][
-                            "split_update_group"
-                        ]
-                    ):
-                        command += " permanent {permanent}".format(
-                            **config_data["bgp"]["slow_peer"][
-                                "split_update_group"
-                            ]
-                        )
-            cmd.append(command)
-        if config_data["bgp"].get("snmp"):
-            cmd.append("bgp snmp traps add-type")
-        if config_data["bgp"].get("sso"):
-            cmd.append("bgp sso route-refresh-enable")
-        if config_data["bgp"].get("soft_reconfig_backup"):
-            cmd.append("bgp soft-reconfig-backup")
-        if config_data["bgp"].get("suppress_inactive"):
-            cmd.append("bgp suppress-inactive")
-        if config_data["bgp"].get("transport"):
-            cmd.append("bgp transport path-mtu-discovery")
-        if config_data["bgp"].get("update_delay"):
-            cmd.append(
-                "bgp update-delay {update_delay}".format(**config_data["bgp"])
-            )
-        if config_data["bgp"].get("update_group"):
-            cmd.append("bgp update-group split as-override")
-        if config_data["bgp"].get("upgrade_cli"):
-            command += "bgp upgrade-cli"
-            if config_data["bgp"]["upgrade_cli"].get("af_mode"):
-                command += " af-mode"
-        return cmd
-
-
-def _tmplt_bgp_dampening(config_data):
-    if "bgp" in config_data and "dampening" in config_data["bgp"]:
-        if config_data["bgp"]["dampening"].get("penalty_half_time"):
-            command = "bgp dampening {penalty_half_time}".format(
-                **config_data["bgp"]["dampening"]
-            )
-            if config_data["bgp"]["dampening"].get("reuse_route_val"):
-                command += " {reuse_route_val}".format(
-                    **config_data["bgp"]["dampening"]
-                )
-            if config_data["bgp"]["dampening"].get("suppress_route_val"):
-                command += " {suppress_route_val}".format(
-                    **config_data["bgp"]["dampening"]
-                )
-            if config_data["bgp"]["dampening"].get("max_suppress"):
-                command += " {max_suppress}".format(
-                    **config_data["bgp"]["dampening"]
-                )
-        elif config_data["bgp"]["dampening"].get("route_map"):
-            command = "bgp dampening {route_map}".format(
-                **config_data["bgp"]["dampening"]
-            )
-        return command
-
-
-def _tmplt_bgp_graceful_shutdown(config_data):
-    if "bgp" in config_data and "graceful_shutdown" in config_data["bgp"]:
-        command = "bgp graceful-shutdown all"
-        if config_data["bgp"]["graceful_shutdown"].get("neighbors"):
-            command += " neighbors"
-            if config_data["bgp"]["graceful_shutdown"]["neighbors"].get(
-                "activate"
-            ):
-                command += " activate"
-            elif config_data["bgp"]["graceful_shutdown"]["neighbors"].get(
-                "time"
-            ):
-                command += " {time}".format(
-                    **config_data["bgp"]["graceful_shutdown"]["neighbors"]
-                )
-        elif config_data["bgp"]["graceful_shutdown"].get("vrfs"):
-            command += " vrfs"
-            if config_data["bgp"]["graceful_shutdown"]["vrfs"].get("activate"):
-                command += " activate"
-            elif config_data["bgp"]["graceful_shutdown"]["neighbors"].get(
-                "time"
-            ):
-                command += " {time}".format(
-                    **config_data["bgp"]["graceful_shutdown"]["vrfs"]
-                )
-        if config_data["bgp"]["graceful_shutdown"].get("local_preference"):
-            command += " local-preference {local_preference}".format(
-                **config_data["bgp"]["graceful_shutdown"]
-            )
-        if config_data["bgp"]["graceful_shutdown"].get("community"):
-            command += " community {community}".format(
-                **config_data["bgp"]["graceful_shutdown"]
-            )
-        return command
-
-
-def _tmplt_bgp_nopeerup_delay(config_data):
-    if "bgp" in config_data and "nopeerup_delay" in config_data["bgp"]:
-        commands = []
-        val = config_data["bgp"]["nopeerup_delay"]
-        cmd = "bgp nopeerup-delay"
-        if val.get("cold_boot"):
-            commands.append("{0} cold-boot {cold_boot}".format(cmd, **val))
-        elif val.get("post_boot"):
-            commands.append("{0} post-boot {post_boot}".format(cmd, **val))
-        elif val.get("nsf_switchover"):
-            commands.append(
-                "{0} nsf-switchover {nsf_switchover}".format(cmd, **val)
-            )
-        elif val.get("user_initiated"):
-            commands.append(
-                "{0} user-initiated {user_initiated}".format(cmd, **val)
-            )
-        return commands
-
-
-def _tmplt_neighbor(config_data):
-    if "neighbor" in config_data:
-        commands = []
-        cmd = "neighbor"
-        if "address" in config_data["neighbor"]:
-            cmd += " {address}".format(**config_data["neighbor"])
-        elif "tag" in config_data["neighbor"]:
-            cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        if "remote_as" in config_data["neighbor"]:
-            commands.append(
-                "{0} remote-as {remote_as}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "activate" in config_data["neighbor"]:
-            commands.append("{0} activate".format(cmd))
-        if "additional_paths" in config_data["neighbor"]:
-            self_cmd = "{0} additional-paths".format(cmd)
-            if "disable" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " disable"
-            elif "receive" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " receive"
-            elif "send" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " send"
-            commands.append(self_cmd)
-        if "advertise" in config_data["neighbor"]:
-            self_cmd = "{0} advertise".format(cmd)
-            if "additional_paths" in config_data["neighbor"]["advertise"]:
-                self_cmd += " additional-paths"
-                if (
-                    "all"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
-                    self_cmd += " all"
-                elif (
-                    "best"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
-                    self_cmd += " best {best}".format(
-                        **config_data["neighbor"]["advertise"][
-                            "additional_paths"
-                        ]
-                    )
-                elif (
-                    "group_best"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
-                    self_cmd += " group-best"
-            elif "best_external" in config_data["neighbor"]["advertise"]:
-                self_cmd += " best-external"
-            elif "diverse_path" in config_data["neighbor"]["advertise"]:
-                self_cmd += "diverse-path"
-                if (
-                    "backup"
-                    in config_data["neighbor"]["advertise"]["diverse_path"]
-                ):
-                    self_cmd += " backup"
-                elif (
-                    "mpath"
-                    in config_data["neighbor"]["advertise"]["diverse_path"]
-                ):
-                    self_cmd += " mpath"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("advertise_map"):
-            self_cmd = "{0} advertise-map {name}".format(
-                cmd, **config_data["neighbor"]["advertise_map"]
-            )
-            if "exist_map" in config_data["neighbor"]["advertise_map"]:
-                self_cmd += " exist-map {exist_map}".format(
-                    **config_data["neighbor"]["advertise_map"]
-                )
-            elif "non_exist_map" in config_data["neighbor"]["advertise_map"]:
-                self_cmd += " exist-map {non_exist_map}".format(
-                    **config_data["neighbor"]["advertise_map"]
-                )
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("advertisement_interval"):
-            commands.append(
-                "{0} advertisement-interval {advertisement_interval}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if config_data["neighbor"].get("aigp"):
-            self_cmd = "{0} aigp".format(cmd)
-            if config_data["neighbor"]["aigp"].get("send"):
-                self_cmd += " send"
-                if config_data["neighbor"]["aigp"]["send"].get(
-                    "cost_community"
-                ):
-                    self_cmd += " cost-community {id}".format(
-                        **config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]
-                    )
-                    if config_data["neighbor"]["aigp"]["send"][
-                        "cost_community"
-                    ].get("poi"):
-                        self_cmd += " poi"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("igp_cost"):
-                            self_cmd += " igp-cost"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("pre_bestpath"):
-                            self_cmd += " pre-bestpath"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("transitive"):
-                            self_cmd += " transitive"
-                if config_data["neighbor"]["aigp"]["send"].get("med"):
-                    self_cmd += " med"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("allow_policy"):
-            commands.append("{0} allow-policy".format(cmd))
-        if config_data["neighbor"].get("allowas_in"):
-            commands.append(
-                "{0} allowas-in {allowas_in}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if config_data["neighbor"].get("as_override"):
-            commands.append("{0} as-override".format(cmd))
-        if "bmp_activate" in config_data["neighbor"]:
-            self_cmd = "{0} bmp-activate".format(cmd)
-            if config_data["neighbor"]["bmp_activate"].get("all"):
-                self_cmd += " all"
-            if "server" in config_data["neighbor"]["bmp_activate"]:
-                self_cmd += " server {server}".format(
-                    **config_data["neighbor"]["bmp_activate"]
-                )
-            commands.append(self_cmd)
-        if "capability" in config_data["neighbor"]:
-            self_cmd = "{0} capability".format(cmd)
-            if config_data["neighbor"]["capability"].get("both"):
-                self_cmd += " both"
-            elif config_data["neighbor"]["capability"].get("receive"):
-                self_cmd += " receive"
-            elif config_data["neighbor"]["capability"].get("send"):
-                self_cmd += " send"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("cluster_id"):
-            commands.append(
-                "{0} cluster-id {cluster_id}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "default_originate" in config_data["neighbor"]:
-            self_cmd = "{0} default-originate".format(cmd)
-            if config_data["neighbor"]["default_originate"].get("route_map"):
-                self_cmd += " route-map {route_map}".format(
-                    **config_data["neighbor"]["default_originate"]
-                )
-            commands.append(self_cmd)
-        if "description" in config_data["neighbor"]:
-            commands.append(
-                "{0} description {description}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if config_data["neighbor"].get("disable_connected_check"):
-            commands.append("{0} disable-connected-check".format(cmd))
-        if "distribute_list" in config_data["neighbor"]:
-            self_cmd = "{0} distribute-list".format(cmd)
-            if "acl" in config_data["neighbor"]["distribute_list"]:
-                self_cmd += " {acl}".format(
-                    **config_data["neighbor"]["distribute_list"]
-                )
-            if config_data["neighbor"]["distribute_list"].get("in"):
-                self_cmd += " in"
-            elif config_data["neighbor"]["distribute_list"].get("out"):
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("dmzlink_bw"):
-            commands.append("{0} dmzlink-bw".format(cmd))
-        if "ebgp_multihop" in config_data["neighbor"]:
-            self_cmd = "{0} ebgp-multihop".format(cmd)
-            if "hop_count" in config_data["neighbor"]["ebgp_multihop"]:
-                self_cmd += " {hop_count}".format(
-                    **config_data["neighbor"]["ebgp_multihop"]
-                )
-            commands.append(self_cmd)
-        if "fall_over" in config_data["neighbor"]:
-            self_cmd = "{0} fall-over".format(cmd)
-            if "bfd" in config_data["neighbor"]["fall_over"]:
-                self_cmd += " bfd"
-                if config_data["neighbor"]["fall_over"]["bfd"].get(
-                    "multi_hop"
-                ):
-                    self_cmd += " multi-hop"
-                elif config_data["neighbor"]["fall_over"]["bfd"].get(
-                    "single_hop"
-                ):
-                    self_cmd += " single-hop"
-            elif "route_map" in config_data["neighbor"]["fall_over"]:
-                self_cmd += " {route_map}".format(
-                    **config_data["neighbor"]["route_map"]
-                )
-            commands.append(self_cmd)
-        if "filter_list" in config_data["neighbor"]:
-            self_cmd = "{0} filter-list".format(cmd)
-            if "path_acl" in config_data["neighbor"]["filter_list"]:
-                self_cmd += " {path_acl}".format(
-                    **config_data["neighbor"]["filter_list"]
-                )
-            if config_data["neighbor"]["filter_list"].get("in"):
-                self_cmd += " in"
-            elif config_data["neighbor"]["filter_list"].get("out"):
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if "ha_mode" in config_data["neighbor"]:
-            self_cmd = "{0} ha-mode".format(cmd)
-            if config_data["neighbor"]["ha_mode"].get("disable"):
-                self_cmd += " disable"
-            commands.append(self_cmd)
-        if "inherit" in config_data["neighbor"]:
-            self_cmd = "{0} inherit {inherit}".format(
-                cmd, **config_data["neighbor"]
-            )
-            commands.append(self_cmd)
-        if "local_as" in config_data["neighbor"]:
-            self_cmd = "{0} local-as".format(cmd)
-            if "number" in config_data["neighbor"]["local_as"]:
-                self_cmd += " {number}".format(
-                    **config_data["neighbor"]["local_as"]
-                )
-            if config_data["neighbor"]["local_as"].get("dual_as"):
-                self_cmd += " dual-as"
-            elif config_data["neighbor"]["local_as"].get("no_prepend"):
-                self_cmd += " no-prepend"
-                if config_data["neighbor"]["local_as"]["no_prepend"]:
-                    self_cmd += " replace-as"
-            commands.append(self_cmd)
-        if "log_neighbor_changes" in config_data["neighbor"]:
-            self_cmd = "{0} log-neighbor-changes".format(cmd)
-            if config_data["neighbor"]["log_neighbor_changes"].get("disable"):
-                self_cmd += " disable"
-            commands.append(self_cmd)
-        if "maximum_prefix" in config_data["neighbor"]:
-            self_cmd = "{0} maximum-prefix".format(cmd)
-            if "max_no" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {max_no}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
-            if "threshold_val" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {threshold_val}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
-            if config_data["neighbor"]["maximum_prefix"].get("restart"):
-                self_cmd += " restart {restart}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
-            elif config_data["neighbor"]["filter_list"].get("warning_only"):
-                self_cmd += " warning-only"
-            commands.append(self_cmd)
-        if "next_hop_self" in config_data["neighbor"]:
-            self_cmd = "{0} next-hop-self".format(cmd)
-            if config_data["neighbor"]["next_hop_self"].get("all"):
-                self_cmd += " all"
-            commands.append(self_cmd)
-        if "next_hop_unchanged" in config_data["neighbor"]:
-            self_cmd = "{0} next-hop-unchanged".format(cmd)
-            if config_data["neighbor"]["next_hop_unchanged"].get("allpaths"):
-                self_cmd += " allpaths"
-            commands.append(self_cmd)
-        if "password" in config_data["neighbor"]:
-            commands.append(
-                "{0} password {password}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "path_attribute" in config_data["neighbor"]:
-            self_cmd = "{0} path-attribute".format(cmd)
-            if "discard" in config_data["neighbor"]["path_attribute"]:
-                self_cmd += " discard"
-                if (
-                    "type"
-                    in config_data["neighbor"]["path_attribute"]["discard"]
-                ):
-                    self_cmd += " {type}".format(
-                        **config_data["neighbor"]["path_attribute"]["discard"]
-                    )
-                elif (
-                    "range"
-                    in config_data["neighbor"]["path_attribute"]["discard"]
-                ):
-                    self_cmd += " range"
-                    if (
-                        "start"
-                        in config_data["neighbor"]["path_attribute"][
-                            "discard"
-                        ]["range"]
-                    ):
-                        self_cmd += " {start}".format(
-                            **config_data["neighbor"]["path_attribute"][
-                                "discard"
-                            ]["range"]
-                        )
-                    elif (
-                        "end"
-                        in config_data["neighbor"]["path_attribute"][
-                            "discard"
-                        ]["range"]
-                    ):
-                        self_cmd += " {start}".format(
-                            **config_data["neighbor"]["path_attribute"][
-                                "discard"
-                            ]["range"]
-                        )
-                if (
-                    "in"
-                    in config_data["neighbor"]["path_attribute"]["discard"]
-                ):
-                    self_cmd += " in"
-            if (
-                "treat_as_withdraw"
-                in config_data["neighbor"]["path_attribute"]
-            ):
-                self_cmd += " treat-as-withdraw"
-                if (
-                    "type"
-                    in config_data["neighbor"]["path_attribute"][
-                        "treat_as_withdraw"
-                    ]
-                ):
-                    self_cmd += " {type}".format(
-                        **config_data["neighbor"]["path_attribute"][
-                            "treat_as_withdraw"
-                        ]
-                    )
-                elif (
-                    "range"
-                    in config_data["neighbor"]["path_attribute"][
-                        "treat_as_withdraw"
-                    ]
-                ):
-                    self_cmd += " range"
-                    if (
-                        "start"
-                        in config_data["neighbor"]["path_attribute"][
-                            "treat_as_withdraw"
-                        ]["range"]
-                    ):
-                        self_cmd += " {start}".format(
-                            **config_data["neighbor"]["path_attribute"][
-                                "treat_as_withdraw"
-                            ]["range"]
-                        )
-                    elif (
-                        "end"
-                        in config_data["neighbor"]["path_attribute"][
-                            "treat_as_withdraw"
-                        ]["range"]
-                    ):
-                        self_cmd += " {start}".format(
-                            **config_data["neighbor"]["path_attribute"][
-                                "treat_as_withdraw"
-                            ]["range"]
-                        )
-                if (
-                    "in"
-                    in config_data["neighbor"]["path_attribute"][
-                        "treat_as_withdraw"
-                    ]
-                ):
-                    self_cmd += " in"
-            commands.append(self_cmd)
-        if "peer_group" in config_data["neighbor"]:
-            commands.append(
-                "{0} peer-group {peer_group}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "remove_private_as" in config_data["neighbor"]:
-            self_cmd = "{0} remove-private-as".format(cmd)
-            if config_data["neighbor"]["remove_private_as"].get("all"):
-                self_cmd += " all"
-            elif config_data["neighbor"]["remove_private_as"].get(
-                "replace_as"
-            ):
-                self_cmd += " replace_as"
-            commands.append(self_cmd)
-        if "route_map" in config_data["neighbor"]:
-            self_cmd = "{0} route-map".format(cmd)
-            if "name" in config_data["neighbor"]["route_map"]:
-                self_cmd += " {name}".format(
-                    **config_data["neighbor"]["route_map"]
-                )
-            if "in" in config_data["neighbor"]["route_map"]:
-                self_cmd += " in"
-            elif "out" in config_data["neighbor"]["route_map"]:
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if "route_reflector_client" in config_data["neighbor"]:
-            commands.append("{0} route-reflector-client".format(cmd))
-        if "route_server_client" in config_data["neighbor"]:
-            self_cmd = "{0} route-server-client".format(cmd)
-            if "context" in config_data["neighbor"]["route_map"]:
-                self_cmd += " context {context}".format(
-                    **config_data["neighbor"]["route_server_client"]
-                )
-            commands.append(self_cmd)
-        if "send_community" in config_data["neighbor"]:
-            self_cmd = "{0} send-community".format(cmd)
-            if config_data["neighbor"]["send_community"].get("both"):
-                self_cmd += " both"
-            elif config_data["neighbor"]["send_community"].get("extended"):
-                self_cmd += " extended"
-            elif config_data["neighbor"]["send_community"].get("standard"):
-                self_cmd += " standard"
-            commands.append(self_cmd)
-        if "send_label" in config_data["neighbor"]:
-            self_cmd = "{0} send-label".format(cmd)
-            if config_data["neighbor"]["send_label"].get("explicit_null"):
-                self_cmd += " explicit-null"
-            commands.append(self_cmd)
-        if "shutdown" in config_data["neighbor"]:
-            self_cmd = "{0} shutdown".format(cmd)
-            if "graceful" in config_data["neighbor"]["route_map"]:
-                self_cmd += " graceful {graceful}".format(
-                    **config_data["neighbor"]["shutdown"]
-                )
-            commands.append(self_cmd)
-        if "slow_peer" in config_data["neighbor"]:
-            self_cmd = "{0} slow-peer".format(cmd)
-            if "detection" in config_data["neighbor"]["slow_peer"]:
-                self_cmd += " detection"
-                if (
-                    "disable"
-                    in config_data["neighbor"]["slow_peer"]["detection"]
-                ):
-                    self_cmd += " disable"
-                elif (
-                    "threshold"
-                    in config_data["neighbor"]["slow_peer"]["detection"]
-                ):
-                    self_cmd += " threshold {threshold}".format(
-                        **config_data["neighbor"]["slow_peer"]["detection"]
-                    )
-            elif "split_update_group" in config_data["neighbor"]["slow_peer"]:
-                self_cmd += " split-update-group"
-                if (
-                    "dynamic"
-                    in config_data["neighbor"]["slow_peer"][
-                        "split_update_group"
-                    ]
-                ):
-                    self_cmd += " dynamic"
-                    if (
-                        "disable"
-                        in config_data["neighbor"]["slow_peer"][
-                            "split_update_group"
-                        ]["dynamic"]
-                    ):
-                        self_cmd += " disable"
-                    elif (
-                        "permanent"
-                        in config_data["neighbor"]["slow_peer"][
-                            "split_update_group"
-                        ]["dynamic"]
-                    ):
-                        self_cmd += " permanent"
-                elif (
-                    "static"
-                    in config_data["neighbor"]["slow_peer"][
-                        "split_update_group"
-                    ]
-                ):
-                    self_cmd += " static"
-            commands.append(self_cmd)
-        if "soft_reconfiguration" in config_data["neighbor"]:
-            commands.append("{0} soft-reconfiguration".format(cmd))
-        if "timers" in config_data["neighbor"]:
-            self_cmd = "{0} timers {interval} {holdtime}".format(
-                cmd, **config_data["neighbor"]["timers"]
-            )
-            if "min_holdtime" in config_data["neighbor"]["timers"]:
-                self_cmd += " {min_holdtime}".format(
-                    **config_data["neighbor"]["timers"]
-                )
-            commands.append(self_cmd)
-        if "translate_update" in config_data["neighbor"]:
-            self_cmd = "{0} translate-update".format(cmd)
-            if config_data["neighbor"]["send_community"].get("nlri"):
-                self_cmd += " nlri"
-                if config_data["neighbor"]["nlri"].get("multicast"):
-                    self_cmd += "multicast"
-                if config_data["neighbor"]["nlri"].get("unicast"):
-                    self_cmd += "unicast"
-            commands.append(self_cmd)
-        if "transport" in config_data["neighbor"]:
-            self_cmd = "{0} transport".format(cmd)
-            if config_data["neighbor"]["transport"].get("connection_mode"):
-                self_cmd += " connection-mode"
-                if config_data["neighbor"]["transport"]["connection_mode"].get(
-                    "active"
-                ):
-                    self_cmd += " active"
-                elif config_data["neighbor"]["transport"][
-                    "connection_mode"
-                ].get("passive"):
-                    self_cmd += " passive"
-            elif config_data["neighbor"]["transport"].get("multi_session"):
-                self_cmd += " multi-session"
-            elif config_data["neighbor"]["transport"].get(
-                "path_mtu_discovery"
-            ):
-                self_cmd += " path-mtu-discovery"
-                if config_data["neighbor"]["transport"][
-                    "path_mtu_discovery"
-                ].get("disable"):
-                    self_cmd += " disable"
-            commands.append(self_cmd)
-        if "ttl_security" in config_data["neighbor"]:
-            commands.append(
-                "{0} ttl-security {ttl_security}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "unsuppress_map" in config_data["neighbor"]:
-            commands.append(
-                "{0} unsuppress-map {unsuppress_map}".format(
-                    cmd, **config_data["neighbor"]
-                )
-            )
-        if "version" in config_data["neighbor"]:
-            commands.append(
-                "{0} version {version}".format(cmd, **config_data["neighbor"])
-            )
-        if "weight" in config_data["neighbor"]:
-            commands.append(
-                "{0} weight {weight}".format(cmd, **config_data["neighbor"])
-            )
-        return commands
-
-
-def _tmplt_redistribute(config_data):
-    if "redistribute" in config_data:
-
-        def common_config(command, param):
-            if config_data["redistribute"][param].get("metric"):
-                command += " metric {metric}".format(
-                    **config_data["redistribute"][param]
-                )
-            if config_data["redistribute"][param].get("route_map"):
-                command += " route-map {route_map}".format(
-                    **config_data["redistribute"][param]
-                )
-            return command
-
-        command = "redistribute"
-        if config_data["redistribute"].get("application"):
-            command += " application {name}".format(
-                **config_data["redistribute"]["application"]
-            )
-            command = common_config(command, "application")
-        elif config_data["redistribute"].get("bgp"):
-            command += " bgp {as_number}".format(
-                **config_data["redistribute"]["bgp"]
-            )
-            command = common_config(command, "bgp")
-        elif config_data["redistribute"].get("connected"):
-            command += " connected"
-            command = common_config(command, "connected")
-        elif config_data["redistribute"].get("eigrp"):
-            command += " eigrp {as_number}".format(
-                **config_data["redistribute"]["eigrp"]
-            )
-            command = common_config(command, "eigrp")
-        elif config_data["redistribute"].get("isis"):
-            command += " isis {area_tag}".format(
-                **config_data["redistribute"]["isis"]
-            )
-            if config_data["redistribute"]["isis"].get("clns"):
-                command += " clns"
-            elif config_data["redistribute"]["isis"].get("ip"):
-                command += " ip"
-            command = common_config(command, "isis")
-        elif config_data["redistribute"].get("iso_igrp"):
-            command += " iso-igrp {area_tag}".format(
-                **config_data["redistribute"]["iso_igrp"]
-            )
-            if config_data["redistribute"]["iso_igrp"].get("route_map"):
-                command += " route-map {route_map}".format(
-                    **config_data["redistribute"]["iso_igrp"]
-                )
-        elif config_data["redistribute"].get("lisp"):
-            command += " lisp"
-            command = common_config(command, "lisp")
-        elif config_data["redistribute"].get("mobile"):
-            command += " mobile"
-            command = common_config(command, "mobile")
-        elif config_data["redistribute"].get("odr"):
-            command += " odr"
-            command = common_config(command, "odr")
-        elif config_data["redistribute"].get("rip"):
-            command += " rip"
-            command = common_config(command, "rip")
-        elif config_data["redistribute"].get("ospf"):
-            command += " ospf {process_id}".format(
-                **config_data["redistribute"]["ospf"]
-            )
-            if config_data["redistribute"]["ospf"].get("match"):
-                command += " match"
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "external"
-                ):
-                    command += " external"
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "internal"
-                ):
-                    command += " internal"
-                if config_data["redistribute"]["ospf"]["match"].get(
-                    "nssa_external"
-                ):
-                    command += " nssa-external"
-                if config_data["redistribute"]["ospf"]["match"].get("type_1"):
-                    command += " 1"
-                elif config_data["redistribute"]["ospf"]["match"].get(
-                    "type_2"
-                ):
-                    command += " 2"
-            if config_data["redistribute"]["ospf"].get("vrf"):
-                command += " vrf"
-            command = common_config(command, "ospf")
-        elif config_data["redistribute"].get("ospfv3"):
-            command += " ospfv3 {process_id}".format(
-                **config_data["redistribute"]["ospfv3"]
-            )
-            if config_data["redistribute"]["ospfv3"].get("match"):
-                command += " match"
-                if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "external"
-                ):
-                    command += " external"
-                if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "internal"
-                ):
-                    command += " internal"
-                if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "nssa_external"
-                ):
-                    command += " nssa-external"
-                if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "type_1"
-                ):
-                    command += " 1"
-                elif config_data["redistribute"]["ospfv3"]["match"].get(
-                    "type_2"
-                ):
-                    command += " 2"
-            command = common_config(command, "ospf")
-        elif config_data["redistribute"].get("static"):
-            command += " static"
-            command = common_config(command, "static")
-        elif config_data["redistribute"].get("vrf"):
-            if config_data["redistribute"]["vrf"].get("name"):
-                command += " vrf {name}".format(
-                    **config_data["redistribute"]["vrf"]
-                )
-            elif config_data["redistribute"]["vrf"].get("global"):
-                command += " vrf global"
-
-        return command
-
-
-def _tmplt_bgp_timers(config_data):
-    if "timers" in config_data:
-        command = "timers bgp"
-        if config_data["timers"].get("keepalive"):
-            command += " {keepalive}".format(**config_data["timers"])
-        if config_data["timers"].get("holdtime"):
-            command += " {holdtime}".format(**config_data["timers"])
-        if config_data["timers"].get("min_holdtime"):
-            command += " {min_holdtime}".format(**config_data["timers"])
-    return command
-
-
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_globalTemplate, self).__init__(
@@ -1078,760 +30,3257 @@ class Bgp_globalTemplate(NetworkTemplate):
         {
             "name": "as_number",
             "getval": re.compile(
-                r"""^router*
-                    \s*bgp*
-                    \s*(?P<as_number>\d+)*
-                    $""",
+                r"""
+                ^router\sbgp
+                (\s(?P<as_number>\S+))?
+                $""",
                 re.VERBOSE,
             ),
-            "compval": "as_number",
-            "setval": "router bgp {{ as_number }}",
+            "setval": "router bgp {{ as_number|string }}",
             "result": {"as_number": "{{ as_number }}"},
-            "shared": True,
         },
         {
-            "name": "bgp.additional_paths",
+            "name": "aggregate_addresses",
             "getval": re.compile(
-                r"""\s*bgp*
-                    \s*additional-paths*
-                    \s*(?P<install>install)*
-                    \s*(?P<receive>receive)*
-                    \s*(?P<select>select)*
-                    \s*(?P<select_all>all)*
-                    \s*(?P<select_backup>backup)*
-                    \s*(?P<select_best>best\s\d)*
-                    \s*(?P<select_best_external>best-external)*
-                    \s*(?P<select_group_best>group-best)*
-                    \s*(?P<send>send)*
-                    $""",
+                r"""
+                \saggregate-address
+                (\s(?P<address>\S+))?
+                (\s(?P<netmask>\S+))?
+                (\s(?P<as_set>as-set))?
+                (\s(?P<summary_only>summary-only))?
+                (\s(?P<as_confed_set>as-confed-set))?
+                (\sadvertise-map\s(?P<advertise_map>\S+))?
+                (\sattribute-map\s(?P<attribute_map>\S+))?
+                (\ssuppress-map\s(?P<suppress_map>\S+))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_additional_paths,
+            "setval": "aggregate-address "
+            "{{ address }} {{ netmask }}"
+            "{{ ' as-set' if as_set|d(False) else ''}}"
+            "{{ ' summary-only' if summary_only|d(False) else ''}}"
+            "{{ ' as-confed-set' if as_confed_set|d(False) else ''}}"
+            "{{ (' advertise-map ' + advertise_map) if advertise_map is defined else '' }}"
+            "{{ (' attribute-map ' + attribute_map) if attribute_map is defined else '' }}"
+            "{{ (' suppress-map ' + suppress_map) if suppress_map is defined else '' }}",
             "result": {
-                "bgp": {
-                    "additional_paths": {
-                        "install": "{{ True if install is defined }}",
-                        "receive": "{{ True if receive is defined }}",
-                        "select": {
-                            "all": "{{ True if select_all is defined }}",
-                            "backup": "{{ True if select_backup is defined }}",
-                            "best": "{{ select_best.split('best ')[1] if select_best is defined }}",
-                            "best_external": "{{ True if select_best_external is defined }}",
-                            "group_best": "{{ True if select_group_best is defined }}",
-                        },
-                        "send": "{{ True if send is defined }}",
+                "aggregate_addresses": [
+                    {
+                        "address": "{{ address }}",
+                        "netmask": "{{ netmask }}",
+                        "advertise_map": "{{ advertise_map }}",
+                        "as_confed_set": "{{ not not as_confed_set }}",
+                        "as_set": "{{ not not as_set }}",
+                        "attribute_map": "{{ attribute_map }}",
+                        "suppress_map": "{{ suppress_map }}",
+                        "summary_only": "{{ not not summary_only }}",
+                    }
+                ]
+            },
+        },
+        {
+            "name": "auto_summary",
+            "getval": re.compile(
+                r"""
+                ((\sauto-summary))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "auto-summary",
+            "result": {"auto_summary": True},
+        },
+        {
+            "name": "bmp.buffer_size",
+            "getval": re.compile(
+                r"""
+                \sbmp\sbuffer-size
+                (\s(?P<buffer_size>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bmp buffer-size {{ bmp.buffer_size|string }}",
+            "result": {"bmp": {"buffer_size": "{{ buffer_size }}"}},
+        },
+        {
+            "name": "bmp.initial_refresh.delay",
+            "getval": re.compile(
+                r"""
+                \sbmp\sinitial-refresh\sdelay
+                (\s(?P<delay>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bmp initial-refresh delay {{ bmp.initial_refresh.delay|string }}",
+            "result": {"bmp": {"initial_refresh": {"delay": "{{ delay }}"}}},
+        },
+        {
+            "name": "bmp.initial_refresh.skip",
+            "getval": re.compile(
+                r"""
+                \sbmp\sinitial-refresh\sskip
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bmp initial-refresh skip",
+            "result": {"bmp": {"initial_refresh": {"skip": True}}},
+        },
+        {
+            "name": "bmp.server",
+            "getval": re.compile(
+                r"""
+                \sbmp\sserver
+                (\s(?P<server>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bmp server {{ bmp.server }}",
+            "result": {"bmp": {"server": "{{ server|string }}"}},
+        },
+        {
+            "name": "bmp.server_options.activate",
+            "getval": re.compile(
+                r"""
+                \sactivate
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "activate",
+            "result": {"bmp": {"server_options": {"activate": True}}},
+        },
+        {
+            "name": "bmp.server_options.address",
+            "getval": re.compile(
+                r"""
+                \saddress\s(?P<host>\S+)\s
+                (\sport-number(?P<port>\d+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "address "
+            "{{ bmp.server_options.address.host }} port-number {{ bmp.server_options.address.port|string }}\nexit-bmp-server-mode",
+            "result": {
+                "bmp": {
+                    "server_options": {
+                        "address": {"host": "{{ host }}", "port": "{{ port }}"}
                     }
                 }
             },
         },
         {
-            "name": "bgp.bestpath",
+            "name": "default_information",
             "getval": re.compile(
-                r"""\s*bgp*
-                    \s*bestpath*
-                    \s*(?P<aigp>aigp\signore)*
-                    \s*(?P<compare_routerid>compare-routerid)*
-                    \s*(?P<cost_community>cost-community\signore)*
-                    \s*(?P<med>med\s(confed|missing-as-worst|confed\smissing-as-worst))*
-                    $""",
+                r"""
+                (\sdefault-information originate)?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_bestpath,
+            "setval": "default-information originate",
+            "result": {"default_information": True},
+        },
+        {
+            "name": "default_metric",
+            "getval": re.compile(
+                r"""
+                ^default-metric\s(?P<default_metric>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "default-metric {{ default_metric|string }}",
+            "result": {"default_metric": "{{ default_metric }}"},
+        },
+        {
+            "name": "distance.admin",
+            "getval": re.compile(
+                r"""
+                \sdistance
+                (\s(?P<distance>\d+))?
+                (\s(?P<address>\S+))?
+                (\s(?P<wildcard_bit>\S+))?
+                (\s(?P<acl>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "distance"
+            "{{ (' ' + distance.admin.distance|string) if distance.admin.distance is defined else '' }}"
+            "{{ (' ' + distance.admin.address) if distance.admin.address is defined else '' }}"
+            "{{ (' ' + distance.admin.wildcard_bit) if distance.admin.wildcard_bit is defined else '' }}"
+            "{{ (' ' + distance.admin.acl) if distance.admin.acl is defined else '' }}",
             "result": {
-                "bgp": {
-                    "bestpath": [
-                        {
-                            "aigp": "{{ True if aigp is defined }}",
-                            "compare_routerid": "{{ True if compare_routerid is defined }}",
-                            "cost_community": "{{ True if cost_community is defined }}",
-                            "med": {
-                                "confed": "{{ True if med is defined and 'confed' in med }}",
-                                "missing_as_worst": "{{ True if med is defined and 'missing-as-worst' in med }}",
-                            },
-                        }
-                    ]
+                "distance": {
+                    "admin": {
+                        "distance": "{{ distance }}",
+                        "address": "{{ address }}",
+                        "wildcard_bit": "{{ wildcard_bit }}",
+                        "acl": "{{ acl }}",
+                    }
                 }
             },
         },
         {
-            "name": "bgp.config",
+            "name": "distance.bgp",
             "getval": re.compile(
-                r"""\sbgp*
-                    \s*(?P<advertise_best_external>advertise-best-external)*
-                    \s*(?P<aggregate_timer>aggregate-timer\s\d+)*
-                    \s*(?P<always_compare_med>always-compare-med)*
-                    \s*(?P<asnotation>asnotation\sdot)*
-                    \s*(?P<client_to_client>client-to-client\sreflection\s(all|intra-cluster))*
-                    \s*(?P<cluster_id>cluster-id\s.*)*
-                    \s*(?P<confederation>confederation\s(identifier\s\d+|peers\s\d+))*
-                    \s*(?P<consistency_checker>consistency-checker\s((auto-repair\sinterval\s\d+|auto-repair)|(error-message\sinterval\s\d+|error-message)))*
-                    \s*(?P<deterministic_med>deterministic-med)*
-                    \s*(?P<dmzlink_bw>dmzlink-bw)*
-                    \s*(?P<enforce_first_as>enforce-first-as)*
-                    \s*(?P<enhanced_error>enhanced-error)*
-                    \s*(?P<fast_external_fallover>fast-external-fallover)*
-                    \s*(?P<graceful_restart>graceful-restart(\sextended|\srestart-time\s\d+|\sstalepath-time\s\d+))*
-                    \s*(?P<inject_map>inject-map\s\S+\sexist-map\s\S+\scopy-attributes|inject-map\s\S+\sexist-map\s\S+)*
-                    \s*(?P<listen>listen\s(limit\s\d+|(range\s.*peer-group\s\S+|range\s.*)))*
-                    \s*(?P<log_neighbor_changes>log-neighbor-changes)*
-                    \s*(?P<maxas_limit>maxas-limit\s\d+)*
-                    \s*(?P<maxcommunity_limit>maxas-limit\s\d+)*
-                    \s*(?P<maxextcommunity_limit>maxextcommunity-limit\s\d+)*
-                    \s*(?P<nexthop>nexthop\s(route-map\s\S+|trigger\s(delay\s\d+|enable)))*
-                    \s*(?P<recursion>recursion\shost)*
-                    \s*(?P<redistribute_internal>redistribute-internal)*
-                    \s*(?P<refresh>refresh\s(max-eor-time\s\d+|stalepath-time\s\d+))*
-                    \s*(?P<regexp>regexp\sdeterministic)*
-                    \s*(?P<router_id>router-id\s((?:[0-9]{1,3}\.){3}[0-9]{1,3}|interface\s\S+\s\S+|vrf\sauto-assign))*
-                    \s*(?P<route_map>route-map\spriority)*
-                    \s*(?P<scan_time>scan-time\s\d+)*
-                    \s*(?P<slow_peer>slow-peer((\sdetection\sthreshold\d+|\sdetection)|(\ssplit-update-group\sdynamic\spermanent|\ssplit-update-group\sdynamic)))*
-                    \s*(?P<snmp>snmp\straps\sadd-type)*
-                    \s*(?P<sso>sso\sroute-refresh-enable)*
-                    \s*(?P<soft_reconfig_backup>soft-reconfig-backup)*
-                    \s*(?P<suppress_inactive>suppress-inactive)*
-                    \s*(?P<transport>transport\spath-mtu-discovery)*
-                    \s*(?P<update_delay>update-delay\s\d+)*
-                    \s*(?P<update_group>update-group\ssplit\sas-override)*
-                    \s*(?P<upgrade_cli>upgrade-cli\saf-mode|upgrade-cli)*
-                    $""",
+                r"""
+                \sdistance\sbgp
+                (\s(?P<routes_external>\d+))?
+                (\s(?P<routes_internal>\d+))?
+                (\s(?P<routes_local>\d+))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_config,
-            "compval": "bgp",
+            "setval": "distance bgp"
+            "{{ (' ' + distance.bgp.routes_external|string) if distance.bgp.routes_external is defined else '' }}"
+            "{{ (' ' + distance.bgp.routes_internal|string) if distance.bgp.routes_internal is defined else '' }}"
+            "{{ (' ' + distance.bgp.routes_local|string) if distance.bgp.routes_local is defined else '' }}",
+            "result": {
+                "distance": {
+                    "bgp": {
+                        "routes_external": "{{ routes_external }}",
+                        "routes_internal": "{{ routes_internal }}",
+                        "routes_local": "{{ routes_local }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "distance.mbgp",
+            "getval": re.compile(
+                r"""
+                \sdistance\smbgp
+                (\s(?P<routes_external>\d+))?
+                (\s(?P<routes_internal>\d+))?
+                (\s(?P<routes_local>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "distance mbgp"
+            "{{ (' ' + distance.mbgp.routes_external|string) if distance.mbgp.routes_external is defined else '' }}"
+            "{{ (' ' + distance.mbgp.routes_internal|string) if distance.mbgp.routes_internal is defined else '' }}"
+            "{{ (' ' + distance.mbgp.routes_local|string) if distance.mbgp.routes_local is defined else '' }}",
+            "result": {
+                "distance": {
+                    "mbgp": {
+                        "routes_external": "{{ routes_external }}",
+                        "routes_internal": "{{ routes_internal }}",
+                        "routes_local": "{{ routes_local }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "distributes",
+            "getval": re.compile(
+                r"""
+                \sdistribute-list
+                (\s(?P<acl>\S+))?
+                (\sprefix\s(?P<prefix>\S+))?
+                (\sgateway\s(?P<gateway>\S+))?
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                (\s(?P<interface>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "distribute-list"
+            "{{ (' prefix ' + prefix) if prefix is defined else '' }}"
+            "{{ (' gateway ' + gateway) if gateway is defined else '' }}"
+            "{{ (' ' + acl) if acl is defined else '' }}"
+            "{{ (' in' ) if in|d(False) else '' }}"
+            "{{ (' out' ) if out|d(False)  else '' }}"
+            "{{ (' ' + interface) if interface is defined else '' }}",
+            "result": {
+                "distributes": [
+                    {
+                        "prefix": "{{ prefix }}",
+                        "gateway": "{{ gateway }}",
+                        "acl": "{{ acl }}",
+                        "in": "{{ not not in }}",
+                        "out": "{{ not not out }}",
+                        "interface": "{{ interface }}",
+                    }
+                ]
+            },
+        },
+        {
+            "name": "maximum_paths.paths",
+            "getval": re.compile(
+                r"""
+                \smaximum-paths
+                (\s(?P<paths>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths {{ maximum_paths.paths|string }}",
+            "result": {"maximum_paths": {"paths": "{{ paths }}"}},
+        },
+        {
+            "name": "maximum_paths.eibgp",
+            "getval": re.compile(
+                r"""
+                \smaximum-paths\seibgp
+                (\s(?P<eibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths eibgp {{ maximum_paths.eibgp|string }}",
+            "result": {"maximum_paths": {"eibgp": "{{ eibgp }}"}},
+        },
+        {
+            "name": "maximum_paths.ibgp",
+            "getval": re.compile(
+                r"""
+                \smaximum-paths\sibgp
+                (\s(?P<ibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths ibgp {{ maximum_paths.ibgp|string }}",
+            "result": {"maximum_paths": {"ibgp": "{{ ibgp }}"}},
+        },
+        {
+            "name": "maximum_secondary_paths.paths",
+            "getval": re.compile(
+                r"""
+                \smaximum-secondary-paths
+                (\s(?P<paths>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths {{ maximum_secondary_paths.paths|string }}",
+            "result": {"maximum_secondary_paths": {"paths": "{{ paths }}"}},
+        },
+        {
+            "name": "maximum_secondary_paths.eibgp",
+            "getval": re.compile(
+                r"""
+                \smaximum-secondary-paths\seibgp
+                (\s(?P<eibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths eibgp {{ maximum_secondary_paths.eibgp|string }}",
+            "result": {"maximum_secondary_paths": {"eibgp": "{{ eibgp }}"}},
+        },
+        {
+            "name": "maximum_secondary_paths.ibgp",
+            "getval": re.compile(
+                r"""
+                \smaximum-secondary-paths\sibgp
+                (\s(?P<ibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths ibgp {{ maximum_secondary_paths.ibgp|string }}",
+            "result": {"maximum_secondary_paths": {"ibgp": "{{ ibgp }}"}},
+        },
+        {
+            "name": "networks",
+            "getval": re.compile(
+                r"""
+                \snetwork
+                (\s(?P<address>\S+))?
+                (\smask\s(?P<netmask>\S+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                (\s(?P<backdoor>backdoor))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "network"
+            "{{ (' ' + address) if address is defined else '' }}"
+            "{{ (' mask ' + netmask) if netmask is defined else '' }}"
+            "{{ (' route-map ' + route_map) if route_map is defined else '' }}"
+            "{{ (' backdoor' ) if backdoor|d(False) else '' }}",
+            "result": {
+                "networks": [
+                    {
+                        "address": "{{ address }}",
+                        "netmask": "{{ netmask }}",
+                        "route_map": "{{ route_map }}",
+                        "backdoor": "{{ not not backdoor }}",
+                    }
+                ]
+            },
+        },
+        {
+            "name": "route_server_context.name",
+            "getval": re.compile(
+                r"""
+                \sroute-server_context
+                (\s(?P<name>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "route-server-context {{ route_server_context.name }}",
+            "result": {"route_server_context": {"name": "{{ name }}"}},
+        },
+        {
+            "name": "route_server_context.address_family",
+            "getval": re.compile(
+                r"""
+                \sroute-server_context\saddress-family
+                (\s(?P<afi>ipv4|ipv6))?
+                (\s(?P<modifier>multicast|unicast))?
+                (\simport-map\s(?P<import_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "address-family"
+            "{{ (' ' + route_server_context.address_family.afi) if route_server_context.address_family.afi is defined else '' }}"
+            "{{ (' ' + route_server_context.address_family.modifier) if route_server_context.address_family.modifier is defined else '' }}"
+            "{{ (' import-map ' + route_server_context.address_family.import_map) if route_server_context.address_family.import_map is defined else '' }}",
+            "result": {
+                "route_server_context": {
+                    "address_family": {
+                        "afi": "{{ afi }}",
+                        "modifier": "{{ modifier }}",
+                        "import_map": "{{ import_map }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_server_context.description",
+            "getval": re.compile(
+                r"""
+                \sroute-server_context\sdescription
+                (\s(?P<description>.+$))?
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "description {{ route_server_context.description }}",
+            "result": {
+                "route_server_context": {"description": "{{ description }}"}
+            },
+        },
+        {
+            "name": "synchronization",
+            "getval": re.compile(
+                r"""\s(?P<synchronization>synchronization)""", re.VERBOSE
+            ),
+            "setval": "synchronization",
+            "result": {"synchronization": "{{ not not synchronization }}"},
+        },
+        {
+            "name": "table_map",
+            "getval": re.compile(
+                r"""
+                \stable-map
+                (\s(?P<name>\S+))?
+                (\s(?P<filter>filter))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "table-map"
+            "{{ (' ' + name) if name is defined else '' }}"
+            "{{ (' filter' ) if filter|d(False) else '' }}",
+            "result": {
+                "table_map": {
+                    "name": "{{ name }}",
+                    "filter": "{{ not not filter }}",
+                }
+            },
+        },
+        {
+            "name": "timers",
+            "getval": re.compile(
+                r"""
+                \stimers\sbgp
+                (\s(?P<keepalive>\d+))?
+                (\s(?P<holdtime>\d+))?
+                (\s(?P<min_holdtime>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "timers bgp"
+            "{{ (' ' + timers.keepalive|string) if timers.keepalive is defined else '' }}"
+            "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
+            "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
+            "result": {
+                "timers": {
+                    "keepalive": "{{ keepalive }}",
+                    "holdtime": "{{ holdtime }}",
+                    "min_holdtime": "{{ min_holdtime }}",
+                }
+            },
+        },
+        # bgp starts
+        {
+            "name": "bgp.additional_paths",
+            "getval": re.compile(
+                r"""
+                \sbgp\sadditional-paths
+                (\s(?P<install>install))?
+                (\s(?P<receive>receive))?
+                (\s(?P<select>select))?
+                (\s(?P<send>send))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp additional-paths"
+            "{{ (' install' ) if bgp.additional_paths.install|d(False) else '' }}"
+            "{{ (' receive' ) if bgp.additional_paths.receive|d(False) else '' }}"
+            "{{ (' select' ) if bgp.additional_paths.select|d(False) else '' }}"
+            "{{ (' send' ) if bgp.additional_paths.send|d(False) else '' }}",
             "result": {
                 "bgp": {
-                    "advertise_best_external": "{{ True if advertise_best_external is defined }}",
-                    "aggregate_timer": "{{ aggregate_timer.split('aggregate-timer ')[1] if aggregate_timer is defined }}",
-                    "always_compare_med": "{{ True if always_compare_med is defined }}",
-                    "asnotation": "{{ True if asnotation is defined }}",
+                    "additional_paths": {
+                        "install": "{{ not not install }}",
+                        "receive": "{{ not not receive }}",
+                        "select": "{{ not not select }}",
+                        "send": "{{ not not send }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.advertise_best_external",
+            "getval": re.compile(
+                r"""\s(bgp\sadvertise-best-external)""", re.VERBOSE
+            ),
+            "setval": "{{ ('bgp advertise-best-external' ) if bgp.advertise_best_external|d(False) else '' }}",
+            "result": {"bgp": {"advertise_best_external": True}},
+        },
+        {
+            "name": "bgp.aggregate_timer",
+            "getval": re.compile(
+                r"""
+                \sbgp\saggregate-timer
+                (\s(?P<aggregate_timer>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp aggregate-timer {{ bgp.aggregate_timer|string }}",
+            "result": {"bgp": {"aggregate_timer": "{{ aggregate_timer }}"}},
+        },
+        {
+            "name": "bgp.always_compare_med",
+            "getval": re.compile(
+                r"""\s(bgp\salways-compare-med)""", re.VERBOSE
+            ),
+            "setval": "{{ ('bgp always-compare-med' ) if bgp.always_compare_med|d(False) else '' }}",
+            "result": {"bgp": {"always_compare_med": True}},
+        },
+        {
+            "name": "bgp.asnotation",
+            "getval": re.compile(r"""\s(bgp\sasnotation\sdot)""", re.VERBOSE),
+            "setval": "{{ ('bgp asnotation dot' ) if bgp.asnotation|d(False) else '' }}",
+            "result": {"bgp": {"asnotation": True}},
+        },
+        {
+            "name": "bgp.bestpath_options.aigp",
+            "getval": re.compile(
+                r"""\s(bgp\sbestpath\saigp\signore)""", re.VERBOSE
+            ),
+            "setval": "{{ ('bgp bestpath aigp ignore' ) if bgp.bestpath_options.aigp|d(False) else '' }}",
+            "result": {"bgp": {"bestpath_options": {"aigp": True}}},
+        },
+        {
+            "name": "bgp.bestpath_options.compare_routerid",
+            "getval": re.compile(
+                r"""\s(bgp\sbestpath\scompare-routerid)""", re.VERBOSE
+            ),
+            "setval": "{{ ('bgp bestpath compare-routerid' ) if bgp.bestpath_options.compare_routerid|d(False) else '' }}",
+            "result": {
+                "bgp": {"bestpath_options": {"compare_routerid": True}}
+            },
+        },
+        {
+            "name": "bgp.bestpath_options.cost_community",
+            "getval": re.compile(
+                r"""\s(bgp\sbestpath\scost-community\signore)""", re.VERBOSE
+            ),
+            "setval": "{{ ('bgp bestpath cost-community ignore' ) if bgp.bestpath_options.cost_community|d(False) else '' }}",
+            "result": {"bgp": {"bestpath_options": {"cost_community": True}}},
+        },
+        {
+            "name": "bgp.bestpath_options.igp_metric",
+            "getval": re.compile(
+                r"""\s(bgp\sbestpath\sigp-metric\signore)""", re.VERBOSE
+            ),
+            "setval": "bgp bestpath igp-metric ignore",
+            "result": {"bgp": {"bestpath_options": {"igp_metric": True}}},
+        },
+        {
+            "name": "bgp.bestpath_options.med",
+            "getval": re.compile(
+                r"""
+                \sbgp\sbestpath\smed
+                (\s(?P<confed>confed))?
+                (\s(?P<missing_as_worst>missing-as-worst))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp bestpath med"
+            "{{ (' confed') if bgp.bestpath_options.med.confed|d(False) else '' }}"
+            "{{ (' missing-as-worst') if bgp.bestpath_options.med.missing_as_worst|d(False) else '' }}",
+            "result": {
+                "bgp": {
+                    "bestpath_options": {
+                        "med": {
+                            "confed": "{{ not not confed }}",
+                            "missing_as_worst": "{{ not not missing_as_worst }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.client_to_client",
+            "getval": re.compile(
+                r"""
+                \sbgp\sclient-to-client
+                (\s(?P<set>reflection))?
+                (\s(?P<all>all))?
+                (\sintra-cluster\scluster-id\s(?P<intra_cluster>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp client-to-client"
+            "{{ (' reflection') if bgp.client_to_client.set|d(False) else '' }}"
+            "{{ (' all') if bgp.client_to_client.all|d(False) else '' }}"
+            "{{ (' intra-cluster cluster-id '+ bgp.client_to_client.intra_cluster ) if bgp.client_to_client.intra_cluster is defined else '' }}",
+            "result": {
+                "bgp": {
                     "client_to_client": {
-                        "set": "{{ True if client_to_client is defined and client_to_client.split(' ')|length == 2 }}",
-                        "all": "{{ True if client_to_client is defined and 'all' in client_to_client }}",
-                        "intra_cluster": "{{\
-                            client_to_client.split('cluster-id ')[1]\
-                                if client_to_client is defined and 'intra-cluster' in client_to_client }}",
-                    },
-                    "cluster_id": "{{ cluster_id.split('cluster-id ')[1] if cluster_id is defined }}",
-                    "confederation": {
-                        "identifier": "{{ confederation.split('confederation identifier ')[1] if confederation is defined }}",
-                        "peers": "{{ confederation.split('confederation peers ')[1] if confederation is defined }}",
-                    },
+                        "set": "{{ not not set }}",
+                        "all": "{{ not not all }}",
+                        "intra_cluster": "{{ intra_cluster }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.cluster_id",
+            "getval": re.compile(
+                r"""
+                \sbgp\scluster-id
+                (\s(?P<cluster_id>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp cluster-id {{ bgp.cluster_id }}",
+            "result": {"bgp": {"cluster_id": "{{ not not cluster_id }}"}},
+        },
+        {
+            "name": "bgp.confederation.peer",
+            "getval": re.compile(
+                r"""
+                \sbgp\sconfederation\speer
+                (\s(?P<peer>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp confederation peers {{ bgp.confederation.peer }}",
+            "result": {"bgp": {"confederation": {"peers": "{{ peer }}"}}},
+        },
+        {
+            "name": "bgp.confederation.identifier",
+            "getval": re.compile(
+                r"""
+                \sbgp\sconfederation\sidentifier
+                (\s(?P<identifier>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp confederation identifier {{ bgp.confederation.identifier }}",
+            "result": {
+                "bgp": {"confederation": {"identifier": "{{ identifier }}"}}
+            },
+        },
+        {
+            "name": "bgp.consistency_checker.auto_repair",
+            "getval": re.compile(
+                r"""
+                \sbgp\sconsistency-checker\sauto-repair
+                (\sinterval\s(?P<interval>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp consistency-checker auto-repair"
+            "{{ (' interval '+ bgp.consistency_checker.auto_repair.interval|string) if bgp.consistency_checker.auto_repair.interval is defined else '' }}",
+            "result": {
+                "bgp": {
                     "consistency_checker": {
                         "auto_repair": {
-                            "set": "{{\
-                                True if consistency_checker is defined and\
-                                    'auto-repair' in consistency_checker and\
-                                        consistency_checker.split(' ')|length == 2 }}",
-                            "interval": "{{\
-                                consistency_checker.split('interval ')[1] if consistency_checker is defined and\
-                                    consistency_checker.split(' ')|length > 2 }}",
-                        },
+                            "set": True,
+                            "interval": "{{ interval }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.consistency_checker.error_message",
+            "getval": re.compile(
+                r"""
+                \sbgp\sconsistency-checker\serror-message
+                (\sinterval\s(?P<interval>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp consistency-checker error-message"
+            "{{ (' interval '+ bgp.consistency_checker.error_message.interval|string) if bgp.consistency_checker.error_message.interval is defined else '' }}",
+            "result": {
+                "bgp": {
+                    "consistency_checker": {
                         "error_message": {
-                            "set": "{{\
-                                True if consistency_checker is defined and\
-                                    'error-message' in consistency_checker and consistency_checker.split(' ')|length == 2 }}",
-                            "interval": "{{\
-                                consistency_checker.split('interval ')[1] if consistency_checker is defined and\
-                                    consistency_checker.split(' ')|length > 2 }}",
-                        },
-                    },
-                    "deterministic_med": "{{ True if deterministic_med is defined }}",
-                    "dmzlink_bw": "{{ True if dmzlink_bw is defined }}",
-                    "enforce_first_as": "{{ True if enforce_first_as is defined }}",
-                    "enhanced_error": "{{ True if enhanced_error is defined }}",
-                    "fast_external_fallover": "{{ True if fast_external_fallover is defined }}",
-                    "graceful_restart": {
-                        "set": "{{ True if graceful_restart is defined and graceful_restart.split(' ')|length == 2 }}",
-                        "extended": "{{ True if graceful_restart is defined and 'extended' in graceful_restart }}",
-                        "restart_time": "{{\
-                            graceful_restart.split('graceful-restart restart-time ')[1] if graceful_restart is defined and\
-                                'restart-time' in graceful_restart }}",
-                        "stalepath_time": "{{\
-                            graceful_restart.split('graceful-restart stalepath-time ')[1] if graceful_restart is defined and\
-                                'stalepath-time' in graceful_restart }}",
-                    },
-                    "inject_map": {
-                        "name": "{{ inject_map.split(' ')[1] if inject_map is defined }}",
-                        "exist_map_name": "{{ inject_map.split('exist-map ')[1].split(' ')[0] if inject_map is defined and 'exist-map' in inject_map }}",
-                        "copy_attributes": "{{ True if inject_map is defined and 'copy-attributes' in inject_map }}",
-                    },
-                    "listen": {
-                        "limit": "{{ listen.split('limit ')[1] if listen is defined and 'limit' in listen }}",
-                        "range": {
-                            "ipv4_with_subnet": "{{ listen.split('range ')[1].split(' ')[0] if listen is defined and ':' not in listen and '.' in listen }}",
-                            "ipv6_with_subnet": "{{ listen.split('range ')[1].split(' ')[0] if listen is defined and ':' in listen and '.' in listen }}",
-                            "peer_group": "{{ listen.split('peer-group ')[1] if listen is defined and 'peer-group' in listen }}",
-                        },
-                    },
-                    "log_neighbor_changes": "{{ True if log_neighbor_changes is defined }}",
-                    "maxas_limit": "{{ maxas_limit.split('maxas-limit ')[1] if maxas_limit is defined }}",
-                    "maxcommunity_limit": "{{ maxcommunity_limit.split('maxcommunity-limit ')[1] if maxcommunity_limit is defined }}",
-                    "maxextcommunity_limit": "{{ maxextcommunity_limit.split('maxextcommunity-limit ')[1] if maxextcommunity_limit is defined }}",
-                    "nexthop": {
-                        "route_map": "{{ nexthop.split('route-map ')[1] if nexthop is defined and 'route-map' in nexthop }}",
-                        "trigger": {
-                            "delay": "{{ nexthop.split('delay ')[1] if nexthop is defined and 'delay' in nexthop }}",
-                            "enable": "{{ True if nexthop is defined and 'enable' in nexthop }}",
-                        },
-                    },
-                    "recursion": "{{ True if recursion is defined }}",
-                    "redistribute_internal": "{{ True if redistribute_internal is defined }}",
-                    "refresh": {
-                        "max_eor_time": "{{ refresh.split('max-eor-time ')[1] if refresh is defined }}",
-                        "stalepath_time": "{{ refresh.split('stalepath-time ')[1] if refresh is defined }}",
-                    },
-                    "regexp": "{{ True if regexp is defined }}",
-                    "router_id": {
-                        "address": "{{ router_id.split(' ')[1] if router_id is defined and '.' in router_id }}",
-                        "interface": "{{ router_id.split('interface ')[1] if router_id is defined and 'interface' in router_id }}",
-                        "vrf": "{{ True if router_id is defined and 'vrf auto-assign' in router_id }}",
-                    },
-                    "route_map": "{{ True if route_map is defined }}",
-                    "scan_time": "{{ scan_time.split('scan-time ')[1] if scan_time is defined }}",
-                    "slow_peer": {
-                        "detection": {
-                            "set": "{{ True if slow_peer is defined and 'detection' in slow_peer and 'threshold' not in slow_peer }}",
-                            "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
-                        },
-                        "split_update_group": {
-                            "dynamic": "{{ True if split_dynamic is defined and split_dynamic.split('dynamic ')[1] == 'disable' }}",
-                            "static": "{{ True if split_static is defined }}",
-                        },
-                    },
-                    "snmp": "{{ True if snmp is defined }}",
-                    "sso": "{{ True if sso is defined }}",
-                    "soft_reconfig_backup": "{{ True if soft_reconfig_backup is defined }}",
-                    "suppress_inactive": "{{ True if suppress_inactive is defined }}",
-                    "transport": "{{ True if transport is defined }}",
-                    "update_delay": "{{ update_delay.split('update-delay ')[1] if update_delay is defined }}",
-                    "update_group": "{{ True if update_group is defined }}",
-                    "upgrade_cli": {
-                        "set": "{{ True if graceful_restart is defined and graceful_restart.split(' ')|length == 2 }}",
-                        "af_mode": "{{ True if upgrade_cli is defined and 'af-mode' in upgrade_cli }}",
-                    },
+                            "set": True,
+                            "interval": "{{ interval }}",
+                        }
+                    }
                 }
             },
         },
         {
             "name": "bgp.dampening",
             "getval": re.compile(
-                r"""\sbgp*
-                    \s*dampening*
-                    \s*(?P<penalty_half_time>\d+)*
-                    \s*(?P<reuse_route_val>\d+)*
-                    \s*(?P<suppress_route_val>\d+)*
-                    \s*(?P<max_suppress>\d+)*
-                    \s*(?P<route_map>\S+)*
-                    $""",
+                r"""
+                \sbgp\sdampening
+                (\s(?P<penalty_half_time>\d+))?
+                (\s(?P<reuse_route_val>\d+))?
+                (\s(?P<suppress_route_val>\d+))?
+                (\s(?P<max_suppress>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_dampening,
+            "setval": "bgp dampening"
+            "{{ (' '+ bgp.dampening.penalty_half_time|string) if bgp.dampening.penalty_half_time is defined else '' }}"
+            "{{ (' '+ bgp.dampening.reuse_route_val|string) if bgp.dampening.reuse_route_val is defined else '' }}"
+            "{{ (' '+ bgp.dampening.suppress_route_val|string) if bgp.dampening.suppress_route_val is defined else '' }}"
+            "{{ (' '+ bgp.dampening.max_suppress|string) if bgp.dampening.max_suppress is defined else '' }}"
+            "{{ (' route-map '+ bgp.dampening.route_map|string) if bgp.dampening.route_map is defined else '' }}",
             "result": {
                 "bgp": {
                     "dampening": {
-                        "penalty_half_time": "{{ penalty_half_time if penalty_half_time is defined }}",
-                        "reuse_route_val": "{{ reuse_route_val if penalty_half_time is defined }}",
-                        "suppress_route_val": "{{ suppress_route_val if penalty_half_time is defined }}",
-                        "max_suppress": "{{ max_suppress if penalty_half_time is defined }}",
-                        "route_map": "{{ dampening.split('route-map ')[1] if dampening is defined and 'route-map' in dampening }}",
+                        "penalty_half_time": "{{ penalty_half_time }}",
+                        "reuse_route_val": "{{ reuse_route_val }}",
+                        "suppress_route_val": "{{ suppress_route_val }}",
+                        "max_suppress": "{{ max_suppress }}",
+                        "route_map": "{{ route_map }}",
                     }
                 }
             },
         },
         {
-            "name": "bgp.graceful_shutdown",
+            "name": "bgp.deterministic_med",
             "getval": re.compile(
-                r"""\sbgp*
-                    \s*graceful-shutdown\sall*
-                    \s*(?P<neighbors>neighbors\s(\d+|activate))*
-                    \s*(?P<vrfs>vrfs\s(\d+|activate))*
-                    \s*(?P<local_preference>local-preference\s\d+)*
-                    \s*(?P<community>community\s\d+)*
-                    $""",
+                r"""\s(bgp\sdeterministic-med)""", re.VERBOSE
+            ),
+            "setval": "bgp deterministic-med",
+            "result": {"bgp": {"deterministic_med": True}},
+        },
+        {
+            "name": "bgp.dmzlink_bw",
+            "getval": re.compile(r"""\s(bgp\sdmzlink-bw)""", re.VERBOSE),
+            "setval": "bgp dmzlink-bw",
+            "result": {"bgp": {"dmzlink_bw": True}},
+        },
+        {
+            "name": "bgp.enforce_first_as",
+            "getval": re.compile(r"""\s(bgp\senforce-first-as)""", re.VERBOSE),
+            "setval": "bgp enforce-first-as",
+            "result": {"bgp": {"enforce_first_as": True}},
+        },
+        {
+            "name": "bgp.enhanced_error",
+            "getval": re.compile(r"""\s(bgp\senhanced-error)""", re.VERBOSE),
+            "setval": "bgp enhanced-error",
+            "result": {"bgp": {"enhanced_error": True}},
+        },
+        {
+            "name": "bgp.fast_external_fallover",
+            "getval": re.compile(
+                r"""\s(bgp\sfast-external-fallover)""", re.VERBOSE
+            ),
+            "setval": "bgp fast-external-fallover",
+            "result": {"bgp": {"fast_external_fallover": True}},
+        },
+        {
+            "name": "bgp.graceful_restart.set",
+            "getval": re.compile(
+                r"""
+                \sbgp\sgraceful-restart
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_graceful_shutdown,
+            "setval": "bgp graceful-restart",
+            "result": {"bgp": {"graceful_restart": {"set": True}}},
+        },
+        {
+            "name": "bgp.graceful_restart.extended",
+            "getval": re.compile(
+                r"""
+                \sbgp\sgraceful-restart\sextended
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp graceful-restart extended",
+            "result": {"bgp": {"graceful_restart": {"extended": True}}},
+        },
+        {
+            "name": "bgp.graceful_restart.restart_time",
+            "getval": re.compile(
+                r"""
+                \sbgp\sgraceful-restart\srestart-time
+                (\s(?P<restart_time>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp graceful-restart restart-time {{ bgp.graceful_restart.restart_time|string }}",
+            "result": {
+                "bgp": {
+                    "graceful_restart": {"restart_time": "{{ restart_time }}"}
+                }
+            },
+        },
+        {
+            "name": "bgp.graceful_restart.stalepath_time",
+            "getval": re.compile(
+                r"""
+                \sbgp\sgraceful-restart\sstalepath-time
+                (\s(?P<stalepath_time>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp graceful-restart stalepath-time {{ bgp.graceful_restart.stalepath_time|string }}",
+            "result": {
+                "bgp": {
+                    "graceful_restart": {
+                        "stalepath_time": "{{ stalepath_time }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.graceful_shutdown.neighbors",
+            "getval": re.compile(
+                r"""
+                \sbgp\sgraceful-shutdown\sall\sneighbors
+                (\s(?P<time>\d+))?
+                (\s(?P<activate>activate))?
+                (\slocal-preference\s(?P<local_preference>\d+))?
+                (\scommunity\s(?P<community>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp graceful-shutdown all neighbors"
+            "{{ (' ' + bgp.graceful_shutdown.neighbors.time|string) if bgp.graceful_shutdown.neighbors.time is defined else '' }}"
+            "{{ (' activate') if bgp.graceful_shutdown.neighbors.activate|d(False) else '' }}"
+            "{{ (' local-preference ' + bgp.graceful_shutdown.local_preference|string) if bgp.graceful_shutdown.local_preference is defined else '' }}"
+            "{{ (' community ' + bgp.graceful_shutdown.community|string) if bgp.graceful_shutdown.community is defined else '' }}",
             "result": {
                 "bgp": {
                     "graceful_shutdown": {
                         "neighbors": {
-                            "time": "{{ neighbors.split('neighbors ')[1] if neighbors is defined and 'activate' not in neighbors }}",
-                            "activate": "{{ True if neighbors is defined and 'activate' in neighbors }}",
+                            "time": "{{ time }}",
+                            "activate": "{{ not not activate }}",
                         },
-                        "vrfs": {
-                            "time": "{{ vrfs.split('vrfs ')[1] if vrfs is defined and 'activate' not in vrfs }}",
-                            "activate": "{{ True if vrfs is defined and 'activate' in vrfs }}",
-                        },
-                        "community": "{{ community.split('community ')[1] if community is defined }}",
-                        "local_preference": "{{ local_preference.split('local-preference ')[1] if local_preference is defined }}",
+                        "community": "{{ community }}",
+                        "local_preference": "{{ local_preference }}",
                     }
                 }
             },
         },
         {
-            "name": "bgp.nopeerup_delay",
+            "name": "bgp.graceful_shutdown.vrfs",
             "getval": re.compile(
-                r"""\sbgp*
-                    \s*nopeerup-delay*
-                    \s*(?P<cold_boot>cold-boot\s\d+)*
-                    \s*(?P<nsf_switchover>nsf-switchover\s\d+)*
-                    \s*(?P<post_boot>post-boot\s\d+)*
-                    \s*(?P<user_initiated>user-initiated\s\d+)*
-                    $""",
+                r"""
+                \sbgp\sgraceful-shutdown\sall\svrfs
+                (\s(?P<time>\d+))?
+                (\s(?P<activate>activate))?
+                (\slocal-preference\s(?P<local_preference>\d+))?
+                (\scommunity\s(?P<community>\S+))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_nopeerup_delay,
+            "setval": "bgp graceful-shutdown all vrfs"
+            "{{ (' ' + bgp.graceful_shutdown.vrfs.time|string) if bgp.graceful_shutdown.vrfs.time is defined else '' }}"
+            "{{ (' activate') if bgp.graceful_shutdown.vrfs.activate|d(False) else '' }}"
+            "{{ (' local-preference ' + bgp.graceful_shutdown.local_preference|string) if bgp.graceful_shutdown.local_preference is defined else '' }}"
+            "{{ (' community ' + bgp.graceful_shutdown.community|string) if bgp.graceful_shutdown.community is defined else '' }}",
             "result": {
                 "bgp": {
-                    "nopeerup_delay": [
+                    "graceful_shutdown": {
+                        "vrfs": {
+                            "time": "{{ time }}",
+                            "activate": "{{ not not activate }}",
+                        },
+                        "community": "{{ community }}",
+                        "local_preference": "{{ local_preference }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "inject_maps",
+            "getval": re.compile(
+                r"""
+                \sbgp\sinject-map
+                (\s(?P<name>\S+))?
+                (\sexist-map\s(?P<exist_map_name>\S+))?
+                (\s(?P<copy_attributes>copy-attributes))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp inject-map"
+            "{{ (' '+ name) if name is defined else '' }}"
+            "{{ (' exist-map '+ exist_map_name) if exist_map_name is defined else '' }}"
+            "{{ (' copy-attributes') if copy_attributes|d(False) else '' }}",
+            "result": {
+                "bgp": {
+                    "inject_maps": [
                         {
-                            "cold_boot": "{{ cold_boot.split('cold-boot ')[1] if cold_boot is defined }}",
-                            "nsf_switchover": "{{ nsf_switchover.split('nsf-switchover ')[1] if nsf_switchover is defined }}",
-                            "post_boot": "{{ post_boot.split('post-boot ')[1] if post_boot is defined }}",
-                            "user_initiated": "{{ user_initiated.split('user-initiated ')[1] if user_initiated is defined }}",
+                            "name": "{{ name }}",
+                            "exist_map_name": "{{ exist_map_name }}",
+                            "copy_attributes": "{{ not not copy_attributes }}",
                         }
                     ]
                 }
             },
         },
         {
-            "name": "neighbor",
+            "name": "bgp.listen.limit",
             "getval": re.compile(
-                r"""\sneighbor*
-                    \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<activate>activate)*
-                    \s*(?P<additional_paths>additional-paths\s(disable|receive|send))*
-                    \s*(?P<advertise>advertise\sadditional-paths\sall\sbest\s\d+\sgroup-best|advertise\sadditional-paths\sbest\s\d+\sgroup-best|advertise\sadditional-paths\sall\sgroup-best|advertise\sbest-external|advertise\sdiverse-path\sbackup\smpath|advertise\sdiverse-path\sbackup|advertise\sdiverse-path\smpath)*
-                    \s*(?P<advertisement_interval>advertisement-interval\s\d+)*
-                    \s*(?P<aigp>aigp\ssend\scost-community\s\d+\spoi\sigp-cost\stransitive|aigp\ssend\scost-community\s\d+\spoi\spre-bestpath\stransitive|aigp\ssend\smed|aigp)*
-                    \s*(?P<allow_policy>allow-policy)*
-                    \s*(?P<allowas_in>allowas-in\s\d+)*
-                    \s*(?P<as_override>as-override)*
-                    \s*(?P<bmp_activate>bmp-activate\s(all|server\s\d+))*
-                    \s*(?P<capability>capability\s(both|receive|send))*
-                    \s*(?P<cluster_id>cluster-id\s\S+)*
-                    \s*(?P<default_originate>default-originate\sroute-map|default-originate)*
-                    \s*(?P<description>description\s\S.+)*
-                    \s*(?P<disable_connected_check>disable-connected-check)*
-                    \s*(?P<distribute_list>distribute-list\s\d+\s(in|out))*
-                    \s*(?P<dmzlink_bw>dmzlink-bw)*
-                    \s*(?P<ebgp_multihop>(ebgp-multihop\s\d+|ebgp-multihop))*
-                    \s*(?P<fall_over>fall-over\s((bfd\s(single-hop|multi-hop)|bfd)|route-map\s\S+))*
-                    \s*(?P<filter_list>filter-list\s\d+\s(in|out))*
-                    \s*(?P<ha_mode>ha-mode\s(graceful-restart\sdisable|graceful-restart))*
-                    \s*(?P<inherit>inherit\speer-session\s\S+)*
-                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as))*
-                    \s*(?P<log_neighbor_changes>log-neighbor-changes\sdisable|log-neighbor-changes)*
-                    \s*(?P<maximum_prefix>maximum-prefix\s(\d+\s\d+\s(restart\s\d+|warning-only)|\d+\s(restart\s\d+|warning-only)))*
-                    \s*(?P<next_hop_self>next-hop-self\sall|next-hop-self)*
-                    \s*(?P<next_hop_unchanged>next-hop-unchanged\sallpaths|next-hop-unchanged)*
-                    \s*(?P<password>password\s\S+)*
-                    \s*(?P<path_attribute>path-attribute\s(discard\srange\s\d+\s\d+\sin|discard\s\d+\sin)|path-attribute\s(treat-as-withdraw\srange\s\d+\s\d+\sin|treat-as-withdraw\s\d+\sin))*
-                    \s*(?P<peer_group>peer-group\s\S+)*
-                    \s*(?P<remote_as>remote-as\s\d+)*
-                    \s*(?P<remove_private_as>remove-private-as\sall\sreplace-as|remove-private-as\sall|remove-private-as)*
-                    \s*(?P<route_map>route-map\s\S+\s(in|out))*
-                    \s*(?P<route_reflector_client>route-reflector-client)*
-                    \s*(?P<route_server_client>route-server-client\scontext\s\S+|route-server-client)*
-                    \s*(?P<send_community>send-community\s(both|extended|standard)|send-community)*
-                    #\s*(?P<send_label>send-label\sexplicit-null|send-label)*
-                    \s*(?P<soft_reconfiguration>soft-reconfiguration\sinbound)*
-                    \s*(?P<slow_peer>slow-peer\s(detection.*|split-update-group.*))*
-                    \s*(?P<timers>(timers\s\d+\s\d+\s\d+|timers\s\d+\s\d+))*
-                    \s*(?P<transport>(transport\s(connection-mode\sactive|connection-mode\spassive)|transport\smulti-session|transport\s(path-mtu-discovery\sdisable|path-mtu-discovery)))*
-                    \s*(?P<ttl_security>ttl-security\shops\s\d+)*
-                    \s*(?P<unsuppress_map>unsuppress-map\s\S+)*
-                    \s*(?P<version>version\s\d+)*
-                    \s*(?P<weight>weight\s\d+)*
-                    $""",
+                r"""
+                \sbgp\slisten\slimit
+                (\s(?P<limit>\d+))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_neighbor,
-            "compval": "neighbor",
+            "setval": "bgp listen limit {{ bgp.listen.limit|string }}",
+            "result": {"bgp": {"listen": {"limit": "{{ limit }}"}}},
+        },
+        {
+            "name": "bgp.listen.range",
+            "getval": re.compile(
+                r"""
+                \sbgp\slisten\srange
+                (\s(?P<host_with_subnet>\S+))?
+                (\speer-group\s(?P<peer_group>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp listen range"
+            "{{ (' '+ bgp.listen.range.host_with_subnet) if bgp.listen.range.host_with_subnet is defined else '' }}"
+            "{{ (' peer-group '+ bgp.listen.range.peer_group) if bgp.listen.range.peer_group is defined else '' }}",
             "result": {
-                "neighbor": [
-                    {
-                        "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                        "ipv6_address": "{{ neighbor if ':' in neighbor and '.' in neighbor }}",
-                        "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
-                        "activate": "{{ True if activate is defined }}",
-                        "additional_paths": {
-                            "disable": "{{ True if additional_paths is defined and 'disable' in additional_paths }}",
-                            "receive": "{{ True if additional_paths is defined and 'receive' in additional_paths }}",
-                            "send": "{{ True if additional_paths is defined and 'send' in additional_paths }}",
-                        },
-                        "advertise": {
-                            "additional_paths": {
-                                "all": "{{ True if advertise is defined and 'additional-paths' in advertise and 'all' in advertise }}",
-                                "best": "{{\
-                                    advertise.split('best ')[1].split(' ')[0] if advertise is defined and\
-                                        'additional-paths' in advertise and 'best' in advertise }}",
-                                "group_best": "{{ True if advertise is defined and 'additional-paths' in advertise and 'group-best' in advertise }}",
-                            },
-                            "best_external": "{{ True if advertise is defined and 'best-external' in advertise }}",
-                            "diverse_path": {
-                                "backup": "{{ True if advertise is defined and 'diverse-path' in advertise and 'backup' in advertise }}",
-                                "mpath": "{{ True if advertise is defined and 'diverse-path' in advertise and 'mpath' in advertise }}",
-                            },
-                        },
-                        "advertisement_interval": "{{ advertisement_interval.split('advertisement-interval ')[1] if advertisement_interval is defined }}",
-                        "aigp": {
-                            "enable": "{{ True if aigp is defined and aigp.split(' ')|length == 1 }}",
-                            "send": {
-                                "cost_community": {
-                                    "id": "{{ aigp.split('send cost-community ')[1].split(' ')[0] if aigp is defined and 'send cost-community' in aigp }}",
-                                    "poi": {
-                                        "igp_cost": "{{ True if aigp is defined and 'poi igp-cost' in aigp }}",
-                                        "pre_bestpath": "{{ True if aigp is defined and 'poi pre-bestpath' in aigp }}",
-                                        "transitive": "{{ True if aigp is defined and 'transitive' in aigp }}",
-                                    },
-                                },
-                                "med": "{{ True if aigp is defined and 'send med' in aigp }}",
-                            },
-                        },
-                        "allow_policy": "{{ True if allow_policy is defined }}",
-                        "allowas_in": "{{ allowas_in.split('allowas-in ')[1] if allowas_in is defined }}",
-                        "as_override": "{{ True if as_override is defined }}",
-                        "bmp_activate": {
-                            "all": "{{ True if bmp_activate is defined and 'all' in bmp_activate }}",
-                            "server": "{{ bmp_activate.split('server ')[1] if bmp_activate is defined and 'server' in bmp_activate }}",
-                        },
-                        "capability": {
-                            "both": "{{ True if capability is defined and 'both' in capability }}",
-                            "receive": "{{ True if capability is defined and 'receive' in capability }}",
-                            "send": "{{ True if capability is defined and 'send' in capability }}",
-                        },
-                        "cluster_id": "{{ cluster_id.split('cluster-id ')[1] if bmp_activate is defined }}",
-                        "default_originate": {
-                            "set": "{{ True if default_originate is defined and default_originate.split(' ')|length == 1 }}",
-                            "route_map": "{{ default_originate.split(' ')[1] if default_originate is defined and default_originate.split(' ')|length > 1 }}",
-                        },
-                        "description": "{{ description.split('description ')[1] if description is defined }}",
-                        "disable_connected_check": "{{ True if disable_connected_check is defined }}",
-                        "distribute_list": {
-                            "acl": "{{ distribute_list.split(' ')[1] if distribute_list is defined }}",
-                            "in": "{{ True if distribute_list is defined and 'in' in distribute_list }}",
-                            "out": "{{ True if distribute_list is defined and 'out' in distribute_list }}",
-                        },
-                        "dmzlink_bw": "{{ True if dmzlink_bw is defined }}",
+                "bgp": {
+                    "listen": {
+                        "range": {
+                            "host_with_subnet": "{{ host_with_subnet }}",
+                            "peer_group": "{{ peer_group }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.log_neighbor_changes",
+            "getval": re.compile(
+                r"""\s(bgp\slog-neighbor-changes)""", re.VERBOSE
+            ),
+            "setval": "bgp log-neighbor-changes",
+            "result": {"bgp": {"log_neighbor_changes": True}},
+        },
+        {
+            "name": "bgp.maxas_limit",
+            "getval": re.compile(
+                r"""
+                \sbgp\smaxas-limit
+                (\s(?P<maxas_limit>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp maxas-limit {{ bgp.maxas_limit|string }}",
+            "result": {"bgp": {"maxas_limit": "{{ maxas_limit }}"}},
+        },
+        {
+            "name": "bgp.maxcommunity_limit",
+            "getval": re.compile(
+                r"""
+                \sbgp\smaxcommunity-limit
+                (\s(?P<maxcommunity_limit>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp maxcommunity-limit {{ bgp.maxcommunity_limit|string }}",
+            "result": {
+                "bgp": {"maxcommunity_limit": "{{ maxcommunity_limit }}"}
+            },
+        },
+        {
+            "name": "bgp.maxextcommunity_limit",
+            "getval": re.compile(
+                r"""
+                \sbgp\smaxextcommunity-limit
+                (\s(?P<maxextcommunity_limit>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp maxextcommunity-limit {{ bgp.maxextcommunity_limit|string }}",
+            "result": {
+                "bgp": {"maxextcommunity_limit": "{{ maxextcommunity_limit }}"}
+            },
+        },
+        {
+            "name": "bgp.nexthop.route_map",
+            "getval": re.compile(
+                r"""
+                \sbgp\snexthop\sroute-map
+                (\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nexthop route-map {{ bgp.nexthop.route_map }}",
+            "result": {"bgp": {"nexthop": {"route_map": "{{ route_map }}"}}},
+        },
+        {
+            "name": "bgp.nexthop.trigger.delay",
+            "getval": re.compile(
+                r"""
+                \sbgp\snexthop\strigger\sdelay
+                (\s(?P<delay>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nexthop trigger delay {{ bgp.nexthop.trigger.delay|string }}",
+            "result": {
+                "bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}
+            },
+        },
+        {
+            "name": "bgp.nexthop.trigger.enable",
+            "getval": re.compile(
+                r"""
+                \sbgp\snexthop\strigger\senable
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nexthop trigger enable",
+            "result": {"bgp": {"nexthop": {"trigger": {"enable": True}}}},
+        },
+        {
+            "name": "bgp.nopeerup_delay_options.cold_boot",
+            "getval": re.compile(
+                r"""
+                \sbgp\snopeerup-delay\scold-boot
+                (\s(?P<cold_boot>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nopeerup-delay cold-boot {{ bgp.nopeerup_delay_options.cold_boot|string }}",
+            "result": {
+                "bgp": {
+                    "nopeerup_delay_options": {"cold_boot": "{{ cold_boot }}"}
+                }
+            },
+        },
+        {
+            "name": "bgp.nopeerup_delay_options.post_boot",
+            "getval": re.compile(
+                r"""
+                \sbgp\snopeerup-delay\spost-boot
+                (\s(?P<post_boot>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nopeerup-delay post-boot {{ bgp.nopeerup_delay_options.post_boot|string }}",
+            "result": {
+                "bgp": {
+                    "nopeerup_delay_options": {"post_boot": "{{ post_boot }}"}
+                }
+            },
+        },
+        {
+            "name": "bgp.nopeerup_delay_options.nsf_switchover",
+            "getval": re.compile(
+                r"""
+                \sbgp\snopeerup-delay\snsf-switchover
+                (\s(?P<nsf_switchover>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nopeerup-delay nsf-switchover {{ bgp.nopeerup_delay_options.nsf_switchover|string }}",
+            "result": {
+                "bgp": {
+                    "nopeerup_delay_options": {
+                        "nsf_switchover": "{{ nsf_switchover }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.nopeerup_delay_options.user_initiated",
+            "getval": re.compile(
+                r"""
+                \sbgp\snopeerup-delay\suser-initiated
+                (\s(?P<user_initiated>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp nopeerup-delay user-initiated {{ bgp.nopeerup_delay_options.user_initiated|string }}",
+            "result": {
+                "bgp": {
+                    "nopeerup_delay_options": {
+                        "user_initiated": "{{ user_initiated }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.recursion",
+            "getval": re.compile(
+                r"""
+                \sbgp\srecursion\shost
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp recursion host",
+            "result": {"bgp": {"recursion": True}},
+        },
+        {
+            "name": "bgp.redistribute_internal",
+            "getval": re.compile(
+                r"""
+                \sbgp\sredistribute-internal
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp redistribute-internal",
+            "result": {"bgp": {"redistribute_internal": True}},
+        },
+        {
+            "name": "bgp.refresh.max_eor_time",
+            "getval": re.compile(
+                r"""
+                \sbgp\srefresh\smax-eor-time
+                (\s(?P<max_eor_time>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp refresh max-eor-time {{ bgp.refresh.max_eor_time|string }}",
+            "result": {
+                "bgp": {"refresh": {"max_eor_time": "{{ max_eor_time }}"}}
+            },
+        },
+        {
+            "name": "bgp.refresh.stalepath_time",
+            "getval": re.compile(
+                r"""
+                \sbgp\srefresh\sstalepath-time
+                (\s(?P<stalepath_time>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp refresh stalepath-time {{ bgp.refresh.stalepath_time|string }}",
+            "result": {
+                "bgp": {"refresh": {"stalepath_time": "{{ stalepath_time }}"}}
+            },
+        },
+        {
+            "name": "bgp.regexp",
+            "getval": re.compile(
+                r"""
+                \sbgp\sregexp\sdeterministic
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp regexp deterministic",
+            "result": {"bgp": {"regexp": True}},
+        },
+        {
+            "name": "bgp.router_id",
+            "getval": re.compile(
+                r"""
+                \sbgp\srouter-id
+                (\s(?P<address>\S+))?
+                (\sinterface\s(?P<interface>\S+))?
+                (\svrf\s(?P<vrf>auto-assign))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp router-id"
+            "{{ (' ' + bgp.router_id.address) if bgp.router_id.address is defined else '' }}"
+            "{{ (' interface ' + bgp.router_id.interface) if bgp.router_id.interface is defined else '' }}"
+            "{{ (' vrf auto-assign') if bgp.router_id.vrf|d(False) else '' }}",
+            "result": {
+                "bgp": {
+                    "router_id": {
+                        "address": "{{ address }}",
+                        "interface": "{{ interface }}",
+                        "vrf": "{{ not not vrf }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.scan_time",
+            "getval": re.compile(
+                r"""
+                \sbgp\sscan-time
+                (\s(?P<scan_time>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp scan-time {{ bgp.scan_time|string }}",
+            "result": {"bgp": {"scan_time": "{{ scan_time }}"}},
+        },
+        {
+            "name": "bgp.slow_peer.detection.set",
+            "getval": re.compile(
+                r"""
+                \sbgp\sslow-peer\sdetection
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp slow-peer detection",
+            "result": {"bgp": {"slow_peer": {"detection": {"set": True}}}},
+        },
+        {
+            "name": "bgp.slow_peer.detection.threshold",
+            "getval": re.compile(
+                r"""
+                \sbgp\sslow-peer\sdetection\sthreshold
+                (\s(?P<threshold>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp slow-peer detection threshold {{ bgp.slow_peer.detection.threshold|string }}",
+            "result": {
+                "bgp": {
+                    "slow_peer": {
+                        "detection": {"threshold": "{{ threshold }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.slow_peer.split_update_group",
+            "getval": re.compile(
+                r"""
+                \sbgp\sslow-peer\ssplit-update-group
+                (\s(?P<dynamic>dynamic))?
+                (\s(?P<permanent>permanent))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp slow-peer split-update-group"
+            "{{ (' dynamic') if bgp.slow_peer.split_update_group.dynamic|d(False) else '' }}"
+            "{{ (' permanent') if bgp.slow_peer.split_update_group.permanent|d(False) else '' }}",
+            "result": {
+                "bgp": {
+                    "slow_peer": {
+                        "split_update_group": {
+                            "dynamic": "{{ not not dynamic }}",
+                            "permanent": "{{ not not permanent }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "bgp.snmp",
+            "getval": re.compile(
+                r"""
+                \sbgp\ssnmp\straps\sadd-type
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp snmp traps add-type",
+            "result": {"bgp": {"snmp": True}},
+        },
+        {
+            "name": "bgp.sso",
+            "getval": re.compile(
+                r"""
+                \sbgp\ssso\sroute-refresh-enable
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp sso route-refresh-enable",
+            "result": {"bgp": {"sso": True}},
+        },
+        {
+            "name": "bgp.soft_reconfig_backup",
+            "getval": re.compile(
+                r"""
+                \sbgp\ssoft-reconfig-backup
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp soft-reconfig-backup ",
+            "result": {"bgp": {"soft_reconfig_backup": True}},
+        },
+        {
+            "name": "bgp.suppress_inactive",
+            "getval": re.compile(
+                r"""
+                \sbgp\ssuppress-inactive
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp suppress-inactive",
+            "result": {"bgp": {"suppress_inactive": True}},
+        },
+        {
+            "name": "bgp.transport",
+            "getval": re.compile(
+                r"""
+                \sbgp\stransport\spath-mtu-discovery
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp transport path-mtu-discovery",
+            "result": {"bgp": {"transport": True}},
+        },
+        {
+            "name": "bgp.update_delay",
+            "getval": re.compile(
+                r"""
+                \sbgp\supdate-delay
+                (\s(?P<update_delay>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp update-delay {{ bgp.update_delay|string }}",
+            "result": {"bgp": {"update_delay": "{{ update_delay }}"}},
+        },
+        {
+            "name": "bgp.update_group",
+            "getval": re.compile(
+                r"""
+                \sbgp\supdate-group\ssplit\sas-override
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp update-group split as-override",
+            "result": {"bgp": {"update_group": True}},
+        },
+        {
+            "name": "bgp.upgrade_cli.set",
+            "getval": re.compile(
+                r"""
+                \sbgp\supgrade-cli
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp upgrade-cli",
+            "result": {"bgp": {"update_group": {"set": True}}},
+        },
+        {
+            "name": "bgp.upgrade_cli.af_mode",
+            "getval": re.compile(
+                r"""
+                \sbgp\supgrade-cli\saf-mode
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "bgp upgrade-cli af-mode",
+            "result": {"bgp": {"update_group": {"af_mode": True}}},
+        },
+        # bgp ends
+        # neighbor remote-as starts
+        {
+            "name": "neighbor_address",
+            "getval": re.compile(
+                r"""
+                \sneighbordel(?P<neighbor_address>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}",
+            "result": {"del_neighbor": True},
+        },
+        {
+            "name": "remote_as",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \sremote-as\s(?P<remote_as>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' remote-as ' + remote_as|string) if remote_as is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remote_as": "{{ remote_as }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "peer_group",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \speer-group\s(?P<peer_group>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' peer-group ' + peer_group) if peer_group|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "peer_group": "{{ peer_group }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "bmp_activate",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \s(?P<bmp_activate>bmp-activate)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} bmp-activate",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "bmp_activate": "{{ not not bmp_activate }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "cluster_id",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \s(?P<cluster_id>cluster-id)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} cluster-id",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "cluster_id": "{{ not not cluster_id }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "description",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \sdescription\s(?P<description>.+$)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} description"
+            "{{ (' ' + description) if description is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "description": "{{ description }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "disable_connected_check",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \s(?P<disable_connected_check>disable-connected-check)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} disable-connected-check",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "disable_connected_check": "{{ not not disable_connected_check }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "ebgp_multihop",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \s(?P<enable>ebgp_multihop)
+                (\s(?P<hop_count>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ebgp-multihop"
+            "{{ (' ' + hop_count|string) if hop_count is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
                         "ebgp_multihop": {
-                            "enable": "{{ True if ebgp_multihop is defined and ebgp_multihop.split(' ')|length == 1 }}",
-                            "hop_count": "{{ ebgp_multihop.split(' ')[1] if ebgp_multihop is defined and len(ebgp_multihop.split(' ')) > 1 }}",
-                        },
+                            "enable": "{{ not not enable }}",
+                            "hop_count": "{{ hop_count }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "fall_over.bfd",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sfall-over
+                \s(?P<set>bfd)
+                (\s(?P<multi_hop>multi-hop))?
+                (\s(?P<single_hop>single-hop))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} fall-over"
+            "{{ (' bfd') if fall_over.bfd.set is defined else '' }}"
+            "{{ (' multi-hop') if fall_over.bfd.multi_hop is defined else '' }}"
+            "{{ (' single-hop') if fall_over.bfd.single_hop is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
                         "fall_over": {
                             "bfd": {
-                                "set": "{{ True if fall_over is defined and\
-                                    'bfd' in fall_over and 'single-hop' not in fall_over and 'multi-hop' not in fall_over }}",
-                                "multi_hop": "{{ True if fall_over is defined and 'bfd' in fall_over and 'multi-hop' in fall_over }}",
-                                "single_hop": "{{ True if fall_over is defined and 'bfd' in fall_over and 'single-hop' in fall_over }}",
-                            },
-                            "route_map": "{{ fall_over.split('fall-over route-map ')[1] if fall_over is defined and 'route-map' in fall_over }}",
-                        },
-                        "filter_list": {
-                            "acl": "{{ filter_list.split(' ')[1] if filter_list is defined }}",
-                            "in": "{{ True if filter_list is defined and 'in' in filter_list }}",
-                            "out": "{{ True if filter_list is defined and 'out' in filter_list }}",
-                        },
+                                "set": "{{ not not set }}",
+                                "multi_hop": "{{ not not multi_hop }}",
+                                "single_hop": "{{ not not single_hop }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "fall_over.route_map",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sroute-map
+                \s(?P<route_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} route-map {{ fall_over.route_map }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "fall_over": {"route_map": "{{ not not route_map }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "ha_mode",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sha-mode
+                \s(?P<set>graceful-restart)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ha-mode"
+            "{{ (' graceful-restart') if ha_mode.set is defined else '' }}"
+            "{{ (' disable') if ha_mode.disable is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
                         "ha_mode": {
-                            "set": "{{ True if ha_mode is defined and 'disable' not in ha_mode }}",
-                            "disable": "{{ True if ha_mode is defined and 'disable' in ha_mode }}",
-                        },
-                        "inherit": "{{ inherit.split('inherit peer-session ')[1] if inherit is defined }}",
+                            "set": "{{ not not set }}",
+                            "disable": "{{ not not disable }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "inherit",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s(?P<inherit>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} inherit peer-session"
+            "{{ (' ' + inherit) if inherit is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"inherit": "{{ inherit }}"}
+                }
+            },
+        },
+        {
+            "name": "local_as",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
+                (\s(?P<number>\S+))?
+                (\s(?P<dual_as>dual-as))?
+                (\s(?P<no_prepend>no-prepend))?
+                (\s(?P<replace_as>replace-as))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} local-as"
+            "{{ (' ' + local_as.number) if local_as.number is defined else '' }}"
+            "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
+            "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
+            "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
                         "local_as": {
-                            "set": "{{ True if local_as is defined and local_as.split(' ')|length == 1 }}",
-                            "number": "{{ local_as.split(' ')[1] if local_as is defined and local_as.split(' ')|length > 1 }}",
-                            "dual_as": "{{ True if local_as is defined and local_as.split(' ')|length > 2 and 'dual-as' in local_as }}",
+                            "set": "{{ not not local_as }}",
+                            "number": "{{ number }}",
+                            "dual_as": "{{ not not dual_as }}",
                             "no_prepend": {
-                                "set": "{{\
-                                    True if local_as is defined and\
-                                        local_as.split(' ')|length > 2 and 'no-prepend' in local_as and\
-                                            'replace-as' not in local_as }}",
-                                "replace_as": "{{ True if local_as is defined and\
-                                    local_as.split(' ')|length > 2 and 'no-prepend' in local_as and 'replace-as' in local_as }}",
+                                "set": "{{ not not no_prepend }}",
+                                "replace_as": "{{ not not replace_as }}",
                             },
-                        },
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "log_neighbor_changes",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \s(?P<set>log-neighbor-changes)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' log-neighbor-changes') if log_neighbor_changes.set is defined else '' }}"
+            "{{ (' disable') if log_neighbor_changes.disable is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
                         "log_neighbor_changes": {
-                            "set": "{{ True if log_neighbor_changes is defined and 'disable' not in log_neighbor_changes }}",
-                            "disable": "{{ True if log_neighbor_changes is defined and 'disable' in log_neighbor_changes }}",
+                            "set": "{{ not not set }}",
+                            "disable": "{{ not not disable }}",
                         },
-                        "maximum_prefix": {
-                            "max_no": "{{ maximum_prefix.split(' ')[1] if maximum_prefix is defined }}",
-                            "threshold_val": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and\
-                                maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
-                            "restart": "{{ maximum_prefix.split('restart ')[1] if maximum_prefix is defined and 'restart' in maximum_prefix }}",
-                            "warning_only": "{{ True if maximum_prefix is defined and 'warning-only' in maximum_prefix }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "password_options",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\spassword
+                \s(?P<encryption>\d+)
+                (\s(?P<pass_key>.$))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} password"
+            "{{ (' '+ password_options.encryption|string) if password_options.encryption is defined else '' }}"
+            "{{ (' '+ password_options.pass_key) if password_options.pass_key is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "password_options": {
+                            "encryption": "{{ encryption }}",
+                            "pass_key": "{{ pass_key }}",
                         },
-                        "next_hop_self": {
-                            "set": "{{ True if next_hop_self is defined and next_hop_self.split(' ')|length == 1 }}",
-                            "all": "{{ True if next_hop_self is defined and next_hop_self.split(' ')|length > 1 }}",
-                        },
-                        "next_hop_unchanged": {
-                            "set": "{{ True if next_hop_unchanged is defined and next_hop_unchanged.split(' ')|length == 1 }}",
-                            "allpaths": "{{ True if next_hop_unchanged is defined and next_hop_unchanged.split(' ')|length > 1 }}",
-                        },
-                        "password": "{{ password.split(' ')[1] if password is defined }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "path_attribute.discard",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\spath-attribute\sdiscard
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} path-attribute discard"
+            "{{ (' ' + type) if path_attribute.discard.type is defined else '' }}"
+            "{{ (' range '+ path_attribute.discard.range.start|string) if spath_attribute.discard.range.start is defined else '' }}"
+            "{{ (' '+ path_attribute.discard.range.end|string) if spath_attribute.discard.range.end is defined else '' }}"
+            "{{ (' in') if path_attribute.discard.in|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
                         "path_attribute": {
                             "discard": {
-                                "type": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                    path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                "type": "{{ type }}",
                                 "range": {
-                                    "start": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                    "end": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                    "start": "{{ start }}",
+                                    "end": "{{ end }}",
                                 },
-                                "in": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                    'in' in path_attribute %}{{ True }}{% endif %}",
-                            },
+                                "in": "{{ not not in }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "path_attribute.treat_as_withdraw",  # TODO
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\spath-attribute\streat-as-withdraw
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} path-attribute treat-as-withdraw"
+            "{{ (' ' + type) if path_attribute.treat_as_withdraw.type is defined else '' }}"
+            "{{ (' range '+ path_attribute.treat_as_withdraw.range.start|string) if spath_attribute.treat_as_withdraw.range.start is defined else '' }}"
+            "{{ (' '+ path_attribute.treat_as_withdraw.range.end|string) if spath_attribute.treat_as_withdraw.range.end is defined else '' }}"
+            "{{ (' in') if path_attribute.treat_as_withdraw.in|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "path_attribute": {
                             "treat_as_withdraw": {
-                                "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                    path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
+                                "type": "{{ type }}",
                                 "range": {
-                                    "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                    "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                        path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
+                                    "start": "{{ start }}",
+                                    "end": "{{ end }}",
                                 },
-                                "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                    'in' in path_attribute %}{{ True }}{% endif %}",
-                            },
-                        },
-                        "peer_group": "{{ listen.split('peer-group ')[1] if listen is defined and 'peer-group' in listen }}",
-                        "remote_as": "{{ remote_as.split('remote-as ')[1] if remote_as is defined }}",
-                        "remove_private_as": {
-                            "set": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length == 1 }}",
-                            "all": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and 'all' in remove_private_as }}",
-                            "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
-                                'replace-as' in remove_private_as }}",
-                        },
-                        "route_map": {
-                            "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
-                            "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
-                            "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
-                        },
-                        "route_reflector_client": "{{ True if route_reflector_client is defined }}",
-                        "route_server_client": {
-                            "set": "{{ True if route_server_client is defined and route_server_client.split(' ')|length == 1 }}",
-                            "context": "{{ route_server_client.split('route-server-client context ')[1] if route_server_client is defined }}",
-                        },
-                        "send_community": {
-                            "set": "{{ True if send_community is defined and send_community.split(' ')|length == 1 }}",
-                            "both": "{{ True if send_community is defined and 'both' in send_community }}",
-                            "extended": "{{ True if send_community is defined and 'extended' in send_community }}",
-                            "standard": "{{ True if send_community is defined and 'standard' in send_community }}",
-                        },
-                        "send_label": {
-                            "set": "{{ True if send_label is defined and send_label.split(' ')|length == 1 }}",
-                            "explicit_null": "{{ True if send_label is defined and 'explicit-null' in send_label }}",
-                        },
-                        "slow_peer": {
-                            "detection": {
-                                "enable": "{{ True if slow_peer is defined and 'disable' not in slow_peer and 'threshold' not in slow_peer }}",
-                                "disable": "{{ True if slow_peer is defined and 'disable' in slow_peer }}",
-                                "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
-                            },
-                            "split_update_group": {
-                                "dynamic": {
-                                    "enable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
-                                        'disable' not in slow_peer and 'threshold' not in slow_peer }}",
-                                    "disable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'disable' in slow_peer }}",
-                                    "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'permanent' in slow_peer }}",
-                                },
-                                "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
-                            },
-                        },
-                        "soft_reconfiguration": "{{ True if soft_reconfiguration is defined }}",
-                        "timers": {
-                            "interval": "{{ timers.split(' ')[1] if timers is defined }}",
-                            "holdtime": "{{ timers.split(' ')[2] if timers is defined }}",
-                            "min_holdtime": "{{ timers.split(' ')[3] if timers is defined and timers.split(' ')|length > 3 }}",
-                        },
-                        "translate_update": {
-                            "set": "{{ True if translate_update is defined and translate_update.split(' ')|length == 1 }}",
-                            "nlri": {
-                                "multicast": "{{ True if translate_update is defined and 'nlri multicast' in translate_update }}",
-                                "unicast": "{{ True if translate_update is defined and 'nlri unicast' in translate_update }}",
-                            },
-                        },
-                        "transport": {
-                            "connection_mode": {
-                                "active": "{{ True if transport is defined and 'connection-mode active' in transport }}",
-                                "passive": "{{ True if transport is defined and 'connection-mode passive' in transport }}",
-                            },
-                            "multi_session": "{{ True if transport is defined and 'multi-session' in transport }}",
-                            "path_mtu_discovery": {
-                                "set": "{{ True if transport is defined and 'path-mtu-discovery' in transport and 'disable' not in transport }}",
-                                "disable": "{{ True if transport is defined and 'path-mtu-discovery' in transport and 'disable' in transport }}",
-                            },
-                        },
-                        "ttl_security": "{{ ttl_security.split('ttl-security hops ')[1] if ttl_security is defined }}",
-                        "unsuppress_map": "{{ unsuppress_map.split('unsuppress-map ')[1] if unsuppress_map is defined }}",
-                        "version": "{{ version.split('version ')[1] if version is defined }}",
-                        "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
+                                "in": "{{ not not in }}",
+                            }
+                        }
                     }
-                ]
+                }
             },
         },
         {
-            "name": "redistribute",
+            "name": "shutdown",
             "getval": re.compile(
-                r"""\s*redistribute*
-                        \s*(?P<application>application\s\S+\smetric\s\d+\sroute-map\s\S+|application\s\S+\s(metric\s\d+|route-map\s\S+))*
-                        \s*(?P<bgp>bgp\s\d+\smetric\s\d+\sroute-map\s\S+|bgp\s\d+\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<connected>connected\s(metric\s\d+\sroute-map\s\S+|metric\s\d+))*
-                        \s*(?P<eigrp>eigrp\s\d+\smetric\s\d+\sroute-map\s\S+|eigrp\s\d+\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<isis>isis\s\S+\sclns\smetric\s\d+\sroute-map\s\S+|isis\s\S+\sip\smetric\s\d+\sroute-map\s\S+|isis\s\S+\s(clns|ip)\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<iso_igrp>iso-igrp\s\S+\sroute-map\s\S+|iso-igrp\s\S+)*
-                        \s*(?P<lisp>lisp\smetric\s\d+\sroute-map\s\S+|lisp\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<mobile>mobile\smetric\s\d+\sroute-map\s\S+|mobile\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<odr>odr\smetric\s\d+\sroute-map\s\S+|odr\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<ospf>ospf\s\d+(\s.*))*
-                        \s*(?P<ospfv3>ospfv3\s\d+(\s.*))*
-                        \s*(?P<rip>rip\smetric\s\d+\sroute-map\s\S+|rip\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<static>static\sclns\smetric\s\d+\sroute-map\s\S+|static\sip\smetric\s\d+\sroute-map\s\S+|static\s(clns|ip)\s(metric\s\d+\sroute-map\s\S+))*
-                        \s*(?P<vrf>vrf\s\S+|vrf\sglobal)*
-                    $""",
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sshutdown
+                (\sgraceful(?P<graceful>\d+))?
+                (\scommunity(?P<community>\d+))?
+                (\s(?P<local_preference>local-preference))?
+                $""",
                 re.VERBOSE,
             ),
-            "compval": "redistribute",
-            "setval": _tmplt_redistribute,
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' shutdown') if shutdown.set is defined else '' }}"
+            "{{ (' graceful '+ shutdown.graceful|string) if shutdown.graceful is defined else '' }}"
+            "{{ (' community '+ shutdown.community|string) if shutdown.community is defined else '' }}"
+            "{{ (' local-preference') if shutdown.local_preference|d(False) else '' }}",
             "result": {
-                "redistribute": [
-                    {
-                        "application": {
-                            "name": "{{ application.split(' ')[1] if application is defined }}",
-                            "metric": "{{ application.split('metric ')[1].split(' ')[0] if application is defined and 'metric' in application }}",
-                            "route_map": "{{ application.split('route-map ')[1].split(' ')[0] if application is defined and 'route-map' in application }}",
-                        },
-                        "bgp": {
-                            "as_number": "{{ bgp.split(' ')[1] if bgp is defined }}",
-                            "metric": "{{ bgp.split('metric ')[1].split(' ')[0] if bgp is defined and 'metric' in bgp }}",
-                            "route_map": "{{ bgp.split('route-map ')[1].split(' ')[0] if bgp is defined and 'route-map' in bgp }}",
-                        },
-                        "connected": {
-                            "metric": "{{ connected.split('metric ')[1].split(' ')[0] if connected is defined and 'metric' in connected }}",
-                            "route_map": "{{ connected.split('route-map ')[1].split(' ')[0] if connected is defined and 'route-map' in connected }}",
-                        },
-                        "eigrp": {
-                            "as_number": "{{ eigrp.split(' ')[1] if eigrp is defined }}",
-                            "metric": "{{ eigrp.split('metric ')[1].split(' ')[0] if eigrp is defined and 'metric' in eigrp }}",
-                            "route_map": "{{ eigrp.split('route-map ')[1].split(' ')[0] if eigrp is defined and 'route-map' in eigrp }}",
-                        },
-                        "isis": {
-                            "area_tag": "{{ isis.split(' ')[1] if isis is defined }}",
-                            "clns": "{{ True if isis is defined and 'clns' in isis }}",
-                            "ip": "{{ True if isis is defined and 'ip' in isis }}",
-                            "metric": "{{ isis.split('metric ')[1].split(' ')[0] if isis is defined and 'metric' in isis }}",
-                            "route_map": "{{ isis.split('route-map ')[1].split(' ')[0] if isis is defined and 'route-map' in isis }}",
-                        },
-                        "iso_igrp": {
-                            "area_tag": "{{ iso_igrp.split(' ')[1] if iso_igrp is defined }}",
-                            "route_map": "{{ iso_igrp.split('route-map ')[1].split(' ')[0] if iso_igrp is defined and 'route-map' in iso_igrp }}",
-                        },
-                        "lisp": {
-                            "metric": "{{ lisp.split('metric ')[1].split(' ')[0] if lisp is defined and 'metric' in lisp }}",
-                            "route_map": "{{ lisp.split('route-map ')[1].split(' ')[0] if lisp is defined and 'route-map' in lisp }}",
-                        },
-                        "mobile": {
-                            "metric": "{{ mobile.split('metric ')[1].split(' ')[0] if mobile is defined and 'metric' in mobile }}",
-                            "route_map": "{{ mobile.split('route-map ')[1].split(' ')[0] if mobile is defined and 'route-map' in mobile }}",
-                        },
-                        "odr": {
-                            "metric": "{{ odr.split('metric ')[1].split(' ')[0] if odr is defined and 'metric' in odr }}",
-                            "route_map": "{{ odr.split('route-map ')[1].split(' ')[0] if odr is defined and 'route-map' in odr }}",
-                        },
-                        "ospf": {
-                            "process_id": "{{ ospf.split(' ')[1] if ospf is defined }}",
-                            "match": {
-                                "external": "{{ True if ospf is defined and 'external' in ospf }}",
-                                "internal": "{{ True if ospf is defined and 'internal' in ospf }}",
-                                "nssa_external": "{{ True if ospf is defined and 'nssa-external' in ospf }}",
-                                "type_1": "{{ True if ospf is defined and '1' in ospf }}",
-                                "type_2": "{{ True if ospf is defined and '2' in ospf }}",
-                            },
-                            "metric": "{{ ospf.split('metric ')[1].split(' ')[0] if ospf is defined and 'metric' in ospf }}",
-                            "route_map": "{{ ospf.split('route-map ')[1].split(' ')[0] if ospf is defined and 'route-map' in ospf }}",
-                            "vrf": "{{ ospf.split('vrf ')[1].split(' ')[0] if ospf is defined and 'vrf' in ospf }}",
-                        },
-                        "ospfv3": {
-                            "process_id": "{{ ospfv3.split(' ')[1] if ospf is defined }}",
-                            "match": {
-                                "external": "{{ True if ospfv3 is defined and 'external' in ospfv3 }}",
-                                "internal": "{{ True if ospfv3 is defined and 'internal' in ospfv3 }}",
-                                "nssa_external": "{{ True if ospfv3 is defined and 'nssa-external' in ospfv3 }}",
-                                "type_1": "{{ True if ospfv3 is defined and '1' in ospfv3 }}",
-                                "type_2": "{{ True if ospfv3 is defined and '2' in ospfv3 }}",
-                            },
-                            "metric": "{{ ospfv3.split('metric ')[1].split(' ')[0] if ospfv3 is defined and 'metric' in ospfv3 }}",
-                            "route_map": "{{ ospfv3.split('route-map ')[1].split(' ')[0] if ospfv3 is defined and 'route-map' in ospfv3 }}",
-                            "vrf": "{{ ospfv3.split('vrf ')[1].split(' ')[0] if ospfv3 is defined and 'vrf' in ospfv3 }}",
-                        },
-                        "rip": {
-                            "metric": "{{ rip.split('metric ')[1].split(' ')[0] if rip is defined and 'metric' in rip }}",
-                            "route_map": "{{ rip.split('route-map ')[1].split(' ')[0] if rip is defined and 'route-map' in rip }}",
-                        },
-                        "static": {
-                            "clns": "{{ True if static is defined and 'clns' in static }}",
-                            "ip": "{{ True if static is defined and 'ip' in static }}",
-                            "metric": "{{ static.split('metric ')[1].split(' ')[0] if static is defined and 'metric' in static }}",
-                            "route_map": "{{ static.split('route-map ')[1].split(' ')[0] if static is defined and 'route-map' in static }}",
-                        },
-                        "vrf": {
-                            "name": "{{ vrf.split('vrf ')[1].split(' ')[0] if vrf is defined and 'vrf' in vrf and 'global' not in vrf }}",
-                            "global": "{{ True if vrf is defined and 'vrf' in vrf and 'global' in vrf }}",
-                        },
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "shutdown": {
+                            "set": True,
+                            "graceful": "{{ graceful }}",
+                            "community": "{{ community }}",
+                            "local_preference": "{{ not not local_preference }}",
+                        }
                     }
-                ]
+                }
             },
         },
         {
-            "name": "route_server_context",
+            "name": "soft_reconfiguration",
             "getval": re.compile(
-                r"""\s*(?P<route_server_context>route-server-context\s\S+)""",
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration\sinbound
+                $""",
                 re.VERBOSE,
             ),
-            "compval": "route_server_context",
-            "setval": "",
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' soft-reconfiguration inbound') if soft_reconfiguration|d(False) else '' }}",
             "result": {
-                "route_server_context": "{{ route_server_context.split('route-server-context ')[1] if route_server_context is defined }}"
-            },
-        },
-        {
-            "name": "synchronization",
-            "getval": re.compile(
-                r"""\s*(?P<synchronization>synchronization)""", re.VERBOSE
-            ),
-            "compval": "synchronization",
-            "setval": "synchronization",
-            "result": {
-                "synchronization": "{{ Trues if synchronization is defined }}"
-            },
-        },
-        {
-            "name": "table_map",
-            "getval": re.compile(
-                r"""\s*(?P<table_map>route-server-context\s\S+)""", re.VERBOSE
-            ),
-            "compval": "table_map",
-            "setval": "",
-            "result": {
-                "table_map": "{{ table_map.split('route-server-context ')[1] if table_map is defined }}"
+                "neighbors": {
+                    "{{ neighbor_address }}": {"soft_reconfiguration": True}
+                }
             },
         },
         {
             "name": "timers",
             "getval": re.compile(
-                r"""\s*(?P<timers>timers\sbgp\s\d+\s\d+\s\d+)""", re.VERBOSE
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stimers
+                (\s(?P<interval>\d+))?
+                (\s(?P<holdtime>\d+))?
+                (\s(?P<min_holdtime>\d+))?
+                $""",
+                re.VERBOSE,
             ),
-            "compval": "timers",
-            "setval": _tmplt_bgp_timers,
+            "setval": "neighbor {{ neighbor_address }} timers"
+            "{{ (' ' + timers.interval|string) if timers.interval is defined else '' }}"
+            "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
+            "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
             "result": {
-                "timers": {
-                    "keepalive": "{{ timers.split(' ')[2] if timers is defined }}",
-                    "holdtime": "{{ timers.split(' ')[3] if timers is defined }}",
-                    "min_holdtime": "{{ timers.split(' ')[4] if timers is defined and timers.split(' ')|length > 4 }}",
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "timers": {
+                            "interval": "{{ interval }}",
+                            "holdtime": "{{ holdtime }}",
+                            "min_holdtime": "{{ min_holdtime }}",
+                        }
+                    }
                 }
             },
         },
+        {
+            "name": "transport.connection_mode",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stransport\sconnection-mode
+                (\s(?P<active>active))?
+                (\s(?P<passive>passive))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport connection-mode"
+            "{{ (' active') if transport.connection_mode.active|d(False) else '' }}"
+            "{{ (' passive') if transport.connection_mode.passive|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "transport": {
+                            "connection_mode": {
+                                "active": "{{ not not active }}",
+                                "passive": "{{ not not passive }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "transport.multi_session",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stransport\smulti-session
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport multi-session",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "transport": {"multi_session": True},
+                    }
+                }
+            },
+        },
+        {
+            "name": "transport.path_mtu_discovery",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stransport\spath-mtu-discovery
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport"
+            "{{ (' path-mtu-discovery') if transport.path_mtu_discovery.set|d(False) else '' }}"
+            "{{ (' disable') if transport.path_mtu_discovery.disable|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "transport": {
+                            "path_mtu_discovery": {
+                                "set": True,
+                                "disable": "{{ not not disable }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "ttl_security",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sttl-security
+                (\shops(?P<ttl_security>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ttl-security"
+            "{{ (' hops '+ ttl_security|string) if ttl_security is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "ttl_security": "{{ ttl_security }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "unsuppress_map",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sunsuppress-map
+                (\s(?P<unsuppress_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} unsuppress-map"
+            "{{ (' ' + unsuppress_map) if unsuppress_map is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "unsuppress_map": "{{ unsuppress_map }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "update_source",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\supdate-source
+                (\s(?P<update_source>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} update-source"
+            "{{ (' ' + update_source) if update_source is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "update_source": "{{ update_source }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "version",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sversion
+                (\s(?P<version>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} version"
+            "{{ (' ' + version|string) if version is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "version": "{{ version }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "weight",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sweight
+                (\s(?P<weight>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} weight"
+            "{{ (' ' + weight|string) if weight is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"weight": "{{ weight }}"}
+                }
+            },
+        },
+        # neighbor remote-as ends
+        # neighbor peer-group starts
+        {
+            "name": "activate",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sactivate
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' activate') if activate|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "activate": True,
+                        "neighbor_address": "{{ neighbor_address }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "additional_paths",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadditional-paths
+                (\s(?P<disable>disable))?
+                (\s(?P<receive>receive))?
+                (\s(?P<send>send))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} additional-paths"
+            "{{ (' disable') if  additional_paths.disable|d(False) else '' }}"
+            "{{ (' receive') if additional_paths.receive|d(False) else '' }}"
+            "{{ (' send') if additional_paths.send|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "additional_paths": {
+                            "disable": "{{ not not disable }}",
+                            "receive": "{{ not not receive }}",
+                            "send": "{{ not not send }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertise.additional_paths",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sadditional-paths
+                (\s(?P<all>all))?
+                (\sbest\s(?P<receive>\d+))?
+                (\s(?P<group_best>group-best))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} advertise additional-paths"
+            "{{ (' all') if  advertise.additional_paths.all|d(False) else '' }}"
+            "{{ (' best '+ best|string) if advertise.additional_paths.best|d(False) else '' }}"
+            "{{ (' group-best') if advertise.additional_paths.group_best|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise": {
+                            "additional_paths": {
+                                "all": "{{ not not all }}",
+                                "best": "{{ receive }}",
+                                "group_best": "{{ not not group_best }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertise.best_external",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sbest-external
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' advertise best-external') if  advertise.best_external|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise": {"best-external": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertise.diverse_path",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sdiverse-path
+                (\s(?P<backup>backup))?
+                (\s(?P<mpath>mpath))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} advertise diverse-path"
+            "{{ (' backup') if  advertise.diverse_path.backup|d(False) else '' }}"
+            "{{ (' mpath') if advertise.diverse_path.mpath|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise": {
+                            "diverse_path": {
+                                "backup": "{{ not not backup }}",
+                                "mpath": "{{ not not mpath }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertise_map",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadvertise-map
+                (\s(?P<name>\S+))?
+                (\sexist-map\s(?P<exist_map>\S+))?
+                (\snon-exist-map\s(?P<non_exist_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} advertise-map"
+            "{{ (' ' + name) if  advertise_map.name is defined else '' }}"
+            "{{ (' exist-map ' + exist_map) if  advertise_map.exist_map is defined else '' }}"
+            "{{ (' non-exist-map ' + non_exist_map) if advertise_map.non_exist_map is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertise_map": {
+                            "name": "{{ name }}",
+                            "exist_map": "{{ exist_map }}",
+                            "non_exist_map": "{{ non_exist_map }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertisement_interval",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sadvertisement-interval
+                (\s(?P<advertisement_interval>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} advertisement-interval"
+            "{{ (' ' + advertisement_interval|string) if advertisement_interval is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "advertisement_interval": "{{ advertisement_interval }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "aigp",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\saigp
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' aigp') if aigp.enable|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"aigp": {"enable": True}}
+                }
+            },
+        },
+        {
+            "name": "aigp.send.cost_community",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\saigp\ssend\scost-community
+                (\s(?P<id>\d+))\spoi
+                (\s(?P<igp_cost>igp-cost))?
+                (\s(?P<pre_bestpath>pre-bestpath))?
+                (\s(?P<transitive>transitive))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} aigp send cost-community"
+            "{{ (' ' + aigp.send.cost_community.id|string + ' poi') if  aigp.send.cost_community.id is defined else '' }}"
+            "{{ (' igp-cost') if  aigp.send.cost_community.poi.igp_cost|d(False) else '' }}"
+            "{{ (' pre-bestpath') if  aigp.send.cost_community.poi.pre_bestpath|d(False) else '' }}"
+            "{{ (' transitive') if  aigp.send.cost_community.poi.transitive|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "aigp": {
+                            "send": {
+                                "cost_community": {
+                                    "id": "{{ id }}",
+                                    "poi": {
+                                        "igp_cost": "{{ not not igp_cost }}",
+                                        "pre_bestpath": "{{ not not pre_bestpath }}",
+                                        "transitive": "{{ not not transitive }}",
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "aigp.send.med",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\saigp\ssend\smed
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' aigp send med') if aigp.send.med|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"aigp": {"send": {"med": True}}}
+                }
+            },
+        },
+        {
+            "name": "allow_policy",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sallow-policy
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' allow-policy') if allow_policy|d(False) else '' }}",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"allow_policy": True}}
+            },
+        },
+        {
+            "name": "allowas_in",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sallowas-in
+                (\s(?P<allowas_in>\d+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' allowas-in ' + allowas_in|string) if allowas_in is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "allowas_in": "{{ allowas_in }}"
+                    }
+                }
+            },
+        },
+        {
+            "name": "as_override",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sas-override
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' as-override') if as_override|d(False) else '' }}",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"as_override": True}}
+            },
+        },
+        {
+            "name": "bmp_activate",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sbmp-activate
+                (\sserver\s(?P<server>\d+))?
+                (\s(?P<all>all))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} bmp-activate"
+            "{{ (' server '+ bmp_activate.server|string) if bmp_activate.server is defined else '' }}"
+            "{{ (' all') if bmp_activate.all|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "bmp_activate": {
+                            "server": "{{ server }}",
+                            "all": "{{ not not  all }}",
+                        },
+                    }
+                }
+            },
+        },
+        {
+            "name": "capability",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\scapability\sorf\sprefix-list
+                (\s(?P<both>both))?
+                (\s(?P<receive>receive))?
+                (\s(?P<send>send))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} capability orf prefix-list"
+            "{{ (' both') if capability.both|d(False) else '' }}"
+            "{{ (' receive') if capability.receive|d(False) else '' }}"
+            "{{ (' send') if capability.send|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "capability": {
+                            "both": "{{ not not both }}",
+                            "receive": "{{ not not receive }}",
+                            "send": "{{ not not  send }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "default_originate",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' default-originate') if default_originate.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "default_originate": {"set": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "default_originate.route_map",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                (\sroute-map\s(?P<route_map>\S+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} default-originate"
+            "{{ (' route-map' + default_originate.route_map) if default_originate.route_map is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "default-originate": {"route_map": "{{ route_map }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "distribute_list",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sdistribute-list
+                (\s(?P<acl>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} distribute-list"
+            "{{ (' ' + distribute_list.acl) if distribute_list.acl is defined else '' }}"
+            "{{ (' in') if distribute_list.in|d(False) else '' }}"
+            "{{ (' out') if distribute_list.out|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "distribute_list": {
+                            "acl": "{{ acl }}",
+                            "in": "{{ not not in }}",
+                            "out": "{{ not not out }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "dmzlink_bw",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sdmzlink-bw
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' dmzlink-bw') if dmzlink_bw|d(False) else '' }}",
+            "result": {
+                "neighbors": {"{{ neighbor_address }}": {"dmzlink_bw": True}}
+            },
+        },
+        {
+            "name": "filter_list",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sfilter-list
+                (\s(?P<acl>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} filter-list"
+            "{{ (' ' + filter_list.path_acl) if filter_list.path_acl is defined else '' }}"
+            "{{ (' in') if filter_list.in|d(False) else '' }}"
+            "{{ (' out') if filter_list.out|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "filter_list": {
+                            "path_acl": "{{ acl }}",
+                            "in": "{{ not not in }}",
+                            "out": "{{ not not out }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "maximum_prefix",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
+                (\s(?P<max_no>\d+))
+                (\s(?P<threshold_val>\d+))?
+                (\srestart(?P<restart>\d+))?
+                (\s(?P<warning_only>warning-only))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} maximum-prefix"
+            "{{ (' ' + maximum_prefix.max_no|string) if maximum_prefix.max_no is defined else '' }}"
+            "{{ (' ' + maximum_prefix.threshold_val|string) if maximum_prefix.threshold_val is defined else '' }}"
+            "{{ (' restart ' + maximum_prefix.restart|string) if maximum_prefix.restart is defined else '' }}"
+            "{{ (' warning-only') if maximum_prefix.warning_only|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "maximum_prefix": {
+                            "max_no": "{{ max_no }}",
+                            "threshold_val": "{{ threshold_val }}",
+                            "restart": "{{ restart }}",
+                            "warning_only": "{{ not not warning_only }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "next_hop_self.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\snext-hop-self
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-self') if next_hop_self.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_self": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "next_hop_self.all",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\snext-hop-self\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-self all') if next_hop_self.all|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"next_hop_self": {"all": True}}
+                }
+            },
+        },
+        {
+            "name": "next_hop_unchanged.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-unchanged') if next_hop_unchanged.set|d(False) else ''}}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "next_hop_unchanged": {"set": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "next_hop_unchanged.allpaths",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged\sallpaths
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-unchanged allpaths') if next_hop_unchanged.allpaths|d(False) else ''}}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "next_hop_unchanged": {"allpaths": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "remove_private_as.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as') if remove_private_as.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"set": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "remove_private_as.all",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as all') if remove_private_as.all|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"all": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "remove_private_as.replace_as",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sreplace-as
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as replace-as') if remove_private_as.replace_as|d(False) else ''}}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {"replace_as": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_maps",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sroute-map
+                (\s(?P<route_maps>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ route_maps.neighbor_address }} route-map"
+            "{{ (' ' + route_maps.name) if route_maps.name is defined else '' }}"
+            "{{ (' in') if route_maps.in|d(False) else '' }}"
+            "{{ (' out') if route_maps.out|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "route_maps": [
+                            {
+                                "name": "{{ route_maps }}",
+                                "in": "{{ not not in }}",
+                                "out": "{{ not not out }}",
+                            }
+                        ]
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_reflector_client",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sroute-reflector-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' route-reflector-client') if route_reflector_client|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "neighbor_address": "{{ neighbor_address }}",
+                        "route_reflector_client": True,
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_server_client.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' route-server-client') if route_server_client.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "route_server_client": {"set": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_server_client.context",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                (\scontext(?P<context>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} route-server-client"
+            "{{ (' context ' + route_server_client.context) if route_server_client.context is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "route_server_client": {"context": "{{ context }}"}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssend-community
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' send-community') if send_community.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_community": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "send_community.both",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sboth
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' both') if send_community.both|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "send_community": {"both": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.extended",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sextended
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' extended') if send_community.extended|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "send_community": {"extended": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.standard",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sstandard
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' standard') if send_community.standard|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "send_community": {"standard": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_label.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\ssend-label
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' send-label') if send_label.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {"send_label": {"set": True}}
+                }
+            },
+        },
+        {
+            "name": "send_label.explicit_null",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sexplicit-null
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-label"
+            "{{ (' explicit-null') if send_label.explicit_null|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "send_label": {"explicit_null": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "slow_peer.detection",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
+                (\s(?P<enable>enable))?
+                (\s(?P<disable>disable))?
+                (\sthreshold\s(?P<threshold>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} slow-peer detection"
+            "{{ (' enable') if slow_peer.detection.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer.detection.disable|d(False) else '' }}"
+            "{{ (' threshold ' + slow_peer.detection.threshold|string) if slow_peer.detection.threshold is defined else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "slow_peer": {
+                            "detection": {
+                                "enable": "{{ not not enable }}",
+                                "disable": "{{ not not disable }}",
+                                "threshold": "{{ threshold }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "slow_peer.split_update_group",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
+                (\s(?P<static>static))?
+                (\s(?P<dynamic>dynamic))?
+                (\s(?P<disable>disable))?
+                (\s(?P<permanent>permanent))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} slow-peer split-update-group"
+            "{{ (' static') if slow_peer.split_update_group.static|d(False) else '' }}"
+            "{{ (' dynamic') if slow_peer.split_update_group.dynamic.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer.split_update_group.dynamic.disable|d(False) else '' }}"
+            "{{ (' permanent') if slow_peer.split_update_group.dynamic.permanent|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "slow_peer": {
+                            "split_update_group": {
+                                "static": "{{ not not static }}",
+                                "dynamic": {
+                                    "enable": "{{ not not dynamic }}",
+                                    "disable": "{{ not not disable }}",
+                                    "permanent": "{{ not not permanent }}",
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "translate_update.set",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stranslate-update
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' translate_update') if translate_update.set|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "translate_update": {"set": True}
+                    }
+                }
+            },
+        },
+        {
+            "name": "translate_update.nlri",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)\stranslate-update\snlri
+                (\s(?P<multicast>multicast))?
+                (\s(?P<unicast>unicast))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} translate-update nlri"
+            "{{ (' multicast') if translate_update.nlri.multicast|d(False) else '' }}"
+            "{{ (' unicast') if translate_update.nlri.unicast|d(False) else '' }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "translate_update": {
+                            "nlri": {
+                                "multicast": "{{ not not multicast }}",
+                                "unicast": "{{ not not unicast }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        # neighbor peer-group ends
+        # redistribute starts
+        {
+            "name": "application",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sapplication\s(?P<name>\S+)
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute application {{ application.name }}"
+            "{{ (' metric ' + application.metric|string) if application.metric is defined else '' }}"
+            "{{ (' route-map ' + application.route_map) if application.route_map is defined else '' }}",
+            "remval": "redistribute application {{ application.name }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "application": {
+                            "name": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "bgp",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sbgp\s(?P<name>\S+)
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute bgp {{ bgp.name }}"
+            "{{ (' metric ' + bgp.metric|string) if bgp.metric is defined else '' }}"
+            "{{ (' route-map ' + bgp.route_map) if bgp.route_map is defined else '' }}",
+            "remval": "redistribute bgp {{ bgp.name }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "bgp": {
+                            "name": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "connected",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sconnected
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute connected"
+            "{{ (' metric ' + connected.metric|string) if connected.metric is defined else '' }}"
+            "{{ (' route-map ' + connected.route_map) if connected.route_map is defined else '' }}",
+            "remval": "redistribute connected",
+            "result": {
+                "redistribute": [
+                    {
+                        "connected": {
+                            "set": True,
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "eigrp",
+            "getval": re.compile(
+                r"""
+                \sredistribute\seigrp\s(?P<name>\S+)
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute eigrp {{ eigrp.name|string }}"
+            "{{ (' metric ' + eigrp.metric|string) if eigrp.metric is defined else '' }}"
+            "{{ (' route-map ' + eigrp.route_map) if eigrp.route_map is defined else '' }}",
+            "remval": "redistribute eigrp {{ eigrp.name|string }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "eigrp": {
+                            "as_number": "{{ name }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "isis",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sisis\s(?P<name>\S+)
+                (\s(?P<clns>clns))?
+                (\s(?P<ip>ip))?
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute isis {{ isis.area_tag }}"
+            "{{ (' clns') if isis.clns|d(False) else '' }}"
+            "{{ (' ip') if isis.ip|d(False) else '' }}"
+            "{{ (' metric ' + isis.metric|string) if isis.metric is defined else '' }}"
+            "{{ (' route-map ' + isis.route_map) if isis.route_map is defined else '' }}",
+            "remval": "redistribute isis {{ isis.area_tag }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "isis": {
+                            "area_tag": "{{ name }}",
+                            "clns": "{{ not not clns }}",
+                            "ip": "{{ not not ip }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "iso_igrp",
+            "getval": re.compile(
+                r"""
+                \sredistribute\siso-igrp\s(?P<name>\S+)
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute iso-igrp {{ iso_igrp.area_tag }}"
+            "{{ (' route-map ' + iso_igrp.route_map) if iso_igrp.route_map is defined else '' }}",
+            "remval": "redistribute iso-igrp {{ iso_igrp.area_tag }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "iso_igrp": {
+                            "area_tag": "{{ name }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "lisp",
+            "getval": re.compile(
+                r"""
+                \sredistribute\slisp
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute lisp"
+            "{{ (' metric ' + lisp.metric|string) if lisp.metric is defined else '' }}"
+            "{{ (' route-map ' + lisp.route_map) if lisp.route_map is defined else '' }}",
+            "remval": "redistribute lisp",
+            "result": {
+                "redistribute": [
+                    {
+                        "lisp": {
+                            "set": True,
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "mobile",
+            "getval": re.compile(
+                r"""
+                \sredistribute\smobile
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute mobile"
+            "{{ (' metric ' + mobile.metric|string) if mobile.metric is defined else '' }}"
+            "{{ (' route-map ' + mobile.route_map) if mobile.route_map is defined else '' }}",
+            "remval": "redistribute mobile",
+            "result": {
+                "redistribute": [
+                    {
+                        "mobile": {
+                            "set": True,
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "odr",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sodr
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute odr"
+            "{{ (' metric ' + odr.metric|string) if odr.metric is defined else '' }}"
+            "{{ (' route-map ' + odr.route_map) if odr.route_map is defined else '' }}",
+            "remval": "redistribute odr",
+            "result": {
+                "redistribute": [
+                    {
+                        "odr": {
+                            "set": True,
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "ospf",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sospf\s(?P<process_id>\S+)
+                (\s(?P<type_1>1))?
+                (\s(?P<type_2>2))?
+                (\s(?P<external>external))?
+                (\s(?P<internal>internal))?
+                (\s(?P<nssa_external>nssa-external))?
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                (\svrf\s(?P<vrf>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute ospf {{ ospf.process_id }}"
+            "{{ (' 1') if ospf.match.type_1|d(False) else '' }}"
+            "{{ (' 2') if ospf.match.type_2|d(False) else '' }}"
+            "{{ (' external') if ospf.match.external|d(False) else '' }}"
+            "{{ (' internal') if ospf.match.internal|d(False) else '' }}"
+            "{{ (' nssa-external') if ospf.match.nssa_external|d(False) else '' }}"
+            "{{ (' metric ' + ospf.metric|string) if ospf.metric is defined else '' }}"
+            "{{ (' route-map ' + ospf.route_map) if ospf.route_map is defined else '' }}"
+            "{{ (' vrf ' + ospf.vrf) if ospf.vrf is defined else '' }}",
+            "remval": "redistribute ospf {{ ospf.process_id }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "ospf": {
+                            "process_id": "{{ process_id }}",
+                            "match": {
+                                "type_1": "{{ not not type_1 }}",
+                                "type_2": "{{ not not type_2 }}",
+                                "external": "{{ not not external }}",
+                                "internal": "{{ not not internal }}",
+                                "nssa_external": "{{ not not nssa_external }}",
+                            },
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                            "vrf": "{{ vrf }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "ospfv3",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sospfv3\s(?P<process_id>\S+)
+                (\s(?P<type_1>1))?
+                (\s(?P<type_2>2))?
+                (\s(?P<external>external))?
+                (\s(?P<internal>internal))?
+                (\s(?P<nssa_external>nssa-external))?
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute ospfv3 {{ ospfv3.process_id }}"
+            "{{ (' 1') if ospfv3.match.type_1|d(False) else '' }}"
+            "{{ (' 2') if ospfv3.match.type_2|d(False) else '' }}"
+            "{{ (' external') if ospfv3.match.external|d(False)  else '' }}"
+            "{{ (' internal') if ospfv3.match.internal|d(False)  else '' }}"
+            "{{ (' nssa-external') if ospfv3.match.nssa_external|d(False) else '' }}"
+            "{{ (' metric ' + ospfv3.metric|string) if ospfv3.metric is defined else '' }}"
+            "{{ (' route-map ' + ospfv3.route_map) if ospfv3.route_map is defined else '' }}",
+            "remval": "redistribute ospfv3 {{ ospfv3.process_id }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "ospfv3": {
+                            "process_id": "{{ process_id }}",
+                            "match": {
+                                "type_1": "{{ not not type_2 }}",
+                                "type_2": "{{ not not type_2 }}",
+                                "external": "{{ not not external }}",
+                                "internal": "{{ not not internal }}",
+                                "nssa_external": "{{ not not nssa_external }}",
+                            },
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "rip",
+            "getval": re.compile(
+                r"""
+                \sredistribute\srip
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute rip"
+            "{{ (' metric ' + rip.metric|string) if rip.metric is defined else '' }}"
+            "{{ (' route-map ' + rip.route_map) if rip.route_map is defined else '' }}",
+            "remval": "redistribute rip",
+            "result": {
+                "redistribute": [
+                    {
+                        "rip": {
+                            "set": True,
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "static",
+            "getval": re.compile(
+                r"""
+                \sredistribute\sstatic
+                (\s(?P<clns>clns))?
+                (\s(?P<ip>ip))?
+                (\smetric\s(?P<metric>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute static"
+            "{{ (' clns') if static.clns|d(False) else '' }}"
+            "{{ (' ip') if static.ip|d(False) else '' }}"
+            "{{ (' metric ' + static.metric|string) if static.metric is defined else '' }}"
+            "{{ (' route-map ' + static.route_map) if static.route_map is defined else '' }}",
+            "remval": "redistribute static",
+            "result": {
+                "redistribute": [
+                    {
+                        "static": {
+                            "set": True,
+                            "clns": "{{ not not clns }}",
+                            "ip": "{{ not not ip }}",
+                            "metric": "{{ metric }}",
+                            "route_map": "{{ route_map }}",
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            "name": "vrf",
+            "getval": re.compile(
+                r"""
+                \sredistribute\svrf
+                (\s(?P<name>\S+))?
+                (\s(?P<global>global))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "redistribute vrf {{ vrf.name }}"
+            "{{ (' global') if vrf.global|d(False) else '' }}",
+            "remval": "redistribute vrf {{ vrf.name }}",
+            "result": {
+                "redistribute": [
+                    {
+                        "vrf": {
+                            "name": "{{ name }}",
+                            "global": "{{ not not global }}",
+                        }
+                    }
+                ]
+            },
+        },
+        # redistribute ends
     ]

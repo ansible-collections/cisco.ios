@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_system
 author: Peter Sprygada (@privateip)
-short_description: Manage the system attributes on Cisco IOS devices
+short_description: Module to manage the system attributes.
 description:
 - This module provides declarative management of node system attributes on Cisco IOS
   devices.  It provides an option to configure host system parameters or remove those
@@ -351,8 +351,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ Main entry point for Ansible module execution
-    """
+    """Main entry point for Ansible module execution"""
     argument_spec = dict(
         hostname=dict(),
         domain_name=dict(type="list", elements="raw"),

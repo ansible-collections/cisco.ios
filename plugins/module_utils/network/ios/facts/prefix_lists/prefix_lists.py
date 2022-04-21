@@ -29,8 +29,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.pref
 
 
 class Prefix_listsFacts(object):
-    """ The cisco.ios prefix_lists facts class
-    """
+    """The cisco.ios prefix_lists facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -38,11 +37,11 @@ class Prefix_listsFacts(object):
 
     def get_prefix_list_data(self, connection):
         return connection.get(
-            "sh running-config | section ^ip prefix-list|^ipv6 prefix-list"
+            "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Prefix_lists network resource
+        """Populate the facts for Prefix_lists network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

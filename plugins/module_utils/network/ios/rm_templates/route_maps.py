@@ -375,7 +375,9 @@ def _tmplt_route_map_set(config_data):
             if set["as_path"].get("prepend"):
                 cmd += " prepend"
                 if set["as_path"]["prepend"].get("as_number"):
-                    cmd += " {as_number}".format(**set["as_path"]["prepend"])
+                    cmd += " {0}".format(
+                        " ".join(set["as_path"]["prepend"].get("as_number"))
+                    )
                 elif set["as_path"]["prepend"].get("last_as"):
                     cmd += " last-as {last_as}".format(
                         **set["as_path"]["prepend"]

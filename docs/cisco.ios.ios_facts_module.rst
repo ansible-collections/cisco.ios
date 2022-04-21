@@ -5,7 +5,7 @@
 cisco.ios.ios_facts
 *******************
 
-**Collect facts from remote devices running Cisco IOS**
+**Module to collect facts from remote devices.**
 
 
 Version added: 1.0.0
@@ -65,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;all&#x27;, &#x27;interfaces&#x27;, &#x27;l2_interfaces&#x27;, &#x27;vlans&#x27;, &#x27;lag_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;l3_interfaces&#x27;, &#x27;acl_interfaces&#x27;, &#x27;static_routes&#x27;, &#x27;acls&#x27;.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;bgp_global&#x27;, &#x27;l3_interfaces&#x27;, &#x27;lag_interfaces&#x27;, &#x27;ntp_global&#x27;, &#x27;acls&#x27;, &#x27;hostname&#x27;, &#x27;interfaces&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;logging_global&#x27;, &#x27;ospf_interfaces&#x27;, &#x27;ospfv2&#x27;, &#x27;prefix_lists&#x27;, &#x27;static_routes&#x27;, &#x27;acl_interfaces&#x27;, &#x27;all&#x27;, &#x27;bgp_address_family&#x27;, &#x27;l2_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;ospfv3&#x27;, &#x27;snmp_server&#x27;, &#x27;vlans&#x27;.</div>
                 </td>
             </tr>
             <tr>
@@ -102,7 +102,7 @@ Parameters
                 <td>
                         <div><b>Deprecated</b></div>
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
-                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>IOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>

@@ -29,8 +29,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf
 
 
 class Ospf_InterfacesFacts(object):
-    """ The cisco.ios ospf_interfaces facts class
-    """
+    """The cisco.ios ospf_interfaces facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -47,10 +46,10 @@ class Ospf_InterfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_ospf_interfaces_data(self, connection):
-        return connection.get("sh running-config | section ^interface")
+        return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Ospf_interfaces network resource
+        """Populate the facts for Ospf_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

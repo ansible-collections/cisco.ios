@@ -320,7 +320,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sversion\s(?P<version>1|3|2c))?
                 (\s(?P<version_option>auth|noauth|priv))?
                 (\svrf\s(?P<vrf>\S+))?
-                (\s(?P<community_string>\w+))?
+                (\s(?P<community_string>[-\w]+))?
                 (\s+(?P<traps>.+$))?
                 """, re.VERBOSE),
             "setval": cmd_option_hosts,
@@ -385,8 +385,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\suser
-                (\s(?P<username>\w+))?
-                (\s(?P<group>\w+))?
+                (\s(?P<username>[-\w]+))?
+                (\s(?P<group>[-\w]+))?
                 (\sremote\s(?P<remote>\S+))?
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\s(?P<version>v1|v3|v2c))?
@@ -402,6 +402,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' udp-port ' + udp_port|string) if udp_port is defined else '' }}"
                       "{{ (' ' + version) if version is defined else '' }}"
                       "{{ (' ' + version_option) if version_option is defined else '' }}"
+                      "{{ (' auth ' + authentication.algorithm) if authentication is defined and authentication.algorithm is defined else '' }}"
+                      "{{ (' ' + authentication.password) if authentication is defined and authentication.password is defined else '' }}"
+                      "{{ (' priv ' + encryption.priv) if encryption is defined and encryption.priv is defined else '' }}"
+                      "{{ (' ' + encryption.priv_option) if encryption is defined and encryption.priv_option is defined else '' }}"
+                      "{{ (' ' + encryption.password) if encryption is defined and encryption.password is defined else '' }}"
                       "{{ (' access ' + acl_v4|string) if acl_v4 is defined else '' }}"
                       "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}",
@@ -426,18 +431,18 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\sview
-                (\s(?P<name>\w+))?
-                (\s(?P<family_name>\w+))?
+                (\s(?P<name>[-\w]+))?
+                (\s(?P<family_name>[-\w]+))?
                 (\s(?P<excluded>excluded))?
                 (\s(?P<included>included))?
-                """, re.VERBOSE),
+                $""", re.VERBOSE),
             "setval": "snmp-server view "
                       "{{ name if name is defined else '' }}"
                       "{{ (' ' + family_name) if family_name is defined else '' }}"
                       "{{ ' excluded' if excluded is defined else '' }}"
                       "{{ ' included' if included is defined else '' }}",
             "result": {
-                "users": [
+                "views": [
                     {
                         "name": "{{ name }}",
                         "family_name": "{{ family_name }}",

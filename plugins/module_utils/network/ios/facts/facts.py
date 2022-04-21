@@ -45,7 +45,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_int
     L3_InterfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
-    Acl_InterfacesFacts,
+    Acl_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_RoutesFacts,
@@ -83,6 +83,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_gl
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
+    HostnameFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base import (
     Default,
     Hardware,
@@ -105,7 +108,7 @@ FACT_RESOURCE_SUBSETS = dict(
     lldp_global=Lldp_globalFacts,
     lldp_interfaces=Lldp_InterfacesFacts,
     l3_interfaces=L3_InterfacesFacts,
-    acl_interfaces=Acl_InterfacesFacts,
+    acl_interfaces=Acl_interfacesFacts,
     static_routes=Static_RoutesFacts,
     acls=AclsFacts,
     ospfv2=Ospfv2Facts,
@@ -118,12 +121,12 @@ FACT_RESOURCE_SUBSETS = dict(
     prefix_lists=Prefix_listsFacts,
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
+    hostname=HostnameFacts,
 )
 
 
 class Facts(FactsBase):
-    """ The fact class for ios
-    """
+    """The fact class for ios"""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
     VALID_RESOURCE_SUBSETS = frozenset(FACT_RESOURCE_SUBSETS.keys())
@@ -134,7 +137,7 @@ class Facts(FactsBase):
     def get_facts(
         self, legacy_facts_type=None, resource_facts_type=None, data=None
     ):
-        """ Collect the facts for ios
+        """Collect the facts for ios
         :param legacy_facts_type: List of legacy facts types
         :param resource_facts_type: List of resource fact types
         :param data: previously collected conf

@@ -27,8 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp
 
 
 class Snmp_serverFacts(object):
-    """ The ios snmp_server facts class
-    """
+    """The ios snmp_server facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -60,7 +59,7 @@ class Snmp_serverFacts(object):
             return hosts
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Snmp_server network resource
+        """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

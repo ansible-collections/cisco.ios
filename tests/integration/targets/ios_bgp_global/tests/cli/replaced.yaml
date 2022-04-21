@@ -15,15 +15,15 @@
           as_number: 65000
           bgp:
             advertise_best_external: true
-            bestpath:
-              - med:
-                  confed: true
+            bestpath_options:
+              med:
+                confed: true
             log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
-                cold_boot: 20
+            nopeerup_delay_options:
+              post_boot: 10
+              cold_boot: 20
           neighbor:
-            - address: 192.0.2.1
+            - address: 192.0.2.2
               description: replace neighbor
               remote_as: 100
               slow_peer:
@@ -32,6 +32,7 @@
           redistribute:
             - connected:
                 metric: 10
+                set: true
         state: replaced
 
     - name: Assert that correct set of commands were generated

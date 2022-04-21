@@ -25,8 +25,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 
 
 class VlansFacts(object):
-    """ The ios vlans fact class
-    """
+    """The ios vlans fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class VlansFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_vlans_data(self, connection):
-        """ Checks device is L2/L3 and returns
+        """Checks device is L2/L3 and returns
         facts gracefully. Does not fail module.
         """
         check_os_type = connection.get_device_info()
@@ -52,7 +51,7 @@ class VlansFacts(object):
         return connection.get("show vlan")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for vlans
+        """Populate the facts for vlans
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -148,17 +147,27 @@ class VlansFacts(object):
             conf = list(filter(None, conf.split(" ")))
             config["vlan_id"] = int(conf[0])
             config["name"] = conf[1]
+            state_idx = 2
+            for i in range(2, len(conf)):  # check for index where state starts
+                if conf[i] in ["suspended", "active"]:
+                    state_idx = i
+                    break
+                elif conf[i].split("/")[0] in ["sus", "act"]:
+                    state_idx = i
+                    break
+                config["name"] += " " + conf[i]
             try:
-                if len(conf[2].split("/")) > 1:
-                    if conf[2].split("/")[0] == "sus":
+                if len(conf[state_idx].split("/")) > 1:
+                    _state = conf[state_idx].split("/")[0]
+                    if _state == "sus":
                         config["state"] = "suspend"
-                    elif conf[2].split("/")[0] == "act":
+                    elif _state == "act":
                         config["state"] = "active"
                     config["shutdown"] = "enabled"
                 else:
-                    if conf[2] == "suspended":
+                    if conf[state_idx] == "suspended":
                         config["state"] = "suspend"
-                    elif conf[2] == "active":
+                    elif conf[state_idx] == "active":
                         config["state"] = "active"
                     config["shutdown"] = "disabled"
             except IndexError:
@@ -175,7 +184,14 @@ class VlansFacts(object):
                     remote_span_vlan.append(conf)
                 remote_span = []
                 for each in remote_span_vlan:
-                    remote_span.append(int(each))
+                    split_sp_list = each.split("-")
+                    if len(split_sp_list) > 1:  # break range
+                        for r_sp in range(
+                            int(split_sp_list[0]), int(split_sp_list[1]) + 1
+                        ):
+                            remote_span.append(r_sp)
+                    else:
+                        remote_span.append(int(each))
                 config["remote_span"] = remote_span
 
         return utils.remove_empties(config)

@@ -5,7 +5,7 @@
 cisco.ios.ios_ntp_global
 ************************
 
-**ntp_global resource module**
+**Resource module to configure NTP.**
 
 
 Version added: 2.5.0

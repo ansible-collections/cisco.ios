@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_logging_global` - Added alias to render host under hosts not hostname."

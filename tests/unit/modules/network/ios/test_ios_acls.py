@@ -369,7 +369,7 @@ class TestIosAclsModule(TestIosModule):
                                         grant="permit",
                                         log=dict(user_cookie="testLog"),
                                         protocol="tcp",
-                                        sequence="10",
+                                        sequence=10,
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -381,10 +381,11 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
-                                        sequence="20",
+                                        sequence=20,
                                         source=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
@@ -398,6 +399,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
@@ -417,7 +419,9 @@ class TestIosAclsModule(TestIosModule):
                 state="replaced",
             )
         )
-        self.execute_module(changed=False, commands=[], sort=True)
+        result = self.execute_module(changed=False)
+        command = []
+        self.assertEqual(sorted(result["commands"]), sorted(command))
 
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -484,6 +488,10 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+            Reflexive IP access list MIRROR
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """
@@ -514,6 +522,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
@@ -531,6 +540,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
@@ -554,6 +564,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
+                                        protocol="tcp",
                                         protocol_options=dict(
                                             tcp=dict(ack="true")
                                         ),
@@ -576,7 +587,9 @@ class TestIosAclsModule(TestIosModule):
                 state="overridden",
             )
         )
-        self.execute_module(changed=False, commands=[], sort=True)
+        result = self.execute_module(changed=False)
+        command = []
+        self.assertEqual(sorted(result["commands"]), sorted(command))
 
     def test_ios_acls_deleted_afi_based(self):
         self.execute_show_command.return_value = dedent(
@@ -766,6 +779,43 @@ class TestIosAclsModule(TestIosModule):
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
+    def test_ios_acls_parsed_matches(self):
+        set_module_args(
+            dict(
+                running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
+                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)""",
+                state="parsed",
+            )
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "R1_TRAFFIC",
+                        "acl_type": "standard",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "source": {"host": "10.11.12.13"},
+                            },
+                            {
+                                "sequence": 40,
+                                "grant": "permit",
+                                "source": {
+                                    "address": "128.0.0.0",
+                                    "wildcard_bits": "63.255.255.255",
+                                },
+                            },
+                        ],
+                    }
+                ],
+            }
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
+
     def test_ios_acls_overridden_remark(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -804,6 +854,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
@@ -821,6 +872,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
+                                        protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(echo="true")
                                         ),
@@ -844,6 +896,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
+                                        protocol="tcp",
                                         protocol_options=dict(
                                             tcp=dict(ack="true")
                                         ),
@@ -1166,4 +1219,10 @@ class TestIosAclsModule(TestIosModule):
         )
 
         result = self.execute_module(failed=True)
-        self.assertEqual(result, {"failed": True})
+        self.assertEqual(
+            result,
+            {
+                "msg": "Cannot update existing sequence 10 of ACLs test_acl with state merged. Please use state replaced or overridden.",
+                "failed": True,
+            },
+        )

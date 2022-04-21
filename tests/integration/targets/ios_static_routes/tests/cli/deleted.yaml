@@ -5,7 +5,7 @@
 
 - include_tasks: _remove_config.yaml
 
-- include_tasks: _intial_setup_config.yaml
+- include_tasks: _initial_setup_config.yaml
 
 - block:
 

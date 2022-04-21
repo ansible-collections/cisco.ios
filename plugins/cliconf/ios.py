@@ -21,8 +21,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-cliconf: ios
+author:
+- Ansible Networking Team (@ansible-network)
+name: ios
 short_description: Use ios cliconf to run command on Cisco IOS platform
 description:
 - This ios plugin provides low level abstraction apis for sending and receiving CLI
@@ -37,6 +38,7 @@ options:
       to the device is present in this list, the existing cache is invalidated.
     version_added: 2.0.0
     type: list
+    elements: str
     default: []
     vars:
     - name: ansible_ios_config_commands
@@ -453,9 +455,8 @@ class Cliconf(CliconfBase):
 
             if out is None:
                 raise AnsibleConnectionFailure(
-                    message=u"cli prompt is not identified from the last received"
-                    u" response window: %s"
-                    % self._connection._last_recv_window
+                    message="cli prompt is not identified from the last received"
+                    " response window: %s" % self._connection._last_recv_window
                 )
 
             if re.search(

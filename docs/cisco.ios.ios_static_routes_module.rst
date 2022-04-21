@@ -5,7 +5,7 @@
 cisco.ios.ios_static_routes
 ***************************
 
-**Static routes resource module**
+**Resource module to configure static routes.**
 
 
 Version added: 1.0.0

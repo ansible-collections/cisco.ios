@@ -1,6 +1,6 @@
 #
 # -*- coding: utf-8 -*-
-# Copyright 2019 Red Hat Inc.
+# Copyright 2022 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
 The ios_acl_interfaces class
@@ -14,402 +14,114 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
-    ConfigBase,
+from ansible.module_utils._text import to_text
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
+    Acl_interfacesTemplate,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible.module_utils.six import iteritems
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    remove_duplicate_interface,
-    normalize_interface,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 
 
-class Acl_Interfaces(ConfigBase):
+class Acl_interfaces(ResourceModule):
     """
     The ios_acl_interfaces class
     """
 
-    gather_subset = ["!all", "!min"]
-
-    gather_network_resources = ["acl_interfaces"]
-
     def __init__(self, module):
-        super(Acl_Interfaces, self).__init__(module)
-
-    def get_acl_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
-        :rtype: A dictionary
-        :returns: The current configuration as a dictionary
-        """
-        facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+        super(Acl_interfaces, self).__init__(
+            empty_fact_val={},
+            facts_module=Facts(module),
+            module=module,
+            resource="acl_interfaces",
+            tmplt=Acl_interfacesTemplate(),
         )
-        acl_interfaces_facts = facts["ansible_network_resources"].get(
-            "acl_interfaces"
-        )
-        if not acl_interfaces_facts:
-            return []
-
-        return acl_interfaces_facts
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
+
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        result = {"changed": False}
-        commands = list()
-        warnings = list()
+        if self.state not in ["parsed", "gathered"]:
+            self.generate_commands()
+            self.run_commands()
+        return self.result
 
-        if self.state in self.ACTION_STATES:
-            existing_acl_interfaces_facts = self.get_acl_interfaces_facts()
-        else:
-            existing_acl_interfaces_facts = []
-
-        if self.state in self.ACTION_STATES or self.state == "rendered":
-            commands.extend(self.set_config(existing_acl_interfaces_facts))
-
-        if commands and self.state in self.ACTION_STATES:
-            if not self._module.check_mode:
-                self._connection.edit_config(commands)
-            result["changed"] = True
-
-        if self.state in self.ACTION_STATES:
-            result["commands"] = commands
-
-        if self.state in self.ACTION_STATES or self.state == "gathered":
-            changed_acl_interfaces_facts = self.get_acl_interfaces_facts()
-        elif self.state == "rendered":
-            result["rendered"] = commands
-        elif self.state == "parsed":
-            running_config = self._module.params["running_config"]
-            if not running_config:
-                self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
-                )
-            result["parsed"] = self.get_acl_interfaces_facts(
-                data=running_config
-            )
-        else:
-            changed_acl_interfaces_facts = []
-
-        if self.state in self.ACTION_STATES:
-            result["before"] = existing_acl_interfaces_facts
-            if result["changed"]:
-                result["after"] = changed_acl_interfaces_facts
-        elif self.state == "gathered":
-            result["gathered"] = changed_acl_interfaces_facts
-
-        result["warnings"] = warnings
-
-        return result
-
-    def set_config(self, existing_acl_interfaces_facts):
-        """ Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+    def generate_commands(self):
+        """Select the appropriate function based on the state provided
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        want = self._module.params["config"]
-        if want:
-            for item in want:
-                item["name"] = normalize_interface(item["name"])
+        # convert list of dicts to dicts of dicts
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
-        have = existing_acl_interfaces_facts
-        resp = self.set_state(want, have)
-        return to_list(resp)
+        # turn all lists of dicts into dicts prior to merge
+        for entry in wantd, haved:
+            self._list_to_dict(entry)
 
-    def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
+        # if state is merged, merge want onto have and then compare
+        if self.state == "merged":
+            wantd = dict_merge(haved, wantd)
 
-        state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
-            self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+        # if state is deleted, empty out wantd and set haved to wantd
+        if self.state == "deleted":
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            wantd = {}
+
+        # remove superfluous config
+        if self.state in ["overridden", "deleted"]:
+            for k, have in haved.items():
+                if k not in wantd:
+                    self._compare(want={}, have=have)
+
+        for k, want in wantd.items():
+            self._compare(want=want, have=haved.pop(k, {}))
+
+    def _compare(self, want, have):
+        begin = len(self.commands)
+        self._compare_lists(want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "interface", False)
             )
 
-        if state == "overridden":
-            commands = self._state_overridden(want, have)
-        elif state == "deleted":
-            commands = self._state_deleted(want, have)
-        elif state == "merged" or state == "rendered":
-            commands = self._state_merged(want, have)
-        elif state == "replaced":
-            commands = self._state_replaced(want, have)
+    def _compare_lists(self, want, have):
+        wdict = want.get("access_groups", {})
+        hdict = have.get("access_groups", {})
 
-        return commands
+        for afi in ("ipv4", "ipv6"):
+            wacls = wdict.pop(afi, {}).pop("acls", {})
+            hacls = hdict.pop(afi, {}).pop("acls", {})
 
-    def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
+            for key, entry in wacls.items():
+                if entry != hacls.pop(key, {}):
+                    entry["afi"] = afi
+                    self.addcmd(entry, "access_groups", False)
+            # remove remaining items in have for replaced
+            for entry in hacls.values():
+                entry["afi"] = afi
+                self.addcmd(entry, "access_groups", True)
 
-        for interface in want:
-            for each in have:
-                if each["name"] == interface["name"]:
-                    break
-            else:
-                continue
-            commands.extend(self._clear_config(interface, each, "replaced"))
-            commands.extend(self._set_config(interface, each))
-        # Remove the duplicate interface call
-        commands = remove_duplicate_interface(commands)
-
-        return commands
-
-    def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
-        :param want: the desired configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
-        """
-        commands = []
-
-        for each in have:
-            for interface in want:
-                if each["name"] == interface["name"]:
-                    break
-            else:
-                # We didn't find a matching desired state, which means we can
-                # pretend we recieved an empty desired state.
-                interface = dict(name=each["name"])
-                commands.extend(self._clear_config(interface, each))
-                continue
-            commands.extend(self._clear_config(interface, each, "overridden"))
-            commands.extend(self._set_config(interface, each))
-        # Remove the duplicate interface call
-        commands = remove_duplicate_interface(commands)
-
-        return commands
-
-    def _state_merged(self, want, have):
-        """ The command generator when state is merged
-        :param want: the additive configuration as a dictionary
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to merge the provided into
-                  the current configuration
-        """
-        commands = []
-
-        for interface in want:
-            for each in have:
-                if each["name"] == interface["name"]:
-                    break
-            else:
-                # configuring non-existing interface
-                commands.extend(self._set_config(interface, dict()))
-                continue
-            commands.extend(self._set_config(interface, each))
-
-        return commands
-
-    def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
-        :param want: the objects from which the configuration should be removed
-        :param have: the current configuration as a dictionary
-        :rtype: A list
-        :returns: the commands necessary to remove the current configuration
-                  of the provided objects
-        """
-        commands = []
-
-        if want:
-            for interface in want:
-                for each in have:
-                    if each["name"] == interface["name"]:
-                        break
-                else:
-                    continue
-                commands.extend(self._clear_config(interface, each))
-        else:
-            for each in have:
-                commands.extend(self._clear_config(dict(), each))
-
-        return commands
-
-    def dict_to_set(self, input_dict, test_set, final_set, count=0):
-        # recursive function to convert input dict to set for comparision
-        test_dict = dict()
-        if isinstance(input_dict, dict):
-            input_dict_len = len(input_dict)
-            for k, v in sorted(iteritems(input_dict)):
-                count += 1
-                if isinstance(v, list):
-                    for each in v:
-                        if isinstance(each, dict):
-                            input_dict_len = len(each)
-                            if [
-                                True for i in each.values() if type(i) == list
-                            ]:
-                                self.dict_to_set(each, set(), final_set, count)
-                            else:
-                                self.dict_to_set(each, test_set, final_set, 0)
-                else:
-                    if v is not None:
-                        test_dict.update({k: v})
-                    if (
-                        tuple(iteritems(test_dict)) not in test_set
-                        and count == input_dict_len
-                    ):
-                        test_set.add(tuple(iteritems(test_dict)))
-                        count = 0
-                    if count == input_dict_len + 1:
-                        test_set.update(tuple(iteritems(test_dict)))
-                        final_set.add(tuple(test_set))
-
-    def _set_config(self, want, have):
-        """ Function that sets the acls config based on the want and have config
-        :param want: want config
-        :param have: have config
-        :param acl_want: want acl config
-        :param afi: acl afi type
-        :rtype: A list
-        :returns: the commands generated based on input want/have params
-        """
-        commands = []
-
-        want_set = set()
-        have_set = set()
-        self.dict_to_set(want, set(), want_set)
-        self.dict_to_set(have, set(), have_set)
-
-        for w in want_set:
-            want_afi = dict(w).get("afi")
-            if have_set:
-
-                def common_diff_config_code(diff_list, cmd, commands):
-                    for each in diff_list:
-                        try:
-                            temp = dict(each)
-                            temp_cmd = cmd + " {0} {1}".format(
-                                temp["name"], temp["direction"]
-                            )
-                            if temp_cmd not in commands:
-                                commands.append(temp_cmd)
-                        except ValueError:
-                            continue
-
-                for h in have_set:
-                    have_afi = dict(h).get("afi")
-                    if have_afi == want_afi:
-                        if want_afi == "ipv4":
-                            diff = set(w) - set(h)
-                            if diff:
-                                cmd = "ip access-group"
-                                common_diff_config_code(diff, cmd, commands)
-                        if want_afi == "ipv6":
-                            diff = set(w) - set(h)
-                            if diff:
-                                cmd = "ipv6 traffic-filter"
-                                common_diff_config_code(diff, cmd, commands)
-                        break
-                else:
-                    if want_afi == "ipv4":
-                        diff = set(w) - set(h)
-                        if diff:
-                            cmd = "ip access-group"
-                            common_diff_config_code(diff, cmd, commands)
-                    if want_afi == "ipv6":
-                        diff = set(w) - set(h)
-                        if diff:
-                            cmd = "ipv6 traffic-filter"
-                            common_diff_config_code(diff, cmd, commands)
-            else:
-
-                def common_want_config_code(want, cmd, commands):
-                    for each in want:
-                        if each[0] == "afi":
-                            continue
-                        temp = dict(each)
-                        temp_cmd = cmd + " {0} {1}".format(
-                            temp["name"], temp["direction"]
-                        )
-                        commands.append(temp_cmd)
-
-                if want_afi == "ipv4":
-                    cmd = "ip access-group"
-                    common_want_config_code(w, cmd, commands)
-                if want_afi == "ipv6":
-                    cmd = "ipv6 traffic-filter"
-                    common_want_config_code(w, cmd, commands)
-        commands.sort()
-        if commands:
-            interface = want.get("name")
-            commands.insert(0, "interface {0}".format(interface))
-
-        return commands
-
-    def _clear_config(self, want, have, state=""):
-        """ Function that deletes the acl config based on the want and have config
-        :param acl: acl config
-        :param config: config
-        :rtype: A list
-        :returns: the commands generated based on input acl/config params
-        """
-        commands = []
-
-        if want.get("name"):
-            interface = "interface " + want["name"]
-        else:
-            interface = "interface " + have["name"]
-
-        w_access_group = want.get("access_groups")
-        temp_want_acl_name = []
-        if w_access_group:
-            # get the user input afi and acls
-            for each in w_access_group:
-                want_acls = each.get("acls")
-                if want_acls:
-                    for each in want_acls:
-                        temp_want_acl_name.append(each.get("name"))
-
-        h_access_group = have.get("access_groups")
-        if h_access_group:
-            for access_grp in h_access_group:
-                for acl in access_grp.get("acls"):
-                    acl_name = acl.get("name")
-                    acl_direction = acl.get("direction")
-                    if access_grp.get("afi") == "ipv4":
-                        if acl_name in temp_want_acl_name:
-                            continue
-                        cmd = "no ip access-group"
-                        cmd += " {0} {1}".format(acl_name, acl_direction)
-                        commands.append(cmd)
-                    elif access_grp.get("afi") == "ipv6":
-                        if acl_name in temp_want_acl_name:
-                            continue
-                        cmd = "no ipv6 traffic-filter"
-                        cmd += " {0} {1}".format(acl_name, acl_direction)
-                        commands.append(cmd)
-        if commands:
-            # inserting the interface at first
-            commands.insert(0, interface)
-
-        return commands
+    def _list_to_dict(self, entry):
+        for item in entry.values():
+            for ag in item.get("access_groups", []):
+                ag["acls"] = {
+                    subentry["direction"]: {
+                        "name": to_text(subentry["name"]),
+                        "direction": subentry["direction"],
+                    }
+                    for subentry in ag.get("acls", [])
+                }
+            item["access_groups"] = {
+                subentry["afi"]: subentry
+                for subentry in item.get("access_groups", [])
+            }

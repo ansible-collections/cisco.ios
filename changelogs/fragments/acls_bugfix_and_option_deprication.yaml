@@ -1,9 +1,0 @@
----
-minor_changes:
-  - "`ios_acls` - Added enable_fragment attribute to enable fragments under ace."
-bugfixes:
-  - "`ios_acls` - Fixes protocol_options not rendering command properly when range is specified."
-doc_changes:
-  - "`ios_acls` - Documentation updated with commands used for fetching remarks data under aces."
-deprecated_features:
-  - "`ios_acls` - Deprecated fragment attribute added boolean alternate as enable_fragment."

@@ -28,8 +28,7 @@ The arg spec for the ios_logging_global module
 
 
 class Logging_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_logging_global module
-    """
+    """The arg spec for the ios_logging_global module"""
 
     argument_spec = {
         "config": {
@@ -246,7 +245,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "vrf": {"type": "str"},
                         "xml": {"type": "bool"},
                         "ipv6": {"type": "str"},
-                        "hostname": {"type": "str"},
+                        "host": {"type": "str", "aliases": ["hostname"]},
                     },
                 },
                 "message_counter": {

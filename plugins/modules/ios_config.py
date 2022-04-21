@@ -21,7 +21,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_config
 author: Peter Sprygada (@privateip)
-short_description: Manage Cisco IOS configuration sections
+short_description: Module to manage configuration sections.
 description:
 - Cisco IOS configurations use a simple block indent file syntax for segmenting configuration
   into sections.  This module provides an implementation for working with IOS configuration
@@ -428,8 +428,7 @@ def save_config(module, result):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
     argument_spec = dict(
         src=dict(type="str"),

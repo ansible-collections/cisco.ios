@@ -27,19 +27,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 
 
 class Bgp_address_familyFacts(object):
-    """ The cisco.ios_bgp_address_family facts class
-    """
+    """The cisco.ios_bgp_address_family facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bgp_address_familyArgs.argument_spec
 
     def get_bgp_address_family_data(self, connection):
-        return connection.get("sh running-config | section ^router bgp")
+        return connection.get("show running-config | section ^router bgp")
 
     def _process_facts(self, objs):
-        """ makes data as per the facts after data obtained from parsers
-        """
+        """makes data as per the facts after data obtained from parsers"""
         temp_af = []
         if objs.get("address_family"):
             for k, v in iteritems(objs["address_family"]):
@@ -70,9 +68,21 @@ class Bgp_address_familyFacts(object):
                         set = False
                         temp = utils.remove_empties(temp)
                         for each in neighbor_list:
-                            if neighbor_identifier == each["address"]:
-                                each.update(temp)
-                                set = True
+                            for neighbor_type in [
+                                "address",
+                                "ipv6_adddress",
+                                "tag",
+                            ]:
+                                try:
+                                    if (
+                                        neighbor_identifier
+                                        == each[neighbor_type]
+                                    ):
+                                        each.update(temp)
+                                        set = True
+                                        break
+                                except KeyError:
+                                    continue
                         if not neighbor_list or not set:
                             if alter:
                                 neighbor_list.extend(list(alter.values()))
@@ -83,35 +93,27 @@ class Bgp_address_familyFacts(object):
                     temp, al = {}, {}
                     temp_param, neighbor_identifier = None, None
 
+                    neighbor_type_list = ["address", "ipv6_adddress", "tag"]
+
                     for each in neighbor:
                         if temp_param and not each.get(temp_param) and temp:
                             temp.update({temp_param: temp_param_list})
                             _update_neighor_list(neighbor_list, temp)
                             temp_param_list = []
                             temp = {}
-                        if (
-                            each.get("address")
-                            or each.get("ipv6_address")
-                            or each.get("tag")
-                        ) != neighbor_identifier:
-                            neighbor_identifier = (
-                                each.get("address")
-                                or each.get("ipv6_address")
-                                or each.get("tag")
-                            )
-                            if "address" in each:
-                                temp["address"] = neighbor_identifier
-                            elif "ipv6_address" in each:
-                                temp["ipv6_address"] = neighbor_identifier
-                            else:
-                                temp["tag"] = neighbor_identifier
-                        temp.update(each)
-                        if not al.get(
-                            each.get("address")
-                        ):  # adds multiple nighbors
-                            al[each.get("address")] = each
-                        else:
-                            al.get(each.get("address")).update(each)
+                        for neighbor_type in neighbor_type_list:
+                            try:
+                                temp[neighbor_type] = each[neighbor_type]
+                                temp.update(each)
+                                if not al.get(each.get(neighbor_type)):
+                                    al[each.get(neighbor_type)] = each
+                                else:
+                                    al.get(each.get(neighbor_type)).update(
+                                        each
+                                    )
+                                break
+                            except KeyError:
+                                continue
                         for param in [
                             "prefix_lists",
                             "route_maps",
@@ -140,7 +142,7 @@ class Bgp_address_familyFacts(object):
         return objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

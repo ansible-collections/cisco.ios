@@ -1,0 +1,6 @@
+---
+- name: add ipv6 extra data
+  vars:
+    lines: "ipv6 unicast-routing\nipv6 router eigrp 10\n"
+  ansible.netcommon.cli_config:
+    config: '{{ lines }}'

@@ -49,7 +49,7 @@ class Route_maps(ResourceModule):
         )
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -60,8 +60,8 @@ class Route_maps(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
 
         if self.want:
@@ -100,9 +100,9 @@ class Route_maps(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Route_maps network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Route_maps network resource.
         """
         if want != have and self.state != "deleted":
             self.entries_compare(want, have)

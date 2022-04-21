@@ -5,7 +5,7 @@
 cisco.ios.ios_logging_global
 ****************************
 
-**Logging resource module**
+**Resource module to configure logging.**
 
 
 Version added: 2.2.0
@@ -713,7 +713,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>hostname</b>
+                    <b>host</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -723,6 +723,7 @@ Parameters
                 </td>
                 <td>
                         <div>IP address of the syslog server</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: hostname</div>
                 </td>
             </tr>
             <tr>

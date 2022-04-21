@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -724,6 +724,39 @@ options:
           acl_v4:
             description: Access list ipv4 associated
             type: str
+          authentication:
+            description:
+              - Authentication parameters for the user.
+              - Effects idempotency of module as configuration applied is not reflected
+                in running-config.
+            type: dict
+            suboptions:
+              algorithm:
+                description: Select algorithm for authentication.
+                type: str
+                choices: ["md5", "sha"]
+              password:
+                description:
+                  - Authentication password for user.
+                type: str
+          encryption:
+            description:
+              - Encryption parameters for the user.
+              - Effects idempotency of module as configuration applied is not reflected
+                in running-config.
+            type: dict
+            suboptions:
+              priv:
+                description: Select algorithm for encryption.
+                type: str
+                choices: ["3des", "aes", "des"]
+              priv_option:
+                description: Add extra option for specific priv if any.
+                type: str
+              password:
+                description:
+                  - Authentication password for user.
+                type: str
           group:
             description: SNMP group for the user.
             type: str
@@ -745,10 +778,8 @@ options:
             type: str
           version_option:
             choices:
-              - auth
-              - access
               - encrypted
-            description: community name to the host.
+            description: Enable encrypted version option.
             type: str
           vrf:
             description: The remote SNMP entity's VPN Routing instance
@@ -797,7 +828,7 @@ options:
       - The states I(replaced) and I(overridden) have identical
         behaviour for this module.
     type: str
-short_description: snmp_server resource module
+short_description: Resource module to configure snmp server.
 version_added: 2.6.0
 """
 

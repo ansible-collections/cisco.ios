@@ -48,7 +48,7 @@ class Prefix_lists(ResourceModule):
         self.parsers = ["prefix_list"]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -59,8 +59,8 @@ class Prefix_lists(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = {entry["afi"]: entry for entry in self.want}
 
@@ -121,9 +121,9 @@ class Prefix_lists(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Prefix_lists network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Prefix_lists network resource.
         """
         if want != have and self.state != "deleted":
             for k, v in iteritems(want["prefix_lists"]):
@@ -176,10 +176,10 @@ class Prefix_lists(ResourceModule):
                                     },
                                 )
                             else:
-                                if self.state == "merged" and have_prefix_param.get(
-                                    "sequence"
-                                ) == val.get(
-                                    "sequence"
+                                if (
+                                    self.state == "merged"
+                                    and have_prefix_param.get("sequence")
+                                    == val.get("sequence")
                                 ):
                                     self._module.fail_json(
                                         "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(

@@ -146,7 +146,7 @@ class Snmp_server(ResourceModule):
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -157,8 +157,8 @@ class Snmp_server(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = self._snmp_list_to_dict(self.want)
         haved = self._snmp_list_to_dict(self.have)
@@ -175,9 +175,9 @@ class Snmp_server(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Snmp_server network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Snmp_server network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self.compare(parsers=self.complex_parsers, want=want, have=have)

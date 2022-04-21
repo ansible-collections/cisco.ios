@@ -542,8 +542,7 @@ def check_declarative_intent_params(module, want, result):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     neighbors_spec = dict(host=dict(), port=dict())
     element_spec = dict(
         name=dict(),

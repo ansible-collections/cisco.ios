@@ -5,7 +5,7 @@
 cisco.ios.ios_config
 ********************
 
-**Manage Cisco IOS configuration sections**
+**Module to manage configuration sections.**
 
 
 Version added: 1.0.0
@@ -289,7 +289,7 @@ Parameters
                 <td>
                         <div><b>Deprecated</b></div>
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
-                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>IOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>

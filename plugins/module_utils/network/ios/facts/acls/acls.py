@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-
+import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -31,8 +31,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 class AclsFacts(object):
-    """ The ios_acls fact class
-    """
+    """The ios_acls fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
 
@@ -44,7 +43,7 @@ class AclsFacts(object):
         # Get the remarks on access-lists from the ios router
         # alternate command 'sh run partition access-list' but has a lot of ordering issues
         # and incomplete ACLs are not viewed correctly
-        _acl_data = connection.get("sh access-list")
+        _acl_data = connection.get("show access-list")
         _remarks_data = connection.get(
             "show running-config | include ip(v6)* access-list|remark"
         )
@@ -52,8 +51,19 @@ class AclsFacts(object):
             _acl_data += "\n" + _remarks_data
         return _acl_data
 
+    def sanitize_data(self, data):
+        """removes matches or extra config info that is added on acl match"""
+        re_data = ""
+        for da in data.split("\n"):
+            if "matches" in da:
+                mod_da = re.sub(r"\([^()]*\)", "", da)
+                re_data += mod_da[:-1] + "\n"
+            else:
+                re_data += da + "\n"
+        return re_data
+
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for acls
+        """Populate the facts for acls
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -64,6 +74,9 @@ class AclsFacts(object):
         if not data:
             data = self.get_acl_data(connection)
 
+        if data:
+            data = self.sanitize_data(data)
+
         rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
         current = rmmod.parse()
 
@@ -72,7 +85,10 @@ class AclsFacts(object):
 
         if current.get("acls"):
             for k, v in iteritems(current.get("acls")):
-                if v.get("afi") == "ipv4":
+                if v.get("afi") == "ipv4" and v.get("acl_type") in [
+                    "standard",
+                    "extended",
+                ]:
                     del v["afi"]
                     temp_v4.append(v)
                 elif v.get("afi") == "ipv6":
@@ -84,6 +100,17 @@ class AclsFacts(object):
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
+                    if each_ace.get("source"):
+                        if len(each_ace.get("source")) == 1 and each_ace.get(
+                            "source", {}
+                        ).get("address"):
+                            each_ace["source"]["host"] = each_ace[
+                                "source"
+                            ].pop("address")
+                        if each_ace.get("source", {}).get("address"):
+                            addr = each_ace.get("source", {}).get("address")
+                            if addr[-1] == ",":
+                                each_ace["source"]["address"] = addr[:-1]
                     if each_ace.get("icmp_igmp_tcp_protocol"):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
@@ -97,14 +124,27 @@ class AclsFacts(object):
                             "protocol_number": each_ace.pop("protocol_number")
                         }
 
+            def collect_remarks(aces):
+                """makes remarks list per ace"""
+                ace_entry = []
+                rem = []
+                for i in aces:
+                    if i.get("remarks"):
+                        rem.append(i.pop("remarks"))
+                    else:
+                        ace_entry.append(i)
+                if rem:
+                    ace_entry.append({"remarks": rem})
+                return ace_entry
+
             for each in temp_v4:
-                aces_ipv4 = each.get("aces")
-                if aces_ipv4:
+                if each.get("aces"):
+                    each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
             for each in temp_v6:
-                aces_ipv6 = each.get("aces")
-                if aces_ipv6:
+                if each.get("aces"):
+                    each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
         objs = []
