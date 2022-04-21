@@ -47,7 +47,7 @@ options:
     - Specify a list of values to include a larger subset.
     - Use a value with an initial C(!) to collect all facts except that subset.
     required: false
-    default: '!config'
+    default: 'min'
     type: list
     elements: str
   gather_network_resources:
@@ -233,10 +233,6 @@ def main():
         argument_spec=argument_spec, supports_check_mode=True
     )
     warnings = []
-    if module.params["gather_subset"] == "!config":
-        warnings.append(
-            "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
-        )
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
