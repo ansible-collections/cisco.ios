@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This will configure both login and motd banners on remote devices running Cisco IOS.  It allows playbooks to add or remote banner text from the active running configuration.
+- This will configure both login and motd banners on remote devices running Cisco IOS. It allows playbooks to add or remote banner text from the active running configuration.
 
 
 
