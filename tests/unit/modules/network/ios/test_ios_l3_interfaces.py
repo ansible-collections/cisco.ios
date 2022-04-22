@@ -96,14 +96,8 @@ class TestIosL3InterfacesModule(TestIosModule):
                 state="merged",
             )
         )
-        commands = [
-            "interface GigabitEthernet0/3.100",
-            "ip address 192.168.0.3 255.255.255.0 secondary",
-            "interface Serial3/0",
-            "ipv6 address fd5d:12c9:2201:1::1/64 cga",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
 
     def test_ios_l3_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -156,7 +150,6 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface Serial1/0",
             "ip address 192.168.0.3 255.255.255.0",
         ]
-
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
