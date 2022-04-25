@@ -64,7 +64,6 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base imp
     enable_mode,
 )
 
-# from ansible.plugins.cliconf import CliconfBase, enable_mode
 
 
 class Cliconf(CliconfBase):
