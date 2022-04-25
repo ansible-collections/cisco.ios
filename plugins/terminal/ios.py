@@ -29,7 +29,6 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base im
     TerminalBase,
 )
 
-# from ansible.plugins.terminal import TerminalBase
 from ansible.utils.display import Display
 
 display = Display()
