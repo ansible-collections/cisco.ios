@@ -1,0 +1,3 @@
+---
+major_changes:
+  - "`facts` - default value for `gather_subset` is changed to min instead of !config."

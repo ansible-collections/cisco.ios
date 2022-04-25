@@ -24,7 +24,7 @@ author: Ricardo Carrillo Cruz (@rcarrillocruz)
 short_description: Module to configure multiline banners.
 description:
 - This will configure both login and motd banners on remote devices running Cisco
-  IOS.  It allows playbooks to add or remote banner text from the active running configuration.
+  IOS. It allows playbooks to add or remote banner text from the active running configuration.
 version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios

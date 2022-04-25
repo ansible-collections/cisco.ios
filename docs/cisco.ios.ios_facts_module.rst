@@ -79,7 +79,7 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">"!config"</div>
+                        <b>Default:</b><br/><div style="color: blue">"min"</div>
                 </td>
                 <td>
                         <div>When supplied, this argument restricts the facts collected to a given subset.</div>

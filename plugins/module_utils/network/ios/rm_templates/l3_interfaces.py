@@ -21,13 +21,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 def ip_tmplt(config_data):
-    cmd = "{tp} address {ip}"
-    if config_data.get("ipv4"):
-        config = config_data.get("ipv4")
-        cmd = cmd.format(tp="ip", ip=config["address"])
-    elif config_data.get("ipv6"):
+    cmd = "ipv6 address {ip}"
+    if config_data.get("ipv6"):
         config = config_data.get("ipv6")
-        cmd = cmd.format(tp="ipv6", ip=config["address"])
+        cmd = cmd.format(ip=config["address"])
     if config.get("segment_routing"):
         # if config.get("segment_routing").get("enable"):
         cmd += " segment-routing"
@@ -45,32 +42,6 @@ def ip_tmplt(config_data):
         cmd += " cga"
     if config.get("eui"):
         cmd += " eui"
-    return cmd
-
-
-def autoconfig_tmplt(config_data):
-    cmd = "ipv6 address autoconfig"
-    if config_data["ipv6"].get("autoconfig"):
-        config = config_data.get("ipv6").get("autoconfig")
-        if config.get("default"):
-            cmd = cmd + " default"
-    return cmd
-
-
-def dhcp_tmplt(config_data):
-    cmd = "{tp} address dhcp"
-    if config_data.get("ipv4"):
-        config = config_data.get("ipv4").get("dhcp")
-        cmd = cmd.format(tp="ip")
-    elif config_data.get("ipv6"):
-        config = config_data.get("ipv6").get("dhcp")
-        cmd = cmd.format(tp="ipv6")
-    if config.get("rapid_commit"):
-        cmd += " rapid-commit"
-    if config.get("client_id"):
-        cmd += " client-id {cid}".format(cid=config.get("client_id"))
-    if config.get("hostname"):
-        cmd += " hostname {hnm}".format(hnm=config.get("hostname"))
     return cmd
 
 
@@ -105,7 +76,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": ip_tmplt,
+            "setval": "ip address {{ ipv4.address }}"
+            "{{ ' secondary' if ipv4.secondary|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv4": [
@@ -145,7 +117,9 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": dhcp_tmplt,
+            "setval": "ip address dhcp"
+            "{{ (' client-id ' + ipv4.dhcp.client_id) if ipv4.dhcp.client_id is defined else ''}}"
+            "{{ (' hostname ' + ipv4.dhcp.hostname) if ipv4.dhcp.hostname is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv4": [
@@ -204,7 +178,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                     re.VERBOSE,
             ),
-            "setval": autoconfig_tmplt,
+            "setval": "ipv6 address autoconfig"
+            "{{ ' default' if ipv6.autoconfig.default|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv6": [
@@ -221,19 +196,19 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "ipv6.dhcp",
             "getval": re.compile(
-                r"""\s+ipv6\saddress\s
-                    ((?P<dhcp>dhcp))
+                r"""\s+ipv6\saddress\sdhcp
                     (\s(?P<rapid_commit>rapid-commit))?
                     $""",
                     re.VERBOSE,
             ),
-            "setval": dhcp_tmplt,
+            "setval": "ipv6 address dhcp"
+            "{{ ' rapid-commit' if ipv6.dhcp.rapid_commit|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "ipv6": [
                         {
                             "dhcp": {
-                                "enable": "{{ True if dhcp is defined }}",
+                                "enable": True,
                                 "rapid_commit": "{{ True if rapid_commit is defined }}",
                             },
                         },
