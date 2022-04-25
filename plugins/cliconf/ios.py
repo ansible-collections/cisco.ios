@@ -65,7 +65,6 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base imp
 )
 
 
-
 class Cliconf(CliconfBase):
     def __init__(self, *args, **kwargs):
         self._device_info = {}
