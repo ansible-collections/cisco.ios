@@ -1,3 +1,0 @@
----
-bugfixes:
-    - acls parser didn't only checked if the proto_options variable existed without validating that it was a dictionary before trying to use it as one.
