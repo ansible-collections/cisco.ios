@@ -28,12 +28,12 @@
     ansible_buffer_read_timeout: 2
   ignore_errors: true
   register: result
-  when: ansible_connection == 'network_cli'
+  when: ansible_connection == 'ansible.netcommon.network_cli'
 
 - assert:
     that:
       - 'result.failed == true'
       - "'timeout value 1 seconds reached' in result.msg"
-  when: ansible_connection == 'network_cli'
+  when: ansible_connection == 'ansible.netcommon.network_cli'
 
 - debug: msg="END ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
