@@ -1,3 +1,0 @@
----
-trivial:
-  - "change the ansible_connection to ansible.netcommon.network_cli (FQCN)"

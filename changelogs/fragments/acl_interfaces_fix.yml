@@ -1,5 +1,0 @@
----
-bugfixes:
-  - "`acl_interfaces` - optimization and bugfixes."
-trivial:
-  - "`acl_interfaces` - fix tests for action states."

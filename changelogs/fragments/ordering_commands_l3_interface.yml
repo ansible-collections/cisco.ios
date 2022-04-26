@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_l3_interface` - config code to generate proper ordering of commands on action states."
