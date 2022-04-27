@@ -5,6 +5,25 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.0.0
+======
+
+Major Changes
+-------------
+
+- Minimum required ansible.netcommon version is 2.5.1.
+- Updated base plugin references to ansible.netcommon.
+- `facts` - default value for `gather_subset` is changed to min instead of !config.
+
+Bugfixes
+--------
+
+- Fix become raises error when exec prompt timestamp is configured.
+- `acl_interfaces` - optimization and bugfixes.
+- `ios_l3_interface` - config code to generate proper ordering of commands on action states.
+- `ios_logging_global` - Added alias to render host under hosts not hostname.
+- acls parser didn't only checked if the proto_options variable existed without validating that it was a dictionary before trying to use it as one.
+
 v2.8.1
 ======
 

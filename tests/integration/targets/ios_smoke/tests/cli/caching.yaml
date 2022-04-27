@@ -98,4 +98,4 @@
       with_items: "{{ interfaces }}"
       loop_control:
         loop_var: intf
-  when: ansible_connection == "network_cli" and ansible_network_single_user_mode|d(False)
+  when: ansible_connection == "ansible.netcommon.network_cli" and ansible_network_single_user_mode|d(False)
