@@ -24,4 +24,4 @@
   tags: local
 
 - name: run test cases with single_user_mode (connection=network_cli)
-  include: "{{ role_path }}/tests/cli/caching.yaml ansible_connection=network_cli ansible_network_single_user_mode=True ansible_connection=network_cli"
+  include: "{{ role_path }}/tests/cli/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True ansible_connection=network_cli"

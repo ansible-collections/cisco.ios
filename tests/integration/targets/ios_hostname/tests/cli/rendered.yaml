@@ -1,0 +1,18 @@
+---
+- debug:
+    msg: Start ios_hostname rendered integration tests ansible_connection={{
+      ansible_connection }}
+
+- block:
+
+    - name: ios_hostname render - Play
+      register: result
+      cisco.ios.ios_hostname:
+        config:
+          hostname: 'testname'
+        state: rendered
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.rendered == rendered['commands']

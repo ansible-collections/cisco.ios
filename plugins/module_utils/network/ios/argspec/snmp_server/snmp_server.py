@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -28,8 +28,7 @@ The arg spec for the ios_snmp_server module
 
 
 class Snmp_serverArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_snmp_server module
-    """
+    """The arg spec for the ios_snmp_server module"""
 
     argument_spec = {
         "config": {
@@ -444,6 +443,29 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "options": {
                         "acl_v6": {"type": "str"},
                         "acl_v4": {"type": "str"},
+                        "authentication": {
+                            "no_log": False,
+                            "type": "dict",
+                            "options": {
+                                "algorithm": {
+                                    "type": "str",
+                                    "choices": ["md5", "sha"],
+                                },
+                                "password": {"type": "str", "no_log": True},
+                            },
+                        },
+                        "encryption": {
+                            "no_log": False,
+                            "type": "dict",
+                            "options": {
+                                "priv": {
+                                    "type": "str",
+                                    "choices": ["3des", "aes", "des"],
+                                },
+                                "priv_option": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
+                            },
+                        },
                         "group": {"type": "str"},
                         "remote": {"type": "str"},
                         "udp_port": {"type": "int"},
@@ -453,7 +475,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "type": "str",
                         },
                         "version_option": {
-                            "choices": ["auth", "access", "encrypted"],
+                            "choices": ["encrypted"],
                             "type": "str",
                         },
                         "vrf": {"type": "str"},

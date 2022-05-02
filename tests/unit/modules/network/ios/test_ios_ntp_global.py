@@ -366,7 +366,7 @@ class TestIosNtpGlobalModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ntp_global_replaced_overridden(self):
-        """ both the replaced and overridden states are supported to have same behaviour """
+        """both the replaced and overridden states are supported to have same behaviour"""
         self.execute_show_command.return_value = dedent(
             """\
             ntp allow mode control 4
@@ -495,7 +495,7 @@ class TestIosNtpGlobalModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ntp_global_replaced_overridden_idempotent(self):
-        """ both the replaced and overridden states are supported to have same behaviour """
+        """both the replaced and overridden states are supported to have same behaviour"""
         self.execute_show_command.return_value = dedent(
             """\
             ntp allow mode control 4

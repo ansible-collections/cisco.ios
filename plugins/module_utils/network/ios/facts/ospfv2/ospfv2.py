@@ -28,18 +28,17 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 class Ospfv2Facts(object):
-    """ The ios ospfv2 fact class
-    """
+    """The ios ospfv2 fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Ospfv2Args.argument_spec
 
     def get_ospfv2_data(self, connection):
-        return connection.get("sh running-config | section ^router ospf")
+        return connection.get("show running-config | section ^router ospf")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for ospfv2
+        """Populate the facts for ospfv2
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

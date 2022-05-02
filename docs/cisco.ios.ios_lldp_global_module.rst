@@ -5,7 +5,7 @@
 cisco.ios.ios_lldp_global
 *************************
 
-**LLDP resource module**
+**Resource module to configure LLDP.**
 
 
 Version added: 1.0.0

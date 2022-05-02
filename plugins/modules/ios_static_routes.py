@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_static_routes
-short_description: Static routes resource module
+short_description: Resource module to configure static routes.
 description: This module configures and manages the static routes on IOS platforms.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)

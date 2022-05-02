@@ -1,0 +1,66 @@
+---
+- debug:
+    msg: START ios_bgp_global round trip integration tests on connection={{
+      ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: ios_bgp_global rtt - Play (Base config)
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          bgp:
+            advertise_best_external: true
+            bestpath_options:
+              med:
+                confed: true
+            log_neighbor_changes: true
+            nopeerup_delay_options:
+              post_boot: 10
+              cold_boot: 20
+          neighbor:
+            - address: 192.0.2.2
+              description: replace neighbor
+              remote_as: 100
+              slow_peer:
+                detection:
+                  disable: true
+          networks:
+            - address: 192.0.2.3
+          redistribute:
+            - connected:
+                metric: 10
+                set: true
+        state: merged
+
+    - name: ios_bgp_global rtt - Gather bgp_global facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - bgp_global
+
+    - name: ios_bgp_global rtt - Apply the provided configuration (config to be reverted)
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          networks:
+            - address: 192.0.2.4
+        state: merged
+
+    - name: ios_bgp_global rtt - Revert back to base config using facts round trip
+      register: revert
+      cisco.ios.ios_bgp_global:
+        config: "{{ ansible_facts['network_resources']['bgp_global'] }}"
+        state: replaced
+
+    - assert:
+        that:
+          - revert.changed == true
+          - revert['commands'] == rtt['commands']
+
+  always:
+    - include_tasks: _remove_config.yaml

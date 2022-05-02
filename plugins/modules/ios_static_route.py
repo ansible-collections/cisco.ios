@@ -329,8 +329,7 @@ def map_params_to_obj(module, required_together=None):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         prefix=dict(type="str"),
         mask=dict(type="str"),

@@ -154,8 +154,7 @@ def load_config(module, commands):
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 

@@ -23,7 +23,7 @@ module: ios_facts
 author:
 - Peter Sprygada (@privateip)
 - Sumit Jaiswal (@justjais)
-short_description: Collect facts from remote devices running Cisco IOS
+short_description: Module to collect facts from remote devices.
 description:
 - Collects a base set of device facts from a remote device that is running IOS.  This
   module prepends all of the base network fact keys with C(ansible_net_<fact>).  The
@@ -47,7 +47,7 @@ options:
     - Specify a list of values to include a larger subset.
     - Use a value with an initial C(!) to collect all facts except that subset.
     required: false
-    default: '!config'
+    default: 'min'
     type: list
     elements: str
   gather_network_resources:
@@ -56,9 +56,11 @@ options:
       Possible values for this argument include all and the resources like interfaces,
       vlans etc. Can specify a list of values to include a larger subset. Values can
       also be used with an initial C(!) to specify that a specific subset should
-      not be collected. Valid subsets are 'all', 'interfaces', 'l2_interfaces', 'vlans',
-      'lag_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global', 'lldp_interfaces',
-      'l3_interfaces', 'acl_interfaces', 'static_routes', 'acls'.
+      not be collected. Valid subsets are 'bgp_global', 'l3_interfaces', 'lag_interfaces',
+      'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
+      'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
+      'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',
+      'ospfv3', 'snmp_server', 'vlans'.
     type: list
     elements: str
   available_network_resources:
@@ -231,10 +233,6 @@ def main():
         argument_spec=argument_spec, supports_check_mode=True
     )
     warnings = []
-    if module.params["gather_subset"] == "!config":
-        warnings.append(
-            "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
-        )
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):

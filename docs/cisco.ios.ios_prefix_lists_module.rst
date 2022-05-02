@@ -5,7 +5,7 @@
 cisco.ios.ios_prefix_lists
 **************************
 
-**Prefix Lists resource module**
+**Resource module to configure prefix lists.**
 
 
 Version added: 2.2.0

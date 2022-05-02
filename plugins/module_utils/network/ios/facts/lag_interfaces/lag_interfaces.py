@@ -31,8 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_
 
 
 class Lag_interfacesFacts(object):
-    """ The ios_lag_interfaces fact class
-    """
+    """The ios_lag_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -52,7 +51,7 @@ class Lag_interfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for interfaces
+        """Populate the facts for interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

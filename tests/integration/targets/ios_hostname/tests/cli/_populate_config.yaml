@@ -1,0 +1,6 @@
+---
+- name: PRE POST TASK Populate hostname config
+  cisco.ios.ios_hostname:
+    config:
+      hostname: 'box1'
+    state: merged

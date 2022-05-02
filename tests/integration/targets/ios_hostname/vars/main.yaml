@@ -1,0 +1,24 @@
+---
+merged:
+  commands:
+    - hostname boxTest
+  after:
+    hostname: 'boxTest'
+
+deleted:
+  before:
+    hostname: 'box1'
+  commands:
+    - no hostname box1
+
+parsed:
+  config:
+    hostname: 'testname'
+
+gathered:
+  config:
+    hostname: 'box1'
+
+rendered:
+  commands:
+    - hostname testname

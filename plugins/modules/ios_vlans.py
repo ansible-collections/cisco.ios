@@ -23,7 +23,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_vlans
-short_description: VLANs resource module
+short_description: Resource module to configure VLANs.
 description: This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0
@@ -737,8 +737,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 
 def _is_l2_device(module):
-    """ fails module if device is L3.
-    """
+    """fails module if device is L3."""
     connection = get_connection(module)
     check_os_type = connection.get_device_info()
     if check_os_type.get("network_os_type") == "L3":

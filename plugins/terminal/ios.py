@@ -25,7 +25,10 @@ import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_text, to_bytes
-from ansible.plugins.terminal import TerminalBase
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
+    TerminalBase,
+)
+
 from ansible.utils.display import Display
 
 display = Display()
@@ -34,34 +37,34 @@ display = Display()
 class TerminalModule(TerminalBase):
 
     terminal_stdout_re = [
-        re.compile(br"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$")
+        re.compile(rb"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$")
     ]
 
     privilege_level_re = re.compile(r"Current privilege level is (\d+)$")
 
     terminal_stderr_re = [
-        re.compile(br"% ?Error"),
-        # re.compile(br"^% \w+", re.M),
-        re.compile(br"% ?Bad secret"),
-        re.compile(br"[\r\n%] Bad passwords"),
-        re.compile(br"invalid input", re.I),
-        re.compile(br"(?:incomplete|ambiguous) command", re.I),
-        re.compile(br"connection timed out", re.I),
-        re.compile(br"[^\r\n]+ not found"),
-        re.compile(br"'[^']' +returned error code: ?\d+"),
-        re.compile(br"Bad mask", re.I),
-        re.compile(br"% ?(\S+) ?overlaps with ?(\S+)", re.I),
-        re.compile(br"[%\S] ?Error: ?[\s]+", re.I),
-        re.compile(br"[%\S] ?Informational: ?[\s]+", re.I),
-        re.compile(br"Command authorization failed"),
-        re.compile(br"Command Rejected: ?[\s]+", re.I),
+        re.compile(rb"% ?Error"),
+        # re.compile(rb"^% \w+", re.M),
+        re.compile(rb"% ?Bad secret"),
+        re.compile(rb"[\r\n%] Bad passwords"),
+        re.compile(rb"invalid input", re.I),
+        re.compile(rb"(?:incomplete|ambiguous) command", re.I),
+        re.compile(rb"connection timed out", re.I),
+        re.compile(rb"[^\r\n]+ not found"),
+        re.compile(rb"'[^']' +returned error code: ?\d+"),
+        re.compile(rb"Bad mask", re.I),
+        re.compile(rb"% ?(\S+) ?overlaps with ?(\S+)", re.I),
+        re.compile(rb"[%\S] ?Error: ?[\s]+", re.I),
+        re.compile(rb"[%\S] ?Informational: ?[\s]+", re.I),
+        re.compile(rb"Command authorization failed"),
+        re.compile(rb"Command Rejected: ?[\s]+", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
 
     def get_privilege_level(self):
         try:
-            cmd = {u"command": u"show privilege"}
+            cmd = {"command": "show privilege"}
             result = self._exec_cli_command(
                 to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
             )
@@ -70,7 +73,7 @@ class TerminalModule(TerminalBase):
                 "unable to fetch privilege, with error: %s" % (e.message)
             )
 
-        prompt = self.privilege_level_re.match(result)
+        prompt = self.privilege_level_re.search(result)
         if not prompt:
             raise AnsibleConnectionFailure(
                 "unable to check privilege level [%s]" % result
@@ -115,15 +118,15 @@ class TerminalModule(TerminalBase):
         ):
             return
 
-        cmd = {u"command": u"enable"}
+        cmd = {"command": "enable"}
         if passwd:
             # Note: python-3.5 cannot combine u"" and r"" together.  Thus make
             # an r string and use to_text to ensure it's text on both py2 and py3.
-            cmd[u"prompt"] = to_text(
+            cmd["prompt"] = to_text(
                 r"[\r\n]?(?:.*)?[Pp]assword: ?$", errors="surrogate_or_strict"
             )
-            cmd[u"answer"] = passwd
-            cmd[u"prompt_retry_check"] = True
+            cmd["answer"] = passwd
+            cmd["prompt_retry_check"] = True
         try:
             self._exec_cli_command(
                 to_bytes(json.dumps(cmd), errors="surrogate_or_strict")

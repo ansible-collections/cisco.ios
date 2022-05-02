@@ -461,8 +461,7 @@ def map_params_to_obj(module, required_if=None):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         dest=dict(
             type="str",

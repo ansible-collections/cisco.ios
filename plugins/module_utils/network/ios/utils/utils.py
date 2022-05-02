@@ -34,7 +34,7 @@ def add_command_to_config_list(interface, cmd, commands):
 
 
 def reverify_diff_py35(want, have):
-    """ Function to re-verify the set diff for py35 as it doesn't maintains dict order which results
+    """Function to re-verify the set diff for py35 as it doesn't maintains dict order which results
         into unexpected set diff
     :param config: want and have set config
     :returns: True/False post checking if there's any actual diff b/w want and have sets
@@ -292,8 +292,7 @@ def is_valid_ip(ip_str):
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 
@@ -356,8 +355,7 @@ def normalize_interface(name):
 
 
 def get_interface_type(interface):
-    """Gets the type of interface
-    """
+    """Gets the type of interface"""
 
     if interface.upper().startswith("GI"):
         return "GigabitEthernet"

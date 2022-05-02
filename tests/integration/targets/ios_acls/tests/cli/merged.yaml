@@ -16,6 +16,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         fin: true
@@ -52,6 +53,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         fin: true
@@ -71,6 +73,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: icmp
                     protocol_options:
                       icmp:
                         echo: true
@@ -87,6 +90,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -102,6 +106,7 @@
                       service_value: 12
                   - grant: deny
                     sequence: 20
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -122,6 +127,7 @@
                 aces:
                   - grant: deny
                     sequence: 10
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true

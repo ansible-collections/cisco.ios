@@ -22,6 +22,7 @@
                 aces:
 
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         fin: true
@@ -42,6 +43,7 @@
                 aces:
 
                   - grant: deny
+                    protocol: icmp
                     protocol_options:
                       icmp:
                         echo: true
@@ -59,6 +61,7 @@
                 aces:
 
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -74,6 +77,7 @@
                       service_value: 12
 
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -96,6 +100,7 @@
                 aces:
 
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -127,6 +132,7 @@
               - name: 110
                 aces:
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -147,6 +153,7 @@
               - name: 123
                 aces:
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         ack: true
@@ -163,6 +170,7 @@
               - name: 150
                 aces:
                   - grant: deny
+                    protocol: tcp
                     protocol_options:
                       tcp:
                         syn: true
@@ -195,7 +203,7 @@
 
     - assert:
         that:
-          - revert.commands|length == 10
+          - revert.commands|length == 11
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:

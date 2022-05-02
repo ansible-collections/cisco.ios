@@ -5,7 +5,7 @@
 cisco.ios.ios_bgp_global
 ************************
 
-**Global BGP resource module**
+**Resource module to configure BGP.**
 
 
 Version added: 1.3.0
@@ -45,7 +45,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A list of configurations for global bgp.</div>
+                        <div>A dictionary of options for bgp configurations.</div>
                 </td>
             </tr>
                                 <tr>
@@ -61,7 +61,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Configure BGP aggregate entries</div>
+                        <div>Configure BGP aggregate entry</div>
+                        <div>This option is DEPRECATED and is replaced with aggregate_addresses which accepts list of dict as input, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>
@@ -78,7 +79,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Aggregate address</div>
+                        <div>Specify aggregate address</div>
                 </td>
             </tr>
             <tr>
@@ -171,7 +172,173 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Aggregate mask</div>
+                        <div>Specify aggregate mask</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>summary_only</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Filter more specific routes from updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>suppress_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Conditionally filter more specific routes from updates</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>aggregate_addresses</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure BGP aggregate entries</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify aggregate address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>advertise_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set condition to advertise attribute</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>as_confed_set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Generate AS confed set path information</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>as_set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Generate AS set path information</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>attribute_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set attributes of aggregate</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>netmask</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify aggregate mask</div>
                 </td>
             </tr>
             <tr>
@@ -221,13 +388,12 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Autonomous system number.</div>
+                        <div>Autonomous system number</div>
                 </td>
             </tr>
             <tr>
@@ -555,6 +721,180 @@ Parameters
                 </td>
                 <td>
                         <div>Change the default bestpath selection</div>
+                        <div>This option is DEPRECATED and replaced with bestpath_options of type dict, this attribute will be removed after 2024-06-01.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>aigp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparision</div>
+                        <div>ignore</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>compare_routerid</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Compare router-id for identical EBGP paths</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>cost_community</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>cost community</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>igp_metric</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>igp metric</div>
+                        <div>Ignore igp metric in bestpath selection</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>med</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>MED attribute</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>confed</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Compare MED among confederation paths</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>missing_as_worst</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Treat missing MED as the least preferred one</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>bestpath_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Change the default bestpath selection</div>
                 </td>
             </tr>
                                 <tr>
@@ -802,14 +1142,10 @@ Parameters
                     <b>cluster_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
                 </td>
                 <td>
                         <div>Configure Route-Reflector Cluster-id (peers may reset)</div>
@@ -1401,7 +1737,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Gracefully shut down all neigbors</div>
+                        <div>Gracefully shut down all neighbors</div>
                 </td>
             </tr>
                                 <tr>
@@ -1424,7 +1760,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Activate graceful shutdown of all neigbors</div>
+                        <div>Activate graceful shutdown of all neighbors</div>
                 </td>
             </tr>
             <tr>
@@ -1463,7 +1799,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Gracefully shut down all vrf neigbors</div>
+                        <div>Gracefully shut down all vrf neighbors</div>
                 </td>
             </tr>
                                 <tr>
@@ -1486,7 +1822,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Activate graceful shutdown of all neigbors</div>
+                        <div>Activate graceful shutdown of all neighbors</div>
                 </td>
             </tr>
             <tr>
@@ -1520,6 +1856,84 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Routemap which specifies prefixes to inject</div>
+                        <div>This option is DEPRECATED and is updated with inject_maps which is a list of dict, this attribute will be removed after 2024-06-01.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>copy_attributes</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Copy attributes from aggregate</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>exist_map_name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>route-map name</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>route-map name</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>inject_maps</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -1648,6 +2062,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host_with_subnet</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IPv4 subnet range(A.B.C.D/nn)</div>
+                        <div>IPv6 subnet range(X:X:X:X::X/&lt;0-128&gt;)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ipv4_with_subnet</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1658,6 +2092,7 @@ Parameters
                 </td>
                 <td>
                         <div>IPv4 subnet range(A.B.C.D/nn)</div>
+                        <div>This option is DEPRECATED and is updated with host_with_subnet which is a common attribute for address, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
             <tr>
@@ -1677,6 +2112,7 @@ Parameters
                 </td>
                 <td>
                         <div>IPv6 subnet range(X:X:X:X::X/&lt;0-128&gt;)</div>
+                        <div>This option is DEPRECATED and is updated with host_with_subnet which is a common attribute for address attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
             <tr>
@@ -1844,7 +2280,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Set the delay to tigger nexthop tracking</div>
+                        <div>Set the delay to trigger nexthop tracking</div>
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
@@ -1883,6 +2319,101 @@ Parameters
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
                          / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set how long BGP will wait for the first peer to come up before beginning the update delay or graceful restart timers (in seconds)</div>
+                        <div>This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict, this attribute will be removed after 2024-06-01.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>cold_boot</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>How long to wait for the first peer to come up upon a cold boot</div>
+                        <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nsf_switchover</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>How long to wait for the first peer, post NSF switchover</div>
+                        <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>post_boot</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>How long to wait for the first peer to come up once the system is already booted and all peers go down</div>
+                        <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>user_initiated</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>How long to wait for the first peer, post a manual clear of BGP peers by the admin user</div>
+                        <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nopeerup_delay_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -2336,10 +2867,14 @@ Parameters
                     <b>permanent</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
                         <div>Keep the slow-peer permanently in slow-update group</div>
@@ -2367,7 +2902,7 @@ Parameters
                 <td>
                         <div>BGP SNMP options</div>
                         <div>BGP SNMP trap options</div>
-                        <div>Use cbgpPeer2Type as part of index for traps</div>
+                        <div>Use cbgp Peer2Type as part of index for traps</div>
                 </td>
             </tr>
             <tr>
@@ -2573,7 +3108,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>BGP Monitoring Protocol)</div>
+                        <div>BGP Monitoring Protocol</div>
                 </td>
             </tr>
                                 <tr>
@@ -2670,6 +3205,103 @@ Parameters
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>server_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>bmp server options</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>activate</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>activate server</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>skip all refreshes</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>host address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>port number BMP server</div>
+                </td>
+            </tr>
+
+
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -2983,6 +3615,7 @@ Parameters
                 </td>
                 <td>
                         <div>Filter networks in routing updates</div>
+                        <div>This option is DEPRECATED and is replaced with distributes which is of type list of dict, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>
@@ -3059,6 +3692,134 @@ Parameters
                 </td>
                 <td>
                         <div>Filter outgoing routing updates</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>distributes</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Filter networks in routing updates</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>acl</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IP access list number/name</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>gateway</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Filter prefixes in routing updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>in</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Filter incoming routing updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>interface details</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>out</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Filter outgoing routing updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>prefix</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Filtering incoming updates based on gateway</div>
                 </td>
             </tr>
 
@@ -3202,7 +3963,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>neighbor</b>
+                    <b>neighbors</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -3213,6 +3974,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify a neighbor router</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: neighbor</div>
                 </td>
             </tr>
                                 <tr>
@@ -3335,6 +4097,7 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor address (A.B.C.D)</div>
+                        <div>This option is DEPRECATED and replaced with neighbor_address, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
             <tr>
@@ -3972,7 +4735,7 @@ Parameters
                 <td>
                         <div>Advertise capability to the peer</div>
                         <div>Advertise ORF capability to the peer</div>
-                        <div>Advertise prefixlist ORF capability to this neighbor</div>
+                        <div>Advertise prefix-list ORF capability to this neighbor</div>
                 </td>
             </tr>
                                 <tr>
@@ -4615,6 +5378,7 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor ipv6 address (X:X:X:X::X)</div>
+                        <div>This option is DEPRECATED and replaced with neighbor_address, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
             <tr>
@@ -4924,6 +5688,25 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>neighbor_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Neighbor address (A.B.C.D)</div>
+                        <div>Neighbor tag</div>
+                        <div>Neighbor ipv6 address (X:X:X:X::X)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>next_hop_self</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -5059,8 +5842,63 @@ Parameters
                 </td>
                 <td>
                         <div>Set a password</div>
+                        <div>This option is DEPRECATED and is replaced with password_options which accepts dict as input, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>password_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set a password with encryption type</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>encryption</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Encryption type (0 to disable encryption, 7 for proprietary)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>pass_key</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The password</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -5352,7 +6190,7 @@ Parameters
                     <b>remote_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -5461,6 +6299,88 @@ Parameters
                 </td>
                 <td>
                         <div>Apply route map to neighbor</div>
+                        <div>This option is DEPRECATED and is replaced with route_maps which accepts list of dict as input, this attribute will be removed after 2024-06-01.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>in</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Apply map to incoming routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Replace all private AS numbers with local AS</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>out</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Apply map to outbound routes</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>route_maps</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Apply a list of route maps to neighbor</div>
                 </td>
             </tr>
                                 <tr>
@@ -5797,6 +6717,24 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>community</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set Community for Gshut routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>graceful</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -5809,6 +6747,28 @@ Parameters
                         <div>Gracefully shut down this neighbor</div>
                         <div>time in seconds</div>
                         <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>local_preference</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set Local Preference for Gshut routes</div>
                 </td>
             </tr>
             <tr>
@@ -6107,6 +7067,7 @@ Parameters
                 </td>
                 <td>
                         <div>Neighbor tag</div>
+                        <div>This option is DEPRECATED and replaced with neighbor_address, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
             <tr>
@@ -6489,8 +7450,25 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Route-map to selectively unsuppress suppressed routes</div>
+                        <div>Route-map to selectively un-suppress suppressed routes</div>
                         <div>Name of route map</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>update_source</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source of routing updates</div>
                 </td>
             </tr>
             <tr>
@@ -6527,6 +7505,96 @@ Parameters
                 </td>
                 <td>
                         <div>Set default weight for routes from this neighbor</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>networks</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify a network to announce via BGP</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify network address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>backdoor</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specify a BGP backdoor route</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>netmask</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specify network mask</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>route_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route-map to modify the attributes</div>
                 </td>
             </tr>
 
@@ -6742,6 +7810,28 @@ Parameters
                 </td>
                 <td>
                         <div>Route map reference</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
                 </td>
             </tr>
 
@@ -7040,6 +8130,28 @@ Parameters
                         <div>Route map reference</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
+                </td>
+            </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -7094,6 +8206,28 @@ Parameters
                         <div>Route map reference</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
+                </td>
+            </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -7146,6 +8280,28 @@ Parameters
                 </td>
                 <td>
                         <div>Route map reference</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
                 </td>
             </tr>
 
@@ -7632,6 +8788,28 @@ Parameters
                         <div>Route map reference</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
+                </td>
+            </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -7730,6 +8908,28 @@ Parameters
                         <div>Route map reference</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the top level attribute</div>
+                </td>
+            </tr>
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -7804,6 +9004,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enter route server context command mode</div>
+                        <div>This option is DEPRECATED as it is out of scope of the module, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>
@@ -7936,6 +9137,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enter scope command mode</div>
+                        <div>This option is DEPRECATED as is not valid within the scope of module, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>
@@ -8067,6 +9269,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enter template command mode</div>
+                        <div>This option is DEPRECATED as is not valid within the scope of module, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>
@@ -8227,7 +9430,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version 15.2 on VIRL
+   - Tested against Cisco IOSv Version 15.2.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
@@ -8252,8 +9455,6 @@ Examples
             advertise_best_external: true
             bestpath:
               - compare_routerid: true
-            nopeerup_delay:
-              - post_boot: 10
             dampening:
               penalty_half_time: 1
               reuse_route_val: 1
@@ -8264,9 +9465,15 @@ Examples
                 time: 50
               community: 100
               local_preference: 100
+            log_neighbor_changes: true
+            nopeerup_delay:
+              - post_boot: 10
+          networks:
+            - address: 192.0.2.3
+            - address: 192.0.2.2
           neighbor:
-            - address: 198.51.100.1
-              description:  merge neighbor
+            - address: 192.0.2.1
+              description: merge neighbor
               remote_as: 100
               aigp:
                 send:
@@ -8278,38 +9485,99 @@ Examples
               route_map:
                 name: test-route
                 out: true
+          redistribute:
+            - connected:
+                metric: 10
+          timers:
+            keepalive: 100
+            holdtime: 200
+            min_holdtime: 150
         state: merged
 
-    # Commands fired:
+    # Task Output:
     # ---------------
-    #
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "bgp dampening 1 1 1 1",
-    #         "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "bgp advertise-best-external",
-    #         "bgp nopeerup-delay post-boot 10",
-    #         "bgp bestpath compare-routerid",
-    #         "neighbor 198.51.100.1 remote-as 100",
-    #         "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "neighbor 198.51.100.1 description merge neighbor",
-    #         "neighbor 198.51.100.1 route-map test-route out"
-    #     ]
+
+    # after:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       compare_routerid: true
+    #     dampening:
+    #       max_suppress: 1
+    #       penalty_half_time: 1
+    #       reuse_route_val: 1
+    #       suppress_route_val: 1
+    #     graceful_shutdown:
+    #       community: '100'
+    #       local_preference: 100
+    #       neighbors:
+    #         time: 50
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       post_boot: 10
+    #   neighbors:
+    #   - aigp:
+    #       send:
+    #         cost_community:
+    #           id: 100
+    #           poi:
+    #             igp_cost: true
+    #             transitive: true
+    #     description: merge neighbor
+    #     neighbor_address: 192.0.2.1
+    #     remote_as: '100'
+    #     route_maps:
+    #     - name: test-route
+    #       out: true
+    #   networks:
+    #   - address: 192.0.2.2
+    #   - address: 192.0.2.3
+    #   redistribute:
+    #   - connected:
+    #       metric: 10
+    #       set: true
+    #   timers:
+    #     holdtime: 200
+    #     keepalive: 100
+    #     min_holdtime: 150
+
+    # commands:
+    # - router bgp 65000
+    # - timers bgp 100 200 150
+    # - bgp advertise-best-external
+    # - bgp bestpath compare-routerid
+    # - bgp dampening 1 1 1 1
+    # - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    # - bgp log-neighbor-changes
+    # - bgp nopeerup-delay post-boot 10
+    # - network 192.0.2.3
+    # - network 192.0.2.2
+    # - neighbor 192.0.2.1 remote-as 100
+    # - neighbor 192.0.2.1 description merge neighbor
+    # - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    # - neighbor 192.0.2.1 route-map test-route out
+    # - redistribute connected metric 10
 
     # After state:
     # ------------
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
+    #  bgp log-neighbor-changes
     #  bgp nopeerup-delay post-boot 10
     #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  network 192.0.2.2
+    #  network 192.0.2.3
+    #  timers bgp 100 200 150
+    #  redistribute connected metric 10
+    #  neighbor 192.0.2.1 remote-as 100
+    #  neighbor 192.0.2.1 description merge neighbor
+    #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 192.0.2.1 route-map test-route out
 
 
     # Using replaced
@@ -8323,11 +9591,13 @@ Examples
     #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
+    #  network 192.0.2.2
+    #  network 192.0.2.3
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  neighbor 198.0.2.1 remote-as 100
+    #  neighbor 198.0.2.1 description merge neighbor
+    #  neighbor 198.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 198.0.2.1 route-map test-route out
 
 
     - name: Replaces device configuration of listed global BGP with provided configuration
@@ -8343,8 +9613,10 @@ Examples
             nopeerup_delay:
               - post_boot: 10
                 cold_boot: 20
+          networks:
+            - address: 192.0.2.4
           neighbor:
-            - address: 192.0.2.1
+            - address: 192.0.2.5
               description:  replace neighbor
               remote_as: 100
               slow_peer:
@@ -8352,26 +9624,81 @@ Examples
                   disable: true
         state: replaced
 
-    # Commands fired:
+    # Task Output:
     # ---------------
     #
-    #  "commands": [
-    #     "router bgp 65000"
-    #     "no bgp dampening 1 1 1 1"
-    #     "no timers bgp 100 200 150"
-    #     "no bgp bestpath compare-routerid"
-    #     "bgp bestpath med confed"
-    #     "bgp nopeerup-delay cold-boot 20"
-    #     "no neighbor 198.51.100.1 remote-as 100"
-    #     "neighbor 192.0.2.1 remote-as 100"
-    #     "no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
-    #     "no neighbor 198.51.100.1 route-map test-route out"
-    #     "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive"
-    #     "no neighbor 198.51.100.1 description merge neighbor"
-    #     "neighbor 192.0.2.1 slow-peer detection disable"
-    #     "neighbor 192.0.2.1 description replace neighbor"
-    # ]
+    # before:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       compare_routerid: true
+    #     dampening:
+    #       max_suppress: 1
+    #       penalty_half_time: 1
+    #       reuse_route_val: 1
+    #       suppress_route_val: 1
+    #     graceful_shutdown:
+    #       community: '100'
+    #       local_preference: 100
+    #       neighbors:
+    #         time: 50
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       post_boot: 10
+    #   neighbors:
+    #   - aigp:
+    #       send:
+    #         cost_community:
+    #           id: 100
+    #           poi:
+    #             igp_cost: true
+    #             transitive: true
+    #     description: merge neighbor
+    #     neighbor_address: 198.0.2.1
+    #     remote_as: '100'
+    #     route_maps:
+    #     - name: test-route
+    #       out: true
+    #   networks:
+    #   - address: 192.0.2.2
+    #   - address: 192.0.2.3
 
+    # after:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       med:
+    #         confed: true
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       cold_boot: 20
+    #       post_boot: 10
+    #   neighbors:
+    #   - description: replace neighbor
+    #     neighbor_address: 192.0.2.5
+    #     remote_as: '100'
+    #     slow_peer:
+    #       detection:
+    #         disable: true
+    #   networks:
+    #   - address: 192.0.2.4
+
+    # commands:
+    # - router bgp 65000
+    # - no bgp bestpath compare-routerid
+    # - bgp bestpath med confed
+    # - no bgp dampening 1 1 1 1
+    # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    # - bgp nopeerup-delay cold-boot 20
+    # - network 192.0.2.4
+    # - no network 192.0.2.2
+    # - no network 192.0.2.3
+    # - neighbor 192.0.2.5 remote-as 100
+    # - neighbor 192.0.2.5 description replace neighbor
+    # - neighbor 192.0.2.5 slow-peer detection disable
+    # - no neighbor 198.0.2.1
 
     # After state:
     # -------------
@@ -8383,10 +9710,10 @@ Examples
     #  bgp nopeerup-delay post-boot 10
     #  bgp bestpath med confed
     #  bgp advertise-best-external
-    #  redistribute connected metric 10
-    #  neighbor 192.0.2.1 remote-as 100
-    #  neighbor 192.0.2.1 description replace neighbor
-    #  neighbor 192.0.2.1 slow-peer detection disable
+    #  network 192.0.2.4
+    #  neighbor 192.0.2.5 remote-as 100
+    #  neighbor 192.0.2.5 description replace neighbor
+    #  neighbor 192.0.2.5 slow-peer detection disable
 
     # Using Deleted
 
@@ -8400,10 +9727,10 @@ Examples
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  neighbor 192.0.2.1 remote-as 100
+    #  neighbor 192.0.2.1 description merge neighbor
+    #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 192.0.2.1 route-map test-route out
 
     - name: "Delete global BGP (Note: This won't delete the configured global BGP)"
       cisco.ios.ios_bgp_global:
@@ -8411,21 +9738,55 @@ Examples
           as_number: 65000
         state: deleted
 
-    # Commands fired:
+    # Task Output:
     # ---------------
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "no bgp dampening 1 1 1 1",
-    #         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "no bgp advertise-best-external",
-    #         "no bgp bestpath compare-routerid",
-    #         "no bgp nopeerup-delay post-boot 10",
-    #         "no neighbor 198.51.100.1 remote-as 100",
-    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "no neighbor 198.51.100.1 description merge neighbor",
-    #         "no neighbor 198.51.100.1 route-map test-route out"
-    #     ]
 
+    # before:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       compare_routerid: true
+    #     dampening:
+    #       max_suppress: 1
+    #       penalty_half_time: 1
+    #       reuse_route_val: 1
+    #       suppress_route_val: 1
+    #     graceful_shutdown:
+    #       community: '100'
+    #       local_preference: 100
+    #       neighbors:
+    #         time: 50
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       post_boot: 10
+    #   neighbors:
+    #   - aigp:
+    #       send:
+    #         cost_community:
+    #           id: 100
+    #           poi:
+    #             igp_cost: true
+    #             transitive: true
+    #     description: merge neighbor
+    #     neighbor_address: 192.0.2.1
+    #     remote_as: '100'
+    #     route_maps:
+    #     - name: test-route
+    #       out: true
+
+    # after:
+    #   as_number: '65000'
+
+    # commands:
+    # - router bgp 65000
+    # - no bgp advertise-best-external
+    # - no bgp bestpath compare-routerid
+    # - no bgp dampening 1 1 1 1
+    # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    # - no bgp log-neighbor-changes
+    # - no bgp nopeerup-delay post-boot 10
+    # - no neighbor 192.0.2.1
 
     # After state:
     # -------------
@@ -8447,31 +9808,64 @@ Examples
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  neighbor 192.0.2.1 remote-as 100
+    #  neighbor 192.0.2.1 description merge neighbor
+    #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 192.0.2.1 route-map test-route out
 
 
     - name: "Delete global BGP without config"
       cisco.ios.ios_bgp_global:
         state: deleted
 
-    # Commands fired:
+    # Task Output:
     # ---------------
-    #  "commands": [
-    #         "router bgp 65000",
-    #         "no bgp dampening 1 1 1 1",
-    #         "no bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #         "no bgp advertise-best-external",
-    #         "no bgp bestpath compare-routerid",
-    #         "no bgp nopeerup-delay post-boot 10",
-    #         "no neighbor 198.51.100.1 remote-as 100",
-    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "no neighbor 198.51.100.1 description merge neighbor",
-    #         "no neighbor 198.51.100.1 route-map test-route out"
-    #     ]
 
+    # before:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       compare_routerid: true
+    #     dampening:
+    #       max_suppress: 1
+    #       penalty_half_time: 1
+    #       reuse_route_val: 1
+    #       suppress_route_val: 1
+    #     graceful_shutdown:
+    #       community: '100'
+    #       local_preference: 100
+    #       neighbors:
+    #         time: 50
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       post_boot: 10
+    #   neighbors:
+    #   - aigp:
+    #       send:
+    #         cost_community:
+    #           id: 100
+    #           poi:
+    #             igp_cost: true
+    #             transitive: true
+    #     description: merge neighbor
+    #     neighbor_address: 192.0.2.1
+    #     remote_as: '100'
+    #     route_maps:
+    #     - name: test-route
+    #       out: true
+
+    # after:
+    #   as_number: '65000'
+
+    # commands:
+    # - router bgp 65000
+    # - no bgp advertise-best-external
+    # - no bgp bestpath compare-routerid
+    # - no bgp dampening 1 1 1 1
+    # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    # - no bgp nopeerup-delay post-boot 10
+    # - no neighbor 198.51.100.1
 
     # After state:
     # -------------
@@ -8492,10 +9886,10 @@ Examples
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  neighbor 192.0.2.1 remote-as 100
+    #  neighbor 192.0.2.1 description merge neighbor
+    #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 192.0.2.1 route-map test-route out
 
 
     - name: 'Delete the configured global BGP (Note: This WILL delete the the configured
@@ -8503,11 +9897,45 @@ Examples
       cisco.ios.ios_bgp_global:
         state: purged
 
-    # Commands fired:
+    # Task Output:
     # ---------------
-    #  "commands": [
-    #         "no router bgp 65000",
-    #     ]
+
+    # before:
+    #   as_number: '65000'
+    #   bgp:
+    #     advertise_best_external: true
+    #     bestpath_options:
+    #       compare_routerid: true
+    #     dampening:
+    #       max_suppress: 1
+    #       penalty_half_time: 1
+    #       reuse_route_val: 1
+    #       suppress_route_val: 1
+    #     graceful_shutdown:
+    #       community: '100'
+    #       local_preference: 100
+    #       neighbors:
+    #         time: 50
+    #     log_neighbor_changes: true
+    #     nopeerup_delay_options:
+    #       post_boot: 10
+    #   neighbors:
+    #   - aigp:
+    #       send:
+    #         cost_community:
+    #           id: 100
+    #           poi:
+    #             igp_cost: true
+    #             transitive: true
+    #     description: merge neighbor
+    #     neighbor_address: 192.0.2.1
+    #     remote_as: '100'
+    #     route_maps:
+    #     - name: test-route
+    #       out: true
+
+    # commands:
+    #  - no router bgp 65000
 
     # After state:
     # -------------
@@ -8526,10 +9954,10 @@ Examples
     #  bgp bestpath compare-routerid
     #  bgp dampening 1 1 1 1
     #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  neighbor 192.0.2.1 remote-as 100
+    #  neighbor 192.0.2.1 description merge neighbor
+    #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+    #  neighbor 192.0.2.1 route-map test-route out
 
 
     - name: Gather listed global BGP with provided configurations
@@ -8540,15 +9968,13 @@ Examples
     # Module Execution Result:
     # ------------------------
     #
-    #  "gathered": {
+    # "gathered": {
     #         "as_number": "65000",
     #         "bgp": {
     #             "advertise_best_external": true,
-    #             "bestpath": [
-    #                 {
-    #                     "compare_routerid": true
-    #                 }
-    #             ],
+    #             "bestpath_options": {
+    #                 "compare_routerid": true
+    #             },
     #             "dampening": {
     #                 "max_suppress": 1,
     #                 "penalty_half_time": 1,
@@ -8562,15 +9988,12 @@ Examples
     #                     "time": 50
     #                 }
     #             },
-    #             "nopeerup_delay": [
-    #                 {
-    #                     "post_boot": 10
-    #                 }
-    #             ]
+    #             "nopeerup_delay_options": {
+    #                 "post_boot": 10
+    #             }
     #         },
-    #         "neighbor": [
+    #         "neighbors": [
     #             {
-    #                 "address": "198.51.100.1",
     #                 "aigp": {
     #                     "send": {
     #                         "cost_community": {
@@ -8583,68 +10006,404 @@ Examples
     #                     }
     #                 },
     #                 "description": "merge neighbor",
-    #                 "remote_as": 100,
-    #                 "route_map": {
-    #                     "name": "test-route",
-    #                     "out": true
-    #                 }
+    #                 "neighbor_address": "192.0.2.1",
+    #                 "remote_as": "100",
+    #                 "route_maps": [
+    #                     {
+    #                         "name": "test-route",
+    #                         "out": true
+    #                     }
+    #                 ]
     #             }
     #         ]
+    #     },
+    #     "invocation": {
+    #         "module_args": {
+    #             "config": null,
+    #             "running_config": null,
+    #             "state": "gathered"
+    #         }
     #     }
+    # }
 
     # Using Rendered
 
     - name: Rendered the provided configuration with the existing running configuration
       cisco.ios.ios_bgp_global:
-        config:
-          as_number: 65000
-          bgp:
-            advertise_best_external: true
-            bestpath:
-              - compare_routerid: true
-            nopeerup_delay:
-              - post_boot: 10
-            dampening:
-              penalty_half_time: 1
-              reuse_route_val: 1
-              suppress_route_val: 1
-              max_suppress: 1
-            graceful_shutdown:
-              neighbors:
-                time: 50
-              community: 100
-              local_preference: 100
-          neighbor:
-            - address: 198.51.100.1
-              description:  merge neighbor
-              remote_as: 100
-              aigp:
-                send:
-                  cost_community:
-                    id: 100
-                    poi:
-                      igp_cost: true
-                      transitive: true
-              route_map:
-                name: test-route
-                out: true
+        config: >-
+            {{
+                {
+                "aggregate_addresses": [
+                    {
+                        "address": "192.0.2.1",
+                        "attribute_map": "testMap1",
+                        "netmask": "255.255.255.0",
+                        "summary_only": true
+                    },
+                    {
+                        "address": "192.0.2.2",
+                        "as_set": true,
+                        "netmask": "255.255.255.0"
+                    },
+                    {
+                        "address": "192.0.2.3",
+                        "as_set": true,
+                        "netmask": "255.255.255.0"
+                    }
+                ],
+                "as_number": "65000",
+                "auto_summary": true,
+                "bgp": {
+                    "additional_paths": {
+                        "install": true,
+                        "receive": true
+                    },
+                    "aggregate_timer": 0,
+                    "always_compare_med": true,
+                    "asnotation": true,
+                    "bestpath_options": {
+                        "aigp": true,
+                        "compare_routerid": true,
+                        "med": {
+                            "confed": true,
+                            "missing_as_worst": true
+                        }
+                    },
+                    "confederation": {
+                        "identifier": "22"
+                    },
+                    "consistency_checker": {
+                        "error_message": {
+                            "interval": 10,
+                            "set": true
+                        }
+                    },
+                    "dampening": {
+                        "route_map": "routeMap1Test"
+                    },
+                    "deterministic_med": true,
+                    "graceful_restart": {
+                        "restart_time": 2,
+                        "stalepath_time": 22
+                    },
+                    "graceful_shutdown": {
+                        "community": "77",
+                        "local_preference": 230,
+                        "vrfs": {
+                            "time": 31
+                        }
+                    },
+                    "inject_maps": [
+                        {
+                            "copy_attributes": true,
+                            "exist_map_name": "Testmap3",
+                            "name": "map2"
+                        },
+                        {
+                            "copy_attributes": true,
+                            "exist_map_name": "Testmap2",
+                            "name": "map1"
+                        }
+                    ],
+                    "listen": {
+                        "limit": 200,
+                        "range": {
+                            "host_with_subnet": "192.0.2.1/24",
+                            "peer_group": "PaulNetworkGroup"
+                        }
+                    },
+                    "log_neighbor_changes": true,
+                    "maxas_limit": 2,
+                    "maxcommunity_limit": 3,
+                    "maxextcommunity_limit": 3,
+                    "nexthop": {
+                        "route_map": "RouteMap1",
+                        "trigger": {
+                            "delay": 2
+                        }
+                    },
+                    "nopeerup_delay_options": {
+                        "cold_boot": 2,
+                        "nsf_switchover": 10,
+                        "post_boot": 22,
+                        "user_initiated": 22
+                    },
+                    "recursion": true,
+                    "redistribute_internal": true,
+                    "refresh": {
+                        "max_eor_time": 700,
+                        "stalepath_time": 800
+                    },
+                    "router_id": {
+                        "vrf": true
+                    },
+                    "scan_time": 22,
+                    "slow_peer": {
+                        "detection": {
+                            "threshold": 345
+                        },
+                        "split_update_group": {
+                            "dynamic": true,
+                            "permanent": true
+                        }
+                    },
+                    "sso": true,
+                    "suppress_inactive": true,
+                    "update_delay": 2,
+                    "update_group": true
+                },
+                "bmp": {
+                    "buffer_size": 22,
+                    "server": 2
+                },
+                "distance": {
+                    "bgp": {
+                        "routes_external": 2,
+                        "routes_internal": 3,
+                        "routes_local": 4
+                    },
+                    "mbgp": {
+                        "routes_external": 2,
+                        "routes_internal": 3,
+                        "routes_local": 5
+                    }
+                },
+                "distributes": [
+                    {
+                        "in": true,
+                        "prefix": "prefixTest"
+                    },
+                    {
+                        "out": true,
+                        "gateway": "gatewayTest"
+                    },
+                    {
+                        "out": true,
+                        "acl": "300",
+                        "interface": "Loopback0"
+                    }
+                ],
+                "maximum_paths": {
+                    "ibgp": 2,
+                    "paths": 2
+                },
+                "maximum_secondary_paths": {
+                    "ibgp": 22,
+                    "paths": 22
+                },
+                "neighbors": [
+                    {
+                        "advertise": {
+                            "diverse_path": {
+                                "backup": true
+                            }
+                        },
+                        "neighbor_address": "192.0.2.8",
+                        "route_reflector_client": true
+                    },
+                    {
+                        "neighbor_address": "192.0.2.9",
+                        "remote_as": 64500,
+                        "update_source": "Loopback0",
+                        "route_maps":[{
+                            "name": "rmp1",
+                            "in": true,
+                        },{
+                            "name": "rmp2",
+                            "in": true,
+                        },]
+                    },
+                    {
+                        "neighbor_address": "192.0.2.10",
+                        "remote_as": 64500,
+                        "update_source": "Loopback1"
+                    },
+                    {
+                        "activate": true,
+                        "neighbor_address": "192.0.2.11",
+                        "remote_as": 45000,
+                        "send_community": {
+                            "extended": true
+                        }
+                    },
+                    {
+                        "activate": true,
+                        "neighbor_address": "192.0.2.12",
+                        "remote_as": 45000
+                    },
+                    {
+                        "neighbor_address": "192.0.2.13",
+                        "remote_as": 6553601,
+                        "shutdown": {
+                            "set": true,
+                            "graceful": 10,
+                            "community": 20,
+                        }
+                    },
+                    {
+                        "activate": true,
+                        "advertise": {
+                            "additional_paths": {
+                                "group_best": true
+                            }
+                        },
+                        "neighbor_address": "2001:DB8::1037"
+                    },
+                    {
+                        "neighbor_address": "testNebTag",
+                        "peer_group": "5",
+                        "soft_reconfiguration": true,
+                        "version": 4
+                    }
+                ],
+                "networks": [
+                    {
+                        "address": "192.0.2.15",
+                        "backdoor": true,
+                        "netmask": "55.255.255.0",
+                        "route_map": "mp1"
+                    },
+                    {
+                        "address": "192.0.2.16",
+                        "backdoor": true,
+                        "netmask": "255.255.255.0",
+                        "route_map": "mp2"
+                    },
+                    {
+                        "address": "192.0.2.17",
+                        "backdoor": true,
+                        "netmask": "255.255.255.0",
+                        "route_map": "mp2"
+                    }
+                ],
+                "redistribute": [
+                    {
+                        "static": {
+                            "metric": 33,
+                            "route_map": "rmp1"
+                        }
+                    },
+                    {
+                        "application": {
+                            "metric": 22,
+                            "name": "app1"
+                        }
+                    },
+                    {
+                        "application": {
+                            "metric": 33,
+                            "name": "app2",
+                            "route_map": "mp1"
+                        }
+                    },
+                    {
+                        "connected": {
+                            "metric": 22
+                        }
+                    },
+                    {
+                        "mobile": {
+                            "metric": 211
+                        }
+                    }
+                ],
+                "route_server_context": {
+                    "description": "checking description as line"
+                }
+            }
+            }}
         state: rendered
 
     # Module Execution Result:
     # ------------------------
     #
     # "rendered": [
-    #       "router bgp 65000",
-    #       "bgp dampening 1 1 1 1",
-    #       "bgp graceful-shutdown all neighbors 50 community 100 local-preference 100",
-    #       "bgp advertise-best-external",
-    #       "bgp nopeerup-delay post-boot 10",
-    #       "bgp bestpath compare-routerid",
-    #       "neighbor 198.51.100.1 remote-as 100",
-    #       "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #       "neighbor 198.51.100.1 description merge neighbor",
-    #       "neighbor 198.51.100.1 route-map test-route out"
-    #  ]
+    #         "router bgp 65000",
+    #         "auto-summary",
+    #         "bmp buffer-size 22",
+    #         "bmp server 2",
+    #         "distance bgp 2 3 4",
+    #         "distance mbgp 2 3 5",
+    #         "maximum-paths 2",
+    #         "maximum-paths ibgp 2",
+    #         "maximum-secondary-paths 22",
+    #         "maximum-secondary-paths ibgp 22",
+    #         "description checking description as line",
+    #         "bgp additional-paths install receive",
+    #         "bgp aggregate-timer 0",
+    #         "bgp always-compare-med",
+    #         "bgp asnotation dot",
+    #         "bgp bestpath aigp ignore",
+    #         "bgp bestpath compare-routerid",
+    #         "bgp bestpath med confed missing-as-worst",
+    #         "bgp confederation identifier 22",
+    #         "bgp consistency-checker error-message interval 10",
+    #         "bgp dampening route-map routeMap1Test",
+    #         "bgp deterministic-med",
+    #         "bgp graceful-restart restart-time 2",
+    #         "bgp graceful-restart stalepath-time 22",
+    #         "bgp graceful-shutdown all vrfs 31 local-preference 230 community 77",
+    #         "bgp listen limit 200",
+    #         "bgp listen range 192.0.2.1/24 peer-group PaulNetworkGroup",
+    #         "bgp log-neighbor-changes",
+    #         "bgp maxas-limit 2",
+    #         "bgp maxcommunity-limit 3",
+    #         "bgp maxextcommunity-limit 3",
+    #         "bgp nexthop route-map RouteMap1",
+    #         "bgp nexthop trigger delay 2",
+    #         "bgp nopeerup-delay cold-boot 2",
+    #         "bgp nopeerup-delay post-boot 22",
+    #         "bgp nopeerup-delay nsf-switchover 10",
+    #         "bgp nopeerup-delay user-initiated 22",
+    #         "bgp recursion host",
+    #         "bgp redistribute-internal",
+    #         "bgp refresh max-eor-time 700",
+    #         "bgp refresh stalepath-time 800",
+    #         "bgp router-id vrf auto-assign",
+    #         "bgp scan-time 22",
+    #         "bgp slow-peer detection threshold 345",
+    #         "bgp slow-peer split-update-group dynamic permanent",
+    #         "bgp sso route-refresh-enable",
+    #         "bgp suppress-inactive",
+    #         "bgp update-delay 2",
+    #         "bgp update-group split as-override",
+    #         "bgp inject-map map2 exist-map Testmap3 copy-attributes",
+    #         "bgp inject-map map1 exist-map Testmap2 copy-attributes",
+    #         "distribute-list prefix prefixTest in",
+    #         "distribute-list gateway gatewayTest out",
+    #         "distribute-list 300 out Loopback0",
+    #         "aggregate-address 192.0.2.1 255.255.255.0 summary-only attribute-map testMap1",
+    #         "aggregate-address 192.0.2.2 255.255.255.0 as-set",
+    #         "aggregate-address 192.0.2.3 255.255.255.0 as-set",
+    #         "network 192.0.2.15 mask 55.255.255.0 route-map mp1 backdoor",
+    #         "network 192.0.2.16 mask 255.255.255.0 route-map mp2 backdoor",
+    #         "network 192.0.2.17 mask 255.255.255.0 route-map mp2 backdoor",
+    #         "neighbor 192.0.2.8 advertise diverse-path backup",
+    #         "neighbor 192.0.2.8 route-reflector-client",
+    #         "neighbor 192.0.2.9 remote-as 64500",
+    #         "neighbor 192.0.2.9 update-source Loopback0",
+    #         "neighbor 192.0.2.9 route-map rmp1 in",
+    #         "neighbor 192.0.2.9 route-map rmp2 in",
+    #         "neighbor 192.0.2.10 remote-as 64500",
+    #         "neighbor 192.0.2.10 update-source Loopback1",
+    #         "neighbor 192.0.2.11 remote-as 45000",
+    #         "neighbor 192.0.2.11 activate",
+    #         "neighbor 192.0.2.11 send-community extended",
+    #         "neighbor 192.0.2.12 remote-as 45000",
+    #         "neighbor 192.0.2.12 activate",
+    #         "neighbor 192.0.2.13 remote-as 6553601",
+    #         "neighbor 192.0.2.13 shutdown graceful 10 community 20",
+    #         "neighbor 2001:DB8::1037 activate",
+    #         "neighbor 2001:DB8::1037 advertise additional-paths group-best",
+    #         "neighbor testNebTag peer-group 5",
+    #         "neighbor testNebTag soft-reconfiguration inbound",
+    #         "neighbor testNebTag version 4",
+    #         "redistribute static metric 33 route-map rmp1",
+    #         "redistribute application app1 metric 22",
+    #         "redistribute application app2 metric 33 route-map mp1",
+    #         "redistribute connected metric 22",
+    #         "redistribute mobile metric 211"
+    #     ]
 
     # Using Parsed
 
@@ -8652,15 +10411,90 @@ Examples
     # ----------------
     #
     # router bgp 65000
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  auto-summary
+    #  bmp buffer-size 22
+    #  bmp server 2
+    #  distance bgp 2 3 4
+    #  distance mbgp 2 3 5
+    #  maximum-paths 2
+    #  maximum-paths ibgp 2
+    #  maximum-secondary-paths 22
+    #  maximum-secondary-paths ibgp 22
+    #  description checking description as line
+    #  bgp additional-paths install receive
+    #  bgp aggregate-timer 0
+    #  bgp always-compare-med
+    #  bgp asnotation dot
+    #  bgp bestpath aigp ignore
     #  bgp bestpath compare-routerid
-    #  bgp dampening 1 1 1 1
-    #  bgp advertise-best-external
-    #  neighbor 198.51.100.1 remote-as 100
-    #  neighbor 198.51.100.1 description merge neighbor
-    #  neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #  neighbor 198.51.100.1 route-map test-route out
+    #  bgp bestpath med confed missing-as-worst
+    #  bgp confederation identifier 22
+    #  bgp consistency-checker error-message interval 10
+    #  bgp dampening route-map routeMap1Test
+    #  bgp deterministic-med
+    #  bgp graceful-restart restart-time 2
+    #  bgp graceful-restart stalepath-time 22
+    #  bgp graceful-shutdown all vrfs 31 local-preference 230 community 77
+    #  bgp listen limit 200
+    #  bgp listen range 192.0.2.1/24 peer-group PaulNetworkGroup
+    #  bgp log-neighbor-changes
+    #  bgp maxas-limit 2
+    #  bgp maxcommunity-limit 3
+    #  bgp maxextcommunity-limit 3
+    #  bgp nexthop route-map RouteMap1
+    #  bgp nexthop trigger delay 2
+    #  bgp nopeerup-delay cold-boot 2
+    #  bgp nopeerup-delay post-boot 22
+    #  bgp nopeerup-delay nsf-switchover 10
+    #  bgp nopeerup-delay user-initiated 22
+    #  bgp recursion host
+    #  bgp redistribute-internal
+    #  bgp refresh max-eor-time 700
+    #  bgp refresh stalepath-time 800
+    #  bgp router-id vrf auto-assign
+    #  bgp scan-time 22
+    #  bgp slow-peer detection threshold 345
+    #  bgp slow-peer split-update-group dynamic permanent
+    #  bgp sso route-refresh-enable
+    #  bgp suppress-inactive
+    #  bgp update-delay 2
+    #  bgp update-group split as-override
+    #  bgp inject-map map2 exist-map Testmap3 copy-attributes
+    #  bgp inject-map map1 exist-map Testmap2 copy-attributes
+    #  distribute-list prefix prefixTest in
+    #  distribute-list gateway gatewayTest out
+    #  distribute-list 300 out Loopback0
+    #  aggregate-address 192.0.2.1 255.255.255.0 summary-only attribute-map testMap1
+    #  aggregate-address 192.0.2.2 255.255.255.0 as-set
+    #  aggregate-address 192.0.2.3 255.255.255.0 as-set
+    #  network 192.0.2.15 mask 55.255.255.0 route-map mp1 backdoor
+    #  network 192.0.2.16 mask 255.255.255.0 route-map mp2 backdoor
+    #  network 192.0.2.17 mask 255.255.255.0 route-map mp2 backdoor
+    #  neighbor 192.0.2.8 advertise diverse-path backup
+    #  neighbor 192.0.2.8 route-reflector-client
+    #  neighbor 192.0.2.9 remote-as 64500
+    #  neighbor 192.0.2.9 update-source Loopback0
+    #  neighbor 192.0.2.9 route-map rmp1 in
+    #  neighbor 192.0.2.9 route-map rmp2 in
+    #  neighbor 192.0.2.10 remote-as 64500
+    #  neighbor 192.0.2.10 update-source Loopback1
+    #  neighbor 192.0.2.11 remote-as 45000
+    #  neighbor 192.0.2.11 activate
+    #  neighbor 192.0.2.11 send-community extended
+    #  neighbor 192.0.2.12 remote-as 45000
+    #  neighbor 192.0.2.12 activate
+    #  neighbor 192.0.2.13 remote-as 6553601
+    #  neighbor 192.0.2.13 shutdown graceful 10 community 20
+    #  neighbor 2001:DB8::1037 activate
+    #  neighbor 2001:DB8::1037 advertise additional-paths group-best
+    #  neighbor testNebTag peer-group 5
+    #  neighbor testNebTag soft-reconfiguration inbound
+    #  neighbor testNebTag version 4
+    #  redistribute static metric 33 route-map rmp1
+    #  redistribute application app1 metric 22
+    #  redistribute application app2 metric 33 route-map mp1
+    #  redistribute connected metric 22
+    #  redistribute mobile metric 21
 
     - name: Parse the commands for provided configuration
       cisco.ios.ios_bgp_global:
@@ -8671,52 +10505,278 @@ Examples
     # ------------------------
     #
     #  "parsed": {
+    #         "aggregate_addresses": [
+    #             {
+    #                 "address": "192.0.2.1",
+    #                 "attribute_map": "testMap1",
+    #                 "netmask": "255.255.255.0",
+    #                 "summary_only": true
+    #             },
+    #             {
+    #                 "address": "192.0.2.2",
+    #                 "as_set": true,
+    #                 "netmask": "255.255.255.0"
+    #             },
+    #             {
+    #                 "address": "192.0.2.3",
+    #                 "as_set": true,
+    #                 "netmask": "255.255.255.0"
+    #             }
+    #         ],
     #         "as_number": "65000",
+    #         "auto_summary": true,
     #         "bgp": {
-    #             "advertise_best_external": true,
-    #             "bestpath": [
-    #                 {
-    #                     "compare_routerid": true
+    #             "additional_paths": {
+    #                 "install": true,
+    #                 "receive": true
+    #             },
+    #             "aggregate_timer": 0,
+    #             "always_compare_med": true,
+    #             "asnotation": true,
+    #             "bestpath_options": {
+    #                 "aigp": true,
+    #                 "compare_routerid": true,
+    #                 "med": {
+    #                     "confed": true,
+    #                     "missing_as_worst": true
     #                 }
-    #             ],
+    #             },
+    #             "confederation": {
+    #                 "identifier": "22"
+    #             },
+    #             "consistency_checker": {
+    #                 "error_message": {
+    #                     "interval": 10,
+    #                     "set": true
+    #                 }
+    #             },
     #             "dampening": {
-    #                 "max_suppress": 1,
-    #                 "penalty_half_time": 1,
-    #                 "reuse_route_val": 1,
-    #                 "suppress_route_val": 1
+    #                 "route_map": "routeMap1Test"
+    #             },
+    #             "deterministic_med": true,
+    #             "graceful_restart": {
+    #                 "restart_time": 2,
+    #                 "stalepath_time": 22
     #             },
     #             "graceful_shutdown": {
-    #                 "community": "100",
-    #                 "local_preference": 100,
-    #                 "neighbors": {
-    #                     "time": 50
+    #                 "community": "77",
+    #                 "local_preference": 230,
+    #                 "vrfs": {
+    #                     "time": 31
     #                 }
     #             },
-    #             "nopeerup_delay": [
+    #             "inject_maps": [
     #                 {
-    #                     "post_boot": 10
+    #                     "copy_attributes": true,
+    #                     "exist_map_name": "Testmap3",
+    #                     "name": "map2"
+    #                 },
+    #                 {
+    #                     "copy_attributes": true,
+    #                     "exist_map_name": "Testmap2",
+    #                     "name": "map1"
     #                 }
-    #             ]
+    #             ],
+    #             "listen": {
+    #                 "limit": 200,
+    #                 "range": {
+    #                     "host_with_subnet": "192.0.2.1/24",
+    #                     "peer_group": "PaulNetworkGroup"
+    #                 }
+    #             },
+    #             "log_neighbor_changes": true,
+    #             "maxas_limit": 2,
+    #             "maxcommunity_limit": 3,
+    #             "maxextcommunity_limit": 3,
+    #             "nexthop": {
+    #                 "route_map": "RouteMap1",
+    #                 "trigger": {
+    #                     "delay": 2
+    #                 }
+    #             },
+    #             "nopeerup_delay_options": {
+    #                 "cold_boot": 2,
+    #                 "nsf_switchover": 10,
+    #                 "post_boot": 22,
+    #                 "user_initiated": 22
+    #             },
+    #             "recursion": true,
+    #             "redistribute_internal": true,
+    #             "refresh": {
+    #                 "max_eor_time": 700,
+    #                 "stalepath_time": 800
+    #             },
+    #             "router_id": {
+    #                 "vrf": true
+    #             },
+    #             "scan_time": 22,
+    #             "slow_peer": {
+    #                 "detection": {
+    #                     "threshold": 345
+    #                 },
+    #                 "split_update_group": {
+    #                     "dynamic": true,
+    #                     "permanent": true
+    #                 }
+    #             },
+    #             "sso": true,
+    #             "suppress_inactive": true,
+    #             "update_delay": 2,
+    #             "update_group": true
     #         },
-    #         "neighbor": [
+    #         "bmp": {
+    #             "buffer_size": 22,
+    #             "server": 2
+    #         },
+    #         "distance": {
+    #             "bgp": {
+    #                 "routes_external": 2,
+    #                 "routes_internal": 3,
+    #                 "routes_local": 4
+    #             },
+    #             "mbgp": {
+    #                 "routes_external": 2,
+    #                 "routes_internal": 3,
+    #                 "routes_local": 5
+    #             }
+    #         },
+    #         "distributes": [
     #             {
-    #                 "address": "198.51.100.1",
-    #                 "aigp": {
-    #                     "send": {
-    #                         "cost_community": {
-    #                             "id": 100,
-    #                             "poi": {
-    #                                 "igp_cost": true,
-    #                                 "transitive": true
-    #                             }
-    #                         }
+    #                 "in": true,
+    #                 "prefix": "prefixTest"
+    #             },
+    #             {
+    #                 "gateway": "gatewayTest",
+    #                 "out": true
+    #             },
+    #             {
+    #                 "acl": "300",
+    #                 "interface": "Loopback0",
+    #                 "out": true
+    #             }
+    #         ],
+    #         "maximum_paths": {
+    #             "ibgp": 2,
+    #             "paths": 2
+    #         },
+    #         "maximum_secondary_paths": {
+    #             "ibgp": 22,
+    #             "paths": 22
+    #         },
+    #         "neighbors": [
+    #             {
+    #                 "neighbor_address": "192.0.2.10",
+    #                 "remote_as": "64500",
+    #                 "update_source": "Loopback1"
+    #             },
+    #             {
+    #                 "activate": true,
+    #                 "neighbor_address": "192.0.2.11",
+    #                 "remote_as": "45000",
+    #                 "send_community": {
+    #                     "extended": true
+    #                 }
+    #             },
+    #             {
+    #                 "activate": true,
+    #                 "neighbor_address": "192.0.2.12",
+    #                 "remote_as": "45000"
+    #             },
+    #             {
+    #                 "neighbor_address": "192.0.2.13",
+    #                 "remote_as": "6553601"
+    #             },
+    #             {
+    #                 "advertise": {
+    #                     "diverse_path": {
+    #                         "backup": true
     #                     }
     #                 },
-    #                 "description": "merge neighbor",
-    #                 "remote_as": 100,
-    #                 "route_map": {
-    #                     "name": "test-route",
-    #                     "out": true
+    #                 "neighbor_address": "192.0.2.8",
+    #                 "route_reflector_client": true
+    #             },
+    #             {
+    #                 "neighbor_address": "192.0.2.9",
+    #                 "remote_as": "64500",
+    #                 "route_maps": [
+    #                     {
+    #                         "in": true,
+    #                         "name": "rmp1"
+    #                     },
+    #                     {
+    #                         "in": true,
+    #                         "name": "rmp2"
+    #                     }
+    #                 ],
+    #                 "update_source": "Loopback0"
+    #             },
+    #             {
+    #                 "activate": true,
+    #                 "advertise": {
+    #                     "additional_paths": {
+    #                         "group_best": true
+    #                     }
+    #                 },
+    #                 "neighbor_address": "2001:DB8::1037"
+    #             },
+    #             {
+    #                 "neighbor_address": "testNebTag",
+    #                 "peer_group": "5",
+    #                 "soft_reconfiguration": true,
+    #                 "version": 4
+    #             }
+    #         ],
+    #         "networks": [
+    #             {
+    #                 "address": "192.0.2.15",
+    #                 "backdoor": true,
+    #                 "netmask": "55.255.255.0",
+    #                 "route_map": "mp1"
+    #             },
+    #             {
+    #                 "address": "192.0.2.16",
+    #                 "backdoor": true,
+    #                 "netmask": "255.255.255.0",
+    #                 "route_map": "mp2"
+    #             },
+    #             {
+    #                 "address": "192.0.2.17",
+    #                 "backdoor": true,
+    #                 "netmask": "255.255.255.0",
+    #                 "route_map": "mp2"
+    #             }
+    #         ],
+    #         "redistribute": [
+    #             {
+    #                 "static": {
+    #                     "metric": 33,
+    #                     "route_map": "rmp1",
+    #                     "set": true
+    #                 }
+    #             },
+    #             {
+    #                 "application": {
+    #                     "metric": 22,
+    #                     "name": "app1"
+    #                 }
+    #             },
+    #             {
+    #                 "application": {
+    #                     "metric": 33,
+    #                     "name": "app2",
+    #                     "route_map": "mp1"
+    #                 }
+    #             },
+    #             {
+    #                 "connected": {
+    #                     "metric": 22,
+    #                     "set": true
+    #                 }
+    #             },
+    #             {
+    #                 "mobile": {
+    #                     "metric": 21,
+    #                     "set": true
     #                 }
     #             }
     #         ]
@@ -8742,15 +10802,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>after</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when changed</td>
                 <td>
-                            <div>The configuration as structured data after module completion.</div>
+                            <div>The resulting configuration after module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -8759,15 +10819,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>before</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The configuration as structured data prior to module invocation.</div>
+                            <div>The configuration prior to the module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -8779,12 +10839,63 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The set of commands pushed to the remote device</div>
+                            <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65000&#x27;, &#x27;bgp nopeerup-delay post-boot 10&#x27;, &#x27;bgp advertise-best-external&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65000&#x27;, &#x27;neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive&#x27;, &#x27;bgp graceful-shutdown all neighbors 50 local-preference 100 community 100&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65000&#x27;, &#x27;neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive&#x27;, &#x27;bgp graceful-shutdown all neighbors 50 local-preference 100 community 100&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -8799,3 +10910,4 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)
