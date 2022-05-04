@@ -28,8 +28,7 @@ The arg spec for the ios_interfaces module
 
 
 class InterfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_interfaces module
-    """
+    """The arg spec for the ios_interfaces module"""
 
     argument_spec = {
         "config": {

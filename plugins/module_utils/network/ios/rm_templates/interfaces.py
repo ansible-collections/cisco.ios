@@ -19,31 +19,90 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(InterfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(InterfacesTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
-            "getval": re.compile(
-                r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE),
-            "setval": "",
-            "result": {
+            'name': 'interface',
+            'getval': re.compile(r'''
+              ^interface\s
+              (?P<name>\S+)$''', re.VERBOSE),
+            'setval': 'interface {{ name }}',
+            'result': {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                },
             },
-            "shared": True
+            'shared': True
         },
         {
-            "name": "key_b",
+            "name": "description",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
+                \s+description\s(?P<description>.+$)
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "description {{ description }}",
             "result": {
+                '{{ name }}': {
+                    'description': '{{ description }}',
+                },
+            },
+        },
+        {
+            "name": "enabled",
+            "getval": re.compile(
+                r"""
+                \s+shutdown$""", re.VERBOSE),
+            "setval": "shutdown",
+            "result": {
+                '{{ name }}': {
+                    'enabled': True,
+                },
+            },
+        },
+        {
+            "name": "speed",
+            "getval": re.compile(
+                r"""
+                \s+speed\s(?P<speed>.+$)
+                $""", re.VERBOSE),
+            "setval": "speed {{ speed }}",
+            "result": {
+                '{{ name }}': {
+                    'speed': '{{ speed }}',
+                },
+            },
+        },
+        {
+            "name": "mtu",
+            "getval": re.compile(
+                r"""
+                \s+mtu\s(?P<mtu>.+$)
+                $""", re.VERBOSE),
+            "setval": "mtu {{ mtu|string }}",
+            "result": {
+                '{{ name }}': {
+                    'mtu': '{{ mtu }}',
+                },
+            },
+        },
+        {
+            "name": "duplex",
+            "getval": re.compile(
+                r"""
+                \s+duplex\s(?P<duplex>full|half|auto)
+                $""", re.VERBOSE),
+            "setval": "duplex {{ duplex }}",
+            "result": {
+                '{{ name }}': {
+                    'duplex': '{{ duplex }}',
+                },
             },
         },
     ]
