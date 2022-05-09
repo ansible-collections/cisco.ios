@@ -17,8 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -47,7 +45,7 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = ["description", "enabled", "speed", "mtu", "duplex"]
 
     def execute_module(self):
         """Execute the module
@@ -72,7 +70,7 @@ class Interfaces(ResourceModule):
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
+        if self.state in ["deleted", "purged"]:
             haved = {
                 k: v for k, v in iteritems(haved) if k in wantd or not wantd
             }
@@ -84,8 +82,12 @@ class Interfaces(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == "purged":
+            for k, have in iteritems(haved):
+                self.purge(have)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -93,4 +95,13 @@ class Interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "interface", False)
+            )
+
+    def purge(self, have):
+        """Handle operation for purged state"""
+        self.commands.append(self._tmplt.render(have, "interface", True))

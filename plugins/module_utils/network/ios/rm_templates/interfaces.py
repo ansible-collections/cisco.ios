@@ -58,11 +58,13 @@ class InterfacesTemplate(NetworkTemplate):
             "name": "enabled",
             "getval": re.compile(
                 r"""
-                \s+shutdown$""", re.VERBOSE),
+                ((?P<negate>\sno))?
+                ((?P<shutdown>\sshutdown))?
+                $""", re.VERBOSE),
             "setval": "shutdown",
             "result": {
                 '{{ name }}': {
-                    'enabled': True,
+                    'enabled': "{{ False if negate is defined else True }}",
                 },
             },
         },
@@ -72,7 +74,7 @@ class InterfacesTemplate(NetworkTemplate):
                 r"""
                 \s+speed\s(?P<speed>.+$)
                 $""", re.VERBOSE),
-            "setval": "speed {{ speed }}",
+            "setval": "speed {{ speed|string }}",
             "result": {
                 '{{ name }}': {
                     'speed': '{{ speed }}',
