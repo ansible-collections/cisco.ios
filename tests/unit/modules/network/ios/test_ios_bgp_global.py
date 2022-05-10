@@ -656,6 +656,17 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "update_source": "Loop",
                         },
                         {
+                            "neighbor_address": "192.1.1.2",
+                            "local_as": {
+                                "no_prepend": {
+                                    "replace_as": True,
+                                    "set": True,
+                                },
+                                "number": 56,
+                                "set": True,
+                            },
+                        },
+                        {
                             "activate": True,
                             "address": "192.0.1.2",
                             "remote_as": 45000,
@@ -767,6 +778,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 192.5.5.5 route-map rmp1 in",
             "neighbor 192.6.6.6 remote-as 64500",
             "neighbor 192.6.6.6 update-source Loop",
+            "neighbor 192.1.1.2 local-as 56 no-prepend replace-as",
             "neighbor 192.0.1.2 remote-as 45000",
             "neighbor 192.0.1.2 password new password",
             "neighbor 192.0.1.2 activate",
