@@ -359,7 +359,7 @@ class Logging_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^logging\sbuffered
-                (\sdiscriminator\s(?P<sdiscriminator>.+))?
+                (\sdiscriminator\s(?P<discriminator>.+))?
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
                 (\s(?P<size>[1-9][0-9]*))?
@@ -407,7 +407,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
                 (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings|guaranteed$))?
-                (\s(?P<discriminator>discriminator\s.+$))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
             "setval": tmplt_console,
             "result": {
@@ -559,7 +559,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<filtered>filtered))?
                 (\s(?P<xml>xml))?
                 (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
-                (\s(?P<discriminator>discriminator\s.+$))?
+                (\sdiscriminator\s(?P<discriminator>.+$))?
                 $""", re.VERBOSE),
             "setval": tmplt_monitor,
             "result": {
