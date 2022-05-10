@@ -1,5 +1,5 @@
 ---
-minor_change:
+minor_changes:
   - "`ios_interfaces` - Add purged state to ios_interfaces."
 bugfixes:
   - "`ios_interfaces` - Parse interface shutdown config correctly."
