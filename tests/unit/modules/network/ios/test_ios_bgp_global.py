@@ -311,7 +311,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             "redistribute static metric 33 route-map mp1",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_merged_idempotent(self):
@@ -800,7 +799,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             "redistribute mobile metric 211",
         ]
         result = self.execute_module(changed=False)
-        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_bgp_global_parsed(self):
