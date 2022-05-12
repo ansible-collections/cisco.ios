@@ -1,0 +1,11 @@
+name: Units
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  unit:
+    uses: ansible-network/github_actions/.github/workflows/unit.yml@main

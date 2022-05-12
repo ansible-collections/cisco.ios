@@ -1,0 +1,11 @@
+name: Sanity
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sanity:
+    uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
