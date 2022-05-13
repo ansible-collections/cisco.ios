@@ -55,7 +55,7 @@ class AclsFacts(object):
         """removes matches or extra config info that is added on acl match"""
         re_data = ""
         for da in data.split("\n"):
-            if "matches" in da:
+            if "match" in da:
                 mod_da = re.sub(r"\([^()]*\)", "", da)
                 re_data += mod_da[:-1] + "\n"
             else:
