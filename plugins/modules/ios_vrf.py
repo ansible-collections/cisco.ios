@@ -271,7 +271,7 @@ delta:
   description: The time elapsed to perform all operations
   returned: always
   type: str
-  sample: "0:00:10.469466\"
+  sample: "0:00:10.469466"
 """
 import re
 import time
