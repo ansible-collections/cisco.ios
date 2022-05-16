@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_ntp` - Handle regex matching server attributes gracefully."
