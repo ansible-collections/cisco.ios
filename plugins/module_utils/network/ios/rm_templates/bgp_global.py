@@ -1629,7 +1629,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} local-as"
-            "{{ (' ' + local_as.number) if local_as.number is defined else '' }}"
+            "{{ (' ' + local_as.number|string) if local_as.number is defined else '' }}"
             "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
             "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
             "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
