@@ -1,8 +1,12 @@
-#
 # -*- coding: utf-8 -*-
-# Copyright 2019 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 """
 The ios lag_interfaces fact class
 It is in this file the configuration is collected from the device
@@ -10,118 +14,80 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
-
-import re
 from copy import deepcopy
+from itertools import groupby
 
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    get_interface_type,
-    normalize_interface,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
+    Lag_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
 )
 
-
 class Lag_interfacesFacts(object):
-    """The ios_lag_interfaces fact class"""
+    """ The ios lag_interfaces facts class
+    """
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec='config', options='options'):
         self._module = module
         self.argument_spec = Lag_interfacesArgs.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
 
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
+    def get_lag_interfaces_data(self, connection):
+        return connection.get(
+            "show running-config | section ^interface"
+        )
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for interfaces
+        """ Populate the facts for Lag_interfaces network resource
+
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
+
         :rtype: dictionary
         :returns: facts
         """
+        facts = {}
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section ^interface")
-        # operate on a collection of resource x
-        config = ("\n" + data).split("\ninterface ")
-        for conf in config:
-            if conf:
-                obj = self.render_config(self.generated_spec, conf)
-                if obj:
-                    if not obj.get("members"):
-                        obj.update({"members": []})
-                    objs.append(obj)
+            data = self.get_lag_interfaces_data(connection)
 
-        # for appending members configured with same channel-group
-        for each in range(len(objs)):
-            if each < (len(objs) - 1):
-                if objs[each]["name"] == objs[each + 1]["name"]:
-                    objs[each]["members"].append(objs[each + 1]["members"][0])
-                    del objs[each + 1]
-        facts = {}
+        # parse native config using the Lag_interfaces template
+        lag_interfaces_parser = Lag_interfacesTemplate(lines=data.splitlines(), module=self._module)
+        objs = self.process_facts(list(lag_interfaces_parser.parse().values()))
+        ansible_facts['ansible_network_resources'].pop('lag_interfaces', None)
 
-        if objs:
-            facts["lag_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+        params = utils.remove_empties(
+            lag_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+        )
 
-            for cfg in params["config"]:
-                facts["lag_interfaces"].append(utils.remove_empties(cfg))
-        ansible_facts["ansible_network_resources"].update(facts)
+        facts['lag_interfaces'] = params['config']
+        ansible_facts['ansible_network_resources'].update(facts)
 
         return ansible_facts
 
-    def render_config(self, spec, conf):
-        """
-        Render config as dictionary structure and delete keys
-          from spec for null values
+    def process_facts(self, all_objs):
+        lag_facts = []
+        objs = []
+        def key_channel(k):
+            return k.get('channel')
 
-        :param spec: The facts tree, generated from the argspec
-        :param conf: The configuration
-        :rtype: dictionary
-        :returns: The generated config
-        """
-        config = deepcopy(spec)
-        match = re.search(r"^(\S+)", conf)
-        intf = match.group(1)
+        for intrf in all_objs:
+            if intrf.get('channel'):
+                objs.append(intrf)
 
-        if get_interface_type(intf) == "unknown":
-            return {}
-        member_config = {}
-        channel_group = utils.parse_conf_arg(conf, "channel-group")
-        if intf.startswith("Gi"):
-            config["name"] = intf
-            config["members"] = []
-            if channel_group:
-                channel_group = channel_group.split(" ")
-                id = channel_group[0]
-                config["name"] = "Port-channel{0}".format(str(id))
-                if "mode" in channel_group:
-                    mode = channel_group[2]
-                    member_config.update({"mode": mode})
-                if "link" in channel_group:
-                    link = channel_group[2]
-                    member_config.update({"link": link})
-            if member_config.get("mode") or member_config.get("link"):
-                member_config["member"] = normalize_interface(intf)
-                config["members"].append(member_config)
+        objs = sorted(objs, key=key_channel)
 
-        return utils.remove_empties(config)
+        for key, value in groupby(objs, key_channel):
+            if key:
+                _v = list(value)
+                for v in _v:
+                    v.pop('channel')
+                lag_facts.append({"name": key, "members":_v})
+
+        return lag_facts
