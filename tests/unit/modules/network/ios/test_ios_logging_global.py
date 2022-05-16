@@ -67,43 +67,6 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
-        self.allCommands = [
-            "logging on",
-            "logging buffered xml 5099 notifications",
-            "logging buginf",
-            "logging cns-events warnings",
-            "logging console xml critical",
-            "logging count",
-            "logging delimiter tcp",
-            "logging discriminator msglog01 severity includes 5",
-            "logging dmvpn rate-limit 10",
-            "logging esm config",
-            "logging exception 4099",
-            "logging facility local5",
-            "logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2",
-            "logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst",
-            "logging history alerts",
-            "logging host 172.16.1.1",
-            "logging host 172.16.1.11 xml",
-            "logging host 172.16.1.25 filtered",
-            "logging host 172.16.1.10 filtered stream 10",
-            "logging host 172.16.1.13 transport tcp port 514",
-            "logging message-counter log",
-            "logging message-counter debug",
-            "logging monitor warnings",
-            "logging origin-id hostname",
-            "logging persistent batch 4444",
-            "logging policy-firewall rate-limit 10",
-            "logging queue-limit esm 150",
-            "logging rate-limit all 2",
-            "logging reload alerts",
-            "logging server-arp",
-            "logging snmp-trap errors",
-            "logging source-interface GBit1/0",
-            "logging source-interface CTunnel2",
-            "logging trap errors",
-            "logging userinfo",
-        ]
 
     def test_ios_logging_global_merged_idempotent(self):
         """
@@ -491,6 +454,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         )
         playbook = dict(
             config=dict(
+                monitor=dict(discriminator="TEST"),
                 hosts=[
                     dict(hostname="172.16.2.15", session_id=dict(text="Test")),
                     dict(
@@ -542,10 +506,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
                             )
                         ),
                     ),
-                ]
+                ],
             )
         )
         merged = [
+            "logging monitor discriminator TEST",
             "logging host 172.16.2.15 session-id string Test",
             "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7304 discriminator msglog01 severity includes 5",
             "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7314 sequence-num-session",
