@@ -783,7 +783,7 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
-                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)""",
+                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)\n60 permit 134.107.136.0, wildcard bits 0.0.0.255 (1 match)""",
                 state="parsed",
             )
         )
@@ -807,6 +807,14 @@ class TestIosAclsModule(TestIosModule):
                                 "source": {
                                     "address": "128.0.0.0",
                                     "wildcard_bits": "63.255.255.255",
+                                },
+                            },
+                            {
+                                "grant": "permit",
+                                "sequence": 60,
+                                "source": {
+                                    "address": "134.107.136.0",
+                                    "wildcard_bits": "0.0.0.255",
                                 },
                             },
                         ],
