@@ -1657,6 +1657,20 @@ class TestIosSnmpServerModule(TestIosModule):
                             "remote": {"host": "172.16.0.2", "udp_port": 23},
                         },
                     ],
+                    "views": [
+                        {"family_name": "iso", "name": "ro"},
+                        {
+                            "family_name": "internet",
+                            "included": True,
+                            "name": "ro",
+                        },
+                        {"family_name": "iso", "included": True, "name": "rw"},
+                        {
+                            "family_name": "internet",
+                            "included": True,
+                            "name": "rw",
+                        },
+                    ],
                     "users": [
                         {
                             "username": "paul",
@@ -1775,6 +1789,10 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server engineID local AB0C5342FA0A",
             "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
             "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server view ro iso",
+            "snmp-server view ro internet included",
+            "snmp-server view rw iso included",
+            "snmp-server view rw internet included",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None

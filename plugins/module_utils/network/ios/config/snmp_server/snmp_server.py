@@ -240,6 +240,16 @@ class Snmp_server(ResourceModule):
                             for t in tmp_data[k].get("protocol"):
                                 tmp.update({t: t})
                             tmp_data[k]["protocol"] = tmp
+                elif k == "groups":
+                    tmp_data[k] = {
+                        str(i[p_key.get(k)] + i.get("version_option", "")): i
+                        for i in tmp_data[k]
+                    }
+                elif k == "views":
+                    tmp_data[k] = {
+                        str(i[p_key.get(k)] + i.get("family_name", "")): i
+                        for i in tmp_data[k]
+                    }
                 else:
                     tmp_data[k] = {
                         str(i[p_key.get(k)]): i for i in tmp_data[k]
