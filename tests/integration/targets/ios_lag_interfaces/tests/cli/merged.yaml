@@ -29,12 +29,6 @@
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
             \ length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
-      assert:
-        that:
-          - "{{ merged['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
-
     - name: Assert that after dict is correctly generated
       assert:
         that:

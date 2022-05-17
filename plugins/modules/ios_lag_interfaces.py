@@ -124,21 +124,34 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 10
+    - name: Port-channel10
       members:
       - member: GigabitEthernet0/1
         mode: auto
       - member: GigabitEthernet0/2
         mode: auto
-    - name: 20
+    - name: Port-channel20
       members:
       - member: GigabitEthernet0/3
         mode: on
-    - name: 30
+    - name: Port-channel30
       members:
       - member: GigabitEthernet0/4
         mode: active
     state: merged
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - channel-group 20 mode on
+# - interface GigabitEthernet0/4
+# - channel-group 30 mode active
 
 # After state:
 # ------------
@@ -185,13 +198,28 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 20
+    - name: Port-channel20
       members:
       - member: GigabitEthernet0/2
         mode: auto
       - member: GigabitEthernet0/3
         mode: auto
     state: overridden
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
+# - interface GigabitEthernet0/2
+# - channel-group 20 mode auto
+# - interface GigabitEthernet0/3
+# - channel-group 20 mode auto
 
 # After state:
 # ------------
@@ -236,11 +264,20 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 40
+    - name: Port-channel30
       members:
       - member: GigabitEthernet0/3
         mode: auto
     state: replaced
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/3
+# - channel-group 30 mode auto
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
 
 # After state:
 # ------------
@@ -288,9 +325,20 @@ EXAMPLES = """
 - name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 10
-    - name: 20
+    - name: Port-channel10
+    - name: Port-channel20
     state: deleted
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - no channel-group 20 mode on
 
 # After state:
 # -------------
@@ -337,6 +385,19 @@ EXAMPLES = """
   cisco.ios.ios_lag_interfaces:
     state: deleted
 
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - no channel-group 20 mode on
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
+
 # After state:
 # -------------
 #
@@ -359,14 +420,21 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | section ^interface
-# interface Port-channel11
-# interface Port-channel22
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
 # interface GigabitEthernet0/1
-#  shutdown
-#  channel-group 11 mode active
+#   shutdown
+#   channel-group 10 mode auto
 # interface GigabitEthernet0/2
-#  shutdown
-#  channel-group 22 mode active
+#   shutdown
+#   channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#   shutdown
+#   channel-group 20 mode on
+# interface GigabitEthernet0/4
+#   shutdown
+#   channel-group 30 mode active
 
 - name: Gather listed LAG interfaces with provided configurations
   cisco.ios.ios_lag_interfaces:
@@ -377,38 +445,58 @@ EXAMPLES = """
 # ------------------------
 #
 # "gathered": [
-#     {
-#         "members": [
-#             {
-#                 "member": "GigabitEthernet0/1",
-#                 "mode": "active"
-#             }
-#         ],
-#         "name": "Port-channel11"
-#     },
-#     {
-#         "members": [
-#             {
-#                 "member": "GigabitEthernet0/2",
-#                 "mode": "active"
-#             }
-#         ],
-#         "name": "Port-channel22"
-#     }
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/1",
+#             "mode": "auto"
+#         },
+#         {
+#             "member": "GigabitEthernet0/2",
+#             "mode": "auto"
+#         }
+#     ],
+#     "name": "Port-channel10"
+# },
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/3",
+#             "mode": "on"
+#         }
+#     ],
+#     "name": "Port-channel20"
+# },
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/4",
+#             "mode": "active"
+#         }
+#     ],
+#     "name": "Port-channel30"
+# }
 # ]
 
 # After state:
 # ------------
 #
 # vios#sh running-config | section ^interface
-# interface Port-channel11
-# interface Port-channel22
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
 # interface GigabitEthernet0/1
-#  shutdown
-#  channel-group 11 mode active
+#   shutdown
+#   channel-group 10 mode auto
 # interface GigabitEthernet0/2
-#  shutdown
-#  channel-group 22 mode active
+#   shutdown
+#   channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#   shutdown
+#   channel-group 20 mode on
+# interface GigabitEthernet0/4
+#   shutdown
+#   channel-group 30 mode active
 
 # Using Rendered
 
@@ -495,17 +583,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet0/1
+    - channel-group 10 mode auto
+    - channel-group 10 mode active link 20
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet0/2
+    - channel-group 20 mode auto
+    - channel-group 20 mode active link 60
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
