@@ -71,9 +71,7 @@ class Lag_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -97,33 +95,30 @@ class Lag_interfaces(ResourceModule):
             if entry != haveing.pop(key, {}):
                 self.addcmd(entry, "channel", False)
             if len(self.commands) != begin:
-                self.commands.insert(
-                    begin, self._tmplt.render(entry, "member", False)
-                )
+                self.commands.insert(begin, self._tmplt.render(entry, "member", False))
 
         # remove remaining items in have for replaced
         for entry in haveing.values():
             begin = len(self.commands)
             self.addcmd(entry, "channel", True)
             if len(self.commands) != begin:
-                self.commands.insert(
-                    begin, self._tmplt.render(entry, "member", False)
-                )
+                self.commands.insert(begin, self._tmplt.render(entry, "member", False))
 
     def extract_channel_num(self, channel):
         try:
-            return channel.lower().split("port-channel")[1]
+            return channel.lower().split("port-channel")[1], False
         except IndexError:
-            return channel.lower().split("port-channel")[0]
+            return channel.lower().split("port-channel")[0], True
 
     def list_to_dict(self, params):
         channels = {}
         for ethChannels in params:
             tmp = {}
             for member in ethChannels.get("members", {}):
-                member["channel"] = self.extract_channel_num(
-                    ethChannels.get("name")
-                )
+                member["channel"] = self.extract_channel_num(ethChannels.get("name"))[0]
                 tmp[member.get("member")] = member
+            update = self.extract_channel_num(ethChannels.get("name"))[1]
+            if update:
+                ethChannels["name"] = "Port-channel" + ethChannels.get("name")
             channels[ethChannels.get("name")] = tmp
         return channels
