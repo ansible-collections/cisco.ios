@@ -105,7 +105,374 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
+#
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface GigabitEthernet0/1
+#  shutdown
+# interface GigabitEthernet0/2
+#  shutdown
+# interface GigabitEthernet0/3
+#  shutdown
+# interface GigabitEthernet0/4
+#  shutdown
 
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_lag_interfaces:
+    config:
+    - name: 10
+      members:
+      - member: GigabitEthernet0/1
+        mode: auto
+      - member: GigabitEthernet0/2
+        mode: auto
+    - name: 20
+      members:
+      - member: GigabitEthernet0/3
+        mode: on
+    - name: 30
+      members:
+      - member: GigabitEthernet0/4
+        mode: active
+    state: merged
+
+# After state:
+# ------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+# Using overridden
+#
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+- name: Override device configuration of all interfaces with provided configuration
+  cisco.ios.ios_lag_interfaces:
+    config:
+    - name: 20
+      members:
+      - member: GigabitEthernet0/2
+        mode: auto
+      - member: GigabitEthernet0/3
+        mode: auto
+    state: overridden
+
+# After state:
+# ------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 20 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode auto
+# interface GigabitEthernet0/4
+#  shutdown
+
+# Using replaced
+#
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+- name: Replaces device configuration of listed interfaces with provided configuration
+  cisco.ios.ios_lag_interfaces:
+    config:
+    - name: 40
+      members:
+      - member: GigabitEthernet0/3
+        mode: auto
+    state: replaced
+
+# After state:
+# ------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface Port-channel40
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 40 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+# Using Deleted
+#
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+- name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
+  cisco.ios.ios_lag_interfaces:
+    config:
+    - name: 10
+    - name: 20
+    state: deleted
+
+# After state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+# interface GigabitEthernet0/2
+#  shutdown
+# interface GigabitEthernet0/3
+#  shutdown
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+# Using Deleted without any config passed
+#"(NOTE: This will delete all of configured LLDP module attributes)"
+
+#
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#  shutdown
+#  channel-group 20 mode on
+# interface GigabitEthernet0/4
+#  shutdown
+#  channel-group 30 mode active
+
+- name: "Delete all configured LAG attributes for interfaces (Note: This won't delete the interface itself)"
+  cisco.ios.ios_lag_interfaces:
+    state: deleted
+
+# After state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
+# interface GigabitEthernet0/1
+#  shutdown
+# interface GigabitEthernet0/2
+#  shutdown
+# interface GigabitEthernet0/3
+#  shutdown
+# interface GigabitEthernet0/4
+#  shutdown
+
+# Using Gathered
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Port-channel11
+# interface Port-channel22
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 11 mode active
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 22 mode active
+
+- name: Gather listed LAG interfaces with provided configurations
+  cisco.ios.ios_lag_interfaces:
+    config:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# "gathered": [
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/1",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel11"
+#     },
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/2",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel22"
+#     }
+# ]
+
+# After state:
+# ------------
+#
+# vios#sh running-config | section ^interface
+# interface Port-channel11
+# interface Port-channel22
+# interface GigabitEthernet0/1
+#  shutdown
+#  channel-group 11 mode active
+# interface GigabitEthernet0/2
+#  shutdown
+#  channel-group 22 mode active
+
+# Using Rendered
+
+- name: Render the commands for provided  configuration
+  cisco.ios.ios_lag_interfaces:
+    config:
+      - name: Port-channel11
+        members:
+          - member: GigabitEthernet0/1
+            mode: active
+      - name: Port-channel22
+        members:
+          - member: GigabitEthernet0/2
+            mode: passive
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# "rendered": [
+#         "interface GigabitEthernet0/1",
+#         "channel-group 11 mode active",
+#         "interface GigabitEthernet0/2",
+#         "channel-group 22 mode passive",
+#     ]
+
+# Using Parsed
+
+#  File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet0/1
+# channel-group 11 mode active
+# interface GigabitEthernet0/2
+# channel-group 22 mode passive
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_lag_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/1",
+#                 "mode": "active"
+#             }
+#         ],
+#         "name": "Port-channel11"
+#     },
+#     {
+#         "members": [
+#             {
+#                 "member": "GigabitEthernet0/2",
+#                 "mode": "passive"
+#             }
+#         ],
+#         "name": "Port-channel22"
+#     }
+# ]
 """
 
 RETURN = """
@@ -163,10 +530,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lag_i
     Lag_interfaces,
 )
 
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 def main():
     """

@@ -14,10 +14,8 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
 from itertools import groupby
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -28,21 +26,19 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_
     Lag_interfacesArgs,
 )
 
-class Lag_interfacesFacts(object):
-    """ The ios lag_interfaces facts class
-    """
 
-    def __init__(self, module, subspec='config', options='options'):
+class Lag_interfacesFacts(object):
+    """The ios lag_interfaces facts class"""
+
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Lag_interfacesArgs.argument_spec
 
     def get_lag_interfaces_data(self, connection):
-        return connection.get(
-            "show running-config | section ^interface"
-        )
+        return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Lag_interfaces network resource
+        """Populate the facts for Lag_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -58,27 +54,32 @@ class Lag_interfacesFacts(object):
             data = self.get_lag_interfaces_data(connection)
 
         # parse native config using the Lag_interfaces template
-        lag_interfaces_parser = Lag_interfacesTemplate(lines=data.splitlines(), module=self._module)
+        lag_interfaces_parser = Lag_interfacesTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = self.process_facts(list(lag_interfaces_parser.parse().values()))
-        ansible_facts['ansible_network_resources'].pop('lag_interfaces', None)
+        ansible_facts["ansible_network_resources"].pop("lag_interfaces", None)
 
         params = utils.remove_empties(
-            lag_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            lag_interfaces_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            )
         )
 
-        facts['lag_interfaces'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["lag_interfaces"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
 
     def process_facts(self, all_objs):
         lag_facts = []
         objs = []
+
         def key_channel(k):
-            return k.get('channel')
+            return k.get("channel")
 
         for intrf in all_objs:
-            if intrf.get('channel'):
+            if intrf.get("channel"):
                 objs.append(intrf)
 
         objs = sorted(objs, key=key_channel)
@@ -87,7 +88,7 @@ class Lag_interfacesFacts(object):
             if key:
                 _v = list(value)
                 for v in _v:
-                    v.pop('channel')
-                lag_facts.append({"name": key, "members":_v})
+                    v.pop("channel")
+                lag_facts.append({"name": key, "members": _v})
 
         return lag_facts

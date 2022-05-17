@@ -28,8 +28,7 @@ The arg spec for the ios_lag_interfaces module
 
 
 class Lag_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_lag_interfaces module
-    """
+    """The arg spec for the ios_lag_interfaces module"""
 
     argument_spec = {
         "config": {
@@ -44,7 +43,13 @@ class Lag_interfacesArgs(object):  # pylint: disable=R0903
                         "member": {"type": "str"},
                         "mode": {
                             "type": "str",
-                            "choices": ["auto", "desirable", "on", "active", "passive"],
+                            "choices": [
+                                "auto",
+                                "desirable",
+                                "on",
+                                "active",
+                                "passive",
+                            ],
                         },
                         "link": {"type": "int"},
                     },

@@ -17,7 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -48,9 +47,8 @@ class Lag_interfaces(ResourceModule):
             tmplt=Lag_interfacesTemplate(),
         )
 
-
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -61,8 +59,8 @@ class Lag_interfaces(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = self.list_to_dict(self.want)
         haved = self.list_to_dict(self.have)
@@ -89,9 +87,9 @@ class Lag_interfaces(ResourceModule):
 
     def _compare(self, wants, haveing):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Lag_interfaces network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Lag_interfaces network resource.
         """
 
         for key, entry in wants.items():
@@ -114,17 +112,18 @@ class Lag_interfaces(ResourceModule):
 
     def extract_channel_num(self, channel):
         try:
-            return channel.lower().split('port-channel')[1]
-        except:
-            return channel.lower().split('port-channel')[0]
+            return channel.lower().split("port-channel")[1]
+        except IndexError:
+            return channel.lower().split("port-channel")[0]
 
     def list_to_dict(self, params):
         channels = {}
         for ethChannels in params:
             tmp = {}
-            for member in ethChannels.get("members"):
-                member["channel"] = self.extract_channel_num(ethChannels.get("name"))
+            for member in ethChannels.get("members", {}):
+                member["channel"] = self.extract_channel_num(
+                    ethChannels.get("name")
+                )
                 tmp[member.get("member")] = member
             channels[ethChannels.get("name")] = tmp
         return channels
-
