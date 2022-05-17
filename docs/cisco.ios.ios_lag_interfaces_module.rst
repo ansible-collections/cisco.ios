@@ -391,7 +391,6 @@ Examples
     # interface Port-channel10
     # interface Port-channel20
     # interface Port-channel30
-    # interface Port-channel40
     # interface GigabitEthernet0/1
     #  shutdown
     #  channel-group 10 mode auto
@@ -400,10 +399,9 @@ Examples
     #  channel-group 10 mode auto
     # interface GigabitEthernet0/3
     #  shutdown
-    #  channel-group 40 mode on
+    #  channel-group 30 mode auto
     # interface GigabitEthernet0/4
     #  shutdown
-    #  channel-group 30 mode active
 
     # Using Deleted
     #
