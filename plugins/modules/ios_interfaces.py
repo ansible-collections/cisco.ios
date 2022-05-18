@@ -102,6 +102,8 @@ options:
         option should be the same format as the output of command I(show running-config
         | include ip route|ipv6 route) executed on device. For state I(parsed) active
         connection to remote host is not required.
+      - The state I(purged) negates virtual/logical interfaces that are specified in task
+        from running-config.
     type: str
 """
 
@@ -140,6 +142,20 @@ EXAMPLES = """
       speed: 100
       duplex: full
     state: merged
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/2",
+#       "description Configured and Merged by Ansible Network",
+#       "no shutdown",
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Merged by Ansible Network",
+#       "mtu 2800",
+#       "duplex full",
+#       "shutdown",
+#     ],
 
 # After state:
 # ------------
@@ -195,6 +211,17 @@ EXAMPLES = """
       mtu: 2500
       speed: 1000
     state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Replaced by Ansible Network",
+#       "mtu 2500",
+#       "duplex auto",
+#       "speed 1000",
+#     ],
 
 # After state:
 # -------------
@@ -254,6 +281,18 @@ EXAMPLES = """
       mtu: 2000
     state: overridden
 
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "no description description Configured by Ansible",
+#       "no duplex auto",
+#       "no speed auto",
+#       "interface GigabitEthernet0/2",
+#       "description Configured and Overridden by Ansible Network",
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Overridden by Ansible Network",
+#       "mtu 2000",
+#     ],
+
 # After state:
 # -------------
 #
@@ -304,6 +343,13 @@ EXAMPLES = """
     - name: GigabitEthernet0/2
     state: deleted
 
+# "commands": [
+#       "interface GigabitEthernet0/2",
+#       "no description description Configured by Ansible Network",
+#       "no duplex auto",
+#       "no speed 1000",
+#     ],
+
 # After state:
 # -------------
 #
@@ -330,6 +376,8 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | section ^interface
+# interface Loopback888
+# interface Port-channel10
 # interface GigabitEthernet0/1
 #  no ip address
 #  duplex auto
@@ -350,8 +398,14 @@ EXAMPLES = """
 - name: "Purge given interfaces (Note: This will delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet0/2
-    state: deleted
+    - name: Loopback888
+    - name: Port-channel10
+    state: purged
+
+# "commands": [
+#       "no interface Loopback888",
+#       "no interface Port-channel10",
+#     ],
 
 # After state:
 # -------------
@@ -361,6 +415,11 @@ EXAMPLES = """
 #  no ip address
 #  duplex auto
 #  speed auto
+# interface GigabitEthernet0/2
+#  description Configured by Ansible Network
+#  no ip address
+#  duplex auto
+#  speed 1000
 # interface GigabitEthernet0/3
 #  description Configured by Ansible Network
 #  mtu 2500
@@ -464,6 +523,7 @@ EXAMPLES = """
 #         "speed 100",
 #         "duplex full",
 #         "shutdown"
+#         ]
 
 # Using Parsed
 

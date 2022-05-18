@@ -29,7 +29,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.inte
 class InterfacesFacts(object):
     """The ios interfaces facts class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = InterfacesArgs.argument_spec
 

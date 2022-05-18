@@ -202,6 +202,7 @@ Parameters
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | include ip route|ipv6 route</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>purged</em> negates virtual/logical interfaces that are specified in task from running-config.</div>
                 </td>
             </tr>
     </table>
@@ -257,6 +258,20 @@ Examples
           duplex: full
         state: merged
 
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet0/2",
+    #       "description Configured and Merged by Ansible Network",
+    #       "no shutdown",
+    #       "interface GigabitEthernet0/3",
+    #       "description Configured and Merged by Ansible Network",
+    #       "mtu 2800",
+    #       "duplex full",
+    #       "shutdown",
+    #     ],
+
     # After state:
     # ------------
     #
@@ -311,6 +326,17 @@ Examples
           mtu: 2500
           speed: 1000
         state: replaced
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet0/3",
+    #       "description Configured and Replaced by Ansible Network",
+    #       "mtu 2500",
+    #       "duplex auto",
+    #       "speed 1000",
+    #     ],
 
     # After state:
     # -------------
@@ -370,6 +396,18 @@ Examples
           mtu: 2000
         state: overridden
 
+    # "commands": [
+    #       "interface GigabitEthernet0/1",
+    #       "no description description Configured by Ansible",
+    #       "no duplex auto",
+    #       "no speed auto",
+    #       "interface GigabitEthernet0/2",
+    #       "description Configured and Overridden by Ansible Network",
+    #       "interface GigabitEthernet0/3",
+    #       "description Configured and Overridden by Ansible Network",
+    #       "mtu 2000",
+    #     ],
+
     # After state:
     # -------------
     #
@@ -420,6 +458,13 @@ Examples
         - name: GigabitEthernet0/2
         state: deleted
 
+    # "commands": [
+    #       "interface GigabitEthernet0/2",
+    #       "no description description Configured by Ansible Network",
+    #       "no duplex auto",
+    #       "no speed 1000",
+    #     ],
+
     # After state:
     # -------------
     #
@@ -446,6 +491,8 @@ Examples
     # -------------
     #
     # vios#show running-config | section ^interface
+    # interface Loopback888
+    # interface Port-channel10
     # interface GigabitEthernet0/1
     #  no ip address
     #  duplex auto
@@ -466,8 +513,14 @@ Examples
     - name: "Purge given interfaces (Note: This will delete the interface itself)"
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet0/2
-        state: deleted
+        - name: Loopback888
+        - name: Port-channel10
+        state: purged
+
+    # "commands": [
+    #       "no interface Loopback888",
+    #       "no interface Port-channel10",
+    #     ],
 
     # After state:
     # -------------
@@ -477,6 +530,11 @@ Examples
     #  no ip address
     #  duplex auto
     #  speed auto
+    # interface GigabitEthernet0/2
+    #  description Configured by Ansible Network
+    #  no ip address
+    #  duplex auto
+    #  speed 1000
     # interface GigabitEthernet0/3
     #  description Configured by Ansible Network
     #  mtu 2500
@@ -580,6 +638,7 @@ Examples
     #         "speed 100",
     #         "duplex full",
     #         "shutdown"
+    #         ]
 
     # Using Parsed
 
