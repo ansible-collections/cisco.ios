@@ -1,0 +1,15 @@
+---
+name: Test collection
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sanity:
+    uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
+
+  unit:
+    uses: ansible-network/github_actions/.github/workflows/unit.yml@main
