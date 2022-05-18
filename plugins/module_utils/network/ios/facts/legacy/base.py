@@ -51,7 +51,7 @@ class FactsBase(object):
 
 class Default(FactsBase):
 
-    COMMANDS = ["show version", "show virtual switch"]
+    COMMANDS = ["show version", "show switch virtual", "show inventory"]
 
     def populate(self):
         super(Default, self).populate()
@@ -61,7 +61,7 @@ class Default(FactsBase):
             self.facts["iostype"] = self.parse_iostype(data)
             self.facts["serialnum"] = self.parse_serialnum(data)
             self.parse_stacks(data)
-        data = self.responses[1]
+        data = self.responses[1] + self.responses[2]
         vss_errs = ["Invalid input", "Switch Mode : Standalone"]
         if data and not any(err in data for err in vss_errs):
             self.parse_virtual_switch(data)
@@ -100,6 +100,10 @@ class Default(FactsBase):
             self.facts["virtual_switch"] = "VSS"
             self.facts["virtual_switch_domain"] = match.group(1)
 
+        match = re.findall(r"System\".*?SN:\s*([^\s]+)", data, re.S)
+        if match:
+            self.facts["virtual_switch_serialnums"] = match
+
     def platform_facts(self):
         platform_facts = {}
 
@@ -137,7 +141,7 @@ class Hardware(FactsBase):
                 warnings.append("Unable to gather memory statistics")
             else:
                 processor_line = [
-                    l for l in data.splitlines() if "Processor" in l
+                    line for line in data.splitlines() if "Processor" in line
                 ].pop()
                 match = re.findall(r"\s(\d+)\s", processor_line)
                 if match:
@@ -172,7 +176,8 @@ class Config(FactsBase):
         data = self.responses[0]
         if data:
             data = re.sub(
-                r"^Building configuration...\s+Current configuration : \d+ bytes\n",
+                r"""^Building configuration
+                ...\s+Current configuration : \d+ bytes\n""",
                 "",
                 data,
                 flags=re.MULTILINE,
