@@ -116,7 +116,7 @@ Parameters
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>auto</li>
-                                    <li>yes</li>
+                                    <li>on</li>
                                     <li>desirable</li>
                                     <li>active</li>
                                     <li>passive</li>
@@ -792,5 +792,5 @@ Status
 Authors
 ~~~~~~~
 
-- Sagar Paul (KB-perByte)
+- Sagar Paul (@KB-perByte)
 - Sumit Jaiswal (@justjais)

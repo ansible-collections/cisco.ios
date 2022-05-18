@@ -19,7 +19,7 @@ description: This module manages properties of Link Aggregation Group on Cisco I
   devices.
 version_added: 1.0.0
 author:
-- Sagar Paul (KB-perByte)
+- Sagar Paul (@KB-perByte)
 - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSv Version 15.2.
@@ -55,7 +55,7 @@ options:
             type: str
             choices:
             - auto
-            - on
+            - 'on'
             - desirable
             - active
             - passive
