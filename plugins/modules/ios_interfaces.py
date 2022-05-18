@@ -1,23 +1,13 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_interfaces
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -27,7 +17,9 @@ module: ios_interfaces
 short_description: Resource module to configure interfaces.
 description: This module manages the interface attributes of Cisco IOS network devices.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+- Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSv Version 15.2 on VIRL
   - This module works with connection C(network_cli).
@@ -90,6 +82,7 @@ options:
     - deleted
     - rendered
     - gathered
+    - purged
     - parsed
     default: merged
     description:
@@ -109,6 +102,8 @@ options:
         option should be the same format as the output of command I(show running-config
         | include ip route|ipv6 route) executed on device. For state I(parsed) active
         connection to remote host is not required.
+      - The state I(purged) negates virtual/logical interfaces that are specified in task
+        from running-config.
     type: str
 """
 
@@ -147,6 +142,20 @@ EXAMPLES = """
       speed: 100
       duplex: full
     state: merged
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/2",
+#       "description Configured and Merged by Ansible Network",
+#       "no shutdown",
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Merged by Ansible Network",
+#       "mtu 2800",
+#       "duplex full",
+#       "shutdown",
+#     ],
 
 # After state:
 # ------------
@@ -202,6 +211,17 @@ EXAMPLES = """
       mtu: 2500
       speed: 1000
     state: replaced
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Replaced by Ansible Network",
+#       "mtu 2500",
+#       "duplex auto",
+#       "speed 1000",
+#     ],
 
 # After state:
 # -------------
@@ -261,6 +281,18 @@ EXAMPLES = """
       mtu: 2000
     state: overridden
 
+# "commands": [
+#       "interface GigabitEthernet0/1",
+#       "no description description Configured by Ansible",
+#       "no duplex auto",
+#       "no speed auto",
+#       "interface GigabitEthernet0/2",
+#       "description Configured and Overridden by Ansible Network",
+#       "interface GigabitEthernet0/3",
+#       "description Configured and Overridden by Ansible Network",
+#       "mtu 2000",
+#     ],
+
 # After state:
 # -------------
 #
@@ -311,6 +343,13 @@ EXAMPLES = """
     - name: GigabitEthernet0/2
     state: deleted
 
+# "commands": [
+#       "interface GigabitEthernet0/2",
+#       "no description description Configured by Ansible Network",
+#       "no duplex auto",
+#       "no speed 1000",
+#     ],
+
 # After state:
 # -------------
 #
@@ -331,13 +370,14 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-# Using Deleted without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
+# Using Purged
 
 # Before state:
 # -------------
 #
 # vios#show running-config | section ^interface
+# interface Loopback888
+# interface Port-channel10
 # interface GigabitEthernet0/1
 #  no ip address
 #  duplex auto
@@ -355,9 +395,17 @@ EXAMPLES = """
 #  duplex full
 #  speed 1000
 
-- name: "Delete module attributes of all interfaces (Note: This won't delete the interface itself)"
+- name: "Purge given interfaces (Note: This will delete the interface itself)"
   cisco.ios.ios_interfaces:
-    state: deleted
+    config:
+    - name: Loopback888
+    - name: Port-channel10
+    state: purged
+
+# "commands": [
+#       "no interface Loopback888",
+#       "no interface Port-channel10",
+#     ],
 
 # After state:
 # -------------
@@ -368,13 +416,18 @@ EXAMPLES = """
 #  duplex auto
 #  speed auto
 # interface GigabitEthernet0/2
+#  description Configured by Ansible Network
 #  no ip address
 #  duplex auto
-#  speed auto
+#  speed 1000
 # interface GigabitEthernet0/3
+#  description Configured by Ansible Network
+#  mtu 2500
 #  no ip address
-#  duplex auto
-#  speed auto
+#  shutdown
+#  duplex full
+#  speed 1000
+
 
 # Using Gathered
 
@@ -470,6 +523,7 @@ EXAMPLES = """
 #         "speed 100",
 #         "duplex full",
 #         "shutdown"
+#         ]
 
 # Using Parsed
 
@@ -513,25 +567,55 @@ EXAMPLES = """
 #             "speed": "100"
 #         }
 #     ]
-
 """
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['interface GigabitEthernet 0/1', 'description This is test', 'speed 100']
+  sample:
+    - interface GigabitEthernet2
+    - speed 1200
+    - mtu 1800
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - interface GigabitEthernet1
+    - description Interface description
+    - shutdown
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
@@ -547,21 +631,20 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
-
     module = AnsibleModule(
         argument_spec=InterfacesArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "purged", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
+
     result = Interfaces(module).execute_module()
     module.exit_json(**result)
 
