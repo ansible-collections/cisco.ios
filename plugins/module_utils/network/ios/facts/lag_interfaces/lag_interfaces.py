@@ -74,15 +74,23 @@ class Lag_interfacesFacts(object):
     def process_facts(self, all_objs):
         lag_facts = []
         objs = []
+        temp_channels = []
 
         def key_channel(k):
             return k.get("channel")
 
         for intrf in all_objs:
             if intrf.get("channel"):
+                if intrf.get("channel") in temp_channels:
+                    temp_channels.remove(intrf.get("channel"))
                 objs.append(intrf)
+            if "Port-channel" in intrf.get("member"):
+                temp_channels.append(intrf.get("member"))
 
         objs = sorted(objs, key=key_channel)
+
+        for empty_channel in temp_channels:
+            objs.append({"channel": empty_channel})
 
         for key, value in groupby(objs, key_channel):
             if key:
