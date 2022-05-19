@@ -1,16 +1,11 @@
 ---
 merged:
-  before:
-    - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
   commands:
     - interface GigabitEthernet0/1
     - channel-group 11 mode active
     - interface GigabitEthernet0/2
     - channel-group 22 mode passive
   after:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
@@ -21,7 +16,6 @@ merged:
       name: Port-channel22
 replaced:
   before:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
@@ -34,7 +28,6 @@ replaced:
     - interface GigabitEthernet0/1
     - channel-group 11 mode passive
   after:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: passive
@@ -45,7 +38,6 @@ replaced:
       name: Port-channel22
 overridden:
   before:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
@@ -56,19 +48,16 @@ overridden:
       name: Port-channel22
   commands:
     - interface GigabitEthernet0/1
-    - no channel-group
+    - no channel-group 11 mode active
     - interface GigabitEthernet0/2
     - channel-group 22 mode passive
   after:
-    - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
     - members:
         - member: GigabitEthernet0/2
           mode: passive
       name: Port-channel22
 deleted:
   before:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active
@@ -79,16 +68,11 @@ deleted:
       name: Port-channel22
   commands:
     - interface GigabitEthernet0/1
-    - no channel-group
+    - no channel-group 11 mode active
     - interface GigabitEthernet0/2
-    - no channel-group
-  after:
-    - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - no channel-group 22 mode active
 gathered:
   config:
-    - name: GigabitEthernet0/0
     - members:
         - member: GigabitEthernet0/1
           mode: active

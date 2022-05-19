@@ -22,6 +22,10 @@ DOCUMENTATION = r"""
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
 short_description: Module to configure link aggregation groups.
+deprecated:
+  alternative: ios_lag_interfaces
+  why: Updated modules released with more functionality.
+  removed_at_date: '2024-06-01'
 description:
 - This module provides declarative management of link aggregation groups on Cisco
   IOS network devices.

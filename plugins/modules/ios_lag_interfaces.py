@@ -1,35 +1,28 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
-The module file for ios_l3_interfaces
+The module file for ios_lag_interfaces
 """
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_lag_interfaces
 short_description: Resource module to configure LAG interfaces.
 description: This module manages properties of Link Aggregation Group on Cisco IOS
   devices.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+- Sagar Paul (@KB-perByte)
+- Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL.
+  - Tested against Cisco IOSv Version 15.2.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -60,7 +53,6 @@ options:
             - On mode has to be quoted as 'on' or else pyyaml will convert
               to True before it gets to Ansible.
             type: str
-            required: true
             choices:
             - auto
             - 'on'
@@ -111,6 +103,7 @@ options:
     - gathered
     default: merged
 """
+
 EXAMPLES = """
 # Using merged
 #
@@ -131,21 +124,34 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 10
+    - name: Port-channel10
       members:
       - member: GigabitEthernet0/1
         mode: auto
       - member: GigabitEthernet0/2
         mode: auto
-    - name: 20
+    - name: Port-channel20
       members:
       - member: GigabitEthernet0/3
         mode: on
-    - name: 30
+    - name: Port-channel30
       members:
       - member: GigabitEthernet0/4
         mode: active
     state: merged
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - channel-group 20 mode on
+# - interface GigabitEthernet0/4
+# - channel-group 30 mode active
 
 # After state:
 # ------------
@@ -192,13 +198,28 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 20
+    - name: Port-channel20
       members:
       - member: GigabitEthernet0/2
         mode: auto
       - member: GigabitEthernet0/3
         mode: auto
     state: overridden
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
+# - interface GigabitEthernet0/2
+# - channel-group 20 mode auto
+# - interface GigabitEthernet0/3
+# - channel-group 20 mode auto
 
 # After state:
 # ------------
@@ -243,11 +264,20 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 40
+    - name: Port-channel30
       members:
       - member: GigabitEthernet0/3
         mode: auto
     state: replaced
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/3
+# - channel-group 30 mode auto
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
 
 # After state:
 # ------------
@@ -256,7 +286,6 @@ EXAMPLES = """
 # interface Port-channel10
 # interface Port-channel20
 # interface Port-channel30
-# interface Port-channel40
 # interface GigabitEthernet0/1
 #  shutdown
 #  channel-group 10 mode auto
@@ -265,10 +294,9 @@ EXAMPLES = """
 #  channel-group 10 mode auto
 # interface GigabitEthernet0/3
 #  shutdown
-#  channel-group 40 mode on
+#  channel-group 30 mode auto
 # interface GigabitEthernet0/4
 #  shutdown
-#  channel-group 30 mode active
 
 # Using Deleted
 #
@@ -295,9 +323,20 @@ EXAMPLES = """
 - name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: 10
-    - name: 20
+    - name: Port-channel10
+    - name: Port-channel20
     state: deleted
+
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - no channel-group 20 mode on
 
 # After state:
 # -------------
@@ -344,6 +383,19 @@ EXAMPLES = """
   cisco.ios.ios_lag_interfaces:
     state: deleted
 
+# Task Output:
+# ---------------
+
+# commands:
+# - interface GigabitEthernet0/1
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/2
+# - no channel-group 10 mode auto
+# - interface GigabitEthernet0/3
+# - no channel-group 20 mode on
+# - interface GigabitEthernet0/4
+# - no channel-group 30 mode active
+
 # After state:
 # -------------
 #
@@ -366,14 +418,21 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | section ^interface
-# interface Port-channel11
-# interface Port-channel22
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
 # interface GigabitEthernet0/1
-#  shutdown
-#  channel-group 11 mode active
+#   shutdown
+#   channel-group 10 mode auto
 # interface GigabitEthernet0/2
-#  shutdown
-#  channel-group 22 mode active
+#   shutdown
+#   channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#   shutdown
+#   channel-group 20 mode on
+# interface GigabitEthernet0/4
+#   shutdown
+#   channel-group 30 mode active
 
 - name: Gather listed LAG interfaces with provided configurations
   cisco.ios.ios_lag_interfaces:
@@ -384,38 +443,58 @@ EXAMPLES = """
 # ------------------------
 #
 # "gathered": [
-#     {
-#         "members": [
-#             {
-#                 "member": "GigabitEthernet0/1",
-#                 "mode": "active"
-#             }
-#         ],
-#         "name": "Port-channel11"
-#     },
-#     {
-#         "members": [
-#             {
-#                 "member": "GigabitEthernet0/2",
-#                 "mode": "active"
-#             }
-#         ],
-#         "name": "Port-channel22"
-#     }
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/1",
+#             "mode": "auto"
+#         },
+#         {
+#             "member": "GigabitEthernet0/2",
+#             "mode": "auto"
+#         }
+#     ],
+#     "name": "Port-channel10"
+# },
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/3",
+#             "mode": "on"
+#         }
+#     ],
+#     "name": "Port-channel20"
+# },
+# {
+#     "members": [
+#         {
+#             "member": "GigabitEthernet0/4",
+#             "mode": "active"
+#         }
+#     ],
+#     "name": "Port-channel30"
+# }
 # ]
 
 # After state:
 # ------------
 #
 # vios#sh running-config | section ^interface
-# interface Port-channel11
-# interface Port-channel22
+# interface Port-channel10
+# interface Port-channel20
+# interface Port-channel30
 # interface GigabitEthernet0/1
-#  shutdown
-#  channel-group 11 mode active
+#   shutdown
+#   channel-group 10 mode auto
 # interface GigabitEthernet0/2
-#  shutdown
-#  channel-group 22 mode active
+#   shutdown
+#   channel-group 10 mode auto
+# interface GigabitEthernet0/3
+#   shutdown
+#   channel-group 20 mode on
+# interface GigabitEthernet0/4
+#   shutdown
+#   channel-group 30 mode active
 
 # Using Rendered
 
@@ -480,25 +559,55 @@ EXAMPLES = """
 #         "name": "Port-channel22"
 #     }
 # ]
-
 """
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['interface GigabitEthernet0/1', 'channel-group 1 mode active']
+  sample:
+    - interface GigabitEthernet0/1
+    - channel-group 10 mode auto
+    - channel-group 10 mode active link 20
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - interface GigabitEthernet0/2
+    - channel-group 20 mode auto
+    - channel-group 20 mode active link 60
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
@@ -511,23 +620,22 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lag_i
 def main():
     """
     Main entry point for module execution
+
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
-
     module = AnsibleModule(
         argument_spec=Lag_interfacesArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
+
     result = Lag_interfaces(module).execute_module()
     module.exit_json(**result)
 

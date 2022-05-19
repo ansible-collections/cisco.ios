@@ -1,5 +1,4 @@
 ---
-requires_ansible: ">=2.9.10"
 plugin_routing:
   modules:
     acl_interfaces:
@@ -9,14 +8,10 @@ plugin_routing:
     banner:
       redirect: cisco.ios.ios_banner
     bgp:
+      deprecation:
+        removal_date: "2023-08-24"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_bgp
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
-    ios_bgp:
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.ios.ios_bgp_global
     command:
@@ -25,19 +20,20 @@ plugin_routing:
       redirect: cisco.ios.ios_config
     facts:
       redirect: cisco.ios.ios_facts
+    hostname:
+      redirect: cisco.ios.ios_hostname
     interface:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     interfaces:
       redirect: cisco.ios.ios_interfaces
-    l2_interface:
-      redirect: cisco.ios.ios_l2_interface
+    ios_bgp:
+      deprecation:
+        removal_date: "2023-08-24"
+        warning_text: See the plugin documentation for more details
+    ios_interface:
       deprecation:
         removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
@@ -45,17 +41,46 @@ plugin_routing:
       deprecation:
         removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
-    l2_interfaces:
-      redirect: cisco.ios.ios_l2_interfaces
-    l3_interface:
-      redirect: cisco.ios.ios_l3_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     ios_l3_interface:
       deprecation:
         removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
+    ios_linkagg:
+      deprecation:
+        removal_date: "2024-06-01"
+        warning_text: See the plugin documentation for more details
+    ios_lldp:
+      deprecation:
+        removal_date: "2024-06-01"
+        warning_text: See the plugin documentation for more details
+    ios_logging:
+      deprecation:
+        removal_date: "2023-06-01"
+        warning_text: See the plugin documentation for more details
+    ios_ntp:
+      deprecation:
+        removal_date: "2024-01-01"
+        warning_text: See the plugin documentation for more details
+    ios_static_route:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
+    ios_vlan:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
+    l2_interface:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
+      redirect: cisco.ios.ios_l2_interface
+    l2_interfaces:
+      redirect: cisco.ios.ios_l2_interfaces
+    l3_interface:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
+      redirect: cisco.ios.ios_l3_interface
     l3_interfaces:
       redirect: cisco.ios.ios_l3_interfaces
     lacp:
@@ -65,46 +90,33 @@ plugin_routing:
     lag_interfaces:
       redirect: cisco.ios.ios_lag_interfaces
     linkagg:
+      deprecation:
+        removal_date: "2024-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_linkagg
     lldp:
+      deprecation:
+        removal_date: "2024-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_lldp
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_lldp:
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
     lldp_global:
       redirect: cisco.ios.ios_lldp_global
     lldp_interfaces:
       redirect: cisco.ios.ios_lldp_interfaces
     logging:
+      deprecation:
+        removal_date: "2023-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_logging
-      deprecation:
-        removal_date: "2023-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_logging:
-      deprecation:
-        removal_date: "2023-06-01"
-        warning_text: See the plugin documentation for more details
     logging_global:
       redirect: cisco.ios.ios_logging_global
     ntp:
+      deprecation:
+        removal_date: "2024-01-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_ntp
-      deprecation:
-        removal_date: "2024-01-01"
-        warning_text: See the plugin documentation for more details
-    ios_ntp:
-      deprecation:
-        removal_date: "2024-01-01"
-        warning_text: See the plugin documentation for more details
     ntp_global:
       redirect: cisco.ios.ios_ntp_global
-    hostname:
-      redirect: cisco.ios.ios_hostname
-    snmp_server:
-      redirect: cisco.ios.ios_snmp_server
     ospfv2:
       redirect: cisco.ios.ios_ospfv2
     ping:
@@ -113,15 +125,13 @@ plugin_routing:
       redirect: cisco.ios.ios_prefix_lists
     route_maps:
       redirect: cisco.ios.ios_route_maps
+    snmp_server:
+      redirect: cisco.ios.ios_snmp_server
     static_route:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_static_route
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_static_route:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     static_routes:
       redirect: cisco.ios.ios_static_routes
     system:
@@ -129,15 +139,12 @@ plugin_routing:
     user:
       redirect: cisco.ios.ios_user
     vlan:
+      deprecation:
+        removal_date: "2022-06-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_vlan
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_vlan:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     vlans:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+requires_ansible: ">=2.9.10"
