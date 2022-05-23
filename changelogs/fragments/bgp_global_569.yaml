@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_bgp_global` - Parse local_as commands correctly."

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_snmp_server` - Render group and views commands correctly when having common names."

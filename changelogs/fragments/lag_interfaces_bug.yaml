@@ -1,6 +1,0 @@
----
-bugfixes:
-  - "`ios_lag_interfaces` - Fix commands generation on action states."
-  - "`ios_lag_interfaces` - Module functionality not restricted to GigabitEthernet."
-deprecated_features:
-  - "Deprecated ios_linkagg_module in favor of ios_lag_interfaces."
