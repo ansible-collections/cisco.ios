@@ -5,6 +5,33 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.1.0
+======
+
+Minor Changes
+-------------
+
+- Also collect a list of serial numbers comprised in a vss system as virtual_switch_serialnums
+- Fixing Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/471)
+- `ios_interfaces` - Add purged state to ios_interfaces.
+
+Deprecated Features
+-------------------
+
+- Deprecated ios_linkagg_module in favor of ios_lag_interfaces.
+
+Bugfixes
+--------
+
+- `ios_acl` - Handle ACL config parsing when match/matches are present.
+- `ios_bgp_global` - Parse local_as commands correctly.
+- `ios_interfaces` - Parse interface shutdown config correctly.
+- `ios_lag_interfaces` - Fix commands generation on action states.
+- `ios_lag_interfaces` - Module functionality not restricted to GigabitEthernet.
+- `ios_logging_global` - Parse monitor and buffered config correctly.
+- `ios_ntp` - Handle regex matching server attributes gracefully.
+- `ios_snmp_server` - Render group and views commands correctly when having common names.
+
 v3.0.0
 ======
 
