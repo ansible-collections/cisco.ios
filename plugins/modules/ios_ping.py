@@ -86,7 +86,7 @@ EXAMPLES = """
     vrf: prod
     afi: ipv4
 
-- name: Test unreachability to 198.51.100.253 using default vrf
+- name: Test un reachability to 198.51.100.253 using default vrf
   cisco.ios.ios_ping:
     dest: 198.51.100.253
     state: absent
