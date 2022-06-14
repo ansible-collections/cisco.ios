@@ -3876,11 +3876,14 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
-                        <div>The states <em>merged</em> is the default state which merges the want and have config, but for ACL module as the IOS platform doesn&#x27;t allow update of ACE over an pre-existing ACE sequence in ACL, same way ACLs resource module will error out for respective scenario and only addition of new ACE over new sequence will be allowed with merge state.</div>
+                        <div>The state <em>merged</em> is the default state which merges the want and have config, but for ACL module as the IOS platform doesn&#x27;t allow update of ACE over an pre-existing ACE sequence in ACL, same way ACLs resource module will error out for respective scenario and only addition of new ACE over new sequence will be allowed with merge state.</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of commands <em>show access-list</em> and <em>show running-config | include ip(v6</em>* access-list|remark) executed on device. Config data from both the commands should be kept together one after another for the parsers to pick the commands correctly. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>overridden</em>, modify/add the ACLs defined, deleted all other ACLs.</div>
+                        <div>The state <em>replaced</em>, modify/add only the ACEs of the ACLs defined only. It does not perform any other change on the device.</div>
+                        <div>The state <em>deleted</em>, deletes only the specified ACLs, or all if not specified.</div>
                 </td>
             </tr>
     </table>

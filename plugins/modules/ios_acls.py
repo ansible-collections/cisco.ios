@@ -614,7 +614,7 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
-      - The states I(merged) is the default state which merges the want and
+      - The state I(merged) is the default state which merges the want and
         have config, but for ACL module as the IOS platform doesn't allow
         update of ACE over an pre-existing ACE sequence in ACL, same way ACLs
         resource module will error out for respective scenario and only addition
@@ -637,6 +637,13 @@ options:
         device. Config data from both the commands should be kept together one after
         another for the parsers to pick the commands correctly.
         For state I(parsed) active connection to remote host is not required.
+      - The state I(overridden), modify/add the ACLs defined, deleted all other ACLs.
+      - The state I(replaced), modify/add only the ACEs of the ACLs defined only.
+        It does not perform any other change on the device.
+      - The state I(deleted), deletes only the specified ACLs, or all if not specified.
+
+
+
     type: str
 short_description: Resource module to configure ACLs.
 version_added: 1.0.0

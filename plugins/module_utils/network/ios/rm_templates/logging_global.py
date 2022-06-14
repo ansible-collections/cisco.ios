@@ -317,7 +317,7 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^logging\shost
                 (\s(?P<hostname>\S+))?
                 (\sipv6\s(?P<ipv6>\S+))?
-                (\svrf\s(?P<vrf>\w+))?
+                (\svrf\s(?P<vrf>\S+))?
                 (\stransport\s(?P<transport>tcp|udp))?
                 (\sport\s(?P<port>\d+))?
                 (\s(?P<audit>audit))?
