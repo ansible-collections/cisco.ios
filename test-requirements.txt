@@ -5,3 +5,4 @@ pexpect
 pytest-xdist
 yamllint
 coverage==4.5.4
+git+https://github.com/ansible-community/pytest-ansible-units.git
