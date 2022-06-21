@@ -32,11 +32,13 @@ class PingArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "count": {"type": "int"},
-        "afi": {"choices": ["ipv4", "ipv6"], "default": "ipv4", "type": "str"},
+        "afi": {"choices": ["ip", "ipv6"], "default": "ip", "type": "str"},
         "dest": {"required": True, "type": "str"},
         "df_bit": {"default": False, "type": "bool"},
         "source": {"type": "str"},
-        "size": {"type": "int"},
+        "ingress": {"type": "str"},
+        "egress": {"type": "str"},
+        "timeout": {"type": "int"},
         "state": {
             "choices": ["absent", "present"],
             "default": "present",

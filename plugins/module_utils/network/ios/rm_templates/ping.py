@@ -40,11 +40,11 @@ class PingTemplate(NetworkTemplate):
             "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
             "{{ (' ' + afi|string ) if afi is defined else '' }}"
             "{{ (' ' + dest ) if dest is defined else '' }}"
-            "{{ (' count ' + count|string ) if count is defined else '' }}"
+            "{{ (' repeat ' + count|string ) if count is defined else '' }}"
             "{{ (' df-bit' ) if df_bit|d(False) else '' }}"
-            "{{ (' sweep' ) if sweep|d(False)  else '' }}"
-            "{{ (' validate' ) if validate|d(False)  else '' }}"
-            "{{ (' size ' + size|string ) if size is defined else '' }}"
+            "{{ (' timeout ' + timeout|string) if timeout is defined else '' }}"
+            "{{ (' ingress ' + ingress) if ingress is defined else '' }}"
+            "{{ (' egress ' + egress) if egress is defined else '' }}"
             "{{ (' source ' + source) if source is defined else '' }}",
             'result': {
                 "ping": {

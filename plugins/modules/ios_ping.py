@@ -30,11 +30,11 @@ options:
     type: int
   afi:
     description:
-    - Define echo type ipv4 or ipv6.
+    - Define echo type ip or ipv6.
     choices:
-    - ipv4
+    - ip
     - ipv6
-    default: ipv4
+    default: ip
     type: str
   dest:
     description:
@@ -46,14 +46,22 @@ options:
     - Set the DF bit.
     default: false
     type: bool
-  size:
-    description:
-    - Size of packets to send.
-    type: int
   source:
     description:
     - The source IP Address.
     type: str
+  egress:
+    description:
+    - Force egress interface bypassing routing.
+    type: str
+  ingress:
+    description:
+    - LAN source interface for Ingress.
+    type: str
+  timeout:
+    description:
+    - specify timeout interval.
+    type: int
   state:
     description:
     - Determines if the expected result is success or fail.
@@ -84,7 +92,7 @@ EXAMPLES = """
   cisco.ios.ios_ping:
     dest: 198.51.100.252
     vrf: prod
-    afi: ipv4
+    afi: ip
 
 - name: Test un reachability to 198.51.100.253 using default vrf
   cisco.ios.ios_ping:
