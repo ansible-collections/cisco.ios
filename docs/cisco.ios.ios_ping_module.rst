@@ -5,7 +5,7 @@
 cisco.ios.ios_ping
 ******************
 
-**Module to tests reachability using ping from network devices.**
+**Tests reachability using ping from IOS switch.**
 
 
 Version added: 1.0.0
@@ -32,12 +32,31 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="2">Parameter</th>
+            <th colspan="1">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>afi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>ip</b>&nbsp;&larr;</div></li>
+                                    <li>ipv6</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Define echo type ip or ipv6.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>count</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -52,7 +71,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>dest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -68,7 +87,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>df_bit</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -87,29 +106,9 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>provider</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div><b>Deprecated</b></div>
-                        <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
-                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html</a>.</div>
-                        <div><hr/></div>
-                        <div>A dict object containing connection details.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>auth_pass</b>
+                    <b>egress</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -118,34 +117,13 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the password to use if required to enter privileged mode on the remote device.  If <em>authorize</em> is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable <code>ANSIBLE_NET_AUTH_PASS</code> will be used instead.</div>
+                        <div>Force egress interface bypassing routing.</div>
                 </td>
             </tr>
             <tr>
-                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>authorize</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable <code>ANSIBLE_NET_AUTHORIZE</code> will be used instead.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>host</b>
+                    <b>ingress</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -154,107 +132,11 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport.</div>
+                        <div>LAN source interface for Ingress.</div>
                 </td>
             </tr>
             <tr>
-                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>password</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable <code>ANSIBLE_NET_PASSWORD</code> will be used instead.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>port</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specifies the port to use when building the connection to the remote device.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ssh_keyfile</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">path</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable <code>ANSIBLE_NET_SSH_KEYFILE</code> will be used instead.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>timeout</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>username</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable <code>ANSIBLE_NET_USERNAME</code> will be used instead.</div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>size</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Size of packets to send.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>source</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -269,7 +151,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -288,7 +170,22 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>timeout</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>specify timeout interval.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>vrf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -310,11 +207,10 @@ Notes
 -----
 
 .. note::
+   - Tested against IOS 16.4.0.
    - For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
    - For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
    - For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
 
 
@@ -323,32 +219,38 @@ Examples
 
 .. code-block:: yaml
 
-    - name: Test reachability to 10.10.10.10 using default vrf
+    - name: Test reachability to 198.51.100.251 using default vrf
       cisco.ios.ios_ping:
-        dest: 10.10.10.10
+        dest: 198.51.100.251
 
-    - name: Test reachability to 10.20.20.20 using prod vrf
+    - name: Test reachability to 198.51.100.252 using prod vrf
       cisco.ios.ios_ping:
-        dest: 10.20.20.20
+        dest: 198.51.100.252
         vrf: prod
+        afi: ip
 
-    - name: Test unreachability to 10.30.30.30 using default vrf
+    - name: Test un reachability to 198.51.100.253 using default vrf
       cisco.ios.ios_ping:
-        dest: 10.30.30.30
+        dest: 198.51.100.253
         state: absent
 
-    - name: Test reachability to 10.40.40.40 using prod vrf and setting count and source
+    - name: Test reachability to 198.51.100.250 using prod vrf and setting count and source
       cisco.ios.ios_ping:
-        dest: 10.40.40.40
+        dest: 198.51.100.250
         source: loopback0
         vrf: prod
         count: 20
 
-    - name: Test reachability to 10.50.50.50 using df-bit and size
+    - name: Test reachability to 198.51.100.249 using df-bit and size
       cisco.ios.ios_ping:
-        dest: 10.50.50.50
+        dest: 198.51.100.249
         df_bit: true
         size: 1400
+
+    - name: Test reachability to ipv6 address
+      cisco.ios.ios_ping:
+        dest: 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff
+        afi: ipv6
 
 
 
@@ -378,7 +280,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>Show the command sent.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ping vrf prod 10.40.40.40 count 20 source loopback0&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ping vrf prod 198.51.100.251 count 20 source loopback0&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -461,3 +363,4 @@ Authors
 ~~~~~~~
 
 - Jacob McGill (@jmcgill298)
+- Sagar Paul (@KB-perByte)
