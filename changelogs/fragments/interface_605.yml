@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`ios_interfaces` - Fix enable attribute."

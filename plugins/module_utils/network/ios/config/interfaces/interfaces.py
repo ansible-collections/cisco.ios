@@ -45,7 +45,7 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = ["description", "enabled", "speed", "mtu", "duplex"]
+        self.parsers = ["description", "speed", "mtu", "duplex"]
 
     def execute_module(self):
         """Execute the module
@@ -97,6 +97,11 @@ class Interfaces(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if want.get("enabled") != have.get("enabled"):
+            if want.get("enabled"):
+                self.addcmd(want, "enabled", True)
+            else:
+                self.addcmd(want, "enabled", False)
         if len(self.commands) != begin:
             self.commands.insert(
                 begin, self._tmplt.render(want or have, "interface", False)
