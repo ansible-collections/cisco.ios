@@ -177,5 +177,6 @@ class Logging_global(ResourceModule):
                 }
         return tmp_data
 
-    def trim_whitespace(self, word):
-        return to_text(word).strip()
+    def trim_whitespace(self, word, check=True):
+        if check:
+            return to_text(word).strip()
