@@ -58,8 +58,8 @@ class InterfacesTemplate(NetworkTemplate):
             "name": "enabled",
             "getval": re.compile(
                 r"""
-                ((?P<negate>\sno))?
-                ((?P<shutdown>\sshutdown))?
+                (?P<negate>\sno)?
+                (?P<shutdown>\sshutdown)
                 $""", re.VERBOSE),
             "setval": "shutdown",
             "result": {
