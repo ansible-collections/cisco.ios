@@ -1,90 +1,155 @@
 #
-# (c) 2016 Red Hat Inc.
+# (c) 2022, Ansible by Red Hat, inc
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 
-# Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
+
+from textwrap import dedent
 
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_ping
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
-from .ios_module import TestIosModule, load_fixture
+from .ios_module import TestIosModule
 
 
 class TestIosPingModule(TestIosModule):
-    """Class used for Unit Tests agains ios_ping module"""
-
     module = ios_ping
 
     def setUp(self):
         super(TestIosPingModule, self).setUp()
-        self.mock_run_commands = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_ping.run_commands"
+        self.mock_execute_show_command = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping.Ping.run_command"
         )
-        self.run_commands = self.mock_run_commands.start()
+        self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
         super(TestIosPingModule, self).tearDown()
-        self.mock_run_commands.stop()
+        self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None):
-        def load_from_file(*args, **kwargs):
-            commands = kwargs["commands"]
-            output = list()
-
-            for command in commands:
-                filename = str(command).split(" | ", 1)[0].replace(" ", "_")
-                output.append(load_fixture("ios_ping_%s" % filename))
-            return output
-
-        self.run_commands.side_effect = load_from_file
-
-    def test_ios_ping_expected_success(self):
-        """Test for successful pings when destination should be reachable"""
+    def test_ios_ping_count(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+            !
+            Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
+            """
+        )
         set_module_args(dict(count=2, dest="8.8.8.8"))
-        self.execute_module()
+        result = self.execute_module()
+        mock_res = {
+            "commands": "ping ip 8.8.8.8 repeat 2",
+            "packet_loss": "0%",
+            "packets_rx": 2,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "changed": False,
+        }
+        self.assertEqual(result, mock_res)
 
-    def test_ios_ping_expected_failure(self):
-        """Test for unsuccessful pings when destination should not be reachable"""
-        set_module_args(dict(count=2, dest="10.255.255.250", state="absent"))
-        self.execute_module()
+    def test_ios_ping_v6(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff, timeout is 2 seconds:
+            !
+            Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
+            """
+        )
+        set_module_args(
+            dict(
+                count=2,
+                dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff",
+                afi="ipv6",
+            )
+        )
+        result = self.execute_module()
+        mock_res = {
+            "commands": "ping ipv6 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff repeat 2",
+            "packet_loss": "0%",
+            "packets_rx": 2,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "changed": False,
+        }
+        self.assertEqual(result, mock_res)
 
-    def test_ios_ping_unexpected_success(self):
-        """Test for successful pings when destination should not be reachable - FAIL."""
+    def test_ios_ping_options_all(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+            !
+            Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
+            """
+        )
+        set_module_args(
+            {
+                "afi": "ip",
+                "count": 4,
+                "dest": "8.8.8.8",
+                "df_bit": True,
+                "source": "Loopback88",
+                "state": "present",
+                "vrf": "DummyVrf",
+            }
+        )
+        result = self.execute_module()
+        mock_res = {
+            "commands": "ping vrf DummyVrf ip 8.8.8.8 repeat 4 df-bit source Loopback88",
+            "packet_loss": "0%",
+            "packets_rx": 2,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "changed": False,
+        }
+        self.assertEqual(result, mock_res)
+
+    def test_ios_ping_state_absent_pass(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+            !
+            Success rate is 90 percent (2/2), round-trip min/avg/max = 25/25/25 ms
+            """
+        )
         set_module_args(dict(count=2, dest="8.8.8.8", state="absent"))
-        self.execute_module(failed=True)
+        result = self.execute_module(failed=True)
+        mock_res = {
+            "msg": "Ping succeeded unexpectedly",
+            "commands": "ping ip 8.8.8.8 repeat 2",
+            "packet_loss": "10%",
+            "packets_rx": 2,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "failed": True,
+        }
+        self.assertEqual(result, mock_res)
 
-    def test_ios_ping_unexpected_failure(self):
-        """Test for unsuccessful pings when destination should be reachable - FAIL."""
-        set_module_args(dict(count=2, dest="10.255.255.250"))
-        self.execute_module(failed=True)
-
-    def test_ios_ping_with_size(self):
-        """Test for successful pings using size option."""
-        set_module_args(dict(size=1400, dest="8.8.8.8"))
-        commands = ["ping 8.8.8.8 size 1400"]
-        self.execute_module(commands=commands)
-
-    def test_ios_ping_with_size_df_bit(self):
-        """Test for successful pings using size and df-bit options."""
-        set_module_args(dict(size=1400, df_bit=True, dest="8.8.8.8"))
-        commands = ["ping 8.8.8.8 size 1400 df-bit"]
-        self.execute_module(commands=commands)
+    def test_ios_ping_state_absent_present_fail(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 12 seconds:
+            !
+            Success rate is 0 percent (0/2), round-trip min/avg/max = 25/25/25 ms
+            """
+        )
+        set_module_args(dict(count=2, dest="8.8.8.8", state="present"))
+        result = self.execute_module(failed=True)
+        mock_res = {
+            "msg": "Ping failed unexpectedly",
+            "commands": "ping ip 8.8.8.8 repeat 2",
+            "packet_loss": "100%",
+            "packets_rx": 0,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "failed": True,
+        }
+        self.assertEqual(result, mock_res)

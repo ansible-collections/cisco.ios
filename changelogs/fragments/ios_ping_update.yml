@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - "`ios_ping` - Add ipv6 options."
