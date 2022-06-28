@@ -585,3 +585,14 @@ releases:
     - logging_global_571.yaml
     - snmp_server_view_group_fix.yaml
     release_date: '2022-05-23'
+  3.2.0:
+    changes:
+      bugfixes:
+      - '`ios_interfaces` - Fix enable attribute.'
+      minor_changes:
+      - '`ios_ping` - Add ipv6 options.'
+    fragments:
+    - gha_update.yml
+    - interface_605.yml
+    - ios_ping_update.yml
+    release_date: '2022-06-28'
