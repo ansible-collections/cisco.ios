@@ -366,7 +366,6 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(result["commands"], commands)
 
     def test_ios_interfaces_deleted(self):
