@@ -101,7 +101,12 @@ class Interfaces(ResourceModule):
             if want.get("enabled"):
                 self.addcmd(want, "enabled", True)
             else:
-                self.addcmd(want, "enabled", False)
+                if want:
+                    self.addcmd(want, "enabled", False)
+                elif have.get("enabled"):
+                    # handles deleted as want be blank and only
+                    # negates if no shutdown
+                    self.addcmd(have, "enabled", False)
         if len(self.commands) != begin:
             self.commands.insert(
                 begin, self._tmplt.render(want or have, "interface", False)

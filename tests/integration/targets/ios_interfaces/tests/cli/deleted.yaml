@@ -12,7 +12,10 @@
     - name: Delete attributes of all configured interfaces
       register: result
       cisco.ios.ios_interfaces: &id001
-        state: deleted
+        config:
+          - name: GigabitEthernet0/1
+          - name: GigabitEthernet0/2
+      state: deleted
 
     - debug:
         msg:

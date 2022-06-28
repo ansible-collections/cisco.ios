@@ -351,7 +351,6 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
-            "shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
             "no duplex full",
@@ -367,6 +366,7 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
         ]
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(result["commands"], commands)
 
     def test_ios_interfaces_deleted(self):

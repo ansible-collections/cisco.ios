@@ -73,12 +73,12 @@ replaced:
       speed: '100'
   commands:
     - interface GigabitEthernet0/1
-    - no speed
+    - no speed 10
     - description Configured and Replaced by Ansible-Network
     - mtu 110
     - interface GigabitEthernet0/2
     - no shutdown
-    - no mtu
+    - no mtu 110
     - description Configured and Replaced by Ansible-Network
     - speed 10
   after:
@@ -125,11 +125,11 @@ overridden:
       speed: '100'
   commands:
     - interface GigabitEthernet0/1
-    - no description
-    - no speed
-    - no mtu
+    - no description this is interface1
+    - no speed 10
+    - no mtu 65
     - interface GigabitEthernet0/2
-    - no speed
+    - no speed 100
     - description Configured and Overridden by Ansible-Network
     - mtu 2000
     - duplex full
@@ -163,7 +163,6 @@ deleted:
       name: GigabitEthernet0/0
       speed: auto
     - description: this is interface1
-      duplex: auto
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
@@ -176,14 +175,14 @@ deleted:
       speed: '100'
   commands:
     - interface GigabitEthernet0/1
-    - no description
-    - no speed
-    - no mtu
+    - no description this is interface1
+    - no speed 10
+    - no mtu 65
+    - shutdown
     - interface GigabitEthernet0/2
-    - no description
-    - no shutdown
-    - no speed
-    - no mtu
+    - no description this is interface for testing
+    - no speed 100
+    - no mtu 110
   after:
     - enabled: true
       name: loopback888
@@ -194,11 +193,11 @@ deleted:
       name: GigabitEthernet0/0
       speed: auto
     - duplex: auto
-      enabled: true
+      enabled: false
       name: GigabitEthernet0/1
       speed: auto
     - duplex: auto
-      enabled: true
+      enabled: false
       name: GigabitEthernet0/2
       speed: auto
 gathered:
