@@ -78,18 +78,15 @@ class Ping:
         )
         return ping_results
 
-    def process_result(self, ping_results_raw):
+    def process_result(self, ping_results):
         """
         Function used to parse the statistical information from the ping response.
         Example: "Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/8 ms"
         Returns the percent of packet loss, received packets, transmitted packets, and RTT data.
         """
 
-        if type(ping_results_raw) == list:
-            ping_results_list = ping_results_raw[0].split("\n")
-            for line in ping_results_list:
-                if line.startswith("Success"):
-                    ping_results = line
+        if type(ping_results) == list:
+            ping_results = ping_results[0]
 
         ping_data = PingTemplate(lines=ping_results.splitlines())
         obj = list(ping_data.parse().values())
