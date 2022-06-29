@@ -13,10 +13,23 @@
       register: result
       cisco.ios.ios_interfaces: &id001
         config:
-
+          - enabled: true
+            name: loopback888
+          - enabled: true
+            name: loopback999
+          - duplex: auto
+            enabled: true
+            name: GigabitEthernet0/0
+            speed: auto
+          - description: this is interface1
+            duplex: auto
+            enabled: true
+            mtu: 65
+            name: GigabitEthernet0/1
+            speed: '10'
           - name: GigabitEthernet0/2
             description: Configured and Overridden by Ansible-Network
-            enabled: false
+            enabled: true
             duplex: full
             mtu: 2000
         state: overridden
@@ -48,7 +61,6 @@
       assert:
         that:
           - result['changed'] == false
-  ignore_errors: true
-  always:
 
+  always:
     - include_tasks: _remove_config.yaml

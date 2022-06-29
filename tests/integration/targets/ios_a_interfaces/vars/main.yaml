@@ -124,15 +124,12 @@ overridden:
       name: GigabitEthernet0/2
       speed: '100'
   commands:
-    - interface GigabitEthernet0/1
-    - no description this is interface1
-    - no speed 10
-    - no mtu 65
     - interface GigabitEthernet0/2
     - no speed 100
     - description Configured and Overridden by Ansible-Network
     - mtu 2000
     - duplex full
+    - no shutdown
   after:
     - enabled: true
       name: loopback888
@@ -142,13 +139,15 @@ overridden:
       enabled: true
       name: GigabitEthernet0/0
       speed: auto
-    - duplex: auto
+    - description: this is interface1
+      duplex: auto
       enabled: true
+      mtu: 65
       name: GigabitEthernet0/1
-      speed: auto
+      speed: '10'
     - description: Configured and Overridden by Ansible-Network
       duplex: full
-      enabled: false
+      enabled: true
       mtu: 2000
       name: GigabitEthernet0/2
       speed: auto
