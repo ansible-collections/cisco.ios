@@ -32,7 +32,7 @@ class PingTemplate(NetworkTemplate):
                 ^Success\srate\sis
                 (\s(?P<pct>\d+))?
                 (\spercent\s\((?P<rx>\d+)/(?P<tx>\d+)\))?
-                ,\s+round-trip\smin/avg/max\s=
+                (,\s+round-trip\smin/avg/max\s=)?
                 (\s(?P<min>\d+)/(?P<avg>\d+)/(?P<max>\d+))?
                 (\s+\w+\s*$|.*\s*$)?
                 ''', re.VERBOSE),
