@@ -1,10 +1,6 @@
 ---
 merged:
   before:
-    - enabled: true
-      name: loopback888
-    - enabled: true
-      name: loopback999
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0
@@ -17,6 +13,10 @@ merged:
       enabled: true
       name: GigabitEthernet0/2
       speed: auto
+    - enabled: true
+      name: Loopback888
+    - enabled: true
+      name: Loopback999
   commands:
     - interface GigabitEthernet0/1
     - description Configured and Merged by Ansible-Network
@@ -29,10 +29,6 @@ merged:
     - duplex full
     - shutdown
   after:
-    - enabled: true
-      name: loopback888
-    - enabled: true
-      name: loopback999
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0
@@ -49,6 +45,10 @@ merged:
       mtu: 2800
       name: GigabitEthernet0/2
       speed: '100'
+    - enabled: true
+      name: Loopback888
+    - enabled: true
+      name: Loopback999
 replaced:
   before:
     - enabled: true
