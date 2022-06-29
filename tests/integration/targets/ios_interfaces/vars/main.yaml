@@ -178,11 +178,13 @@ deleted:
     - no description this is interface1
     - no speed 10
     - no mtu 65
+    - no duplex auto
     - shutdown
     - interface GigabitEthernet0/2
     - no description this is interface for testing
     - no speed 100
     - no mtu 110
+    - no duplex auto
   after:
     - enabled: true
       name: loopback888
@@ -231,7 +233,7 @@ parsed:
       name: GigabitEthernet0/1
     - description: interfaces 0/2
       duplex: full
-      enabled: true
+      enabled: false
       mtu: 2800
       name: GigabitEthernet0/2
       speed: "100"

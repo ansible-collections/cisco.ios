@@ -48,6 +48,7 @@
       assert:
         that:
           - result['changed'] == false
+  ignore_errors: true
   always:
 
     - include_tasks: _remove_config.yaml
