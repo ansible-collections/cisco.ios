@@ -205,10 +205,6 @@ deleted:
       name: Loopback999
 gathered:
   config:
-    - enabled: true
-      name: loopback888
-    - enabled: true
-      name: loopback999
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0
@@ -218,13 +214,18 @@ gathered:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: "10"
+      speed: '10'
     - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
       name: GigabitEthernet0/2
-      speed: "100"
+      speed: '100'
+    - enabled: true
+      name: Loopback888
+    - enabled: true
+      name: Loopback999
+
 parsed:
   config:
     - description: interfaces 0/1
