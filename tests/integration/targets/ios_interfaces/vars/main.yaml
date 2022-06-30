@@ -129,7 +129,7 @@ overridden:
       speed: '100'
   commands:
     - interface GigabitEthernet0/2
-    - no speed 100
+    - speed auto
     - description Configured and Overridden by Ansible-Network
     - mtu 2000
     - duplex full

@@ -32,6 +32,7 @@
             enabled: true
             duplex: full
             mtu: 2000
+            speed: auto
         state: overridden
 
     - name: Assert that correct set of commands were generated
