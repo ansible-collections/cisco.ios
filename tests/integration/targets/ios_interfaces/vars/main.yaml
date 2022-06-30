@@ -54,14 +54,12 @@ replaced:
   commands:
     - interface GigabitEthernet0/1
     - description Configured and Replaced by Ansible-Network
-    - no speed 10
+    - speed auto
     - mtu 110
-    - no duplex auto
     - interface GigabitEthernet0/2
     - description Configured and Replaced by Ansible-Network
     - speed 10
     - no mtu 110
-    - no duplex auto
     - no shutdown
   after:
     - duplex: auto

@@ -13,13 +13,14 @@
       register: result
       cisco.ios.ios_interfaces: &id001
         config:
-
           - name: GigabitEthernet0/1
             description: Configured and Replaced by Ansible-Network
+            speed: auto
+            duplex: auto
             mtu: 110
-
           - name: GigabitEthernet0/2
             description: Configured and Replaced by Ansible-Network
+            duplex: auto
             speed: 10
         state: replaced
 
