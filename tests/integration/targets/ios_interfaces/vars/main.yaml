@@ -108,9 +108,9 @@ replaced:
 overridden:
   before:
     - enabled: true
-      name: loopback888
+      name: Loopback888
     - enabled: true
-      name: loopback999
+      name: Loopback999
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0
@@ -136,9 +136,9 @@ overridden:
     - no shutdown
   after:
     - enabled: true
-      name: loopback888
+      name: Loopback888
     - enabled: true
-      name: loopback999
+      name: Loopback999
     - duplex: auto
       enabled: true
       name: GigabitEthernet0/0

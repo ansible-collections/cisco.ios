@@ -14,9 +14,9 @@
       cisco.ios.ios_interfaces: &id001
         config:
           - enabled: true
-            name: loopback888
+            name: Loopback888
           - enabled: true
-            name: loopback999
+            name: Loopback999
           - duplex: auto
             enabled: true
             name: GigabitEthernet0/0
