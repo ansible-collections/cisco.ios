@@ -5,6 +5,19 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- `ios_ping` - Add ipv6 options.
+
+Bugfixes
+--------
+
+- `ios_interfaces` - Fix enable attribute.
+
 v3.1.0
 ======
 
