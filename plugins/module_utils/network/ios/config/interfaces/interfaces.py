@@ -30,6 +30,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
     InterfacesTemplate,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
+)
 
 
 class Interfaces(ResourceModule):
@@ -64,6 +67,9 @@ class Interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
+
+        for each in wantd, haved:
+            self.normalize_interface_names(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -101,7 +107,12 @@ class Interfaces(ResourceModule):
             if want.get("enabled"):
                 self.addcmd(want, "enabled", True)
             else:
-                self.addcmd(want, "enabled", False)
+                if want:
+                    self.addcmd(want, "enabled", False)
+                elif have.get("enabled"):
+                    # handles deleted as want be blank and only
+                    # negates if no shutdown
+                    self.addcmd(have, "enabled", False)
         if len(self.commands) != begin:
             self.commands.insert(
                 begin, self._tmplt.render(want or have, "interface", False)
@@ -110,3 +121,9 @@ class Interfaces(ResourceModule):
     def purge(self, have):
         """Handle operation for purged state"""
         self.commands.append(self._tmplt.render(have, "interface", True))
+
+    def normalize_interface_names(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
+        return param

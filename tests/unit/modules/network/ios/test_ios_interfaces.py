@@ -351,7 +351,6 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
-            "shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
             "no duplex full",
