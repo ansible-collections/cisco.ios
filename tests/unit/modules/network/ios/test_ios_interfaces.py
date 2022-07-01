@@ -122,10 +122,9 @@ class TestIosInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet1",
             "description This interface should be disabled",
-            "shutdown",
             "interface GigabitEthernet2",
             "description This interface should be enabled",
-            "no shutdown",
+            "shutdown",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -169,7 +168,6 @@ class TestIosInterfacesModule(TestIosModule):
                 "config": [
                     {
                         "description": "Ansible UT interface 1",
-                        "enabled": False,
                         "name": "GigabitEthernet1",
                     },
                     {
@@ -223,7 +221,6 @@ class TestIosInterfacesModule(TestIosModule):
                 "config": [
                     {
                         "description": "Ansible UT interface 1",
-                        "enabled": False,
                         "name": "GigabitEthernet1",
                     },
                     {"name": "GigabitEthernet2", "speed": 1200, "mtu": 1800},
@@ -279,7 +276,6 @@ class TestIosInterfacesModule(TestIosModule):
                 "config": [
                     {
                         "description": "Ansible UT interface 1",
-                        "enabled": False,
                         "name": "GigabitEthernet1",
                     },
                     {
@@ -333,7 +329,6 @@ class TestIosInterfacesModule(TestIosModule):
                 "config": [
                     {
                         "description": "Ansible UT interface try 1",
-                        "enabled": False,
                         "speed": 1000,
                         "name": "GigabitEthernet1",
                     },
@@ -351,16 +346,15 @@ class TestIosInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet2",
             "no description Ansible UT interface 2",
-            "no shutdown",
             "no speed 1000",
             "no mtu 1500",
+            "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
-            "no shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
-            "no shutdown",
             "no duplex full",
+            "shutdown",
             "interface GigabitEthernet1",
             "description Ansible UT interface try 1",
             "speed 1000",
@@ -369,6 +363,7 @@ class TestIosInterfacesModule(TestIosModule):
             "speed 1000",
             "mtu 1500",
             "no duplex auto",
+            "no shutdown",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -568,7 +563,7 @@ class TestIosInterfacesModule(TestIosModule):
             {
                 "name": "GigabitEthernet1",
                 "description": "Ansible UT interface 1",
-                "enabled": False,
+                "enabled": True,
             },
             {
                 "name": "GigabitEthernet2",
@@ -580,13 +575,13 @@ class TestIosInterfacesModule(TestIosModule):
             {
                 "name": "GigabitEthernet3",
                 "description": "Ansible UT interface 3",
-                "enabled": True,
+                "enabled": False,
                 "duplex": "auto",
             },
             {
                 "name": "GigabitEthernet4",
                 "description": "Ansible UT interface 4",
-                "enabled": True,
+                "enabled": False,
             },
             {
                 "name": "GigabitEthernet5",
@@ -649,25 +644,27 @@ class TestIosInterfacesModule(TestIosModule):
                 state="rendered",
             )
         )
+
         commands = [
             "interface GigabitEthernet1",
             "description Ansible UT interface 1",
+            "shutdown",
             "interface GigabitEthernet2",
             "description Ansible UT interface 2",
-            "shutdown",
             "speed 1000",
             "mtu 1500",
+            "no shutdown",
             "interface GigabitEthernet3",
             "description Ansible UT interface 3",
-            "shutdown",
             "duplex auto",
+            "no shutdown",
             "interface GigabitEthernet4",
             "description Ansible UT interface 4",
-            "shutdown",
+            "no shutdown",
             "interface GigabitEthernet5",
             "description Ansible UT interface 5",
-            "shutdown",
             "duplex full",
+            "no shutdown",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
