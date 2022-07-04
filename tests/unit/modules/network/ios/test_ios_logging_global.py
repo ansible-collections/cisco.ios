@@ -577,7 +577,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
     def test_ios_logging_global_gathered_host(self):
         self.execute_show_command.return_value = dedent(
             """\
-            logging host 172.16.1.1 vrf vpn1 transport tcp audit
+            logging host 172.16.1.1 vrf vpn-1 transport tcp audit
             """
         )
         set_module_args(dict(state="gathered"))
@@ -585,7 +585,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             hosts=[
                 dict(
                     hostname="172.16.1.1",
-                    vrf="vpn1",
+                    vrf="vpn-1",
                     transport=dict(tcp=dict(audit=True)),
                 )
             ]

@@ -843,7 +843,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server engineID local AB0C5342FA0A
             snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
             snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
-            snmp-server user newuser newfamily v1 access 24
+            snmp-server user new@user! new.family$ v1 access 24
             snmp-server user paul familypaul v3 access ipv6 ipv6acl
             snmp-server user replaceUser replaceUser v3
             snmp-server group group0 v3 auth
@@ -1030,7 +1030,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
             "no snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
             "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
-            "no snmp-server user newuser newfamily v1 access 24",
+            "no snmp-server user new@user! new.family$ v1 access 24",
             "no snmp-server user paul familypaul v3 access ipv6",
             "no snmp-server user replaceUser replaceUser v3",
         ]
@@ -1108,8 +1108,8 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
-            snmp-server view no-writetest testiso excluded
-            snmp-server view test-view test-test included
+            snmp-server view no-write.test testiso excluded
+            snmp-server view test-view! test-test included
             """
         )
 
@@ -1381,7 +1381,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 ],
                 "views": [
                     {
-                        "name": "no-writetest",
+                        "name": "no-write.test",
                         "family_name": "testiso",
                         "excluded": True,
                     },
@@ -1429,7 +1429,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
             "snmp-server user paul familypaul v3 access ipv6",
             "snmp-server view newView TestFamilyName included",
-            "no snmp-server view test-view test-test included",
+            "no snmp-server view test-view! test-test included",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
@@ -1615,7 +1615,7 @@ class TestIosSnmpServerModule(TestIosModule):
             """\
             snmp-server host 172.16.2.99 checktrap  isis hsrp
             snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
             """
         )
         set_module_args(dict(state="gathered"))
@@ -1630,7 +1630,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 {
                     "host": "172.16.2.1",
-                    "community_string": "replaceUser",
+                    "community_string": "replace-User!",
                     "traps": ["slb", "pki"],
                     "version": "3",
                     "version_option": "noauth",
