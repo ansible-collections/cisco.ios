@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ntp
@@ -115,13 +116,12 @@ commands:
     sample: ["no ntp server 10.0.255.10", "no ntp source Loopback0"]
 """
 import re
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
 )
 
 

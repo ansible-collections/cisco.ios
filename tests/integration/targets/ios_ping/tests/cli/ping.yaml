@@ -18,13 +18,14 @@
       - show ip interface {{ management_interface }} | include Internet address
 
 - name: Extract the IP address from registered output
-  set_fact: management_ip="{{ show_ip_interface_result.stdout[0].split()[-1].split('/')[0]
+  set_fact:
+    management_ip="{{ show_ip_interface_result.stdout[0].split()[-1].split('/')[0]
     }}"
 
 - name: expected successful ping
   register: esp
   cisco.ios.ios_ping:
-    dest: '{{ management_ip }}'
+    dest: "{{ management_ip }}"
 
 - name: unexpected unsuccessful ping
   register: uup
@@ -36,7 +37,7 @@
   register: usp
   ignore_errors: true
   cisco.ios.ios_ping:
-    dest: '{{ management_ip }}'
+    dest: "{{ management_ip }}"
     state: absent
 
 - name: expected unsuccessful ping

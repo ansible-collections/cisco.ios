@@ -5,7 +5,7 @@
   ignore_errors: true
   cisco.ios.ios_ntp: &id007
     server: 10.75.32.5
-    source_int: '{{ test_interface }}'
+    source_int: "{{ test_interface }}"
     acl: NTP_ACL
     logging: true
     key_id: 10
@@ -14,12 +14,11 @@
     state: absent
 
 - block:
-
     - name: configure NTP
       register: result
       cisco.ios.ios_ntp: &id001
         server: 10.75.32.5
-        source_int: '{{ test_interface }}'
+        source_int: "{{ test_interface }}"
         state: present
 
     - assert: &id002
@@ -90,7 +89,6 @@
 
     - assert: *id004
   always:
-
     - name: Remove ntp config
       cisco.ios.ios_ntp: *id007
 

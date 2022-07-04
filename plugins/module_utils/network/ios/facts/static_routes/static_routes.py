@@ -12,21 +12,21 @@ based on the configuration.
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    netmask_to_cidr,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     is_valid_ip,
+    netmask_to_cidr,
 )
 
 

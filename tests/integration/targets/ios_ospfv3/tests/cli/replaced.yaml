@@ -8,7 +8,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaced provided OSPF V3 configuration
       register: result
       cisco.ios.ios_ospfv3: &id001
@@ -54,5 +53,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

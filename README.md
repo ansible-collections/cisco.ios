@@ -1,4 +1,5 @@
 # Cisco IOS Collection
+
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.ios)-->
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS network appliances.
@@ -10,15 +11,16 @@ This collection has been tested against Cisco IOSv version 15.2 on VIRL.
 
 This collection has been tested against following Ansible versions: **>=2.9.10**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the 
-fully qualified collection name (for example, `cisco.ios.ios`). 
+For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
+fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
 ### Supported connections
-The Cisco IOS collection supports ``network_cli``  connections.
+
+The Cisco IOS collection supports `network_cli` connections.
 
 ## Included content
 
@@ -74,6 +76,7 @@ Name | Description
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
 
 <!--end collection content-->
+
 ## Installing this collection
 
 You can install the Cisco IOS collection with the Ansible Galaxy CLI:
@@ -87,8 +90,8 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 collections:
   - name: cisco.ios
 ```
-## Using this collection
 
+## Using this collection
 
 This collection includes [network resource modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html).
 
@@ -99,26 +102,24 @@ The following example task replaces configuration changes in the existing config
 
 ```yaml
 ---
-  - name: Replace device configuration of specified L2 interfaces with provided configuration.
-    cisco.ios.ios_l2_interfaces:
-      config:
-        - name: GigabitEthernet0/2
-          trunk:
+- name: Replace device configuration of specified L2 interfaces with provided configuration.
+  cisco.ios.ios_l2_interfaces:
+    config:
+      - name: GigabitEthernet0/2
+        trunk:
           - allowed_vlans: 20-25,40
             native_vlan: 20
             pruning_vlans: 10
             encapsulation: isl
-      state: replaced
-
+    state: replaced
 ```
 
 **NOTE**: For Ansible 2.9, you may not see deprecation warnings when you run your playbooks with this collection. Use this documentation to track when a module is deprecated.
 
-
 ### See Also:
 
-* [Cisco IOS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-* [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
+- [Cisco IOS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+- [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
 
@@ -126,18 +127,21 @@ We welcome community contributions to this collection. If you find problems, ple
 
 You can also join us on:
 
-- IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
+- IRC - the `#ansible-network` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
 
 ### Code of Conduct
+
 This collection follows the Ansible project's
 [Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html).
 Please read and familiarize yourself with this document.
 
 ## Release notes
+
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
+
 Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/CHANGELOG.rst).
 
 ## Roadmap

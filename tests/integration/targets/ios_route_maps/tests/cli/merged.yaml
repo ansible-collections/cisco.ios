@@ -1,10 +1,10 @@
 ---
 - debug:
-    msg: START Merged ios_route_maps state for integration tests on connection={{
+    msg:
+      START Merged ios_route_maps state for integration tests on connection={{
       ansible_connection }}
 
 - block:
-
     - include_tasks: _remove_config.yaml
     - name: Merge provided Route maps configuration with device configuration
       register: result
@@ -125,5 +125,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

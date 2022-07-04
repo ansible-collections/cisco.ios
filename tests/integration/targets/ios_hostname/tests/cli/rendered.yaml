@@ -4,12 +4,11 @@
       ansible_connection }}
 
 - block:
-
     - name: ios_hostname render - Play
       register: result
       cisco.ios.ios_hostname:
         config:
-          hostname: 'testname'
+          hostname: "testname"
         state: rendered
 
     - assert:

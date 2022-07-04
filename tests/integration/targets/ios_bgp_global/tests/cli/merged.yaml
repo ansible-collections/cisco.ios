@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg: START Merged ios_bgp_global state for integration tests on connection={{
+    msg:
+      START Merged ios_bgp_global state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_bgp_global: &id001
@@ -78,5 +78,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

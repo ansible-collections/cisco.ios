@@ -12,6 +12,7 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
@@ -26,8 +27,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     filter_dict_having_none_value,
 )
 

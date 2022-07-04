@@ -2,7 +2,6 @@
 - debug: msg="START cli/error_regex.yaml on connection={{ ansible_connection }}"
 
 - block:
-
     - name: clear logs 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id001
@@ -53,7 +52,6 @@
       register: result
       vars:
         ansible_terminal_stderr_re:
-
           - pattern: connection timed out
             flags: re.I
       cisco.ios.ios_command:

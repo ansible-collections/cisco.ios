@@ -20,6 +20,7 @@ The module file for ios_static_routes
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_static_routes

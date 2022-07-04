@@ -12,6 +12,7 @@ based on the configuration.
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -19,14 +20,14 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    netmask_to_cidr,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
+    L3_interfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
-    L3_interfacesArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    netmask_to_cidr,
 )
 
 

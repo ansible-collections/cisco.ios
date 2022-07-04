@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = r"""
 module: ios_linkagg
@@ -150,7 +151,9 @@ commands:
     - no interface port-channel 30
 """
 import re
+
 from copy import deepcopy
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
@@ -160,10 +163,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
 )
 
 

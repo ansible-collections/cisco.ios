@@ -8,7 +8,6 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Apply the provided configuration (Base config)
       register: base_config
       cisco.ios.ios_lldp_interfaces:
@@ -27,8 +26,8 @@
     - name: Gather LLDP interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - lldp_interfaces
 
@@ -61,5 +60,4 @@
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
-
     - include_tasks: _remove_config.yaml

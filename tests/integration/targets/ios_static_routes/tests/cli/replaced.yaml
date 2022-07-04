@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_static_routes state for integration tests on connection={{
+    msg:
+      START Replaced ios_static_routes state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
@@ -8,34 +9,26 @@
 - include_tasks: _initial_setup_config.yaml
 
 - block:
-
     - name: Replaces device configuration of listed interfaces with provided configuration
       register: result
       cisco.ios.ios_static_routes: &id001
         config:
-
           - vrf: ansible_temp_vrf
             address_families:
-
               - afi: ipv4
                 routes:
-
                   - dest: 192.0.2.0/24
                     next_hops:
-
                       - forward_router_address: 192.0.2.1
                         name: replaced_vrf
                         tag: 75
                         track: 155
 
           - address_families:
-
               - afi: ipv4
                 routes:
-
                   - dest: 198.51.100.0/24
                     next_hops:
-
                       - forward_router_address: 198.51.101.1
                         name: replaced_route
                         distance_metric: 175
@@ -44,10 +37,8 @@
 
               - afi: ipv6
                 routes:
-
                   - dest: 2001:DB8:0:3::/64
                     next_hops:
-
                       - forward_router_address: 2001:DB8:0:3::2
                         name: replaced_v6
                         tag: 110
@@ -59,7 +50,8 @@
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 
-    - name: Replaces device configuration of listed interfaces with provided configuration
+    - name:
+        Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_static_routes: *id001
@@ -70,7 +62,6 @@
           - result.commands|length == 0
           - result['changed'] == false
   always:
-
     - include_tasks: _populate_config.yaml
 
     - include_tasks: _remove_config.yaml

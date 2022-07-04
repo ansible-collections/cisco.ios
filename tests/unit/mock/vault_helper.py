@@ -14,10 +14,10 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible.module_utils._text import to_bytes
-
 from ansible.parsing.vault import VaultSecret
 
 

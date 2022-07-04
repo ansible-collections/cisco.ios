@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_facts
@@ -213,8 +214,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.fact
     FactsArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
     FACT_RESOURCE_SUBSETS,
+    Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,

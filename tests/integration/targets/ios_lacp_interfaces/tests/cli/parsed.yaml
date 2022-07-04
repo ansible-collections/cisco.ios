@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START ios_lacp_interfaces parsed integration tests on connection={{ ansible_connection
+    msg:
+      START ios_lacp_interfaces parsed integration tests on connection={{ ansible_connection
       }}
 
 - block:

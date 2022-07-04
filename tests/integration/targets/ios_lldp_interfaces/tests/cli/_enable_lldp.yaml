@@ -3,4 +3,4 @@
   vars:
     lines: "lldp run\n"
   ansible.netcommon.cli_config:
-    config: '{{ lines }}'
+    config: "{{ lines }}"

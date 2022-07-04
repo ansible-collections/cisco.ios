@@ -6,7 +6,6 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: l3_interface rtt - Apply the provided configuration (Base config)
       register: result
       cisco.ios.ios_l3_interfaces:
@@ -35,8 +34,8 @@
     - name: l3_interface rtt - Gather L3 interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - l3_interfaces
 

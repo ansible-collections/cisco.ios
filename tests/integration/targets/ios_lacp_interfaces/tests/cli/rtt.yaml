@@ -6,7 +6,6 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Apply the provided configuration (Base config)
       register: base_config
       cisco.ios.ios_lacp_interfaces:
@@ -23,8 +22,8 @@
     - name: Gather lacp interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - lacp_interfaces
 
@@ -58,5 +57,4 @@
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml

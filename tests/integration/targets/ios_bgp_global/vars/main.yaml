@@ -18,7 +18,7 @@ merged:
     - redistribute connected metric 10
 
   after:
-    as_number: '65000'
+    as_number: "65000"
     bgp:
       advertise_best_external: true
       bestpath_options:
@@ -29,7 +29,7 @@ merged:
         reuse_route_val: 1
         suppress_route_val: 1
       graceful_shutdown:
-        community: '100'
+        community: "100"
         local_preference: 100
         neighbors:
           time: 50
@@ -46,7 +46,7 @@ merged:
                 transitive: true
         description: merge neighbor
         neighbor_address: 198.0.2.1
-        remote_as: '100'
+        remote_as: "100"
         route_maps:
           - name: test-route
             out: true
@@ -61,7 +61,7 @@ merged:
 
 gathered:
   after:
-    as_number: '65000'
+    as_number: "65000"
     bgp:
       advertise_best_external: true
       bestpath_options:
@@ -72,7 +72,7 @@ gathered:
         reuse_route_val: 1
         suppress_route_val: 1
       graceful_shutdown:
-        community: '100'
+        community: "100"
         local_preference: 100
         neighbors:
           time: 50
@@ -89,7 +89,7 @@ gathered:
                 transitive: true
         description: merge neighbor
         neighbor_address: 192.0.2.1
-        remote_as: '100'
+        remote_as: "100"
         route_maps:
           - name: test-route
             out: true
@@ -117,7 +117,7 @@ replaced:
     - no neighbor 192.0.2.1
 
   after:
-    as_number: '65000'
+    as_number: "65000"
     bgp:
       advertise_best_external: true
       bestpath_options:
@@ -130,7 +130,7 @@ replaced:
     neighbors:
       - description: replace neighbor
         neighbor_address: 192.0.2.2
-        remote_as: '100'
+        remote_as: "100"
         slow_peer:
           detection:
             disable: true
@@ -141,7 +141,7 @@ replaced:
 
 parsed:
   after:
-    as_number: '65000'
+    as_number: "65000"
     bgp:
       advertise_best_external: true
       bestpath_options:
@@ -152,7 +152,7 @@ parsed:
         reuse_route_val: 1
         suppress_route_val: 1
       graceful_shutdown:
-        community: '100'
+        community: "100"
         local_preference: 100
         neighbors:
           time: 50
@@ -169,7 +169,7 @@ parsed:
                 transitive: true
         description: merge neighbor
         neighbor_address: 198.0.2.1
-        remote_as: '100'
+        remote_as: "100"
         route_maps:
           - name: test-route
             out: true

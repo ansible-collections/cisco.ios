@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_acls state for integration tests on connection={{ ansible_connection
+    msg:
+      START Replaced ios_acls state for integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaces device configuration of listed interfaces with provided configuration
       register: result
       cisco.ios.ios_acls: &id001
@@ -81,7 +81,8 @@
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 
-    - name: Replaces device configuration of listed interfaces with provided configuration
+    - name:
+        Replaces device configuration of listed interfaces with provided configuration
         (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id001
@@ -92,5 +93,4 @@
           - result.commands|length == 0
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

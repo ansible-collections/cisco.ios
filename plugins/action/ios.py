@@ -18,11 +18,13 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-import sys
 import copy
+import sys
 
+from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.action.network import (
     ActionModule as ActionNetworkModule,
 )
@@ -32,7 +34,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_provider_spec,
 )
-from ansible.utils.display import Display
+
 
 display = Display()
 

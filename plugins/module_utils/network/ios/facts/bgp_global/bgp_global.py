@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,11 +18,11 @@ based on the configuration.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
-    Bgp_globalTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
+    Bgp_globalTemplate,
 )
 
 

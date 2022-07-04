@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_config
@@ -358,23 +359,20 @@ time:
   sample: "22:28:34"
 """
 import json
+
 from ansible.module_utils._text import to_text
-from ansible.module_utils.connection import ConnectionError
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    run_commands,
-    get_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    get_defaults_flag,
-    get_connection,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_config,
+    get_connection,
+    get_defaults_flag,
+    ios_argument_spec,
+    run_commands,
 )
 
 

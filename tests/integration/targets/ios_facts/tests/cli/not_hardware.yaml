@@ -1,12 +1,13 @@
 ---
-- debug: msg="START cli/not_hardware_facts.yaml on connection={{ ansible_connection
+- debug:
+    msg="START cli/not_hardware_facts.yaml on connection={{ ansible_connection
     }}"
 
 - name: test not hardware
   register: result
   cisco.ios.ios_facts:
     gather_subset:
-      - '!hardware'
+      - "!hardware"
 
 - assert:
     that:
@@ -19,5 +20,6 @@
       - result.ansible_facts.ansible_net_filesystems is not defined
       - result.ansible_facts.ansible_net_filesystems_info is not defined
 
-- debug: msg="END cli/not_hardware_facts.yaml on connection={{ ansible_connection
+- debug:
+    msg="END cli/not_hardware_facts.yaml on connection={{ ansible_connection
     }}"

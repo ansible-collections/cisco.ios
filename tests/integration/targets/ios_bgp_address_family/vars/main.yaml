@@ -305,4 +305,4 @@ parsed:
           - address: 192.0.2.0
           - address: 192.0.3.0
           - address: 192.0.4.0
-    as_number: '65536'
+    as_number: "65536"

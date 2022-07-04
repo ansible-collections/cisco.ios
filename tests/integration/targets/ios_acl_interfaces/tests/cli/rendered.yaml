@@ -1,22 +1,19 @@
 ---
 - debug:
-    msg: Start ios_acl_interfaces rendered integration tests ansible_connection={{
+    msg:
+      Start ios_acl_interfaces rendered integration tests ansible_connection={{
       ansible_connection }}
 
 - block:
-
     - name: Render the commands for provided  configuration
       become: true
       register: result
       cisco.ios.ios_acl_interfaces:
         config:
-
           - name: GigabitEthernet0/1
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: 110
                     direction: in
 
@@ -25,7 +22,6 @@
 
               - afi: ipv6
                 acls:
-
                   - name: test_v6
                     direction: out
 
@@ -34,10 +30,8 @@
 
           - name: GigabitEthernet0/2
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: 110
                     direction: in
 

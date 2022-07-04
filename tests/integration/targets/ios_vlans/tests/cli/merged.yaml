@@ -1,17 +1,16 @@
 ---
 - debug:
-    msg: START Merged ios_vlans state for integration tests on connection={{ ansible_connection
+    msg:
+      START Merged ios_vlans state for integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_vlans: &id001
         config:
-
           - name: Vlan_10
             vlan_id: 10
             state: active
@@ -58,5 +57,4 @@
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml

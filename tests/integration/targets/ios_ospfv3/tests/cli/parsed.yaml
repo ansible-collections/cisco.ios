@@ -1,7 +1,8 @@
 ---
 - block:
     - debug:
-        msg: START ios_ospfv3 parsed integration tests on connection={{ ansible_connection
+        msg:
+          START ios_ospfv3 parsed integration tests on connection={{ ansible_connection
           }}
 
     - name: Parse the commands for provided configuration
@@ -14,4 +15,4 @@
         that:
           - result.changed == false
           - "{{ merged['after']['processes'] | symmetric_difference(result['parsed']['processes']) |length\
-              \ == 0 }}"
+            \ == 0 }}"

@@ -18,7 +18,7 @@
     backup: true
     backup_options:
       filename: backup_with_alias.cfg
-      dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+      dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
 - assert:
     that:
@@ -26,7 +26,7 @@
 
 - name: check if the backup file-4 exist
   find:
-    paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg'
+    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
   register: backup_file
   connection: local
 

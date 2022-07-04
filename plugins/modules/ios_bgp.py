@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_bgp
@@ -415,11 +416,11 @@ commands:
     - exit-address-family
 """
 from ansible.module_utils._text import to_text
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
-    NetworkModule,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     REDISTRIBUTE_PROTOCOLS,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
+    NetworkModule,
 )
 
 

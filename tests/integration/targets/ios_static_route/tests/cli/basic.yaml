@@ -1,11 +1,11 @@
 ---
-- debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection
+- debug:
+    msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection
     }}"
 
 - name: Clear all static routes
   cisco.ios.ios_static_route: &id003
     aggregate:
-
       - prefix: 172.16.31.0
 
       - prefix: 172.16.32.0
@@ -102,7 +102,6 @@
   register: result
   cisco.ios.ios_static_route:
     aggregate:
-
       - prefix: 172.16.32.0
 
       - prefix: 172.16.33.0
@@ -120,7 +119,6 @@
   register: result
   cisco.ios.ios_static_route:
     aggregate:
-
       - prefix: 172.16.32.0
 
       - prefix: 172.16.33.0
@@ -147,5 +145,6 @@
       - result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no
         ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
 
-- debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection
+- debug:
+    msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection
     }}"

@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{
+    msg:
+      Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{
       ansible_connection }}
 
 - include_tasks: _enable_lldp.yaml
@@ -10,7 +11,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Delete LLDP attributes for respective configured interfaces
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
@@ -43,5 +43,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: _remove_config.yaml

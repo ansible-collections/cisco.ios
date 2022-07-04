@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Merged ios_snmp_server state for integration tests on connection={{
+    msg:
+      START Merged ios_snmp_server state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: ios_snmp_server merged - Play
       register: result
       cisco.ios.ios_snmp_server: &id001
@@ -41,5 +41,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

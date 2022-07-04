@@ -1,11 +1,12 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} ios_l2_interface aggregate
+- debug:
+    msg="START connection={{ ansible_connection }} ios_l2_interface aggregate
     test"
 
 - name: Setup - Ensure interfaces are switchport
   loop:
-    - '{{ test_interface }}'
-    - '{{ test_interface2 }}'
+    - "{{ test_interface }}"
+    - "{{ test_interface2 }}"
   cisco.ios.ios_config:
     lines:
       - switchport
@@ -15,7 +16,6 @@
 - name: Setup vlans
   cisco.ios.ios_vlan:
     aggregate:
-
       - vlan_id: 6
 
       - vlan_id: 15
@@ -23,28 +23,25 @@
 - name: Setup - Remove interface aggregate before testing
   cisco.ios.ios_l2_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         mode: access
         access_vlan: 6
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         mode: access
         access_vlan: 15
     state: absent
 
 - block:
-
     - name: Configure interface for access_vlan aggregate
       register: result
       cisco.ios.ios_l2_interface: &id001
         aggregate:
-
-          - name: '{{ test_interface }}'
+          - name: "{{ test_interface }}"
             mode: access
             access_vlan: 6
 
-          - name: '{{ test_interface2 }}'
+          - name: "{{ test_interface2 }}"
             mode: access
             access_vlan: 15
 
@@ -64,12 +61,11 @@
       register: result
       cisco.ios.ios_l2_interface: &id002
         aggregate:
-
-          - name: '{{ test_interface }}'
+          - name: "{{ test_interface }}"
             mode: access
             access_vlan: 6
 
-          - name: '{{ test_interface2 }}'
+          - name: "{{ test_interface2 }}"
             mode: access
             access_vlan: 15
         state: absent
@@ -86,12 +82,10 @@
         that:
           - result.changed == false
   always:
-
     - name: remove vlans
       ignore_errors: true
       cisco.ios.ios_vlan:
         aggregate:
-
           - vlan_id: 6
 
           - vlan_id: 15
