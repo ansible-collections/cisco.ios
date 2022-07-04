@@ -224,7 +224,8 @@ def map_obj_to_commands(updates, module):
                         commands.append("interface {0}".format(m))
                         commands.append(
                             "no channel-group {0} mode {1}".format(
-                                group, mode
+                                group,
+                                mode,
                             ),
                         )
     if purge:
