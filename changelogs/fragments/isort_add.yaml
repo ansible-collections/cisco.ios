@@ -1,3 +1,0 @@
----
-trivial:
-  - Add isort to pre-commit, increase black line length
