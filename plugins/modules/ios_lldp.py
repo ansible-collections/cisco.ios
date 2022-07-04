@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lldp
@@ -67,12 +68,11 @@ commands:
     - lldp run
 """
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    load_config,
-    run_commands,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
+    run_commands,
 )
 
 

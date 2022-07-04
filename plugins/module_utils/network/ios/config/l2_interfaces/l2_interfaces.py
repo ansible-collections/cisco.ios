@@ -12,6 +12,7 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -21,19 +22,16 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    dict_to_set,
-    normalize_interface,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    remove_command_from_config_list,
     add_command_to_config_list,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    dict_to_set,
     filter_dict_having_none_value,
+    normalize_interface,
+    remove_command_from_config_list,
     remove_duplicate_interface,
 )
 

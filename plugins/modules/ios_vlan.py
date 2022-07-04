@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_vlan
@@ -170,18 +171,19 @@ commands:
 """
 import re
 import time
+
 from copy import deepcopy
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    load_config,
-    run_commands,
-    normalize_interface,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
+    normalize_interface,
+    run_commands,
 )
 
 

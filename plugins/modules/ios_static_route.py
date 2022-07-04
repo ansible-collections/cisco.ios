@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_static_route
@@ -187,6 +188,7 @@ commands:
 """
 from copy import deepcopy
 from re import findall
+
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import check_required_together
@@ -194,12 +196,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
     validate_ip_address,
 )
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
 )
 
 

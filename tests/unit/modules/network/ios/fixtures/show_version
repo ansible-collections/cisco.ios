@@ -41,5 +41,3 @@ DRAM configuration is 72 bits wide with parity disabled.
 
 
 Configuration register is 0x0
-
-

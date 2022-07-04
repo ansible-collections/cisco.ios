@@ -18,6 +18,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -44,9 +45,9 @@ options:
     - name: ansible_ios_config_commands
 """
 
+import json
 import re
 import time
-import json
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_text

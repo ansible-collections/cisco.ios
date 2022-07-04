@@ -13,21 +13,21 @@ based on the configuration.
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 import platform
 import re
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    run_commands,
-    get_capabilities,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    normalize_interface,
-)
 from ansible.module_utils.six import iteritems
 from ansible.module_utils.six.moves import zip
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_capabilities,
+    normalize_interface,
+    run_commands,
+)
 
 
 class FactsBase(object):

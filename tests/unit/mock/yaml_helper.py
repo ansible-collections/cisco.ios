@@ -1,12 +1,14 @@
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 import io
+
 import yaml
 
 from ansible.module_utils.six import PY3
-from ansible.parsing.yaml.loader import AnsibleLoader
 from ansible.parsing.yaml.dumper import AnsibleDumper
+from ansible.parsing.yaml.loader import AnsibleLoader
 
 
 class YamlTestUtils(object):

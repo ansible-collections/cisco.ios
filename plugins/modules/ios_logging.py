@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_logging
@@ -188,7 +189,9 @@ commands:
     - logging host 172.16.0.1
 """
 import re
+
 from copy import deepcopy
+
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import check_required_if
@@ -196,15 +199,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
     validate_ip_address,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    get_config,
-    load_config,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_capabilities,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_config,
     ios_argument_spec,
+    load_config,
 )
 
 
