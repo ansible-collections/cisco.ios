@@ -386,7 +386,7 @@ class Interfaces(FactsBase):
             return match.group(1)
 
     def parse_lineprotocol(self, data):
-        match = re.search(r"line protocol is (\S+).+$", data, re.M)
+        match = re.search(r"line protocol is (up|down)(.+)?$", data, re.M)
         if match:
             return match.group(1)
 
