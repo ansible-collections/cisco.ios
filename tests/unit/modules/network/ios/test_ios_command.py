@@ -22,11 +22,12 @@ __metaclass__ = type
 
 import json
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_command
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -38,7 +39,7 @@ class TestIosCommandModule(TestIosModule):
         super(TestIosCommandModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_command.run_commands"
+            "ansible_collections.cisco.ios.plugins.modules.ios_command.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -89,7 +90,7 @@ class TestIosCommandModule(TestIosModule):
     def test_ios_command_retries(self):
         wait_for = 'result[0] contains "test string"'
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, retries=2)
+            dict(commands=["show version"], wait_for=wait_for, retries=2),
         )
         self.execute_module(failed=True)
         self.assertEqual(self.run_commands.call_count, 2)
@@ -100,7 +101,7 @@ class TestIosCommandModule(TestIosModule):
             'result[0] contains "test string"',
         ]
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="any")
+            dict(commands=["show version"], wait_for=wait_for, match="any"),
         )
         self.execute_module()
 
@@ -110,7 +111,7 @@ class TestIosCommandModule(TestIosModule):
             'result[0] contains "IOSv Software"',
         ]
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="all")
+            dict(commands=["show version"], wait_for=wait_for, match="all"),
         )
         self.execute_module()
 
@@ -121,7 +122,7 @@ class TestIosCommandModule(TestIosModule):
         ]
         commands = ["show version", "show version"]
         set_module_args(
-            dict(commands=commands, wait_for=wait_for, match="all")
+            dict(commands=commands, wait_for=wait_for, match="all"),
         )
         self.execute_module(failed=True)
 
@@ -132,7 +133,7 @@ class TestIosCommandModule(TestIosModule):
         self.assertEqual(
             result["warnings"],
             [
-                "Only show commands are supported when using check mode, not executing configure terminal"
+                "Only show commands are supported when using check mode, not executing configure terminal",
             ],
         )
 

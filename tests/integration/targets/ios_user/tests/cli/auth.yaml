@@ -1,6 +1,5 @@
 ---
 - block:
-
     - name: Create user with password
       cisco.ios.ios_user:
         name: auth_user
@@ -14,7 +13,8 @@
 
     - name: test login for {{ ansible_user }} user with password
       expect:
-        command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
+        command:
+          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
           }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
@@ -39,7 +39,6 @@
         that:
           - results.failed
   always:
-
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
 
@@ -50,10 +49,9 @@
         state: absent
 
 - block:
-
     - name: Ensure ssh key is not world readable
       file:
-        path: '{{ role_path }}/files/test_rsa'
+        path: "{{ role_path }}/files/test_rsa"
         mode: 384
 
     - name: Create user with sshkey
@@ -93,7 +91,6 @@
         that:
           - results.failed
   always:
-
     - name: reset connection with {{ ansible_user }}
       meta: reset_connection
 

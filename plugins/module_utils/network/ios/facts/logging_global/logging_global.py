@@ -18,11 +18,11 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.logging_global import (
-    Logging_globalTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logging_global.logging_global import (
     Logging_globalArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.logging_global import (
+    Logging_globalTemplate,
 )
 
 
@@ -54,7 +54,8 @@ class Logging_globalFacts(object):
 
         # parse native config using the Logging_global template
         logging_global_parser = Logging_globalTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objFinal = logging_global_parser.parse()
 
@@ -76,18 +77,22 @@ class Logging_globalFacts(object):
                     )
                 elif type(v) == list and k == "source_interface":
                     objFinal[k] = sorted(
-                        objFinal[k], key=lambda item: item["interface"]
+                        objFinal[k],
+                        key=lambda item: item["interface"],
                     )
                 elif type(v) == list and k == "filter":
                     objFinal[k] = sorted(
-                        objFinal[k], key=lambda item: item["url"]
+                        objFinal[k],
+                        key=lambda item: item["url"],
                     )
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
             logging_global_parser.validate_config(
-                self.argument_spec, {"config": objFinal}, redact=True
-            )
+                self.argument_spec,
+                {"config": objFinal},
+                redact=True,
+            ),
         )
 
         facts["logging_global"] = params.get("config", {})

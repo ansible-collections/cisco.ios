@@ -8,11 +8,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_ntp_global
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule
 
 
@@ -23,18 +25,18 @@ class TestIosNtpGlobalModule(TestIosModule):
         super(TestIosNtpGlobalModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -42,20 +44,20 @@ class TestIosNtpGlobalModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global."
-            "Ntp_globalFacts.get_ntp_data"
+            "Ntp_globalFacts.get_ntp_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -100,7 +102,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             ntp server 172.16.1.13 source GigabitEthernet0/1
             ntp trusted-key 3 - 13
             ntp trusted-key 21
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -113,7 +115,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                                 ipv6=True,
                                 kod=True,
                             ),
-                        ]
+                        ],
                     ),
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
@@ -123,7 +125,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                             encryption=7,
                             id=2,
                             key="SomeSecurePassword",
-                        )
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -157,10 +159,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     servers=[
                         dict(server="172.16.1.12", version=2),
                         dict(
-                            server="172.16.1.13", source="GigabitEthernet0/1"
+                            server="172.16.1.13",
+                            source="GigabitEthernet0/1",
                         ),
                         dict(
-                            server="checkServerDomainIpv6.com", use_ipv6=True
+                            server="checkServerDomainIpv6.com",
+                            use_ipv6=True,
                         ),
                     ],
                     source="GigabitEthernet0/1",
@@ -171,7 +175,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     update_calendar=True,
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = []
         result = self.execute_module(changed=False)
@@ -182,7 +186,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             """\
             ntp allow mode control 4
             ntp allow mode private
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -195,7 +199,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                                 ipv6=True,
                                 kod=True,
                             ),
-                        ]
+                        ],
                     ),
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
@@ -205,7 +209,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                             encryption=7,
                             id=2,
                             key="SomeSecurePassword",
-                        )
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -240,10 +244,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                         dict(server="172.16.1.12", version=2),
                         dict(server="172.16.1.110", key_id=2),
                         dict(
-                            server="172.16.1.13", source="GigabitEthernet0/1"
+                            server="172.16.1.13",
+                            source="GigabitEthernet0/1",
                         ),
                         dict(
-                            server="checkServerDomainIpv6.com", use_ipv6=True
+                            server="checkServerDomainIpv6.com",
+                            use_ipv6=True,
                         ),
                     ],
                     source="GigabitEthernet0/1",
@@ -254,7 +260,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     update_calendar=True,
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "ntp authenticate",
@@ -318,7 +324,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             ntp server 172.16.1.13 source GigabitEthernet0/1
             ntp trusted-key 3 - 13
             ntp trusted-key 21
-            """
+            """,
         )
         set_module_args(dict(config=dict(), state="deleted"))
         commands = [
@@ -358,7 +364,7 @@ class TestIosNtpGlobalModule(TestIosModule):
     def test_ios_ntp_global_deleted_blank(self):
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(config=dict(), state="deleted"))
         commands = []
@@ -398,7 +404,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             ntp server 172.16.1.111 source GigabitEthernet0/1
             ntp trusted-key 3 - 130
             ntp trusted-key 21
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -411,7 +417,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                                 ipv6=True,
                                 kod=True,
                             ),
-                        ]
+                        ],
                     ),
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
@@ -421,7 +427,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                             encryption=7,
                             id=2,
                             key="SomeSecurePassword",
-                        )
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -455,10 +461,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     servers=[
                         dict(server="172.16.1.12", version=2),
                         dict(
-                            server="172.16.1.13", source="GigabitEthernet0/1"
+                            server="172.16.1.13",
+                            source="GigabitEthernet0/1",
                         ),
                         dict(
-                            server="checkServerDomainIpv6.com", use_ipv6=True
+                            server="checkServerDomainIpv6.com",
+                            use_ipv6=True,
                         ),
                     ],
                     source="GigabitEthernet0/1",
@@ -469,7 +477,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     update_calendar=True,
                 ),
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "no ntp allow mode private",
@@ -519,7 +527,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             ntp server 172.16.1.13 source GigabitEthernet0/1
             ntp trusted-key 3 - 13
             ntp trusted-key 21
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -532,7 +540,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                                 ipv6=True,
                                 kod=True,
                             ),
-                        ]
+                        ],
                     ),
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
@@ -542,7 +550,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                             encryption=7,
                             id=2,
                             key="SomeSecurePassword",
-                        )
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -568,10 +576,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     ],
                     servers=[
                         dict(
-                            server="172.16.1.13", source="GigabitEthernet0/1"
+                            server="172.16.1.13",
+                            source="GigabitEthernet0/1",
                         ),
                         dict(
-                            server="checkServerDomainIpv6.com", use_ipv6=True
+                            server="checkServerDomainIpv6.com",
+                            use_ipv6=True,
                         ),
                     ],
                     source="Loopback888",
@@ -582,7 +592,7 @@ class TestIosNtpGlobalModule(TestIosModule):
                     update_calendar=True,
                 ),
                 state="overridden",
-            )
+            ),
         )
         commands = []
         result = self.execute_module(changed=False)

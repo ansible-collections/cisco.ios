@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli_config/cli_basic.yaml on connection={{ ansible_connection
+- debug:
+    msg="START cli_config/cli_basic.yaml on connection={{ ansible_connection
     }}"
 
 - name: setup

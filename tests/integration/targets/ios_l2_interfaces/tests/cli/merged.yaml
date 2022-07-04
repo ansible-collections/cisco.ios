@@ -1,17 +1,16 @@
 ---
 - debug:
-    msg: START Merged ios_l2_interfaces state for integration tests on connection={{
+    msg:
+      START Merged ios_l2_interfaces state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_l2_interfaces: &id001
         config:
-
           - name: GigabitEthernet0/1
             access:
               vlan: 30
@@ -92,6 +91,5 @@
 
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml
     - include_tasks: _remove_vlan_config.yaml

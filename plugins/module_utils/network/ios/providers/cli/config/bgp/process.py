@@ -7,23 +7,21 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 import re
 
+from ansible.module_utils.common.network import to_netmask
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers import (
-    register_provider,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers import (
-    CliProvider,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.address_family import (
+    AddressFamily,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.neighbors import (
     Neighbors,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.address_family import (
-    AddressFamily,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers import (
+    CliProvider,
+    register_provider,
 )
-from ansible.module_utils.common.network import to_netmask
 
 REDISTRIBUTE_PROTOCOLS = [
     "ospf",
@@ -66,7 +64,7 @@ class Provider(CliProvider):
             self._validate_input(config)
             if operation == "replace":
                 if existing_as and int(existing_as) != self.get_value(
-                    "config.bgp_as"
+                    "config.bgp_as",
                 ):
                     commands.append("no router bgp %s" % existing_as)
                     config = None
@@ -157,10 +155,10 @@ class Provider(CliProvider):
                     if item["networks"]:
                         raise ValueError(
                             "operation is replace but provided both root level network(s) and network(s) under %s %s address family"
-                            % (item["afi"], item["safi"])
+                            % (item["afi"], item["safi"]),
                         )
 
             if root_networks and config and device_has_AF(config):
                 raise ValueError(
-                    "operation is replace and device has one or more address family activated but root level network(s) provided"
+                    "operation is replace and device has one or more address family activated but root level network(s) provided",
                 )

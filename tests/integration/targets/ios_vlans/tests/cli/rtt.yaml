@@ -6,7 +6,6 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Apply the provided configuration (Base config)
       register: base_config
       cisco.ios.ios_vlans:
@@ -32,8 +31,8 @@
     - name: Gather VLANs interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - vlans
 

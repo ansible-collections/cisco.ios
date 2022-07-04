@@ -14,18 +14,19 @@ __metaclass__ = type
 
 import re
 from copy import deepcopy
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+    NetworkTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
     Ospfv3Template,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
-    NetworkTemplate,
 )
 
 
@@ -74,7 +75,8 @@ class Ospfv3Facts(object):
                     vals = utils.dict_merge(capdict, shared)
                     try:
                         res = net_template_obj._deepformat(
-                            deepcopy(parser["result"]), vals
+                            deepcopy(parser["result"]),
+                            vals,
                         )
                     except Exception:
                         continue
@@ -142,14 +144,16 @@ class Ospfv3Facts(object):
             if key in current and current[key]:
                 current[key] = current[key].values()
                 current[key] = sorted(
-                    current[key], key=lambda k, sk=sortv: k[sk]
+                    current[key],
+                    key=lambda k, sk=sortv: k[sk],
                 )
 
         for process in current.get("processes", []):
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
                 process["areas"] = sorted(
-                    process["areas"], key=lambda k, sk="area_id": k[sk]
+                    process["areas"],
+                    key=lambda k, sk="area_id": k[sk],
                 )
                 for area in process["areas"]:
                     if "filters" in area:
@@ -159,7 +163,8 @@ class Ospfv3Facts(object):
                     if "areas" in each:
                         each["areas"] = list(each["areas"].values())
                         each["areas"] = sorted(
-                            each["areas"], key=lambda k, sk="area_id": k[sk]
+                            each["areas"],
+                            key=lambda k, sk="area_id": k[sk],
                         )
                         for area in each["areas"]:
                             if "filters" in area:
@@ -170,7 +175,9 @@ class Ospfv3Facts(object):
         facts = {}
         if current:
             params = ospfv3_parser.validate_config(
-                self.argument_spec, {"config": ipv4}, redact=True
+                self.argument_spec,
+                {"config": ipv4},
+                redact=True,
             )
             params = utils.remove_empties(params)
 

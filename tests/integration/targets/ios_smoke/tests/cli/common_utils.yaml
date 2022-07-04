@@ -34,7 +34,7 @@
 
 - assert:
     that:
-      - 'result.changed == true'
+      - "result.changed == true"
       - '"interface {{ test_interface }}" in result.commands'
       - '"ip address 192.168.20.1 255.255.255.0" in result.commands'
 
@@ -50,18 +50,26 @@
 
 - assert:
     that:
-      - 'result.failed == true'
+      - "result.failed == true"
 
 - name: Change ipv4 and ipv6 address using aggregate
   cisco.ios.ios_l3_interface:
     aggregate:
-      - { name: "{{ test_interface }}", ipv4: 193.167.1.1/8, ipv6: "fd5a:12c9:2201:4::4/32" }
-      - { name: "{{ test_interface2 }}", ipv4: 192.169.2.2/24, ipv6: "fd5b:12c9:2201:5::5/90" }
+      - {
+          name: "{{ test_interface }}",
+          ipv4: 193.167.1.1/8,
+          ipv6: "fd5a:12c9:2201:4::4/32",
+        }
+      - {
+          name: "{{ test_interface2 }}",
+          ipv4: 192.169.2.2/24,
+          ipv6: "fd5b:12c9:2201:5::5/90",
+        }
   register: result
 
 - assert:
     that:
-      - 'result.changed == true'
+      - "result.changed == true"
       - '"interface {{ test_interface }}" in result.commands'
       - '"ip address 193.167.1.1 255.0.0.0" in result.commands'
       - '"ipv6 address fd5a:12c9:2201:4::4/32" in result.commands'

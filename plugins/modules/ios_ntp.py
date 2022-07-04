@@ -115,13 +115,12 @@ commands:
     sample: ["no ntp server 10.0.255.10", "no ntp source Loopback0"]
 """
 import re
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
 )
 
 
@@ -155,7 +154,9 @@ def parse_source_int(line, dest):
 def parse_acl(line, dest):
     if dest == "access-group":
         match = re.search(
-            "ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)", line, re.M
+            "ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)",
+            line,
+            re.M,
         )
         if match:
             acl = match.group(1)
@@ -171,7 +172,9 @@ def parse_logging(line, dest):
 def parse_auth_key(line, dest):
     if dest == "authentication-key":
         match = re.search(
-            "(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)", line, re.M
+            "(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)",
+            line,
+            re.M,
         )
         if match:
             auth_key = match.group(2)
@@ -257,7 +260,7 @@ def map_params_to_obj(module):
             "auth_key": module.params["auth_key"],
             "key_id": module.params["key_id"],
             "vrf": module.params["vrf"],
-        }
+        },
     )
 
     return obj
@@ -293,7 +296,7 @@ def map_obj_to_commands(want, have, module):
             if server_have and (vrf, server) in server_have:
                 if vrf is not None:
                     commands.append(
-                        "no ntp server vrf {0} {1}".format(vrf, server)
+                        "no ntp server vrf {0} {1}".format(vrf, server),
                     )
                 else:
                     commands.append("no ntp server {0}".format(server))
@@ -317,15 +320,16 @@ def map_obj_to_commands(want, have, module):
                 if key_id and key_id_have:
                     commands.append(
                         "no ntp authentication-key {0} md5 {1} 7".format(
-                            key_id, auth_key
-                        )
+                            key_id,
+                            auth_key,
+                        ),
                     )
         elif state == "present":
 
             if server is not None and (vrf, server) not in server_have:
                 if vrf is not None:
                     commands.append(
-                        "ntp server vrf {0} {1}".format(vrf, server)
+                        "ntp server vrf {0} {1}".format(vrf, server),
                     )
                 else:
                     commands.append("ntp server {0}".format(server))
@@ -353,8 +357,9 @@ def map_obj_to_commands(want, have, module):
                 if key_id is not None:
                     commands.append(
                         "ntp authentication-key {0} md5 {1} 7".format(
-                            key_id, auth_key
-                        )
+                            key_id,
+                            auth_key,
+                        ),
                     )
     return commands
 
@@ -376,7 +381,8 @@ def main():
     argument_spec.update(ios_argument_spec)
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     result = {"changed": False}

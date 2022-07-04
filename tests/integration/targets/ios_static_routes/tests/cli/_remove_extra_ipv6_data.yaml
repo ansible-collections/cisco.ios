@@ -3,4 +3,4 @@
   vars:
     lines: "no ipv6 router eigrp 10\nno ipv6 unicast-routing\n"
   ansible.netcommon.cli_config:
-    config: '{{ lines }}'
+    config: "{{ lines }}"

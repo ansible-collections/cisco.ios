@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_ospf_interfaces state for integration tests on connection={{
+    msg:
+      START Replaced ios_ospf_interfaces state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaced provided OSPF Interfaces configuration
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
@@ -49,5 +49,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

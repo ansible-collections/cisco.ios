@@ -252,7 +252,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "config": {"type": "bool"},
                                                 "cross_connect": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "loop": {"type": "bool"},
                                                 "mep_down": {"type": "bool"},
@@ -263,10 +263,10 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "mep_missing": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "mep_unknown": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "service_up": {"type": "bool"},
                                             },
@@ -373,15 +373,15 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                         "state_change": {
                                             "options": {
                                                 "nssa_trans_change": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "shamlink": {
                                                     "options": {
                                                         "interface": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "neighbor": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                     "type": "dict",

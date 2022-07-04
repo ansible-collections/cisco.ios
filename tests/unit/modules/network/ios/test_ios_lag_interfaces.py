@@ -8,11 +8,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_lag_interfaces
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule
 
 
@@ -23,18 +25,18 @@ class TestIosLagInterfacesModule(TestIosModule):
         super(TestIosLagInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -42,20 +44,20 @@ class TestIosLagInterfacesModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lag_interfaces.lag_interfaces."
-            "Lag_interfacesFacts.get_lag_interfaces_data"
+            "Lag_interfacesFacts.get_lag_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -88,14 +90,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"}
+                            {"member": "GigabitEthernet0/1", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -117,7 +119,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -147,14 +149,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"}
+                            {"member": "GigabitEthernet0/1", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -173,7 +175,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -197,14 +199,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/3", "mode": "active"}
+                            {"member": "GigabitEthernet0/3", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -223,7 +225,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -258,14 +260,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"}
+                            {"member": "GigabitEthernet0/1", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -284,7 +286,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -308,7 +310,7 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -328,7 +330,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="overridden",
-            )
+            ),
         )
 
         commands = [
@@ -363,14 +365,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"}
+                            {"member": "GigabitEthernet0/1", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -389,7 +391,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -413,7 +415,7 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(dict(config=[], state="deleted"))
         commands = [
@@ -452,10 +454,10 @@ class TestIosLagInterfacesModule(TestIosModule):
             interface GigabitEthernet0/5
              shutdown
              channel-group 22 link 22
-            """
+            """,
         )
         set_module_args(
-            dict(config=[dict(name="Port-channel11")], state="deleted")
+            dict(config=[dict(name="Port-channel11")], state="deleted"),
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -488,10 +490,10 @@ class TestIosLagInterfacesModule(TestIosModule):
                     interface GigabitEthernet0/5
                      shutdown
                      channel-group 22 link 22
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -520,14 +522,14 @@ class TestIosLagInterfacesModule(TestIosModule):
     def test_ios_lag_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     {
                         "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"}
+                            {"member": "GigabitEthernet0/1", "mode": "active"},
                         ],
                         "name": "Port-channel11",
                     },
@@ -546,7 +548,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                     },
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/1",

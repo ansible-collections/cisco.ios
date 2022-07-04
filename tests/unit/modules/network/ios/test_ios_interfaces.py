@@ -8,11 +8,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_interfaces
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule
 
 
@@ -23,18 +25,18 @@ class TestIosInterfacesModule(TestIosModule):
         super(TestIosInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -42,20 +44,20 @@ class TestIosInterfacesModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces."
-            "InterfacesFacts.get_interfaces_data"
+            "InterfacesFacts.get_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -100,7 +102,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             {
@@ -117,7 +119,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 "state": "merged",
-            }
+            },
         )
         commands = [
             "interface GigabitEthernet1",
@@ -161,7 +163,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             {
@@ -178,7 +180,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 "state": "merged",
-            }
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -214,7 +216,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             {
@@ -226,7 +228,7 @@ class TestIosInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet2", "speed": 1200, "mtu": 1800},
                 ],
                 "state": "replaced",
-            }
+            },
         )
         commands = [
             "interface GigabitEthernet2",
@@ -269,7 +271,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             {
@@ -286,7 +288,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 "state": "replaced",
-            }
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -322,7 +324,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             {
@@ -340,7 +342,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 "state": "overridden",
-            }
+            },
         )
 
         commands = [
@@ -400,10 +402,10 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
-            dict(config=[dict(name="GigabitEthernet1")], state="deleted")
+            dict(config=[dict(name="GigabitEthernet1")], state="deleted"),
         )
         commands = [
             "interface GigabitEthernet1",
@@ -445,7 +447,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -465,7 +467,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 state="purged",
-            )
+            ),
         )
         commands = [
             "no interface GigabitEthernet2",
@@ -506,7 +508,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(dict(config=[], state="purged"))
         commands = [
@@ -553,10 +555,10 @@ class TestIosInterfacesModule(TestIosModule):
                      duplex full
                      negotiation auto
                      ipv6 dhcp server
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -606,7 +608,7 @@ class TestIosInterfacesModule(TestIosModule):
              negotiation auto
             interface GigabitEthernet5
              ipv6 dhcp server
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -642,7 +644,7 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 state="rendered",
-            )
+            ),
         )
 
         commands = [

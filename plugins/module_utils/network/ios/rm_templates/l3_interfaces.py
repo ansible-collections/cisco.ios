@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -48,7 +49,9 @@ def ip_tmplt(config_data):
 class L3_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L3_interfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
@@ -85,9 +88,9 @@ class L3_interfacesTemplate(NetworkTemplate):
                             "address": "{{ ipv4 }}",
                             "netmask": "{{ netmask }}",
                             "secondary": "{{ True if secondary is defined }}",
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
             },
         },
         {
@@ -95,16 +98,17 @@ class L3_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\saddress\spool\s(?P<pool>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip address pool {{ ipv4.pool }}",
             "result": {
                 "{{ name }}": {
                     "ipv4": [
                         {
                             "pool": "{{ pool }}",
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
             },
         },
         {
@@ -130,8 +134,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "hostname": "{{ hostname }}",
                             },
                         },
-                    ]
-                }
+                    ],
+                },
             },
         },
         {
@@ -165,8 +169,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "ipv6_sr": "{{ True if ipv6_sr is defined }}",
                             },
                         },
-                    ]
-                }
+                    ],
+                },
             },
         },
         {
@@ -188,9 +192,9 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "enable": "{{ True if enable is defined }}",
                                 "default": "{{ True if default is defined }}",
                             },
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
             },
         },
         {
@@ -212,8 +216,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "rapid_commit": "{{ True if rapid_commit is defined }}",
                             },
                         },
-                    ]
-                }
+                    ],
+                },
             },
         },
     ]

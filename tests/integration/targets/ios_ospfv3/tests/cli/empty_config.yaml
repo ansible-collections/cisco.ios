@@ -1,7 +1,8 @@
 ---
 - block:
     - debug:
-        msg: START ios_ospfv3 empty_config.yaml integration tests on connection={{
+        msg:
+          START ios_ospfv3 empty_config.yaml integration tests on connection={{
           ansible_connection }}
 
     - name: Merged with empty config should give appropriate error message

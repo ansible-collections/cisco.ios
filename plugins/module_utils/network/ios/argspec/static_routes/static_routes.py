@@ -62,7 +62,7 @@ class Static_RoutesArgs(object):
                                     "type": "list",
                                     "options": {
                                         "forward_router_address": {
-                                            "type": "str"
+                                            "type": "str",
                                         },
                                         "interface": {"type": "str"},
                                         "dhcp": {"type": "bool"},

@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -23,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 class Ntp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Ntp_globalTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
@@ -38,7 +41,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \speer
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group"
                       "{{ ' ipv4' if ipv4 is defined else '' }}"
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
@@ -68,7 +72,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \squery-only
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group"
                       "{{ ' ipv4' if ipv4 is defined else '' }}"
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
@@ -98,7 +103,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \sserve
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group"
                       "{{ ' ipv4' if ipv4 is defined else '' }}"
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
@@ -128,7 +134,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \sserve-only
                 \s(?P<access_list>\S+)
                 (\s(?P<kod>kod))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group"
                       "{{ ' ipv4' if ipv4 is defined else '' }}"
                       "{{ ' ipv6' if ipv6 is defined else '' }}"
@@ -153,7 +160,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sallow\smode\scontrol\s(?P<rate_limit>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp allow mode control {{ allow.control.rate_limit }}",
             "result": {
                 "allow": {
@@ -168,7 +176,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sallow\smode\s(?P<private>private)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp allow mode private",
             "result": {
                 "allow": {
@@ -181,7 +190,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<authenticate>authenticate)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp authenticate",
             "result": {
                 "authenticate": "{{ not not authenticate }}",
@@ -195,7 +205,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s(?P<algorithm>\S+)
                 \s(?P<key>\S+)
                 \s(?P<encryption>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp authentication-key {{ id }} {{ algorithm }} {{ key }} {{ encryption }}",
             "result": {
                 "authentication_keys": [
@@ -213,7 +224,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sbroadcastdelay\s(?P<broadcast_delay>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp broadcastdelay {{ broadcast_delay }}",
             "result": {
                 "broadcast_delay": "{{ broadcast_delay }}",
@@ -224,7 +236,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sclock-period\s(?P<clock_period>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp clock-period {{ clock_period }}",
             "result": {
                 "clock_period": "{{ clock_period }}",
@@ -235,7 +248,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<logging>logging)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp logging",
             "result": {
                 "logging": "{{ not not logging }}",
@@ -246,7 +260,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<master>master)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp master",
             "result": {
                 "master": {
@@ -259,7 +274,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\smaster\s(?P<stratum>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp master {{ master.stratum }}",
             "result": {
                 "master": {
@@ -272,7 +288,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\smax-associations\s(?P<max_associations>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp max-associations {{ max_associations }}",
             "result": {
                 "max_associations": "{{ max_associations }}",
@@ -283,7 +300,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\smaxdistance\s(?P<max_distance>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp maxdistance {{ max_distance }}",
             "result": {
                 "max_distance": "{{ max_distance }}",
@@ -294,7 +312,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\smindistance\s(?P<min_distance>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp mindistance {{ min_distance }}",
             "result": {
                 "min_distance": "{{ min_distance }}",
@@ -305,7 +324,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sorphan\s(?P<orphan>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp orphan {{ orphan }}",
             "result": {
                 "orphan": "{{ orphan }}",
@@ -316,7 +336,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\spanic\s(?P<update>update)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp panic update",
             "result": {
                 "panic_update": "{{ not not update }}",
@@ -327,7 +348,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<passive>passive)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp passive",
             "result": {
                 "passive": "{{ not not passive }}",
@@ -351,7 +373,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\s(?P<prefer>prefer))?
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp peer"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ ' ip' if use_ipv4|d(False) else ''}}"
@@ -404,7 +427,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\s(?P<prefer>prefer))?
                 (\ssource\s(?P<source>\S+))?
                 (\sversion\s(?P<version>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp server"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ ' ip' if use_ipv4|d(False) else ''}}"
@@ -444,7 +468,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\ssource\s(?P<source>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp source {{ source }}",
             "result": {
                 "source": "{{ source }}",
@@ -458,7 +483,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                 \s((?P<range_start>\d+))
                 (\s\-\s)?
                 ((?P<range_end>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp trusted-key {{ range_start }}"
                       "{{ (' - ' + range_end|string) if range_end is defined else '' }}",
             "result": {
@@ -475,7 +501,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<update_calendar>update-calendar)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp update-calendar",
             "result": {
                 "update_calendar": "{{ not not update_calendar }}",

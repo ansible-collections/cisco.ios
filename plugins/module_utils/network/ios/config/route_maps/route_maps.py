@@ -21,11 +21,11 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.route_maps import (
     Route_mapsTemplate,
@@ -139,21 +139,29 @@ class Route_maps(ResourceModule):
                         want_match = v.get("match")
                         if have_match and want_match:
                             self.list_type_compare(
-                                "match", want=want_match, have=have_match
+                                "match",
+                                want=want_match,
+                                have=have_match,
                             )
                         elif not have_match and want_match:
                             self.list_type_compare(
-                                "match", want=want_match, have=dict()
+                                "match",
+                                want=want_match,
+                                have=dict(),
                             )
                         have_set = have_entry.get("set")
                         want_set = v.get("set")
                         if have_set and want_set:
                             self.list_type_compare(
-                                "set", want=want_set, have=have_set
+                                "set",
+                                want=want_set,
+                                have=have_set,
                             )
                         elif not have_set and want_set:
                             self.list_type_compare(
-                                "set", want=want_set, have=dict()
+                                "set",
+                                want=want_set,
+                                have=dict(),
                             )
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
@@ -177,12 +185,16 @@ class Route_maps(ResourceModule):
                     want_match = v.get("match")
                     if want_match:
                         self.list_type_compare(
-                            "match", want=want_match, have=dict()
+                            "match",
+                            want=want_match,
+                            have=dict(),
                         )
                     want_set = v.get("set")
                     if want_set:
                         self.list_type_compare(
-                            "set", want=want_set, have=dict()
+                            "set",
+                            want=want_set,
+                            have=dict(),
                         )
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
@@ -296,24 +308,28 @@ class Route_maps(ResourceModule):
                         match = every.get("match")
                         if match:
                             if match.get("as_path") and match.get(
-                                "as_path"
+                                "as_path",
                             ).get("acls"):
                                 match["as_path"]["acls"] = convert_to_dict(
-                                    match["as_path"]["acls"], "acl"
+                                    match["as_path"]["acls"],
+                                    "acl",
                                 )
                             if match.get("community") and match.get(
-                                "community"
+                                "community",
                             ).get("name"):
                                 match["community"]["name"] = convert_to_dict(
-                                    match["community"]["name"], "name"
+                                    match["community"]["name"],
+                                    "name",
                                 )
                             if match.get("extcommunity"):
                                 match["extcommunity"] = convert_to_dict(
-                                    match["extcommunity"], "num"
+                                    match["extcommunity"],
+                                    "num",
                                 )
                             if match.get("interfaces"):
                                 match["interfaces"] = convert_to_dict(
-                                    match["interfaces"], "interface"
+                                    match["interfaces"],
+                                    "interface",
                                 )
                             if match.get("ip"):
                                 for each_ip_param in [
@@ -325,7 +341,7 @@ class Route_maps(ResourceModule):
                                 ]:
                                     if match["ip"].get(each_ip_param):
                                         if match["ip"][each_ip_param].get(
-                                            "acls"
+                                            "acls",
                                         ):
                                             match["ip"][each_ip_param][
                                                 "acls"
@@ -336,7 +352,7 @@ class Route_maps(ResourceModule):
                                                 "acl",
                                             )
                                         elif match["ip"][each_ip_param].get(
-                                            "prefix_lists"
+                                            "prefix_lists",
                                         ):
                                             match["ip"][each_ip_param][
                                                 "prefix_lists"
@@ -347,27 +363,30 @@ class Route_maps(ResourceModule):
                                                 "prefix_list",
                                             )
                             if match.get("local_preference") and match.get(
-                                "local_preference"
+                                "local_preference",
                             ).get("value"):
                                 match["local_preference"][
                                     "value"
                                 ] = convert_to_dict(
-                                    match["local_preference"]["value"], "value"
+                                    match["local_preference"]["value"],
+                                    "value",
                                 )
                             if match.get("mdt_group") and match.get(
-                                "mdt_group"
+                                "mdt_group",
                             ).get("acls"):
                                 match["mdt_group"]["acls"] = convert_to_dict(
-                                    match["mdt_group"]["acls"], "acl"
+                                    match["mdt_group"]["acls"],
+                                    "acl",
                                 )
                             if match.get("policy_lists"):
                                 match["policy_lists"] = convert_to_dict(
-                                    match["policy_lists"], "policy"
+                                    match["policy_lists"],
+                                    "policy",
                                 )
                             if match.get("security_group"):
                                 for each_sg_param in ["source", "destination"]:
                                     if match.get("security_group").get(
-                                        each_sg_param
+                                        each_sg_param,
                                     ):
                                         match["security_group"][
                                             each_sg_param
@@ -381,11 +400,12 @@ class Route_maps(ResourceModule):
                         if set:
                             if set.get("interfaces"):
                                 set["interfaces"] = convert_to_dict(
-                                    set["interfaces"], "interface"
+                                    set["interfaces"],
+                                    "interface",
                                 )
                         action = every.get("action")
                         sequence = every.get("sequence")
                         temp_entries.update(
-                            {action + "_" + str(sequence): every}
+                            {action + "_" + str(sequence): every},
                         )
                     val["entries"] = temp_entries

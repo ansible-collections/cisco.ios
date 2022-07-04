@@ -19,14 +19,14 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    netmask_to_cidr,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
+    L3_interfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
-    L3_interfacesArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    netmask_to_cidr,
 )
 
 
@@ -77,12 +77,14 @@ class L3_InterfacesFacts(object):
         if objs:
             facts["l3_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["l3_interfaces"].append(utils.remove_empties(cfg))
             facts["l3_interfaces"] = sorted(
-                facts["l3_interfaces"], key=lambda k, sk="name": k[sk]
+                facts["l3_interfaces"],
+                key=lambda k, sk="name": k[sk],
             )
         ansible_facts["ansible_network_resources"].update(facts)
 

@@ -17,11 +17,11 @@ based on the configuration.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hostname import (
-    HostnameTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hostname.hostname import (
     HostnameArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hostname import (
+    HostnameTemplate,
 )
 
 
@@ -53,7 +53,8 @@ class HostnameFacts(object):
 
         # parse native config using the Hostname template
         hostname_parser = HostnameTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = hostname_parser.parse()
 
@@ -61,8 +62,10 @@ class HostnameFacts(object):
 
         params = utils.remove_empties(
             hostname_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["hostname"] = params.get("config", {})

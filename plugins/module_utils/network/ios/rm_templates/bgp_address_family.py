@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -99,7 +100,7 @@ def _tmplt_bgp_af_config(config_data):
             cmd.append(
                 "bgp aggregate-timer {aggregate_timer}".format(
                     **config_data["bgp"]
-                )
+                ),
             )
         if config_data["bgp"].get("dmzlink_bw"):
             cmd.append("bgp dmzlink-bw")
@@ -123,7 +124,7 @@ def _tmplt_bgp_af_config(config_data):
             cmd.append("bgp route-map priority")
         if config_data["bgp"].get("scan_time"):
             cmd.append(
-                "bgp scan-time {scan_time}".format(**config_data["bgp"])
+                "bgp scan-time {scan_time}".format(**config_data["bgp"]),
             )
         if config_data["bgp"].get("soft_reconfig_backup"):
             cmd.append("bgp soft-reconfig-backup")
@@ -210,13 +211,13 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} peer-group {peer_group}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if "remote_as" in config_data["neighbor"]:
             commands.append(
                 "{0} remote-as {remote_as}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if "activate" in config_data["neighbor"]:
             commands.append("{0} activate".format(cmd))
@@ -284,14 +285,14 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} advertisement-interval {advertisement_interval}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if config_data["neighbor"].get("aigp"):
             self_cmd = "{0} aigp".format(cmd)
             if config_data["neighbor"]["aigp"].get("send"):
                 self_cmd += " send"
                 if config_data["neighbor"]["aigp"]["send"].get(
-                    "cost_community"
+                    "cost_community",
                 ):
                     self_cmd += " cost-community {id}".format(
                         **config_data["neighbor"]["aigp"]["send"][
@@ -323,7 +324,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} allowas-in {allowas_in}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if config_data["neighbor"].get("as_override"):
             commands.append("{0} as-override".format(cmd))
@@ -349,7 +350,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} cluster-id {cluster_id}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if "default_originate" in config_data["neighbor"]:
             self_cmd = "{0} default-originate".format(cmd)
@@ -362,7 +363,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} description {description}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if config_data["neighbor"].get("disable_connected_check"):
             commands.append("{0} disable-connected-check".format(cmd))
@@ -391,11 +392,11 @@ def _tmplt_af_neighbor(config_data):
             if "bfd" in config_data["neighbor"]["fall_over"]:
                 self_cmd += " bfd"
                 if config_data["neighbor"]["fall_over"]["bfd"].get(
-                    "multi_hop"
+                    "multi_hop",
                 ):
                     self_cmd += " multi-hop"
                 elif config_data["neighbor"]["fall_over"]["bfd"].get(
-                    "single_hop"
+                    "single_hop",
                 ):
                     self_cmd += " single-hop"
             elif "route_map" in config_data["neighbor"]["fall_over"]:
@@ -485,14 +486,14 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} peer-group {peer_group}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if "remove_private_as" in config_data["neighbor"]:
             self_cmd = "{0} remove-private-as".format(cmd)
             if config_data["neighbor"]["remove_private_as"].get("all"):
                 self_cmd += " all"
             elif config_data["neighbor"]["remove_private_as"].get(
-                "replace_as"
+                "replace_as",
             ):
                 self_cmd += " replace_as"
             commands.append(self_cmd)
@@ -528,21 +529,21 @@ def _tmplt_af_neighbor(config_data):
             commands.append("{0} soft-reconfiguration inbound".format(cmd))
         if "soo" in config_data["neighbor"]:
             commands.append(
-                "{0} soo {soo}".format(cmd, **config_data["neighbor"])
+                "{0} soo {soo}".format(cmd, **config_data["neighbor"]),
             )
         if "unsuppress_map" in config_data["neighbor"]:
             commands.append(
                 "{0} unsuppress-map {unsuppress_map}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if "version" in config_data["neighbor"]:
             commands.append(
-                "{0} version {version}".format(cmd, **config_data["neighbor"])
+                "{0} version {version}".format(cmd, **config_data["neighbor"]),
             )
         if "weight" in config_data["neighbor"]:
             commands.append(
-                "{0} weight {weight}".format(cmd, **config_data["neighbor"])
+                "{0} weight {weight}".format(cmd, **config_data["neighbor"]),
             )
         return commands
 
@@ -802,15 +803,15 @@ def _tmplt_af_redistribute(config_data):
                 external_type = None
                 commands[-1] += " match"
                 if config_data["redistribute"]["ospf"]["match"].get(
-                    "internal"
+                    "internal",
                 ):
                     commands[-1] += " internal"
                 if config_data["redistribute"]["ospf"]["match"].get(
-                    "external"
+                    "external",
                 ):
                     external_type = " external"
                 if config_data["redistribute"]["ospf"]["match"].get(
-                    "nssa_external"
+                    "nssa_external",
                 ):
                     external_type = " nssa-external"
                 if (
@@ -832,23 +833,23 @@ def _tmplt_af_redistribute(config_data):
             if config_data["redistribute"]["ospfv3"].get("match"):
                 cmd += " match"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "external"
+                    "external",
                 ):
                     cmd += " external"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "internal"
+                    "internal",
                 ):
                     cmd += " internal"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "nssa_external"
+                    "nssa_external",
                 ):
                     cmd += " nssa-external"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
-                    "type_1"
+                    "type_1",
                 ):
                     cmd += " 1"
                 elif config_data["redistribute"]["ospfv3"]["match"].get(
-                    "type_2"
+                    "type_2",
                 ):
                     cmd += " 2"
             common_config(cmd, "ospf")
@@ -870,7 +871,9 @@ def _tmplt_af_redistribute(config_data):
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_address_familyTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     PARSERS = [
@@ -906,8 +909,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "afi": "{{ afi }}",
                         "safi": "{{ safi }}",
                         "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",
-                    }
-                }
+                    },
+                },
             },
             "shared": True,
         },
@@ -941,10 +944,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "attribute_map": "{{ attribute_map.split('attribute-map ')[1] if attribute_map is defined }}",
                                 "summary_only": "{{ True if summary_only is defined }}",
                                 "suppress_map": "{{ suppress_map.split('suppress-map ')[1] if suppress_map is defined }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -976,10 +979,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "group_best": "{{ True if select_group_best is defined }}",
                                 },
                                 "send": "{{ True if send is defined }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1017,9 +1020,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "scan_time": "{{ scan_time.split('scan-time ')[1] if scan_time is defined }}",
                             "soft_reconfig_backup": "{{ True if soft_reconfig_backup is defined }}",
                             "update_group": "{{ True if update_group is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -1046,10 +1049,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "suppress_route_val": "{{ suppress_route_val if penalty_half_time is defined }}",
                                 "max_suppress": "{{ max_suppress if penalty_half_time is defined }}",
                                 "route_map": "{{ dampening.split('route-map ')[1] if dampening is defined and 'route-map' in dampening }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1078,11 +1081,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
                                             'permanent' in slow_peer }}",
                                     },
-                                }
-                            ]
-                        }
-                    }
-                }
+                                },
+                            ],
+                        },
+                    },
+                },
             },
         },
         {
@@ -1096,9 +1099,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "default": "{{ True if default is defined }}"
-                    }
-                }
+                        "default": "{{ True if default is defined }}",
+                    },
+                },
             },
         },
         {
@@ -1112,9 +1115,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "default_information": "{{ True if default_information is defined }}"
-                    }
-                }
+                        "default_information": "{{ True if default_information is defined }}",
+                    },
+                },
             },
         },
         {
@@ -1128,9 +1131,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "default_metric": "{{ default_metric.split('default-metric ')[1] if default_metric is defined }}"
-                    }
-                }
+                        "default_metric": "{{ default_metric.split('default-metric ')[1] if default_metric is defined }}",
+                    },
+                },
             },
         },
         {
@@ -1148,9 +1151,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "external": "{{ distance.split(' ')[1] }}",
                             "internal": "{{ distance.split(' ')[2] }}",
                             "local": "{{ distance.split(' ')[3] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -1176,12 +1179,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ prefix_list.split(' ')[1] if prefix_list is defined }}",
                                         "in": "{{ True if prefix_list is defined and 'in' in prefix_list }}",
                                         "out": "{{ True if prefix_list is defined and 'out' in prefix_list }}",
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1207,12 +1210,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
                                         "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
                                         "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1448,10 +1451,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "unsuppress_map": "{{ unsuppress_map.split('unsuppress-map ')[1] if unsuppress_map is defined }}",
                                 "version": "{{ version.split('version ')[1] if version is defined }}",
                                 "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1492,12 +1495,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                             },
                                             "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
                                         },
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1521,10 +1524,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "mask": "{{ mask.split('mask ')[1] if mask is defined }}",
                                 "backdoor": "{{ True if backdoor is defined }}",
                                 "route_map": "{{ route_map.split('route-map ')[1] if route_map is defined }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1583,10 +1586,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "credential": "{{ True if credential is defined }}",
                                     "encrypted": "{{ True if encrypted is defined }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1605,9 +1608,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "table_map": {
                             "name": "{{ name if name is defined }}",
                             "filter": "{{ True if filter is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -1722,10 +1725,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ vrf.split('vrf ')[1].split(' ')[0] if vrf is defined and 'vrf' in vrf and 'global' not in vrf }}",
                                     "global": "{{ True if vrf is defined and 'vrf' in vrf and 'global' in vrf }}",
                                 },
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
     ]

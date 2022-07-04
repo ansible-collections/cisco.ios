@@ -415,11 +415,11 @@ commands:
     - exit-address-family
 """
 from ansible.module_utils._text import to_text
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
-    NetworkModule,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     REDISTRIBUTE_PROTOCOLS,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
+    NetworkModule,
 )
 
 
@@ -476,10 +476,14 @@ def main():
         "synchronization": dict(type="bool"),
         "networks": dict(type="list", elements="dict", options=network_spec),
         "redistribute": dict(
-            type="list", elements="dict", options=redistribute_spec
+            type="list",
+            elements="dict",
+            options=redistribute_spec,
         ),
         "neighbors": dict(
-            type="list", elements="dict", options=af_neighbor_spec
+            type="list",
+            elements="dict",
+            options=af_neighbor_spec,
         ),
     }
     config_spec = {
@@ -488,18 +492,22 @@ def main():
         "log_neighbor_changes": dict(type="bool"),
         "neighbors": dict(type="list", elements="dict", options=neighbor_spec),
         "address_family": dict(
-            type="list", elements="dict", options=address_family_spec
+            type="list",
+            elements="dict",
+            options=address_family_spec,
         ),
         "networks": dict(type="list", elements="dict", options=network_spec),
     }
     argument_spec = {
         "config": dict(type="dict", options=config_spec),
         "operation": dict(
-            default="merge", choices=["merge", "replace", "override", "delete"]
+            default="merge",
+            choices=["merge", "replace", "override", "delete"],
         ),
     }
     module = NetworkModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
     try:
         result = module.edit_config(config_filter="| section ^router bgp")

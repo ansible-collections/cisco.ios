@@ -18,11 +18,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_ntp
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -34,12 +35,12 @@ class TestIosNtpModule(TestIosModule):
         super(TestIosNtpModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_ntp.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_ntp.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_ntp.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_ntp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -50,7 +51,7 @@ class TestIosNtpModule(TestIosModule):
 
     def load_fixtures(self, commands=None):
         self.get_config.return_value = load_fixture(
-            "ios_ntp_config.cfg"
+            "ios_ntp_config.cfg",
         ).strip()
         self.load_config.return_value = dict(diff=None, session="session")
 
@@ -66,7 +67,7 @@ class TestIosNtpModule(TestIosModule):
                 key_id="10",
                 vrf="my_mgmt_vrf",
                 state="present",
-            )
+            ),
         )
         commands = []
         self.execute_module(changed=False, commands=commands)
@@ -82,7 +83,7 @@ class TestIosNtpModule(TestIosModule):
                 auth_key="15435A030726242723273C21181319000A",
                 key_id="10",
                 state="present",
-            )
+            ),
         )
         commands = ["ntp server 10.75.33.5", "ntp source Vlan2"]
         self.execute_module(changed=True, commands=commands)
@@ -99,7 +100,7 @@ class TestIosNtpModule(TestIosModule):
                 key_id="10",
                 vrf="my_mgmt_vrf",
                 state="absent",
-            )
+            ),
         )
         commands = [
             "no ntp server vrf my_mgmt_vrf 10.75.32.5",

@@ -151,6 +151,7 @@ commands:
 """
 import re
 from copy import deepcopy
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
@@ -160,10 +161,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
 )
 
 
@@ -197,7 +196,7 @@ def map_obj_to_commands(updates, module):
                     for m in members:
                         commands.append("interface {0}".format(m))
                         commands.append(
-                            "channel-group {0} mode {1}".format(group, mode)
+                            "channel-group {0} mode {1}".format(group, mode),
                         )
             elif members:
                 if "members" not in obj_in_have.keys():
@@ -205,33 +204,35 @@ def map_obj_to_commands(updates, module):
                         commands.extend(cmd)
                         commands.append("interface {0}".format(m))
                         commands.append(
-                            "channel-group {0} mode {1}".format(group, mode)
+                            "channel-group {0} mode {1}".format(group, mode),
                         )
                 elif set(members) != set(obj_in_have["members"]):
                     missing_members = list(
-                        set(members) - set(obj_in_have["members"])
+                        set(members) - set(obj_in_have["members"]),
                     )
                     for m in missing_members:
                         commands.extend(cmd)
                         commands.append("interface {0}".format(m))
                         commands.append(
-                            "channel-group {0} mode {1}".format(group, mode)
+                            "channel-group {0} mode {1}".format(group, mode),
                         )
                     superfluous_members = list(
-                        set(obj_in_have["members"]) - set(members)
+                        set(obj_in_have["members"]) - set(members),
                     )
                     for m in superfluous_members:
                         commands.extend(cmd)
                         commands.append("interface {0}".format(m))
                         commands.append(
-                            "no channel-group {0} mode {1}".format(group, mode)
+                            "no channel-group {0} mode {1}".format(
+                                group, mode
+                            ),
                         )
     if purge:
         for h in have:
             obj_in_want = search_obj_in_list(h["group"], want)
             if not obj_in_want:
                 commands.append(
-                    "no interface port-channel {0}".format(h["group"])
+                    "no interface port-channel {0}".format(h["group"]),
                 )
     return commands
 
@@ -254,7 +255,7 @@ def map_params_to_obj(module):
                 "mode": module.params["mode"],
                 "members": module.params["members"],
                 "state": module.params["state"],
-            }
+            },
         )
     return obj
 
@@ -267,7 +268,9 @@ def parse_mode(module, config, group, member):
     match_int = re.findall("interface {0}\\n".format(member), body, re.M)
     if match_int:
         match = re.search(
-            "channel-group {0} mode (\\S+)".format(group), body, re.M
+            "channel-group {0} mode (\\S+)".format(group),
+            body,
+            re.M,
         )
         if match:
             mode = match.group(1)
@@ -280,7 +283,9 @@ def parse_members(module, config, group):
         l = line.strip()
         if l.startswith("interface"):
             match_group = re.findall(
-                "channel-group {0} mode".format(group), l, re.M
+                "channel-group {0} mode".format(group),
+                l,
+                re.M,
             )
             if match_group:
                 match = re.search("interface (\\S+)", l, re.M)

@@ -11,6 +11,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cl
     Provider,
 )
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -31,11 +32,12 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(
-            commands, ["router bgp 64496", "bgp router-id 192.0.2.2", "exit"]
+            commands,
+            ["router bgp 64496", "bgp router-id 192.0.2.2", "exit"],
         )
 
     def test_ios_bgp_idempotent(self):
@@ -48,7 +50,7 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -58,7 +60,7 @@ class TestIosBgpModule(TestIosModule):
             params=dict(
                 config=dict(bgp_as=64496, networks=None, address_family=None),
                 operation="delete",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, ["no router bgp 64496"])
@@ -73,7 +75,7 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(
@@ -99,13 +101,13 @@ class TestIosBgpModule(TestIosModule):
                                 holdtime=360,
                                 min_neighbor_holdtime=360,
                             ),
-                        )
+                        ),
                     ],
                     networks=None,
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -117,13 +119,15 @@ class TestIosBgpModule(TestIosModule):
                     bgp_as=64496,
                     networks=[
                         dict(
-                            prefix="192.0.1.0", masklen=23, route_map="RMAP_1"
-                        )
+                            prefix="192.0.1.0",
+                            masklen=23,
+                            route_map="RMAP_1",
+                        ),
                     ],
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(
@@ -133,7 +137,7 @@ class TestIosBgpModule(TestIosModule):
                     "router bgp 64496",
                     "network 192.0.1.0 mask 255.255.254.0 route-map RMAP_1",
                     "exit",
-                ]
+                ],
             ),
         )
 
@@ -144,7 +148,9 @@ class TestIosBgpModule(TestIosModule):
                     bgp_as=64496,
                     networks=[
                         dict(
-                            prefix="192.0.2.0", masklen=23, route_map="RMAP_1"
+                            prefix="192.0.2.0",
+                            masklen=23,
+                            route_map="RMAP_1",
                         ),
                         dict(
                             prefix="198.51.100.0",
@@ -155,7 +161,7 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -166,7 +172,7 @@ class TestIosBgpModule(TestIosModule):
         config = dict(
             bgp_as=64496,
             address_family=[
-                dict(afi="ipv4", safi="unicast", redistribute=[rd_1])
+                dict(afi="ipv4", safi="unicast", redistribute=[rd_1]),
             ],
             networks=None,
         )
@@ -190,7 +196,7 @@ class TestIosBgpModule(TestIosModule):
         config = dict(
             bgp_as=64496,
             address_family=[
-                dict(afi="ipv4", safi="unicast", redistribute=[rd_1, rd_2])
+                dict(afi="ipv4", safi="unicast", redistribute=[rd_1, rd_2]),
             ],
             networks=None,
         )
@@ -202,10 +208,14 @@ class TestIosBgpModule(TestIosModule):
 
     def test_ios_bgp_address_family_neighbors(self):
         af_nbr_1 = dict(
-            neighbor="192.51.100.1", maximum_prefix=35, activate=True
+            neighbor="192.51.100.1",
+            maximum_prefix=35,
+            activate=True,
         )
         af_nbr_2 = dict(
-            neighbor="192.51.100.3", route_reflector_client=True, activate=True
+            neighbor="192.51.100.3",
+            route_reflector_client=True,
+            activate=True,
         )
 
         config = dict(
@@ -215,7 +225,7 @@ class TestIosBgpModule(TestIosModule):
                     afi="ipv4",
                     safi="multicast",
                     neighbors=[af_nbr_1, af_nbr_2],
-                )
+                ),
             ],
             networks=None,
         )
@@ -237,13 +247,15 @@ class TestIosBgpModule(TestIosModule):
 
     def test_ios_bgp_address_family_neighbors_idempotent(self):
         af_nbr_1 = dict(
-            neighbor="203.0.113.1", remove_private_as=True, maximum_prefix=100
+            neighbor="203.0.113.1",
+            remove_private_as=True,
+            maximum_prefix=100,
         )
 
         config = dict(
             bgp_as=64496,
             address_family=[
-                dict(afi="ipv4", safi="unicast", neighbors=[af_nbr_1])
+                dict(afi="ipv4", safi="unicast", neighbors=[af_nbr_1]),
             ],
             networks=None,
         )
@@ -260,7 +272,7 @@ class TestIosBgpModule(TestIosModule):
         config = dict(
             bgp_as=64496,
             address_family=[
-                dict(afi="ipv4", safi="multicast", networks=[net, net2])
+                dict(afi="ipv4", safi="multicast", networks=[net, net2]),
             ],
             networks=None,
         )
@@ -285,7 +297,7 @@ class TestIosBgpModule(TestIosModule):
         config = dict(
             bgp_as=64496,
             address_family=[
-                dict(afi="ipv4", safi="multicast", networks=[net, net2])
+                dict(afi="ipv4", safi="multicast", networks=[net, net2]),
             ],
             networks=None,
         )
@@ -307,7 +319,9 @@ class TestIosBgpModule(TestIosModule):
             neighbor="192.51.100.3",
             remote_as=64496,
             timers=dict(
-                keepalive=300, holdtime=360, min_neighbor_holdtime=360
+                keepalive=300,
+                holdtime=360,
+                min_neighbor_holdtime=360,
             ),
         )
         af_nbr_1 = dict(neighbor="192.51.100.1", maximum_prefix=35)

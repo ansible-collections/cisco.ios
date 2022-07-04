@@ -1,13 +1,13 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_bgp_address_family ansible_connection={{
+    msg:
+      Start Deleted integration state for ios_bgp_address_family ansible_connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Delete provided BGP Address family
       register: result
       cisco.ios.ios_bgp_address_family: &id001
@@ -55,5 +55,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: _remove_config.yaml

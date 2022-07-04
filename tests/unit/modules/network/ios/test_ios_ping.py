@@ -9,11 +9,12 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_ping
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule
 
 
@@ -23,7 +24,7 @@ class TestIosPingModule(TestIosModule):
     def setUp(self):
         super(TestIosPingModule, self).setUp()
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping.Ping.run_command"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping.Ping.run_command",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -38,7 +39,7 @@ class TestIosPingModule(TestIosModule):
             ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
             !
             Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
-            """
+            """,
         )
         set_module_args(dict(count=2, dest="8.8.8.8"))
         result = self.execute_module()
@@ -59,14 +60,14 @@ class TestIosPingModule(TestIosModule):
             ending 2, 100-byte ICMP Echos to 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff, timeout is 2 seconds:
             !
             Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
-            """
+            """,
         )
         set_module_args(
             dict(
                 count=2,
                 dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff",
                 afi="ipv6",
-            )
+            ),
         )
         result = self.execute_module()
         mock_res = {
@@ -86,7 +87,7 @@ class TestIosPingModule(TestIosModule):
             ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
             !
             Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
-            """
+            """,
         )
         set_module_args(
             {
@@ -97,7 +98,7 @@ class TestIosPingModule(TestIosModule):
                 "source": "Loopback88",
                 "state": "present",
                 "vrf": "DummyVrf",
-            }
+            },
         )
         result = self.execute_module()
         mock_res = {
@@ -117,7 +118,7 @@ class TestIosPingModule(TestIosModule):
             ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
             !
             Success rate is 90 percent (2/2), round-trip min/avg/max = 25/25/25 ms
-            """
+            """,
         )
         set_module_args(dict(count=2, dest="8.8.8.8", state="absent"))
         result = self.execute_module(failed=True)
@@ -139,7 +140,7 @@ class TestIosPingModule(TestIosModule):
             ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 12 seconds:
             !
             Success rate is 0 percent (0/2), round-trip min/avg/max = 25/25/25 ms
-            """
+            """,
         )
         set_module_args(dict(count=2, dest="8.8.8.8", state="present"))
         result = self.execute_module(failed=True)

@@ -8,11 +8,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_logging_global
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule
 
 
@@ -23,18 +25,18 @@ class TestIosLoggingGlobalModule(TestIosModule):
         super(TestIosLoggingGlobalModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -42,20 +44,20 @@ class TestIosLoggingGlobalModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global."
-            "Logging_globalFacts.get_logging_data"
+            "Logging_globalFacts.get_logging_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -109,7 +111,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging discriminator msglog01 severity includes 5
             logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2
             logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -162,7 +164,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 ],
                 trap="errors",
                 userinfo=True,
-            )
+            ),
         )
         merged = []
         playbook["state"] = "merged"
@@ -196,7 +198,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging reload alerts
             logging userinfo
             logging trap errors
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -221,7 +223,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 server_arp=True,
                 trap="errors",
                 userinfo=True,
-            )
+            ),
         )
         deleted = [
             "no logging on",
@@ -269,7 +271,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging snmp-trap errors
             logging source-interface GBit1/0
             logging source-interface CTunnel2
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -300,7 +302,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     dict(interface="GBit1/0"),
                     dict(interface="CTunnel2"),
                 ],
-            )
+            ),
         )
         deleted = [
             "no logging discriminator msglog01 severity includes 5",
@@ -347,7 +349,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging reload alerts
             logging userinfo
             logging trap errors
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -378,7 +380,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     dict(interface="GBit1/0"),
                     dict(interface="CTunnel2"),
                 ],
-            )
+            ),
         )
         overridden = [
             "no logging on",
@@ -429,7 +431,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging monitor critical
             logging buffered xml 5099 warnings
             logging facility local6
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -437,7 +439,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 facility="local6",
                 hosts=[dict(host="172.16.1.11", xml=True)],
                 monitor=dict(severity="critical"),
-            )
+            ),
         )
         overridden = []
         playbook["state"] = "overridden"
@@ -450,7 +452,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             logging host 172.16.1.1
-            """
+            """,
         )
         playbook = dict(
             config=dict(
@@ -487,8 +489,8 @@ class TestIosLoggingGlobalModule(TestIosModule):
                         vrf="Apn2",
                         transport=dict(
                             udp=dict(
-                                discriminator="msglog01 severity includes 5"
-                            )
+                                discriminator="msglog01 severity includes 5",
+                            ),
                         ),
                     ),
                     dict(
@@ -503,11 +505,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
                                 filtered=True,
                                 stream=10,
                                 session_id=dict(text="Test"),
-                            )
+                            ),
                         ),
                     ),
                 ],
-            )
+            ),
         )
         merged = [
             "logging monitor discriminator TEST",
@@ -542,10 +544,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     logging count
                     logging delimiter tcp
                     logging host 172.16.2.15 session-id string Test
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         parsed = dict(
             logging_on="enable",
@@ -565,7 +567,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             logging persistent notify
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
         gathered = dict(persistent=dict(notify=True))
@@ -578,7 +580,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             logging host 172.16.1.1 vrf vpn1 transport tcp audit
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
         gathered = dict(
@@ -587,8 +589,8 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     hostname="172.16.1.1",
                     vrf="vpn1",
                     transport=dict(tcp=dict(audit=True)),
-                )
-            ]
+                ),
+            ],
         )
         result = self.execute_module(changed=False)
 
@@ -600,7 +602,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
             dict(
                 config=dict(
                     rate_limit=dict(
-                        console=True, size=2, except_severity="warnings"
+                        console=True,
+                        size=2,
+                        except_severity="warnings",
                     ),
                     reload=dict(message_limit=10, severity="alerts"),
                     persistent=dict(
@@ -612,19 +616,20 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     ),
                     queue_limit=dict(trap=1000),
                     buffered=dict(
-                        discriminator="notifications", filtered=True
+                        discriminator="notifications",
+                        filtered=True,
                     ),
                     hosts=[
                         dict(
                             ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
                             transport=dict(
-                                tcp=dict(session_id=dict(tag="hostname"))
+                                tcp=dict(session_id=dict(tag="hostname")),
                             ),
-                        )
+                        ),
                     ],
                 ),
                 state="rendered",
-            )
+            ),
         )
         rendered = [
             "logging reload message-limit 10 alerts",
@@ -651,7 +656,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging persistent size 1000 filesize 1000
             logging source-interface Gbit0/1 vrf vpn1
             logging filter flash:172.16.1.1 1 args Test
-            """
+            """,
         )
         playbook = dict(config=dict())
         deleted = [
@@ -684,7 +689,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             no logging monitor
             no logging cns-events
             no logging trap
-            """
+            """,
         )
         playbook = dict(config=dict())
         deleted = []
@@ -699,14 +704,14 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             logging host 172.16.1.1
-            """
+            """,
         )
         playbook = dict(
             config=dict(
                 hosts=[
-                    dict(hostname="172.16.2.15", session_id=dict(text="Test"))
-                ]
-            )
+                    dict(hostname="172.16.2.15", session_id=dict(text="Test")),
+                ],
+            ),
         )
         replaced = [
             "no logging host 172.16.1.1",
@@ -730,7 +735,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging source-interface GigabitEthernet0 vrf Mgmt-intf
             logging host 172.16.0.1 transport udp port 10000
             logging host 172.16.0.2
-            """
+            """,
         )
         playbook = {
             "config": {
@@ -748,10 +753,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     "size": 10,
                 },
                 "source_interface": [
-                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}
+                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"},
                 ],
                 "trap": "informational",
-            }
+            },
         }
         replaced = [
             "logging rate-limit console 10 except errors",
@@ -771,7 +776,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             logging host 172.16.2.15
-            """
+            """,
         )
         playbook = dict(config=dict(hosts=[dict(hostname="172.16.2.15")]))
         replaced = []

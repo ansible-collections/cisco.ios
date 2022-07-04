@@ -16,14 +16,14 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+    NetworkTemplate,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
     Ospfv2Template,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
-    NetworkTemplate,
 )
 
 
@@ -50,7 +50,8 @@ class Ospfv2Facts(object):
 
         ipv4 = {"processes": []}
         rmmod = NetworkTemplate(
-            lines=data.splitlines(), tmplt=Ospfv2Template()
+            lines=data.splitlines(),
+            tmplt=Ospfv2Template(),
         )
         current = rmmod.parse()
 
@@ -59,7 +60,8 @@ class Ospfv2Facts(object):
             if key in current and current[key]:
                 current[key] = current[key].values()
                 current[key] = sorted(
-                    current[key], key=lambda k, sk=sortv: k[sk]
+                    current[key],
+                    key=lambda k, sk=sortv: k[sk],
                 )
 
         for process in current.get("processes", []):
@@ -77,7 +79,8 @@ class Ospfv2Facts(object):
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
                 process["areas"] = sorted(
-                    process["areas"], key=lambda k, sk="area_id": k[sk]
+                    process["areas"],
+                    key=lambda k, sk="area_id": k[sk],
                 )
                 for area in process["areas"]:
                     if "filters" in area:
@@ -88,7 +91,8 @@ class Ospfv2Facts(object):
         facts = {}
         if current:
             params = utils.validate_config(
-                self.argument_spec, {"config": ipv4}
+                self.argument_spec,
+                {"config": ipv4},
             )
             params = utils.remove_empties(params)
 

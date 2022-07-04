@@ -70,7 +70,7 @@ gathered:
               ttl:
                 eq: 10
           acl_type: extended
-          name: '110'
+          name: "110"
         - aces:
             - destination:
                 address: 198.51.101.0
@@ -106,7 +106,7 @@ gathered:
               ttl:
                 lt: 20
           acl_type: extended
-          name: '123'
+          name: "123"
         - aces:
             - destination:
                 address: 192.0.3.0
@@ -169,9 +169,9 @@ parsed:
               ttl:
                 eq: 10
             - remarks:
-                - 'test a remark.'
+                - "test a remark."
           acl_type: extended
-          name: '110'
+          name: "110"
         - aces:
             - destination:
                 address: 198.51.101.0
@@ -207,7 +207,7 @@ parsed:
               ttl:
                 lt: 20
           acl_type: extended
-          name: '123'
+          name: "123"
         - aces:
             - destination:
                 address: 192.0.3.0
@@ -249,7 +249,6 @@ parsed:
                   eq: www
           name: R1_TRAFFIC
       afi: ipv6
-
 
 rendered:
   commands:

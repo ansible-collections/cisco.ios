@@ -19,11 +19,11 @@ from itertools import groupby
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
-    Lag_interfacesTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
+    Lag_interfacesTemplate,
 )
 
 
@@ -55,15 +55,18 @@ class Lag_interfacesFacts(object):
 
         # parse native config using the Lag_interfaces template
         lag_interfaces_parser = Lag_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = self.process_facts(list(lag_interfaces_parser.parse().values()))
         ansible_facts["ansible_network_resources"].pop("lag_interfaces", None)
 
         params = utils.remove_empties(
             lag_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["lag_interfaces"] = params.get("config", {})

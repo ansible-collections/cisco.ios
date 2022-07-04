@@ -17,7 +17,6 @@
 - name: Setup vlans
   cisco.ios.ios_vlan:
     aggregate:
-
       - vlan_id: 5
 
       - vlan_id: 6
@@ -33,16 +32,15 @@
       - vlan_id: 20
 
 - block:
-
     - name: Ensure interface is in its default switchport state
       cisco.ios.ios_l2_interface: &id008
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         state: unconfigured
 
     - name: Ensure interface is configured for access vlan 20
       register: result
       cisco.ios.ios_l2_interface: &id001
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         mode: access
         access_vlan: 20
 
@@ -61,7 +59,7 @@
     - name: Ensure interface only has vlans 5-10 as trunk vlans
       register: result
       cisco.ios.ios_l2_interface: &id003
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         mode: trunk
         native_vlan: 10
         trunk_allowed_vlans: 5-10
@@ -74,11 +72,12 @@
 
     - assert: *id004
 
-    - name: Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't
+    - name:
+        Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't
         mean others aren't also being tagged)
       register: result
       cisco.ios.ios_l2_interface: &id005
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         mode: trunk
         native_vlan: 10
         trunk_vlans: 2-50
@@ -94,7 +93,7 @@
     - name: Remove full trunk vlan range 2-50
       register: result
       cisco.ios.ios_l2_interface: &id006
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         mode: trunk
         trunk_vlans: 2-50
         state: absent
@@ -113,7 +112,8 @@
 
     - assert: *id002
 
-    - name: Check Idempotence Reconfigure interface trunk port and ensure 2-50 are
+    - name:
+        Check Idempotence Reconfigure interface trunk port and ensure 2-50 are
         being tagged
       register: result
       cisco.ios.ios_l2_interface: *id005
@@ -123,7 +123,7 @@
     - name: Remove partial trunk vlan range 30-4094 are removed
       register: result
       cisco.ios.ios_l2_interface: &id007
-        name: '{{ test_interface }}'
+        name: "{{ test_interface }}"
         mode: trunk
         trunk_vlans: 30-4094
         state: absent
@@ -148,12 +148,10 @@
 
     - assert: *id004
   always:
-
     - name: remove vlans
       ignore_errors: true
       cisco.ios.ios_vlan:
         aggregate:
-
           - vlan_id: 5
 
           - vlan_id: 6

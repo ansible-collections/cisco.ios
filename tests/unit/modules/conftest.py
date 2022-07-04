@@ -7,10 +7,9 @@ __metaclass__ = type
 import json
 
 import pytest
-
-from ansible.module_utils.six import string_types
 from ansible.module_utils._text import to_bytes
 from ansible.module_utils.common._collections_compat import MutableMapping
+from ansible.module_utils.six import string_types
 
 
 @pytest.fixture
@@ -34,7 +33,7 @@ def patch_ansible_module(request, mocker):
         args = json.dumps(request.param)
     else:
         raise Exception(
-            "Malformed data to the patch_ansible_module pytest fixture"
+            "Malformed data to the patch_ansible_module pytest fixture",
         )
 
     mocker.patch("ansible.module_utils.basic._ANSIBLE_ARGS", to_bytes(args))

@@ -26,15 +26,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    dict_to_set,
-    normalize_interface,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    remove_command_from_config_list,
     add_command_to_config_list,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    dict_to_set,
     filter_dict_having_none_value,
+    normalize_interface,
+    remove_command_from_config_list,
     remove_duplicate_interface,
 )
 
@@ -58,10 +54,12 @@ class Lacp_Interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         lacp_interfaces_facts = facts["ansible_network_resources"].get(
-            "lacp_interfaces"
+            "lacp_interfaces",
         )
 
         if not lacp_interfaces_facts:
@@ -100,10 +98,10 @@ class Lacp_Interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_lacp_interfaces_facts(
-                data=running_config
+                data=running_config,
             )
         else:
             changed_lacp_interfaces_facts = []
@@ -155,8 +153,8 @@ class Lacp_Interfaces(ConfigBase):
         ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    self.state
-                )
+                    self.state,
+                ),
             )
 
         if self.state == "overridden":
@@ -298,12 +296,12 @@ class Lacp_Interfaces(ConfigBase):
             interface = "interface " + have["name"]
 
         if have.get("port_priority") and have.get("port_priority") != want.get(
-            "port_priority"
+            "port_priority",
         ):
             cmd = "lacp port-priority"
             remove_command_from_config_list(interface, cmd, commands)
         if have.get("max_bundle") and have.get("max_bundle") != want.get(
-            "max_bundle"
+            "max_bundle",
         ):
             cmd = "lacp max-bundle"
             remove_command_from_config_list(interface, cmd, commands)

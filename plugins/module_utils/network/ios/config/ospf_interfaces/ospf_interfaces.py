@@ -18,11 +18,11 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -147,14 +147,16 @@ class Ospf_Interfaces(ResourceModule):
                     have_elements = len(have.get("address_family"))
                     while have_elements:
                         if have.get("address_family")[have_elements - 1].get(
-                            "afi"
+                            "afi",
                         ) == each.get("afi"):
                             set_want = False
                             h_each = have["address_family"].pop(
-                                have_elements - 1
+                                have_elements - 1,
                             )
                             self.compare(
-                                parsers=parsers, want=each, have=h_each
+                                parsers=parsers,
+                                want=each,
+                                have=h_each,
                             )
                         have_elements -= 1
                 else:

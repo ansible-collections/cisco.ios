@@ -171,17 +171,16 @@ commands:
 import re
 import time
 from copy import deepcopy
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    load_config,
-    run_commands,
-    normalize_interface,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    load_config,
+    normalize_interface,
+    run_commands,
 )
 
 
@@ -214,7 +213,7 @@ def map_obj_to_commands(updates, module):
                         commands.append("interface {0}".format(i))
                         commands.append("switchport mode access")
                         commands.append(
-                            "switchport access vlan {0}".format(vlan_id)
+                            "switchport access vlan {0}".format(vlan_id),
                         )
             else:
                 if name:
@@ -228,28 +227,30 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(i))
                             commands.append("switchport mode access")
                             commands.append(
-                                "switchport access vlan {0}".format(vlan_id)
+                                "switchport access vlan {0}".format(vlan_id),
                             )
                     elif set(interfaces) != set(obj_in_have["interfaces"]):
                         missing_interfaces = list(
-                            set(interfaces) - set(obj_in_have["interfaces"])
+                            set(interfaces) - set(obj_in_have["interfaces"]),
                         )
                         for i in missing_interfaces:
                             commands.append("vlan {0}".format(vlan_id))
                             commands.append("interface {0}".format(i))
                             commands.append("switchport mode access")
                             commands.append(
-                                "switchport access vlan {0}".format(vlan_id)
+                                "switchport access vlan {0}".format(vlan_id),
                             )
                         superfluous_interfaces = list(
-                            set(obj_in_have["interfaces"]) - set(interfaces)
+                            set(obj_in_have["interfaces"]) - set(interfaces),
                         )
                         for i in superfluous_interfaces:
                             commands.append("vlan {0}".format(vlan_id))
                             commands.append("interface {0}".format(i))
                             commands.append("switchport mode access")
                             commands.append(
-                                "no switchport access vlan {0}".format(vlan_id)
+                                "no switchport access vlan {0}".format(
+                                    vlan_id
+                                ),
                             )
         else:
             commands.append("vlan {0}".format(vlan_id))
@@ -285,7 +286,7 @@ def map_params_to_obj(module):
                     "associated_interfaces"
                 ],
                 "state": module.params["state"],
-            }
+            },
         )
     return obj
 
@@ -312,7 +313,7 @@ def map_ports_str_to_list(ports_str):
         filter(
             bool,
             (normalize_interface(p.strip()) for p in ports_str.split(", ")),
-        )
+        ),
     )
 
 
@@ -360,7 +361,7 @@ def check_declarative_intent_params(want, module, result):
             ):
                 module.fail_json(
                     msg="Interface %s not configured on vlan %s"
-                    % (i, w["vlan_id"])
+                    % (i, w["vlan_id"]),
                 )
 
 

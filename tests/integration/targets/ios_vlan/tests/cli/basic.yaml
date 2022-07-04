@@ -4,7 +4,6 @@
 - set_fact: switch_type="{{ switch_type }}"
 
 - block:
-
     - name: setup - remove vlan used in test
       cisco.ios.ios_config:
         lines:
@@ -20,7 +19,7 @@
         lines:
           - switchport mode access
           - no switchport access vlan 100
-        parents: '{{ item }}'
+        parents: "{{ item }}"
 
     - name: create vlan
       register: result
@@ -162,7 +161,6 @@
       register: result
       cisco.ios.ios_vlan: &id005
         aggregate:
-
           - vlan_id: 200
             name: vlan-200
 
@@ -189,7 +187,6 @@
       register: result
       cisco.ios.ios_vlan: &id006
         aggregate:
-
           - vlan_id: 200
             name: vlan-200
 
@@ -226,7 +223,7 @@
         lines:
           - switchport mode access
           - no switchport access vlan 100
-        parents: '{{ item }}'
+        parents: "{{ item }}"
   when: switch_type == 'L2'
 
 - debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

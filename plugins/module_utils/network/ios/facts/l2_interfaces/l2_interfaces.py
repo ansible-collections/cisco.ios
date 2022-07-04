@@ -14,17 +14,18 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from copy import deepcopy
 import re
+from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
+    L2_InterfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     normalize_interface,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
-    L2_InterfacesArgs,
 )
 
 
@@ -72,7 +73,8 @@ class L2_InterfacesFacts(object):
         if objs:
             facts["l2_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["l2_interfaces"].append(utils.remove_empties(cfg))
@@ -121,7 +123,8 @@ class L2_InterfacesFacts(object):
 
             trunk = dict()
             trunk["encapsulation"] = utils.parse_conf_arg(
-                conf, "switchport trunk encapsulation"
+                conf,
+                "switchport trunk encapsulation",
             )
             native_vlan = utils.parse_conf_arg(conf, "native vlan")
             if native_vlan:
@@ -133,7 +136,7 @@ class L2_InterfacesFacts(object):
             if allowed_vlan_add_all:
                 for each in allowed_vlan_add_all:
                     trunk["allowed_vlans"].extend(
-                        each.split("allowed vlan add ")[1].split(",")
+                        each.split("allowed vlan add ")[1].split(","),
                     )
             pruning_vlan = utils.parse_conf_arg(conf, "pruning vlan")
             if pruning_vlan:

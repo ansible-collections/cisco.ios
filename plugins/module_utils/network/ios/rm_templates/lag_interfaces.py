@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -23,23 +24,27 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 class Lag_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Lag_interfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
     PARSERS = [
         {
             'name': 'member',
-            'getval': re.compile(r'''
+            'getval': re.compile(
+                r'''
               ^interface\s
-              (?P<member>\S+)$''', re.VERBOSE),
+              (?P<member>\S+)$''', re.VERBOSE,
+            ),
             'setval': 'interface {{ member }}',
             'result': {
                 '{{ member }}': {
                     'member': '{{ member }}',
                 },
             },
-            'shared': True
+            'shared': True,
         },
         {
             "name": "channel",
@@ -49,7 +54,8 @@ class Lag_interfacesTemplate(NetworkTemplate):
                 (\s(?P<channel>\d+))?
                 (\smode\s(?P<mode>active|passive|on|desirable|auto))?
                 (\slink\s(?P<link>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "channel-group"
             "{{ (' ' + channel|string) if channel is defined else '' }}"
             "{{ (' mode ' + mode) if mode is defined else '' }}"

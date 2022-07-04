@@ -775,7 +775,7 @@ def main():
         module.exit_json(**result)
     else:
         module.fail_json(
-            """Resource VLAN is not valid for the target device."""
+            """Resource VLAN is not valid for the target device.""",
         )
 
 

@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START ios_acls round trip integration tests on connection={{ ansible_connection
+    msg:
+      START ios_acls round trip integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
@@ -8,19 +9,15 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_acls:
         config:
-
           - afi: ipv4
             acls:
-
               - name: test_acl
                 acl_type: extended
                 aces:
-
                   - grant: deny
                     protocol: tcp
                     protocol_options:
@@ -41,7 +38,6 @@
 
               - name: 110
                 aces:
-
                   - grant: deny
                     protocol: icmp
                     protocol_options:
@@ -59,7 +55,6 @@
 
               - name: 123
                 aces:
-
                   - grant: deny
                     protocol: tcp
                     protocol_options:
@@ -95,10 +90,8 @@
 
           - afi: ipv6
             acls:
-
               - name: R1_TRAFFIC
                 aces:
-
                   - grant: deny
                     protocol: tcp
                     protocol_options:
@@ -118,8 +111,8 @@
     - name: Gather ACLs facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - acls
 
@@ -207,5 +200,4 @@
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
-
     - include_tasks: _remove_config.yaml

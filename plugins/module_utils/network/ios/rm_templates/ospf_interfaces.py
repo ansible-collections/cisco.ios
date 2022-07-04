@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -247,7 +248,9 @@ def _tmplt_ip_ospf_ttl_security(config_data):
 class Ospf_InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Ospf_InterfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     PARSERS = [
@@ -261,7 +264,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "interface {{ name }}",
             "result": {
-                "{{ name }}": {"name": "{{ name }}", "address_family": {}}
+                "{{ name }}": {"name": "{{ name }}", "address_family": {}},
             },
             "shared": True,
         },
@@ -291,9 +294,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "secondaries": "{{ True if secondaries is defined }}",
                                 "instance_id": "{{ instance.split(' ')[1]}}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -314,9 +317,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "adjacency": "{{ True if adjacency is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -343,9 +346,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "message_digest": "{{ True if message_digest is defined }}",
                                 "null": "{{ True if null is defined }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -366,9 +369,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "bfd": "{{ True if bfd is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -389,11 +392,11 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "cost": {
-                                "interface_cost": "{{ cost.split(' ')[1] }}"
+                                "interface_cost": "{{ cost.split(' ')[1] }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -438,9 +441,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                     },
                                 },
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -461,9 +464,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "database_filter": "{{ True if database_filter is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -487,12 +490,12 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                             "dead_interval": {
                                 "time": "{{ seconds }}",
                                 "minimal": {
-                                    "hello_multiplier": "{{ minimal.split(' ')[2] }}"
+                                    "hello_multiplier": "{{ minimal.split(' ')[2] }}",
                                 },
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -518,9 +521,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "ignore": "{{ True if ignore is defined }}",
                                 "disable": "{{ True if disable is defined }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -540,9 +543,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "flood_reduction": "{{ True if flood_reduction is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -562,9 +565,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "hello_interval": "{{ hello_interval.split(' ')[1] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -584,9 +587,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "lls": "{{ True if lls is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -617,9 +620,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                     "cost_threshold": "{{ link_metrics.split(' ')[1] }}",
                                 },
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -639,9 +642,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "mtu_ignore": "{{ True if mtu_ignore is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -665,9 +668,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "id": "{{ multi_area.split(' ')[1] }}",
                                 "cost": "{{ cost.split(' ')[1] }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -698,9 +701,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "poll_interval": "{{ poll_interval.split(' ')[1] }}",
                                 "priority": "{{ priority.split(' ')[1] }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -731,9 +734,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "point_to_multipoint": "{{ True if point_to_multipoint is defined }}",
                                 "point_to_point": "{{ True if point_to_point is defined }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -753,9 +756,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "prefix_suppression": "{{ True if prefix_suppression is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -775,9 +778,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "priority": "{{ priority.split(' ')[1] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -797,9 +800,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "resync_timeout": "{{ resync_timeout.split(' ')[1] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -819,9 +822,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "retransmit_interval": "{{ retransmit_interval.split(' ')[1] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -841,9 +844,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "shutdown": "{{ True if shutdown is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -863,9 +866,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "transmit_delay": "{{ transmit_delay.split(' ')[1] }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -889,9 +892,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                                 "set": "{{ True if hops is not defined and ttl_security is defined }}",
                                 "hops": "{{ hops.split(' ')[1] }}",
                             },
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
     ]

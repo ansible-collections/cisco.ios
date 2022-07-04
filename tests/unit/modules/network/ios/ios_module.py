@@ -20,15 +20,14 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import os
 import json
+import os
 
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     AnsibleExitJson,
     AnsibleFailJson,
     ModuleTestCase,
 )
-
 
 fixture_path = os.path.join(os.path.dirname(__file__), "fixtures")
 fixture_data = {}
@@ -79,7 +78,9 @@ class TestIosModule(ModuleTestCase):
                 )
             else:
                 self.assertEqual(
-                    commands, result["commands"], result["commands"]
+                    commands,
+                    result["commands"],
+                    result["commands"],
                 )
 
         return result

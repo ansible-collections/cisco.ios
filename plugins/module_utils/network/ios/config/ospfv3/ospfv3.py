@@ -14,18 +14,17 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
-
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
-    Ospfv3Template,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
-    ResourceModule,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
+    Ospfv3Template,
 )
 
 
@@ -241,9 +240,9 @@ class Ospfv3(ResourceModule):
                 if have.get("address_family"):
                     for each_have_af in have["address_family"]:
                         if each_have_af.get("vrf") == each_want_af.get(
-                            "vrf"
+                            "vrf",
                         ) and each_have_af.get("afi") == each_want_af.get(
-                            "afi"
+                            "afi",
                         ):
                             self.compare(
                                 parsers=["address_family"],
@@ -256,7 +255,7 @@ class Ospfv3(ResourceModule):
                                 have=each_have_af,
                             )
                         elif each_have_af.get("afi") == each_want_af.get(
-                            "afi"
+                            "afi",
                         ):
                             self.compare(
                                 parsers=["address_family"],
@@ -273,12 +272,12 @@ class Ospfv3(ResourceModule):
                             af_have_areas = {}
                             for each_area in each_want_af["areas"]:
                                 af_want_areas.update(
-                                    {each_area["area_id"]: each_area}
+                                    {each_area["area_id"]: each_area},
                                 )
                             if each_have_af.get("areas"):
                                 for each_area in each_have_af["areas"]:
                                     af_have_areas.update(
-                                        {each_area["area_id"]: each_area}
+                                        {each_area["area_id"]: each_area},
                                     )
 
                             if "exit-address-family" in self.commands:
@@ -294,7 +293,8 @@ class Ospfv3(ResourceModule):
                                 )
                             else:
                                 self._areas_compare(
-                                    {"areas": af_want_areas}, dict()
+                                    {"areas": af_want_areas},
+                                    dict(),
                                 )
                             if delete_exit_family:
                                 self.commands.append("exit-address-family")
@@ -307,7 +307,9 @@ class Ospfv3(ResourceModule):
                         have=dict(),
                     )
                     self.compare(
-                        parsers=af_parsers, want=each_want_af, have=dict()
+                        parsers=af_parsers,
+                        want=each_want_af,
+                        have=dict(),
                     )
                     if each_want_af.get("areas"):
                         af_areas = {}

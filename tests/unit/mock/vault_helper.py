@@ -17,7 +17,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils._text import to_bytes
-
 from ansible.parsing.vault import VaultSecret
 
 
@@ -38,5 +37,7 @@ class TextVaultSecret(VaultSecret):
     def bytes(self):
         """The text encoded with encoding, unless we specifically set _bytes."""
         return self._bytes or to_bytes(
-            self.text, encoding=self.encoding, errors=self.errors
+            self.text,
+            encoding=self.encoding,
+            errors=self.errors,
         )

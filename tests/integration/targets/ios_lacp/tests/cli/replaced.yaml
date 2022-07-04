@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_lacp state for integration tests on connection={{ ansible_connection
+    msg:
+      START Replaced ios_lacp state for integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaces system LACP configuration provided LACP configuration
       register: result
       cisco.ios.ios_lacp: &id001
@@ -43,5 +43,4 @@
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml

@@ -15,22 +15,22 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    validate_n_expand_ipv4,
-    validate_ipv6,
-    normalize_interface,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
+    validate_ipv6,
+    validate_n_expand_ipv4,
 )
 
 
@@ -108,7 +108,8 @@ class L3_interfaces(ResourceModule):
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "name", False)
+                begin,
+                self._tmplt.render(want or have, "name", False),
             )
 
     def _compare_lists(self, want, have):
@@ -172,14 +173,14 @@ class L3_interfaces(ResourceModule):
                                     "dhcp": {
                                         "dhcp": {
                                             "client_id": each.get(
-                                                "dhcp_client"
+                                                "dhcp_client",
                                             ),
                                             "hostname": each.get(
-                                                "dhcp_hostname"
+                                                "dhcp_hostname",
                                             ),
-                                        }
-                                    }
-                                }
+                                        },
+                                    },
+                                },
                             )
                         if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})

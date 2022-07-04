@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -28,14 +29,16 @@ class PingTemplate(NetworkTemplate):
     PARSERS = [
         {
             'name': 'rate',
-            'getval': re.compile(r'''
+            'getval': re.compile(
+                r'''
                 ^Success\srate\sis
                 (\s(?P<pct>\d+))?
                 (\spercent\s\((?P<rx>\d+)/(?P<tx>\d+)\))?
                 (,\s+round-trip\smin/avg/max\s=)?
                 (\s(?P<min>\d+)/(?P<avg>\d+)/(?P<max>\d+))?
                 (\s+\w+\s*$|.*\s*$)?
-                ''', re.VERBOSE),
+                ''', re.VERBOSE,
+            ),
             "setval": "ping"
             "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
             "{{ (' ' + afi|string ) if afi is defined else '' }}"

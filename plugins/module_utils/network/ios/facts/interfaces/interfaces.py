@@ -18,11 +18,11 @@ based on the configuration.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
-    InterfacesTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
+    InterfacesTemplate,
 )
 
 
@@ -51,7 +51,8 @@ class InterfacesFacts(object):
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = sorted(
             list(interfaces_parser.parse().values()),
@@ -62,8 +63,10 @@ class InterfacesFacts(object):
         facts = {"interfaces": []}
         params = utils.remove_empties(
             interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["interfaces"] = params["config"]

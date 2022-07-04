@@ -19,11 +19,11 @@ created.
 
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -98,7 +98,8 @@ class Lag_interfaces(ResourceModule):
                 self.addcmd(entry, "channel", False)
             if len(self.commands) != begin:
                 self.commands.insert(
-                    begin, self._tmplt.render(entry, "member", False)
+                    begin,
+                    self._tmplt.render(entry, "member", False),
                 )
 
         # remove remaining items in have for replaced
@@ -107,7 +108,8 @@ class Lag_interfaces(ResourceModule):
             self.addcmd(entry, "channel", True)
             if len(self.commands) != begin:
                 self.commands.insert(
-                    begin, self._tmplt.render(entry, "member", False)
+                    begin,
+                    self._tmplt.render(entry, "member", False),
                 )
 
     def extract_channel_num(self, channel):
@@ -122,7 +124,7 @@ class Lag_interfaces(ResourceModule):
             tmp = {}
             for member in ethChannels.get("members", {}):
                 member["channel"] = self.extract_channel_num(
-                    ethChannels.get("name")
+                    ethChannels.get("name"),
                 )[0]
                 tmp[member.get("member")] = member
             update = self.extract_channel_num(ethChannels.get("name"))[1]

@@ -15,17 +15,17 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
-    ResourceModule,
 )
 
 
@@ -115,10 +115,13 @@ class Acls(ResourceModule):
                 else hentry.get("acl_type")
             )
             begin = len(
-                self.commands
+                self.commands,
             )  # to determine the index for acl command
             self._compare_aces(
-                wentry.pop("aces", {}), hentry.pop("aces", {}), afi, wname
+                wentry.pop("aces", {}),
+                hentry.pop("aces", {}),
+                afi,
+                wname,
             )  # handle aces
 
             if len(self.commands) != begin or (not have and want):
@@ -151,12 +154,13 @@ class Acls(ResourceModule):
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of ACLs {1} with state merged."
                             " Please use state replaced or overridden.".format(
-                                hentry.get("sequence", ""), name
-                            )
+                                hentry.get("sequence", ""),
+                                name,
+                            ),
                         )
                     else:  # other action states
                         if hentry.get(
-                            "remarks"
+                            "remarks",
                         ):  # remove remark if not in want
                             for rems in hentry.get("remarks"):
                                 if rems not in wentry.get("remarks", {}):
@@ -167,7 +171,9 @@ class Acls(ResourceModule):
                                     )
                         else:  # remove ace if not in want
                             self.addcmd(
-                                add_afi(hentry, afi), "aces", negate=True
+                                add_afi(hentry, afi),
+                                "aces",
+                                negate=True,
                             )
                 if wentry.get("remarks"):  # add remark if not in have
                     for rems in wentry.get("remarks"):
@@ -225,7 +231,7 @@ class Acls(ResourceModule):
                         if acl.get("aces"):
                             temp_rem = []  # remarks if defined in an ace
                             for ace in acl.get(
-                                "aces"
+                                "aces",
                             ):  # each ace turned to dict
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
@@ -238,8 +244,8 @@ class Acls(ResourceModule):
                                         ]:  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
                                                 "Unsupported attribute for standard ACL - {0}.".format(
-                                                    ks
-                                                )
+                                                    ks,
+                                                ),
                                             )
 
                                 if ace.get("remarks"):
@@ -248,7 +254,7 @@ class Acls(ResourceModule):
 
                                 if ace.get("sequence"):
                                     temp_aces.update(
-                                        {ace.get("sequence"): ace}
+                                        {ace.get("sequence"): ace},
                                     )
                                 elif ace:
                                     count += 1
@@ -256,23 +262,23 @@ class Acls(ResourceModule):
 
                             if temp_rem:  # add remarks to the temp ace
                                 temp_aces.update(
-                                    {en_name: {"remarks": temp_rem}}
+                                    {en_name: {"remarks": temp_rem}},
                                 )
 
                         if acl.get(
-                            "acl_type"
+                            "acl_type",
                         ):  # update acl dict with req info
                             temp_acls.update(
                                 {
                                     acl.get("name"): {
                                         "aces": temp_aces,
                                         "acl_type": acl["acl_type"],
-                                    }
-                                }
+                                    },
+                                },
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces}}
+                                {acl.get("name"): {"aces": temp_aces}},
                             )
                 each["acls"] = temp_acls
                 temp.update({each["afi"]: {"acls": temp_acls}})

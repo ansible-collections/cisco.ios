@@ -21,11 +21,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_system
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -37,12 +38,12 @@ class TestIosSystemModule(TestIosModule):
         super(TestIosSystemModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_system.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_system.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_system.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_system.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -75,8 +76,8 @@ class TestIosSystemModule(TestIosModule):
                 domain_name=[
                     {"name": "test.com", "vrf": "test"},
                     {"name": "eng.example.net"},
-                ]
-            )
+                ],
+            ),
         )
         commands = [
             "ip domain name vrf test test.com",
@@ -97,7 +98,7 @@ class TestIosSystemModule(TestIosModule):
 
     def test_ios_system_domain_search_complex(self):
         set_module_args(
-            dict(domain_search=[{"name": "ansible.com", "vrf": "test"}])
+            dict(domain_search=[{"name": "ansible.com", "vrf": "test"}]),
         )
         commands = [
             "no ip domain list vrf management example.net",

@@ -137,20 +137,19 @@ failed_conditions:
   sample: ['...', '...']
 """
 import time
+
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
     Conditional,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    transform_commands,
     to_lines,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    run_commands,
+    transform_commands,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    run_commands,
 )
 
 
@@ -161,7 +160,7 @@ def parse_commands(module, warnings):
             if not item["command"].startswith("show"):
                 warnings.append(
                     "Only show commands are supported when using check mode, not executing %s"
-                    % item["command"]
+                    % item["command"],
                 )
                 commands.remove(item)
     return commands
@@ -178,7 +177,8 @@ def main():
     )
     argument_spec.update(ios_argument_spec)
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False, "warnings": warnings}
@@ -208,7 +208,7 @@ def main():
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
     result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
+        {"stdout": responses, "stdout_lines": list(to_lines(responses))},
     )
     module.exit_json(**result)
 

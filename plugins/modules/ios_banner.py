@@ -104,15 +104,14 @@ commands:
     - that contains a multiline
     - string
 """
+from re import M, search
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
+    ios_argument_spec,
     load_config,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
-from re import search, M
 
 
 def map_obj_to_commands(updates, module):
@@ -144,11 +143,14 @@ def map_config_to_obj(module):
     :return: banner config dict object.
     """
     out = get_config(
-        module, flags="| begin banner %s" % module.params["banner"]
+        module,
+        flags="| begin banner %s" % module.params["banner"],
     )
     if out:
         regex = search(
-            "banner " + module.params["banner"] + " \\^C{1,}\n", out, M
+            "banner " + module.params["banner"] + " \\^C{1,}\n",
+            out,
+            M,
         )
         if regex:
             regex = regex.group()

@@ -20,11 +20,11 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -168,6 +168,6 @@ class Ntp_global(ResourceModule):
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("access_group") and k == "access_group":
                 tmp_data[k] = self._ntp_list_to_dict(
-                    tmp_data.get("access_group")
+                    tmp_data.get("access_group"),
                 )
         return tmp_data

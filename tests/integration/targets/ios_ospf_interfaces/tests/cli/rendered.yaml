@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start ios_ospf_interfaces rendered integration tests ansible_connection={{
+    msg:
+      Start ios_ospf_interfaces rendered integration tests ansible_connection={{
       ansible_connection }}
 
 - block:

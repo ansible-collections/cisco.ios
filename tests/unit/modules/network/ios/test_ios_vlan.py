@@ -20,14 +20,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_vlan
 from ansible_collections.cisco.ios.plugins.modules.ios_vlan import (
     parse_vlan_brief,
 )
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -39,12 +40,12 @@ class TestIosVlanModule(TestIosModule):
         super(TestIosVlanModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.run_commands"
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlan.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -82,7 +83,7 @@ class TestIosVlanModule(TestIosModule):
                 "name": "vlan2",
                 "state": "present",
                 "interfaces": ["GigabitEthernet1/0/8", "GigabitEthernet1/0/7"],
-            }
+            },
         )
         result = self.execute_module(changed=True)
         expected_commands = [
@@ -104,7 +105,7 @@ class TestIosVlanModule(TestIosModule):
                 "name": "vlan3",
                 "state": "present",
                 "interfaces": ["GigabitEthernet1/0/8", "GigabitEthernet1/0/7"],
-            }
+            },
         )
         result = self.execute_module(changed=True)
         expected_commands = [

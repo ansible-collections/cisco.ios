@@ -194,7 +194,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                         "filtered": {"type": "bool"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "session_id": {
                                             "type": "dict",
@@ -221,7 +221,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                         "filtered": {"type": "bool"},
                                         "port": {"type": "int"},
                                         "sequence_num_session": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "session_id": {
                                             "type": "dict",

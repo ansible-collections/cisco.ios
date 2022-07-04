@@ -18,11 +18,11 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
-    Bgp_address_familyTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
+    Bgp_address_familyTemplate,
 )
 
 
@@ -109,7 +109,7 @@ class Bgp_address_familyFacts(object):
                                     al[each.get(neighbor_type)] = each
                                 else:
                                     al.get(each.get(neighbor_type)).update(
-                                        each
+                                        each,
                                     )
                                 break
                             except KeyError:
@@ -137,7 +137,8 @@ class Bgp_address_familyFacts(object):
             objs["address_family"] = temp_af
 
             objs["address_family"] = sorted(
-                objs["address_family"], key=lambda k, sk="afi": k[sk]
+                objs["address_family"],
+                key=lambda k, sk="afi": k[sk],
             )
         return objs
 
@@ -159,7 +160,8 @@ class Bgp_address_familyFacts(object):
 
         # parse native config using the Bgp_address_family template
         bgp_af_parser = Bgp_address_familyTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = bgp_af_parser.parse()
 
@@ -168,13 +170,16 @@ class Bgp_address_familyFacts(object):
             objs = self._process_facts(utils.remove_empties(objs))
 
             ansible_facts["ansible_network_resources"].pop(
-                "bgp_address_family", None
+                "bgp_address_family",
+                None,
             )
 
             params = utils.remove_empties(
                 bgp_af_parser.validate_config(
-                    self.argument_spec, {"config": objs}, redact=True
-                )
+                    self.argument_spec,
+                    {"config": objs},
+                    redact=True,
+                ),
             )
 
             facts["bgp_address_family"] = params["config"]

@@ -7,11 +7,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_prefix_lists
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -22,18 +23,18 @@ class TestIosPrefixListsModule(TestIosModule):
         super(TestIosPrefixListsModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -41,20 +42,20 @@ class TestIosPrefixListsModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix_lists.prefix_lists."
-            "Prefix_listsFacts.get_prefix_list_data"
+            "Prefix_listsFacts.get_prefix_list_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -89,7 +90,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=15,
                                         prefix="25.0.0.0/8",
                                         sequence=25,
-                                    )
+                                    ),
                                 ],
                                 name="10",
                             ),
@@ -126,15 +127,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=20,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "ip prefix-list 10 description this is merge test",
@@ -191,7 +192,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    )
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -227,15 +228,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -273,7 +274,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=20,
                                         prefix="35.0.0.0/8",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_replace",
                             ),
@@ -291,15 +292,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "ip prefix-list 10 description this is replace test",
@@ -360,7 +361,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    )
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -396,15 +397,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -442,7 +443,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=20,
                                         prefix="35.0.0.0/8",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_override",
                             ),
@@ -460,15 +461,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "no ip prefix-list test",
@@ -531,7 +532,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=15,
                                         prefix="12.0.0.0/8",
                                         sequence=50,
-                                    )
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -567,15 +568,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         ge=80,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -606,7 +607,7 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=15,
                                         prefix="25.0.0.0/8",
                                         sequence=25,
-                                    )
+                                    ),
                                 ],
                                 name="10",
                             ),
@@ -643,15 +644,15 @@ class TestIosPrefixListsModule(TestIosModule):
                                         le=100,
                                         prefix="2001:DB8:0:4::/64",
                                         sequence=10,
-                                    )
+                                    ),
                                 ],
                                 name="test_ipv6",
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "ip prefix-list 10 description this is merge test",

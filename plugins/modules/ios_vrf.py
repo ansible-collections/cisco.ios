@@ -276,19 +276,18 @@ delta:
 import re
 import time
 from functools import partial
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import exec_command
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    load_config,
-    get_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
-from ansible.module_utils.six import iteritems
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_config,
+    ios_argument_spec,
+    load_config,
+)
 
 
 def get_interface_type(interface):
@@ -341,7 +340,7 @@ def map_obj_to_commands(updates, module):
                         k
                         for k, v in module.params.items()
                         if (k.endswith("_ipv6") or k.endswith("_both")) and v
-                    ]
+                    ],
                 )
                 != 0
             )
@@ -351,7 +350,7 @@ def map_obj_to_commands(updates, module):
                         k
                         for k, v in module.params.items()
                         if (k.endswith("_ipv4") or k.endswith("_both")) and v
-                    ]
+                    ],
                 )
                 != 0
             )
@@ -407,23 +406,26 @@ def map_obj_to_commands(updates, module):
             add_command_to_vrf(want["name"], cmd, commands)
         if want["interfaces"] is not None:
             for intf in set(have.get("interfaces", [])).difference(
-                want["interfaces"]
+                want["interfaces"],
             ):
                 commands.extend(
                     [
                         "interface %s" % intf,
                         "no vrf forwarding %s" % want["name"],
-                    ]
+                    ],
                 )
             for intf in set(want["interfaces"]).difference(
-                have.get("interfaces", [])
+                have.get("interfaces", []),
             ):
                 cfg = get_config(module)
                 configobj = NetworkConfig(indent=1, contents=cfg)
                 children = configobj["interface %s" % intf].children
                 intf_config = "\n".join(children)
                 commands.extend(
-                    ["interface %s" % intf, "vrf forwarding %s" % want["name"]]
+                    [
+                        "interface %s" % intf,
+                        "vrf forwarding %s" % want["name"],
+                    ],
                 )
                 match = re.search("ip address .+", intf_config, re.M)
                 if match:
@@ -566,12 +568,16 @@ def map_config_to_obj(module):
             "route_import_ipv4": parse_import_ipv4(configobj, item),
             "route_export_ipv4": parse_export_ipv4(configobj, item),
             "route_both_ipv4": parse_both(
-                configobj, item, address_family="ipv4"
+                configobj,
+                item,
+                address_family="ipv4",
             ),
             "route_import_ipv6": parse_import_ipv6(configobj, item),
             "route_export_ipv6": parse_export_ipv6(configobj, item),
             "route_both_ipv6": parse_both(
-                configobj, item, address_family="ipv6"
+                configobj,
+                item,
+                address_family="ipv6",
             ),
         }
         instances.append(obj)
@@ -636,10 +642,10 @@ def map_params_to_obj(module):
                 if not item["route_import%s" % address_family]:
                     item["route_import%s" % address_family] = list()
                 item["route_export%s" % address_family].extend(
-                    get_value("route_both%s" % address_family)
+                    get_value("route_both%s" % address_family),
                 )
                 item["route_import%s" % address_family].extend(
-                    get_value("route_both%s" % address_family)
+                    get_value("route_both%s" % address_family),
                 )
         item["associated_interfaces"] = get_value("associated_interfaces")
         objects.append(item)
@@ -674,7 +680,8 @@ def check_declarative_intent_params(want, module, result):
             time.sleep(module.params["delay"])
         name = module.params["name"]
         rc, out, err = exec_command(
-            module, "show vrf | include {0}".format(name)
+            module,
+            "show vrf | include {0}".format(name),
         )
         if rc == 0:
             data = out.strip().split()
@@ -688,11 +695,11 @@ def check_declarative_intent_params(want, module, result):
                         continue
                     for i in w["associated_interfaces"]:
                         if get_interface_type(i) is not get_interface_type(
-                            interface
+                            interface,
                         ):
                             module.fail_json(
                                 msg="Interface %s not configured on vrf %s"
-                                % (interface, name)
+                                % (interface, name),
                             )
 
 

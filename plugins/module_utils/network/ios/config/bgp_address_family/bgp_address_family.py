@@ -18,11 +18,11 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
@@ -90,7 +90,7 @@ class Bgp_address_family(ResourceModule):
             wantd = dict_merge(haved, wantd)
             if len(wantd) > 1:
                 self._module.fail_json(
-                    msg="BGP is already running. Only one BGP instance is allowed per device."
+                    msg="BGP is already running. Only one BGP instance is allowed per device.",
                 )
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
@@ -165,7 +165,9 @@ class Bgp_address_family(ResourceModule):
                 self._compare_network(val, have=h_key)
                 self._compare_snmp(val, have=h_key)
                 self.compare(
-                    parsers=self.parsers, want=val, have=h.pop(key, dict())
+                    parsers=self.parsers,
+                    want=val,
+                    have=h.pop(key, dict()),
                 )
             if cmd_len != len(self.commands):
                 af_cmd = "address-family {afi}".format(**val)
@@ -234,18 +236,24 @@ class Bgp_address_family(ResourceModule):
                 )
             else:
                 self.compare(
-                    parsers=parsers, want={"bgp": {key: val}}, have=dict()
+                    parsers=parsers,
+                    want={"bgp": {key: val}},
+                    have=dict(),
                 )
         if self.state == "replaced" or self.state == "overridden":
             if h_bgp:
                 for key, val in iteritems(h_bgp):
                     self.compare(
-                        parsers=parsers, want=dict(), have={"bgp": {key: val}}
+                        parsers=parsers,
+                        want=dict(),
+                        have={"bgp": {key: val}},
                     )
             elif have.get("bgp"):
                 for key, val in iteritems(have.pop("bgp")):
                     self.compare(
-                        parsers=parsers, want=dict(), have={"bgp": {key: val}}
+                        parsers=parsers,
+                        want=dict(),
+                        have={"bgp": {key: val}},
                     )
 
     def _compare_neighbor(self, want, have):
@@ -286,7 +294,10 @@ class Bgp_address_family(ResourceModule):
                 for k, v in iteritems(val):
                     if k == "route_map" or k == "prefix_list":
                         k, v, deprecated = _handle_neighbor_deprecated(
-                            k, key, v, h
+                            k,
+                            key,
+                            v,
+                            h,
                         )
                     if h[key].get(k) and k not in neighbor_key:
                         if k not in ["prefix_lists", "route_maps"]:
@@ -296,13 +307,13 @@ class Bgp_address_family(ResourceModule):
                                     "neighbor": {
                                         neighbor_tag: val[neighbor_tag],
                                         k: v,
-                                    }
+                                    },
                                 },
                                 have={
                                     "neighbor": {
                                         neighbor_tag: val[neighbor_tag],
                                         k: h[key].pop(k, {}),
-                                    }
+                                    },
                                 },
                             )
                         if k in ["prefix_lists", "route_maps"]:
@@ -313,13 +324,13 @@ class Bgp_address_family(ResourceModule):
                                         "neighbor": {
                                             neighbor_tag: val[neighbor_tag],
                                             k: v_param,
-                                        }
+                                        },
                                     },
                                     have={
                                         "neighbor": {
                                             neighbor_tag: val[neighbor_tag],
                                             k: h[key][k].pop(k_param, {}),
-                                        }
+                                        },
                                     },
                                 )
                     elif k not in neighbor_key:
@@ -330,7 +341,7 @@ class Bgp_address_family(ResourceModule):
                                     "neighbor": {
                                         neighbor_tag: val[neighbor_tag],
                                         k: v,
-                                    }
+                                    },
                                 },
                                 have=dict(),
                             )
@@ -345,13 +356,15 @@ class Bgp_address_family(ResourceModule):
                                         "neighbor": {
                                             neighbor_tag: val[neighbor_tag],
                                             k: v_param,
-                                        }
+                                        },
                                     },
                                     have=dict(),
                                 )
             else:
                 self.compare(
-                    parsers=parsers, want={"neighbor": val}, have=dict()
+                    parsers=parsers,
+                    want={"neighbor": val},
+                    have=dict(),
                 )
                 for param in ["prefix_lists", "route_maps"]:
                     if param in val:
@@ -362,7 +375,7 @@ class Bgp_address_family(ResourceModule):
                                     "neighbor": {
                                         "address": val["address"],
                                         param: v_param,
-                                    }
+                                    },
                                 },
                                 have=dict(),
                             )
@@ -370,7 +383,9 @@ class Bgp_address_family(ResourceModule):
         if self.state == "replaced" or self.state == "overridden":
             for key, val in iteritems(h):
                 self.compare(
-                    parsers=parsers, want=dict(), have={"neighbor": val}
+                    parsers=parsers,
+                    want=dict(),
+                    have={"neighbor": val},
                 )
             count = 0
             remote = 0
@@ -403,12 +418,16 @@ class Bgp_address_family(ResourceModule):
                     )
             else:
                 self.compare(
-                    parsers=parsers, want={"network": val}, have=dict()
+                    parsers=parsers,
+                    want={"network": val},
+                    have=dict(),
                 )
         if self.state == "replaced" or self.state == "overridden":
             for key, val in iteritems(h):
                 self.compare(
-                    parsers=parsers, want=dict(), have={"network": val}
+                    parsers=parsers,
+                    want=dict(),
+                    have={"network": val},
                 )
 
     def _compare_snmp(self, want, have):
@@ -426,20 +445,20 @@ class Bgp_address_family(ResourceModule):
                                 "snmp": {
                                     key: val,
                                     "name": w["context"]["name"],
-                                }
+                                },
                             },
                             have={
                                 "snmp": {
                                     key: h_snmp_param,
                                     "name": w["context"]["name"],
-                                }
+                                },
                             },
                         )
                 elif key == "community" or key == "user":
                     self.compare(
                         parsers=parsers,
                         want={
-                            "snmp": {key: val, "name": w["context"]["name"]}
+                            "snmp": {key: val, "name": w["context"]["name"]},
                         },
                         have=dict(),
                     )
@@ -474,8 +493,8 @@ class Bgp_address_family(ResourceModule):
                                 + "_"
                                 + each.get("safi", "")
                                 + "_"
-                                + each.get("vrf", ""): each
-                            }
+                                + each.get("vrf", ""): each,
+                            },
                         )
                     val["address_family"] = temp
                     self.list_to_dict(val["address_family"])
@@ -525,7 +544,7 @@ class Bgp_address_family(ResourceModule):
 
     def handle_deprecated(self, want_to_validate):
         if want_to_validate.get("next_hop_self") and want_to_validate.get(
-            "nexthop_self"
+            "nexthop_self",
         ):
             del want_to_validate["next_hop_self"]
         elif want_to_validate.get("next_hop_self"):

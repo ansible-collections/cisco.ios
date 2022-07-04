@@ -104,7 +104,7 @@ if sys.version_info >= (3,) and sys.version_info < (3, 4, 4):
             import _io
 
             file_spec = list(
-                set(dir(_io.TextIOWrapper)).union(set(dir(_io.BytesIO)))
+                set(dir(_io.TextIOWrapper)).union(set(dir(_io.BytesIO))),
             )
 
         if mock is None:

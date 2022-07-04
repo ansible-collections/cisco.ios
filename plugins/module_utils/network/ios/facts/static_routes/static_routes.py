@@ -16,17 +16,16 @@ __metaclass__ = type
 
 
 from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    netmask_to_cidr,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     is_valid_ip,
+    netmask_to_cidr,
 )
 
 
@@ -50,7 +49,7 @@ class Static_RoutesFacts(object):
 
     def get_static_routes_data(self, connection):
         return connection.get(
-            "show running-config | include ^ip route .+ |^ipv6 route .+"
+            "show running-config | include ^ip route .+ |^ipv6 route .+",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -72,7 +71,9 @@ class Static_RoutesFacts(object):
         for key in same_dest.keys():
             if key:
                 obj = self.render_config(
-                    self.generated_spec, key, same_dest[key]
+                    self.generated_spec,
+                    key,
+                    same_dest[key],
                 )
                 if obj:
                     objs.append(obj)
@@ -84,7 +85,7 @@ class Static_RoutesFacts(object):
                 each.get("address_families")[0]
                 for each in objs
                 if each.get("vrf") is None
-            ]
+            ],
         }
 
         temp_objs = [each for each in objs if each.get("vrf") is not None]
@@ -94,7 +95,8 @@ class Static_RoutesFacts(object):
         if objs:
             facts["static_routes"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["static_routes"].append(utils.remove_empties(cfg))
@@ -128,7 +130,9 @@ class Static_RoutesFacts(object):
                     filter_vrf = utils.parse_conf_arg(i, ip_str)
                     if "::" not in filter_vrf:
                         filter_vrf, dest_vrf = self.update_netmask_to_cidr(
-                            filter_vrf, 1, 2
+                            filter_vrf,
+                            1,
+                            2,
                         )
                         dest_vrf = dest_vrf + "_vrf"
                     else:
@@ -147,7 +151,9 @@ class Static_RoutesFacts(object):
                         "::" not in filter_non_vrf
                     ):  # "/" not in filter_non_vrf and
                         filter_non_vrf, dest = self.update_netmask_to_cidr(
-                            filter_non_vrf, 0, 1
+                            filter_non_vrf,
+                            0,
+                            1,
                         )
                     else:
                         dest = filter_non_vrf.split(" ")[0]
@@ -240,7 +246,7 @@ class Static_RoutesFacts(object):
                         and ":" not in i
                         and ord(i[0]) > 48
                         and ord(i[0]) < 57
-                    ][0]
+                    ][0],
                 )
             except IndexError:
                 dist_metrics = None

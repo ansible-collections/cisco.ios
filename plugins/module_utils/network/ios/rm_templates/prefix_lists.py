@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -80,10 +81,10 @@ class Prefix_listsTemplate(NetworkTemplate):
                                 "ge": "{{ ge.split(' ')[1] if ge is defined }}",
                                 "le": "{{ le.split(' ')[1] if le is defined }}",
                             },
-                        }
+                        },
                     ],
-                }
+                },
             },
             "shared": True,
-        }
+        },
     ]

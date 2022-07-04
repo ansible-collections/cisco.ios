@@ -166,16 +166,15 @@ commands:
 """
 import re
 from copy import deepcopy
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    ios_argument_spec,
     load_config,
     run_commands,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
 )
 
 
@@ -210,7 +209,8 @@ def is_switchport(name, module):
     intf_type = get_interface_type(name)
     if intf_type in ("ethernet", "portchannel"):
         config = run_commands(
-            module, ["show interface {0} switchport".format(name)]
+            module,
+            ["show interface {0} switchport".format(name)],
         )[0]
         match = re.search("Switchport: Enabled", config)
         return bool(match)
@@ -229,7 +229,8 @@ def interface_is_portchannel(name, module):
 
 def get_switchport(name, module):
     config = run_commands(
-        module, ["show interface {0} switchport".format(name)]
+        module,
+        ["show interface {0} switchport".format(name)],
     )[0]
     mode = re.search("Administrative Mode: (?:.* )?(\\w+)$", config, re.M)
     access = re.search("Access Mode VLAN: (\\d+)", config)
@@ -263,7 +264,7 @@ def remove_switchport_config_commands(name, existing, proposed, module):
         av_check = existing.get("access_vlan") == proposed.get("access_vlan")
         if av_check:
             command = "no switchport access vlan {0}".format(
-                existing.get("access_vlan")
+                existing.get("access_vlan"),
             )
             commands.append(command)
     elif mode == "trunk":
@@ -279,18 +280,19 @@ def remove_switchport_config_commands(name, existing, proposed, module):
         if vlans_to_remove:
             proposed_allowed_vlans = proposed.get("trunk_allowed_vlans")
             remove_trunk_allowed_vlans = proposed.get(
-                "trunk_vlans", proposed_allowed_vlans
+                "trunk_vlans",
+                proposed_allowed_vlans,
             )
             command = "switchport trunk allowed vlan remove {0}".format(
-                remove_trunk_allowed_vlans
+                remove_trunk_allowed_vlans,
             )
             commands.append(command)
         native_check = existing.get("native_vlan") == proposed.get(
-            "native_vlan"
+            "native_vlan",
         )
         if native_check and proposed.get("native_vlan"):
             command = "no switchport trunk native vlan {0}".format(
-                existing.get("native_vlan")
+                existing.get("native_vlan"),
             )
             commands.append(command)
     if commands:
@@ -313,21 +315,21 @@ def get_switchport_config_commands(name, existing, proposed, module):
         commands.append(command)
     if proposed_mode == "access":
         av_check = str(existing.get("access_vlan")) == str(
-            proposed.get("access_vlan")
+            proposed.get("access_vlan"),
         )
         if not av_check:
             command = "switchport access vlan {0}".format(
-                proposed.get("access_vlan")
+                proposed.get("access_vlan"),
             )
             commands.append(command)
     elif proposed_mode == "trunk":
         tv_check = existing.get("trunk_vlans_list") == proposed.get(
-            "trunk_vlans_list"
+            "trunk_vlans_list",
         )
         if not tv_check:
             if proposed.get("allowed"):
                 command = "switchport trunk allowed vlan {0}".format(
-                    proposed.get("trunk_allowed_vlans")
+                    proposed.get("trunk_allowed_vlans"),
                 )
                 commands.append(command)
             else:
@@ -336,15 +338,15 @@ def get_switchport_config_commands(name, existing, proposed, module):
                 vlans_to_add = set(proposed_vlans).difference(existing_vlans)
                 if vlans_to_add:
                     command = "switchport trunk allowed vlan add {0}".format(
-                        proposed.get("trunk_vlans")
+                        proposed.get("trunk_vlans"),
                     )
                     commands.append(command)
         native_check = str(existing.get("native_vlan")) == str(
-            proposed.get("native_vlan")
+            proposed.get("native_vlan"),
         )
         if not native_check and proposed.get("native_vlan"):
             command = "switchport trunk native vlan {0}".format(
-                proposed.get("native_vlan")
+                proposed.get("native_vlan"),
             )
             commands.append(command)
     if commands:
@@ -437,7 +439,7 @@ def map_params_to_obj(module):
                 "trunk_vlans": module.params["trunk_vlans"],
                 "trunk_allowed_vlans": module.params["trunk_allowed_vlans"],
                 "state": module.params["state"],
-            }
+            },
         )
     return obj
 
@@ -452,14 +454,15 @@ def main():
         trunk_vlans=dict(type="str"),
         trunk_allowed_vlans=dict(type="str"),
         state=dict(
-            choices=["absent", "present", "unconfigured"], default="present"
+            choices=["absent", "present", "unconfigured"],
+            default="present",
         ),
     )
     aggregate_spec = deepcopy(element_spec)
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
     )
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)
@@ -496,23 +499,23 @@ def main():
         name = name.lower()
         if mode == "access" and state == "present" and not access_vlan:
             module.fail_json(
-                msg="access_vlan param is required when mode=access && state=present"
+                msg="access_vlan param is required when mode=access && state=present",
             )
         if mode == "trunk" and access_vlan:
             module.fail_json(
-                msg="access_vlan param not supported when using mode=trunk"
+                msg="access_vlan param not supported when using mode=trunk",
             )
         if not is_switchport(name, module):
             module.fail_json(
                 msg="""Ensure interface is configured to be a L2
 port first before using this module. You can use
-the ios_interface module for this."""
+the ios_interface module for this.""",
             )
         if interface_is_portchannel(name, module):
             module.fail_json(
                 msg="""Cannot change L2 config on physical
 port because it is in a portchannel.
-You should update the portchannel config."""
+You should update the portchannel config.""",
             )
         # existing will never be null for Eth intfs as there is always a default
         existing = get_switchport(name, module)
@@ -520,7 +523,7 @@ You should update the portchannel config."""
         # If there isn't an existing, something is wrong per previous comment
         if not existing:
             module.fail_json(
-                msg="Make sure you are using the FULL interface name"
+                msg="Make sure you are using the FULL interface name",
             )
         if trunk_vlans or trunk_allowed_vlans:
             if trunk_vlans:
@@ -547,7 +550,10 @@ does not exist on the  switch yet!""",
                 )
             else:
                 command = get_switchport_config_commands(
-                    name, existing, proposed, module
+                    name,
+                    existing,
+                    proposed,
+                    module,
                 )
                 commands.append(command)
         elif state == "unconfigured":
@@ -557,7 +563,10 @@ does not exist on the  switch yet!""",
                 commands.append(command)
         elif state == "absent":
             command = remove_switchport_config_commands(
-                name, existing, proposed, module
+                name,
+                existing,
+                proposed,
+                module,
             )
             commands.append(command)
         if trunk_vlans or trunk_allowed_vlans:

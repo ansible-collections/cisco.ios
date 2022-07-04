@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -23,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 class HostnameTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(HostnameTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
@@ -33,7 +36,8 @@ class HostnameTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^hostname\s(?P<hostname>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "hostname {{ hostname }}",
             "result": {
                 "hostname": "{{ hostname }}",

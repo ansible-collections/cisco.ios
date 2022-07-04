@@ -17,11 +17,11 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
-    Acl_interfacesTemplate,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_interfaces.acl_interfaces import (
     Acl_interfacesArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
+    Acl_interfacesTemplate,
 )
 
 
@@ -34,7 +34,7 @@ class Acl_interfacesFacts(object):
 
     def get_acl_interfaces_data(self, connection):
         return connection.get(
-            "show running-config | include ^interface|ip access-group|ipv6 traffic-filter"
+            "show running-config | include ^interface|ip access-group|ipv6 traffic-filter",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -67,7 +67,8 @@ class Acl_interfacesFacts(object):
             if cfg.get("access_groups"):
                 facts["acl_interfaces"].append(cfg)
         utils.validate_config(
-            self.argument_spec, {"config": facts.get("acl_interfaces")}
+            self.argument_spec,
+            {"config": facts.get("acl_interfaces")},
         )
 
         ansible_facts["ansible_network_resources"].update(facts)

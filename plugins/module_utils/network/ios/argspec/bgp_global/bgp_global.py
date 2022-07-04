@@ -482,13 +482,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "igp_cost": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "pre_bestpath": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "transitive": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },

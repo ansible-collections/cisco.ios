@@ -1,10 +1,10 @@
 ---
 - debug:
-    msg: START Merged ios_prefix_lists state for integration tests on connection={{
+    msg:
+      START Merged ios_prefix_lists state for integration tests on connection={{
       ansible_connection }}
 
 - block:
-
     - include_tasks: _remove_config.yaml
     - name: Merge provided Prefix lists configuration with device configuration
       register: result
@@ -88,5 +88,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

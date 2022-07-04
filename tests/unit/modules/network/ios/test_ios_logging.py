@@ -22,11 +22,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_logging
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -38,21 +39,21 @@ class TestIosLoggingModule(TestIosModule):
         super(TestIosLoggingModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
-            "device_info": {"network_os_version": "15.6(2)T"}
+            "device_info": {"network_os_version": "15.6(2)T"},
         }
 
     def tearDown(self):
@@ -110,21 +111,21 @@ class TestIosLoggingModuleIOS12(TestIosModule):
         super(TestIosLoggingModuleIOS12, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities"
+            "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
-            "device_info": {"network_os_version": "12.1(2)T"}
+            "device_info": {"network_os_version": "12.1(2)T"},
         }
 
     def tearDown(self):
@@ -136,7 +137,7 @@ class TestIosLoggingModuleIOS12(TestIosModule):
 
     def load_fixtures(self, commands=None):
         self.get_config.return_value = load_fixture(
-            "ios_logging_config_ios12.cfg"
+            "ios_logging_config_ios12.cfg",
         )
         self.load_config.return_value = None
 

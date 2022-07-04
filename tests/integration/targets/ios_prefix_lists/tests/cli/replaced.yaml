@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg: START Replaced ios_prefix_lists state for integration tests on connection={{
+    msg:
+      START Replaced ios_prefix_lists state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaced provided Prefix lists configuration
       register: result
       cisco.ios.ios_prefix_lists: &id001
@@ -72,5 +72,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

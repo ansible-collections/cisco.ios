@@ -19,12 +19,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.plugins.modules import ios_facts
 from ansible.module_utils.six import assertCountEqual
+from ansible_collections.cisco.ios.plugins.modules import ios_facts
+from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     set_module_args,
 )
+
 from .ios_module import TestIosModule, load_fixture
 
 
@@ -35,19 +36,19 @@ class TestIosFactsModule(TestIosModule):
     def setUp(self):
         super(TestIosFactsModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.run_commands"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection = (
             self.mock_get_resource_connection.start()
         )
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.get_capabilities"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
@@ -82,10 +83,12 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="default"))
         result = self.execute_module()
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_model"], "WS-C3750-24TS"
+            result["ansible_facts"]["ansible_net_model"],
+            "WS-C3750-24TS",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU"
+            result["ansible_facts"]["ansible_net_serialnum"],
+            "CAT0726R0ZU",
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_stacked_models"],
@@ -114,7 +117,7 @@ class TestIosFactsModule(TestIosModule):
         self.assertIsNone(
             result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"][
                 "macaddress"
-            ]
+            ],
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_interfaces"][

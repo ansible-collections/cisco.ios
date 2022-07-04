@@ -20,9 +20,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import sys
 import copy
+import sys
 
+from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.action.network import (
     ActionModule as ActionNetworkModule,
 )
@@ -32,7 +33,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_provider_spec,
 )
-from ansible.utils.display import Display
 
 display = Display()
 
@@ -52,7 +52,7 @@ class ActionModule(ActionNetworkModule):
             provider = self._task.args.get("provider", {})
             if any(provider.values()):
                 display.warning(
-                    "provider is unnecessary when using network_cli and will be ignored"
+                    "provider is unnecessary when using network_cli and will be ignored",
                 )
                 del self._task.args["provider"]
         elif self._play_context.connection == "local":
@@ -86,7 +86,10 @@ class ActionModule(ActionNetworkModule):
                 pc.connection = "network_cli"
                 pc.network_os = "ios"
                 connection = self._shared_loader_obj.connection_loader.get(
-                    "persistent", pc, sys.stdin, task_uuid=self._task._uuid
+                    "persistent",
+                    pc,
+                    sys.stdin,
+                    task_uuid=self._task._uuid,
                 )
 
             display.vvv(
@@ -100,7 +103,7 @@ class ActionModule(ActionNetworkModule):
                 else connection.get_option("persistent_command_timeout")
             )
             connection.set_options(
-                direct={"persistent_command_timeout": command_timeout}
+                direct={"persistent_command_timeout": command_timeout},
             )
 
             socket_path = connection.run()
@@ -116,8 +119,8 @@ class ActionModule(ActionNetworkModule):
             warnings.append(
                 [
                     "connection local support for this module is deprecated and will be removed in version 2.14, use connection %s"
-                    % pc.connection
-                ]
+                    % pc.connection,
+                ],
             )
         else:
             return {

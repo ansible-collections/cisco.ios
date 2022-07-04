@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg: START Replaced ios_bgp_address_family state for integration tests on connection={{
+    msg:
+      START Replaced ios_bgp_address_family state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaced provided BGP Address family configuration
       register: result
       cisco.ios.ios_bgp_address_family: &id001
@@ -86,5 +86,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

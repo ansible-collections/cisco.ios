@@ -38,7 +38,7 @@ class Ospfv2Args(object):
             "options": {
                 "processes": {
                     "mutually_exclusive": [
-                        ("passive_interface", "passive_interfaces")
+                        ("passive_interface", "passive_interfaces"),
                     ],
                     "elements": "dict",
                     "options": {
@@ -255,7 +255,7 @@ class Ospfv2Args(object):
                                         "name": {
                                             "required": True,
                                             "type": "str",
-                                        }
+                                        },
                                     },
                                     "type": "dict",
                                 },
@@ -378,7 +378,7 @@ class Ospfv2Args(object):
                                             "options": {
                                                 "area": {"type": "int"},
                                                 "interface_type": {
-                                                    "type": "str"
+                                                    "type": "str",
                                                 },
                                             },
                                             "type": "dict",
@@ -432,7 +432,7 @@ class Ospfv2Args(object):
                                         "disable": {"type": "bool"},
                                         "helper": {"type": "bool"},
                                         "strict_lsa_checking": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                     },
                                     "type": "dict",
@@ -515,11 +515,11 @@ class Ospfv2Args(object):
                                         "spf": {
                                             "options": {
                                                 "between_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "max_delay": {"type": "int"},
                                                 "receive_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                             "type": "dict",
@@ -541,7 +541,7 @@ class Ospfv2Args(object):
                         "vrf": {"type": "str"},
                     },
                     "type": "list",
-                }
+                },
             },
             "type": "dict",
         },

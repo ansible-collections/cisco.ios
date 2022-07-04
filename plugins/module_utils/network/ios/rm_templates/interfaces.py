@@ -15,6 +15,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -23,30 +24,35 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 class InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(InterfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
     PARSERS = [
         {
             'name': 'interface',
-            'getval': re.compile(r'''
+            'getval': re.compile(
+                r'''
               ^interface\s
-              (?P<name>\S+)$''', re.VERBOSE),
+              (?P<name>\S+)$''', re.VERBOSE,
+            ),
             'setval': 'interface {{ name }}',
             'result': {
                 '{{ name }}': {
                     'name': '{{ name }}',
                 },
             },
-            'shared': True
+            'shared': True,
         },
         {
             "name": "description",
             "getval": re.compile(
                 r"""
                 \s+description\s(?P<description>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "description {{ description }}",
             "result": {
                 '{{ name }}': {
@@ -60,7 +66,8 @@ class InterfacesTemplate(NetworkTemplate):
                 r"""
                 (?P<negate>\sno)?
                 (?P<shutdown>\sshutdown)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "shutdown",
             "result": {
                 '{{ name }}': {
@@ -73,7 +80,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+speed\s(?P<speed>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "speed {{ speed|string }}",
             "result": {
                 '{{ name }}': {
@@ -86,7 +94,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+mtu\s(?P<mtu>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "mtu {{ mtu|string }}",
             "result": {
                 '{{ name }}': {
@@ -99,7 +108,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+duplex\s(?P<duplex>full|half|auto)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "duplex {{ duplex }}",
             "result": {
                 '{{ name }}': {

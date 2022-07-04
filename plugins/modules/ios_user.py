@@ -307,24 +307,23 @@ import hashlib
 import re
 from copy import deepcopy
 from functools import partial
+
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
+    ios_argument_spec,
     load_config,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
-from ansible.module_utils.six import iteritems
 
 
 def validate_privilege(value, module):
     if value and not 1 <= value <= 15:
         module.fail_json(
-            msg="privilege must be between 1 and 15, got %s" % value
+            msg="privilege must be between 1 and 15, got %s" % value,
         )
 
 
@@ -372,7 +371,7 @@ def map_obj_to_commands(updates, module):
     def add_hashed_password(command, want, x):
         command.append(
             "username %s secret %s %s"
-            % (want["name"], x.get("type"), x.get("value"))
+            % (want["name"], x.get("type"), x.get("value")),
         )
 
     def add_ssh(command, want, x=None):
@@ -408,7 +407,7 @@ def map_obj_to_commands(updates, module):
                 ):
                     module.fail_json(
                         msg="Can not have both a user password and a user secret."
-                        + " Please choose one or the other."
+                        + " Please choose one or the other.",
                     )
                 add(
                     commands,
@@ -437,7 +436,9 @@ def parse_sshkey(data, user):
     key_list = []
     if sshcfg:
         match = re.findall(
-            "key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M
+            "key-hash (\\S+ \\S+(?: .+)?)$",
+            sshcfg.group(),
+            re.M,
         )
         if match:
             key_list = match
@@ -562,11 +563,14 @@ def main():
         name=dict(),
         configured_password=dict(no_log=True),
         hashed_password=dict(
-            no_log=True, type="dict", options=hashed_password_spec
+            no_log=True,
+            type="dict",
+            options=hashed_password_spec,
         ),
         nopassword=dict(type="bool"),
         update_password=dict(
-            default="always", choices=["on_create", "always"]
+            default="always",
+            choices=["on_create", "always"],
         ),
         password_type=dict(default="secret", choices=["secret", "password"]),
         privilege=dict(type="int"),

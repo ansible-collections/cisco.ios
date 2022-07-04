@@ -17,15 +17,16 @@ __metaclass__ = type
 
 import re
 from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
+    Lacp_InterfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     normalize_interface,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
-    Lacp_InterfacesArgs,
 )
 
 
@@ -74,7 +75,8 @@ class Lacp_InterfacesFacts(object):
         if objs:
             facts["lacp_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["lacp_interfaces"].append(utils.remove_empties(cfg))
