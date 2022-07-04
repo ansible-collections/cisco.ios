@@ -18,19 +18,23 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from os import path
 import json
+
+from os import path
+
 
 try:
     from unittest.mock import MagicMock
 except ImportError:
     from mock import MagicMock
 
-from ansible_collections.cisco.ios.tests.unit.compat import unittest
-from ansible_collections.cisco.ios.plugins.cliconf import ios
 from ansible.module_utils._text import to_bytes
+
+from ansible_collections.cisco.ios.plugins.cliconf import ios
+from ansible_collections.cisco.ios.tests.unit.compat import unittest
 
 
 b_FIXTURE_DIR = b"%s/fixtures/ios" % (

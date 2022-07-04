@@ -13,9 +13,11 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import copy
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
@@ -23,13 +25,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    filter_dict_having_none_value,
     new_dict_to_set,
     validate_n_expand_ipv4,
-    filter_dict_having_none_value,
 )
 
 

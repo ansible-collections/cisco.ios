@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_command
@@ -137,20 +138,20 @@ failed_conditions:
   sample: ['...', '...']
 """
 import time
+
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
     Conditional,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    transform_commands,
     to_lines,
+    transform_commands,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    run_commands,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     ios_argument_spec,
+    run_commands,
 )
 
 

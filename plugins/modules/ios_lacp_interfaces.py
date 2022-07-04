@@ -20,6 +20,7 @@ The module file for ios_lacp_interfaces
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -473,6 +474,7 @@ commands:
   sample: ['interface GigabitEthernet 0/1', 'lacp port-priority 30']
 """
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesArgs,
 )

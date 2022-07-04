@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_l3_interface
@@ -147,27 +148,26 @@ commands:
     - ipv6 address fd5d:12c9:2201:1::1/64
 """
 import re
+
 from copy import deepcopy
+
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_default_spec,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    is_netmask,
     is_masklen,
-    to_netmask,
+    is_netmask,
+    remove_default_spec,
     to_masklen,
+    to_netmask,
+)
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_config,
+    ios_argument_spec,
+    load_config,
 )
 
 

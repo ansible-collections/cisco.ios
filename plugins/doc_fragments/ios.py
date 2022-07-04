@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 # Copyright: (c) 2015, Peter Sprygada <psprygada@ansible.com>

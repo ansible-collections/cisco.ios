@@ -1,8 +1,8 @@
 -------------------------
 Device ID: R2
-Entry address(es): 
+Entry address(es):
   IP address: 10.0.0.3
-Platform: cisco CSR1000V,  Capabilities: Router IGMP 
+Platform: cisco CSR1000V,  Capabilities: Router IGMP
 Interface: GigabitEthernet1,  Port ID (outgoing port): GigabitEthernet2
 Holdtime : 149 sec
 
@@ -14,14 +14,14 @@ Compiled Sun 08-Jul-18 04:30 by mcpre
 
 advertisement version: 2
 Duplex: full
-Management address(es): 
+Management address(es):
   IP address: 10.0.0.3
 
 -------------------------
 Device ID: R3
-Entry address(es): 
+Entry address(es):
   IP address: 10.0.0.4
-Platform: cisco CSR1000V,  Capabilities: Router IGMP 
+Platform: cisco CSR1000V,  Capabilities: Router IGMP
 Interface: GigabitEthernet1,  Port ID (outgoing port): GigabitEthernet3
 Holdtime : 149 sec
 
@@ -33,7 +33,7 @@ Compiled Sun 08-Jul-18 04:30 by mcpre
 
 advertisement version: 2
 Duplex: full
-Management address(es): 
+Management address(es):
   IP address: 10.0.0.4
 
 

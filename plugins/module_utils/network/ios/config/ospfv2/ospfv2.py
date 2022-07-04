@@ -11,21 +11,22 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
-
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
-    Ospfv2Template,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
-    ResourceModule,
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
+    Ospfv2Template,
 )
 
 

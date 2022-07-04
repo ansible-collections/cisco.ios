@@ -12,20 +12,22 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible.module_utils._text import to_text
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
-    Acl_interfacesTemplate,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
-    ResourceModule,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
+    Acl_interfacesTemplate,
 )
 
 

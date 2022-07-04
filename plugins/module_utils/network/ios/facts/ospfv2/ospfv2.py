@@ -10,20 +10,22 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+    NetworkTemplate,
+)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
     Ospfv2Template,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
-    NetworkTemplate,
 )
 
 

@@ -20,6 +20,7 @@ The module file for ios_vlans
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_vlans
@@ -725,6 +726,7 @@ commands:
   sample: ['vlan 20', 'name vlan_20', 'mtu 600', 'remote-span']
 """
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )

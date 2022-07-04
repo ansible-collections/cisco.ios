@@ -12,25 +12,27 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    validate_n_expand_ipv4,
-    validate_ipv6,
-    normalize_interface,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
+)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
+    validate_ipv6,
+    validate_n_expand_ipv4,
 )
 
 

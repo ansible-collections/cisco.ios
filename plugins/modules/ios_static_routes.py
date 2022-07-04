@@ -20,6 +20,7 @@ The module file for ios_static_routes
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_static_routes
@@ -658,6 +659,7 @@ parsed:
     of the parameters above.
 """
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
 )

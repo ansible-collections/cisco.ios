@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -18,11 +19,12 @@ based on the configuration.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
-    InterfacesTemplate,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
+    InterfacesTemplate,
 )
 
 
