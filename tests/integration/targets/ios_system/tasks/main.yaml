@@ -1,2 +1,2 @@
 ---
-- include: cli.yaml
+- ansible.builtin.include: cli.yaml

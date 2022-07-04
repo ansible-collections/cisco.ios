@@ -1,6 +1,6 @@
 ---
 - block:
-    - include: cli.yaml
+    - ansible.builtin.include: cli.yaml
       tags:
         - network_cli
   when: switch_type == "L2"
