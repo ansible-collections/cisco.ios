@@ -237,8 +237,8 @@ class Ospfv3(ResourceModule):
             for each_want_af in want["address_family"]:
                 if have.get("address_family"):
                     for each_have_af in have["address_family"]:
-                        if each_have_af.get("vrf") == each_want_af.get("vrf",) and each_have_af.get(
-                            "afi"
+                        if each_have_af.get("vrf") == each_want_af.get("vrf") and each_have_af.get(
+                            "afi",
                         ) == each_want_af.get(
                             "afi",
                         ):

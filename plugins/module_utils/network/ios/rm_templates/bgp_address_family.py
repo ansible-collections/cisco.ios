@@ -234,15 +234,15 @@ def _tmplt_af_neighbor(config_data):
                     if config_data["neighbor"]["aigp"]["send"]["cost_community"].get("poi"):
                         self_cmd += " poi"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "igp_cost"
+                            "igp_cost",
                         ):
                             self_cmd += " igp-cost"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "pre_bestpath"
+                            "pre_bestpath",
                         ):
                             self_cmd += " pre-bestpath"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "transitive"
+                            "transitive",
                         ):
                             self_cmd += " transitive"
                 if config_data["neighbor"]["aigp"]["send"].get("med"):

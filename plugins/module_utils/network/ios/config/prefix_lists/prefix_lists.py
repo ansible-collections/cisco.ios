@@ -178,7 +178,7 @@ class Prefix_lists(ResourceModule):
                                 )
                             else:
                                 if self.state == "merged" and have_prefix_param.get(
-                                    "sequence"
+                                    "sequence",
                                 ) == val.get("sequence"):
                                     self._module.fail_json(
                                         "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
