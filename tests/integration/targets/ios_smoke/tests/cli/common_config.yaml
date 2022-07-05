@@ -75,7 +75,7 @@
 
 # CustomNetworkConfig
 # currently gets skipped because switch_type != 'L2'
-- set_fact: switch_type="{{ switch_type }}"
+- ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
 
