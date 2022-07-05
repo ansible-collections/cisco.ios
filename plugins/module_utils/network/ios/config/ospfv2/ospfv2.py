@@ -292,7 +292,8 @@ class Ospfv2(ResourceModule):
                 ].get("interface"):
                     temp = {}
                     for entry in proc["passive_interfaces"]["interface"].get(
-                        "name", []
+                        "name",
+                        [],
                     ):
                         temp.update({entry: entry})
                     proc["passive_interfaces"]["interface"]["name"] = temp

@@ -228,9 +228,9 @@ class Snmp_server(ResourceModule):
                                 str(
                                     i[p_key.get(k)]
                                     + i.get("version", "")
-                                    + i.get("community_string", "")
-                                ): i
-                            }
+                                    + i.get("community_string", ""),
+                                ): i,
+                            },
                         )
                     tmp_data[k] = tmp_host
                 elif k == "context":

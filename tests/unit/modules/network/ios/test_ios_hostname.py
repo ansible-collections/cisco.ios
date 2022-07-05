@@ -26,18 +26,18 @@ class TestIosHostnameModule(TestIosModule):
         super(TestIosHostnameModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -45,20 +45,20 @@ class TestIosHostnameModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname."
-            "HostnameFacts.get_hostname_data"
+            "HostnameFacts.get_hostname_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -75,7 +75,7 @@ class TestIosHostnameModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname
-            """
+            """,
         )
         set_module_args(dict(config=dict(hostname="testname"), state="merged"))
         commands = []
@@ -86,10 +86,10 @@ class TestIosHostnameModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname
-            """
+            """,
         )
         set_module_args(
-            dict(config=dict(hostname="testnameNew"), state="merged")
+            dict(config=dict(hostname="testnameNew"), state="merged"),
         )
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)
@@ -99,7 +99,7 @@ class TestIosHostnameModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname
-            """
+            """,
         )
         set_module_args(dict(config=dict(), state="deleted"))
         commands = ["no hostname testname"]
@@ -109,7 +109,7 @@ class TestIosHostnameModule(TestIosModule):
     def test_ios_hostname_deleted_blank(self):
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(config=dict(), state="deleted"))
         commands = []
@@ -121,10 +121,10 @@ class TestIosHostnameModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname
-            """
+            """,
         )
         set_module_args(
-            dict(config=dict(hostname="testnameNew"), state="replaced")
+            dict(config=dict(hostname="testnameNew"), state="replaced"),
         )
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)

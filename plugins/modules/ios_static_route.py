@@ -348,7 +348,7 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
     )
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)

@@ -110,7 +110,8 @@ class L3_interfaces(ResourceModule):
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "name", False)
+                begin,
+                self._tmplt.render(want or have, "name", False),
             )
 
     def _compare_lists(self, want, have):
@@ -174,14 +175,14 @@ class L3_interfaces(ResourceModule):
                                     "dhcp": {
                                         "dhcp": {
                                             "client_id": each.get(
-                                                "dhcp_client"
+                                                "dhcp_client",
                                             ),
                                             "hostname": each.get(
-                                                "dhcp_hostname"
+                                                "dhcp_hostname",
                                             ),
-                                        }
-                                    }
-                                }
+                                        },
+                                    },
+                                },
                             )
                         if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})

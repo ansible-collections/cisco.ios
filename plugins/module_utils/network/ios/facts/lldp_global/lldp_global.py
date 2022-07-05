@@ -69,7 +69,8 @@ class Lldp_globalFacts(object):
 
         if objs:
             params = utils.validate_config(
-                self.argument_spec, {"config": utils.remove_empties(objs)}
+                self.argument_spec,
+                {"config": utils.remove_empties(objs)},
             )
             facts["lldp_global"] = utils.remove_empties(params["config"])
         ansible_facts["ansible_network_resources"].update(facts)

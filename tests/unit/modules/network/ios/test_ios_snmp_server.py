@@ -26,18 +26,18 @@ class TestIosSnmpServerModule(TestIosModule):
         super(TestIosSnmpServerModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -45,20 +45,20 @@ class TestIosSnmpServerModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
-            "Snmp_serverFacts.get_snmp_data"
+            "Snmp_serverFacts.get_snmp_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -173,7 +173,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
-            """
+            """,
         )
 
         playbook = {
@@ -442,7 +442,7 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v3",
                     },
                 ],
-            }
+            },
         }
         merged = []
         playbook["state"] = "merged"
@@ -477,7 +477,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
             snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9
             snmp-server inform pending 2
-            """
+            """,
         )
 
         playbook = {
@@ -760,7 +760,7 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v3",
                     },
                 ],
-            }
+            },
         }
         merged = [
             "snmp-server accounting commands default",
@@ -940,7 +940,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
-            """
+            """,
         )
         playbook = {"config": {}}
         deleted = [
@@ -1113,7 +1113,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server inform pending 2
             snmp-server view no-write.test testiso excluded
             snmp-server view test-view! test-test included
-            """
+            """,
         )
 
         playbook = {
@@ -1394,7 +1394,7 @@ class TestIosSnmpServerModule(TestIosModule):
                         "included": True,
                     },
                 ],
-            }
+            },
         }
         overridden = [
             "snmp-server cache interval 2",
@@ -1445,7 +1445,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server host 172.16.2.99 informs version 2c check  msdp
             snmp-server host 172.16.2.99 check  slb
             snmp-server host 172.16.1.1 version 3 auth group0  tty
-            """
+            """,
         )
         playbook = {
             "config": {
@@ -1469,8 +1469,8 @@ class TestIosSnmpServerModule(TestIosModule):
                         "host": "172.16.2.99",
                         "traps": ["slb"],
                     },
-                ]
-            }
+                ],
+            },
         }
         overridden = []
         playbook["state"] = "replaced"
@@ -1508,10 +1508,10 @@ class TestIosSnmpServerModule(TestIosModule):
                     snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
                     snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
                     snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         parsed = {
             "engine_id": [
@@ -1527,7 +1527,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "group": "familypaul",
                     "version": "v3",
                     "acl_v4": "ipv6",
-                }
+                },
             ],
             "traps": {
                 "ospf": {
@@ -1559,7 +1559,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "mep_unknown": True,
                             "service_up": True,
                         },
-                    }
+                    },
                 },
             },
             "hosts": [
@@ -1619,7 +1619,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server host 172.16.2.99 checktrap  isis hsrp
             snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
             snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
         gathered = {
@@ -1643,7 +1643,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "community_string": "checktrap",
                     "traps": ["isis", "hsrp"],
                 },
-            ]
+            ],
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
@@ -1680,7 +1680,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "group": "familypaul",
                             "version": "v3",
                             "acl_v4": "ipv6",
-                        }
+                        },
                     ],
                     "traps": {
                         "ospf": {
@@ -1715,7 +1715,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                     "mep_unknown": True,
                                     "service_up": True,
                                 },
-                            }
+                            },
                         },
                     },
                     "hosts": [
@@ -1767,7 +1767,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     ],
                 },
                 "state": "rendered",
-            }
+            },
         )
         rendered = [
             "snmp-server enable traps ospf cisco-specific errors",
@@ -1819,14 +1819,14 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "priv_option": 128,
                                 "password": "somepass",
                             },
-                        }
-                    ]
+                        },
+                    ],
                 },
                 "state": "rendered",
-            }
+            },
         )
         rendered = [
-            "snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"
+            "snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None

@@ -93,7 +93,8 @@ class Acl_interfaces(ResourceModule):
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "interface", False)
+                begin,
+                self._tmplt.render(want or have, "interface", False),
             )
 
     def _compare_lists(self, want, have):

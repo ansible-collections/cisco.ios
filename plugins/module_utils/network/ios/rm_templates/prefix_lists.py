@@ -82,10 +82,10 @@ class Prefix_listsTemplate(NetworkTemplate):
                                 "ge": "{{ ge.split(' ')[1] if ge is defined }}",
                                 "le": "{{ le.split(' ')[1] if le is defined }}",
                             },
-                        }
+                        },
                     ],
-                }
+                },
             },
             "shared": True,
-        }
+        },
     ]

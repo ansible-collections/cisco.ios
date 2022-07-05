@@ -75,12 +75,12 @@ class Cliconf(CliconfBase):
     def get_config(self, source="running", flags=None, format=None):
         if source not in ("running", "startup"):
             raise ValueError(
-                "fetching configuration from %s is not supported" % source
+                "fetching configuration from %s is not supported" % source,
             )
 
         if format:
             raise ValueError(
-                "'format' value %s is not supported for get_config" % format
+                "'format' value %s is not supported for get_config" % format,
             )
 
         if not flags:
@@ -143,19 +143,19 @@ class Cliconf(CliconfBase):
 
         if candidate is None and device_operations["supports_generate_diff"]:
             raise ValueError(
-                "candidate configuration is required to generate diff"
+                "candidate configuration is required to generate diff",
             )
 
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
                 "'match' value %s in invalid, valid values are %s"
-                % (diff_match, ", ".join(option_values["diff_match"]))
+                % (diff_match, ", ".join(option_values["diff_match"])),
             )
 
         if diff_replace not in option_values["diff_replace"]:
             raise ValueError(
                 "'replace' value %s in invalid, valid values are %s"
-                % (diff_replace, ", ".join(option_values["diff_replace"]))
+                % (diff_replace, ", ".join(option_values["diff_replace"])),
             )
 
         # prepare candidate configuration
@@ -167,10 +167,15 @@ class Cliconf(CliconfBase):
             # running configuration
             have_src, have_banners = self._extract_banners(running)
             running_obj = NetworkConfig(
-                indent=1, contents=have_src, ignore_lines=diff_ignore_lines
+                indent=1,
+                contents=have_src,
+                ignore_lines=diff_ignore_lines,
             )
             configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
+                running_obj,
+                path=path,
+                match=diff_match,
+                replace=diff_replace,
             )
 
         else:
@@ -186,12 +191,20 @@ class Cliconf(CliconfBase):
 
     @enable_mode
     def edit_config(
-        self, candidate=None, commit=True, replace=None, comment=None
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
     ):
         resp = {}
         operations = self.get_device_operations()
         self.check_edit_config_capability(
-            operations, candidate, commit, replace, comment
+            operations,
+            candidate,
+            commit,
+            replace,
+            comment,
         )
 
         results = []
@@ -216,7 +229,11 @@ class Cliconf(CliconfBase):
         return resp
 
     def edit_macro(
-        self, candidate=None, commit=True, replace=None, comment=None
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
     ):
         """
         ios_config:
@@ -229,7 +246,11 @@ class Cliconf(CliconfBase):
         resp = {}
         operations = self.get_device_operations()
         self.check_edit_config_capability(
-            operations, candidate, commit, replace, comment
+            operations,
+            candidate,
+            commit,
+            replace,
+            comment,
         )
 
         results = []
@@ -272,7 +293,7 @@ class Cliconf(CliconfBase):
             raise ValueError("must provide value of command to execute")
         if output:
             raise ValueError(
-                "'output' value %s is not supported for get" % output
+                "'output' value %s is not supported for get" % output,
             )
 
         return self.send_command(
@@ -362,7 +383,10 @@ class Cliconf(CliconfBase):
         return json.dumps(result)
 
     def edit_banner(
-        self, candidate=None, multiline_delimiter="@", commit=True
+        self,
+        candidate=None,
+        multiline_delimiter="@",
+        commit=True,
     ):
         """
         Edit banner on remote device
@@ -411,7 +435,7 @@ class Cliconf(CliconfBase):
             if output:
                 raise ValueError(
                     "'output' value %s is not supported for run_commands"
-                    % output
+                    % output,
                 )
 
             try:
@@ -455,7 +479,8 @@ class Cliconf(CliconfBase):
             if out is None:
                 raise AnsibleConnectionFailure(
                     message="cli prompt is not identified from the last received"
-                    " response window: %s" % self._connection._last_recv_window
+                    " response window: %s"
+                    % self._connection._last_recv_window,
                 )
 
             if re.search(
@@ -463,7 +488,8 @@ class Cliconf(CliconfBase):
                 to_text(out, errors="surrogate_then_replace").strip(),
             ):
                 self._connection.queue_message(
-                    "vvvv", "wrong context, sending end to device"
+                    "vvvv",
+                    "wrong context, sending end to device",
                 )
                 self._connection.send_command("end")
 

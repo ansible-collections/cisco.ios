@@ -125,7 +125,8 @@ class VlansFacts(object):
         if final_objs:
             facts["vlans"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
 
             for cfg in params["config"]:
@@ -190,7 +191,8 @@ class VlansFacts(object):
                     split_sp_list = each.split("-")
                     if len(split_sp_list) > 1:  # break range
                         for r_sp in range(
-                            int(split_sp_list[0]), int(split_sp_list[1]) + 1
+                            int(split_sp_list[0]),
+                            int(split_sp_list[1]) + 1,
                         ):
                             remote_span.append(r_sp)
                     else:

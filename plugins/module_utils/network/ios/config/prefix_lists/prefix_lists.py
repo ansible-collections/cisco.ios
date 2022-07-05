@@ -98,7 +98,7 @@ class Prefix_lists(ResourceModule):
                     if k == "ipv4":
                         k = "ip"
                     self.commands.append(
-                        "no {0} prefix-list {1}".format(k, key)
+                        "no {0} prefix-list {1}".format(k, key),
                     )
 
         # remove superfluous config for overridden and deleted
@@ -110,7 +110,7 @@ class Prefix_lists(ResourceModule):
                         k = "ip"
                     if want_afi and key not in want_afi.get("prefix_lists"):
                         self.commands.append(
-                            "no {0} prefix-list {1}".format(k, key)
+                            "no {0} prefix-list {1}".format(k, key),
                         )
 
         for k, want in iteritems(wantd):
@@ -134,7 +134,8 @@ class Prefix_lists(ResourceModule):
                     for key, val in iteritems(v.get("entries")):
                         if have_prefix.get("entries"):
                             have_prefix_param = have_prefix["entries"].pop(
-                                key, {}
+                                key,
+                                {},
                             )
                         else:
                             have_prefix_param = None
@@ -145,7 +146,7 @@ class Prefix_lists(ResourceModule):
                                     "afi": want["afi"],
                                     "name": k,
                                     "prefix_list": {
-                                        "description": v["description"]
+                                        "description": v["description"],
                                     },
                                 },
                                 have={
@@ -153,8 +154,8 @@ class Prefix_lists(ResourceModule):
                                     "name": k,
                                     "prefix_list": {
                                         "description": have_prefix.pop(
-                                            "description"
-                                        )
+                                            "description",
+                                        ),
                                     },
                                 },
                             )
@@ -173,7 +174,7 @@ class Prefix_lists(ResourceModule):
                                         "afi": have["afi"],
                                         "name": k,
                                         "prefix_list": {
-                                            key: have_prefix_param
+                                            key: have_prefix_param,
                                         },
                                     },
                                 )
@@ -185,9 +186,10 @@ class Prefix_lists(ResourceModule):
                                 ):
                                     self._module.fail_json(
                                         "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
-                                            val.get("sequence"), k
+                                            val.get("sequence"),
+                                            k,
                                         )
-                                        + " Please use state replaced or overridden."
+                                        + " Please use state replaced or overridden.",
                                     )
                                 self.compare(
                                     parsers=self.parsers,
@@ -236,7 +238,7 @@ class Prefix_lists(ResourceModule):
                                     "prefix_list": {
                                         "description": have_prefix[
                                             "description"
-                                        ]
+                                        ],
                                     },
                                 },
                             )
@@ -258,7 +260,7 @@ class Prefix_lists(ResourceModule):
                                 "afi": want["afi"],
                                 "name": k,
                                 "prefix_list": {
-                                    "description": v["description"]
+                                    "description": v["description"],
                                 },
                             },
                             have=dict(),
@@ -284,14 +286,14 @@ class Prefix_lists(ResourceModule):
                         if each.get("entries"):
                             for every in each["entries"]:
                                 temp_entries.update(
-                                    {str(every["sequence"]): every}
+                                    {str(every["sequence"]): every},
                                 )
                         temp_prefix_list.update(
                             {
                                 each["name"]: {
                                     "description": each.get("description"),
                                     "entries": temp_entries,
-                                }
-                            }
+                                },
+                            },
                         )
                     val["prefix_lists"] = temp_prefix_list

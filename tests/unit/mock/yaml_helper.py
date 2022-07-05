@@ -47,7 +47,8 @@ class YamlTestUtils(object):
 
         # dump the gen 2 objects directory to strings
         string_from_object_dump_2 = self._dump_string(
-            obj_2, dumper=AnsibleDumper
+            obj_2,
+            dumper=AnsibleDumper,
         )
 
         # The gen 1 and gen 2 yaml strings
@@ -61,7 +62,8 @@ class YamlTestUtils(object):
         obj_3 = loader_3.get_data()
 
         string_from_object_dump_3 = self._dump_string(
-            obj_3, dumper=AnsibleDumper
+            obj_3,
+            dumper=AnsibleDumper,
         )
 
         self.assertEqual(obj, obj_3)
@@ -95,10 +97,14 @@ class YamlTestUtils(object):
 
         if PY3:
             yaml.dump(
-                obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper
+                obj_from_stream,
+                stream_obj_from_stream,
+                Dumper=AnsibleDumper,
             )
             yaml.dump(
-                obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper
+                obj_from_stream,
+                stream_obj_from_string,
+                Dumper=AnsibleDumper,
             )
         else:
             yaml.dump(
@@ -122,17 +128,23 @@ class YamlTestUtils(object):
 
         if PY3:
             yaml_string_obj_from_stream = yaml.dump(
-                obj_from_stream, Dumper=AnsibleDumper
+                obj_from_stream,
+                Dumper=AnsibleDumper,
             )
             yaml_string_obj_from_string = yaml.dump(
-                obj_from_string, Dumper=AnsibleDumper
+                obj_from_string,
+                Dumper=AnsibleDumper,
             )
         else:
             yaml_string_obj_from_stream = yaml.dump(
-                obj_from_stream, Dumper=AnsibleDumper, encoding=None
+                obj_from_stream,
+                Dumper=AnsibleDumper,
+                encoding=None,
             )
             yaml_string_obj_from_string = yaml.dump(
-                obj_from_string, Dumper=AnsibleDumper, encoding=None
+                obj_from_string,
+                Dumper=AnsibleDumper,
+                encoding=None,
             )
 
         assert yaml_string == yaml_string_obj_from_stream

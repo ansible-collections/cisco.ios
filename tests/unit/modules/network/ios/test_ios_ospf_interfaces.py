@@ -24,18 +24,18 @@ class TestIosOspfInterfacesModule(TestIosModule):
         super(TestIosOspfInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -43,20 +43,20 @@ class TestIosOspfInterfacesModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospf_interfaces.ospf_interfaces."
-            "Ospf_InterfacesFacts.get_ospf_interfaces_data"
+            "Ospf_InterfacesFacts.get_ospf_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -110,12 +110,12 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 cost=dict(interface_cost=50),
                                 priority=50,
                                 ttl_security=dict(hops=150),
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -152,7 +152,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
                                 ttl_security=dict(hops=50),
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/2",
                     ),
@@ -164,13 +164,13 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=20,
                                 process=dict(id=55, area_id="105"),
                                 transmit_delay=30,
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/3",
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -187,12 +187,12 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 cost=dict(interface_cost=50),
                                 priority=50,
                                 ttl_security=dict(hops=150),
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -217,7 +217,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
                                 ttl_security=dict(hops=50),
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/2",
                     ),
@@ -229,13 +229,13 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=20,
                                 process=dict(id=55, area_id="105"),
                                 transmit_delay=30,
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/3",
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -251,13 +251,13 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
                                 transmit_delay=50,
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/3",
-                    )
+                    ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -289,7 +289,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
                                 ttl_security=dict(hops=50),
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/2",
                     ),
@@ -301,19 +301,19 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 priority=20,
                                 process=dict(id=55, area_id="105"),
                                 transmit_delay=30,
-                            )
+                            ),
                         ],
                         name="GigabitEthernet0/3",
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_deleted_interface(self):
         set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/2")], state="deleted")
+            dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"),
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -378,12 +378,12 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 cost=dict(interface_cost=50),
                                 priority=50,
                                 ttl_security=dict(hops=150),
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",

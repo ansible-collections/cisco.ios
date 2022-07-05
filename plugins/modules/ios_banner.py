@@ -145,11 +145,14 @@ def map_config_to_obj(module):
     :return: banner config dict object.
     """
     out = get_config(
-        module, flags="| begin banner %s" % module.params["banner"]
+        module,
+        flags="| begin banner %s" % module.params["banner"],
     )
     if out:
         regex = search(
-            "banner " + module.params["banner"] + " \\^C{1,}\n", out, M
+            "banner " + module.params["banner"] + " \\^C{1,}\n",
+            out,
+            M,
         )
         if regex:
             regex = regex.group()

@@ -232,14 +232,15 @@ def main():
     argument_spec = FactsArgs.argument_spec
     argument_spec.update(ios_argument_spec)
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
     warnings = []
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
         ansible_facts["available_network_resources"] = sorted(
-            FACT_RESOURCE_SUBSETS.keys()
+            FACT_RESOURCE_SUBSETS.keys(),
         )
     result = Facts(module).get_facts()
     additional_facts, additional_warnings = result

@@ -43,7 +43,7 @@ def _tmplt_access_list_entries(aces):
                 )
             else:
                 port_proto_type = list(
-                    config_data[attr]["port_protocol"].keys()
+                    config_data[attr]["port_protocol"].keys(),
                 )[0]
                 command += " {0} {1}".format(
                     port_proto_type,
@@ -78,7 +78,7 @@ def _tmplt_access_list_entries(aces):
             else:
                 command += " {0}".format(list(aces["protocol_options"])[0])
                 proto_option = aces["protocol_options"].get(
-                    list(aces["protocol_options"])[0]
+                    list(aces["protocol_options"])[0],
                 )
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
@@ -86,11 +86,13 @@ def _tmplt_access_list_entries(aces):
             command = source_destination_common_config(aces, command, "source")
         if aces.get("destination"):
             command = source_destination_common_config(
-                aces, command, "destination"
+                aces,
+                command,
+                "destination",
             )
         if isinstance(proto_option, dict):
             command += " {0}".format(
-                list(proto_option.keys())[0].replace("_", "-")
+                list(proto_option.keys())[0].replace("_", "-"),
             )
         if aces.get("dscp"):
             command += " dscp {dscp}".format(**aces)
@@ -158,8 +160,8 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
                         "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
-                    }
-                }
+                    },
+                },
             },
             "shared": True,
         },
@@ -192,8 +194,8 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name_r|d() }}": {
                         "name": "{{ acl_name_r }}",
                         "aces": [{"remarks": "{{ remarks }}"}],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -211,8 +213,8 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name_linear|d() }}": {
                         "name": "{{ acl_name_linear }}",
                         "aces": [{"remarks": "{{ remarks }}"}],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -244,10 +246,10 @@ class AclsTemplate(NetworkTemplate):
                                     "host": "{{ host }}",
                                 },
                                 "log": {"set": "{{ not not log }}"},
-                            }
+                            },
                         ],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -342,7 +344,7 @@ class AclsTemplate(NetworkTemplate):
                                     "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
                                 },
                                 "option": {
-                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}"
+                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}",
                                 },
                                 "precedence": "{{ precedence }}",
                                 "time_range": "{{ time_range }}",
@@ -360,10 +362,10 @@ class AclsTemplate(NetworkTemplate):
                                     "lt": "{{ ttl_lt }}",
                                     "neq": "{{ ttl_neq }}",
                                 },
-                            }
+                            },
                         ],
-                    }
-                }
+                    },
+                },
             },
         },
     ]

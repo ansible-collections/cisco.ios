@@ -62,10 +62,12 @@ class L2_Interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         l2_interfaces_facts = facts["ansible_network_resources"].get(
-            "l2_interfaces"
+            "l2_interfaces",
         )
         if not l2_interfaces_facts:
             return []
@@ -102,10 +104,10 @@ class L2_Interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_l2_interfaces_facts(
-                data=running_config
+                data=running_config,
             )
         else:
             changed_l2_interfaces_facts = []
@@ -155,8 +157,8 @@ class L2_Interfaces(ConfigBase):
         ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    self.state
-                )
+                    self.state,
+                ),
             )
 
         if self.state == "overridden":
@@ -283,7 +285,7 @@ class L2_Interfaces(ConfigBase):
                 else:
                     module.fail_json(
                         msg="Command rejected: Bad VLAN list - end of range not larger than the"
-                        " start of range!"
+                        " start of range!",
                     )
             else:
                 return True
@@ -315,14 +317,16 @@ class L2_Interfaces(ConfigBase):
                         check,
                         want["trunk"][each],
                     ) = self._expand_vlan_range_if_any(
-                        "want", want["trunk"][each]
+                        "want",
+                        want["trunk"][each],
                     )
                     if not check:
                         (
                             check,
                             have["trunk"][each],
                         ) = self._expand_vlan_range_if_any(
-                            "have", have["trunk"][each]
+                            "have",
+                            have["trunk"][each],
                         )
 
         # Get the diff b/w want and have
@@ -333,7 +337,7 @@ class L2_Interfaces(ConfigBase):
         have_trunk = dict(have_dict).get("trunk")
         if want_trunk and have_trunk:
             diff = set(tuple(dict(want_dict).get("trunk"))) - set(
-                tuple(dict(have_dict).get("trunk"))
+                tuple(dict(have_dict).get("trunk")),
             )
             _want_dict = dict(want_dict)
             _have_dict = dict(have_dict)
@@ -359,7 +363,7 @@ class L2_Interfaces(ConfigBase):
 
             if diff.get("voice"):
                 cmd = "switchport voice vlan {0}".format(
-                    diff.get("voice")[0][1]
+                    diff.get("voice")[0][1],
                 )
                 add_command_to_config_list(interface, cmd, commands)
 
@@ -368,30 +372,31 @@ class L2_Interfaces(ConfigBase):
                     diff = dict(trunk)
                 if diff.get("encapsulation"):
                     cmd = self.trunk_cmds["encapsulation"] + " {0}".format(
-                        diff.get("encapsulation")
+                        diff.get("encapsulation"),
                     )
                     add_command_to_config_list(interface, cmd, commands)
                 if diff.get("native_vlan"):
                     cmd = self.trunk_cmds["native_vlan"] + " {0}".format(
-                        diff.get("native_vlan")
+                        diff.get("native_vlan"),
                     )
                     add_command_to_config_list(interface, cmd, commands)
                 allowed_vlans = diff.get("allowed_vlans")
                 pruning_vlans = diff.get("pruning_vlans")
 
                 if allowed_vlans and self._check_for_correct_vlan_range(
-                    allowed_vlans, module
+                    allowed_vlans,
+                    module,
                 ):
                     diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("allowed_vlans"):
                             have_allowed_vlans = have_trunk.get(
-                                "allowed_vlans"
+                                "allowed_vlans",
                             )
                             allowed_vlans = list(allowed_vlans)
                             diff = set(allowed_vlans).difference(
-                                set(have_allowed_vlans)
+                                set(have_allowed_vlans),
                             )
                             allowed_vlans = list(diff) if diff else tuple()
                     allowed_vlans = ",".join(allowed_vlans)
@@ -404,18 +409,19 @@ class L2_Interfaces(ConfigBase):
                         cmd = trunk_cmd + " {0}".format(allowed_vlans)
                         add_command_to_config_list(interface, cmd, commands)
                 if pruning_vlans and self._check_for_correct_vlan_range(
-                    pruning_vlans, module
+                    pruning_vlans,
+                    module,
                 ):
                     diff = None
                     if self.state == "merged":
                         have_trunk = have.get("trunk")
                         if have_trunk and have_trunk.get("pruning_vlans"):
                             have_pruning_vlans = have_trunk.get(
-                                "pruning_vlans"
+                                "pruning_vlans",
                             )
                             pruning_vlans = list(pruning_vlans)
                             diff = set(pruning_vlans).difference(
-                                set(have_pruning_vlans)
+                                set(have_pruning_vlans),
                             )
                             pruning_vlans = list(diff) if diff else tuple()
                     pruning_vlans = ",".join(pruning_vlans)
@@ -443,16 +449,20 @@ class L2_Interfaces(ConfigBase):
 
         if have.get("mode") or want.get("mode"):
             remove_command_from_config_list(
-                interface, "switchport mode", commands
+                interface,
+                "switchport mode",
+                commands,
             )
 
         if have.get("access") and want.get("access") is None:
             remove_command_from_config_list(
-                interface, L2_Interfaces.access_cmds["access_vlan"], commands
+                interface,
+                L2_Interfaces.access_cmds["access_vlan"],
+                commands,
             )
         elif have.get("access") and want.get("access"):
             if have.get("access").get("vlan") != want.get("access").get(
-                "vlan"
+                "vlan",
             ):
                 remove_command_from_config_list(
                     interface,
@@ -462,57 +472,77 @@ class L2_Interfaces(ConfigBase):
 
         if have.get("voice") and want.get("voice") is None:
             remove_command_from_config_list(
-                interface, L2_Interfaces.voice_cmds["voice_vlan"], commands
+                interface,
+                L2_Interfaces.voice_cmds["voice_vlan"],
+                commands,
             )
         elif have.get("voice") and want.get("voice"):
             if have.get("voice").get("vlan") != want.get("voice").get("vlan"):
                 remove_command_from_config_list(
-                    interface, L2_Interfaces.voice_cmds["voice_vlan"], commands
+                    interface,
+                    L2_Interfaces.voice_cmds["voice_vlan"],
+                    commands,
                 )
 
         if have.get("trunk") and want.get("trunk") is None:
             # Check when no config is passed
             if have.get("trunk").get("encapsulation"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["encapsulation"], commands
+                    interface,
+                    self.trunk_cmds["encapsulation"],
+                    commands,
                 )
             if have.get("trunk").get("native_vlan"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["native_vlan"], commands
+                    interface,
+                    self.trunk_cmds["native_vlan"],
+                    commands,
                 )
             if have.get("trunk").get("allowed_vlans"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["allowed_vlans"], commands
+                    interface,
+                    self.trunk_cmds["allowed_vlans"],
+                    commands,
                 )
             if have.get("trunk").get("pruning_vlans"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["pruning_vlans"], commands
+                    interface,
+                    self.trunk_cmds["pruning_vlans"],
+                    commands,
                 )
         elif have.get("trunk") and want.get("trunk"):
             # Check when config is passed, also used in replaced and override state
             if have.get("trunk").get("encapsulation") and have.get(
-                "trunk"
+                "trunk",
             ).get("encapsulation") != want.get("trunk").get("encapsulation"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["encapsulation"], commands
+                    interface,
+                    self.trunk_cmds["encapsulation"],
+                    commands,
                 )
             if have.get("trunk").get("native_vlan") and have.get("trunk").get(
-                "native_vlan"
+                "native_vlan",
             ) != want.get("trunk").get("native_vlan"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["native_vlan"], commands
+                    interface,
+                    self.trunk_cmds["native_vlan"],
+                    commands,
                 )
             if have.get("trunk").get("allowed_vlans") and have.get(
-                "trunk"
+                "trunk",
             ).get("allowed_vlans") != want.get("trunk").get("allowed_vlans"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["allowed_vlans"], commands
+                    interface,
+                    self.trunk_cmds["allowed_vlans"],
+                    commands,
                 )
             if have.get("trunk").get("pruning_vlans") and have.get(
-                "trunk"
+                "trunk",
             ).get("pruning_vlans") != want.get("trunk").get("pruning_vlans"):
                 remove_command_from_config_list(
-                    interface, self.trunk_cmds["pruning_vlans"], commands
+                    interface,
+                    self.trunk_cmds["pruning_vlans"],
+                    commands,
                 )
 
         return commands

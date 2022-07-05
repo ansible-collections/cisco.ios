@@ -39,7 +39,7 @@ class Prefix_listsFacts(object):
 
     def get_prefix_list_data(self, connection):
         return connection.get(
-            "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+            "show running-config | section ^ip prefix-list|^ipv6 prefix-list",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -81,7 +81,7 @@ class Prefix_listsFacts(object):
                             for each in final_objs:
                                 if v["afi"] == each["afi"]:
                                     each["prefix_lists"].extend(
-                                        temp["prefix_lists"]
+                                        temp["prefix_lists"],
                                     )
                         else:
                             final_objs.append(copy(temp))
@@ -91,17 +91,18 @@ class Prefix_listsFacts(object):
                     if not temp_prefix_list.get("name"):
                         temp_prefix_list["name"] = each["name"]
                     if not temp_prefix_list.get("description") and each.get(
-                        "description"
+                        "description",
                     ):
                         temp_prefix_list["description"] = each["description"]
                     if each["entries"] and not each["entries"].get(
-                        "description"
+                        "description",
                     ):
                         temp_prefix_list["entries"].append(each["entries"])
                 temp["prefix_lists"].append(temp_prefix_list)
             if temp and temp["afi"]:
                 temp["prefix_lists"] = sorted(
-                    temp["prefix_lists"], key=lambda k, sk="name": str(k[sk])
+                    temp["prefix_lists"],
+                    key=lambda k, sk="name": str(k[sk]),
                 )
                 # additional check for py3.5
                 if len(final_objs) == 2:
@@ -114,13 +115,15 @@ class Prefix_listsFacts(object):
             final_objs = sorted(final_objs, key=lambda k, sk="afi": k[sk])
 
             ansible_facts["ansible_network_resources"].pop(
-                "prefix_lists", None
+                "prefix_lists",
+                None,
             )
 
             params = utils.remove_empties(
                 utils.validate_config(
-                    self.argument_spec, {"config": final_objs}
-                )
+                    self.argument_spec,
+                    {"config": final_objs},
+                ),
             )
 
             facts["prefix_lists"] = params["config"]

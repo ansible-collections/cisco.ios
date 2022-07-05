@@ -80,7 +80,9 @@ class TestIosModule(ModuleTestCase):
                 )
             else:
                 self.assertEqual(
-                    commands, result["commands"], result["commands"]
+                    commands,
+                    result["commands"],
+                    result["commands"],
                 )
 
         return result

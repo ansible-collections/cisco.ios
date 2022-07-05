@@ -78,7 +78,8 @@ class Snmp_serverFacts(object):
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = snmp_server_parser.parse()
 
@@ -90,8 +91,10 @@ class Snmp_serverFacts(object):
 
         params = utils.remove_empties(
             snmp_server_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["snmp_server"] = params.get("config", {})

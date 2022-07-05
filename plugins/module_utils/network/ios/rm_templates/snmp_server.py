@@ -34,7 +34,7 @@ def cmd_option_engine_id(config_data):
                 cmd += "remote {host}".format(host=rm.get("host"))
             if rm.get("udp_port"):
                 cmd += " udp-port {udp_port}".format(
-                    udp_port=rm.get("udp_port")
+                    udp_port=rm.get("udp_port"),
                 )
             if rm.get("vrf"):
                 cmd += " vrf {vrf}".format(vrf=rm.get("vrf"))
@@ -67,17 +67,17 @@ def cmd_option_hosts(config_data):  # contain sub list attr
             cmd += " informs"
         if config_data.get("version"):
             cmd += " version {version}".format(
-                version=config_data.get("version")
+                version=config_data.get("version"),
             )
         if config_data.get("version_option"):
             cmd += " {version}".format(
-                version=config_data.get("version_option")
+                version=config_data.get("version_option"),
             )
         if config_data.get("vrf"):
             cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
             cmd += " {community_string}".format(
-                community_string=config_data.get("community_string")
+                community_string=config_data.get("community_string"),
             )
         if config_data.get("traps"):
             for protocol in list(config_data.get("traps").keys()):
@@ -112,7 +112,9 @@ def cmd_option_trap_bgp(config_data):
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Snmp_serverTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
@@ -123,7 +125,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\saccounting\scommands
                 (\s(?P<command>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server accounting commands {{ accounting.command }}",
             "result": {
                 "accounting": {
@@ -137,7 +140,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\scache\sinterval
                 (\s(?P<interval>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server cache interval {{ cache }}",
             "result": {
                 "cache": "{{ interval }}",
@@ -149,7 +153,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\schassis-id
                 (\s(?P<uqString>.+$))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server chassis-id {{ chassis_id }}",
             "result": {
                 "chassis_id": "{{ uqString }}",
@@ -166,7 +171,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<rw>RW))?
                 (\sipv6\s(?P<acl_v6>\S+))?
                 (\s(?P<acl_v4>\S+|\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server community "
                       "{{ name }}"
                       "{{ (' view ' + view) if view is defined else '' }}"
@@ -184,7 +190,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "acl_v6": "{{ acl_v6 }}",
                         "acl_v4": "{{ acl_v4 }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -193,7 +199,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\scontact
                 (\s(?P<contact>.+$))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server contact {{ contact }}",
             "result": {
                 "contact": "{{ contact }}",
@@ -205,10 +212,11 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\scontext
                 (\s(?P<context>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server context {{ context }}",
             "result": {
-                "context": ["{{ context }}", ],
+                "context": ["{{ context }}"],
             },
         },
         {
@@ -218,7 +226,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\sdrop
                 (\s(?P<vrf_traffic>vrf-traffic))?
                 (\s(?P<unknown_user>unknown-user))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server drop"
                       "{{ ' vrf-traffic' if drop.vrf_traffic is defined else '' }}"
                       "{{ ' unknown-user' if drop.unknown_user is defined else '' }}",
@@ -226,7 +235,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "drop": {
                     "vrf_traffic": "{{ not not vrf_traffic }}",
                     "unknown_user": "{{ not not unknown_user }}",
-                }
+                },
             },
         },
         {
@@ -239,7 +248,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<id>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": cmd_option_engine_id,
             "result": {
                 "engine_id": [
@@ -252,7 +262,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                             "vrf": "{{ vrf }}",
                         },
                     },
-                ]
+                ],
             },
         },
         {
@@ -262,12 +272,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\sfile-transfer
                 (\saccess-group\s(?P<access_group>\S+))?
                 (\sprotocol\s(?P<protocol>ftp|rcp|tftp))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": cmd_option_file_transfer,
             "result": {
                 "file_transfer": {
                     "access_group": "{{ access_group }}",
-                    "protocol": ["{{ protocol }}", ],
+                    "protocol": ["{{ protocol }}"],
                 },
             },
         },
@@ -285,7 +296,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\swrite\s(?P<write>\S+))?
                 (\saccess\s(?P<acl_v4>\S+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server group "
                       "{{ group if group is defined else '' }}"
                       "{{ (' ' + version) if version is defined else '' }}"
@@ -309,7 +321,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "acl_v4": "{{ acl_v4 }}",
                         "acl_v6": "{{ acl_v6 }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -324,7 +336,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<community_string>\S+))?
                 (\s+(?P<traps>.+$))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": cmd_option_hosts,
             "result": {
                 "hosts": [
@@ -337,7 +350,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "version_option": "{{ version_option }}",
                         "vrf": "{{ vrf }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -355,7 +368,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sspecial-char\s(?P<special_char>\d+))?
                 (\sdigits\s(?P<digits>\d+))?
                 (\schange\s(?P<change>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server password-policy "
                       "{{ policy_name if policy_name is defined else '' }}"
                       "{{ (' user ' + username) if username is defined else ' define' }}"
@@ -379,7 +393,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "change": "{{ change }}",
                         "digits": "{{ digits }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -396,7 +410,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\saccess\s(?P<acl_v4>\S+|\d+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server user "
                       "{{ username if username is defined else '' }}"
                       "{{ (' ' + group) if group is defined else '' }}"
@@ -425,7 +440,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "acl_v6": "{{ acl_v6 }}",
                         "vrf": "{{ vrf }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -437,7 +452,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<family_name>[-\w]+))?
                 (\s(?P<excluded>excluded))?
                 (\s(?P<included>included))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server view "
                       "{{ name if name is defined else '' }}"
                       "{{ (' ' + family_name) if family_name is defined else '' }}"
@@ -451,7 +467,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "excluded": "{{ not not excluded }}",
                         "included": "{{ not not included }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -460,7 +476,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\sifindex
                 (\s(?P<if_index>persist))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server ifindex persist",
             "result": {
                 "if_index": "{{ not not if_index }}",
@@ -474,7 +491,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\spending\s(?P<pending>\d+))?
                 (\sretries\s(?P<retries>\d+))?
                 (\stimeout\s(?P<timeout>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server inform"
                       "{{ (' pending ' + inform.pending|string) if inform.pending is defined else '' }}"
                       "{{ (' retries ' + inform.retries|string) if inform.retries is defined else '' }}"
@@ -484,7 +502,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                     "pending": "{{ pending }}",
                     "retries": "{{ retries }}",
                     "timeout": "{{ timeout }}",
-                }
+                },
             },
         },
         {
@@ -494,7 +512,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\sip\sdscp
                 (\s(?P<dscp>\d+))?
                 (\sprecedence(?P<precedence>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server ip dscp "
                       "{{ (ip.dscp|string) if ip.dscp is defined else '' }}"
                       "{{ (' precedence ' + ip.precedence) if ip.precedence is defined else '' }}",
@@ -511,7 +530,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\slocation
                 (\s(?P<location>.+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server location {{ location }}",
             "result": {
                 "location": "{{ location }}",
@@ -523,7 +543,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\smanager
                 (\ssession-timeout\s(?P<manager>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server manager session-timeout {{ manager }}",
             "result": {
                 "manager": "{{ manager }}",
@@ -535,7 +556,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\spacketsize
                 (\s(?P<packet_size>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server packetsize {{ packet_size }}",
             "result": {
                 "packet_size": "{{ packet_size }}",
@@ -547,7 +569,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\squeue-length
                 (\s(?P<queue_length>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server queue-length {{ queue_length }}",
             "result": {
                 "queue_length": "{{ queue_length }}",
@@ -559,7 +582,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\strap\stimeout
                 (\s(?P<ttimeout>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server trap timeout {{ trap_timeout }}",
             "result": {
                 "trap_timeout": "{{ ttimeout }}",
@@ -571,7 +595,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\ssource-interface
                 (\sinforms\s(?P<interface>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server source-interface informs {{ source_interface }}",
             "result": {
                 "source_interface": "{{ interface }}",
@@ -583,7 +608,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\strap-source
                 (\s(?P<interface>\S+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server trap-source {{ trap_source }}",
             "result": {
                 "trap_source": "{{ interface }}",
@@ -596,7 +622,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable\straps\sauth-framework
                 (\s(?P<sec_violation>sec-violation))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps"
                       "{{ (' auth-framework') if traps.auth_framework.enable is defined else '' }}"
                       "{{ (' sec-violation') if traps.auth_framework.sec_violation is defined else '' }}",
@@ -616,7 +643,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sbfd
                 (\s(?P<session_down>session-down))?
                 (\s(?P<session_up>session-up))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps bfd' if traps.bfd.enable is defined else '' }}"
                       "{{ (' session-down') if traps.bfd.session_down is defined else '' }}"
                       "{{ (' session-up') if traps.bfd.session_up is defined else '' }}",
@@ -641,7 +669,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<backward_trans>backward-trans))?
                 (\s(?P<limited>limited))?
                 (\sthreshold(?P<prefix>prefix))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": cmd_option_trap_bgp,
             "remval": "snmp-server enable traps bgp",
             "result": {
@@ -669,7 +698,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sbridge
                 (\s(?P<newroot>newroot))?
                 (\s(?P<topologychange>topologychange))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps bridge' if traps.bridge.enable is defined else '' }}"
                       "{{ (' newroot') if traps.bridge.newroot|d(False) is defined else '' }}"
                       "{{ (' topologychange') if traps.bridge.topologychange|d(False) is defined else '' }}",
@@ -688,7 +718,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\scasa
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps casa",
             "result": {
                 "traps": {
@@ -701,7 +732,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\scnpd
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps cnpd",
             "result": {
                 "traps": {
@@ -714,7 +746,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sconfig
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps config",
             "result": {
                 "traps": {
@@ -727,7 +760,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sisis$
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps isis",
             "result": {
                 "traps": {
@@ -740,7 +774,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sconfig-copy
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps config-copy",
             "result": {
                 "traps": {
@@ -753,7 +788,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sconfig-ctid
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps config-ctid",
             "result": {
                 "traps": {
@@ -766,7 +802,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sdhcp
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps dhcp",
             "result": {
                 "traps": {
@@ -779,7 +816,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\seigrp
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps eigrp",
             "result": {
                 "traps": {
@@ -792,7 +830,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sentity
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity",
             "result": {
                 "traps": {
@@ -805,7 +844,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\senergywise$
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps energywise",
             "result": {
                 "traps": {
@@ -818,7 +858,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sevent-manager
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps event-manager",
             "result": {
                 "traps": {
@@ -831,7 +872,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sflowmon
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps flowmon",
             "result": {
                 "traps": {
@@ -844,7 +886,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sfru-ctrl
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps fru-ctrl",
             "result": {
                 "traps": {
@@ -857,7 +900,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\shsrp
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps hsrp",
             "result": {
                 "traps": {
@@ -870,7 +914,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsla
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsla",
             "result": {
                 "traps": {
@@ -883,7 +928,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\smsdp$
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps msdp",
             "result": {
                 "traps": {
@@ -896,7 +942,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\spw\svc$
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps pw vc",
             "result": {
                 "traps": {
@@ -909,7 +956,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\smvpn
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps mvpn",
             "result": {
                 "traps": {
@@ -922,7 +970,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\smpls\svpn
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps mpls vpn",
             "result": {
                 "traps": {
@@ -935,7 +984,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\spki
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps pki",
             "result": {
                 "traps": {
@@ -948,7 +998,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\srsvp
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rsvp",
             "result": {
                 "traps": {
@@ -961,7 +1012,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\ssyslog
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps syslog",
             "result": {
                 "traps": {
@@ -974,7 +1026,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\stransceiver-all
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps transceiver-all",
             "result": {
                 "traps": {
@@ -987,7 +1040,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\stty
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps tty",
             "result": {
                 "traps": {
@@ -1000,7 +1054,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\svrrp
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps vrrp",
             "result": {
                 "traps": {
@@ -1013,7 +1068,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipmulticast
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipmulticast",
             "result": {
                 "traps": {
@@ -1026,7 +1082,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sike\spolicy\sadd
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ike policy add",
             "result": {
                 "traps": {
@@ -1043,7 +1100,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sike\spolicy\sdelete
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ike policy delete",
             "result": {
                 "traps": {
@@ -1060,7 +1118,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sike\stunnel\sstart
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ike tunnel start",
             "result": {
                 "traps": {
@@ -1077,7 +1136,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sike\stunnel\sstop
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ike tunnel stop",
             "result": {
                 "traps": {
@@ -1094,7 +1154,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\scryptomap\sadd
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec cryptomap add",
             "result": {
                 "traps": {
@@ -1111,7 +1172,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\scryptomap\sdelete
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec cryptomap delete",
             "result": {
                 "traps": {
@@ -1128,7 +1190,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\scryptomap\sattach
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec cryptomap attach",
             "result": {
                 "traps": {
@@ -1145,7 +1208,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\scryptomap\sdetach
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec cryptomap detach",
             "result": {
                 "traps": {
@@ -1162,7 +1226,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\stunnel\sstart
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec tunnel start",
             "result": {
                 "traps": {
@@ -1179,7 +1244,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\stunnel\sstop
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec tunnel stop",
             "result": {
                 "traps": {
@@ -1196,7 +1262,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sipsec\stoo-many-sas
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ipsec too-many-sas",
             "result": {
                 "traps": {
@@ -1211,7 +1278,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\serrors
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific errors",
             "result": {
                 "traps": {
@@ -1228,7 +1296,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\sretransmit
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific retransmit",
             "result": {
                 "traps": {
@@ -1245,7 +1314,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\slsa
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific lsa",
             "result": {
                 "traps": {
@@ -1262,7 +1332,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\sstate-change\snssa-trans-change
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific state-change nssa-trans-change",
             "result": {
                 "traps": {
@@ -1281,7 +1352,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\sstate-change\sshamlink\sinterface
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific state-change shamlink interface",
             "result": {
                 "traps": {
@@ -1302,7 +1374,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\scisco-specific\sstate-change\sshamlink\sneighbor
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf cisco-specific state-change shamlink neighbor",
             "result": {
                 "traps": {
@@ -1323,7 +1396,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\serrors
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf errors",
             "result": {
                 "traps": {
@@ -1338,7 +1412,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\sretransmit
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf retransmit",
             "result": {
                 "traps": {
@@ -1353,7 +1428,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\slsa
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf lsa",
             "result": {
                 "traps": {
@@ -1368,7 +1444,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sospf\sstate-change
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf state-change",
             "result": {
                 "traps": {
@@ -1384,7 +1461,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable\straps\sl2tun\spseudowire\sstatus
                 (\s(?P<pseudowire_status>))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps l2tun pseudowire status",
             "result": {
                 "traps": {
@@ -1399,7 +1477,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sl2tun\ssession
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps l2tun session",
             "result": {
                 "traps": {
@@ -1415,7 +1494,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable\straps\scpu
                 (\s(?P<threshold>threshold))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps cpu' if traps.cpu.enable is defined else '' }}"
                       "{{ ' threshold' if traps.cpu.threshold is defined else '' }}",
             "result": {
@@ -1433,7 +1513,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable\straps\sfirewall
                 (\s(?P<serverstatus>serverstatus))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps firewall' if traps.firewall.enable is defined else '' }}"
                       "{{ ' serverstatus' if traps.firewall.serverstatus|d(False) else ''}}",
             "result": {
@@ -1453,7 +1534,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<neighbor_change>neighbor-change))?
                 (\s(?P<rp_mapping_change>rp-mapping-change))?
                 (\s(?P<invalid_pim_message>invalid-pim-message))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps pim' if traps.pim.enable is defined else '' }}"
                       "{{ ' neighbor-change' if traps.pim.neighbor_change|d(False) else ''}}"
                       "{{ ' rp-mapping-change' if traps.pim.rp_mapping_change|d(False) else ''}}"
@@ -1478,7 +1560,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<vrf_down>vrf-down))?
                 (\s(?P<vnet_trunk_up>vnet-trunk-up))?
                 (\s(?P<vnet_trunk_down>vnet-trunk-down))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps vrfmib"
                       "{{ ' vrf-up' if traps.vrfmib.vrf_up|d(False) else ''}}"
                       "{{ ' vrf-down' if traps.vrfmib.vrf_down|d(False) else ''}}"
@@ -1505,7 +1588,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<linkup>linkup))?
                 (\s(?P<coldstart>coldstart))?
                 (\s(?P<warmstart>warmstart))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps snmp"
                       "{{ ' authentication' if traps.snmp.authentication is defined else '' }}"
                       "{{ ' linkdown' if traps.snmp.linkdown|d(False) else ''}}"
@@ -1529,7 +1613,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sframe-relay$
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps frame-relay",
             "result": {
                 "traps": {
@@ -1546,7 +1631,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sframe-relay\ssubif
                 (\scount(?P<count>\d+))?
                 (\sinterval(?P<interval>\d+))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps frame-relay subif"
                       "{{ (' count ' + count|string) if traps.frame_relay.count else '' }}"
                       "{{ (' interval ' + interval|string) if traps.frame_relay.interval else '' }}",
@@ -1571,7 +1657,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<peer_state_change>peer-state-change))?
                 (\s(?P<peer_fib_state_change>peer-fib-state-change))?
                 (\s(?P<inconsistency>inconsistency))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps cef' if traps.cef.enable is defined else '' }}"
                       "{{ ' resource-failure' if traps.cef.resource_failure|d(False) else ''}}"
                       "{{ ' peer-state-change' if traps.cef.peer_state_change|d(False) else ''}}"
@@ -1596,7 +1683,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable\straps\sdlsw
                 (\s(?P<circuit>circuit))?
                 (\s(?P<tconn>tconn))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "{{ 'snmp-server enable traps dlsw' if traps.dlsw.enable is defined else '' }}"
                       "{{ ' circuit' if traps.dlsw.circuit|d(False) else ''}}"
                       "{{ ' tconn' if traps.dlsw.tconn|d(False) else ''}}",
@@ -1618,7 +1706,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<status>status))?
                 (\s(?P<create>create))?
                 (\s(?P<delete>delete))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ethernet evc"
                       "{{ ' create' if traps.ethernet.evc.create|d(False) else ''}}"
                       "{{ ' delete' if traps.ethernet.evc.delete|d(False) else ''}}"
@@ -1645,7 +1734,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<cross_connect>cross-connect))?
                 (\s(?P<loop>loop))?
                 (\s(?P<config>config))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ethernet cfm cc"
                       "{{ ' mep-up' if traps.ethernet.cfm.cc.mep_up|d(False) else ''}}"
                       "{{ ' mep-down' if traps.ethernet.cfm.cc.mep_down|d(False) else ''}}"
@@ -1676,7 +1766,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<mep_missing>mep-missing))?
                 (\s(?P<mep_unknown>mep-unknown))?
                 (\s(?P<service_up>service-up))?
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ethernet cfm crosscheck"
                       "{{ ' mep-missing' if traps.ethernet.cfm.crosscheck.mep_missing|d(False) else ''}}"
                       "{{ ' mep-unknown' if traps.ethernet.cfm.crosscheck.mep_unknown|d(False) else ''}}"
@@ -1700,7 +1791,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable\straps\sethernet\scfm\salarm
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ethernet cfm alarm",
             "result": {
                 "traps": {
@@ -1717,7 +1809,8 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server\ssystem-shutdown
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "snmp-server system-shutdown",
             "result": {
                 "system_shutdown": True,

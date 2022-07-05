@@ -75,7 +75,8 @@ class Lldp_InterfacesFacts(object):
         if objs:
             facts["lldp_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["lldp_interfaces"].append(utils.remove_empties(cfg))

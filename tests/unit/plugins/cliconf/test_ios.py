@@ -39,7 +39,8 @@ from ansible_collections.cisco.ios.tests.unit.compat import unittest
 
 b_FIXTURE_DIR = b"%s/fixtures/ios" % (
     to_bytes(
-        path.dirname(path.abspath(__file__)), errors="surrogate_or_strict"
+        path.dirname(path.abspath(__file__)),
+        errors="surrogate_or_strict",
     )
 )
 
@@ -52,7 +53,7 @@ def _connection_side_effect(*args, **kwargs):
             value = kwargs.get("command")
 
         fixture_path = path.abspath(
-            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
+            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))),
         )
         with open(fixture_path, "rb") as file_desc:
             return file_desc.read()
