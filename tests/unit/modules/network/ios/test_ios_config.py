@@ -24,13 +24,8 @@ __metaclass__ = type
 
 from ansible_collections.cisco.ios.plugins.cliconf.ios import Cliconf
 from ansible_collections.cisco.ios.plugins.modules import ios_config
-from ansible_collections.cisco.ios.tests.unit.compat.mock import (
-    MagicMock,
-    patch,
-)
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.compat.mock import MagicMock, patch
+from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
 

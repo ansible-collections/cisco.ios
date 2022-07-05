@@ -7,4 +7,4 @@
       \ pruning vlan 10,20\nswitchport mode trunk\n"
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
-    config: '{{ lines }}'
+    config: "{{ lines }}"

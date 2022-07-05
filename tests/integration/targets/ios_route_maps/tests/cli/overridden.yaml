@@ -1,13 +1,13 @@
 ---
 - debug:
-    msg: START Overridden ios_route_maps state for integration tests on connection={{
+    msg:
+      START Overridden ios_route_maps state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Override provided Route maps configuration
       register: result
       cisco.ios.ios_route_maps: &id001
@@ -124,5 +124,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

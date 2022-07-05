@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg: START Merged ios_lldp_global state for integration tests on connection={{
+    msg:
+      START Merged ios_lldp_global state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Merge provided configuration Global LLDP
       register: result
       cisco.ios.ios_lldp_global: &id001
@@ -42,5 +42,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

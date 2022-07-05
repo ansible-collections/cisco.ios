@@ -18,9 +18,7 @@ __metaclass__ = type
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
@@ -96,11 +94,7 @@ class VlansFacts(object):
             if temp:
                 conf = temp
                 temp = ""
-            if (
-                conf
-                and " " not in filter(None, conf.split("-"))
-                and not conf.split(" ")[0] == ""
-            ):
+            if conf and " " not in filter(None, conf.split("-")) and not conf.split(" ")[0] == "":
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
                     mtu_objs.append(obj)

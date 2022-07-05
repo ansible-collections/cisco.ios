@@ -1,16 +1,15 @@
 ---
 - debug:
-    msg: Start ios_l2_interfaces rendered integration tests ansible_connection={{
+    msg:
+      Start ios_l2_interfaces rendered integration tests ansible_connection={{
       ansible_connection }}
 
 - block:
-
     - name: Render the commands for provided  configuration
       become: true
       register: result
       cisco.ios.ios_l2_interfaces:
         config:
-
           - name: GigabitEthernet0/1
             access:
               vlan: 30

@@ -4,7 +4,6 @@
       ansible_connection }}
 
 - block:
-
     - name: Render the commands for provided  configuration
       become: true
       register: result

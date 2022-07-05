@@ -249,10 +249,7 @@ def map_obj_to_commands(updates, module, os_version):
             if facility:
                 present = False
                 for entry in have:
-                    if (
-                        entry["dest"] == "facility"
-                        and entry["facility"] == facility
-                    ):
+                    if entry["dest"] == "facility" and entry["facility"] == facility:
                         present = True
                 if not present:
                     commands.append("logging facility {0}".format(facility))

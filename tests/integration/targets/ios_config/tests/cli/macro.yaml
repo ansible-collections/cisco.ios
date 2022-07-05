@@ -11,7 +11,6 @@
 - name: ios_config macro integration tests
   when: supports_macro is succeeded
   block:
-
     - name: Define macro name
       ansible.builtin.set_fact:
         macro_name: MACRO_ANSIBLE_TEST
@@ -27,8 +26,8 @@
       register: result
       cisco.ios.ios_config:
         parents: macro name {{ macro_name }}
-        multiline_delimiter: '@'
-        after: '@'
+        multiline_delimiter: "@"
+        after: "@"
         match: line
         replace: block
         lines: "{{ lookup('template', 'basic/macro.j2') }}"
@@ -42,8 +41,8 @@
       register: result
       cisco.ios.ios_config:
         parents: macro name {{ macro_name }}
-        multiline_delimiter: '@'
-        after: '@'
+        multiline_delimiter: "@"
+        after: "@"
         match: line
         replace: block
         lines: "{{ lookup('template', 'basic/macro.j2') }}"
@@ -53,7 +52,6 @@
         that:
           - result.changed == false
   always:
-
     - name: teardown
       cisco.ios.ios_config:
         lines:

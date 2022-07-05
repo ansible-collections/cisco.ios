@@ -6,7 +6,6 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: ios_ntp_global rtt - Play (Base config)
       register: result
       cisco.ios.ios_ntp_global:
@@ -19,8 +18,8 @@
     - name: ios_ntp_global rtt - Gather ntp facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - ntp_global
 

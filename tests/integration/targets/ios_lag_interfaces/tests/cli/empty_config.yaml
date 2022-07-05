@@ -1,10 +1,10 @@
 ---
 - debug:
-    msg: START ios_lag_interfaces empty_config.yaml integration tests on connection={{
+    msg:
+      START ios_lag_interfaces empty_config.yaml integration tests on connection={{
       ansible_connection }}
 
 - block:
-
     - name: Merged with empty config should give appropriate error message
       register: result
       ignore_errors: true

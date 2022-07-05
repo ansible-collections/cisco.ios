@@ -701,8 +701,7 @@ def check_declarative_intent_params(want, module, result):
                             interface,
                         ):
                             module.fail_json(
-                                msg="Interface %s not configured on vrf %s"
-                                % (interface, name),
+                                msg="Interface %s not configured on vrf %s" % (interface, name),
                             )
 
 

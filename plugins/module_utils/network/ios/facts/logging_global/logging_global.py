@@ -16,9 +16,7 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logging_global.logging_global import (
     Logging_globalArgs,
@@ -73,9 +71,7 @@ class Logging_globalFacts(object):
                 elif type(v) == list and k == "hosts":
                     objFinal[k] = sorted(
                         objFinal[k],
-                        key=lambda item: item["host"]
-                        if item.get("host")
-                        else item.get("ipv6"),
+                        key=lambda item: item["host"] if item.get("host") else item.get("ipv6"),
                     )
                 elif type(v) == list and k == "source_interface":
                     objFinal[k] = sorted(

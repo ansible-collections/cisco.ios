@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START ios_prefix_lists empty_config.yaml integration tests on connection={{
+    msg:
+      START ios_prefix_lists empty_config.yaml integration tests on connection={{
       ansible_connection }}
 
 - name: Merged with empty config should give appropriate error message

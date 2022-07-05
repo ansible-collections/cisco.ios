@@ -285,9 +285,7 @@ def map_params_to_obj(module):
                 "vlan_id": str(module.params["vlan_id"]),
                 "name": module.params["name"],
                 "interfaces": module.params["interfaces"],
-                "associated_interfaces": module.params[
-                    "associated_interfaces"
-                ],
+                "associated_interfaces": module.params["associated_interfaces"],
                 "state": module.params["state"],
             },
         )
@@ -330,9 +328,7 @@ def parse_to_obj(logical_rows):
     if obj["state"] == "suspended":
         obj["state"] = "suspend"
     obj["interfaces"] = map_ports_str_to_list(obj["interfaces"])
-    obj["interfaces"].extend(
-        prts_r for prts in rest_rows for prts_r in map_ports_str_to_list(prts)
-    )
+    obj["interfaces"].extend(prts_r for prts in rest_rows for prts_r in map_ports_str_to_list(prts))
     return obj
 
 
@@ -357,14 +353,9 @@ def check_declarative_intent_params(want, module, result):
             have = map_config_to_obj(module)
         for i in w["associated_interfaces"]:
             obj_in_have = search_obj_in_list(w["vlan_id"], have)
-            if (
-                obj_in_have
-                and "interfaces" in obj_in_have
-                and i not in obj_in_have["interfaces"]
-            ):
+            if obj_in_have and "interfaces" in obj_in_have and i not in obj_in_have["interfaces"]:
                 module.fail_json(
-                    msg="Interface %s not configured on vlan %s"
-                    % (i, w["vlan_id"]),
+                    msg="Interface %s not configured on vlan %s" % (i, w["vlan_id"]),
                 )
 
 

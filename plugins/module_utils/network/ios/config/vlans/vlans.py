@@ -20,16 +20,10 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    dict_to_set,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Vlans(ConfigBase):
@@ -131,10 +125,7 @@ class Vlans(ConfigBase):
                   to the desired configuration
         """
 
-        if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     self.state,
@@ -321,9 +312,7 @@ class Vlans(ConfigBase):
         have_diff = have_dict - want_dict
 
         if diff:
-            if have_diff and (
-                self.state == "replaced" or self.state == "overridden"
-            ):
+            if have_diff and (self.state == "replaced" or self.state == "overridden"):
                 negate_have_config(diff, have_diff, vlan, commands)
 
             name = dict(diff).get("name")
@@ -355,9 +344,7 @@ class Vlans(ConfigBase):
                 self.add_command_to_config_list(vlan, "shutdown", commands)
             elif shutdown == "disabled":
                 self.add_command_to_config_list(vlan, "no shutdown", commands)
-        elif have_diff and (
-            self.state == "replaced" or self.state == "overridden"
-        ):
+        elif have_diff and (self.state == "replaced" or self.state == "overridden"):
             negate_have_config(diff, have_diff, vlan, commands)
 
         return commands
@@ -370,10 +357,7 @@ class Vlans(ConfigBase):
         if (
             have.get("vlan_id")
             and "default" not in have.get("name")
-            and (
-                have.get("vlan_id") != want.get("vlan_id")
-                or self.state == "deleted"
-            )
+            and (have.get("vlan_id") != want.get("vlan_id") or self.state == "deleted")
         ):
             self.remove_command_from_config_list(vlan, "vlan", commands)
         elif "default" not in have.get("name"):

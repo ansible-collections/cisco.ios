@@ -1,11 +1,12 @@
 ---
-- debug: msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection
+- debug:
+    msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection
     }}"
 
 - name: Configure interface (setup)
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-1
     speed: 1000
     mtu: 1800
@@ -14,7 +15,7 @@
 - name: Configure interface
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-initial
     state: present
 
@@ -27,7 +28,7 @@
 - name: Confgure interface (idempotent)
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-initial
     state: present
 
@@ -38,7 +39,7 @@
 - name: Confgure interface parameters
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface
     mtu: 2000
     state: present
@@ -53,7 +54,7 @@
 - name: Change interface parameters
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-1
     mtu: 1800
     state: present
@@ -68,7 +69,7 @@
 - name: Disable interface
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     enabled: false
 
 - assert:
@@ -80,7 +81,7 @@
 - name: Enable interface
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     enabled: true
 
 - assert:
@@ -92,7 +93,7 @@
 - name: Confgure second interface (setup)
   register: result
   cisco.ios.ios_interface:
-    name: '{{ test_interface2 }}'
+    name: "{{ test_interface2 }}"
     description: test-interface-initial
     speed: 1000
     mtu: 1800
@@ -102,12 +103,11 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         mtu: 2000
         description: test-interface-1
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         mtu: 2000
         description: test-interface-2
     speed: 1000
@@ -126,12 +126,11 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         mtu: 2000
         description: test-interface-1
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         mtu: 2000
         description: test-interface-2
     speed: 1000
@@ -145,10 +144,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+      - name: "{{ test_interface }}"
 
-      - name: '{{ test_interface }}'
-
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
     enabled: false
     state: present
 
@@ -164,10 +162,9 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
+      - name: "{{ test_interface }}"
 
-      - name: '{{ test_interface }}'
-
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
     enabled: true
     state: present
 
@@ -182,7 +179,6 @@
 - name: loopback interface setup
   cisco.ios.ios_interface:
     aggregate:
-
       - name: Loopback9
 
       - name: Loopback10
@@ -192,7 +188,6 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
-
       - name: Loopback9
 
       - name: Loopback10
@@ -208,7 +203,6 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
-
       - name: Loopback9
 
       - name: Loopback10
@@ -224,7 +218,6 @@
   register: result
   cisco.ios.ios_interface:
     aggregate:
-
       - name: Loopback9
 
       - name: Loopback10
@@ -234,5 +227,6 @@
     that:
       - result.changed == false
 
-- debug: msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection
+- debug:
+    msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection
     }}"

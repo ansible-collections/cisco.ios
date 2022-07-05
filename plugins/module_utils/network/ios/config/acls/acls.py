@@ -23,9 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
 )
@@ -73,9 +71,7 @@ class Acls(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to want
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             if wantd.get("ipv4") and not haved.get("ipv4"):
                 haved["ipv4"] = {}
             if wantd.get("ipv6") and not haved.get("ipv6"):
@@ -86,9 +82,7 @@ class Acls(ResourceModule):
                     wplists = wvalue.get("acls", {})
                     hplists = hvalue.get("acls", {})
                     hvalue["acls"] = {
-                        k: v
-                        for k, v in iteritems(hplists)
-                        if k in wplists or not wplists
+                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
                     }
 
         # remove superfluous config for overridden and deleted
@@ -111,11 +105,7 @@ class Acls(ResourceModule):
         hplists = have.get("acls", {})
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
-            acl_type = (
-                wentry["acl_type"]
-                if wentry.get("acl_type")
-                else hentry.get("acl_type")
-            )
+            acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
             begin = len(
                 self.commands,
             )  # to determine the index for acl command

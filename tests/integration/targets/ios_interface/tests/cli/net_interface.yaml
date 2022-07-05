@@ -1,11 +1,12 @@
 ---
-- debug: msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
+- debug:
+    msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
     }}"
 
 - name: Configure interface (setup)
   register: result
   ansible.netcommon.net_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-1
     speed: 1000
     mtu: 1800
@@ -14,7 +15,7 @@
 - name: Configure interface using platform agnostic module
   register: result
   ansible.netcommon.net_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface-initial
     state: present
 
@@ -27,7 +28,7 @@
 - name: Confgure interface parameters using platform agnostic module
   register: result
   ansible.netcommon.net_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     description: test-interface
     mtu: 2000
     state: present
@@ -39,5 +40,6 @@
       - '"description test-interface" in result.commands'
       - '"mtu 2000" in result.commands'
 
-- debug: msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
+- debug:
+    msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
     }}"

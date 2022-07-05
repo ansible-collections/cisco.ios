@@ -218,9 +218,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
     FACT_RESOURCE_SUBSETS,
     Facts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import ios_argument_spec
 
 
 def main():

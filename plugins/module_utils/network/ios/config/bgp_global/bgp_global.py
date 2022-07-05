@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
@@ -169,16 +167,12 @@ class Bgp_global(ResourceModule):
 
         if self.state == "deleted":
             # deleted, clean up global params
-            if not self.want or (
-                self.have.get("as_number") == self.want.get("as_number")
-            ):
+            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
             # delete as_number takes down whole bgp config
-            if not self.want or (
-                self.have.get("as_number") == self.want.get("as_number")
-            ):
+            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
                 self.addcmd(self.have or {}, "as_number", True)
 
         else:
@@ -412,17 +406,12 @@ class Bgp_global(ResourceModule):
                         neb = self._bgp_global_list_to_dict(neb)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("distributes") and k == "distributes":
-                tmp_data[k] = {
-                    str("".join([i.get(j, "") for j in _v])): i
-                    for i in tmp_data[k]
-                }
+                tmp_data[k] = {str("".join([i.get(j, "") for j in _v])): i for i in tmp_data[k]}
             elif tmp_data.get("redistribute") and k == "redistribute":
                 tmp_data[k] = {
                     str(
                         [
-                            ky + vl.get("name", "") + vl.get("process_id", "")
-                            if ky in _v
-                            else ky
+                            ky + vl.get("name", "") + vl.get("process_id", "") if ky in _v else ky
                             for ky, vl in i.items()
                         ][0],
                     ): i
@@ -481,24 +470,16 @@ class Bgp_global(ResourceModule):
                             _want_bgp.pop("inject_map"),
                         ]
                 if _want_bgp.get("listen", {}).get("range"):
-                    if (
-                        _want_bgp.get("listen")
-                        .get("range")
-                        .get("ipv4_with_subnet")
-                    ):
-                        _want_bgp["listen"]["range"][
-                            "host_with_subnet"
-                        ] = _want_bgp["listen"]["range"].pop(
+                    if _want_bgp.get("listen").get("range").get("ipv4_with_subnet"):
+                        _want_bgp["listen"]["range"]["host_with_subnet"] = _want_bgp["listen"][
+                            "range"
+                        ].pop(
                             "ipv4_with_subnet",
                         )
-                    elif (
-                        _want_bgp.get("listen")
-                        .get("range")
-                        .get("ipv6_with_subnet")
-                    ):
-                        _want_bgp["listen"]["range"][
-                            "host_with_subnet"
-                        ] = _want_bgp["listen"]["range"].pop(
+                    elif _want_bgp.get("listen").get("range").get("ipv6_with_subnet"):
+                        _want_bgp["listen"]["range"]["host_with_subnet"] = _want_bgp["listen"][
+                            "range"
+                        ].pop(
                             "ipv6_with_subnet",
                         )
             if want.get("distribute_list"):

@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg: START Merged ios_bgp_address_family state for integration tests on connection={{
+    msg:
+      START Merged ios_bgp_address_family state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _initial_vrf_setup.yaml
 
 - block:
-
     - name: Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_bgp_address_family: &id001
@@ -101,5 +101,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

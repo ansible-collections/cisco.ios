@@ -152,9 +152,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ping.ping import (
     PingArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping import (
-    Ping,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping import Ping
 
 
 def main():

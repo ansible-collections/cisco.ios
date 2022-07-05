@@ -1482,9 +1482,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import (
-    Acls,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import Acls
 
 
 def main():

@@ -32,9 +32,7 @@ def _tmplt_access_list_entries(aces):
         elif config_data[attr].get("host"):
             command += " host {host}".format(**config_data[attr])
         elif config_data[attr].get("object_group"):
-            command += " object-group {object_group}".format(
-                **config_data[attr]
-            )
+            command += " object-group {object_group}".format(**config_data[attr])
         if config_data[attr].get("port_protocol"):
             if config_data[attr].get("port_protocol").get("range"):
                 command += " range {0} {1}".format(
@@ -56,25 +54,15 @@ def _tmplt_access_list_entries(aces):
     if aces:
         if aces.get("sequence") and aces.get("afi") == "ipv4":
             command += "{sequence}".format(**aces)
-        if (
-            aces.get("grant")
-            and aces.get("sequence")
-            and aces.get("afi") == "ipv4"
-        ):
+        if aces.get("grant") and aces.get("sequence") and aces.get("afi") == "ipv4":
             command += " {grant}".format(**aces)
-        elif (
-            aces.get("grant")
-            and aces.get("sequence")
-            and aces.get("afi") == "ipv6"
-        ):
+        elif aces.get("grant") and aces.get("sequence") and aces.get("afi") == "ipv6":
             command += "{grant}".format(**aces)
         elif aces.get("grant"):
             command += "{grant}".format(**aces)
         if aces.get("protocol_options"):
             if "protocol_number" in aces["protocol_options"]:
-                command += " {protocol_number}".format(
-                    **aces["protocol_options"]
-                )
+                command += " {protocol_number}".format(**aces["protocol_options"])
             else:
                 command += " {0}".format(list(aces["protocol_options"])[0])
                 proto_option = aces["protocol_options"].get(

@@ -20,16 +20,10 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    dict_to_set,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Lacp(ConfigBase):
@@ -218,10 +212,7 @@ class Lacp(ConfigBase):
         # Delete the interface config based on the want and have config
         commands = []
 
-        if (
-            have.get("system").get("priority")
-            and have.get("system").get("priority") != 32768
-        ):
+        if have.get("system").get("priority") and have.get("system").get("priority") != 32768:
             cmd = "lacp system-priority"
             self._remove_command_from_config_list(cmd, commands)
 

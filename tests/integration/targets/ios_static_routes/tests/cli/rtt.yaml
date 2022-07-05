@@ -1,39 +1,32 @@
 ---
 - debug:
-    msg: START ios_static_routes round trip integration tests on connection={{ ansible_connection
+    msg:
+      START ios_static_routes round trip integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
 
 - block:
-
     - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_static_routes:
         config:
-
           - vrf: ansible_temp_vrf
             address_families:
-
               - afi: ipv4
                 routes:
-
                   - dest: 192.0.2.0/24
                     next_hops:
-
                       - forward_router_address: 192.0.2.1
                         name: rtt_vrf
                         tag: 50
                         track: 150
 
           - address_families:
-
               - afi: ipv4
                 routes:
-
                   - dest: 198.51.100.0/24
                     next_hops:
-
                       - forward_router_address: 198.51.101.1
                         name: rtt_route_1
                         distance_metric: 110
@@ -44,8 +37,8 @@
     - name: Gather static routes facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - static_routes
 
@@ -53,16 +46,12 @@
       register: result
       cisco.ios.ios_static_routes:
         config:
-
           - vrf: ansible_temp_vrf
             address_families:
-
               - afi: ipv4
                 routes:
-
                   - dest: 192.0.2.0/24
                     next_hops:
-
                       - forward_router_address: 192.0.2.12
                         name: new_rtt_vrf
                         tag: 10
@@ -88,7 +77,6 @@
           - revert.commands|symmetric_difference(rtt.override_revert_commands) ==
             []
   always:
-
     - include_tasks: _populate_config.yaml
 
     - include_tasks: _remove_config.yaml

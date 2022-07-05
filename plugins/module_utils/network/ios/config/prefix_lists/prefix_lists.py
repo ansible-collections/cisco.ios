@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.prefix_lists import (
     Prefix_listsTemplate,
 )
@@ -117,9 +115,9 @@ class Prefix_lists(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
         # alligning cmd with negate cmd 1st followed by config cmd
         if self.state in ["overridden", "replaced"]:
-            self.commands = [
-                each for each in self.commands if "no" in each
-            ] + [each for each in self.commands if "no" not in each]
+            self.commands = [each for each in self.commands if "no" in each] + [
+                each for each in self.commands if "no" not in each
+            ]
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -179,11 +177,9 @@ class Prefix_lists(ResourceModule):
                                     },
                                 )
                             else:
-                                if (
-                                    self.state == "merged"
-                                    and have_prefix_param.get("sequence")
-                                    == val.get("sequence")
-                                ):
+                                if self.state == "merged" and have_prefix_param.get(
+                                    "sequence"
+                                ) == val.get("sequence"):
                                     self._module.fail_json(
                                         "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
                                             val.get("sequence"),
@@ -223,9 +219,7 @@ class Prefix_lists(ResourceModule):
                                 },
                                 have=dict(),
                             )
-                    if have_prefix and (
-                        self.state == "replaced" or self.state == "overridden"
-                    ):
+                    if have_prefix and (self.state == "replaced" or self.state == "overridden"):
                         if have_prefix.get("description"):
                             # Code snippet should be removed when Description param is removed from
                             # entries level as this supports deprecated level of Description
@@ -236,9 +230,7 @@ class Prefix_lists(ResourceModule):
                                     "afi": want["afi"],
                                     "name": k,
                                     "prefix_list": {
-                                        "description": have_prefix[
-                                            "description"
-                                        ],
+                                        "description": have_prefix["description"],
                                     },
                                 },
                             )

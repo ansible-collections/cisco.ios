@@ -146,9 +146,7 @@ class Hardware(FactsBase):
             if "Invalid input detected" in data:
                 warnings.append("Unable to gather memory statistics")
             else:
-                processor_line = [
-                    line for line in data.splitlines() if "Processor" in line
-                ].pop()
+                processor_line = [line for line in data.splitlines() if "Processor" in line].pop()
                 match = re.findall(r"\s(\d+)\s", processor_line)
                 if match:
                     self.facts["memtotal_mb"] = int(match[0]) / 1024

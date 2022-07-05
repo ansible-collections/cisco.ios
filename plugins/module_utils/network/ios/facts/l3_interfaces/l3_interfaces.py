@@ -17,9 +17,7 @@ __metaclass__ = type
 
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
@@ -66,9 +64,7 @@ class L3_InterfacesFacts(object):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
                         cidr_val = netmask_to_cidr(each["netmask"])
-                        each["address"] = (
-                            each["address"].strip(" ") + "/" + cidr_val
-                        )
+                        each["address"] = each["address"].strip(" ") + "/" + cidr_val
                         del each["netmask"]
             temp.append(v)
         # sorting the dict by interface name

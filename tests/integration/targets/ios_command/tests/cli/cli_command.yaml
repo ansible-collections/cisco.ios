@@ -3,7 +3,6 @@
     msg: START cli/cli_command.yaml on connection={{ ansible_connection }}
 
 - block:
-
     - name: get output for single command
       register: result
       ansible.netcommon.cli_command:

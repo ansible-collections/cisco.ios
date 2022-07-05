@@ -27,9 +27,7 @@ import re
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
 from ansible.utils.display import Display
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
-    TerminalBase,
-)
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
 
 
 display = Display()
@@ -115,10 +113,7 @@ class TerminalModule(TerminalBase):
             )
 
     def on_become(self, passwd=None):
-        if (
-            self._get_prompt().endswith(b"#")
-            and self.get_privilege_level() == 15
-        ):
+        if self._get_prompt().endswith(b"#") and self.get_privilege_level() == 15:
             return
 
         cmd = {"command": "enable"}
@@ -144,11 +139,7 @@ class TerminalModule(TerminalBase):
                 % (prompt, e.message),
             )
 
-        if (
-            prompt is None
-            or not prompt.endswith(b"#")
-            or privilege_level != 15
-        ):
+        if prompt is None or not prompt.endswith(b"#") or privilege_level != 15:
             raise AnsibleConnectionFailure(
                 "failed to elevate privilege to enable mode, still at level [%d] and prompt [%s]"
                 % (privilege_level, prompt),

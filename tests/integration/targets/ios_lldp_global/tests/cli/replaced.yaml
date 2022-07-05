@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_lldp_global state for integration tests on connection={{
+    msg:
+      START Replaced ios_lldp_global state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _remove_config.yaml
@@ -8,7 +9,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Replaces Global LLDP configuration with provided LLDP configuration
       register: result
       cisco.ios.ios_lldp_global: &id001
@@ -43,5 +43,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

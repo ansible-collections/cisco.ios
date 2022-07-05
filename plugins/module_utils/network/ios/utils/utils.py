@@ -88,10 +88,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 if v is not None:
                     test_dict.update({k: v})
                 try:
-                    if (
-                        tuple(iteritems(test_dict)) not in test_set
-                        and count == input_dict_len
-                    ):
+                    if tuple(iteritems(test_dict)) not in test_set and count == input_dict_len:
                         test_set.add(tuple(iteritems(test_dict)))
                         count = 0
                 except TypeError:
@@ -159,10 +156,7 @@ def filter_dict_having_none_value(want, have):
                     if have.get(k):
                         dict_val = have.get(k).get(key)
                         test_key_dict.update({key: dict_val})
-                elif (
-                    k == "ipv6"
-                    and value.lower() != have.get(k)[0].get(key).lower()
-                ):
+                elif k == "ipv6" and value.lower() != have.get(k)[0].get(key).lower():
                     # as multiple IPV6 address can be configured on same
                     # interface, for replace state in place update will
                     # actually create new entry, which isn't as expected
@@ -181,10 +175,7 @@ def filter_dict_having_none_value(want, have):
                         dict_val = have.get(k)[0].get(key)
                         test_key_dict.update({key: dict_val})
                 elif have.get(k):
-                    if (
-                        k == "ipv6"
-                        and value.lower() != have.get(k)[0].get(key).lower()
-                    ):
+                    if k == "ipv6" and value.lower() != have.get(k)[0].get(key).lower():
                         dict_val = have.get(k)[0].get(key)
                         test_key_dict.update({key: dict_val})
                 if test_key_dict:
@@ -197,11 +188,7 @@ def filter_dict_having_none_value(want, have):
                 if each.get("secondary"):
                     want_ip = each.get("address").split("/")
                     have_ip = have.get("ipv4")
-                    if (
-                        len(want_ip) > 1
-                        and have_ip
-                        and have_ip[0].get("secondary")
-                    ):
+                    if len(want_ip) > 1 and have_ip and have_ip[0].get("secondary"):
                         have_ip = have_ip[0]["address"].split(" ")[0]
                         if have_ip != want_ip[0]:
                             diff_ip = True

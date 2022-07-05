@@ -4,7 +4,6 @@
 - ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
-
     - name: setup - remove config used in test(part1)
       ignore_errors: true
       cisco.ios.ios_config:
@@ -24,7 +23,7 @@
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        parents: '{{ item }}'
+        parents: "{{ item }}"
 
     - name: create linkagg
       register: result
@@ -115,7 +114,6 @@
       register: result
       cisco.ios.ios_linkagg: &id005
         aggregate:
-
           - group: 5
 
           - group: 20
@@ -158,7 +156,7 @@
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
-        parents: '{{ item }}'
+        parents: "{{ item }}"
   when: switch_type == 'L2'
 
 - debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

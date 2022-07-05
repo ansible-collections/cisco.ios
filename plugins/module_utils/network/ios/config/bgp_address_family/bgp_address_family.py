@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
 )
@@ -290,9 +288,7 @@ class Bgp_address_family(ResourceModule):
         for key, val in iteritems(w):
             val = self.handle_deprecated(val)
             if h and h.get(key):
-                neighbor_tag = [each for each in neighbor_key if each in val][
-                    0
-                ]
+                neighbor_tag = [each for each in neighbor_key if each in val][0]
                 for k, v in iteritems(val):
                     if k == "route_map" or k == "prefix_list":
                         k, v, deprecated = _handle_neighbor_deprecated(
@@ -347,10 +343,7 @@ class Bgp_address_family(ResourceModule):
                                 },
                                 have=dict(),
                             )
-                        elif (
-                            k in ["prefix_lists", "route_maps"]
-                            and not deprecated
-                        ):
+                        elif k in ["prefix_lists", "route_maps"] and not deprecated:
                             for k_param, v_param in iteritems(val[k]):
                                 self.compare(
                                     parsers=parsers,
@@ -524,13 +517,10 @@ class Bgp_address_family(ResourceModule):
                             each["route_maps"] = temp
                         if each.get("slow_peer"):
                             each["slow_peer"] = {
-                                list(every)[0]: every[list(every)[0]]
-                                for every in each["slow_peer"]
+                                list(every)[0]: every[list(every)[0]] for every in each["slow_peer"]
                             }
                     val["neighbor"] = {
-                        each.get("address")
-                        or each.get("ipv6_adddress")
-                        or each.get("tag"): each
+                        each.get("address") or each.get("ipv6_adddress") or each.get("tag"): each
                         for each in val.get("neighbor", [])
                     }
                 if "network" in val:

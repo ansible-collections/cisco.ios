@@ -19,13 +19,9 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     add_command_to_config_list,
     dict_to_set,
@@ -151,10 +147,7 @@ class L2_Interfaces(ConfigBase):
         """
         commands = []
 
-        if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     self.state,
@@ -313,18 +306,12 @@ class L2_Interfaces(ConfigBase):
         if have.get("trunk") and want.get("trunk"):
             for each in ["allowed_vlans", "pruning_vlans"]:
                 if have["trunk"].get(each) and want["trunk"].get(each):
-                    (
-                        check,
-                        want["trunk"][each],
-                    ) = self._expand_vlan_range_if_any(
+                    (check, want["trunk"][each],) = self._expand_vlan_range_if_any(
                         "want",
                         want["trunk"][each],
                     )
                     if not check:
-                        (
-                            check,
-                            have["trunk"][each],
-                        ) = self._expand_vlan_range_if_any(
+                        (check, have["trunk"][each],) = self._expand_vlan_range_if_any(
                             "have",
                             have["trunk"][each],
                         )
@@ -512,9 +499,9 @@ class L2_Interfaces(ConfigBase):
                 )
         elif have.get("trunk") and want.get("trunk"):
             # Check when config is passed, also used in replaced and override state
-            if have.get("trunk").get("encapsulation") and have.get(
-                "trunk",
-            ).get("encapsulation") != want.get("trunk").get("encapsulation"):
+            if have.get("trunk").get("encapsulation") and have.get("trunk",).get(
+                "encapsulation"
+            ) != want.get("trunk").get("encapsulation"):
                 remove_command_from_config_list(
                     interface,
                     self.trunk_cmds["encapsulation"],
@@ -528,17 +515,17 @@ class L2_Interfaces(ConfigBase):
                     self.trunk_cmds["native_vlan"],
                     commands,
                 )
-            if have.get("trunk").get("allowed_vlans") and have.get(
-                "trunk",
-            ).get("allowed_vlans") != want.get("trunk").get("allowed_vlans"):
+            if have.get("trunk").get("allowed_vlans") and have.get("trunk",).get(
+                "allowed_vlans"
+            ) != want.get("trunk").get("allowed_vlans"):
                 remove_command_from_config_list(
                     interface,
                     self.trunk_cmds["allowed_vlans"],
                     commands,
                 )
-            if have.get("trunk").get("pruning_vlans") and have.get(
-                "trunk",
-            ).get("pruning_vlans") != want.get("trunk").get("pruning_vlans"):
+            if have.get("trunk").get("pruning_vlans") and have.get("trunk",).get(
+                "pruning_vlans"
+            ) != want.get("trunk").get("pruning_vlans"):
                 remove_command_from_config_list(
                     interface,
                     self.trunk_cmds["pruning_vlans"],

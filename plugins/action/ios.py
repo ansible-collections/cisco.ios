@@ -32,9 +32,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     load_provider,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_provider_spec,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import ios_provider_spec
 
 
 display = Display()
@@ -45,9 +43,7 @@ class ActionModule(ActionNetworkModule):
         del tmp  # tmp no longer has any effect
 
         module_name = self._task.action.split(".")[-1]
-        self._config_module = (
-            True if module_name in ["ios_config", "config"] else False
-        )
+        self._config_module = True if module_name in ["ios_config", "config"] else False
         persistent_connection = self._play_context.connection.split(".")[-1]
         warnings = []
 
@@ -65,13 +61,9 @@ class ActionModule(ActionNetworkModule):
             pc.network_os = "cisco.ios.ios"
             pc.remote_addr = provider["host"] or self._play_context.remote_addr
             pc.port = int(provider["port"] or self._play_context.port or 22)
-            pc.remote_user = (
-                provider["username"] or self._play_context.connection_user
-            )
+            pc.remote_user = provider["username"] or self._play_context.connection_user
             pc.password = provider["password"] or self._play_context.password
-            pc.private_key_file = (
-                provider["ssh_keyfile"] or self._play_context.private_key_file
-            )
+            pc.private_key_file = provider["ssh_keyfile"] or self._play_context.private_key_file
             pc.become = provider["authorize"] or False
             if pc.become:
                 pc.become_method = "enable"

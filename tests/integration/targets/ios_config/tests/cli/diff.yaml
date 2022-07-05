@@ -3,14 +3,15 @@
 
 - name: Ensure hostname is preset
   cisco.ios.ios_system:
-    hostname: '{{ shorter_hostname }}'
+    hostname: "{{ shorter_hostname }}"
 
 - name: ios_config diff against retrieved config
   diff: true
   register: result
   cisco.ios.ios_config:
     diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+    intended_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
       \ }}"
 
 - assert:
@@ -23,9 +24,11 @@
   register: result
   cisco.ios.ios_config:
     diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+    intended_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
       \ }}"
-    running_config: "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config')\
+    running_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config')\
       \ }}"
 
 - assert:
