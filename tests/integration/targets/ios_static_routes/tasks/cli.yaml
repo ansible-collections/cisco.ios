@@ -1,6 +1,6 @@
 ---
 - name: Collect all cli test cases
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/tests/cli'
     patterns: '{{ testcase }}.yaml'
     use_regex: true
