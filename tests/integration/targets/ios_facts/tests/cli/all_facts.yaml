@@ -24,7 +24,7 @@
     "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True)\
     \ }}"
 
-- set_fact:
+- ansible.builtin.set_fact:
     supported_network_resources:
       - interfaces
       - l2_interfaces

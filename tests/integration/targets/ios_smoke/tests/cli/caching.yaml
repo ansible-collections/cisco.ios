@@ -2,7 +2,7 @@
 - block:
   - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
 
-  - set_fact:
+  - ansible.builtin.set_fact:
       interfaces:
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2

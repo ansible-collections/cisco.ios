@@ -11,7 +11,7 @@
     match: none
 
 - name: collect any backup files
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_files
@@ -34,7 +34,7 @@
       - result.changed == true
 
 - name: collect any backup files
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_files
@@ -66,7 +66,7 @@
       - result.changed == true
 
 - name: check if the backup file-1 exist
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg'
   register: backup_file
   connection: local
@@ -88,7 +88,7 @@
       - result.changed == true
 
 - name: check if the backup file-2 exist
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup/backup.cfg'
   register: backup_file
   connection: local
@@ -110,7 +110,7 @@
       - result.changed == true
 
 - name: check if the backup file-3 exist
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
     pattern: '{{ inventory_hostname_short }}_config*'
   register: backup_file

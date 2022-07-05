@@ -1,0 +1,3 @@
+---
+trivial:
+  - Enable ansible-lint Github Action for tests

@@ -1,6 +1,6 @@
 ---
 - name: Collect all cli test cases
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/tests/cli'
     patterns: '{{ testcase }}.yaml'
     use_regex: true
@@ -8,7 +8,7 @@
   delegate_to: localhost
 
 - name: Set test_items
-  set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
+  ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
   delegate_to: localhost
 
 - name: Run test case (connection=ansible.netcommon.network_cli)

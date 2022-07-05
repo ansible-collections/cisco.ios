@@ -1,7 +1,7 @@
 ---
 - debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
 
-- set_fact: switch_type="{{ switch_type }}"
+- ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
 

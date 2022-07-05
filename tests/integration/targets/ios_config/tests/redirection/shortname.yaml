@@ -25,7 +25,7 @@
       - result.changed == true
 
 - name: check if the backup file-4 exist
-  find:
+  ansible.builtin.find:
     paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg'
   register: backup_file
   connection: local
