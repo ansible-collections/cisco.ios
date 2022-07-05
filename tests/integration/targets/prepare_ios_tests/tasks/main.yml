@@ -24,7 +24,8 @@
   ansible.builtin.set_fact: switch_type="L2"
   when: '"l2" in result.stdout[0]'
 
-- block:
+- name: Block to set Facts
+  block:
     - name: Set test interface to GigabitEthernet0/1 as we are on Cisco IOS
       ansible.builtin.set_fact: test_interface=GigabitEthernet0/1
 
@@ -32,7 +33,8 @@
       ansible.builtin.set_fact: test_interface2=GigabitEthernet0/2
   when: "'Cisco IOS' in result.stdout[0]"
 
-- block:
+- name: Block to fix config
+  block:
     - name: Set test interface to GigabitEthernet2 as we are on Cisco IOS-XE
       ansible.builtin.set_fact: test_interface=GigabitEthernet2
 
