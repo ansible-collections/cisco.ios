@@ -5,12 +5,14 @@ concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 jobs:
+  ansible-lint:
+    uses: ansible-network/github_actions/.github/workflows/ansible-lint.yml@main
   changelog:
     uses: ansible-network/github_actions/.github/workflows/changelog.yml@main
   sanity:
@@ -26,6 +28,7 @@ jobs:
   all_green:
     if: ${{ always() }}
     needs:
+      - ansible-lint
       - changelog
       - sanity
       - unit-galaxy
@@ -34,6 +37,7 @@ jobs:
     steps:
       - run: >-
           python -c "assert set([
+          '${{ needs.ansible-lint.result }}',
           '${{ needs.changelog.result }}',
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}',
