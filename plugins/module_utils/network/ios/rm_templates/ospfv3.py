@@ -1058,7 +1058,7 @@ class Ospfv3Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "default_metric": "{{ default_metric| int}}"
+                        "default_metric": "{{ default_metric| int}}",
                     },
                 },
             },

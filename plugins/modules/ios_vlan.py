@@ -252,7 +252,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("switchport mode access")
                             commands.append(
                                 "no switchport access vlan {0}".format(
-                                    vlan_id
+                                    vlan_id,
                                 ),
                             )
         else:

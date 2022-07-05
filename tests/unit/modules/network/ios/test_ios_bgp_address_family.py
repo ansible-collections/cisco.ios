@@ -108,7 +108,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     remote_as=65100,
                                     route_maps=[
                                         dict(
-                                            name="test-route-out", out="true"
+                                            name="test-route-out",
+                                            out="true",
                                         ),
                                     ],
                                     prefix_lists=[
@@ -180,7 +181,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="192.0.3.1", mask="255.255.255.0"
+                                    address="192.0.3.1",
+                                    mask="255.255.255.0",
                                 ),
                             ],
                         ),

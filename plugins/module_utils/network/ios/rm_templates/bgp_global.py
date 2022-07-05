@@ -1037,7 +1037,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "bgp maxextcommunity-limit {{ bgp.maxextcommunity_limit|string }}",
             "result": {
                 "bgp": {
-                    "maxextcommunity_limit": "{{ maxextcommunity_limit }}"
+                    "maxextcommunity_limit": "{{ maxextcommunity_limit }}",
                 },
             },
         },
@@ -2251,7 +2251,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
-                        "aigp": {"send": {"med": True}}
+                        "aigp": {"send": {"med": True}},
                     },
                 },
             },
@@ -2267,7 +2267,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' allow-policy') if allow_policy|d(False) else '' }}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"allow_policy": True}
+                    "{{ neighbor_address }}": {"allow_policy": True},
                 },
             },
         },
@@ -2699,7 +2699,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
-                        "send_community": {"set": True}
+                        "send_community": {"set": True},
                     },
                 },
             },
