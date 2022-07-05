@@ -241,7 +241,7 @@ def map_obj_to_commands(updates, module, os_version):
                     commands.append("no logging {0}".format(dest))
                 else:
                     module.fail_json(
-                        msg="dest must be among console, monitor, buffered, host, on, trap"
+                        msg="dest must be among console, monitor, buffered, host, on, trap",
                     )
             if facility:
                 commands.append("no logging facility {0}".format(facility))
@@ -275,7 +275,7 @@ def map_obj_to_commands(updates, module, os_version):
                 if not present:
                     if level and level != "debugging":
                         commands.append(
-                            "logging buffered {0} {1}".format(size, level)
+                            "logging buffered {0} {1}".format(size, level),
                         )
                     else:
                         commands.append("logging buffered {0}".format(size))
@@ -300,7 +300,9 @@ def parse_size(line, dest):
     size = None
     if dest == "buffered":
         match = re.search(
-            "logging buffered(?: (\\d+))?(?: [a-z]+)?", line, re.M
+            "logging buffered(?: (\\d+))?(?: [a-z]+)?",
+            line,
+            re.M,
         )
         if match:
             if match.group(1) is not None:
@@ -336,7 +338,9 @@ def parse_level(line, dest):
     else:
         if dest == "buffered":
             match = re.search(
-                "logging buffered(?: \\d+)?(?: ([a-z]+))?", line, re.M
+                "logging buffered(?: \\d+)?(?: ([a-z]+))?",
+                line,
+                re.M,
             )
         else:
             match = re.search("logging {0} (\\S+)".format(dest), line, re.M)
@@ -371,7 +375,7 @@ def map_config_to_obj(module):
                         "size": parse_size(line, dest),
                         "facility": parse_facility(line, dest),
                         "level": parse_level(line, dest),
-                    }
+                    },
                 )
             elif validate_ip_address(match.group(1)):
                 dest = "host"
@@ -382,11 +386,13 @@ def map_config_to_obj(module):
                         "size": parse_size(line, dest),
                         "facility": parse_facility(line, dest),
                         "level": parse_level(line, dest),
-                    }
+                    },
                 )
             else:
                 ip_match = re.search(
-                    "\\d+\\.\\d+\\.\\d+\\.\\d+", match.group(1), re.M
+                    "\\d+\\.\\d+\\.\\d+\\.\\d+",
+                    match.group(1),
+                    re.M,
                 )
                 if ip_match:
                     dest = "host"
@@ -397,7 +403,7 @@ def map_config_to_obj(module):
                             "size": parse_size(line, dest),
                             "facility": parse_facility(line, dest),
                             "level": parse_level(line, dest),
-                        }
+                        },
                     )
     return obj
 
@@ -444,7 +450,7 @@ def map_params_to_obj(module, required_if=None):
                     "facility": module.params["facility"],
                     "level": module.params["level"],
                     "state": module.params["state"],
-                }
+                },
             )
         else:
             obj.append(
@@ -455,7 +461,7 @@ def map_params_to_obj(module, required_if=None):
                     "facility": module.params["facility"],
                     "level": module.params["level"],
                     "state": module.params["state"],
-                }
+                },
             )
     return obj
 
@@ -490,7 +496,7 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
     )
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)

@@ -43,12 +43,12 @@ class TestIosConfigModule(TestIosModule):
         super(TestIosConfigModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_config.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_connection = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_config.get_connection"
+            "ansible_collections.cisco.ios.plugins.modules.ios_config.get_connection",
         )
         self.get_connection = self.mock_get_connection.start()
 
@@ -56,7 +56,7 @@ class TestIosConfigModule(TestIosModule):
         self.conn.edit_config = MagicMock()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_config.run_commands"
+            "ansible_collections.cisco.ios.plugins.modules.ios_config.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -77,7 +77,7 @@ class TestIosConfigModule(TestIosModule):
     def test_ios_config_unchanged(self):
         src = load_fixture("ios_config_config.cfg")
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(src, src)
+            return_value=self.cliconf_obj.get_diff(src, src),
         )
         set_module_args(dict(src=src))
         self.execute_module()
@@ -86,7 +86,7 @@ class TestIosConfigModule(TestIosModule):
         src = load_fixture("ios_config_src.cfg")
         set_module_args(dict(src=src))
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(src, self.running_config)
+            return_value=self.cliconf_obj.get_diff(src, self.running_config),
         )
         commands = [
             "hostname foo",
@@ -109,7 +109,7 @@ class TestIosConfigModule(TestIosModule):
             "no ip address",
         ]
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(src, self.running_config)
+            return_value=self.cliconf_obj.get_diff(src, self.running_config),
         )
         self.execute_module(changed=True, commands=commands)
         self.assertEqual(self.run_commands.call_count, 1)
@@ -140,8 +140,9 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["hostname foo"]
         self.execute_module(changed=True, commands=commands)
@@ -156,8 +157,9 @@ class TestIosConfigModule(TestIosModule):
 
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                candidate_config, self.running_config
-            )
+                candidate_config,
+                self.running_config,
+            ),
         )
 
         commands = ["interface GigabitEthernet0/0", "shutdown"]
@@ -168,8 +170,9 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, before=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["test1", "test2", "hostname foo"]
         self.execute_module(changed=True, commands=commands, sort=False)
@@ -179,8 +182,9 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, after=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["hostname foo", "test1", "test2"]
         self.execute_module(changed=True, commands=commands, sort=False)
@@ -192,12 +196,13 @@ class TestIosConfigModule(TestIosModule):
                 lines=lines,
                 before=["test1", "test2"],
                 after=["test3", "test4"],
-            )
+            ),
         )
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         self.execute_module()
 
@@ -206,7 +211,7 @@ class TestIosConfigModule(TestIosModule):
         lines = ["hostname router"]
         set_module_args(dict(lines=lines, config=config))
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff("\n".join(lines), config)
+            return_value=self.cliconf_obj.get_diff("\n".join(lines), config),
         )
         commands = ["hostname router"]
         self.execute_module(changed=True, commands=commands)
@@ -226,7 +231,7 @@ class TestIosConfigModule(TestIosModule):
                 self.running_config,
                 diff_replace="block",
                 path=parents,
-            )
+            ),
         )
 
         commands = parents + lines
@@ -237,8 +242,10 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, match="none"))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config, diff_match="none"
-            )
+                "\n".join(lines),
+                self.running_config,
+                diff_match="none",
+            ),
         )
         self.execute_module(changed=True, commands=lines)
 
@@ -256,7 +263,7 @@ class TestIosConfigModule(TestIosModule):
                 self.running_config,
                 diff_match="none",
                 path=parents,
-            )
+            ),
         )
 
         commands = parents + lines
@@ -280,7 +287,7 @@ class TestIosConfigModule(TestIosModule):
                 self.running_config,
                 diff_match="strict",
                 path=parents,
-            )
+            ),
         )
 
         commands = parents + ["shutdown"]
@@ -304,7 +311,7 @@ class TestIosConfigModule(TestIosModule):
                 self.running_config,
                 diff_match="exact",
                 path=parents,
-            )
+            ),
         )
 
         commands = parents + lines

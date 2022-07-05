@@ -102,19 +102,19 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "metric": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "metric_type": {
                                                             "type": "int",
                                                             "choices": [1, 2],
                                                         },
                                                         "nssa_only": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
                                                 "no_redistribution": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "no_summary": {"type": "bool"},
                                                 "translate": {
@@ -135,7 +135,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "advertise": {"type": "bool"},
                                                 "cost": {"type": "int"},
                                                 "not_advertise": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                             },
                                         },
@@ -152,13 +152,13 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                             "no_log": True,
                                                         },
                                                         "null": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
                                                 "cost": {"type": "int"},
                                                 "ttl_security": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                         },
@@ -249,7 +249,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "required": True,
                                                 },
                                                 "gateway_name": {
-                                                    "type": "str"
+                                                    "type": "str",
                                                 },
                                                 "direction": {
                                                     "type": "str",
@@ -266,7 +266,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "name": {
                                                     "type": "str",
                                                     "required": True,
-                                                }
+                                                },
                                             },
                                         },
                                     },
@@ -286,7 +286,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                         "enable": {"type": "bool"},
                                         "disable": {"type": "bool"},
                                         "strict_lsa_checking": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                     },
                                 },
@@ -339,7 +339,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "acknowledgement": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "update": {"type": "int"},
                                             },
@@ -357,7 +357,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "set": {"type": "bool"},
                                                 "disable": {"type": "bool"},
                                                 "per_interface": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "redundancy": {"type": "int"},
                                             },
@@ -387,7 +387,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "options": {
                                                 "time": {"type": "int"},
                                                 "wait_for_bgp": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                             },
                                         },
@@ -451,10 +451,10 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "acknowledgement": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "redundancy": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                     },
                                                 },
@@ -463,13 +463,13 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "set": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "per_interface": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "redundancy": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                     },
                                                 },
@@ -482,7 +482,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "flood": {"type": "int"},
                                                 "lsa_group": {"type": "int"},
                                                 "retransmission": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                         },
@@ -493,13 +493,13 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "first_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "min_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "max_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                     },
                                                 },
@@ -507,13 +507,13 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "receive_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "between_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "max_delay": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                     },
                                                 },
@@ -723,7 +723,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                         "max_packets": {"type": "int"},
                                         "unlimited": {"type": "bool"},
                                     },
-                                }
+                                },
                             },
                         },
                         "router_id": {"type": "str"},
@@ -739,7 +739,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "acknowledgement": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "redundancy": {"type": "int"},
                                             },
@@ -750,7 +750,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "options": {
                                                 "set": {"type": "bool"},
                                                 "per_interface": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "redundancy": {"type": "int"},
                                             },
@@ -781,10 +781,10 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "receive_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "between_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "max_delay": {"type": "int"},
                                             },
@@ -794,7 +794,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                             },
                         },
                     },
-                }
+                },
             },
         },
         "running_config": {"type": "str"},

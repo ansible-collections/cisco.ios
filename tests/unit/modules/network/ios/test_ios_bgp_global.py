@@ -27,18 +27,18 @@ class TestIosBgpGlobalModule(TestIosModule):
         super(TestIosBgpGlobalModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -46,20 +46,20 @@ class TestIosBgpGlobalModule(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
-            "Bgp_globalFacts.get_bgp_global_data"
+            "Bgp_globalFacts.get_bgp_global_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -86,7 +86,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
 
         set_module_args(
@@ -124,7 +124,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         },
                         "confederation": {"identifier": "22"},
                         "consistency_checker": {
-                            "error_message": {"interval": 10, "set": True}
+                            "error_message": {"interval": 10, "set": True},
                         },
                         "dampening": {
                             "max_suppress": 44,
@@ -225,8 +225,8 @@ class TestIosBgpGlobalModule(TestIosModule):
                                             "igp_cost": True,
                                             "transitive": True,
                                         },
-                                    }
-                                }
+                                    },
+                                },
                             },
                             "neighbor_address": "192.0.2.4",
                             "remote_as": "100.1",
@@ -239,7 +239,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "metric": 33,
                                 "name": "ap112",
                                 "route_map": "mp1",
-                            }
+                            },
                         },
                         {"connected": {"metric": 22}},
                         {"static": {"metric": 33, "route_map": "mp1"}},
@@ -247,7 +247,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                 },
                 "state": "merged",
-            }
+            },
         )
         commands = [
             "router bgp 65000",
@@ -328,7 +328,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -345,12 +345,12 @@ class TestIosBgpGlobalModule(TestIosModule):
                             address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
-                        )
+                        ),
                     ],
                     timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
                 ),
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -368,7 +368,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -385,12 +385,12 @@ class TestIosBgpGlobalModule(TestIosModule):
                             address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
-                        )
+                        ),
                     ],
                     timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
                 ),
                 state="merged",
-            )
+            ),
         )
         # self.assertEqual(sorted(result["commands"]), sorted(commands))
         with self.assertRaises(AnsibleFailJson) as error:
@@ -415,7 +415,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -426,7 +426,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                             address="192.168.0.11",
                             attribute_map="map1",
                             netmask="255.255.0.0",
-                        )
+                        ),
                     ),
                     aggregate_addresses=[
                         dict(
@@ -445,7 +445,8 @@ class TestIosBgpGlobalModule(TestIosModule):
                         bestpath_options=dict(compare_routerid=True),
                         log_neighbor_changes=True,
                         nopeerup_delay_options=dict(
-                            cold_boot=20, post_boot=10
+                            cold_boot=20,
+                            post_boot=10,
                         ),
                     ),
                     redistribute=[dict(connected=dict(set=True, metric=10))],
@@ -454,11 +455,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                             address="192.0.2.1",
                             remote_as=200,
                             description="replace neighbor",
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -488,7 +489,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -505,12 +506,12 @@ class TestIosBgpGlobalModule(TestIosModule):
                             address="192.0.2.1",
                             remote_as=100,
                             route_map=dict(name="test-route", out=True),
-                        )
+                        ),
                     ],
                     timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
                 ),
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -528,7 +529,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(dict(config=dict(as_number=65000), state="deleted"))
         commands = [
@@ -546,7 +547,7 @@ class TestIosBgpGlobalModule(TestIosModule):
     def test_ios_bgp_global_deleted_empty(self):
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(config=dict(as_number=65000), state="deleted"))
         result = self.execute_module(changed=False)
@@ -566,7 +567,7 @@ class TestIosBgpGlobalModule(TestIosModule):
              address-family ipv4
               neighbor 192.0.2.28 activate
               neighbor 172.31.35.140 activate
-            """
+            """,
         )
         set_module_args(dict(config=dict(as_number=65000), state="purged"))
         commands = ["no router bgp 65000"]
@@ -593,7 +594,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "med": {
                                     "confed": True,
                                     "missing_as_worst": True,
-                                }
+                                },
                             },
                         ],
                         "inject_map": {
@@ -615,7 +616,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "nsf_switchover": 10,
                                 "post_boot": 22,
                                 "user_initiated": 22,
-                            }
+                            },
                         ],
                     },
                     "bmp": {"buffer_size": 22, "server": 2},
@@ -691,7 +692,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         {
                             "activate": True,
                             "advertise": {
-                                "additional_paths": {"group_best": True}
+                                "additional_paths": {"group_best": True},
                             },
                             "ipv6_adddress": "2001:DB8::1037",
                         },
@@ -730,17 +731,17 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "metric": 33,
                                 "name": "ap112",
                                 "route_map": "mp1",
-                            }
+                            },
                         },
                         {"connected": {"metric": 22}},
                         {"mobile": {"metric": 211}},
                     ],
                     "route_server_context": {
-                        "description": "good smn server BMP"
+                        "description": "good smn server BMP",
                     },
                 },
                 "state": "rendered",
-            }
+            },
         )
         commands = [
             "router bgp 65000",
@@ -818,10 +819,10 @@ class TestIosBgpGlobalModule(TestIosModule):
                      address-family ipv4
                       neighbor 192.0.2.28 activate
                       neighbor 172.31.35.140 activate
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = {
@@ -838,7 +839,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "remote_as": "100",
                     "neighbor_address": "192.0.2.1",
                     "route_maps": [{"name": "test-route", "out": True}],
-                }
+                },
             ],
         }
         self.assertEqual(parsed_list, result["parsed"])

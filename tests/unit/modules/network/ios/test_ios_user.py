@@ -38,12 +38,12 @@ class TestIosUserModule(TestIosModule):
         super(TestIosUserModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_user.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_user.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_user.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_user.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -70,7 +70,7 @@ class TestIosUserModule(TestIosModule):
                 "answer": "y",
                 "newline": False,
                 "prompt": "This operation will remove all username related configurations with same name",
-            }
+            },
         ]
 
         result_cmd = []
@@ -120,7 +120,7 @@ class TestIosUserModule(TestIosModule):
                 name="test",
                 configured_password="test",
                 update_password="on_create",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username test secret test"])
@@ -131,7 +131,7 @@ class TestIosUserModule(TestIosModule):
                 name="ansible",
                 configured_password="test",
                 update_password="on_create",
-            )
+            ),
         )
         self.execute_module()
 
@@ -141,7 +141,7 @@ class TestIosUserModule(TestIosModule):
                 name="ansible",
                 configured_password="test",
                 update_password="always",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username ansible secret test"])

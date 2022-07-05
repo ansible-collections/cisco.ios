@@ -48,7 +48,7 @@ class AclsFacts(object):
         # and incomplete ACLs are not viewed correctly
         _acl_data = connection.get("show access-list")
         _remarks_data = connection.get(
-            "show running-config | include ip(v6)* access-list|remark"
+            "show running-config | include ip(v6)* access-list|remark",
         )
         if _remarks_data:
             _acl_data += "\n" + _remarks_data
@@ -105,7 +105,8 @@ class AclsFacts(object):
                 for each_ace in each.get("aces"):
                     if each_ace.get("source"):
                         if len(each_ace.get("source")) == 1 and each_ace.get(
-                            "source", {}
+                            "source",
+                            {},
                         ).get("address"):
                             each_ace["source"]["host"] = each_ace[
                                 "source"
@@ -118,13 +119,14 @@ class AclsFacts(object):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
                                 each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-", "_"
-                                ): True
-                            }
+                                    "-",
+                                    "_",
+                                ): True,
+                            },
                         }
                     if each_ace.get("protocol_number"):
                         each_ace["protocol_options"] = {
-                            "protocol_number": each_ace.pop("protocol_number")
+                            "protocol_number": each_ace.pop("protocol_number"),
                         }
 
             def collect_remarks(aces):
@@ -160,7 +162,8 @@ class AclsFacts(object):
         if objs:
             facts["acls"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["acls"].append(utils.remove_empties(cfg))

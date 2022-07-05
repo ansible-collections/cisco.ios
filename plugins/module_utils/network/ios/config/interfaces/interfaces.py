@@ -117,7 +117,8 @@ class Interfaces(ResourceModule):
                     self.addcmd(have, "enabled", False)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "interface", False)
+                begin,
+                self._tmplt.render(want or have, "interface", False),
             )
 
     def purge(self, have):

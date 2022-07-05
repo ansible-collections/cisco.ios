@@ -177,12 +177,12 @@ def validate_ipv4(value, module):
         if len(address) != 2:
             module.fail_json(
                 msg="address format is <ipv4 address>/<mask>, got invalid format %s"
-                % value
+                % value,
             )
         if not is_masklen(address[1]):
             module.fail_json(
                 msg="invalid value for mask: %s, mask should be in range 0-32"
-                % address[1]
+                % address[1],
             )
 
 
@@ -192,12 +192,12 @@ def validate_ipv6(value, module):
         if len(address) != 2:
             module.fail_json(
                 msg="address format is <ipv6 address>/<mask>, got invalid format %s"
-                % value
+                % value,
             )
         elif not 0 <= int(address[1]) <= 128:
             module.fail_json(
                 msg="invalid value for mask: %s, mask should be in range 0-128"
-                % address[1]
+                % address[1],
             )
 
 
@@ -250,7 +250,8 @@ def map_obj_to_commands(updates, module):
                     address = ipv4.split("/")
                     if len(address) == 2:
                         ipv4 = "{0} {1}".format(
-                            address[0], to_netmask(address[1])
+                            address[0],
+                            to_netmask(address[1]),
                         )
                     commands.append("no ip address {0}".format(ipv4))
                 else:
@@ -272,7 +273,8 @@ def map_obj_to_commands(updates, module):
                     address = ipv4.split("/")
                     if len(address) == 2:
                         ipv4 = "{0} {1}".format(
-                            address[0], to_netmask(address[1])
+                            address[0],
+                            to_netmask(address[1]),
                         )
                     commands.append("ip address {0}".format(ipv4))
             if ipv6:
@@ -301,7 +303,8 @@ def map_config_to_obj(module):
             address = ipv4.strip().split(" ")
             if len(address) == 2 and is_netmask(address[1]):
                 ipv4 = "{0}/{1}".format(
-                    address[0], to_text(to_masklen(address[1]))
+                    address[0],
+                    to_text(to_masklen(address[1])),
                 )
         obj = {
             "name": item,
@@ -330,7 +333,7 @@ def map_params_to_obj(module):
                 "ipv4": module.params["ipv4"],
                 "ipv6": module.params["ipv6"],
                 "state": module.params["state"],
-            }
+            },
         )
         validate_param_values(module, obj)
     return obj
@@ -349,7 +352,7 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
     )
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)

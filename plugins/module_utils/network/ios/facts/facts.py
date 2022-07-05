@@ -97,7 +97,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
 
 
 FACT_LEGACY_SUBSETS = dict(
-    default=Default, hardware=Hardware, interfaces=Interfaces, config=Config
+    default=Default,
+    hardware=Hardware,
+    interfaces=Interfaces,
+    config=Config,
 )
 
 FACT_RESOURCE_SUBSETS = dict(
@@ -137,7 +140,10 @@ class Facts(FactsBase):
         super(Facts, self).__init__(module)
 
     def get_facts(
-        self, legacy_facts_type=None, resource_facts_type=None, data=None
+        self,
+        legacy_facts_type=None,
+        resource_facts_type=None,
+        data=None,
     ):
         """Collect the facts for ios
         :param legacy_facts_type: List of legacy facts types
@@ -148,12 +154,15 @@ class Facts(FactsBase):
         """
         if self.VALID_RESOURCE_SUBSETS:
             self.get_network_resources_facts(
-                FACT_RESOURCE_SUBSETS, resource_facts_type, data
+                FACT_RESOURCE_SUBSETS,
+                resource_facts_type,
+                data,
             )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(
-                FACT_LEGACY_SUBSETS, legacy_facts_type
+                FACT_LEGACY_SUBSETS,
+                legacy_facts_type,
             )
 
         return self.ansible_facts, self._warnings

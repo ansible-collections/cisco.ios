@@ -36,7 +36,7 @@ class Acl_interfacesFacts(object):
 
     def get_acl_interfaces_data(self, connection):
         return connection.get(
-            "show running-config | include ^interface|ip access-group|ipv6 traffic-filter"
+            "show running-config | include ^interface|ip access-group|ipv6 traffic-filter",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -69,7 +69,8 @@ class Acl_interfacesFacts(object):
             if cfg.get("access_groups"):
                 facts["acl_interfaces"].append(cfg)
         utils.validate_config(
-            self.argument_spec, {"config": facts.get("acl_interfaces")}
+            self.argument_spec,
+            {"config": facts.get("acl_interfaces")},
         )
 
         ansible_facts["ansible_network_resources"].update(facts)

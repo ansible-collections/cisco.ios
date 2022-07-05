@@ -149,14 +149,16 @@ class Ospf_Interfaces(ResourceModule):
                     have_elements = len(have.get("address_family"))
                     while have_elements:
                         if have.get("address_family")[have_elements - 1].get(
-                            "afi"
+                            "afi",
                         ) == each.get("afi"):
                             set_want = False
                             h_each = have["address_family"].pop(
-                                have_elements - 1
+                                have_elements - 1,
                             )
                             self.compare(
-                                parsers=parsers, want=each, have=h_each
+                                parsers=parsers,
+                                want=each,
+                                have=h_each,
                             )
                         have_elements -= 1
                 else:

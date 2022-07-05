@@ -345,7 +345,9 @@ def map_config_to_obj(module):
         obj = {
             "name": item,
             "description": parse_config_argument(
-                configobj, item, "description"
+                configobj,
+                item,
+                "description",
             ),
             "speed": parse_config_argument(configobj, item, "speed"),
             "duplex": parse_config_argument(configobj, item, "duplex"),
@@ -419,7 +421,9 @@ def map_obj_to_commands(updates):
                     add_command_to_interface(interface, "shutdown", commands)
                 elif not disable and obj_in_have.get("disable", False):
                     add_command_to_interface(
-                        interface, "no shutdown", commands
+                        interface,
+                        "no shutdown",
+                        commands,
                     )
             else:
                 commands.append(interface)
@@ -464,7 +468,8 @@ def check_declarative_intent_params(module, want, result):
             if match:
                 have_state = match.group(1)
             if have_state is None or not conditional(
-                want_state, have_state.strip()
+                want_state,
+                have_state.strip(),
             ):
                 failed_conditions.append("state " + "eq(%s)" % want_state)
         if want_tx_rate:
@@ -473,7 +478,9 @@ def check_declarative_intent_params(module, want, result):
             if match:
                 have_tx_rate = match.group(1)
             if have_tx_rate is None or not conditional(
-                want_tx_rate, have_tx_rate.strip(), cast=int
+                want_tx_rate,
+                have_tx_rate.strip(),
+                cast=int,
             ):
                 failed_conditions.append("tx_rate " + want_tx_rate)
         if want_rx_rate:
@@ -482,7 +489,9 @@ def check_declarative_intent_params(module, want, result):
             if match:
                 have_rx_rate = match.group(1)
             if have_rx_rate is None or not conditional(
-                want_rx_rate, have_rx_rate.strip(), cast=int
+                want_rx_rate,
+                have_rx_rate.strip(),
+                cast=int,
             ):
                 failed_conditions.append("rx_rate " + want_rx_rate)
         if want_neighbors:
@@ -492,7 +501,8 @@ def check_declarative_intent_params(module, want, result):
             # Process LLDP neighbors
             if have_neighbors_lldp is None:
                 rc, have_neighbors_lldp, err = exec_command(
-                    module, "show lldp neighbors detail"
+                    module,
+                    "show lldp neighbors detail",
                 )
                 if rc != 0:
                     module.fail_json(
@@ -513,7 +523,8 @@ def check_declarative_intent_params(module, want, result):
             # Process CDP neighbors
             if have_neighbors_cdp is None:
                 rc, have_neighbors_cdp, err = exec_command(
-                    module, "show cdp neighbors detail"
+                    module,
+                    "show cdp neighbors detail",
                 )
                 if rc != 0:
                     module.fail_json(
@@ -558,7 +569,8 @@ def main():
         neighbors=dict(type="list", elements="dict", options=neighbors_spec),
         delay=dict(default=10, type="int"),
         state=dict(
-            default="present", choices=["present", "absent", "up", "down"]
+            default="present",
+            choices=["present", "absent", "up", "down"],
         ),
     )
     aggregate_spec = deepcopy(element_spec)
@@ -567,7 +579,7 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
     )
     argument_spec.update(element_spec)
     argument_spec.update(ios_argument_spec)

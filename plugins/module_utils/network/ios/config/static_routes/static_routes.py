@@ -55,10 +55,12 @@ class Static_Routes(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         static_routes_facts = facts["ansible_network_resources"].get(
-            "static_routes"
+            "static_routes",
         )
         if not static_routes_facts:
             return []
@@ -98,10 +100,10 @@ class Static_Routes(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_static_routes_facts(
-                data=running_config
+                data=running_config,
             )
         else:
             changed_static_routes_facts = []
@@ -146,8 +148,8 @@ class Static_Routes(ConfigBase):
         ):
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                    state,
+                ),
             )
         commands = []
         if state == "overridden":
@@ -189,15 +191,21 @@ class Static_Routes(ConfigBase):
                                         have_set = set()
                                         new_hops = []
                                         for each in route_want.get(
-                                            "next_hops"
+                                            "next_hops",
                                         ):
                                             want_set = set()
                                             new_dict_to_set(
-                                                each, [], want_set, 0
+                                                each,
+                                                [],
+                                                want_set,
+                                                0,
                                             )
                                             new_hops.append(want_set)
                                         new_dict_to_set(
-                                            addr_have, [], have_set, 0
+                                            addr_have,
+                                            [],
+                                            have_set,
+                                            0,
                                         )
                                         # Check if the have dict next_hops value is diff from want dict next_hops
                                         have_dict = (
@@ -210,13 +218,13 @@ class Static_Routes(ConfigBase):
                                         have_dict.update(
                                             {
                                                 "forward_router_address": route_have.get(
-                                                    "next_hops"
+                                                    "next_hops",
                                                 )[
                                                     0
                                                 ].get(
-                                                    "forward_router_address"
-                                                )
-                                            }
+                                                    "forward_router_address",
+                                                ),
+                                            },
                                         )
                                         # updating the have_dict with next_hops val that's not None
                                         new_have_dict = {}
@@ -240,12 +248,12 @@ class Static_Routes(ConfigBase):
                                             # static routes needs to be deleted before the new want static routes changes
                                             # are applied
                                             clear_route_have = copy.deepcopy(
-                                                route_have
+                                                route_have,
                                             )
                                             # inplace update is allowed in case of ipv6 static routes, so not deleting it
                                             # before applying the want changes
                                             if ":" not in route_want.get(
-                                                "dest"
+                                                "dest",
                                             ):
                                                 commands.extend(
                                                     self._clear_config(
@@ -255,7 +263,7 @@ class Static_Routes(ConfigBase):
                                                         addr_have,
                                                         {},
                                                         clear_route_have,
-                                                    )
+                                                    ),
                                                 )
                                         commands.extend(cmd)
                                 if check:
@@ -278,7 +286,7 @@ class Static_Routes(ConfigBase):
                                 {},
                                 new_hops,
                                 set(),
-                            )
+                            ),
                         )
         commands = [each for each in commands if "no" in each] + [
             each for each in commands if "no" not in each
@@ -319,15 +327,21 @@ class Static_Routes(ConfigBase):
                                         have_set = set()
                                         new_hops = []
                                         for each in route_want.get(
-                                            "next_hops"
+                                            "next_hops",
                                         ):
                                             want_set = set()
                                             new_dict_to_set(
-                                                each, [], want_set, 0
+                                                each,
+                                                [],
+                                                want_set,
+                                                0,
                                             )
                                             new_hops.append(want_set)
                                         new_dict_to_set(
-                                            addr_have, [], have_set, 0
+                                            addr_have,
+                                            [],
+                                            have_set,
+                                            0,
                                         )
                                         commands.extend(
                                             self._clear_config(
@@ -337,7 +351,7 @@ class Static_Routes(ConfigBase):
                                                 addr_have,
                                                 route_want,
                                                 route_have,
-                                            )
+                                            ),
                                         )
                                         commands.extend(
                                             self._set_config(
@@ -348,7 +362,7 @@ class Static_Routes(ConfigBase):
                                                 route_have,
                                                 new_hops,
                                                 have_set,
-                                            )
+                                            ),
                                         )
                                         del addr_want.get("routes")[count]
                                     count += 1
@@ -359,8 +373,13 @@ class Static_Routes(ConfigBase):
                         if not check:
                             commands.extend(
                                 self._clear_config(
-                                    {}, h, {}, addr_have, {}, route_have
-                                )
+                                    {},
+                                    h,
+                                    {},
+                                    addr_have,
+                                    {},
+                                    route_have,
+                                ),
                             )
         # For configuring any non-existing want config
         for w in temp_want:
@@ -373,8 +392,14 @@ class Static_Routes(ConfigBase):
                         new_hops.append(want_set)
                     commands.extend(
                         self._set_config(
-                            w, {}, addr_want, route_want, {}, new_hops, set()
-                        )
+                            w,
+                            {},
+                            addr_want,
+                            route_want,
+                            {},
+                            new_hops,
+                            set(),
+                        ),
                     )
         # Arranging the cmds suct that all delete cmds are fired before all set cmds
         commands = [each for each in sorted(commands) if "no" in each] + [
@@ -411,15 +436,21 @@ class Static_Routes(ConfigBase):
                                         have_set = set()
                                         new_hops = []
                                         for each in route_want.get(
-                                            "next_hops"
+                                            "next_hops",
                                         ):
                                             want_set = set()
                                             new_dict_to_set(
-                                                each, [], want_set, 0
+                                                each,
+                                                [],
+                                                want_set,
+                                                0,
                                             )
                                             new_hops.append(want_set)
                                         new_dict_to_set(
-                                            addr_have, [], have_set, 0
+                                            addr_have,
+                                            [],
+                                            have_set,
+                                            0,
                                         )
                                         commands.extend(
                                             self._set_config(
@@ -430,7 +461,7 @@ class Static_Routes(ConfigBase):
                                                 route_have,
                                                 new_hops,
                                                 have_set,
-                                            )
+                                            ),
                                         )
                                 if check:
                                     break
@@ -452,7 +483,7 @@ class Static_Routes(ConfigBase):
                                 {},
                                 new_hops,
                                 set(),
-                            )
+                            ),
                         )
 
         return commands
@@ -477,7 +508,7 @@ class Static_Routes(ConfigBase):
                                 if h.get("address_families"):
                                     for addr_have in h.get("address_families"):
                                         for route_have in addr_have.get(
-                                            "routes"
+                                            "routes",
                                         ):
                                             if (
                                                 route_want.get("dest")
@@ -495,7 +526,7 @@ class Static_Routes(ConfigBase):
                                                             addr_want,
                                                             {},
                                                             route_want,
-                                                        )
+                                                        ),
                                                     )
                                                 else:
                                                     commands.extend(
@@ -506,7 +537,7 @@ class Static_Routes(ConfigBase):
                                                             addr_have,
                                                             {},
                                                             route_have,
-                                                        )
+                                                        ),
                                                     )
                                         if check:
                                             break
@@ -525,7 +556,7 @@ class Static_Routes(ConfigBase):
                                             addr_have,
                                             {},
                                             route_have,
-                                        )
+                                        ),
                                     )
         else:
             # Drill each iteration of have and then based on dest and afi type comparison fire delete config call
@@ -534,8 +565,13 @@ class Static_Routes(ConfigBase):
                     for route_have in addr_have.get("routes"):
                         commands.extend(
                             self._clear_config(
-                                {}, h, {}, addr_have, {}, route_have
-                            )
+                                {},
+                                h,
+                                {},
+                                addr_have,
+                                {},
+                                route_have,
+                            ),
                         )
 
         return commands
@@ -587,7 +623,14 @@ class Static_Routes(ConfigBase):
         return cmd
 
     def _set_config(
-        self, want, have, addr_want, route_want, route_have, hops, have_set
+        self,
+        want,
+        have,
+        addr_want,
+        route_want,
+        route_have,
+        hops,
+        have_set,
     ):
         """
         Set the interface config based on the want and have config
@@ -645,7 +688,13 @@ class Static_Routes(ConfigBase):
         return commands
 
     def _clear_config(
-        self, want, have, addr_want, addr_have, route_want, route_have
+        self,
+        want,
+        have,
+        addr_want,
+        addr_have,
+        route_want,
+        route_have,
     ):
         """
         Delete the interface config based on the want and have config
@@ -694,11 +743,11 @@ class Static_Routes(ConfigBase):
                     each.add(tuple(iteritems({"afi": addr_have.get("afi")})))
                 if route_want:
                     each.add(
-                        tuple(iteritems({"dest": route_want.get("dest")}))
+                        tuple(iteritems({"dest": route_want.get("dest")})),
                     )
                 else:
                     each.add(
-                        tuple(iteritems({"dest": route_have.get("dest")}))
+                        tuple(iteritems({"dest": route_have.get("dest")})),
                     )
                 temp_want = {}
                 for each_want in each:

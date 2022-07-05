@@ -381,7 +381,7 @@ def check_args(module, warnings):
     if module.params["multiline_delimiter"]:
         if len(module.params["multiline_delimiter"]) != 1:
             module.fail_json(
-                msg="multiline_delimiter value can only be a single character"
+                msg="multiline_delimiter value can only be a single character",
             )
 
 
@@ -422,7 +422,7 @@ def save_config(module, result):
         run_commands(module, "copy running-config startup-config\r")
     else:
         module.warn(
-            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage"
+            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage",
         )
 
 
@@ -436,7 +436,8 @@ def main():
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
         match=dict(
-            default="line", choices=["line", "strict", "exact", "none"]
+            default="line",
+            choices=["line", "strict", "exact", "none"],
         ),
         replace=dict(default="line", choices=["line", "block"]),
         multiline_delimiter=dict(default="@"),
@@ -446,7 +447,8 @@ def main():
         backup=dict(type="bool", default=False),
         backup_options=dict(type="dict", options=backup_spec),
         save_when=dict(
-            choices=["always", "never", "modified", "changed"], default="never"
+            choices=["always", "never", "modified", "changed"],
+            default="never",
         ),
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
@@ -531,13 +533,18 @@ def main():
         save_config(module, result)
     elif module.params["save_when"] == "modified":
         output = run_commands(
-            module, ["show running-config", "show startup-config"]
+            module,
+            ["show running-config", "show startup-config"],
         )
         running_config = NetworkConfig(
-            indent=1, contents=output[0], ignore_lines=diff_ignore_lines
+            indent=1,
+            contents=output[0],
+            ignore_lines=diff_ignore_lines,
         )
         startup_config = NetworkConfig(
-            indent=1, contents=output[1], ignore_lines=diff_ignore_lines
+            indent=1,
+            contents=output[1],
+            ignore_lines=diff_ignore_lines,
         )
         if running_config.sha1 != startup_config.sha1:
             save_config(module, result)
@@ -552,12 +559,14 @@ def main():
 
         # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(
-            indent=1, contents=contents, ignore_lines=diff_ignore_lines
+            indent=1,
+            contents=contents,
+            ignore_lines=diff_ignore_lines,
         )
         if module.params["diff_against"] == "running":
             if module.check_mode:
                 module.warn(
-                    "unable to perform diff against running-config due to check mode"
+                    "unable to perform diff against running-config due to check mode",
                 )
                 contents = None
             else:
@@ -572,7 +581,9 @@ def main():
             contents = module.params["intended_config"]
         if contents is not None:
             base_config = NetworkConfig(
-                indent=1, contents=contents, ignore_lines=diff_ignore_lines
+                indent=1,
+                contents=contents,
+                ignore_lines=diff_ignore_lines,
             )
             if running_config.sha1 != base_config.sha1:
                 if module.params["diff_against"] == "intended":
@@ -585,11 +596,11 @@ def main():
                     {
                         "changed": True,
                         "diff": {"before": str(before), "after": str(after)},
-                    }
+                    },
                 )
 
     if result.get("changed") and any(
-        (module.params["src"], module.params["lines"])
+        (module.params["src"], module.params["lines"]),
     ):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"

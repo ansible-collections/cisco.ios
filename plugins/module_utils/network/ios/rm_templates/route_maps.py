@@ -42,7 +42,7 @@ def _tmplt_route_map_match(config_data):
             if config_data["match"]["additional_paths"].get("best_range"):
                 cmd += " best-range"
                 if config_data["match"]["additional_paths"]["best_range"].get(
-                    "lower_limit"
+                    "lower_limit",
                 ):
                     cmd += " lower-limit {lower_limit}".format(
                         **config_data["match"]["additional_paths"][
@@ -50,7 +50,7 @@ def _tmplt_route_map_match(config_data):
                         ]
                     )
                 if config_data["match"]["additional_paths"]["best_range"].get(
-                    "upper_limit"
+                    "upper_limit",
                 ):
                     cmd += " upper-limit {upper_limit}".format(
                         **config_data["match"]["additional_paths"][
@@ -102,7 +102,7 @@ def _tmplt_route_map_match(config_data):
             command.append(cmd)
         if match.get("length"):
             command.append(
-                "match length {minimum} {maximum}".format(**match["length"])
+                "match length {minimum} {maximum}".format(**match["length"]),
             )
         if match.get("local_preference"):
             cmd = "match local-preference "
@@ -239,11 +239,13 @@ def _tmplt_route_map_match_ip(config_data):
             if config_data["match"]["ip"]["address"].get("prefix_lists"):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["address"]["prefix_lists"]
+                    cmd,
+                    config_data["match"]["ip"]["address"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["address"].get("acls"):
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["address"]["acls"]
+                    cmd,
+                    config_data["match"]["ip"]["address"]["acls"],
                 )
         if config_data["match"]["ip"].get("flowspec"):
             cmd += " flowspec"
@@ -254,27 +256,31 @@ def _tmplt_route_map_match_ip(config_data):
             if config_data["match"]["ip"]["flowspec"].get("prefix_lists"):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["flowspec"]["prefix_lists"]
+                    cmd,
+                    config_data["match"]["ip"]["flowspec"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["flowspec"].get("acls"):
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["flowspec"]["acls"]
+                    cmd,
+                    config_data["match"]["ip"]["flowspec"]["acls"],
                 )
         if config_data["match"]["ip"].get("next_hop"):
             cmd += " next-hop"
             if config_data["match"]["ip"]["next_hop"].get("prefix_lists"):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["next_hop"]["prefix_lists"]
+                    cmd,
+                    config_data["match"]["ip"]["next_hop"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["next_hop"].get("acls"):
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["next_hop"]["acls"]
+                    cmd,
+                    config_data["match"]["ip"]["next_hop"]["acls"],
                 )
         if config_data["match"]["ip"].get("redistribution_source"):
             cmd += " redistribution-source"
             if config_data["match"]["ip"]["redistribution_source"].get(
-                "prefix_lists"
+                "prefix_lists",
             ):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
@@ -284,7 +290,7 @@ def _tmplt_route_map_match_ip(config_data):
                     ],
                 )
             elif config_data["match"]["ip"]["redistribution_source"].get(
-                "acls"
+                "acls",
             ):
                 cmd = construct_cmd_from_list(
                     cmd,
@@ -295,7 +301,7 @@ def _tmplt_route_map_match_ip(config_data):
         if config_data["match"]["ip"].get("route_source"):
             cmd += " route-source"
             if config_data["match"]["ip"]["route_source"].get(
-                "redistribution_source"
+                "redistribution_source",
             ):
                 cmd += " redistribution-source"
             if config_data["match"]["ip"]["route_source"].get("prefix_lists"):
@@ -306,7 +312,8 @@ def _tmplt_route_map_match_ip(config_data):
                 )
             elif config_data["match"]["ip"]["route_source"].get("acls"):
                 cmd = construct_cmd_from_list(
-                    cmd, config_data["match"]["ip"]["route_source"]["acls"]
+                    cmd,
+                    config_data["match"]["ip"]["route_source"]["acls"],
                 )
         return cmd
 
@@ -378,7 +385,7 @@ def _tmplt_route_map_set(config_data):
                 cmd += " prepend"
                 if set["as_path"]["prepend"].get("as_number"):
                     cmd += " {0}".format(
-                        " ".join(set["as_path"]["prepend"].get("as_number"))
+                        " ".join(set["as_path"]["prepend"].get("as_number")),
                     )
                 elif set["as_path"]["prepend"].get("last_as"):
                     cmd += " last-as {last_as}".format(
@@ -416,15 +423,15 @@ def _tmplt_route_map_set(config_data):
             command.append(
                 "set dampening {penalty_half_time} {reuse_route_val} {suppress_route_val} {max_suppress}".format(
                     **set["dampening"]
-                )
+                ),
             )
         if set.get("default"):
             command.append(
-                "set default interface {default}".format(**set["default"])
+                "set default interface {default}".format(**set["default"]),
             )
         if set.get("extcomm_list"):
             command.append(
-                "set extcomm-list {extcomm_list} delete".format(**set)
+                "set extcomm-list {extcomm_list} delete".format(**set),
             )
         if set.get("extcommunity"):
             if set["extcommunity"].get("cost"):
@@ -453,7 +460,7 @@ def _tmplt_route_map_set(config_data):
                 command.append(cmd)
             if set["extcommunity"].get("soo"):
                 command.append(
-                    "set extcommunity soo {soo}".format(**set["extcommunity"])
+                    "set extcommunity soo {soo}".format(**set["extcommunity"]),
                 )
             if set["extcommunity"].get("vpn_distinguisher"):
                 cmd = "set extcommunity vpn-distinguisher"
@@ -491,7 +498,7 @@ def _tmplt_route_map_set(config_data):
             command.append("set lisp locator-set {lisp}".format(**set))
         if set.get("local_preference"):
             command.append(
-                "set local-preference {local_preference}".format(**set)
+                "set local-preference {local_preference}".format(**set),
             )
         if set.get("metric"):
             cmd = "set metric"
@@ -507,7 +514,7 @@ def _tmplt_route_map_set(config_data):
                             **set["metric"]
                         )
             if set["metric"].get("deviation") and not set["metric"].get(
-                "eigrp_delay"
+                "eigrp_delay",
             ):
                 if set["metric"]["deviation"] == "plus":
                     cmd = "set metric +{metric_value}".format(**set["metric"])
@@ -551,7 +558,7 @@ def _tmplt_route_map_set_ip(config_data):
         cmd = "set ip"
         if set_ip.get("address"):
             command.append(
-                "{0} address prefix-list {address}".format(cmd, **set_ip)
+                "{0} address prefix-list {address}".format(cmd, **set_ip),
             )
         if set_ip.get("df"):
             command.append("{0} df {df}".format(cmd, **set_ip))
@@ -568,7 +575,7 @@ def _tmplt_route_map_set_ip(config_data):
             cmd += " next-hop"
             if set_ip["next_hop"].get("address"):
                 command.append(
-                    "{0} {address}".format(cmd, **set_ip["next_hop"])
+                    "{0} {address}".format(cmd, **set_ip["next_hop"]),
                 )
             if set_ip["next_hop"].get("dynamic"):
                 command.append("{0} dynamic dhcp".format(cmd))
@@ -576,7 +583,7 @@ def _tmplt_route_map_set_ip(config_data):
                 command.append(
                     "{0} encapsulate l3vpn {encapsulate}".format(
                         cmd, **set_ip["next_hop"]
-                    )
+                    ),
                 )
             if set_ip["next_hop"].get("peer_address"):
                 command.append("{0} peer-address".format(cmd))
@@ -599,7 +606,7 @@ def _tmplt_route_map_set_ip(config_data):
                 command.append(
                     "{0} verify-availability {address} {sequence} track {track}".format(
                         cmd, **set_ip["next_hop"]["verify_availability"]
-                    )
+                    ),
                 )
         if set_ip.get("precedence"):
             cmd += " precedence"
@@ -706,9 +713,9 @@ class Route_mapsTemplate(NetworkTemplate):
                         "entries": {
                             "action": "{{ action }}",
                             "sequence": "{{ sequence }}",
-                        }
+                        },
                     },
-                }
+                },
             },
             "shared": True,
         },
@@ -729,10 +736,10 @@ class Route_mapsTemplate(NetworkTemplate):
                             "continue_entry": {
                                 "set": "{{ True if entry_sequence is not defined }}",
                                 "entry_sequence": "{{ entry_sequence }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -748,9 +755,9 @@ class Route_mapsTemplate(NetworkTemplate):
             "result": {
                 "{{ route_map }}": {
                     "{{ action|d() + '_' + sequence|d() }}": {
-                        "entries": {"description": "{{ description }}"}
-                    }
-                }
+                        "entries": {"description": "{{ description }}"},
+                    },
+                },
             },
         },
         {
@@ -882,10 +889,10 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "tag_list": "{{ tag.split('tag list ')[1].split(' ') if tag is defined and 'list' in tag }}",
                                 },
                                 "track": "{{ track.split('track ')[1] if track is defined }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -946,11 +953,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "prefix_lists": "{{ route_source.split('route-source prefix-list ')[1].split(' ') if route_source is defined and\
                                                 'prefix-list' in route_source else '' }}",
                                     },
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -993,11 +1000,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "prefix_list": "{{ route_source.split('route-source prefix-list ')[1] if route_source is defined and\
                                                 'prefix-list' in route_source }}",
                                     },
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1164,10 +1171,10 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "traffic_index": "{{ traffic_index.split('traffic-index ')[1] if traffic_index is defined }}",
                                 "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",
                                 "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1265,11 +1272,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "track": "{{ vrf.split('track ')[1] if vrf is defined and 'track' in vrf }}",
                                         },
                                     },
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1322,11 +1329,11 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "track": "{{ vrf.split('track ')[1] if vrf is defined and 'verify-availability' in vrf }}",
                                         },
                                     },
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
     ]

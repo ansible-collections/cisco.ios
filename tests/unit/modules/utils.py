@@ -43,7 +43,9 @@ def fail_json(*args, **kwargs):
 class ModuleTestCase(unittest.TestCase):
     def setUp(self):
         self.mock_module = patch.multiple(
-            basic.AnsibleModule, exit_json=exit_json, fail_json=fail_json
+            basic.AnsibleModule,
+            exit_json=exit_json,
+            fail_json=fail_json,
         )
         self.mock_module.start()
         self.mock_sleep = patch("time.sleep")

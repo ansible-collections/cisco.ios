@@ -24,18 +24,18 @@ class TestIosOspfV3Module(TestIosModule):
         super(TestIosOspfV3Module, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = (
             self.mock_get_resource_connection_config.start()
@@ -43,20 +43,20 @@ class TestIosOspfV3Module(TestIosModule):
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = (
             self.mock_get_resource_connection_facts.start()
         )
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv3.ospfv3."
-            "Ospfv3Facts.get_ospfv3_data"
+            "Ospfv3Facts.get_ospfv3_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -90,15 +90,16 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=100, max_adjacency=100
+                                        min_adjacency=100,
+                                        max_adjacency=100,
                                     ),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "router ospfv3 1",
@@ -119,17 +120,18 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="1",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=110)
+                                router_lsa=True,
+                                on_startup=dict(time=110),
                             ),
                             areas=[
                                 dict(
                                     area_id=10,
                                     nssa=dict(
                                         default_information_originate=dict(
-                                            metric=10
-                                        )
+                                            metric=10,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             address_family=[
                                 dict(
@@ -137,25 +139,27 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=50, max_adjacency=50
+                                        min_adjacency=50,
+                                        max_adjacency=50,
                                     ),
                                     areas=[
                                         dict(
                                             area_id=25,
                                             nssa=dict(
                                                 default_information_originate=dict(
-                                                    metric=25, nssa_only=True
-                                                )
+                                                    metric=25,
+                                                    nssa_only=True,
+                                                ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -167,7 +171,8 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="1",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=100)
+                                router_lsa=True,
+                                on_startup=dict(time=100),
                             ),
                             address_family=[
                                 dict(
@@ -175,15 +180,16 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=100, max_adjacency=100
+                                        min_adjacency=100,
+                                        max_adjacency=100,
                                     ),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "router ospfv3 1",
@@ -205,17 +211,18 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="1",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=110)
+                                router_lsa=True,
+                                on_startup=dict(time=110),
                             ),
                             areas=[
                                 dict(
                                     area_id=10,
                                     nssa=dict(
                                         default_information_originate=dict(
-                                            metric=10
-                                        )
+                                            metric=10,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             address_family=[
                                 dict(
@@ -223,25 +230,27 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=50, max_adjacency=50
+                                        min_adjacency=50,
+                                        max_adjacency=50,
                                     ),
                                     areas=[
                                         dict(
                                             area_id=25,
                                             nssa=dict(
                                                 default_information_originate=dict(
-                                                    metric=25, nssa_only=True
-                                                )
+                                                    metric=25,
+                                                    nssa_only=True,
+                                                ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -253,42 +262,45 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="200",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=200)
+                                router_lsa=True,
+                                on_startup=dict(time=200),
                             ),
                             areas=[
                                 dict(
                                     area_id=10,
                                     nssa=dict(
                                         default_information_originate=dict(
-                                            metric=10
-                                        )
+                                            metric=10,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             address_family=[
                                 dict(
                                     afi="ipv4",
                                     unicast=True,
                                     adjacency=dict(
-                                        min_adjacency=50, max_adjacency=50
+                                        min_adjacency=50,
+                                        max_adjacency=50,
                                     ),
                                     areas=[
                                         dict(
                                             area_id=200,
                                             nssa=dict(
                                                 default_information_originate=dict(
-                                                    metric=200, nssa_only=True
-                                                )
+                                                    metric=200,
+                                                    nssa_only=True,
+                                                ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="overridden",
-            )
+            ),
         )
 
         commands = [
@@ -311,17 +323,18 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="1",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=110)
+                                router_lsa=True,
+                                on_startup=dict(time=110),
                             ),
                             areas=[
                                 dict(
                                     area_id=10,
                                     nssa=dict(
                                         default_information_originate=dict(
-                                            metric=10
-                                        )
+                                            metric=10,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             address_family=[
                                 dict(
@@ -329,44 +342,47 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=50, max_adjacency=50
+                                        min_adjacency=50,
+                                        max_adjacency=50,
                                     ),
                                     areas=[
                                         dict(
                                             area_id=25,
                                             nssa=dict(
                                                 default_information_originate=dict(
-                                                    metric=25, nssa_only=True
-                                                )
+                                                    metric=25,
+                                                    nssa_only=True,
+                                                ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospfv3_deleted(self):
         set_module_args(
             dict(
-                config=dict(processes=[dict(process_id="1")]), state="deleted"
-            )
+                config=dict(processes=[dict(process_id="1")]),
+                state="deleted",
+            ),
         )
         commands = ["no router ospfv3 1"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_ospfv3_parsed(self):
         set_module_args(
-            dict(running_config="router ospfv3 1\n area 5", state="parsed")
+            dict(running_config="router ospfv3 1\n area 5", state="parsed"),
         )
         result = self.execute_module(changed=False)
         parsed_list = {
-            "processes": [{"areas": [{"area_id": "5"}], "process_id": 1}]
+            "processes": [{"areas": [{"area_id": "5"}], "process_id": 1}],
         }
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -378,17 +394,18 @@ class TestIosOspfV3Module(TestIosModule):
                         dict(
                             process_id="1",
                             max_metric=dict(
-                                router_lsa=True, on_startup=dict(time=110)
+                                router_lsa=True,
+                                on_startup=dict(time=110),
                             ),
                             areas=[
                                 dict(
                                     area_id=10,
                                     nssa=dict(
                                         default_information_originate=dict(
-                                            metric=10
-                                        )
+                                            metric=10,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             address_family=[
                                 dict(
@@ -396,25 +413,27 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=50, max_adjacency=50
+                                        min_adjacency=50,
+                                        max_adjacency=50,
                                     ),
                                     areas=[
                                         dict(
                                             area_id=25,
                                             nssa=dict(
                                                 default_information_originate=dict(
-                                                    metric=25, nssa_only=True
-                                                )
+                                                    metric=25,
+                                                    nssa_only=True,
+                                                ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "address-family ipv4 unicast vrf blue",

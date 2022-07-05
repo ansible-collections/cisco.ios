@@ -25,16 +25,20 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 class Acl_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Acl_interfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off
     PARSERS = [
         {
             'name': 'interface',
-            'getval': re.compile(r'''
+            'getval': re.compile(
+                r'''
               ^interface\s
-              (?P<name>\S+)$''', re.VERBOSE),
+              (?P<name>\S+)$''', re.VERBOSE,
+            ),
             'setval': 'interface {{ name }}',
             'result': {
                 '{{ name }}': {
@@ -42,7 +46,7 @@ class Acl_interfacesTemplate(NetworkTemplate):
                     'access_groups': {},
                 },
             },
-            'shared': True
+            'shared': True,
         },
         {
             "name": "access_groups",
@@ -67,10 +71,10 @@ class Acl_interfacesTemplate(NetworkTemplate):
                                     "direction": "{{ direction }}",
                                 },
                             ],
-                        }
-                    }
-                }
-            }
+                        },
+                    },
+                },
+            },
         },
     ]
     # fmt: on

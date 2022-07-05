@@ -67,7 +67,7 @@ class Provider(CliProvider):
             self._validate_input(config)
             if operation == "replace":
                 if existing_as and int(existing_as) != self.get_value(
-                    "config.bgp_as"
+                    "config.bgp_as",
                 ):
                     commands.append("no router bgp %s" % existing_as)
                     config = None
@@ -158,10 +158,10 @@ class Provider(CliProvider):
                     if item["networks"]:
                         raise ValueError(
                             "operation is replace but provided both root level network(s) and network(s) under %s %s address family"
-                            % (item["afi"], item["safi"])
+                            % (item["afi"], item["safi"]),
                         )
 
             if root_networks and config and device_has_AF(config):
                 raise ValueError(
-                    "operation is replace and device has one or more address family activated but root level network(s) provided"
+                    "operation is replace and device has one or more address family activated but root level network(s) provided",
                 )

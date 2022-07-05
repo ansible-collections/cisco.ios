@@ -44,7 +44,7 @@ class LacpArgs(object):
                 "system": {
                     "options": {"priority": {"required": True, "type": "int"}},
                     "type": "dict",
-                }
+                },
             },
             "type": "dict",
         },

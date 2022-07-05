@@ -76,7 +76,8 @@ class L2_InterfacesFacts(object):
         if objs:
             facts["l2_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["l2_interfaces"].append(utils.remove_empties(cfg))
@@ -125,7 +126,8 @@ class L2_InterfacesFacts(object):
 
             trunk = dict()
             trunk["encapsulation"] = utils.parse_conf_arg(
-                conf, "switchport trunk encapsulation"
+                conf,
+                "switchport trunk encapsulation",
             )
             native_vlan = utils.parse_conf_arg(conf, "native vlan")
             if native_vlan:
@@ -137,7 +139,7 @@ class L2_InterfacesFacts(object):
             if allowed_vlan_add_all:
                 for each in allowed_vlan_add_all:
                     trunk["allowed_vlans"].extend(
-                        each.split("allowed vlan add ")[1].split(",")
+                        each.split("allowed vlan add ")[1].split(","),
                     )
             pruning_vlan = utils.parse_conf_arg(conf, "pruning vlan")
             if pruning_vlan:

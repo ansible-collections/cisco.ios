@@ -36,12 +36,12 @@ class TestIosBannerModule(TestIosModule):
         super(TestIosBannerModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_banner.get_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_banner.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_banner.load_config"
+            "ansible_collections.cisco.ios.plugins.modules.ios_banner.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -59,10 +59,10 @@ class TestIosBannerModule(TestIosModule):
     def test_ios_banner_create(self):
         for banner_type in ("login", "motd", "exec", "incoming", "slip-ppp"):
             set_module_args(
-                dict(banner=banner_type, text="test\nbanner\nstring")
+                dict(banner=banner_type, text="test\nbanner\nstring"),
             )
             commands = [
-                "banner {0} @\ntest\nbanner\nstring\n@".format(banner_type)
+                "banner {0} @\ntest\nbanner\nstring\n@".format(banner_type),
             ]
             self.execute_module(changed=True, commands=commands)
 
@@ -88,10 +88,10 @@ class TestIosBannerModule(TestIosModule):
                     banner=banner_type,
                     text="test\nbanner\nstring",
                     multiline_delimiter="c",
-                )
+                ),
             )
             commands = [
-                "banner {0} c\ntest\nbanner\nstring\nc".format(banner_type)
+                "banner {0} c\ntest\nbanner\nstring\nc".format(banner_type),
             ]
             self.execute_module(changed=True, commands=commands)
 

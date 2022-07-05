@@ -74,7 +74,8 @@ class Ntp_globalFacts(object):
 
         # parse native config using the Ntp_global template
         ntp_global_parser = Ntp_globalTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = ntp_global_parser.parse()
 
@@ -85,8 +86,10 @@ class Ntp_globalFacts(object):
 
         params = utils.remove_empties(
             ntp_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["ntp_global"] = params.get("config", {})

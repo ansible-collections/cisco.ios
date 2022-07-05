@@ -53,7 +53,8 @@ class InterfacesFacts(object):
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = sorted(
             list(interfaces_parser.parse().values()),
@@ -64,8 +65,10 @@ class InterfacesFacts(object):
         facts = {"interfaces": []}
         params = utils.remove_empties(
             interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["interfaces"] = params["config"]

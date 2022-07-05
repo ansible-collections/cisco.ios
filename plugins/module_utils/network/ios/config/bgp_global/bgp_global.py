@@ -158,7 +158,7 @@ class Bgp_global(ResourceModule):
                 self._module.fail_json(
                     msg="BGP is already configured with ASN {0}. "
                     "Please remove it with state: purged before "
-                    "configuring new ASN".format(h_asn)
+                    "configuring new ASN".format(h_asn),
                 )
 
         if self.want:
@@ -217,23 +217,28 @@ class Bgp_global(ResourceModule):
                 )
             else:
                 self._compare_generic_lists(
-                    want.get(_parse, {}), have.get(_parse, {}), _parse
+                    want.get(_parse, {}),
+                    have.get(_parse, {}),
+                    _parse,
                 )
 
         # for neighbors
         self._compare_neighbor_lists(
-            want.get("neighbors", {}), have.get("neighbors", {})
+            want.get("neighbors", {}),
+            have.get("neighbors", {}),
         )
 
         # for redistribute
         self._compare_redistribute_lists(
-            want.get("redistribute", {}), have.get("redistribute", {})
+            want.get("redistribute", {}),
+            have.get("redistribute", {}),
         )
 
         # add as_number in the begining fo command set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
             self.commands.insert(
-                0, self._tmplt.render(want or have, "as_number", False)
+                0,
+                self._tmplt.render(want or have, "as_number", False),
             )
 
     def _has_bgp_inject_maps(self, want):
@@ -350,11 +355,11 @@ class Bgp_global(ResourceModule):
                 for k_rmps, w_rmps in want_route.items():
                     have_rmps = have_route.pop(k_rmps, {})
                     w_rmps["neighbor_address"] = w_neighbor.get(
-                        "neighbor_address"
+                        "neighbor_address",
                     )
                     if have_rmps:
                         have_rmps["neighbor_address"] = have_nbr.get(
-                            "neighbor_address"
+                            "neighbor_address",
                         )
                         have_rmps = {"route_maps": have_rmps}
                     self.compare(
@@ -419,7 +424,7 @@ class Bgp_global(ResourceModule):
                             if ky in _v
                             else ky
                             for ky, vl in i.items()
-                        ][0]
+                        ][0],
                     ): i
                     for i in tmp_data[k]
                 }
@@ -448,11 +453,11 @@ class Bgp_global(ResourceModule):
             if want.get("aggregate_address"):
                 if want.get("aggregate_addresses"):
                     want["aggregate_addresses"].append(
-                        want.pop("aggregate_address")
+                        want.pop("aggregate_address"),
                     )
                 else:
                     want["aggregate_addresses"] = [
-                        want.pop("aggregate_address")
+                        want.pop("aggregate_address"),
                     ]
             if want.get("bgp"):
                 _want_bgp = want.get("bgp", {})
@@ -469,11 +474,11 @@ class Bgp_global(ResourceModule):
                 if _want_bgp.get("inject_map"):
                     if _want_bgp.get("inject_maps"):
                         _want_bgp["inject_maps"].append(
-                            _want_bgp.pop("inject_map")
+                            _want_bgp.pop("inject_map"),
                         )
                     else:
                         _want_bgp["inject_maps"] = [
-                            _want_bgp.pop("inject_map")
+                            _want_bgp.pop("inject_map"),
                         ]
                 if _want_bgp.get("listen", {}).get("range"):
                     if (
@@ -484,7 +489,7 @@ class Bgp_global(ResourceModule):
                         _want_bgp["listen"]["range"][
                             "host_with_subnet"
                         ] = _want_bgp["listen"]["range"].pop(
-                            "ipv4_with_subnet"
+                            "ipv4_with_subnet",
                         )
                     elif (
                         _want_bgp.get("listen")
@@ -494,7 +499,7 @@ class Bgp_global(ResourceModule):
                         _want_bgp["listen"]["range"][
                             "host_with_subnet"
                         ] = _want_bgp["listen"]["range"].pop(
-                            "ipv6_with_subnet"
+                            "ipv6_with_subnet",
                         )
             if want.get("distribute_list"):
                 if want.get("distributes"):
