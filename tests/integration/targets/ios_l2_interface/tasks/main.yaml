@@ -1,6 +1,7 @@
 ---
 - block:
-    - ansible.builtin.include: cli.yaml
+    - name: "Add Tag to test"
+      ansible.builtin.include: cli.yaml
       tags:
         - network_cli
   when: switch_type == "L2"

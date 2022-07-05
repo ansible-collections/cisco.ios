@@ -5,7 +5,8 @@
   cisco.ios.ios_config:
     src: config.j2
 
-- ansible.builtin.set_fact:
+- name: Set test Facts shorter_hostname
+  ansible.builtin.set_fact:
     shorter_hostname: '{{ inventory_hostname_short| truncate(10, True, "") }}'
 
 - name: Discover IOS L2/L3 switch type
@@ -16,9 +17,11 @@
     commands:
       - show version
 
-- ansible.builtin.set_fact: switch_type=""
+- name: Set test Facts
+  ansible.builtin.set_fact: switch_type=""
 
-- ansible.builtin.set_fact: switch_type="L2"
+- name: Set test Facts to L2
+  ansible.builtin.set_fact: switch_type="L2"
   when: '"l2" in result.stdout[0]'
 
 - block:
