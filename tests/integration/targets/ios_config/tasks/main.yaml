@@ -1,11 +1,11 @@
 ---
-- include: cli.yaml
+- ansible.builtin.include: cli.yaml
   tags:
     - network_cli
 
-- include: cli_config.yaml
+- ansible.builtin.include: cli_config.yaml
   tags:
     - network_cli
 
-- include: redirection.yaml
+- ansible.builtin.include: redirection.yaml
   when: ansible_version.full is version('2.10.0', '>=')

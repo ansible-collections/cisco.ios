@@ -1,2 +1,2 @@
 ---
-- { include: cli.yaml, tags: ['network_cli'] }
+- { ansible.builtin.include: cli.yaml, tags: ['network_cli'] }
