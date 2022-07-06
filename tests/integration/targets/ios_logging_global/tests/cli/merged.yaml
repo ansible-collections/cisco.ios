@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start Merged integration state for ios_logging_global ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: TEST - [merged] Apply provided configuration
+    - name: Test - [merged] apply provided configuration
       cisco.ios.ios_logging_global:
         config:
           buffered:
@@ -44,20 +44,20 @@
         state: merged
       register: result
 
-    - name: TEST - [merged] Assert that correct set of commands were generated
-      assert:
+    - name: Test - [merged] assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: TEST - [merged] Assert that before dicts are correctly generated
-      assert:
+    - name: Test - [merged] assert that before dicts are correctly generated
+      ansible.builtin.assert:
         that:
           - merged['before'] == {}
 
-    - name: TEST - [merged] Assert that after dicts are correctly generated
-      assert:
+    - name: Test - [merged] assert that after dicts are correctly generated
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

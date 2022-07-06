@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_lldp_global gathered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather the provided configuration with the existing running configuration
@@ -12,8 +12,8 @@
         state: gathered
 
     - name: Assert
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['gathered'] == gathered['config'] }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,17 +1,17 @@
 ---
-- debug: msg="START cli/invalid.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/invalid.yaml on connection={{ ansible_connection }}"
 
-- name: run invalid command
+- name: Run invalid command
   register: result
   ignore_errors: true
   cisco.ios.ios_command:
     commands: show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed
 
-- name: run commands that include invalid command
+- name: Run commands that include invalid command
   register: result
   ignore_errors: true
   cisco.ios.ios_command:
@@ -19,8 +19,8 @@
       - show version
       - show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed
 
-- debug: msg="END cli/invalid.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/invalid.yaml on connection={{ ansible_connection }}"

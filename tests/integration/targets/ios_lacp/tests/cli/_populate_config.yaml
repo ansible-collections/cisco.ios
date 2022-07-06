@@ -1,5 +1,5 @@
 ---
-- name: Populate Config
+- name: Populate configuration
   vars:
     lines: "lacp system-priority 500\n"
   when: ansible_net_version != "15.6(2)T"

@@ -1,7 +1,7 @@
 ---
-- debug: msg="START cli/save.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/save.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     commands:
       - no description
@@ -11,16 +11,16 @@
     match: none
     save_when: modified
 
-- name: save should always run
+- name: Save should always run
   register: result
   cisco.ios.ios_config:
     save_when: always
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: delete config (setup)
+- name: Delete configuration (setup)
   register: result
   cisco.ios.ios_config:
     replace: line
@@ -28,7 +28,7 @@
       - no ip http server
     save_when: modified
 
-- name: save should run when changed
+- name: Save should run when changed
   register: result
   cisco.ios.ios_config:
     replace: line
@@ -36,14 +36,14 @@
       - ip http server
     save_when: modified
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: teardown
+- name: Teardown
   register: result
   cisco.ios.ios_config:
     lines:
       - no ip http server
 
-- debug: msg="END cli/save.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/save.yaml on connection={{ ansible_connection }}"

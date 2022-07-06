@@ -1,5 +1,5 @@
 ---
-- name: tear down old users if they exist (Setup)
+- name: Tear down old users if they exist (setup)
   become: true
   cisco.ios.ios_user:
     aggregate:
@@ -16,7 +16,7 @@
       - name: ansibletest6
     state: absent
 
-- name: Create user (SetUp)
+- name: Create user (setup)
   become: true
   register: result
   cisco.ios.ios_user:
@@ -25,12 +25,12 @@
     role: network-operator
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["username ansibletest1 view network-operator", "username ansibletest1 privilege 15"]
 
-- name: Collection of users (SetUp)
+- name: Collection of users (setup)
   become: true
   register: result
   cisco.ios.ios_user:
@@ -41,12 +41,12 @@
     state: present
     view: network-admin
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["username ansibletest2 view network-admin", "username ansibletest3 view network-admin"]
 
-- name: Add user again (Idempotent)
+- name: Add user again (idempotent)
   become: true
   register: result
   cisco.ios.ios_user:
@@ -55,12 +55,12 @@
     role: network-operator
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.commands | length == 0
 
-- name: Add collection of users again (Idempotent)
+- name: Add collection of users again (idempotent)
   become: true
   register: result
   cisco.ios.ios_user:
@@ -71,7 +71,7 @@
     state: present
     view: network-admin
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.commands | length == 0
@@ -85,7 +85,7 @@
     configured_password: testpass
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'username ansibleuser4 password' in result.commands[0]"
@@ -99,7 +99,7 @@
     configured_password: testpass
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'username ansibleuser5 secret' in result.commands[0]"
@@ -114,12 +114,12 @@
       value: $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'username ansibleuser6 secret' in result.commands[0]"
 
-- name: tearDown
+- name: Teardown
   become: true
   register: result
   cisco.ios.ios_user:
@@ -137,7 +137,7 @@
       - name: ansibletest6
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no username ansibletest1" in result.commands[0]["command"]'

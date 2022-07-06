@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Merged ios_lldp_interfaces state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _enable_lldp.yaml
+- ansible.builtin.include_tasks: _enable_lldp.yaml
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge the provided configuration with the existing running configuration
@@ -25,26 +25,26 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       register: result
       cisco.ios.ios_lldp_interfaces: *id001
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

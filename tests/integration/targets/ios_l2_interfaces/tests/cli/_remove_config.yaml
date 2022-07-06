@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: Remove configuration
   vars:
     lines:
       "interface GigabitEthernet 0/1\nno switchport access vlan\nno switchport trunk encapsulation\nno switchport trunk native vlan\nno switchport trunk allowed\

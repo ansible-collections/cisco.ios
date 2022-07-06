@@ -1,5 +1,5 @@
 ---
-- name: Collect all cli test cases
+- name: Collect all CLI test cases
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/cli"
     patterns: "{{ testcase }}.yaml"
@@ -11,7 +11,7 @@
   ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
   delegate_to: localhost
 
-- name: Get the IOS version
+- name: Get the ios version
   cisco.ios.ios_facts:
     gather_subset: all
 

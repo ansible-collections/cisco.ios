@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_acl_interfaces round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_acl_interfaces:
         config:
@@ -38,7 +38,7 @@
                     direction: out
         state: merged
 
-    - name: Gather acl interfaces facts
+    - name: Gather ACL interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -61,20 +61,20 @@
                     direction: in
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_acl_interfaces:
         config: "{{ ansible_facts['network_resources']['acl_interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

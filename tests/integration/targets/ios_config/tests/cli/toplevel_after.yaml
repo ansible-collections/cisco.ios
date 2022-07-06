@@ -1,14 +1,14 @@
 ---
-- debug: msg="START cli/toplevel_after.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/toplevel_after.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines:
       - snmp-server contact ansible
       - hostname {{ shorter_hostname }}
     match: none
 
-- name: configure top level command with before
+- name: Configure top level command with before
   register: result
   cisco.ios.ios_config:
     lines:
@@ -16,13 +16,13 @@
     after:
       - snmp-server contact bar
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'hostname foo' in result.updates"
       - "'snmp-server contact bar' in result.updates"
 
-- name: configure top level command with before idempotent check
+- name: Configure top level command with before idempotent check
   register: result
   cisco.ios.ios_config:
     lines:
@@ -30,15 +30,15 @@
     after:
       - snmp-server contact foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - no snmp-server contact
       - hostname {{ shorter_hostname }}
     match: none
 
-- debug: msg="END cli/toplevel_after.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/toplevel_after.yaml on connection={{ ansible_connection }}"

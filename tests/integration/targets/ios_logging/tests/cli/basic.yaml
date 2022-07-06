@@ -25,7 +25,7 @@
     facility: local7
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging host 172.16.0.1" in result.commands'
@@ -38,14 +38,14 @@
     name: 172.16.0.1
     state: present
 
-- assert: &id002
+- ansible.builtin.assert: &id002
     that:
       - result.changed == false
 
 - name: Delete/disable host logging
   register: result
   cisco.ios.ios_logging: *id001
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no logging host 172.16.0.1" in result.commands'
@@ -53,7 +53,7 @@
 - name: Delete/disable host logging (idempotent)
   register: result
   cisco.ios.ios_logging: *id001
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Console logging with level warnings
   register: result
   cisco.ios.ios_logging:
@@ -61,18 +61,18 @@
     level: warnings
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging console warnings" in result.commands'
 
-- name: Configure Buffer size
+- name: Configure buffer size
   register: result
   cisco.ios.ios_logging:
     dest: buffered
     size: 8000
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging buffered 8000" in result.commands'
@@ -87,7 +87,7 @@
       - dest: buffered
         size: 9000
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging buffered 9000" in result.commands'
@@ -102,7 +102,7 @@
     size: 4096
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging buffered 4096 alerts" in result.commands'
@@ -111,8 +111,8 @@
 - name: Set both logging destination and facility (idempotent)
   register: result
   cisco.ios.ios_logging: *id003
-- assert: *id002
-- name: remove logging as collection tearDown
+- ansible.builtin.assert: *id002
+- name: Remove logging as collection teardown
   register: result
   cisco.ios.ios_logging:
     aggregate:
@@ -126,7 +126,7 @@
       - facility: uucp
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no logging console" in result.commands'

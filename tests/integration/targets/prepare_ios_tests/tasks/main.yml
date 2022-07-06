@@ -5,11 +5,11 @@
   cisco.ios.ios_config:
     src: config.j2
 
-- name: Set test Facts shorter_hostname
+- name: Set test facts shorter_hostname
   ansible.builtin.set_fact:
     shorter_hostname: '{{ inventory_hostname_short| truncate(10, True, "") }}'
 
-- name: Discover IOS L2/L3 switch type
+- name: Discover ios l2/l3 switch type
   connection: ansible.netcommon.network_cli
   become: true
   register: result
@@ -17,38 +17,38 @@
     commands:
       - show version
 
-- name: Set test Facts
+- name: Set test facts
   ansible.builtin.set_fact: switch_type=""
 
-- name: Set test Facts to L2
+- name: Set test facts to layer 2
   ansible.builtin.set_fact: switch_type="L2"
   when: '"l2" in result.stdout[0]'
 
-- name: Block to set Facts
+- name: Block to set facts
   block:
-    - name: Set test interface to GigabitEthernet0/1 as we are on Cisco IOS
+    - name: Set test interface to gigabitethernet0/1 as we are on cisco ios
       ansible.builtin.set_fact: test_interface=GigabitEthernet0/1
 
-    - name: Set test interface 2 to GigabitEthernet0/2 as we are on Cisco IOS
+    - name: Set test interface 2 to gigabitethernet0/2 as we are on cisco ios
       ansible.builtin.set_fact: test_interface2=GigabitEthernet0/2
   when: "'Cisco IOS' in result.stdout[0]"
 
-- name: Block to fix config
+- name: Block to fix configuration
   block:
-    - name: Set test interface to GigabitEthernet2 as we are on Cisco IOS-XE
+    - name: Set test interface to gigabitethernet2 as we are on cisco ios-xe
       ansible.builtin.set_fact: test_interface=GigabitEthernet2
 
-    - name: Disable autonegotiation on GigabitEthernet2
+    - name: Disable autonegotiation on gigabitethernet2
       cisco.ios.ios_config:
         lines:
           - no negotiation auto
         parents: int GigabitEthernet2
       become: true
 
-    - name: Set test interface 2 to GigabitEthernet3 as we are on Cisco IOS-XE
+    - name: Set test interface 2 to gigabitethernet3 as we are on cisco ios-xe
       ansible.builtin.set_fact: test_interface2=GigabitEthernet3
 
-    - name: Disable autonegotiation on GigabitEthernet3
+    - name: Disable autonegotiation on gigabitethernet3
       cisco.ios.ios_config:
         lines:
           - no negotiation auto

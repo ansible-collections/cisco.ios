@@ -1,5 +1,5 @@
 ---
-- name: Populate OSPF Interfaces Configuration
+- name: Populate OSPF interfaces configuration
   cisco.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/1

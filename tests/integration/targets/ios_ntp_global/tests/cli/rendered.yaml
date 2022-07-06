@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_ntp_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
-    - name: ios_ntp_global render - Play
+    - name: Ios_ntp_global render - play
       register: result
       cisco.ios.ios_ntp_global:
         config:
@@ -22,7 +22,7 @@
               version: 2
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered == rendered['commands']

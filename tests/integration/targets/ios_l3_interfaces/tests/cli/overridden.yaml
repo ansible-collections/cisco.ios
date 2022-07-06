@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Overridden ios_l3_interfaces state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: l3_interface overridden - Override device configuration of all interfaces with provided configuration
+    - name: L3_interface overridden - override device configuration of all interfaces with provided configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -24,27 +24,27 @@
                 secondary: true
         state: overridden
 
-    - name: l3_interface overridden - Assert that correct set of commands were generated
-      assert:
+    - name: L3_interface overridden - assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: l3_interface overridden - Assert that before dicts are correctly generated
-      assert:
+    - name: L3_interface overridden - assert that before dicts are correctly generated
+      ansible.builtin.assert:
         that:
           - "{{ overridden['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
-    - name: l3_interface overridden - Assert that after dict is correctly generated
-      assert:
+    - name: L3_interface overridden - assert that after dict is correctly generated
+      ansible.builtin.assert:
         that:
           - "{{ overridden['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: l3_interface overridden - Override device configuration of all interfaces with provided configuration (IDEMPOTENT)
+    - name: L3_interface overridden - override device configuration of all interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
-    - name: l3_interface overridden - Assert that task was idempotent
-      assert:
+    - name: L3_interface overridden - assert that task was idempotent
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

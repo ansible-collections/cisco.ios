@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_acl_interfaces rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
@@ -37,7 +37,7 @@
                     direction: out
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(merged.commands) == []

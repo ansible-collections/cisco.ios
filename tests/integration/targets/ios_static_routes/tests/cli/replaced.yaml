@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Replaced ios_static_routes state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _initial_setup_config.yaml
+- ansible.builtin.include_tasks: _initial_setup_config.yaml
 
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
@@ -42,21 +42,21 @@
                         tag: 110
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 7
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 
-    - name: Replaces device configuration of listed interfaces with provided configuration (IDEMPOTENT)
+    - name: Replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_static_routes: *id001
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result['changed'] == false
   always:
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,14 +1,14 @@
 ---
-- debug: msg="START cli/sublevel.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/sublevel.yaml on connection={{ ansible_connection }}"
 
-- name: setup test
+- name: Setup test
   cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
       - no ip access-list standard test
     match: none
 
-- name: configure sub level command
+- name: Configure sub level command
   register: result
   cisco.ios.ios_config:
     lines:
@@ -16,13 +16,13 @@
     parents:
       - ip access-list extended test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list extended test' in result.updates"
       - "'permit ip any any log' in result.updates"
 
-- name: configure sub level command idempotent check
+- name: Configure sub level command idempotent check
   register: result
   cisco.ios.ios_config:
     lines:
@@ -30,14 +30,14 @@
     parents:
       - ip access-list extended test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none
 
-- debug: msg="END cli/sublevel.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/sublevel.yaml on connection={{ ansible_connection }}"

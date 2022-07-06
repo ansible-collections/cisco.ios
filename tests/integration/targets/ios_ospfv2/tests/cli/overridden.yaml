@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Overridden ios_ospfv2 state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _initial_vrf_setup.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Override provided OSPF V2 configuration
+    - name: Override provided OSPF v2 configuration
       register: result
       cisco.ios.ios_ospfv2: &id001
         config:
@@ -47,26 +47,26 @@
         state: overridden
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) | length == 0 }}"
 
-    - name: Override provided OSPF V2 configuration (IDEMPOTENT)
+    - name: Override provided OSPF v2 configuration (idempotent)
       register: result
       cisco.ios.ios_ospfv2: *id001
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Merged ios_snmp_server state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: ios_snmp_server merged - Play
+    - name: Ios_snmp_server merged - play
       register: result
       cisco.ios.ios_snmp_server: &id001
         config:
@@ -20,22 +20,22 @@
               version: 2c
         state: merged
 
-    - name: ios_snmp_server merged - Assert commands
-      assert:
+    - name: Ios_snmp_server merged - assert commands
+      ansible.builtin.assert:
         that:
           - merged['commands'] == result['commands']
 
-    - name: ios_snmp_server merged - Assert after
-      assert:
+    - name: Ios_snmp_server merged - assert after
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
 
-    - name: ios_snmp_server merged - Play (IDEMPOTENT)
+    - name: Ios_snmp_server merged - play (idempotent)
       register: result
       cisco.ios.ios_snmp_server: *id001
-    - name: ios_snmp_server merged - Assert above task was idempotent
-      assert:
+    - name: Ios_snmp_server merged - assert above task was idempotent
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

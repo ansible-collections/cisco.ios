@@ -1,8 +1,8 @@
 ---
-- debug: msg="START ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
 
 # hit network.ios.ios- get_defaults_flag()
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     commands:
       - no description
@@ -11,13 +11,13 @@
       - interface Loopback999
     match: none
 
-- name: configure device with defaults included
+- name: Configure device with defaults included
   cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
   register: result
 
-- name: run ios commands to test command_timeout
+- name: Run ios commands to test command_timeout
   cisco.ios.ios_command:
     commands:
       - show running-config all
@@ -30,10 +30,10 @@
   register: result
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == true"
       - "'timeout value is 1 secs' in result.msg"
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-- debug: msg="END ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"

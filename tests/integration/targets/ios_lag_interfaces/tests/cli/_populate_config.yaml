@@ -1,5 +1,5 @@
 ---
-- name: Populate Config
+- name: Populate configuration
   vars:
     lines: "interface GigabitEthernet 0/1\nchannel-group 11 mode active\ninterface GigabitEthernet 0/2\nchannel-group 22 mode active\n"
   when: ansible_net_version != "15.6(2)T"

@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_vlans parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -10,7 +10,7 @@
         running_config: "{{ lookup('file', '_parsed.cfg') }}"
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - parsed['config']|symmetric_difference(result.parsed) == []

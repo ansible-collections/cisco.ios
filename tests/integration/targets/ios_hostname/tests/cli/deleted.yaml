@@ -1,27 +1,27 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start Deleted integration state for ios_hostname ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: ios_hostname deleted - Play
+    - name: Ios_hostname deleted - play
       register: result
       cisco.ios.ios_hostname:
         config:
         state: deleted
 
-    - name: ios_hostname deleted - Assert commands
-      assert:
+    - name: Ios_hostname deleted - assert commands
+      ansible.builtin.assert:
         that:
           - deleted['commands'] == result['commands']
 
-    - name: ios_hostname deleted - Assert before
-      assert:
+    - name: Ios_hostname deleted - assert before
+      ansible.builtin.assert:
         that:
           - deleted['before'] == result['before']
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start Deleted integration state for ios_prefix_lists ansible_connection={{ ansible_connection }}
 
 - block:
-    - include_tasks: _remove_config.yaml
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - name: Delete prefix list based on prefix name configured
       register: result
@@ -17,20 +17,20 @@
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted_name['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Delete provided Prefix lists config (IDEMPOTENT)
+    - name: Delete provided prefix lists configuration (idempotent)
       register: result
       cisco.ios.ios_prefix_lists: *id001
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - include_tasks: _remove_config.yaml
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - name: Delete prefix list based on AFI configured
       register: result
@@ -40,37 +40,37 @@
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted_afi['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Delete provided Prefix lists config (IDEMPOTENT)
+    - name: Delete provided prefix lists configuration (idempotent)
       register: result
       cisco.ios.ios_prefix_lists: *id002
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - include_tasks: _remove_config.yaml
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete ALL provided Prefix lists config
+    - name: Delete all provided prefix lists configuration
       register: result
       cisco.ios.ios_prefix_lists: &id003
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Delete ALL provided Prefix lists config (IDEMPOTENT)
+    - name: Delete all provided prefix lists configuration (idempotent)
       register: result
       cisco.ios.ios_prefix_lists: *id003
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

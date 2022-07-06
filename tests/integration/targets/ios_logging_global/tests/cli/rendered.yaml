@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_logging_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
-    - name: TEST - [rendered] Render the commands for provided  configuration
+    - name: Test - [rendered] render the commands for provided  configuration
       register: result
       cisco.ios.ios_logging_global:
         config:
@@ -71,7 +71,7 @@
           logging_on: disable
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []

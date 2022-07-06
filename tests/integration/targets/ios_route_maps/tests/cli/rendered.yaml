@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_route_maps rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
-    - name: Render the commands for provided Route map configuration
+    - name: Render the commands for provided route map configuration
       register: result
       cisco.ios.ios_route_maps:
         config:
@@ -96,7 +96,7 @@
                       critical: true
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(merged.commands) == []

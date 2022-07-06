@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_interfaces rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
@@ -21,7 +21,7 @@
             duplex: full
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []

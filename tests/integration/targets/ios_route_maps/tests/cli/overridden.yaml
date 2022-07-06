@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Overridden ios_route_maps state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Override provided Route maps configuration
+    - name: Override provided route maps configuration
       register: result
       cisco.ios.ios_route_maps: &id001
         config:
@@ -95,26 +95,26 @@
         state: overridden
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Override provided Route maps configuration (IDEMPOTENT)
+    - name: Override provided route maps configuration (idempotent)
       register: result
       cisco.ios.ios_route_maps: *id001
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

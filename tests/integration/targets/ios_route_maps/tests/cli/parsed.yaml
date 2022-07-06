@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_route_maps parsed integration tests on connection={{ ansible_connection }}
 
 - name: Parse the commands for provided configuration
@@ -8,10 +8,10 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ merged['after'] | symmetric_difference(result['parsed']) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "{{ merged['after'] | symmetric_difference(result['parsed']) |length == 0 }}"

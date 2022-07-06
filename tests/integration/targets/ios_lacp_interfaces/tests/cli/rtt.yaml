@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_lacp_interfaces round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_lacp_interfaces:
         config:
@@ -37,23 +37,23 @@
             max_bundle: 2
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 10
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_lacp_interfaces:
         config: "{{ ansible_facts['network_resources']['lacp_interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.commands|length == 10
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

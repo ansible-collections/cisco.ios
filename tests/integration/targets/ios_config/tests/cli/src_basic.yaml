@@ -1,7 +1,7 @@
 ---
-- debug: msg="START cli/src_basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/src_basic.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     commands:
       - no description
@@ -10,29 +10,29 @@
       - interface Loopback999
     match: none
 
-- name: configure device with config
+- name: Configure device with configuration
   register: result
   cisco.ios.ios_config:
     src: basic/config.j2
 
-- name: debug, remove me
-  debug:
+- name: Debug, remove me
+  ansible.builtin.debug:
     msg: "{{ result }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: check device with config
+- name: Check device with configuration
   register: result
   cisco.ios.ios_config:
     src: basic/config.j2
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: check for empty diff
+- name: Check for empty diff
   check_mode: true
   register: result
   cisco.ios.ios_config:
@@ -41,11 +41,11 @@
       - service timestamps debug datetime msec
       - service timestamps log datetime msec
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.updates is undefined
 
-- name: check for diff with ignore lines for running config
+- name: Check for diff with ignore lines for running configuration
   check_mode: true
   register: result
   cisco.ios.ios_config:
@@ -55,8 +55,8 @@
       - service timestamps log datetime msec
     diff_ignore_lines: service timestamps log datetime msec
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "'service timestamps log datetime msec' in result.updates"
 
-- debug: msg="END cli/src_basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/src_basic.yaml on connection={{ ansible_connection }}"

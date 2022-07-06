@@ -1,29 +1,29 @@
 ---
-- debug: msg="START cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines:
       - no ip domain lookup source-interface Loopback888
       - vrf definition ansible
     match: none
 
-- name: configure lookup_source
+- name: Configure lookup_source
   register: result
   cisco.ios.ios_system:
     lookup_source: Loopback888
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain lookup source-interface Loopback888' in result.commands"
 
-- name: verify lookup_source
+- name: Verify lookup_source
   register: result
   cisco.ios.ios_system:
     lookup_source: Loopback888
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -32,7 +32,7 @@
   cisco.ios.ios_system:
     lookup_enabled: false
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no ip domain lookup' in result.commands"
@@ -42,12 +42,12 @@
   cisco.ios.ios_system:
     lookup_enabled: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain lookup' in result.commands"
 
-- name: teardown
+- name: Teardown
   ignore_errors: true
   cisco.ios.ios_config:
     lines:
@@ -55,4 +55,4 @@
       - no vrf definition ansible
     match: none
 
-- debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection }}"

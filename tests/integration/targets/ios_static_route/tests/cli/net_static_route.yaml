@@ -1,14 +1,14 @@
 ---
-- debug: msg="START ios cli/net_static_route.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios cli/net_static_route.yaml on connection={{ ansible_connection }}"
 
-- name: delete static route - setup
+- name: Delete static route - setup
   ansible.netcommon.net_static_route: &id001
     prefix: 172.16.31.0
     mask: 255.255.255.0
     next_hop: 10.0.0.8
     state: absent
 
-- name: create static route using platform agnostic module
+- name: Create static route using platform agnostic module
   register: result
   ansible.netcommon.net_static_route:
     prefix: 172.16.31.0
@@ -17,11 +17,11 @@
     admin_distance: 1
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8 1"]
 
-- name: delete static route - teardown
+- name: Delete static route - teardown
   ansible.netcommon.net_static_route: *id001
-- debug: msg="END ios cli/net_static_route.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios cli/net_static_route.yaml on connection={{ ansible_connection }}"

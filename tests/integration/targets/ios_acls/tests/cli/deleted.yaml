@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start Deleted integration state for ios_acls ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete attributes of provided configured ACLs
+    - name: Delete attributes of provided configured acls
       register: result
       cisco.ios.ios_acls: &id001
         config:
@@ -20,24 +20,24 @@
               - name: R1_TRAFFIC
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 3
           - result.changed == true
           - result.commands|symmetric_difference(deleted.commands) == []
 
-    - name: Delete configured ACLs (IDEMPOTENT)
+    - name: Delete configured acls (idempotent)
       register: result
       cisco.ios.ios_acls: *id001
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result.changed == false
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - name: Delete ACL attributes based on AFI
       register: result
@@ -46,43 +46,43 @@
           - afi: ipv4
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 3
           - result.changed == true
           - result.commands|symmetric_difference(deleted_afi.commands) == []
 
-    - name: Delete ACL attributes based on AFI (IDEMPOTENT)
+    - name: Delete ACL attributes based on AFI (idempotent)
       register: result
       cisco.ios.ios_acls: *id002
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result.changed == false
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete ALL configured ACLs
+    - name: Delete all configured acls
       register: result
       cisco.ios.ios_acls: &id003
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 4
           - result.changed == true
           - result.commands|symmetric_difference(deleted_all.commands) == []
 
-    - name: Delete ALL configured ACLs (IDEMPOTENT)
+    - name: Delete all configured acls (idempotent)
       register: result
       cisco.ios.ios_acls: *id003
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

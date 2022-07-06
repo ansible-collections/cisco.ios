@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_l3_interfaces round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: l3_interface rtt - Apply the provided configuration (Base config)
+    - name: L3_interface RTT - apply the provided configuration (base config)
       register: result
       cisco.ios.ios_l3_interfaces:
         config:
@@ -30,7 +30,7 @@
               - address: 2001:db8:0:3::/64
         state: merged
 
-    - name: l3_interface rtt - Gather L3 interfaces facts
+    - name: L3_interface RTT - gather layer 3 interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -38,7 +38,7 @@
         gather_network_resources:
           - l3_interfaces
 
-    - name: l3_interface rtt - Apply the provided configuration (config to be reverted)
+    - name: L3_interface RTT - apply the provided configuration (config to be reverted)
       # register: result
       cisco.ios.ios_l3_interfaces:
         config:
@@ -51,15 +51,15 @@
                   enable: true
         state: replaced
 
-    - name: l3_interface rtt - Revert back to base config using facts round trip
+    - name: L3_interface RTT - revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_l3_interfaces:
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.changed == true
           - "{{ revert['commands'] | symmetric_difference(rtt['commands']) | length == 0 }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

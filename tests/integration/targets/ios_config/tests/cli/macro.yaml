@@ -1,5 +1,5 @@
 ---
-- debug: msg="START cli/cli_macro.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/cli_macro.yaml on connection={{ ansible_connection }}"
 
 - name: Check for macro support
   register: supports_macro
@@ -8,21 +8,21 @@
     commands:
       - show parser macro brief
 
-- name: ios_config macro integration tests
+- name: Ios_config macro integration tests
   when: supports_macro is succeeded
   block:
     - name: Define macro name
       ansible.builtin.set_fact:
         macro_name: MACRO_ANSIBLE_TEST
 
-    - name: setup - remove configuration
+    - name: Setup - remove configuration
       cisco.ios.ios_config:
         lines:
           - no macro name {{ macro_name }}
           - do show clock
         match: none
 
-    - name: configure macro
+    - name: Configure macro
       register: result
       cisco.ios.ios_config:
         parents: macro name {{ macro_name }}
@@ -33,11 +33,11 @@
         lines: "{{ lookup('template', 'basic/macro.j2') }}"
 
     - name: Check if macro has been added
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - name: configure macro again - idempotent check
+    - name: Configure macro again - idempotent check
       register: result
       cisco.ios.ios_config:
         parents: macro name {{ macro_name }}
@@ -47,16 +47,16 @@
         replace: block
         lines: "{{ lookup('template', 'basic/macro.j2') }}"
 
-    - name: macro already/correctly configured ?
-      assert:
+    - name: Macro already/correctly configured ?
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - name: teardown
+    - name: Teardown
       cisco.ios.ios_config:
         lines:
           - no macro name {{ macro_name }}
           - do show clock
         match: none
 
-- debug: msg="END cli/cli_macro.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/cli_macro.yaml on connection={{ ansible_connection }}"

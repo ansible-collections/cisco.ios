@@ -1,28 +1,28 @@
 ---
-- debug: msg="START cli/output.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/output.yaml on connection={{ ansible_connection }}"
 
-- name: get output for single command
+- name: Get output for single command
   register: result
   cisco.ios.ios_command:
     commands:
       - show version
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
 
-- name: get output for multiple commands
+- name: Get output for multiple commands
   register: result
   cisco.ios.ios_command:
     commands:
       - show version
       - show interfaces
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
       - result.stdout | length == 2
 
-- debug: msg="END cli/output.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/output.yaml on connection={{ ansible_connection }}"

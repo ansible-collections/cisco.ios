@@ -1,5 +1,5 @@
 ---
-- name: Populate Config
+- name: Populate configuration
   vars:
     lines:
       "interface GigabitEthernet 0/1\nswitchport access vlan 10\ninterface GigabitEthernet 0/2\nswitchport trunk encapsulation dot1q\nswitchport trunk native\

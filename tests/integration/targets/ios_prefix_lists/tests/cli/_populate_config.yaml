@@ -1,5 +1,5 @@
 ---
-- name: Populate Prefix Lists Configuration
+- name: Populate prefix lists configuration
   cisco.ios.ios_prefix_lists:
     config:
       - afi: ipv4

@@ -1,17 +1,17 @@
 ---
-- debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
 
 - ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
-    - name: setup - remove vlan used in test
+    - name: Setup - remove VLAN used in test
       cisco.ios.ios_config:
         lines:
           - no vlan 100
           - no vlan 200
           - no vlan 300
 
-    - name: setup - remove switchport settings on interfaces used in test
+    - name: Setup - remove switchport settings on interfaces used in test
       loop:
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
@@ -21,26 +21,26 @@
           - no switchport access vlan 100
         parents: "{{ item }}"
 
-    - name: create vlan
+    - name: Create VLAN
       register: result
       cisco.ios.ios_vlan: &id001
         vlan_id: 100
         name: test-vlan
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'vlan 100' in result.commands"
           - "'name test-vlan' in result.commands"
 
-    - name: create vlan(idempotence)
+    - name: Create vlan (idempotent)
       register: result
       cisco.ios.ios_vlan: *id001
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Add interfaces to vlan
+    - name: Add interfaces to VLAN
       register: result
       cisco.ios.ios_vlan: &id002
         vlan_id: 100
@@ -48,7 +48,7 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface GigabitEthernet0/1' in result.commands"
@@ -58,14 +58,14 @@
           - "'switchport mode access' in result.commands"
           - "'switchport access vlan 100' in result.commands"
 
-    - name: Add interfaces to vlan(idempotence)
+    - name: Add interfaces to vlan (idempotent)
       register: result
       cisco.ios.ios_vlan: *id002
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Check interface assigned to vrf (intent)
+    - name: Check interface assigned to VRF (intent)
       register: result
       cisco.ios.ios_vlan:
         vlan_id: 100
@@ -73,11 +73,11 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == false
 
-    - name: Check interface assigned to vrf (fail)
+    - name: Check interface assigned to VRF (fail)
       ignore_errors: true
       register: result
       cisco.ios.ios_vlan:
@@ -85,18 +85,18 @@
         associated_interfaces:
           - test
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == True
 
-    - name: Remove interface from vlan
+    - name: Remove interface from VLAN
       register: result
       cisco.ios.ios_vlan: &id003
         vlan_id: 100
         interfaces:
           - GigabitEthernet0/1
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'vlan 100' in result.commands"
@@ -104,56 +104,56 @@
           - "'switchport mode access' in result.commands"
           - "'no switchport access vlan 100' in result.commands"
 
-    - name: Remove interface from vlan(idempotence)
+    - name: Remove interface from vlan (idempotent)
       register: result
       cisco.ios.ios_vlan: *id003
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Suspend vlan
+    - name: Suspend VLAN
       register: result
       cisco.ios.ios_vlan:
         vlan_id: 100
         state: suspend
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'vlan 100' in result.commands"
           - "'state suspend' in result.commands"
 
-    - name: Unsuspend vlan
+    - name: Unsuspend VLAN
       register: result
       cisco.ios.ios_vlan:
         vlan_id: 100
         state: active
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'vlan 100' in result.commands"
           - "'state active' in result.commands"
 
-    - name: delete vlan
+    - name: Delete VLAN
       register: result
       cisco.ios.ios_vlan: &id004
         vlan_id: 100
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no vlan 100' in result.commands"
 
-    - name: delete vlan(idempotence)
+    - name: Delete vlan (idempotent)
       register: result
       cisco.ios.ios_vlan: *id004
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: create vlans using aggregate
+    - name: Create vlans using aggregate
       register: result
       cisco.ios.ios_vlan: &id005
         aggregate:
@@ -163,7 +163,7 @@
           - vlan_id: 300
             name: vlan-300
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'vlan 200' in result.commands"
@@ -171,14 +171,14 @@
           - "'vlan 300' in result.commands"
           - "'name vlan-300' in result.commands"
 
-    - name: create vlans using aggregate(idempotence)
+    - name: Create vlans using aggregate (idempotent)
       register: result
       cisco.ios.ios_vlan: *id005
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: delete vlans using aggregate
+    - name: Delete vlans using aggregate
       register: result
       cisco.ios.ios_vlan: &id006
         aggregate:
@@ -189,27 +189,27 @@
             name: vlan-300
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no vlan 200' in result.commands"
           - "'no vlan 300' in result.commands"
 
-    - name: delete vlans using aggregate(idempotence)
+    - name: Delete vlans using aggregate (idempotent)
       register: result
       cisco.ios.ios_vlan: *id006
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: teardown(part1)
+    - name: Teardown(part1)
       cisco.ios.ios_config:
         lines:
           - no vlan 100
           - no vlan 200
           - no vlan 300
 
-    - name: teardown(part2)
+    - name: Teardown(part2)
       loop:
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
@@ -220,4 +220,4 @@
         parents: "{{ item }}"
   when: switch_type == 'L2'
 
-- debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

@@ -1,5 +1,5 @@
 ---
-- name: PRE POST TASK Populate hostname config
+- name: Pre post task populate hostname configuration
   cisco.ios.ios_hostname:
     config:
       hostname: "box1"

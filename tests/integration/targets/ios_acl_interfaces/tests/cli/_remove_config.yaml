@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: Remove configuration
   vars:
     lines:
       "interface GigabitEthernet 0/1\nno ip access-group 110 in\nno ip access-group 100 out\nno ip access-group 123 out\nno ipv6 traffic-filter temp_v6 in\n\

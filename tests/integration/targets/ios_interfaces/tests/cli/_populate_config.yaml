@@ -1,5 +1,5 @@
 ---
-- name: Populate Config
+- name: Populate configuration
   vars:
     lines:
       "interface GigabitEthernet 0/1\ndescription this is interface1\nmtu 65\nspeed 10\nno shutdown\ninterface GigabitEthernet 0/2\ndescription this is interface\

@@ -5,27 +5,27 @@
     text: "Junk login banner\nover multiple lines\n"
     state: present
 
-- name: remove login
+- name: Remove login
   register: result
   cisco.ios.ios_banner:
     banner: login
     state: absent
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ result }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no banner login' in result.commands"
 
-- name: remove login (idempotent)
+- name: Remove login (idempotent)
   register: result
   cisco.ios.ios_banner:
     banner: login
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.commands | length == 0

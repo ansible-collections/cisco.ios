@@ -1,5 +1,5 @@
 ---
-- debug: msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Delete interface ipv4 and ipv6 address(setup)
   register: result
@@ -7,7 +7,7 @@
     name: "{{ test_interface }}"
     state: absent
 
-- name: Setup - Ensure interfaces are switchport
+- name: Setup - ensure interfaces are switchport
   loop:
     - "{{ test_interface }}"
     - "{{ test_interface2 }}"
@@ -24,7 +24,7 @@
     ipv4: 192.168.20.1/24
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -37,7 +37,7 @@
     ipv4: 192.168.20.1/24
     state: present
 
-- assert: &id002
+- ansible.builtin.assert: &id002
     that:
       - result.changed == false
 
@@ -49,7 +49,7 @@
     ipv4: 192.168.20.1/24
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined
@@ -61,7 +61,7 @@
     ipv4: dhcp
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -74,7 +74,7 @@
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -83,7 +83,7 @@
 - name: Configure interface ipv6 address (idempotent)
   register: result
   cisco.ios.ios_l3_interface: *id001
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Configure second ipv6 address on interface
   register: result
   cisco.ios.ios_l3_interface: &id003
@@ -91,7 +91,7 @@
     ipv6: fd5d:12c9:2291:1::1/64
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -100,11 +100,11 @@
 - name: Ensure first ipv6 address still associated with interface
   register: result
   cisco.ios.ios_l3_interface: *id001
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Ensure second ipv6 address still associated with interface
   register: result
   cisco.ios.ios_l3_interface: *id003
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Assign same ipv6 address to other interface (fail)
   ignore_errors: true
   register: result
@@ -113,7 +113,7 @@
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined
@@ -125,7 +125,7 @@
     ipv6: dhcp
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -137,7 +137,7 @@
     name: "{{ test_interface }}"
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -150,7 +150,7 @@
     name: "{{ test_interface }}"
     state: absent
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Delete second interface ipv4 and ipv6 address (setup)
   register: result
   cisco.ios.ios_l3_interface:
@@ -169,7 +169,7 @@
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -191,7 +191,7 @@
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 - name: Change ipv4 and ipv6 address using aggregate
   register: result
   cisco.ios.ios_l3_interface:
@@ -204,7 +204,7 @@
         ipv4: 192.169.2.2/24
         ipv6: fd5b:12c9:2201:5::5/90
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -223,7 +223,7 @@
       - name: "{{ test_interface2 }}"
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -242,5 +242,5 @@
       - name: "{{ test_interface2 }}"
     state: absent
 
-- assert: *id002
-- debug: msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.assert: *id002
+- ansible.builtin.debug: msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"

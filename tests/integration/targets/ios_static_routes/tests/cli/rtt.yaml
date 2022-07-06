@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_static_routes round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Apply the provided configuration (base config)
@@ -56,24 +56,24 @@
                         track: 150
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 2
           - result.changed == true
           - result.commands|symmetric_difference(rtt.override_commands) == []
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_static_routes:
         config: "{{ ansible_facts['network_resources']['static_routes'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.commands|length == 1
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.override_revert_commands) == []
   always:
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

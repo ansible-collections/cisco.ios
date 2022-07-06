@@ -1,5 +1,5 @@
 ---
-- name: Populate Port-Channel Config
+- name: Populate port-channel configuration
   vars:
     lines: "interface Port-channel11\ninterface Port-channel22\n"
   when: ansible_net_version != "15.6(2)T"

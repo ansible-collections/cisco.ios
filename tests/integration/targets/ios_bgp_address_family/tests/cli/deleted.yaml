@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start Deleted integration state for ios_bgp_address_family ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete provided BGP Address family
+    - name: Delete provided BGP address family
       register: result
       cisco.ios.ios_bgp_address_family: &id001
         config:
@@ -19,34 +19,34 @@
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Delete provided BGP Address family (IDEMPOTENT)
+    - name: Delete provided BGP address family (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Delete ALL provided BGP Address family
+    - name: Delete all provided BGP address family
       register: result
       cisco.ios.ios_bgp_address_family: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Delete ALL provided BGP Address family (IDEMPOTENT)
+    - name: Delete all provided BGP address family (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id002
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

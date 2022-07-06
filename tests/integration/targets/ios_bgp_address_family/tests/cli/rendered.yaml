@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_bgp_address_family rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
@@ -77,6 +77,6 @@
                 filter: true
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false

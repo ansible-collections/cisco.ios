@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START ios_bgp_global round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: ios_bgp_global rtt - Play (Base config)
+    - name: Ios_bgp_global RTT - play (base config)
       register: result
       cisco.ios.ios_bgp_global:
         config:
@@ -34,7 +34,7 @@
                 set: true
         state: merged
 
-    - name: ios_bgp_global rtt - Gather bgp_global facts
+    - name: Ios_bgp_global RTT - gather bgp_global facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -42,7 +42,7 @@
         gather_network_resources:
           - bgp_global
 
-    - name: ios_bgp_global rtt - Apply the provided configuration (config to be reverted)
+    - name: Ios_bgp_global RTT - apply the provided configuration (config to be reverted)
       cisco.ios.ios_bgp_global:
         config:
           as_number: 65000
@@ -50,16 +50,16 @@
             - address: 192.0.2.4
         state: merged
 
-    - name: ios_bgp_global rtt - Revert back to base config using facts round trip
+    - name: Ios_bgp_global RTT - revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_bgp_global:
         config: "{{ ansible_facts['network_resources']['bgp_global'] }}"
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.changed == true
           - revert['commands'] == rtt['commands']
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

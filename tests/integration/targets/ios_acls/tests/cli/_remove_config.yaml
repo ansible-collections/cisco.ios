@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: Remove configuration
   vars:
     lines:
       "no ip access-list standard std_acl\nno ip access-list extended test_acl\nno ip access-list extended 110\nno ip access-list extended 123\nno ip access-list\

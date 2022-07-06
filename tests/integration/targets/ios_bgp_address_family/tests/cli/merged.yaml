@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START Merged ios_bgp_address_family state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _initial_vrf_setup.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -80,21 +80,21 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - merged['before'] == {}
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

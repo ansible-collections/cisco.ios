@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: Remove configuration
   vars:
     lines:
       "interface loopback888\nno description\nno shutdown\ninterface loopback999\nno description\nno shutdown\ninterface GigabitEthernet 0/1\nno description\n\

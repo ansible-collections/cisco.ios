@@ -1,5 +1,5 @@
 ---
-- name: setup - remove login
+- name: Setup - remove login
   cisco.ios.ios_banner:
     banner: login
     state: absent
@@ -11,10 +11,10 @@
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ result }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'banner login @\nthis is my login banner\nthat has a multiline\nstring\n@' in result.commands"
@@ -26,7 +26,7 @@
     text: "this is my login banner\nthat has a multiline\nstring"
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.commands | length == 0
@@ -39,10 +39,10 @@
     text: "this is my login banner\nthat has a multiline\nstring\nand a non-default multiline_delimiter"
     state: present
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ result }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - "'banner login x\nthis is my login banner\nthat has a multiline\nstring\nand a non-default multiline_delimiter\nx' in result.commands"
@@ -55,7 +55,7 @@
     text: "this is my login banner\nthat has a multiline\nstring\nand a multiple C chars in the multiline_delimiter\n"
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'banner login ^CCC\nthis is my login banner\nthat has a multiline\nstring\nand a multiple C chars in the multiline_delimiter\n^CCC' in result.commands"
@@ -67,7 +67,7 @@
     text: "this is my login banner\nthat has a multiline\nstring\n"
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'banner login @\nthis is my login banner\nthat has a multiline\nstring\n@' in result.commands"

@@ -1,7 +1,7 @@
 ---
-- debug: msg="START cli/timeout.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/timeout.yaml on connection={{ ansible_connection }}"
 
-- name: test bad condition
+- name: Test bad condition
   register: result
   ignore_errors: true
   cisco.ios.ios_command:
@@ -10,9 +10,9 @@
     wait_for:
       - result[0] contains bad_value_string
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined
 
-- debug: msg="END cli/timeout.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/timeout.yaml on connection={{ ansible_connection }}"

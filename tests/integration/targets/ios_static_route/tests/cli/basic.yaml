@@ -1,5 +1,5 @@
 ---
-- debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
 
 - name: Clear all static routes
   cisco.ios.ios_static_route: &id003
@@ -15,7 +15,7 @@
     next_hop: 10.0.0.8
     state: absent
 
-- name: create static route
+- name: Create static route
   register: result
   cisco.ios.ios_static_route:
     prefix: 172.16.31.0
@@ -23,12 +23,12 @@
     next_hop: 10.0.0.8
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8"]
 
-- name: Verify idempotence with default admin_distance
+- name: Verify idempotent with default admin_distance
   register: result
   cisco.ios.ios_static_route:
     prefix: 172.16.31.0
@@ -37,11 +37,11 @@
     admin_distance: 1
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: modify admin distance of static route
+- name: Modify admin distance of static route
   register: result
   cisco.ios.ios_static_route: &id001
     prefix: 172.16.31.0
@@ -50,19 +50,19 @@
     admin_distance: 2
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["ip route 172.16.31.0 255.255.255.0 10.0.0.8 2"]
 
-- name: modify admin distance of static route again (idempotent)
+- name: Modify admin distance of static route again (idempotent)
   register: result
   cisco.ios.ios_static_route: *id001
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: Verify idempotence with unspecified admin_distance
+- name: Verify idempotent with unspecified admin_distance
   register: result
   cisco.ios.ios_static_route:
     prefix: 172.16.31.0
@@ -70,11 +70,11 @@
     next_hop: 10.0.0.8
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: delete static route
+- name: Delete static route
   register: result
   cisco.ios.ios_static_route: &id002
     prefix: 172.16.31.0
@@ -82,15 +82,15 @@
     next_hop: 10.0.0.8
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["no ip route 172.16.31.0 255.255.255.0 10.0.0.8"]
 
-- name: delete static route again (idempotent)
+- name: Delete static route again (idempotent)
   register: result
   cisco.ios.ios_static_route: *id002
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -105,7 +105,7 @@
     next_hop: 10.0.0.8
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["ip route 172.16.32.0 255.255.255.0 10.0.0.8", "ip route 172.16.33.0 255.255.255.0 10.0.0.8"]
@@ -124,7 +124,7 @@
     next_hop: 10.0.0.8
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["no ip route 172.16.33.0 255.255.255.0 10.0.0.8", "ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
@@ -132,9 +132,9 @@
 - name: Remove static route aggregates
   register: result
   cisco.ios.ios_static_route: *id003
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
 
-- debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"

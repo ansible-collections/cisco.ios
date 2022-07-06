@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start ios_ospfv2 rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
@@ -59,7 +59,7 @@
                     direction: in
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(merged.commands) == []

@@ -1,7 +1,7 @@
 ---
-- debug: msg="START cli/bad_operator.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/bad_operator.yaml on connection={{ ansible_connection }}"
 
-- name: test bad operator
+- name: Test bad operator
   register: result
   ignore_errors: true
   cisco.ios.ios_command:
@@ -11,9 +11,9 @@
     wait_for:
       - "result[0] contains 'Description: Foo'"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined
 
-- debug: msg="END cli/bad_operator.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/bad_operator.yaml on connection={{ ansible_connection }}"

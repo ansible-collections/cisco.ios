@@ -1,22 +1,22 @@
 ---
-- debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/basic.yaml on connection={{ ansible_connection }}"
 
 - ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
-    - name: setup - remove config used in test(part1)
+    - name: Setup - remove configuration used in test(part1)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
 
-    - name: setup - remove config used in test(part2)
+    - name: Setup - remove configuration used in test(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
 
-    - name: setup - remove config used in test(part3)
+    - name: Setup - remove configuration used in test(part3)
       loop:
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
@@ -25,25 +25,25 @@
           - no channel-group 20 mode active
         parents: "{{ item }}"
 
-    - name: create linkagg
+    - name: Create linkagg
       register: result
       cisco.ios.ios_linkagg: &id001
         group: 20
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface port-channel 20' in result.commands"
 
-    - name: create linkagg(Idempotence)
+    - name: Create linkagg (idempotent)
       register: result
       cisco.ios.ios_linkagg: *id001
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: set link aggregation group to members
+    - name: Set link aggregation group to members
       register: result
       cisco.ios.ios_linkagg: &id002
         group: 20
@@ -52,7 +52,7 @@
           - GigabitEthernet0/1
           - GigabitEthernet0/2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface GigabitEthernet0/1' in result.commands"
@@ -60,14 +60,14 @@
           - "'interface GigabitEthernet0/2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
-    - name: set link aggregation group to members(Idempotence)
+    - name: Set link aggregation group to members (idempotent)
       register: result
       cisco.ios.ios_linkagg: *id002
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: remove link aggregation group from member
+    - name: Remove link aggregation group from member
       register: result
       cisco.ios.ios_linkagg: &id003
         group: 20
@@ -75,38 +75,38 @@
         members:
           - GigabitEthernet0/2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface GigabitEthernet0/1' in result.commands"
           - "'no channel-group 20 mode active' in result.commands"
 
-    - name: remove link aggregation group from member(Idempotence)
+    - name: Remove link aggregation group from member (idempotent)
       register: result
       cisco.ios.ios_linkagg: *id003
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: remove linkagg
+    - name: Remove linkagg
       register: result
       cisco.ios.ios_linkagg: &id004
         group: 20
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no interface port-channel 20' in result.commands"
 
-    - name: remove linkagg(Idempotence)
+    - name: Remove linkagg (idempotent)
       register: result
       cisco.ios.ios_linkagg: *id004
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: create aggregate of linkagg definitions
+    - name: Create aggregate of linkagg definitions
       register: result
       cisco.ios.ios_linkagg: &id005
         aggregate:
@@ -117,7 +117,7 @@
             members:
               - GigabitEthernet0/1
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface port-channel 5' in result.commands"
@@ -125,26 +125,26 @@
           - "'interface GigabitEthernet0/1' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
-    - name: create aggregate of linkagg definitions(Idempotence)
+    - name: Create aggregate of linkagg definitions (idempotent)
       register: result
       cisco.ios.ios_linkagg: *id005
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: teardown(part1)
+    - name: Teardown(part1)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
 
-    - name: teardown(part2)
+    - name: Teardown(part2)
       ignore_errors: true
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
 
-    - name: teardown(part3)
+    - name: Teardown(part3)
       loop:
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
@@ -154,4 +154,4 @@
         parents: "{{ item }}"
   when: switch_type == 'L2'
 
-- debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/basic.yaml on connection={{ ansible_connection }}"

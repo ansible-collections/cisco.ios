@@ -1,15 +1,15 @@
 ---
-- name: collect all cli_config test cases
+- name: Collect all cli_config test cases
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/cli_config"
     patterns: "{{ testcase }}.yaml"
   register: test_cases
   delegate_to: localhost
 
-- name: set test_items
+- name: Set test_items
   ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
-- name: run test cases (connection=ansible.netcommon.network_cli)
+- name: Run test cases (connection=ansible.netcommon.network_cli)
   ansible.builtin.include: "{{ test_case_to_run }}"
   vars:
     ansible_connection: ansible.netcommon.network_cli

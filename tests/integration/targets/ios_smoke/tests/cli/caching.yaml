@@ -1,13 +1,13 @@
 ---
 - block:
-    - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
+    - ansible.builtin.debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
 
     - ansible.builtin.set_fact:
         interfaces:
           - interface GigabitEthernet0/1
           - interface GigabitEthernet0/2
 
-    - name: setup
+    - name: Setup
       cisco.ios.ios_config: &rem
         lines:
           - "no description"
@@ -38,7 +38,7 @@
             duplex: full
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface GigabitEthernet0/1" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
@@ -49,14 +49,14 @@
           - '"duplex full" in result.commands'
           - result.commands|length == 7
 
-    - name: Merge base interfaces configuration (IDEMPOTENT)
+    - name: Merge base interfaces configuration (idempotent)
       register: result
       cisco.ios.ios_interfaces: *merged
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == False
 
-    - name: Merge L3 interfaces configuration
+    - name: Merge layer 3 interfaces configuration
       cisco.ios.ios_l3_interfaces: &merged_l3
         config:
           - name: GigabitEthernet0/1
@@ -74,7 +74,7 @@
         state: merged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface GigabitEthernet0/1" in result.commands'
           - '"ip address dhcp client-id GigabitEthernet0/0 hostname test.com" in result.commands'
@@ -84,15 +84,15 @@
           - '"ipv6 address 2001:db8:0:3::/64" in result.commands'
           - result.commands|length == 6
 
-    - name: Merge L3 interfaces configuration (IDEMPOTENT)
+    - name: Merge layer 3 interfaces configuration (idempotent)
       cisco.ios.ios_l3_interfaces: *merged_l3
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that: result.changed == False
 
   always:
-    - name: cleanup
+    - name: Cleanup
       cisco.ios.ios_config: *rem
       with_items: "{{ interfaces }}"
       loop_control:

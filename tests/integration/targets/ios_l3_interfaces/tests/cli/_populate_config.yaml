@@ -1,5 +1,5 @@
 ---
-- name: l3_interface - Populate Config
+- name: L3_interface - populate configuration
   vars:
     lines:
       "interface GigabitEthernet 0/1\nip address 203.0.113.27 255.255.255.0\ninterface GigabitEthernet 0/2\nip address 192.0.2.1 255.255.255.0 secondary\nip\
