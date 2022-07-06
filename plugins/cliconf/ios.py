@@ -57,9 +57,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
     CliconfBase,
     enable_mode,
@@ -182,9 +180,7 @@ class Cliconf(CliconfBase):
             configdiffobjs = candidate_obj.items
             have_banners = {}
 
-        diff["config_diff"] = (
-            dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        )
+        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         banners = self._diff_banners(want_banners, have_banners)
         diff["banner_diff"] = banners if banners else {}
         return diff
@@ -434,8 +430,7 @@ class Cliconf(CliconfBase):
             output = cmd.pop("output", None)
             if output:
                 raise ValueError(
-                    "'output' value %s is not supported for run_commands"
-                    % output,
+                    "'output' value %s is not supported for run_commands" % output,
                 )
 
             try:
@@ -479,8 +474,7 @@ class Cliconf(CliconfBase):
             if out is None:
                 raise AnsibleConnectionFailure(
                     message="cli prompt is not identified from the last received"
-                    " response window: %s"
-                    % self._connection._last_recv_window,
+                    " response window: %s" % self._connection._last_recv_window,
                 )
 
             if re.search(

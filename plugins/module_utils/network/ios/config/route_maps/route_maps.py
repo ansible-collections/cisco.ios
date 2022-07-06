@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.route_maps import (
     Route_mapsTemplate,
 )
@@ -85,9 +83,7 @@ class Route_maps(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -119,10 +115,7 @@ class Route_maps(ResourceModule):
                         # description gets merged with existing description, so explicit delete is required
                         # replaced and overridden state
                         if (
-                            (
-                                self.state == "replaced"
-                                or self.state == "overridden"
-                            )
+                            (self.state == "replaced" or self.state == "overridden")
                             and have_entry.get("description")
                             and have_entry.get("description")
                             != want["entries"][k].get("description")
@@ -168,13 +161,9 @@ class Route_maps(ResourceModule):
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
                         if want["entries"][k].get("action"):
-                            route_map_cmd += " {action}".format(
-                                **want["entries"][k]
-                            )
+                            route_map_cmd += " {action}".format(**want["entries"][k])
                         if want["entries"][k].get("sequence"):
-                            route_map_cmd += " {sequence}".format(
-                                **want["entries"][k]
-                            )
+                            route_map_cmd += " {sequence}".format(**want["entries"][k])
                         self.commands.insert(cmd_len, route_map_cmd)
                         cmd_len = len(self.commands)
             else:
@@ -201,18 +190,12 @@ class Route_maps(ResourceModule):
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
                         if want["entries"][k].get("action"):
-                            route_map_cmd += " {action}".format(
-                                **want["entries"][k]
-                            )
+                            route_map_cmd += " {action}".format(**want["entries"][k])
                         if want["entries"][k].get("sequence"):
-                            route_map_cmd += " {sequence}".format(
-                                **want["entries"][k]
-                            )
+                            route_map_cmd += " {sequence}".format(**want["entries"][k])
                         self.commands.insert(cmd_len, route_map_cmd)
                         cmd_len = len(self.commands)
-        if (
-            self.state == "replaced" or self.state == "overridden"
-        ) and have.get("entries"):
+        if (self.state == "replaced" or self.state == "overridden") and have.get("entries"):
             cmd_len = len(self.commands)
             for k, v in iteritems(have["entries"]):
                 route_map_cmd = "no route-map {route_map}".format(**have)
@@ -248,10 +231,7 @@ class Route_maps(ResourceModule):
                     have_val = have_v.pop(key, {})
                     if val != have_val:
                         if have_val:
-                            if (
-                                self.state == "overridden"
-                                or self.state == "replaced"
-                            ):
+                            if self.state == "overridden" or self.state == "replaced":
                                 self.compare(
                                     parsers=parsers,
                                     want=dict(),
@@ -268,9 +248,7 @@ class Route_maps(ResourceModule):
                                 want={compare_type: {k: {key: val}}},
                                 have=dict(),
                             )
-                if (
-                    self.state == "overridden" or self.state == "replaced"
-                ) and have_v:
+                if (self.state == "overridden" or self.state == "replaced") and have_v:
                     for key, val in iteritems(have_v):
                         self.compare(
                             parsers=parsers,
@@ -345,12 +323,8 @@ class Route_maps(ResourceModule):
                                         if match["ip"][each_ip_param].get(
                                             "acls",
                                         ):
-                                            match["ip"][each_ip_param][
-                                                "acls"
-                                            ] = convert_to_dict(
-                                                match["ip"][each_ip_param][
-                                                    "acls"
-                                                ],
+                                            match["ip"][each_ip_param]["acls"] = convert_to_dict(
+                                                match["ip"][each_ip_param]["acls"],
                                                 "acl",
                                             )
                                         elif match["ip"][each_ip_param].get(
@@ -359,17 +333,13 @@ class Route_maps(ResourceModule):
                                             match["ip"][each_ip_param][
                                                 "prefix_lists"
                                             ] = convert_to_dict(
-                                                match["ip"][each_ip_param][
-                                                    "prefix_lists"
-                                                ],
+                                                match["ip"][each_ip_param]["prefix_lists"],
                                                 "prefix_list",
                                             )
                             if match.get("local_preference") and match.get(
                                 "local_preference",
                             ).get("value"):
-                                match["local_preference"][
-                                    "value"
-                                ] = convert_to_dict(
+                                match["local_preference"]["value"] = convert_to_dict(
                                     match["local_preference"]["value"],
                                     "value",
                                 )
@@ -390,12 +360,8 @@ class Route_maps(ResourceModule):
                                     if match.get("security_group").get(
                                         each_sg_param,
                                     ):
-                                        match["security_group"][
-                                            each_sg_param
-                                        ] = convert_to_dict(
-                                            match["security_group"][
-                                                each_sg_param
-                                            ],
+                                        match["security_group"][each_sg_param] = convert_to_dict(
+                                            match["security_group"][each_sg_param],
                                             each_sg_param,
                                         )
                         set = every.get("set")

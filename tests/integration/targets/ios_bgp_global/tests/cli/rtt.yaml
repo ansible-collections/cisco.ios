@@ -38,8 +38,8 @@
     - name: ios_bgp_global rtt - Gather bgp_global facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - bgp_global
 

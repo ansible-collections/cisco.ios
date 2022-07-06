@@ -16,9 +16,7 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
@@ -43,20 +41,14 @@ class Bgp_address_familyFacts(object):
         temp_af = []
         if objs.get("address_family"):
             for k, v in iteritems(objs["address_family"]):
-                if (
-                    k == "__"
-                ):  # prepare dicts keys to operate on post spliting the keys
+                if k == "__":  # prepare dicts keys to operate on post spliting the keys
                     continue
                 temp_dict = {}
                 temp = [every for every in k.split("_") if every != ""]
                 temp_dict["afi"] = temp.pop(0)
                 if len(temp) > 1:
-                    temp_dict["vrf"] = [
-                        each.split(" ")[1] for each in temp if "vrf" in each
-                    ][0]
-                    temp_dict["safi"] = [
-                        each for each in temp if "vrf" not in each
-                    ][0]
+                    temp_dict["vrf"] = [each.split(" ")[1] for each in temp if "vrf" in each][0]
+                    temp_dict["safi"] = [each for each in temp if "vrf" not in each][0]
                 elif len(temp) == 1:
                     if "vrf" in temp[0]:
                         temp_dict["vrf"] = temp[0].split("vrf ")[1]
@@ -76,10 +68,7 @@ class Bgp_address_familyFacts(object):
                                 "tag",
                             ]:
                                 try:
-                                    if (
-                                        neighbor_identifier
-                                        == each[neighbor_type]
-                                    ):
+                                    if neighbor_identifier == each[neighbor_type]:
                                         each.update(temp)
                                         set = True
                                         break

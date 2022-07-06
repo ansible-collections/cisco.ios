@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_lag_interfaces ansible_connection={{
+    msg:
+      Start Deleted integration state for ios_lag_interfaces ansible_connection={{
       ansible_connection }}
 
 - include_tasks: _populate_port_channel.yaml
@@ -9,7 +10,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Delete attributes of all configured interfaces
       register: result
       cisco.ios.ios_lag_interfaces: &id001
@@ -37,5 +37,4 @@
           - result.changed == false
   when: ansible_net_version != "15.6(2)T"
   always:
-
     - include_tasks: _remove_config.yaml

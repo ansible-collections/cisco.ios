@@ -23,9 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
     Acl_interfacesTemplate,
 )
@@ -125,6 +123,5 @@ class Acl_interfaces(ResourceModule):
                     for subentry in ag.get("acls", [])
                 }
             item["access_groups"] = {
-                subentry["afi"]: subentry
-                for subentry in item.get("access_groups", [])
+                subentry["afi"]: subentry for subentry in item.get("access_groups", [])
             }

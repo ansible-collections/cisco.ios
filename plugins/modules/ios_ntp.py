@@ -342,11 +342,7 @@ def map_obj_to_commands(want, have, module):
             if acl is not None and acl != acl_have:
                 commands.append("ntp access-group peer {0}".format(acl))
 
-            if (
-                logging is not None
-                and logging != logging_have
-                and logging is not False
-            ):
+            if logging is not None and logging != logging_have and logging is not False:
                 commands.append("ntp logging")
 
             if auth is not None and auth != auth_have and auth is not False:

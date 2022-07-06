@@ -165,8 +165,7 @@ def map_obj_to_commands(want, have, module):
             commands.append("no hostname")
         if have["lookup_source"]:
             commands.append(
-                "no ip domain lookup source-interface %s"
-                % have["lookup_source"],
+                "no ip domain lookup source-interface %s" % have["lookup_source"],
             )
         if have["lookup_enabled"] is False:
             commands.append("ip domain lookup")
@@ -211,8 +210,7 @@ def map_obj_to_commands(want, have, module):
             for item in removes:
                 if item["vrf"]:
                     commands.append(
-                        "no ip domain name vrf %s %s"
-                        % (item["vrf"], item["name"]),
+                        "no ip domain name vrf %s %s" % (item["vrf"], item["name"]),
                     )
                 else:
                     commands.append("no ip domain name %s" % item["name"])
@@ -220,8 +218,7 @@ def map_obj_to_commands(want, have, module):
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
                     commands.append(
-                        "ip domain name vrf %s %s"
-                        % (item["vrf"], item["name"]),
+                        "ip domain name vrf %s %s" % (item["vrf"], item["name"]),
                     )
                 else:
                     commands.append("ip domain name %s" % item["name"])
@@ -233,8 +230,7 @@ def map_obj_to_commands(want, have, module):
             for item in removes:
                 if item["vrf"]:
                     commands.append(
-                        "no ip domain list vrf %s %s"
-                        % (item["vrf"], item["name"]),
+                        "no ip domain list vrf %s %s" % (item["vrf"], item["name"]),
                     )
                 else:
                     commands.append("no ip domain list %s" % item["name"])
@@ -242,8 +238,7 @@ def map_obj_to_commands(want, have, module):
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
                     commands.append(
-                        "ip domain list vrf %s %s"
-                        % (item["vrf"], item["name"]),
+                        "ip domain list vrf %s %s" % (item["vrf"], item["name"]),
                     )
                 else:
                     commands.append("ip domain list %s" % item["name"])
@@ -255,8 +250,7 @@ def map_obj_to_commands(want, have, module):
             for item in removes:
                 if item["vrf"]:
                     commands.append(
-                        "no ip name-server vrf %s %s"
-                        % (item["vrf"], item["server"]),
+                        "no ip name-server vrf %s %s" % (item["vrf"], item["server"]),
                     )
                 else:
                     commands.append("no ip name-server %s" % item["server"])
@@ -264,8 +258,7 @@ def map_obj_to_commands(want, have, module):
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
                     commands.append(
-                        "ip name-server vrf %s %s"
-                        % (item["vrf"], item["server"]),
+                        "ip name-server vrf %s %s" % (item["vrf"], item["server"]),
                     )
                 else:
                     commands.append("ip name-server %s" % item["server"])

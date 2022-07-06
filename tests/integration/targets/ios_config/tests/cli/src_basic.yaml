@@ -17,7 +17,7 @@
 
 - name: debug, remove me
   debug:
-    msg: '{{ result }}'
+    msg: "{{ result }}"
 
 - assert:
     that:

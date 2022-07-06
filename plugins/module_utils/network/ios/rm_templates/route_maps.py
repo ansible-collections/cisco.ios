@@ -36,26 +36,20 @@ def _tmplt_route_map_match(config_data):
             if config_data["match"]["additional_paths"].get("all"):
                 cmd += " all"
             if config_data["match"]["additional_paths"].get("best"):
-                cmd += " best {best}".format(
-                    **config_data["match"]["additional_paths"]
-                )
+                cmd += " best {best}".format(**config_data["match"]["additional_paths"])
             if config_data["match"]["additional_paths"].get("best_range"):
                 cmd += " best-range"
                 if config_data["match"]["additional_paths"]["best_range"].get(
                     "lower_limit",
                 ):
                     cmd += " lower-limit {lower_limit}".format(
-                        **config_data["match"]["additional_paths"][
-                            "best_range"
-                        ]
+                        **config_data["match"]["additional_paths"]["best_range"]
                     )
                 if config_data["match"]["additional_paths"]["best_range"].get(
                     "upper_limit",
                 ):
                     cmd += " upper-limit {upper_limit}".format(
-                        **config_data["match"]["additional_paths"][
-                            "best_range"
-                        ]
+                        **config_data["match"]["additional_paths"]["best_range"]
                     )
             if config_data["match"]["additional_paths"].get("group_best"):
                 cmd += " group-best"
@@ -285,18 +279,14 @@ def _tmplt_route_map_match_ip(config_data):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
                     cmd,
-                    config_data["match"]["ip"]["redistribution_source"][
-                        "prefix_lists"
-                    ],
+                    config_data["match"]["ip"]["redistribution_source"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["redistribution_source"].get(
                 "acls",
             ):
                 cmd = construct_cmd_from_list(
                     cmd,
-                    config_data["match"]["ip"]["redistribution_source"][
-                        "acls"
-                    ],
+                    config_data["match"]["ip"]["redistribution_source"]["acls"],
                 )
         if config_data["match"]["ip"].get("route_source"):
             cmd += " route-source"
@@ -328,9 +318,7 @@ def _tmplt_route_map_match_ipv6(config_data):
                     **config_data["match"]["ipv6"]["address"]
                 )
             elif config_data["match"]["ipv6"]["address"].get("acl"):
-                cmd += " {acl}".format(
-                    **config_data["match"]["ipv6"]["address"]
-                )
+                cmd += " {acl}".format(**config_data["match"]["ipv6"]["address"])
         if config_data["match"]["ipv6"].get("flowspec"):
             cmd += " flowspec"
             if config_data["match"]["ipv6"]["flowspec"].get("dest_pfx"):
@@ -342,9 +330,7 @@ def _tmplt_route_map_match_ipv6(config_data):
                     **config_data["match"]["ipv6"]["flowspec"]
                 )
             elif config_data["match"]["ipv6"]["flowspec"].get("acl"):
-                cmd += " {acl}".format(
-                    **config_data["match"]["ipv6"]["flowspec"]
-                )
+                cmd += " {acl}".format(**config_data["match"]["ipv6"]["flowspec"])
         if config_data["match"]["ipv6"].get("next_hop"):
             cmd += " next-hop"
             if config_data["match"]["ipv6"]["next_hop"].get("prefix_list"):
@@ -352,9 +338,7 @@ def _tmplt_route_map_match_ipv6(config_data):
                     **config_data["match"]["ipv6"]["next_hop"]
                 )
             elif config_data["match"]["ipv6"]["next_hop"].get("acl"):
-                cmd += " {acl}".format(
-                    **config_data["match"]["ipv6"]["next_hop"]
-                )
+                cmd += " {acl}".format(**config_data["match"]["ipv6"]["next_hop"])
         if config_data["match"]["ipv6"].get("route_source"):
             cmd += " route-source"
             if config_data["match"]["ipv6"]["route_source"].get("prefix_list"):
@@ -362,9 +346,7 @@ def _tmplt_route_map_match_ipv6(config_data):
                     **config_data["match"]["ipv6"]["route_source"]
                 )
             elif config_data["match"]["ipv6"]["route_source"].get("acl"):
-                cmd += " {acl}".format(
-                    **config_data["match"]["ipv6"]["route_source"]
-                )
+                cmd += " {acl}".format(**config_data["match"]["ipv6"]["route_source"])
         return cmd
 
 
@@ -388,9 +370,7 @@ def _tmplt_route_map_set(config_data):
                         " ".join(set["as_path"]["prepend"].get("as_number")),
                     )
                 elif set["as_path"]["prepend"].get("last_as"):
-                    cmd += " last-as {last_as}".format(
-                        **set["as_path"]["prepend"]
-                    )
+                    cmd += " last-as {last_as}".format(**set["as_path"]["prepend"])
             if set["as_path"].get("tag"):
                 cmd += " tag"
             command.append(cmd)
@@ -443,9 +423,7 @@ def _tmplt_route_map_set(config_data):
                 if set["extcommunity"]["cost"].get("id"):
                     cmd += " {id}".format(**set["extcommunity"]["cost"])
                 if set["extcommunity"]["cost"].get("cost_value"):
-                    cmd += " {cost_value}".format(
-                        **set["extcommunity"]["cost"]
-                    )
+                    cmd += " {cost_value}".format(**set["extcommunity"]["cost"])
                 command.append(cmd)
             if set["extcommunity"].get("rt"):
                 cmd = "set extcommunity rt"
@@ -469,9 +447,7 @@ def _tmplt_route_map_set(config_data):
                         **set["extcommunity"]["vpn_distinguisher"]["range"]
                     )
                 elif set["extcommunity"]["vpn_distinguisher"].get("address"):
-                    cmd += " {address}".format(
-                        **set["extcommunity"]["vpn_distinguisher"]
-                    )
+                    cmd += " {address}".format(**set["extcommunity"]["vpn_distinguisher"])
                 if set["extcommunity"]["vpn_distinguisher"].get("additive"):
                     cmd += " additive"
                 command.append(cmd)
@@ -506,12 +482,16 @@ def _tmplt_route_map_set(config_data):
                 cmd += " {metric_value}".format(**set["metric"])
                 if set["metric"].get("deviation"):
                     if set["metric"]["deviation"] == "plus":
-                        cmd += " +{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                            **set["metric"]
+                        cmd += (
+                            " +{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
+                                **set["metric"]
+                            )
                         )
                     elif set["metric"]["deviation"] == "minus":
-                        cmd += " -{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                            **set["metric"]
+                        cmd += (
+                            " -{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
+                                **set["metric"]
+                            )
                         )
             if set["metric"].get("deviation") and not set["metric"].get(
                 "eigrp_delay",
@@ -581,9 +561,7 @@ def _tmplt_route_map_set_ip(config_data):
                 command.append("{0} dynamic dhcp".format(cmd))
             if set_ip["next_hop"].get("encapsulate"):
                 command.append(
-                    "{0} encapsulate l3vpn {encapsulate}".format(
-                        cmd, **set_ip["next_hop"]
-                    ),
+                    "{0} encapsulate l3vpn {encapsulate}".format(cmd, **set_ip["next_hop"]),
                 )
             if set_ip["next_hop"].get("peer_address"):
                 command.append("{0} peer-address".format(cmd))
@@ -592,13 +570,9 @@ def _tmplt_route_map_set_ip(config_data):
                 if set_ip["next_hop"]["recursive"].get("global_route"):
                     child_cmd += " global"
                 elif set_ip["next_hop"]["recursive"].get("vrf"):
-                    child_cmd += " vrf {vrf}".format(
-                        **set_ip["next_hop"]["recursive"]
-                    )
+                    child_cmd += " vrf {vrf}".format(**set_ip["next_hop"]["recursive"])
                 if set_ip["next_hop"]["recursive"].get("address"):
-                    child_cmd += " {address}".format(
-                        **set_ip["next_hop"]["recursive"]
-                    )
+                    child_cmd += " {address}".format(**set_ip["next_hop"]["recursive"])
                 command.append(child_cmd)
             if set_ip["next_hop"].get("self"):
                 command.append("{0} self".format(cmd))
@@ -675,16 +649,16 @@ def _tmplt_route_map_set_ipv6(config_data):
             if set_ipv6["next_hop"].get("address"):
                 cmd += " {address}".format(**set_ipv6["next_hop"])
             if set_ipv6["next_hop"].get("encapsulate"):
-                cmd += " encapsulate l3vpn {encapsulate}".format(
-                    **set_ipv6["next_hop"]
-                )
+                cmd += " encapsulate l3vpn {encapsulate}".format(**set_ipv6["next_hop"])
             if set_ipv6["next_hop"].get("peer_address"):
                 cmd += " peer-address"
         if set_ipv6.get("precedence"):
             cmd += " precedence {precedence}".format(**set_ipv6)
         if set_ipv6.get("vrf"):
-            cmd += " vrf {vrf} next-hop verify-availability {address} {sequence} track {track}".format(
-                **set_ipv6["vrf"]["verify_availability"]
+            cmd += (
+                " vrf {vrf} next-hop verify-availability {address} {sequence} track {track}".format(
+                    **set_ipv6["vrf"]["verify_availability"]
+                )
             )
         return cmd
 

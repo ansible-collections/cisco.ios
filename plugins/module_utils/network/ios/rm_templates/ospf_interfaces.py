@@ -30,13 +30,9 @@ def _tmplt_ospf_interface(config_data):
 def _tmplt_ospf_interface_process(config_data):
     if "process" in config_data:
         if config_data.get("afi") == "ipv4":
-            command = "ip ospf {id} area {area_id}".format(
-                **config_data["process"]
-            )
+            command = "ip ospf {id} area {area_id}".format(**config_data["process"])
         elif config_data.get("afi") == "ipv6":
-            command = "ipv6 ospf {id} area {area_id}".format(
-                **config_data["process"]
-            )
+            command = "ipv6 ospf {id} area {area_id}".format(**config_data["process"])
         if "secondaries" in config_data["process"]:
             command += " secondaries"
     return command
@@ -49,9 +45,7 @@ def _tmplt_ip_ospf_authentication(config_data):
         elif config_data.get("afi") == "ipv6":
             command = "ipv6 ospf authentication"
         if "key_chain" in config_data["authentication"]:
-            command += " key-chain {key_chain}".format(
-                **config_data["authentication"]
-            )
+            command += " key-chain {key_chain}".format(**config_data["authentication"])
         elif "message_digest" in config_data["authentication"]:
             command += " message-digest"
         elif "null" in config_data["authentication"]:
@@ -62,15 +56,11 @@ def _tmplt_ip_ospf_authentication(config_data):
 def _tmplt_ip_ospf_cost(config_data):
     if "cost" in config_data:
         if config_data.get("afi") == "ipv4":
-            command = "ip ospf cost {interface_cost}".format(
-                **config_data["cost"]
-            )
+            command = "ip ospf cost {interface_cost}".format(**config_data["cost"])
         elif config_data.get("afi") == "ipv6":
             command = "ipv6 ospf cost"
             if "interface_cost" in config_data["cost"]:
-                command = "ipv6 ospf cost {interface_cost}".format(
-                    **config_data["cost"]
-                )
+                command = "ipv6 ospf cost {interface_cost}".format(**config_data["cost"])
             if "dynamic_cost" in config_data["cost"]:
                 if "default" in config_data["cost"]["dynamic_cost"]:
                     command += " dynamic default {default}".format(
@@ -78,33 +68,21 @@ def _tmplt_ip_ospf_cost(config_data):
                     )
                 elif "hysteresis" in config_data["cost"]["dynamic_cost"]:
                     command += " dynamic hysteresis"
-                    if (
-                        "percent"
-                        in config_data["cost"]["dynamic_cost"]["hysteresis"]
-                    ):
+                    if "percent" in config_data["cost"]["dynamic_cost"]["hysteresis"]:
                         command += " percent {percent}".format(
                             **config_data["cost"]["dynamic_cost"]["hysteresis"]
                         )
-                    elif (
-                        "threshold"
-                        in config_data["cost"]["dynamic_cost"]["hysteresis"]
-                    ):
+                    elif "threshold" in config_data["cost"]["dynamic_cost"]["hysteresis"]:
                         command += " threshold {threshold}".format(
                             **config_data["cost"]["dynamic_cost"]["hysteresis"]
                         )
                 elif "weight" in config_data["cost"]["dynamic_cost"]:
                     command += " dynamic weight"
-                    if (
-                        "l2_factor"
-                        in config_data["cost"]["dynamic_cost"]["weight"]
-                    ):
+                    if "l2_factor" in config_data["cost"]["dynamic_cost"]["weight"]:
                         command += " L2-factor {l2_factor}".format(
                             **config_data["cost"]["dynamic_cost"]["weight"]
                         )
-                    elif (
-                        "latency"
-                        in config_data["cost"]["dynamic_cost"]["weight"]
-                    ):
+                    elif "latency" in config_data["cost"]["dynamic_cost"]["weight"]:
                         command += " latency {latency}".format(
                             **config_data["cost"]["dynamic_cost"]["weight"]
                         )
@@ -113,17 +91,11 @@ def _tmplt_ip_ospf_cost(config_data):
                         and config_data["cost"]["dynamic_cost"]["weight"]["oc"]
                     ):
                         command += " oc cdr"
-                    elif (
-                        "resources"
-                        in config_data["cost"]["dynamic_cost"]["weight"]
-                    ):
+                    elif "resources" in config_data["cost"]["dynamic_cost"]["weight"]:
                         command += " resources {resources}".format(
                             **config_data["cost"]["dynamic_cost"]["weight"]
                         )
-                    elif (
-                        "throughput"
-                        in config_data["cost"]["dynamic_cost"]["weight"]
-                    ):
+                    elif "throughput" in config_data["cost"]["dynamic_cost"]["weight"]:
                         command += " throughput {throughput}".format(
                             **config_data["cost"]["dynamic_cost"]["weight"]
                         )
@@ -141,9 +113,7 @@ def _tmplt_ip_ospf_dead_interval(config_data):
                     **config_data["dead_interval"]
                 )
         elif config_data.get("afi") == "ipv6":
-            command = "ipv6 ospf dead-interval {time}".format(
-                **config_data["dead_interval"]
-            )
+            command = "ipv6 ospf dead-interval {time}".format(**config_data["dead_interval"])
     return command
 
 
@@ -172,19 +142,13 @@ def _tmplt_ip_ospf_manet(config_data):
         if "cost" in config_data["manet"]:
             command += " cost"
             if "percent" in config_data["manet"]["cost"]:
-                command += " percent {percent}".format(
-                    **config_data["manet"]["cost"]
-                )
+                command += " percent {percent}".format(**config_data["manet"]["cost"])
             elif "threshold" in config_data["manet"]["cost"]:
-                command += " threshold {threshold}".format(
-                    **config_data["manet"]["cost"]
-                )
+                command += " threshold {threshold}".format(**config_data["manet"]["cost"])
         elif "link_metrics" in config_data["manet"]:
             command += " link-metrics"
             if "cost_threshold" in config_data["manet"]["link_metrics"]:
-                command += " {cost_threshold}".format(
-                    **config_data["manet"]["link_metrics"]
-                )
+                command += " {cost_threshold}".format(**config_data["manet"]["link_metrics"])
     return command
 
 
@@ -198,24 +162,17 @@ def _tmplt_ip_ospf_multi_area(config_data):
 
 def _tmplt_ip_ospf_neighbor(config_data):
     if "neighbor" in config_data:
-        command = "ipv6 ospf neighbor {address}".format(
-            **config_data["neighbor"]
-        )
+        command = "ipv6 ospf neighbor {address}".format(**config_data["neighbor"])
     if "cost" in config_data["neighbor"]:
         command += " cost {cost}".format(**config_data["neighbor"])
-    if (
-        "database_filter" in config_data["neighbor"]
-        and config_data["neighbor"]["database_filter"]
-    ):
+    if "database_filter" in config_data["neighbor"] and config_data["neighbor"]["database_filter"]:
         command += " database-filter all out"
     if "poll_interval" in config_data["neighbor"]:
         command += " poll-interval {poll_interval}".format(
             **config_data["neighbor"]["poll_interval"]
         )
     if "priority" in config_data["neighbor"]:
-        command += " priority {priority}".format(
-            **config_data["neighbor"]["priority"]
-        )
+        command += " priority {priority}".format(**config_data["neighbor"]["priority"])
     return command
 
 

@@ -1,0 +1,23 @@
+# Stuff we don't want priettier to ever to look into
+.*/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# A linked collection directory created by pytest-ansible-units
+
+collections/
+
+# Tracked but not manually edited
+
+# Tracked but manually formatted
+
+# WIP
+tests/integration/targets/nxos_config/templates/config.js
+README.md

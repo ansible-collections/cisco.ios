@@ -28,9 +28,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.snmp_server import (
     Snmp_serverTemplate,
 )
@@ -244,16 +242,12 @@ class Snmp_server(ResourceModule):
                             tmp_data[k]["protocol"] = tmp
                 elif k == "groups":
                     tmp_data[k] = {
-                        str(i[p_key.get(k)] + i.get("version_option", "")): i
-                        for i in tmp_data[k]
+                        str(i[p_key.get(k)] + i.get("version_option", "")): i for i in tmp_data[k]
                     }
                 elif k == "views":
                     tmp_data[k] = {
-                        str(i[p_key.get(k)] + i.get("family_name", "")): i
-                        for i in tmp_data[k]
+                        str(i[p_key.get(k)] + i.get("family_name", "")): i for i in tmp_data[k]
                     }
                 else:
-                    tmp_data[k] = {
-                        str(i[p_key.get(k)]): i for i in tmp_data[k]
-                    }
+                    tmp_data[k] = {str(i[p_key.get(k)]): i for i in tmp_data[k]}
         return tmp_data

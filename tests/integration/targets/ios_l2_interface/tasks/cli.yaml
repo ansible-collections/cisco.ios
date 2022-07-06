@@ -1,8 +1,8 @@
 ---
 - name: collect all cli test cases
   ansible.builtin.find:
-    paths: '{{ role_path }}/tests/cli'
-    patterns: '{{ testcase }}.yaml'
+    paths: "{{ role_path }}/tests/cli"
+    patterns: "{{ testcase }}.yaml"
   register: test_cases
   delegate_to: localhost
 
@@ -10,19 +10,18 @@
   ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
 - name: run test cases (connection=ansible.netcommon.network_cli)
-  ansible.builtin.include: '{{ test_case_to_run }}'
-  with_items: '{{ test_items }}'
+  ansible.builtin.include: "{{ test_case_to_run }}"
+  with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run
   tags: network_cli
 
 - name: run test case (connection=local)
-  ansible.builtin.include: '{{ test_case_to_run }}'
+  ansible.builtin.include: "{{ test_case_to_run }}"
   vars:
     ansible_connection: local
   with_first_found:
-
-    - files: '{{ test_items|default([]) }}'
+    - files: "{{ test_items|default([]) }}"
       skip: true
   loop_control:
     loop_var: test_case_to_run

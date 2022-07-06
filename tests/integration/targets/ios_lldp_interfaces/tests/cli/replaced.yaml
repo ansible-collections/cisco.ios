@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START Replaced ios_lldp_interfaces state for integration tests on connection={{
+    msg:
+      START Replaced ios_lldp_interfaces state for integration tests on connection={{
       ansible_connection }}
 
 - include_tasks: _enable_lldp.yaml
@@ -10,13 +11,12 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
-    - name: Replaces device configuration of listed lldp_interfaces with provided
+    - name:
+        Replaces device configuration of listed lldp_interfaces with provided
         configuration
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
         config:
-
           - name: GigabitEthernet0/1
             transmit: true
 
@@ -43,7 +43,8 @@
           - "{{ replaced['after'] | symmetric_difference(result['after']) | length\
             \ == 0 }}"
 
-    - name: Replaces device configuration of listed lldp_interfaces with provided
+    - name:
+        Replaces device configuration of listed lldp_interfaces with provided
         configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_lldp_interfaces: *id001
@@ -53,5 +54,4 @@
         that:
           - result['changed'] == false
   always:
-
     - include_tasks: _remove_config.yaml

@@ -18,9 +18,7 @@ import re
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -60,20 +58,14 @@ class Ospfv3Facts(object):
                     capdict = temp
                     if "address-family" in line:
                         capdict.update({"id": temp_pid})
-                    if (
-                        "manet" in line
-                        and "pid" not in shared
-                        and shared.get("unicast")
-                    ):
+                    if "manet" in line and "pid" not in shared and shared.get("unicast"):
                         del shared["unicast"]
 
                     if "router ospfv3" in line:
                         temp_pid = None
                     if parser.get("shared"):
                         shared = capdict
-                    if not temp_pid and (
-                        shared.get("pid") or shared.get("id")
-                    ):
+                    if not temp_pid and (shared.get("pid") or shared.get("id")):
                         temp_pid = shared.get("pid") or shared.get("id")
                     vals = utils.dict_merge(capdict, shared)
                     try:

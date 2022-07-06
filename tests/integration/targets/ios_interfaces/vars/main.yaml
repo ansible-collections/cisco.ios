@@ -44,7 +44,7 @@ merged:
       enabled: false
       mtu: 2800
       name: GigabitEthernet0/2
-      speed: '100'
+      speed: "100"
     - enabled: true
       name: Loopback888
     - enabled: true
@@ -76,7 +76,7 @@ replaced:
       duplex: auto
       enabled: true
       name: GigabitEthernet0/2
-      speed: '10'
+      speed: "10"
     - enabled: true
       name: Loopback888
     - enabled: true
@@ -91,13 +91,13 @@ replaced:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: '10'
+      speed: "10"
     - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
       name: GigabitEthernet0/2
-      speed: '100'
+      speed: "100"
     - enabled: true
       name: Loopback888
     - enabled: true
@@ -118,13 +118,13 @@ overridden:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: '10'
+      speed: "10"
     - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
       name: GigabitEthernet0/2
-      speed: '100'
+      speed: "100"
   commands:
     - interface GigabitEthernet0/2
     - speed auto
@@ -146,7 +146,7 @@ overridden:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: '10'
+      speed: "10"
     - description: Configured and Overridden by Ansible-Network
       duplex: full
       enabled: true
@@ -165,13 +165,13 @@ deleted:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: '10'
+      speed: "10"
     - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
       name: GigabitEthernet0/2
-      speed: '100'
+      speed: "100"
     - enabled: true
       name: Loopback888
     - enabled: true
@@ -217,13 +217,13 @@ gathered:
       enabled: true
       mtu: 65
       name: GigabitEthernet0/1
-      speed: '10'
+      speed: "10"
     - description: this is interface for testing
       duplex: auto
       enabled: false
       mtu: 110
       name: GigabitEthernet0/2
-      speed: '100'
+      speed: "100"
     - enabled: true
       name: Loopback888
     - enabled: true

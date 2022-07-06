@@ -8,7 +8,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: ios_hostname deleted - Play
       register: result
       cisco.ios.ios_hostname: &id001
@@ -26,5 +25,4 @@
           - deleted['before'] == result['before']
 
   always:
-
     - include_tasks: _remove_config.yaml

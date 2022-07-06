@@ -176,13 +176,11 @@ def validate_ipv4(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv4 address>/<mask>, got invalid format %s"
-                % value,
+                msg="address format is <ipv4 address>/<mask>, got invalid format %s" % value,
             )
         if not is_masklen(address[1]):
             module.fail_json(
-                msg="invalid value for mask: %s, mask should be in range 0-32"
-                % address[1],
+                msg="invalid value for mask: %s, mask should be in range 0-32" % address[1],
             )
 
 
@@ -191,13 +189,11 @@ def validate_ipv6(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv6 address>/<mask>, got invalid format %s"
-                % value,
+                msg="address format is <ipv6 address>/<mask>, got invalid format %s" % value,
             )
         elif not 0 <= int(address[1]) <= 128:
             module.fail_json(
-                msg="invalid value for mask: %s, mask should be in range 0-128"
-                % address[1],
+                msg="invalid value for mask: %s, mask should be in range 0-128" % address[1],
             )
 
 
@@ -281,8 +277,7 @@ def map_obj_to_commands(updates, module):
                 if (
                     obj_in_have is None
                     or obj_in_have.get("ipv6") is None
-                    or ipv6.lower()
-                    not in [addr.lower() for addr in obj_in_have["ipv6"]]
+                    or ipv6.lower() not in [addr.lower() for addr in obj_in_have["ipv6"]]
                 ):
                     commands.append("ipv6 address {0}".format(ipv6))
         if commands[-1] == interface:

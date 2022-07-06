@@ -18,9 +18,7 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -108,9 +106,7 @@ class AclsFacts(object):
                             "source",
                             {},
                         ).get("address"):
-                            each_ace["source"]["host"] = each_ace[
-                                "source"
-                            ].pop("address")
+                            each_ace["source"]["host"] = each_ace["source"].pop("address")
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
                             if addr[-1] == ",":

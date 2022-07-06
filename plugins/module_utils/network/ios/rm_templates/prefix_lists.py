@@ -29,13 +29,9 @@ def _tmplt_set_prefix_lists(config_data):
         cmd = "{afi} prefix-list {name}".format(**config_data)
         if config_data.get("prefix_list"):
             if config_data["prefix_list"].get("description"):
-                cmd += " description {description}".format(
-                    **config_data["prefix_list"]
-                )
+                cmd += " description {description}".format(**config_data["prefix_list"])
             else:
-                cmd += " seq {sequence} {action} {prefix}".format(
-                    **config_data["prefix_list"]
-                )
+                cmd += " seq {sequence} {action} {prefix}".format(**config_data["prefix_list"])
                 if config_data["prefix_list"].get("ge"):
                     cmd += " ge {ge}".format(**config_data["prefix_list"])
                 if config_data["prefix_list"].get("le"):

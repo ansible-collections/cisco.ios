@@ -61,7 +61,7 @@
     that:
       - result.changed == true
       - "'banner login ^CCC\nthis is my login banner\nthat has a multiline\nstring\nand a multiple C chars in the multiline_delimiter\n^CCC'
-       in result.commands"
+        in result.commands"
 
 - name: Set new banner over device banner configuration with multiline delimination chars present - testing dynamic and resilent banner regex search
   register: result
@@ -74,4 +74,4 @@
     that:
       - result.changed == true
       - "'banner login @\nthis is my login banner\nthat has a multiline\nstring\n@'
-       in result.commands"
+        in result.commands"

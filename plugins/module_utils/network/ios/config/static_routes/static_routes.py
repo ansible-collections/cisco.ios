@@ -22,13 +22,9 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     filter_dict_having_none_value,
     new_dict_to_set,
@@ -142,10 +138,7 @@ class Static_Routes(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     state,
@@ -182,10 +175,8 @@ class Static_Routes(ConfigBase):
                             for addr_have in h.get("address_families"):
                                 for route_have in addr_have.get("routes"):
                                     if (
-                                        route_want.get("dest")
-                                        == route_have.get("dest")
-                                        and addr_want["afi"]
-                                        == addr_have["afi"]
+                                        route_want.get("dest") == route_have.get("dest")
+                                        and addr_want["afi"] == addr_have["afi"]
                                     ):
                                         check = True
                                         have_set = set()
@@ -208,20 +199,16 @@ class Static_Routes(ConfigBase):
                                             0,
                                         )
                                         # Check if the have dict next_hops value is diff from want dict next_hops
-                                        have_dict = (
-                                            filter_dict_having_none_value(
-                                                route_want.get("next_hops")[0],
-                                                route_have.get("next_hops")[0],
-                                            )
+                                        have_dict = filter_dict_having_none_value(
+                                            route_want.get("next_hops")[0],
+                                            route_have.get("next_hops")[0],
                                         )
                                         # update the have_dict with forward_router_address
                                         have_dict.update(
                                             {
                                                 "forward_router_address": route_have.get(
                                                     "next_hops",
-                                                )[
-                                                    0
-                                                ].get(
+                                                )[0].get(
                                                     "forward_router_address",
                                                 ),
                                             },
@@ -318,10 +305,8 @@ class Static_Routes(ConfigBase):
                                 count = 0
                                 for route_want in addr_want.get("routes"):
                                     if (
-                                        route_want.get("dest")
-                                        == route_have.get("dest")
-                                        and addr_want["afi"]
-                                        == addr_have["afi"]
+                                        route_want.get("dest") == route_have.get("dest")
+                                        and addr_want["afi"] == addr_have["afi"]
                                     ):
                                         check = True
                                         have_set = set()
@@ -427,10 +412,8 @@ class Static_Routes(ConfigBase):
                             for addr_have in h.get("address_families"):
                                 for route_have in addr_have.get("routes"):
                                     if (
-                                        route_want.get("dest")
-                                        == route_have.get("dest")
-                                        and addr_want["afi"]
-                                        == addr_have["afi"]
+                                        route_want.get("dest") == route_have.get("dest")
+                                        and addr_want["afi"] == addr_have["afi"]
                                     ):
                                         check = True
                                         have_set = set()
@@ -511,10 +494,8 @@ class Static_Routes(ConfigBase):
                                             "routes",
                                         ):
                                             if (
-                                                route_want.get("dest")
-                                                == route_have.get("dest")
-                                                and addr_want["afi"]
-                                                == addr_have["afi"]
+                                                route_want.get("dest") == route_have.get("dest")
+                                                and addr_want["afi"] == addr_have["afi"]
                                             ):
                                                 check = True
                                                 if route_want.get("next_hops"):

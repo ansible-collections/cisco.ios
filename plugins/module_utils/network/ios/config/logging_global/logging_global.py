@@ -28,9 +28,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.logging_global import (
     Logging_globalTemplate,
 )
@@ -167,16 +165,12 @@ class Logging_global(ResourceModule):
         for k, _v in p_key.items():
             if tmp_data.get(k):
                 tmp_data[k] = {
-                    str(i[p_key[k]])
-                    if i.get(p_key[k])
-                    else str(i.get("ipv6")): i
+                    str(i[p_key[k]]) if i.get(p_key[k]) else str(i.get("ipv6")): i
                     for i in tmp_data[k]
                 }
         for el in list_el:
             if tmp_data.get(el):
-                tmp_data[el] = {
-                    self.trim_whitespace(el + i): {el: i} for i in tmp_data[el]
-                }
+                tmp_data[el] = {self.trim_whitespace(el + i): {el: i} for i in tmp_data[el]}
         return tmp_data
 
     def trim_whitespace(self, word):

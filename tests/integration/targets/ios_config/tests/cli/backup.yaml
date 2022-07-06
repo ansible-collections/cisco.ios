@@ -12,16 +12,16 @@
 
 - name: collect any backup files
   ansible.builtin.find:
-    paths: '{{ role_path }}/backup'
-    pattern: '{{ inventory_hostname_short }}_config*'
+    paths: "{{ role_path }}/backup"
+    pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   connection: local
 
 - name: delete backup files
   file:
-    path: '{{ item.path }}'
+    path: "{{ item.path }}"
     state: absent
-  with_items: '{{backup_files.files|default([])}}'
+  with_items: "{{backup_files.files|default([])}}"
 
 - name: configure device with config
   register: result
@@ -35,8 +35,8 @@
 
 - name: collect any backup files
   ansible.builtin.find:
-    paths: '{{ role_path }}/backup'
-    pattern: '{{ inventory_hostname_short }}_config*'
+    paths: "{{ role_path }}/backup"
+    pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   connection: local
 
@@ -46,11 +46,11 @@
 
 - name: delete configurable backup file path
   file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: absent
   with_items:
-    - '{{ role_path }}/backup_test_dir/'
-    - '{{ role_path }}/backup/backup.cfg'
+    - "{{ role_path }}/backup_test_dir/"
+    - "{{ role_path }}/backup/backup.cfg"
 
 - name: take configuration backup in custom filename and directory path
   become: true
@@ -59,7 +59,7 @@
     backup: true
     backup_options:
       filename: backup.cfg
-      dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+      dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
 - assert:
     that:
@@ -67,7 +67,7 @@
 
 - name: check if the backup file-1 exist
   ansible.builtin.find:
-    paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg'
+    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
   register: backup_file
   connection: local
 
@@ -89,7 +89,7 @@
 
 - name: check if the backup file-2 exist
   ansible.builtin.find:
-    paths: '{{ role_path }}/backup/backup.cfg'
+    paths: "{{ role_path }}/backup/backup.cfg"
   register: backup_file
   connection: local
 
@@ -103,7 +103,7 @@
   cisco.ios.ios_config:
     backup: true
     backup_options:
-      dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+      dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
 - assert:
     that:
@@ -111,8 +111,8 @@
 
 - name: check if the backup file-3 exist
   ansible.builtin.find:
-    paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
-    pattern: '{{ inventory_hostname_short }}_config*'
+    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
+    pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_file
   connection: local
 

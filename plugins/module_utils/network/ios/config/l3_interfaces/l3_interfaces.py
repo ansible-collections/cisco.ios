@@ -23,9 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
@@ -133,11 +131,7 @@ class L3_interfaces(ResourceModule):
 
     def validate_ips(self, afi, want=None, have=None):
         if afi == "ipv4" and want:
-            v4_addr = (
-                validate_n_expand_ipv4(self._module, want)
-                if want.get("address")
-                else {}
-            )
+            v4_addr = validate_n_expand_ipv4(self._module, want) if want.get("address") else {}
             if v4_addr:
                 want["address"] = v4_addr
         elif afi == "ipv6" and want:
@@ -145,11 +139,7 @@ class L3_interfaces(ResourceModule):
                 validate_ipv6(want["address"], self._module)
 
         if afi == "ipv4" and have:
-            v4_addr_h = (
-                validate_n_expand_ipv4(self._module, have)
-                if have.get("address")
-                else {}
-            )
+            v4_addr_h = validate_n_expand_ipv4(self._module, have) if have.get("address") else {}
             if v4_addr_h:
                 have["address"] = v4_addr_h
         elif afi == "ipv6" and have:
@@ -163,10 +153,7 @@ class L3_interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
-                        if (
-                            each.get("address")
-                            and each.get("address") != "dhcp"
-                        ):
+                        if each.get("address") and each.get("address") != "dhcp":
                             temp.update({each["address"]: each})
                         elif each.get("address") == "dhcp":
                             # deprecated attribute

@@ -7,7 +7,6 @@
 - include_tasks: _initial_ipv6_setup.yaml
 
 - block:
-
     - name: Apply the provided configuration (Base config)
       register: base_config
       cisco.ios.ios_ospf_interfaces: &id001
@@ -48,8 +47,8 @@
     - name: Gather OSPF Interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - ospf_interfaces
 
@@ -95,5 +94,4 @@
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
-
     - include_tasks: _remove_config.yaml

@@ -3,7 +3,6 @@
   become: true
   cisco.ios.ios_user:
     aggregate:
-
       - name: ansibletest1
 
       - name: ansibletest2
@@ -37,7 +36,6 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
-
       - name: ansibletest2
 
       - name: ansibletest3
@@ -69,7 +67,6 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
-
       - name: ansibletest2
 
       - name: ansibletest3
@@ -129,7 +126,6 @@
   register: result
   cisco.ios.ios_user:
     aggregate:
-
       - name: ansibletest1
 
       - name: ansibletest2

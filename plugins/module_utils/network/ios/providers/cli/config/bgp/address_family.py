@@ -10,9 +10,7 @@ import re
 
 from ansible.module_utils.common.network import to_netmask
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.neighbors import (
     AFNeighbors,

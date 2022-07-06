@@ -476,11 +476,7 @@ def main():
     contents = None
     flags = get_defaults_flag(module) if module.params["defaults"] else []
     connection = get_connection(module)
-    if (
-        module.params["backup"]
-        or module._diff
-        and module.params["diff_against"] == "running"
-    ):
+    if module.params["backup"] or module._diff and module.params["diff_against"] == "running":
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=1, contents=contents)
         if module.params["backup"]:
@@ -522,9 +518,7 @@ def main():
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
-                        multiline_delimiter=module.params[
-                            "multiline_delimiter"
-                        ],
+                        multiline_delimiter=module.params["multiline_delimiter"],
                     )
             result["changed"] = True
     running_config = module.params["running_config"]

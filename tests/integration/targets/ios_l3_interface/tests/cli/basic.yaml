@@ -1,17 +1,18 @@
 ---
-- debug: msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
+- debug:
+    msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
     }}"
 
 - name: Delete interface ipv4 and ipv6 address(setup)
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     state: absent
 
 - name: Setup - Ensure interfaces are switchport
   loop:
-    - '{{ test_interface }}'
-    - '{{ test_interface2 }}'
+    - "{{ test_interface }}"
+    - "{{ test_interface2 }}"
   cisco.ios.ios_config:
     lines:
       - no shutdown
@@ -21,7 +22,7 @@
 - name: Configure interface ipv4 address
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv4: 192.168.20.1/24
     state: present
 
@@ -34,7 +35,7 @@
 - name: Configure interface ipv4 address (idempotent)
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv4: 192.168.20.1/24
     state: present
 
@@ -46,7 +47,7 @@
   ignore_errors: true
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface2 }}'
+    name: "{{ test_interface2 }}"
     ipv4: 192.168.20.1/24
     state: present
 
@@ -58,7 +59,7 @@
 - name: Change interface ipv4 address
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv4: dhcp
     state: present
 
@@ -71,7 +72,7 @@
 - name: Configure interface ipv6 address
   register: result
   cisco.ios.ios_l3_interface: &id001
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
 
@@ -90,7 +91,7 @@
 - name: Configure second ipv6 address on interface
   register: result
   cisco.ios.ios_l3_interface: &id003
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv6: fd5d:12c9:2291:1::1/64
     state: present
 
@@ -116,7 +117,7 @@
   ignore_errors: true
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface2 }}'
+    name: "{{ test_interface2 }}"
     ipv6: fd5d:12c9:2201:1::1/64
     state: present
 
@@ -128,7 +129,7 @@
 - name: Change interface ipv6 address
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     ipv6: dhcp
     state: present
 
@@ -141,7 +142,7 @@
 - name: Delete interface ipv4 and ipv6 address
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     state: absent
 
 - assert:
@@ -154,7 +155,7 @@
 - name: Delete interface ipv4 and ipv6 address (idempotent)
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface }}'
+    name: "{{ test_interface }}"
     state: absent
 
 - assert: *id002
@@ -162,19 +163,18 @@
 - name: Delete second interface ipv4 and ipv6 address (setup)
   register: result
   cisco.ios.ios_l3_interface:
-    name: '{{ test_interface2 }}'
+    name: "{{ test_interface2 }}"
     state: absent
 
 - name: Configure ipv4 and ipv6 address using aggregate
   register: result
   cisco.ios.ios_l3_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         ipv4: 192.161.0.1/24
         ipv6: fd5d:12c9:2201:2::2/64
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
 
@@ -192,12 +192,11 @@
   register: result
   cisco.ios.ios_l3_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         ipv4: 192.161.0.1/24
         ipv6: fd5d:12c9:2201:2::2/64
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         ipv4: 192.162.0.2/16
         ipv6: fd5e:12c9:2201:3::3/32
 
@@ -207,12 +206,11 @@
   register: result
   cisco.ios.ios_l3_interface:
     aggregate:
-
-      - name: '{{ test_interface }}'
+      - name: "{{ test_interface }}"
         ipv4: 193.167.1.1/8
         ipv6: fd5a:12c9:2201:4::4/32
 
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
         ipv4: 192.169.2.2/24
         ipv6: fd5b:12c9:2201:5::5/90
 
@@ -230,10 +228,9 @@
   register: result
   cisco.ios.ios_l3_interface:
     aggregate:
+      - name: "{{ test_interface }}"
 
-      - name: '{{ test_interface }}'
-
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
     state: absent
 
 - assert:
@@ -250,13 +247,13 @@
   register: result
   cisco.ios.ios_l3_interface:
     aggregate:
+      - name: "{{ test_interface }}"
 
-      - name: '{{ test_interface }}'
-
-      - name: '{{ test_interface2 }}'
+      - name: "{{ test_interface2 }}"
     state: absent
 
 - assert: *id002
 
-- debug: msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
+- debug:
+    msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
     }}"

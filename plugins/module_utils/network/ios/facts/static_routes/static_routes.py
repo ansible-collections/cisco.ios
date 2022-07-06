@@ -18,9 +18,7 @@ __metaclass__ = type
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
@@ -84,9 +82,7 @@ class Static_RoutesFacts(object):
         # append all static routes address_family with NO VRF together
         no_vrf_address_family = {
             "address_families": [
-                each.get("address_families")[0]
-                for each in objs
-                if each.get("vrf") is None
+                each.get("address_families")[0] for each in objs if each.get("vrf") is None
             ],
         }
 
@@ -149,9 +145,7 @@ class Static_RoutesFacts(object):
                         same_dest[dest_vrf].append(("vrf " + filter_vrf))
                 else:
                     filter_non_vrf = utils.parse_conf_arg(i, ip_str)
-                    if (
-                        "::" not in filter_non_vrf
-                    ):  # "/" not in filter_non_vrf and
+                    if "::" not in filter_non_vrf:  # "/" not in filter_non_vrf and
                         filter_non_vrf, dest = self.update_netmask_to_cidr(
                             filter_non_vrf,
                             0,
@@ -244,10 +238,7 @@ class Static_RoutesFacts(object):
                     [
                         i
                         for i in temp_list
-                        if "." not in i
-                        and ":" not in i
-                        and ord(i[0]) > 48
-                        and ord(i[0]) < 57
+                        if "." not in i and ":" not in i and ord(i[0]) > 48 and ord(i[0]) < 57
                     ][0],
                 )
             except IndexError:

@@ -22,9 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
     Ospfv3Template,
 )
@@ -190,9 +188,7 @@ class Ospfv3(ResourceModule):
                 filter_list_entry["area_id"] = wantd["area_id"]
                 if h_item:
                     li_diff = [
-                        item
-                        for item in entry + h_item
-                        if item not in entry or item not in h_item
+                        item for item in entry + h_item if item not in entry or item not in h_item
                     ]
                 else:
                     li_diff = entry
@@ -241,9 +237,9 @@ class Ospfv3(ResourceModule):
             for each_want_af in want["address_family"]:
                 if have.get("address_family"):
                     for each_have_af in have["address_family"]:
-                        if each_have_af.get("vrf") == each_want_af.get(
-                            "vrf",
-                        ) and each_have_af.get("afi") == each_want_af.get(
+                        if each_have_af.get("vrf") == each_want_af.get("vrf") and each_have_af.get(
+                            "afi",
+                        ) == each_want_af.get(
                             "afi",
                         ):
                             self.compare(
@@ -283,9 +279,7 @@ class Ospfv3(ResourceModule):
                                     )
 
                             if "exit-address-family" in self.commands:
-                                del self.commands[
-                                    self.commands.index("exit-address-family")
-                                ]
+                                del self.commands[self.commands.index("exit-address-family")]
                                 delete_exit_family = True
 
                             if af_have_areas:
@@ -318,8 +312,6 @@ class Ospfv3(ResourceModule):
                         for each_area in each_want_af["areas"]:
                             af_areas.update({each_area["area_id"]: each_area})
                         self._areas_compare({"areas": af_areas}, dict())
-                    del self.commands[
-                        self.commands.index("exit-address-family")
-                    ]
+                    del self.commands[self.commands.index("exit-address-family")]
                     self.commands.append("exit-address-family")
                     self.commands[0:0] = temp_cmd_before

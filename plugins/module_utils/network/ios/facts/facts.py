@@ -22,9 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.f
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
-    AclsFacts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import AclsFacts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
@@ -43,9 +41,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2_int
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces import (
     L3_InterfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import (
-    LacpFacts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import LacpFacts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesFacts,
 )

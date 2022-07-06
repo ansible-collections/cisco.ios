@@ -14,9 +14,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -67,14 +65,10 @@ class Ospfv2Facts(object):
                 )
 
         for process in current.get("processes", []):
-            if "passive_interfaces" in process and process[
-                "passive_interfaces"
-            ].get("default"):
+            if "passive_interfaces" in process and process["passive_interfaces"].get("default"):
                 if process["passive_interfaces"].get("interface"):
                     temp = []
-                    for each in process["passive_interfaces"]["interface"][
-                        "name"
-                    ]:
+                    for each in process["passive_interfaces"]["interface"]["name"]:
                         if each:
                             temp.append(each)
                     process["passive_interfaces"]["interface"]["name"] = temp

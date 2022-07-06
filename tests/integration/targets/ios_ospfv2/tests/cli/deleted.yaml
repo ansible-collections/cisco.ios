@@ -8,7 +8,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Delete provided OSPF V2 processes
       register: result
       cisco.ios.ios_ospfv2: &id001
@@ -79,5 +78,4 @@
           - result.changed == false
 
   always:
-
     - include_tasks: _remove_config.yaml

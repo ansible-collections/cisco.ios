@@ -24,9 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 def _tmplt_af(config_data):
     if "address_family" in config_data:
-        cmd = "address-family {{ afi }}".format(
-            **config_data["address_family"]
-        )
+        cmd = "address-family {{ afi }}".format(**config_data["address_family"])
         if config_data["address_family"].get("safi"):
             cmd += " {{ safi }}".format(**config_data["address_family"])
         if config_data["address_family"].get("vrf"):
@@ -36,27 +34,19 @@ def _tmplt_af(config_data):
 
 def _tmplt_af_aggregate_address(config_data):
     if "aggregate_address" in config_data:
-        cmd = "aggregate-address {address} {netmask}".format(
-            **config_data["aggregate_address"]
-        )
+        cmd = "aggregate-address {address} {netmask}".format(**config_data["aggregate_address"])
         if "advertise_map" in config_data["aggregate_address"]:
-            cmd += " advertise-map {advertise_map}".format(
-                **config_data["aggregate_address"]
-            )
+            cmd += " advertise-map {advertise_map}".format(**config_data["aggregate_address"])
         if "as_confed_set" in config_data["aggregate_address"]:
             cmd += " as-confed-set"
         if "as_set" in config_data["aggregate_address"]:
             cmd += " as-set"
         if "attribute_map" in config_data["aggregate_address"]:
-            cmd += " attribute-map {attribute_map}".format(
-                **config_data["aggregate_address"]
-            )
+            cmd += " attribute-map {attribute_map}".format(**config_data["aggregate_address"])
         if "summary_only" in config_data["aggregate_address"]:
             cmd += " summary-only"
         if "suppress_map" in config_data["aggregate_address"]:
-            cmd += " suppress-map {suppress_map}".format(
-                **config_data["aggregate_address"]
-            )
+            cmd += " suppress-map {suppress_map}".format(**config_data["aggregate_address"])
 
         return cmd
 
@@ -71,21 +61,11 @@ def _tmplt_bgp_af_additional_paths(config_data):
                 cmd += " select"
                 if "all" in config_data["bgp"]["additional_paths"]["select"]:
                     cmd += " all"
-                elif (
-                    "best" in config_data["bgp"]["additional_paths"]["select"]
-                ):
-                    cmd += " best {best}".format(
-                        **config_data["bgp"]["additional_paths"]["select"]
-                    )
-                elif (
-                    "best_external"
-                    in config_data["bgp"]["additional_paths"]["select"]
-                ):
+                elif "best" in config_data["bgp"]["additional_paths"]["select"]:
+                    cmd += " best {best}".format(**config_data["bgp"]["additional_paths"]["select"])
+                elif "best_external" in config_data["bgp"]["additional_paths"]["select"]:
                     cmd += " best-external"
-                elif (
-                    "group_best"
-                    in config_data["bgp"]["additional_paths"]["select"]
-                ):
+                elif "group_best" in config_data["bgp"]["additional_paths"]["select"]:
                     cmd += " group-best"
             if "receive" in config_data["bgp"]["additional_paths"]:
                 cmd += " receive"
@@ -99,18 +79,14 @@ def _tmplt_bgp_af_config(config_data):
         cmd = []
         if config_data["bgp"].get("aggregate_timer"):
             cmd.append(
-                "bgp aggregate-timer {aggregate_timer}".format(
-                    **config_data["bgp"]
-                ),
+                "bgp aggregate-timer {aggregate_timer}".format(**config_data["bgp"]),
             )
         if config_data["bgp"].get("dmzlink_bw"):
             cmd.append("bgp dmzlink-bw")
         if "nexthop" in config_data["bgp"]:
             command = "bgp nexthop"
             if "route_map" in config_data["bgp"]["nexthop"]:
-                command += " route-map {route_map}".format(
-                    **config_data["bgp"]["nexthop"]
-                )
+                command += " route-map {route_map}".format(**config_data["bgp"]["nexthop"])
             elif "trigger" in config_data["bgp"]["nexthop"]:
                 if config_data["bgp"]["nexthop"]["trigger"].get("delay"):
                     command += " trigger delay {delay}".format(
@@ -137,25 +113,15 @@ def _tmplt_bgp_af_config(config_data):
 def _tmplt_bgp_af_dampening(config_data):
     if "bgp" in config_data and "dampening" in config_data["bgp"]:
         if config_data["bgp"]["dampening"].get("penalty_half_time"):
-            command = "bgp dampening {penalty_half_time}".format(
-                **config_data["bgp"]["dampening"]
-            )
+            command = "bgp dampening {penalty_half_time}".format(**config_data["bgp"]["dampening"])
             if config_data["bgp"]["dampening"].get("reuse_route_val"):
-                command += " {reuse_route_val}".format(
-                    **config_data["bgp"]["dampening"]
-                )
+                command += " {reuse_route_val}".format(**config_data["bgp"]["dampening"])
             if config_data["bgp"]["dampening"].get("suppress_route_val"):
-                command += " {suppress_route_val}".format(
-                    **config_data["bgp"]["dampening"]
-                )
+                command += " {suppress_route_val}".format(**config_data["bgp"]["dampening"])
             if config_data["bgp"]["dampening"].get("max_suppress"):
-                command += " {max_suppress}".format(
-                    **config_data["bgp"]["dampening"]
-                )
+                command += " {max_suppress}".format(**config_data["bgp"]["dampening"])
         elif config_data["bgp"]["dampening"].get("route_map"):
-            command = "bgp dampening {route_map}".format(
-                **config_data["bgp"]["dampening"]
-            )
+            command = "bgp dampening {route_map}".format(**config_data["bgp"]["dampening"])
         return command
 
 
@@ -171,30 +137,18 @@ def _tmplt_bgp_af_slow_peer(config_data):
                     )
             elif "split_update_group" in config_data["bgp"]["slow_peer"]:
                 cmd += " split-update-group"
-                if (
-                    "dynamic"
-                    in config_data["bgp"]["slow_peer"]["split_update_group"]
-                ):
+                if "dynamic" in config_data["bgp"]["slow_peer"]["split_update_group"]:
                     cmd += " dynamic"
-                    if (
-                        "permanent"
-                        in config_data["bgp"]["slow_peer"][
-                            "split_update_group"
-                        ]
-                    ):
+                    if "permanent" in config_data["bgp"]["slow_peer"]["split_update_group"]:
                         cmd += " permanent {permanent}".format(
-                            **config_data["bgp"]["slow_peer"][
-                                "split_update_group"
-                            ]
+                            **config_data["bgp"]["slow_peer"]["split_update_group"]
                         )
         return cmd
 
 
 def _tmplt_af_distance(config_data):
     if config_data.get("distance"):
-        cmd = "distance bgp {external} {internal} {local}".format(
-            **config_data["distance"]
-        )
+        cmd = "distance bgp {external} {internal} {local}".format(**config_data["distance"])
         return cmd
 
 
@@ -210,15 +164,11 @@ def _tmplt_af_neighbor(config_data):
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         if "peer_group" in config_data["neighbor"]:
             commands.append(
-                "{0} peer-group {peer_group}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]),
             )
         if "remote_as" in config_data["neighbor"]:
             commands.append(
-                "{0} remote-as {remote_as}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} remote-as {remote_as}".format(cmd, **config_data["neighbor"]),
             )
         if "activate" in config_data["neighbor"]:
             commands.append("{0} activate".format(cmd))
@@ -235,38 +185,21 @@ def _tmplt_af_neighbor(config_data):
             self_cmd = "{0} advertise".format(cmd)
             if "additional_paths" in config_data["neighbor"]["advertise"]:
                 self_cmd += " additional-paths"
-                if (
-                    "all"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
+                if "all" in config_data["neighbor"]["advertise"]["additional_paths"]:
                     self_cmd += " all"
-                elif (
-                    "best"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
+                elif "best" in config_data["neighbor"]["advertise"]["additional_paths"]:
                     self_cmd += " best {best}".format(
-                        **config_data["neighbor"]["advertise"][
-                            "additional_paths"
-                        ]
+                        **config_data["neighbor"]["advertise"]["additional_paths"]
                     )
-                elif (
-                    "group_best"
-                    in config_data["neighbor"]["advertise"]["additional_paths"]
-                ):
+                elif "group_best" in config_data["neighbor"]["advertise"]["additional_paths"]:
                     self_cmd += " group-best"
             elif "best_external" in config_data["neighbor"]["advertise"]:
                 self_cmd += " best-external"
             elif "diverse_path" in config_data["neighbor"]["advertise"]:
                 self_cmd += "diverse-path"
-                if (
-                    "backup"
-                    in config_data["neighbor"]["advertise"]["diverse_path"]
-                ):
+                if "backup" in config_data["neighbor"]["advertise"]["diverse_path"]:
                     self_cmd += " backup"
-                elif (
-                    "mpath"
-                    in config_data["neighbor"]["advertise"]["diverse_path"]
-                ):
+                elif "mpath" in config_data["neighbor"]["advertise"]["diverse_path"]:
                     self_cmd += " mpath"
             commands.append(self_cmd)
         if config_data["neighbor"].get("advertise_map"):
@@ -296,25 +229,21 @@ def _tmplt_af_neighbor(config_data):
                     "cost_community",
                 ):
                     self_cmd += " cost-community {id}".format(
-                        **config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]
+                        **config_data["neighbor"]["aigp"]["send"]["cost_community"]
                     )
-                    if config_data["neighbor"]["aigp"]["send"][
-                        "cost_community"
-                    ].get("poi"):
+                    if config_data["neighbor"]["aigp"]["send"]["cost_community"].get("poi"):
                         self_cmd += " poi"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("igp_cost"):
+                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
+                            "igp_cost",
+                        ):
                             self_cmd += " igp-cost"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("pre_bestpath"):
+                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
+                            "pre_bestpath",
+                        ):
                             self_cmd += " pre-bestpath"
-                        if config_data["neighbor"]["aigp"]["send"][
-                            "cost_community"
-                        ]["poi"].get("transitive"):
+                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
+                            "transitive",
+                        ):
                             self_cmd += " transitive"
                 if config_data["neighbor"]["aigp"]["send"].get("med"):
                     self_cmd += " med"
@@ -323,9 +252,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append("{0} allow-policy".format(cmd))
         if config_data["neighbor"].get("allowas_in"):
             commands.append(
-                "{0} allowas-in {allowas_in}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} allowas-in {allowas_in}".format(cmd, **config_data["neighbor"]),
             )
         if config_data["neighbor"].get("as_override"):
             commands.append("{0} as-override".format(cmd))
@@ -334,9 +261,7 @@ def _tmplt_af_neighbor(config_data):
             if config_data["neighbor"]["bmp_activate"].get("all"):
                 self_cmd += " all"
             if "server" in config_data["neighbor"]["bmp_activate"]:
-                self_cmd += " server {server}".format(
-                    **config_data["neighbor"]["bmp_activate"]
-                )
+                self_cmd += " server {server}".format(**config_data["neighbor"]["bmp_activate"])
             commands.append(self_cmd)
         if "capability" in config_data["neighbor"]:
             self_cmd = "{0} capability".format(cmd)
@@ -349,9 +274,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(self_cmd)
         if config_data["neighbor"].get("cluster_id"):
             commands.append(
-                "{0} cluster-id {cluster_id}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} cluster-id {cluster_id}".format(cmd, **config_data["neighbor"]),
             )
         if "default_originate" in config_data["neighbor"]:
             self_cmd = "{0} default-originate".format(cmd)
@@ -362,18 +285,14 @@ def _tmplt_af_neighbor(config_data):
             commands.append(self_cmd)
         if "description" in config_data["neighbor"]:
             commands.append(
-                "{0} description {description}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} description {description}".format(cmd, **config_data["neighbor"]),
             )
         if config_data["neighbor"].get("disable_connected_check"):
             commands.append("{0} disable-connected-check".format(cmd))
         if "distribute_list" in config_data["neighbor"]:
             self_cmd = "{0} distribute-list".format(cmd)
             if "acl" in config_data["neighbor"]["distribute_list"]:
-                self_cmd += " {acl}".format(
-                    **config_data["neighbor"]["distribute_list"]
-                )
+                self_cmd += " {acl}".format(**config_data["neighbor"]["distribute_list"])
             if config_data["neighbor"]["distribute_list"].get("in"):
                 self_cmd += " in"
             elif config_data["neighbor"]["distribute_list"].get("out"):
@@ -384,9 +303,7 @@ def _tmplt_af_neighbor(config_data):
         if "ebgp_multihop" in config_data["neighbor"]:
             self_cmd = "{0} ebgp-multihop".format(cmd)
             if "hop_count" in config_data["neighbor"]["ebgp_multihop"]:
-                self_cmd += " {hop_count}".format(
-                    **config_data["neighbor"]["ebgp_multihop"]
-                )
+                self_cmd += " {hop_count}".format(**config_data["neighbor"]["ebgp_multihop"])
             commands.append(self_cmd)
         if "fall_over" in config_data["neighbor"]:
             self_cmd = "{0} fall-over".format(cmd)
@@ -401,16 +318,12 @@ def _tmplt_af_neighbor(config_data):
                 ):
                     self_cmd += " single-hop"
             elif "route_map" in config_data["neighbor"]["fall_over"]:
-                self_cmd += " {route_map}".format(
-                    **config_data["neighbor"]["route_map"]
-                )
+                self_cmd += " {route_map}".format(**config_data["neighbor"]["route_map"])
             commands.append(self_cmd)
         if "filter_list" in config_data["neighbor"]:
             self_cmd = "{0} filter-list".format(cmd)
             if "path_acl" in config_data["neighbor"]["filter_list"]:
-                self_cmd += " {path_acl}".format(
-                    **config_data["neighbor"]["filter_list"]
-                )
+                self_cmd += " {path_acl}".format(**config_data["neighbor"]["filter_list"])
             if config_data["neighbor"]["filter_list"].get("in"):
                 self_cmd += " in"
             elif config_data["neighbor"]["filter_list"].get("out"):
@@ -422,16 +335,12 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " disable"
             commands.append(self_cmd)
         if "inherit" in config_data["neighbor"]:
-            self_cmd = "{0} inherit {inherit}".format(
-                cmd, **config_data["neighbor"]
-            )
+            self_cmd = "{0} inherit {inherit}".format(cmd, **config_data["neighbor"])
             commands.append(self_cmd)
         if config_data["neighbor"].get("local_as"):
             self_cmd = "{0} local-as".format(cmd)
             if "number" in config_data["neighbor"]["local_as"]:
-                self_cmd += " {number}".format(
-                    **config_data["neighbor"]["local_as"]
-                )
+                self_cmd += " {number}".format(**config_data["neighbor"]["local_as"])
             if config_data["neighbor"]["local_as"].get("dual_as"):
                 self_cmd += " dual-as"
             elif config_data["neighbor"]["local_as"].get("no_prepend"):
@@ -447,17 +356,11 @@ def _tmplt_af_neighbor(config_data):
         if "maximum_prefix" in config_data["neighbor"]:
             self_cmd = "{0} maximum-prefix".format(cmd)
             if "number" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {number}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
+                self_cmd += " {number}".format(**config_data["neighbor"]["maximum_prefix"])
             if "threshold_value" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {threshold_value}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
+                self_cmd += " {threshold_value}".format(**config_data["neighbor"]["maximum_prefix"])
             if config_data["neighbor"]["maximum_prefix"].get("restart"):
-                self_cmd += " restart {restart}".format(
-                    **config_data["neighbor"]["maximum_prefix"]
-                )
+                self_cmd += " restart {restart}".format(**config_data["neighbor"]["maximum_prefix"])
             elif config_data["neighbor"]["filter_list"].get("warning_only"):
                 self_cmd += " warning-only"
             commands.append(self_cmd)
@@ -485,9 +388,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(self_cmd)
         if "peer_group" in config_data["neighbor"]:
             commands.append(
-                "{0} peer-group {peer_group}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]),
             )
         if "remove_private_as" in config_data["neighbor"]:
             self_cmd = "{0} remove-private-as".format(cmd)
@@ -498,15 +399,10 @@ def _tmplt_af_neighbor(config_data):
             ):
                 self_cmd += " replace_as"
             commands.append(self_cmd)
-        if (
-            "route_map" in config_data["neighbor"]
-            and "route_maps" not in config_data["neighbor"]
-        ):
+        if "route_map" in config_data["neighbor"] and "route_maps" not in config_data["neighbor"]:
             self_cmd = "{0} route-map".format(cmd)
             if "name" in config_data["neighbor"]["route_map"]:
-                self_cmd += " {name}".format(
-                    **config_data["neighbor"]["route_map"]
-                )
+                self_cmd += " {name}".format(**config_data["neighbor"]["route_map"])
             if "in" in config_data["neighbor"]["route_map"]:
                 self_cmd += " in"
             elif "out" in config_data["neighbor"]["route_map"]:
@@ -534,9 +430,7 @@ def _tmplt_af_neighbor(config_data):
             )
         if "unsuppress_map" in config_data["neighbor"]:
             commands.append(
-                "{0} unsuppress-map {unsuppress_map}".format(
-                    cmd, **config_data["neighbor"]
-                ),
+                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"]),
             )
         if "version" in config_data["neighbor"]:
             commands.append(
@@ -558,9 +452,7 @@ def _tmplt_neighbor_af_prefix_lists(config_data):
             cmd += " {tag}".format(**config_data["neighbor"])
         elif "ipv6_adddress" in config_data["neighbor"]:
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        cmd = "{0} prefix-list {name}".format(
-            cmd, **config_data["neighbor"]["prefix_lists"]
-        )
+        cmd = "{0} prefix-list {name}".format(cmd, **config_data["neighbor"]["prefix_lists"])
         if config_data["neighbor"]["prefix_lists"].get("in"):
             cmd += " in"
         elif config_data["neighbor"]["prefix_lists"].get("out"):
@@ -605,38 +497,25 @@ def _tmplt_neighbor_af_slow_peer(config_data):
             cmd += " detection"
             if "disable" in config_data["neighbor"]["slow_peer"]["detection"]:
                 cmd += " disable"
-            elif (
-                "threshold"
-                in config_data["neighbor"]["slow_peer"]["detection"]
-            ):
+            elif "threshold" in config_data["neighbor"]["slow_peer"]["detection"]:
                 cmd += " threshold {threshold}".format(
                     **config_data["neighbor"]["slow_peer"]["detection"]
                 )
         elif "split_update_group" in config_data["neighbor"]["slow_peer"]:
             cmd += " split-update-group"
-            if (
-                "dynamic"
-                in config_data["neighbor"]["slow_peer"]["split_update_group"]
-            ):
+            if "dynamic" in config_data["neighbor"]["slow_peer"]["split_update_group"]:
                 cmd += " dynamic"
                 if (
                     "disable"
-                    in config_data["neighbor"]["slow_peer"][
-                        "split_update_group"
-                    ]["dynamic"]
+                    in config_data["neighbor"]["slow_peer"]["split_update_group"]["dynamic"]
                 ):
                     cmd += " disable"
                 elif (
                     "permanent"
-                    in config_data["neighbor"]["slow_peer"][
-                        "split_update_group"
-                    ]["dynamic"]
+                    in config_data["neighbor"]["slow_peer"]["split_update_group"]["dynamic"]
                 ):
                     cmd += " permanent"
-            elif (
-                "static"
-                in config_data["neighbor"]["slow_peer"]["split_update_group"]
-            ):
+            elif "static" in config_data["neighbor"]["slow_peer"]["split_update_group"]:
                 cmd += " static"
         return cmd
 
@@ -657,9 +536,7 @@ def _tmplt_af_snmp(config_data):
     if "snmp" in config_data:
         cmd = "snmp context {name}".format(**config_data["snmp"])
         if config_data["snmp"].get("community"):
-            cmd += " community {snmp_community}".format(
-                **config_data["snmp"]["community"]
-            )
+            cmd += " community {snmp_community}".format(**config_data["snmp"]["community"])
             if config_data["snmp"]["community"].get("ro"):
                 cmd += " ro"
             elif config_data["snmp"]["community"].get("rw"):
@@ -667,9 +544,7 @@ def _tmplt_af_snmp(config_data):
             if config_data["snmp"]["community"].get("acl"):
                 cmd += " {acl}".format(**config_data["snmp"]["community"])
             elif config_data["snmp"]["community"].get("ipv6"):
-                cmd += " ipv6 {ipv6}".format(
-                    **config_data["snmp"]["community"]
-                )
+                cmd += " ipv6 {ipv6}".format(**config_data["snmp"]["community"])
         if config_data["snmp"].get("user"):
             cmd += " user {name}".format(**config_data["snmp"]["user"])
             if config_data["snmp"]["user"].get("credential"):
@@ -679,47 +554,29 @@ def _tmplt_af_snmp(config_data):
             if config_data["snmp"]["user"].get("auth"):
                 cmd += " auth"
                 if config_data["snmp"]["user"]["auth"].get("md5"):
-                    cmd += " md5 {md5}".format(
-                        **config_data["snmp"]["user"]["auth"]
-                    )
+                    cmd += " md5 {md5}".format(**config_data["snmp"]["user"]["auth"])
                 elif config_data["snmp"]["user"]["auth"].get("sha"):
-                    cmd += " sha {sha}".format(
-                        **config_data["snmp"]["user"]["auth"]
-                    )
+                    cmd += " sha {sha}".format(**config_data["snmp"]["user"]["auth"])
             if config_data["snmp"]["user"].get("access"):
                 cmd += " access"
                 if config_data["snmp"]["user"]["access"].get("acl"):
-                    cmd += " {acl}".format(
-                        **config_data["snmp"]["user"]["access"]
-                    )
+                    cmd += " {acl}".format(**config_data["snmp"]["user"]["access"])
                 elif config_data["snmp"]["user"]["access"].get("ipv6"):
-                    cmd += " ipv6 {ipv6}".format(
-                        **config_data["snmp"]["user"]["access"]
-                    )
+                    cmd += " ipv6 {ipv6}".format(**config_data["snmp"]["user"]["access"])
             if config_data["snmp"]["user"].get("priv"):
                 cmd += " priv"
                 if config_data["snmp"]["user"]["priv"].get("3des"):
-                    cmd += " 3des {3des}".format(
-                        **config_data["snmp"]["user"]["priv"]
-                    )
+                    cmd += " 3des {3des}".format(**config_data["snmp"]["user"]["priv"])
                 elif config_data["snmp"]["user"]["priv"].get("des"):
-                    cmd += " des {des}".format(
-                        **config_data["snmp"]["user"]["priv"]
-                    )
+                    cmd += " des {des}".format(**config_data["snmp"]["user"]["priv"])
                 elif config_data["snmp"]["user"]["priv"].get("aes"):
                     cmd += " aes"
                     if config_data["snmp"]["user"]["priv"]["aes"].get("128"):
-                        cmd += " 128 {128}".format(
-                            **config_data["snmp"]["user"]["priv"]["aes"]
-                        )
+                        cmd += " 128 {128}".format(**config_data["snmp"]["user"]["priv"]["aes"])
                     if config_data["snmp"]["user"]["priv"]["aes"].get("192"):
-                        cmd += " 192 {192}".format(
-                            **config_data["snmp"]["user"]["priv"]["aes"]
-                        )
+                        cmd += " 192 {192}".format(**config_data["snmp"]["user"]["priv"]["aes"])
                     if config_data["snmp"]["user"]["priv"]["aes"].get("256"):
-                        cmd += " 256 {256}".format(
-                            **config_data["snmp"]["user"]["priv"]["aes"]
-                        )
+                        cmd += " 256 {256}".format(**config_data["snmp"]["user"]["priv"]["aes"])
         return cmd
 
 
@@ -737,13 +594,9 @@ def _tmplt_af_redistribute(config_data):
 
         def common_config(command, param):
             if config_data["redistribute"][param].get("metric"):
-                command += " metric {metric}".format(
-                    **config_data["redistribute"][param]
-                )
+                command += " metric {metric}".format(**config_data["redistribute"][param])
             if config_data["redistribute"][param].get("route_map"):
-                command += " route-map {route_map}".format(
-                    **config_data["redistribute"][param]
-                )
+                command += " route-map {route_map}".format(**config_data["redistribute"][param])
             commands.append(command)
 
         command = "redistribute"
@@ -753,22 +606,16 @@ def _tmplt_af_redistribute(config_data):
             )
             common_config(cmd, "application")
         if config_data["redistribute"].get("bgp"):
-            cmd = "{0} bgp {as_number}".format(
-                command, **config_data["redistribute"]["bgp"]
-            )
+            cmd = "{0} bgp {as_number}".format(command, **config_data["redistribute"]["bgp"])
             common_config(cmd, "bgp")
         if config_data["redistribute"].get("connected"):
             cmd = "{0} connected".format(command)
             common_config(cmd, "connected")
         if config_data["redistribute"].get("eigrp"):
-            cmd = "{0} eigrp {as_number}".format(
-                command, **config_data["redistribute"]["eigrp"]
-            )
+            cmd = "{0} eigrp {as_number}".format(command, **config_data["redistribute"]["eigrp"])
             common_config(cmd, "eigrp")
         if config_data["redistribute"].get("isis"):
-            cmd = "{0} isis {area_tag}".format(
-                command, **config_data["redistribute"]["isis"]
-            )
+            cmd = "{0} isis {area_tag}".format(command, **config_data["redistribute"]["isis"])
             if config_data["redistribute"]["isis"].get("clns"):
                 cmd += " clns"
             elif config_data["redistribute"]["isis"].get("ip"):
@@ -779,9 +626,7 @@ def _tmplt_af_redistribute(config_data):
                 command, **config_data["redistribute"]["iso_igrp"]
             )
             if config_data["redistribute"]["iso_igrp"].get("route_map"):
-                cmd += " route-map {route_map}".format(
-                    **config_data["redistribute"]["iso_igrp"]
-                )
+                cmd += " route-map {route_map}".format(**config_data["redistribute"]["iso_igrp"])
             common_config(cmd, "iso_igrp")
         if config_data["redistribute"].get("lisp"):
             cmd = "{0} lisp".format(command)
@@ -796,9 +641,7 @@ def _tmplt_af_redistribute(config_data):
             cmd = "{0} rip".format(command)
             common_config(cmd, "rip")
         if config_data["redistribute"].get("ospf"):
-            cmd = "{0} ospf {process_id}".format(
-                command, **config_data["redistribute"]["ospf"]
-            )
+            cmd = "{0} ospf {process_id}".format(command, **config_data["redistribute"]["ospf"])
             common_config(cmd, "ospf")
             if config_data["redistribute"]["ospf"].get("match"):
                 external_type = None
@@ -815,22 +658,14 @@ def _tmplt_af_redistribute(config_data):
                     "nssa_external",
                 ):
                     external_type = " nssa-external"
-                if (
-                    config_data["redistribute"]["ospf"]["match"].get("type_1")
-                    and external_type
-                ):
+                if config_data["redistribute"]["ospf"]["match"].get("type_1") and external_type:
                     commands[-1] += "{0} 1".format(external_type)
-                if (
-                    config_data["redistribute"]["ospf"]["match"].get("type_2")
-                    and external_type
-                ):
+                if config_data["redistribute"]["ospf"]["match"].get("type_2") and external_type:
                     commands[-1] += "{0} 2".format(external_type)
             if config_data["redistribute"]["ospf"].get("vrf"):
                 commands[-1] += " vrf"
         if config_data["redistribute"].get("ospfv3"):
-            cmd = "{0} ospfv3 {process_id}".format(
-                command, **config_data["redistribute"]["ospfv3"]
-            )
+            cmd = "{0} ospfv3 {process_id}".format(command, **config_data["redistribute"]["ospfv3"])
             if config_data["redistribute"]["ospfv3"].get("match"):
                 cmd += " match"
                 if config_data["redistribute"]["ospfv3"]["match"].get(
@@ -859,9 +694,7 @@ def _tmplt_af_redistribute(config_data):
             common_config(cmd, "static")
         if config_data["redistribute"].get("vrf"):
             if config_data["redistribute"]["vrf"].get("name"):
-                cmd = "{0} vrf {name}".format(
-                    command, **config_data["redistribute"]["vrf"]
-                )
+                cmd = "{0} vrf {name}".format(command, **config_data["redistribute"]["vrf"])
             elif config_data["redistribute"]["vrf"].get("global"):
                 cmd = "{0} vrf global".format(command)
             common_config(cmd, "vrf")

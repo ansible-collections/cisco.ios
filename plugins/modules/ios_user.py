@@ -348,16 +348,11 @@ def sshkey_fingerprint(sshkey):
     if " " in sshkey:
         # ssh-rsa AAA...== comment
         keyparts = sshkey.split(" ")
-        keyparts[1] = (
-            hashlib.md5(base64.b64decode(keyparts[1])).hexdigest().upper()
-        )
+        keyparts[1] = hashlib.md5(base64.b64decode(keyparts[1])).hexdigest().upper()
         return " ".join(keyparts)
     else:
         # just the key, assume rsa type
-        return (
-            "ssh-rsa %s"
-            % hashlib.md5(base64.b64decode(sshkey)).hexdigest().upper()
-        )
+        return "ssh-rsa %s" % hashlib.md5(base64.b64decode(sshkey)).hexdigest().upper()
 
 
 def map_obj_to_commands(updates, module):
@@ -373,8 +368,7 @@ def map_obj_to_commands(updates, module):
 
     def add_hashed_password(command, want, x):
         command.append(
-            "username %s secret %s %s"
-            % (want["name"], x.get("type"), x.get("value")),
+            "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
         )
 
     def add_ssh(command, want, x=None):
@@ -403,11 +397,7 @@ def map_obj_to_commands(updates, module):
             add_ssh(commands, want, want["sshkey"])
         if needs_update(want, have, "configured_password"):
             if update_password == "always" or not have:
-                if (
-                    have
-                    and have["password_type"]
-                    and password_type != have["password_type"]
-                ):
+                if have and have["password_type"] and password_type != have["password_type"]:
                     module.fail_json(
                         msg="Can not have both a user password and a user secret."
                         + " Please choose one or the other.",

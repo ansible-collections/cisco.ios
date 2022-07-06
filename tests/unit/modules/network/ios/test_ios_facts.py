@@ -24,9 +24,7 @@ from ansible.module_utils.six import assertCountEqual
 
 from ansible_collections.cisco.ios.plugins.modules import ios_facts
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
 
@@ -45,9 +43,7 @@ class TestIosFactsModule(TestIosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_capabilities = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.get_capabilities",
@@ -105,32 +101,24 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"][
-                "GigabitEthernet0/0"
-            ]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"],
             "5e00.0003.0000",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"][
-                "GigabitEthernet1"
-            ]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["macaddress"],
             "5e00.0006.0000",
         )
         self.assertIsNone(
-            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"][
-                "macaddress"
-            ],
+            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"]["macaddress"],
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"][
-                "GigabitEthernet1"
-            ]["lineprotocol"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["lineprotocol"],
             "up",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"][
-                "TenGigabitEthernet2/5/5"
-            ]["lineprotocol"],
+            result["ansible_facts"]["ansible_net_interfaces"]["TenGigabitEthernet2/5/5"][
+                "lineprotocol"
+            ],
             "down",
         )
 
@@ -138,15 +126,11 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="hardware"))
         result = self.execute_module()
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_filesystems_info"][
-                "bootflash:"
-            ]["spacetotal_kb"],
+            result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacetotal_kb"],
             7712692.0,
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_filesystems_info"][
-                "bootflash:"
-            ]["spacefree_kb"],
+            result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacefree_kb"],
             6453180.0,
         )
 
@@ -160,9 +144,7 @@ class TestIosFactsModule(TestIosModule):
         )
         assertCountEqual(
             self,
-            result["ansible_facts"]["ansible_net_neighbors"][
-                "GigabitEthernet1"
-            ],
+            result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet1"],
             [
                 {
                     "platform": "cisco CSR1000V",
@@ -178,8 +160,6 @@ class TestIosFactsModule(TestIosModule):
         )
         assertCountEqual(
             self,
-            result["ansible_facts"]["ansible_net_neighbors"][
-                "GigabitEthernet3"
-            ],
+            result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet3"],
             [{"host": "Rtest", "port": "Gi1"}],
         )

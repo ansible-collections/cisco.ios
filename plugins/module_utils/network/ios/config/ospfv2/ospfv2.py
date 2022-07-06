@@ -22,9 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
     Ospfv2Template,
 )
@@ -190,9 +188,7 @@ class Ospfv2(ResourceModule):
                 filter_list_entry["area_id"] = wantd["area_id"]
                 if h_item:
                     li_diff = [
-                        item
-                        for item in entry + h_item
-                        if item not in entry or item not in h_item
+                        item for item in entry + h_item if item not in entry or item not in h_item
                     ]
                 else:
                     li_diff = entry
@@ -287,9 +283,7 @@ class Ospfv2(ResourceModule):
                         for entry in proc["distribute_list"].get("acls", []):
                             temp.update({entry["name"]: entry})
                         proc["distribute_list"]["acls"] = temp
-                if proc.get("passive_interfaces") and proc[
-                    "passive_interfaces"
-                ].get("interface"):
+                if proc.get("passive_interfaces") and proc["passive_interfaces"].get("interface"):
                     temp = {}
                     for entry in proc["passive_interfaces"]["interface"].get(
                         "name",
