@@ -36,7 +36,7 @@
         that:
           - replaced['after'] == result['after']
 
-    - name: Test - [replaced] replaced provided ios logging global configuration idempotent
+    - name: Test - [replaced] replaced provided IOS logging global configuration idempotent
       register: result
       cisco.ios.ios_logging_global: *replacedid001
     - name: Test - [replaced] assert that task was idempotent

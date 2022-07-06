@@ -17,7 +17,7 @@
     defaults: true
   register: result
 
-- name: Run ios commands to test command_timeout
+- name: Run IOS commands to test command_timeout
   cisco.ios.ios_command:
     commands:
       - show running-config all

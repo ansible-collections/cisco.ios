@@ -390,7 +390,7 @@
         that:
           - result.changed == false
 
-    - name: Get the ios version
+    - name: Get the IOS version
       cisco.ios.ios_facts:
         gather_subset: all
 

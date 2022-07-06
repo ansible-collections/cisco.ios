@@ -48,7 +48,7 @@
       - ntp_global
       - hostname
 
-- name: Collect list of available network resources for ios
+- name: Collect list of available network resources for IOS
   register: result
   cisco.ios.ios_facts:
     available_network_resources: true

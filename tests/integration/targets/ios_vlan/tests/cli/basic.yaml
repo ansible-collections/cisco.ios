@@ -33,7 +33,7 @@
           - "'vlan 100' in result.commands"
           - "'name test-vlan' in result.commands"
 
-    - name: Create vlan (idempotent)
+    - name: Create VLAN (idempotent)
       register: result
       cisco.ios.ios_vlan: *id001
     - ansible.builtin.assert:
@@ -58,7 +58,7 @@
           - "'switchport mode access' in result.commands"
           - "'switchport access vlan 100' in result.commands"
 
-    - name: Add interfaces to vlan (idempotent)
+    - name: Add interfaces to VLAN (idempotent)
       register: result
       cisco.ios.ios_vlan: *id002
     - ansible.builtin.assert:
@@ -104,7 +104,7 @@
           - "'switchport mode access' in result.commands"
           - "'no switchport access vlan 100' in result.commands"
 
-    - name: Remove interface from vlan (idempotent)
+    - name: Remove interface from VLAN (idempotent)
       register: result
       cisco.ios.ios_vlan: *id003
     - ansible.builtin.assert:
@@ -146,7 +146,7 @@
           - result.changed == true
           - "'no vlan 100' in result.commands"
 
-    - name: Delete vlan (idempotent)
+    - name: Delete VLAN (idempotent)
       register: result
       cisco.ios.ios_vlan: *id004
     - ansible.builtin.assert:

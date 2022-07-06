@@ -9,7 +9,7 @@
   ansible.builtin.set_fact:
     shorter_hostname: '{{ inventory_hostname_short| truncate(10, True, "") }}'
 
-- name: Discover ios l2/l3 switch type
+- name: Discover IOS l2/l3 switch type
   connection: ansible.netcommon.network_cli
   become: true
   register: result
@@ -26,10 +26,10 @@
 
 - name: Block to set facts
   block:
-    - name: Set test interface to gigabitethernet0/1 as we are on cisco ios
+    - name: Set test interface to gigabitethernet0/1 as we are on cisco IOS
       ansible.builtin.set_fact: test_interface=GigabitEthernet0/1
 
-    - name: Set test interface 2 to gigabitethernet0/2 as we are on cisco ios
+    - name: Set test interface 2 to gigabitethernet0/2 as we are on cisco IOS
       ansible.builtin.set_fact: test_interface2=GigabitEthernet0/2
   when: "'Cisco IOS' in result.stdout[0]"
 

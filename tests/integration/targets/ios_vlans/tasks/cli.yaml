@@ -11,7 +11,7 @@
   ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
   delegate_to: localhost
 
-- name: Get the ios version
+- name: Get the IOS version
   cisco.ios.ios_facts:
     gather_subset: all
 
