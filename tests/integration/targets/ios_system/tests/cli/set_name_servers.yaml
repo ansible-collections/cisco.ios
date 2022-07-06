@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli/set_name_servers.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/set_name_servers.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:
@@ -56,5 +54,4 @@
       - no ip name-server
     match: none
 
-- debug: msg="END cli/set_name_servers.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli/set_name_servers.yaml on connection={{ ansible_connection }}"

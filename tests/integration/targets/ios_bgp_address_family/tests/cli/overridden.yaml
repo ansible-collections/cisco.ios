@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Overridden ios_bgp_address_family state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Overridden ios_bgp_address_family state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -74,14 +72,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Override provided BGP Address family configuration
-        (IDEMPOTENT)
+    - name: Override provided BGP Address family configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
-
     - name: Assert that task was idempotent
       assert:
         that:

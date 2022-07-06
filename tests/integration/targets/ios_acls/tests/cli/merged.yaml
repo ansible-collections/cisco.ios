@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Merged ios_acls state for integration tests on connection={{ ansible_connection
-      }}
+    msg: START Merged ios_acls state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -152,7 +150,6 @@
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

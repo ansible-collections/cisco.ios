@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start ios_acl_interfaces rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_acl_interfaces rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided  configuration

@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Overridden ios_prefix_lists state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Overridden ios_prefix_lists state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -48,20 +46,16 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ overridden['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ overridden['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Override provided Prefix lists configuration
-        (IDEMPOTENT)
+    - name: Override provided Prefix lists configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_prefix_lists: *id001
-
     - name: Assert that task was idempotent
       assert:
         that:

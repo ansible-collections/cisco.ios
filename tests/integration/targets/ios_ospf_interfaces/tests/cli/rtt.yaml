@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: START ios_ospf_interfaces round trip integration tests on connection={{
-      ansible_connection }}
+    msg: START ios_ospf_interfaces round trip integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _initial_ipv6_setup.yaml
@@ -9,7 +8,7 @@
 - block:
     - name: Apply the provided configuration (Base config)
       register: base_config
-      cisco.ios.ios_ospf_interfaces: &id001
+      cisco.ios.ios_ospf_interfaces:
         config:
           - name: GigabitEthernet0/1
             address_family:

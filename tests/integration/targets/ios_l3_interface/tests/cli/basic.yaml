@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Delete interface ipv4 and ipv6 address(setup)
   register: result
@@ -85,9 +83,7 @@
 - name: Configure interface ipv6 address (idempotent)
   register: result
   cisco.ios.ios_l3_interface: *id001
-
 - assert: *id002
-
 - name: Configure second ipv6 address on interface
   register: result
   cisco.ios.ios_l3_interface: &id003
@@ -104,15 +100,11 @@
 - name: Ensure first ipv6 address still associated with interface
   register: result
   cisco.ios.ios_l3_interface: *id001
-
 - assert: *id002
-
 - name: Ensure second ipv6 address still associated with interface
   register: result
   cisco.ios.ios_l3_interface: *id003
-
 - assert: *id002
-
 - name: Assign same ipv6 address to other interface (fail)
   ignore_errors: true
   register: result
@@ -159,7 +151,6 @@
     state: absent
 
 - assert: *id002
-
 - name: Delete second interface ipv4 and ipv6 address (setup)
   register: result
   cisco.ios.ios_l3_interface:
@@ -201,7 +192,6 @@
         ipv6: fd5e:12c9:2201:3::3/32
 
 - assert: *id002
-
 - name: Change ipv4 and ipv6 address using aggregate
   register: result
   cisco.ios.ios_l3_interface:
@@ -253,7 +243,4 @@
     state: absent
 
 - assert: *id002
-
-- debug:
-    msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END ios_l3_interface cli/basic.yaml on connection={{ ansible_connection }}"

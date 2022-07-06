@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start ios_snmp_server rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_snmp_server rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: ios_snmp_server render - Play

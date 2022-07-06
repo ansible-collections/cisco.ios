@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_lag_interfaces empty_config.yaml integration tests on connection={{
-      ansible_connection }}
+    msg: START ios_lag_interfaces empty_config.yaml integration tests on connection={{ ansible_connection }}
 
 - block:
     - name: Merged with empty config should give appropriate error message
@@ -14,8 +12,7 @@
 
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state
-            merged'
+          - result.msg == 'value of config parameter must not be empty for state merged'
 
     - name: Replaced with empty config should give appropriate error message
       register: result
@@ -26,8 +23,7 @@
 
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state
-            replaced'
+          - result.msg == 'value of config parameter must not be empty for state replaced'
 
     - name: Overridden with empty config should give appropriate error message
       register: result
@@ -38,8 +34,7 @@
 
     - assert:
         that:
-          - result.msg == 'value of config parameter must not be empty for state
-            overridden'
+          - result.msg == 'value of config parameter must not be empty for state overridden'
 
     - name: Rendered with empty config should give appropriate error message
       register: result
@@ -61,7 +56,6 @@
 
     - assert:
         that:
-          - result.msg == 'value of running_config parameter must not be empty for state
-            parsed'
+          - result.msg == 'value of running_config parameter must not be empty for state parsed'
 
   when: ansible_net_version != "15.6(2)T"

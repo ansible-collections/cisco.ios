@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_ntp_global ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_ntp_global ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -28,7 +26,6 @@
     - name: ios_ntp_global deleted - Play (IDEMPOTENT)
       register: result
       cisco.ios.ios_ntp_global: *id001
-
     - name: ios_ntp_global deleted - Assert above task was idempotent
       assert:
         that:

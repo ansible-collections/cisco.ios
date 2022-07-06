@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_lldp_interfaces gathered integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_lldp_interfaces gathered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _enable_lldp.yaml
 - include_tasks: _remove_config.yaml

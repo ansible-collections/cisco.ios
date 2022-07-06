@@ -39,7 +39,6 @@
     - name: create linkagg(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id001
-
     - assert:
         that:
           - result.changed == false
@@ -64,7 +63,6 @@
     - name: set link aggregation group to members(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id002
-
     - assert:
         that:
           - result.changed == false
@@ -86,7 +84,6 @@
     - name: remove link aggregation group from member(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id003
-
     - assert:
         that:
           - result.changed == false
@@ -105,7 +102,6 @@
     - name: remove linkagg(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id004
-
     - assert:
         that:
           - result.changed == false
@@ -132,7 +128,6 @@
     - name: create aggregate of linkagg definitions(Idempotence)
       register: result
       cisco.ios.ios_linkagg: *id005
-
     - assert:
         that:
           - result.changed == false

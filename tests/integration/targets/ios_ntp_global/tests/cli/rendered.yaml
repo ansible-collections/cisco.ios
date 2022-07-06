@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start ios_ntp_global rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_ntp_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: ios_ntp_global render - Play

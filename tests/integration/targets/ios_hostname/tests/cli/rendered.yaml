@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start ios_hostname rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_hostname rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: ios_hostname render - Play

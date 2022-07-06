@@ -2,10 +2,8 @@
 - name: Remove Config
   vars:
     lines:
-      "interface GigabitEthernet 0/1\nno lacp port-priority\ninterface GigabitEthernet\
-      \ 0/2\nno lacp port-priority\ninterface Port-channel 10\nno lacp fast-switchover\n\
-      no lacp max-bundle\ninterface Port-channel 40\nno lacp fast-switchover\nno\
-      \ lacp max-bundle\n"
+      "interface GigabitEthernet 0/1\nno lacp port-priority\ninterface GigabitEthernet 0/2\nno lacp port-priority\ninterface Port-channel 10\nno lacp fast-switchover\n\
+      no lacp max-bundle\ninterface Port-channel 40\nno lacp fast-switchover\nno lacp max-bundle\n"
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

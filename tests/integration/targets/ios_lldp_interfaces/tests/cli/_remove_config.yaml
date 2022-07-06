@@ -2,8 +2,7 @@
 - name: Remove Config
   vars:
     lines:
-      "interface GigabitEthernet 0/0\nno lldp receive\nno lldp transmit\ninterface\
-      \ GigabitEthernet 0/1\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet\
+      "interface GigabitEthernet 0/0\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet 0/1\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet\
       \ 0/2\nno lldp receive\nno lldp transmit\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

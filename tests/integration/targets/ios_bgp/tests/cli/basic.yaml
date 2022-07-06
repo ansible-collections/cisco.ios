@@ -80,7 +80,6 @@
     - name: Configure BGP with AS 64496 and a router-id (idempotent)
       register: result
       cisco.ios.ios_bgp: *id001
-
     - assert:
         that:
           - result.changed == false
@@ -122,7 +121,6 @@
     - name: Configure BGP neighbors (idempotent)
       register: result
       cisco.ios.ios_bgp: *id002
-
     - assert:
         that:
           - result.changed == false
@@ -162,7 +160,6 @@
     - name: Configure BGP neighbors with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id003
-
     - assert:
         that:
           - result.changed == false
@@ -192,7 +189,6 @@
     - name: Configure root-level networks for BGP (idempotent)
       register: result
       cisco.ios.ios_bgp: *id004
-
     - assert:
         that:
           - result.changed == false
@@ -216,13 +212,11 @@
           - result.changed == True
           - "'router bgp 64496' in result.commands"
           - "'network 198.51.100.16 mask 255.255.255.240' in result.commands"
-          - "'no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2' in\
-            \ result.commands"
+          - "'no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2' in result.commands"
 
     - name: Configure root-level networks for BGP with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id005
-
     - assert:
         that:
           - result.changed == false
@@ -268,7 +262,6 @@
     - name: Configure BGP neighbors under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id006
-
     - assert:
         that:
           - result.changed == false
@@ -316,7 +309,6 @@
     - name: Configure networks under address family (idempotent)
       register: result
       cisco.ios.ios_bgp: *id007
-
     - assert:
         that:
           - result.changed == false
@@ -353,16 +345,13 @@
           - '"address-family ipv4 multicast" in result.commands'
           - '"network 198.51.100.80 mask 255.255.255.240" in result.commands'
           - '"network 203.0.113.192 mask 255.255.255.224" in result.commands'
-          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in
-            result.commands'
-          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in
-            result.commands'
+          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in result.commands'
+          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in result.commands'
           - '"exit-address-family" in result.commands'
 
     - name: Configure networks under address family with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id008
-
     - assert:
         that:
           - result.changed == false
@@ -397,7 +386,6 @@
     - name: Configure redistribute information under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id009
-
     - assert:
         that:
           - result.changed == false
@@ -406,9 +394,7 @@
       cisco.ios.ios_facts:
         gather_subset: all
 
-    - name:
-        Configure redistribute information under address family mode with operation
-        replace
+    - name: Configure redistribute information under address family mode with operation replace
       register: result
       cisco.ios.ios_bgp: &id010
         operation: replace
@@ -430,13 +416,10 @@
           - "'no redistribute eigrp 233' in result.commands"
           - "'exit-address-family' in result.commands"
 
-    - name:
-        Configure redistribute information under address family mode with operation
-        replace (idempotent)
+    - name: Configure redistribute information under address family mode with operation replace (idempotent)
       register: result
       when: ansible_net_version != "15.6(2)T"
       cisco.ios.ios_bgp: *id010
-
     - assert:
         that:
           - result.changed == false
@@ -483,7 +466,6 @@
     - name: Configure BGP neighbors with classful boundary (idempotent)
       register: result
       cisco.ios.ios_bgp: *id011
-
     - assert:
         that:
           - result.changed == false
@@ -501,7 +483,6 @@
     - name: Teardown again (idempotent)
       register: result
       cisco.ios.ios_bgp: *id012
-
     - assert:
         that:
           - result.changed == false

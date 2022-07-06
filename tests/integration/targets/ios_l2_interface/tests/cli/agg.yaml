@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} ios_l2_interface aggregate
-    test"
+- debug: msg="START connection={{ ansible_connection }} ios_l2_interface aggregate test"
 
 - name: Setup - Ensure interfaces are switchport
   loop:
@@ -52,7 +50,6 @@
     - name: Configure interface for access_vlan aggregate(Idempotence)
       register: result
       cisco.ios.ios_l2_interface: *id001
-
     - assert:
         that:
           - result.changed == false
@@ -77,7 +74,6 @@
     - name: Remove interface aggregate(Idempotence)
       register: result
       cisco.ios.ios_l2_interface: *id002
-
     - assert:
         that:
           - result.changed == false
@@ -91,5 +87,4 @@
           - vlan_id: 15
         state: absent
 
-- debug: msg="END connection={{ ansible_connection }} ios_l2_interface aggregate
-    test"
+- debug: msg="END connection={{ ansible_connection }} ios_l2_interface aggregate test"

@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Merged ios_lag_interfaces state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Merged ios_lag_interfaces state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _populate_port_channel.yaml
 - include_tasks: _remove_config.yaml
@@ -25,19 +23,16 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
     - name: Merge provided configuration with device configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_lag_interfaces: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

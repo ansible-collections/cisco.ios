@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_hostname ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_hostname ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -10,7 +9,7 @@
 - block:
     - name: ios_hostname deleted - Play
       register: result
-      cisco.ios.ios_hostname: &id001
+      cisco.ios.ios_hostname:
         config:
         state: deleted
 

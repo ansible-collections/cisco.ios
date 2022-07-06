@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_hostname parsed integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_hostname parsed integration tests on connection={{ ansible_connection }}
 
 - name: ios_hostname parsed - Play
   register: result

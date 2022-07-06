@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_ospfv3 gathered integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_ospfv3 gathered integration tests on connection={{ ansible_connection }}
 
 - block:
     - include_tasks: _remove_config.yaml
@@ -19,7 +17,6 @@
       assert:
         that:
           - result.changed == false
-          - "{{ merged['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['gathered']['processes']) |length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml

@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"
 
 - name: Clear all static routes
   cisco.ios.ios_static_route: &id003
@@ -60,7 +58,6 @@
 - name: modify admin distance of static route again (idempotent)
   register: result
   cisco.ios.ios_static_route: *id001
-
 - assert:
     that:
       - result.changed == false
@@ -93,7 +90,6 @@
 - name: delete static route again (idempotent)
   register: result
   cisco.ios.ios_static_route: *id002
-
 - assert:
     that:
       - result.changed == false
@@ -112,8 +108,7 @@
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["ip route 172.16.32.0 255.255.255.0 10.0.0.8", "ip route
-        172.16.33.0 255.255.255.0 10.0.0.8"]
+      - result.commands == ["ip route 172.16.32.0 255.255.255.0 10.0.0.8", "ip route 172.16.33.0 255.255.255.0 10.0.0.8"]
 
 - name: Add and remove static route aggregates with overrides
   register: result
@@ -132,19 +127,14 @@
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["no ip route 172.16.33.0 255.255.255.0 10.0.0.8", "ip
-        route 172.16.34.0 255.255.255.0 10.0.0.8"]
+      - result.commands == ["no ip route 172.16.33.0 255.255.255.0 10.0.0.8", "ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
 
 - name: Remove static route aggregates
   register: result
   cisco.ios.ios_static_route: *id003
-
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no
-        ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
+      - result.commands == ["no ip route 172.16.32.0 255.255.255.0 10.0.0.8", "no ip route 172.16.34.0 255.255.255.0 10.0.0.8"]
 
-- debug:
-    msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END ios cli/ios_static_route.yaml on connection={{ ansible_connection }}"

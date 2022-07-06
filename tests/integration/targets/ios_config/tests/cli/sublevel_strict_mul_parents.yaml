@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:
@@ -71,6 +69,4 @@
       - no class-map c1
     match: none
 
-- debug:
-    msg="END cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection }}"

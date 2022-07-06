@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Merged ios_snmp_server state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Merged ios_snmp_server state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -35,7 +33,6 @@
     - name: ios_snmp_server merged - Play (IDEMPOTENT)
       register: result
       cisco.ios.ios_snmp_server: *id001
-
     - name: ios_snmp_server merged - Assert above task was idempotent
       assert:
         that:

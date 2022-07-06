@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_snmp_server parsed integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_snmp_server parsed integration tests on connection={{ ansible_connection }}
 
 - name: ios_snmp_server parsed - Play
   register: result

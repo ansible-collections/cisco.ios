@@ -1,12 +1,11 @@
 ---
 - debug:
-    msg: Start ios_prefix_lists rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_prefix_lists rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided Prefix lists configuration
       register: result
-      cisco.ios.ios_prefix_lists: &id001
+      cisco.ios.ios_prefix_lists:
         config:
           - afi: ipv4
             prefix_lists:

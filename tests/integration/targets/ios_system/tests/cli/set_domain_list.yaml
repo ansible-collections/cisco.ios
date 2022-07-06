@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli/set_domain_search.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/set_domain_search.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:
@@ -110,5 +108,4 @@
       - no ip domain-list redhat.com
       - no ip domain-list eng.ansible.com
     match: none
-- debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection }}"

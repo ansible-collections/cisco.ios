@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Merged ios_ntp_global state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Merged ios_ntp_global state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -21,8 +19,7 @@
     - name: ios_ntp_global merged - Assert commands
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: ios_ntp_global merged - Assert after
       assert:
@@ -32,7 +29,6 @@
     - name: ios_ntp_global merged - Play (IDEMPOTENT)
       register: result
       cisco.ios.ios_ntp_global: *id001
-
     - name: ios_ntp_global merged - Assert above task was idempotent
       assert:
         that:

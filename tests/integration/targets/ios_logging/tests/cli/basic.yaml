@@ -45,7 +45,6 @@
 - name: Delete/disable host logging
   register: result
   cisco.ios.ios_logging: *id001
-
 - assert:
     that:
       - result.changed == true
@@ -54,9 +53,7 @@
 - name: Delete/disable host logging (idempotent)
   register: result
   cisco.ios.ios_logging: *id001
-
 - assert: *id002
-
 - name: Console logging with level warnings
   register: result
   cisco.ios.ios_logging:
@@ -114,9 +111,7 @@
 - name: Set both logging destination and facility (idempotent)
   register: result
   cisco.ios.ios_logging: *id003
-
 - assert: *id002
-
 - name: remove logging as collection tearDown
   register: result
   cisco.ios.ios_logging:

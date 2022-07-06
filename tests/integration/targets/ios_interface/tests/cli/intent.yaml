@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios_interface cli/intent.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios_interface cli/intent.yaml on connection={{ ansible_connection }}"
 
 - name: Check intent arguments
   register: result

@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start ios_acl_interfaces overridden integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_acl_interfaces overridden integration tests ansible_connection={{ ansible_connection }}
 
 - include_tasks: _populate_config.yaml
 
@@ -28,13 +26,10 @@
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name:
-        Override device configuration of all acl_interfaces with provided configuration
-        (IDEMPOTENT)
+    - name: Override device configuration of all acl_interfaces with provided configuration (IDEMPOTENT)
       become: true
       register: result
       cisco.ios.ios_acl_interfaces: *id001
-
     - assert:
         that:
           - result.commands|length == 0

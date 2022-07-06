@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_logging_global empty_config.yaml integration tests on connection={{
-      ansible_connection }}
+    msg: START ios_logging_global empty_config.yaml integration tests on connection={{ ansible_connection }}
 
 - name: Merged with empty config should give appropriate error message
   register: result
@@ -57,5 +55,4 @@
 
 - assert:
     that:
-      - result.msg == 'value of running_config parameter must not be empty for state
-        parsed'
+      - result.msg == 'value of running_config parameter must not be empty for state parsed'

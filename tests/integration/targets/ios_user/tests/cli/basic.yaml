@@ -28,8 +28,7 @@
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["username ansibletest1 view network-operator", "username
-        ansibletest1 privilege 15"]
+      - result.commands == ["username ansibletest1 view network-operator", "username ansibletest1 privilege 15"]
 
 - name: Collection of users (SetUp)
   become: true
@@ -45,8 +44,7 @@
 - assert:
     that:
       - result.changed == true
-      - result.commands == ["username ansibletest2 view network-admin", "username
-        ansibletest3 view network-admin"]
+      - result.commands == ["username ansibletest2 view network-admin", "username ansibletest3 view network-admin"]
 
 - name: Add user again (Idempotent)
   become: true

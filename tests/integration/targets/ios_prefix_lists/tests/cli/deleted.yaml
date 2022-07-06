@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_prefix_lists ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_prefix_lists ansible_connection={{ ansible_connection }}
 
 - block:
     - include_tasks: _remove_config.yaml
@@ -21,13 +19,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted_name['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted_name['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete provided Prefix lists config (IDEMPOTENT)
       register: result
       cisco.ios.ios_prefix_lists: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -46,13 +42,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted_afi['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted_afi['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete provided Prefix lists config (IDEMPOTENT)
       register: result
       cisco.ios.ios_prefix_lists: *id002
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -69,13 +63,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete ALL provided Prefix lists config (IDEMPOTENT)
       register: result
       cisco.ios.ios_prefix_lists: *id003
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

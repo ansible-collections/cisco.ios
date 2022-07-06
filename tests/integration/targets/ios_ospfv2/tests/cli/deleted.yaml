@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_ospfv2 ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_ospfv2 ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _initial_vrf_setup.yaml
@@ -21,14 +20,12 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -38,7 +35,6 @@
     - name: Delete provided OSPF V2 processes (IDEMPOTENT)
       register: result
       cisco.ios.ios_ospfv2: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -54,14 +50,12 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -71,7 +65,6 @@
     - name: Delete provided OSPF V2 processes without any config (IDEMPOTENT)
       register: result
       cisco.ios.ios_ospfv2: *id002
-
     - name: Assert that the merge task was idempotent
       assert:
         that:

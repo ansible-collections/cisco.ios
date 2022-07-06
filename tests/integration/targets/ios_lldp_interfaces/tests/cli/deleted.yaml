@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{ ansible_connection }}
 
 - include_tasks: _enable_lldp.yaml
 
@@ -19,25 +17,21 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
     - name: Delete LLDP attributes for respective configured interfaces (IDEMPOTENT)
       register: result
       cisco.ios.ios_lldp_interfaces: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

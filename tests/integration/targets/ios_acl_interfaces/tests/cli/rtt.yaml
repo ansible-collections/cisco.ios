@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: START ios_acl_interfaces round trip integration tests on connection={{
-      ansible_connection }}
+    msg: START ios_acl_interfaces round trip integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 

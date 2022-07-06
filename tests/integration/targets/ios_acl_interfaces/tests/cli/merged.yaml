@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start ios_acl_interfaces merged integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_acl_interfaces merged integration tests ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -45,12 +44,9 @@
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_acl_interfaces: *id001
-
     - assert:
         that:
           - result.commands|length == 0

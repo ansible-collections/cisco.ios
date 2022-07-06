@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_static_routes round trip integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_static_routes round trip integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -74,8 +72,7 @@
         that:
           - revert.commands|length == 1
           - revert.changed == true
-          - revert.commands|symmetric_difference(rtt.override_revert_commands) ==
-            []
+          - revert.commands|symmetric_difference(rtt.override_revert_commands) == []
   always:
     - include_tasks: _populate_config.yaml
 

@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start Deleted integration state for ios_logging ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_logging ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -15,8 +14,7 @@
     - name: TEST - [deleted] Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
   always:
     - include_tasks: _remove_config.yaml

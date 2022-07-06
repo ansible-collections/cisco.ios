@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Replaced ios_logging_global state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Replaced ios_logging_global state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -26,8 +24,7 @@
     - name: TEST - [replaced] Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: TEST - [replaced] Assert that before dicts are correctly generated
       assert:
@@ -42,7 +39,6 @@
     - name: TEST - [replaced] Replaced provided ios logging global configuration idempotent
       register: result
       cisco.ios.ios_logging_global: *replacedid001
-
     - name: TEST - [replaced] Assert that task was idempotent
       assert:
         that:

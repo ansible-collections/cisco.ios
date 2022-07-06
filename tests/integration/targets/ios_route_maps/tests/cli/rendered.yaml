@@ -1,12 +1,11 @@
 ---
 - debug:
-    msg: Start ios_route_maps rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_route_maps rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided Route map configuration
       register: result
-      cisco.ios.ios_route_maps: &id001
+      cisco.ios.ios_route_maps:
         config:
           - route_map: test_1
             entries:

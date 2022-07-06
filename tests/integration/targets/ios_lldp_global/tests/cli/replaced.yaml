@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START Replaced ios_lldp_global state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Replaced ios_lldp_global state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -20,8 +18,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
@@ -33,11 +30,9 @@
         that:
           - "{{ replaced['after'] == result['after'] }}"
 
-    - name: Replaces Global LLDP configuration with provided LLDP configuration
-        (IDEMPOTENT)
+    - name: Replaces Global LLDP configuration with provided LLDP configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_lldp_global: *id001
-
     - name: Assert that task was idempotent
       assert:
         that:

@@ -1,6 +1,5 @@
 ---
-- debug: msg="START ios_lldp cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios_lldp cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Make sure LLDP is not running before tests
   cisco.ios.ios_config:

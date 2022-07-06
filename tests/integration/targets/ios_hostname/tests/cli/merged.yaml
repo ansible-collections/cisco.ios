@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: START Merged ios_hostname state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Merged ios_hostname state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -28,7 +27,6 @@
     - name: ios_hostname merged - Play (IDEMPOTENT)
       register: result
       cisco.ios.ios_hostname: *id001
-
     - name: ios_hostname merged - Assert above task was idempotent
       assert:
         that:

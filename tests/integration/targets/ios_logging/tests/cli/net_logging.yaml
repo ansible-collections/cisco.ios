@@ -1,6 +1,5 @@
 ---
-- debug: msg="START ios cli/net_logging.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios cli/net_logging.yaml on connection={{ ansible_connection }}"
 
 - name: Remove host logging - setup
   ansible.netcommon.net_logging:

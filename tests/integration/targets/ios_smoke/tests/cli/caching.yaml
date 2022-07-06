@@ -52,7 +52,6 @@
     - name: Merge base interfaces configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_interfaces: *merged
-
     - assert:
         that:
           - result.changed == False

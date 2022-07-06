@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Merged integration state for ios_logging_global ansible_connection={{
-      ansible_connection }}
+    msg: Start Merged integration state for ios_logging_global ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -49,8 +47,7 @@
     - name: TEST - [merged] Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: TEST - [merged] Assert that before dicts are correctly generated
       assert:

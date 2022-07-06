@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli/set_lookup_source.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:
@@ -57,5 +55,4 @@
       - no vrf definition ansible
     match: none
 
-- debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli/set_lookup_source.yaml on connection={{ ansible_connection }}"

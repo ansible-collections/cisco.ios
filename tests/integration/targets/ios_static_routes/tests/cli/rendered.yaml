@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_static_routes rendered integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_static_routes rendered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 

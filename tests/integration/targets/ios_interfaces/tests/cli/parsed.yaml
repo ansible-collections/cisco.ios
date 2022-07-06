@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_interfaces parsed integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - name: Parse the commands for provided configuration
   become: true

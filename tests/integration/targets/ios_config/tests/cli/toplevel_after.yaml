@@ -1,6 +1,5 @@
 ---
-- debug: msg="START cli/toplevel_after.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/toplevel_after.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:

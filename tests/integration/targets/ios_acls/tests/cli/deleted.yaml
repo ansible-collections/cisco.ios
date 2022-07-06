@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_acls ansible_connection={{ ansible_connection
-      }}
+    msg: Start Deleted integration state for ios_acls ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -31,7 +29,6 @@
     - name: Delete configured ACLs (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -55,11 +52,9 @@
           - result.changed == true
           - result.commands|symmetric_difference(deleted_afi.commands) == []
 
-    - name: Delete ACL attributes based on AFI
-        (IDEMPOTENT)
+    - name: Delete ACL attributes based on AFI (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id002
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -81,11 +76,9 @@
           - result.changed == true
           - result.commands|symmetric_difference(deleted_all.commands) == []
 
-    - name: Delete ALL configured ACLs
-        (IDEMPOTENT)
+    - name: Delete ALL configured ACLs (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id003
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

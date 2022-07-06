@@ -20,9 +20,7 @@
 
 - assert:
     that: "{{ item.value.spacetotal_kb }} > {{ item.value.spacefree_kb }}"
-  loop:
-    "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True)\
-    \ }}"
+  loop: "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True) }}"
 
 - ansible.builtin.set_fact:
     supported_network_resources:
@@ -59,7 +57,6 @@
   assert:
     that:
       - result.changed == false
-      - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(supported_network_resources) |length\
-        \ == 0 }}"
+      - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(supported_network_resources) |length == 0 }}"
 
 - debug: msg="END cli/all_facts.yaml on connection={{ ansible_connection }}"

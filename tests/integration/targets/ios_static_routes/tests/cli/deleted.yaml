@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_static_routes ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_static_routes ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -60,7 +58,6 @@
     - name: Delete attributes of all configured interfaces (IDEMPOTENT)
       register: result
       cisco.ios.ios_static_routes: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

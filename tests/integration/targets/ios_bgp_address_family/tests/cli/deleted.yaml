@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_bgp_address_family ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_bgp_address_family ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -23,13 +21,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete provided BGP Address family (IDEMPOTENT)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
-
     - name: Assert that the previous task was idempotent
       assert:
         that:
@@ -43,13 +39,11 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete ALL provided BGP Address family (IDEMPOTENT)
       register: result
       cisco.ios.ios_bgp_address_family: *id002
-
     - name: Assert that the previous task was idempotent
       assert:
         that:

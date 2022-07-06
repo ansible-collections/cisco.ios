@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: START Overridden ios_acls state for integration tests on connection={{
-      ansible_connection }}
+    msg: START Overridden ios_acls state for integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -82,12 +81,9 @@
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name:
-        Override device configuration of all interfaces with provided configuration
-        (IDEMPOTENT)
+    - name: Override device configuration of all interfaces with provided configuration (IDEMPOTENT)
       register: result
       cisco.ios.ios_acls: *id001
-
     - name: Assert that task was idempotent
       assert:
         that:

@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:
@@ -38,6 +36,4 @@
       - hostname {{ shorter_hostname }}
     match: none
 
-- debug:
-    msg="END cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection }}"

@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start ios_logging_global rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_logging_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: TEST - [rendered] Render the commands for provided  configuration

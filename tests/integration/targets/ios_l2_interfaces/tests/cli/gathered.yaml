@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_l2_interfaces gathered integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_l2_interfaces gathered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _populate_config.yaml
 

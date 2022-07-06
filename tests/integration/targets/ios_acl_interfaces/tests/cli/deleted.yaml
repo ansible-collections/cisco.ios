@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start ios_acl_interfaces deleted integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_acl_interfaces deleted integration tests ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 

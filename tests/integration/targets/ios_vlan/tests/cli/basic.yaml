@@ -36,7 +36,6 @@
     - name: create vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id001
-
     - assert:
         that:
           - result.changed == false
@@ -62,7 +61,6 @@
     - name: Add interfaces to vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id002
-
     - assert:
         that:
           - result.changed == false
@@ -109,7 +107,6 @@
     - name: Remove interface from vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id003
-
     - assert:
         that:
           - result.changed == false
@@ -152,7 +149,6 @@
     - name: delete vlan(idempotence)
       register: result
       cisco.ios.ios_vlan: *id004
-
     - assert:
         that:
           - result.changed == false
@@ -178,7 +174,6 @@
     - name: create vlans using aggregate(idempotence)
       register: result
       cisco.ios.ios_vlan: *id005
-
     - assert:
         that:
           - result.changed == false
@@ -203,7 +198,6 @@
     - name: delete vlans using aggregate(idempotence)
       register: result
       cisco.ios.ios_vlan: *id006
-
     - assert:
         that:
           - result.changed == false

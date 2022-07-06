@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: START ios_l3_interfaces round trip integration tests on connection={{
-      ansible_connection }}
+    msg: START ios_l3_interfaces round trip integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -61,7 +60,6 @@
     - assert:
         that:
           - revert.changed == true
-          - "{{ revert['commands'] | symmetric_difference(rtt['commands'])\
-            \ | length == 0 }}"
+          - "{{ revert['commands'] | symmetric_difference(rtt['commands']) | length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml

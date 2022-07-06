@@ -1,6 +1,5 @@
 ---
-- debug: msg="START cli/sublevel_strict.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/sublevel_strict.yaml on connection={{ ansible_connection }}"
 
 - name: setup
   cisco.ios.ios_config:

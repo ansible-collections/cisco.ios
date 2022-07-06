@@ -1,12 +1,11 @@
 ---
 - debug:
-    msg: Start ios_ospfv3 rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_ospfv3 rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided  configuration
       register: result
-      cisco.ios.ios_ospfv3: &id001
+      cisco.ios.ios_ospfv3:
         config:
           processes:
             - process_id: 1

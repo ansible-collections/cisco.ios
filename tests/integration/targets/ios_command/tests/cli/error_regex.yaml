@@ -43,11 +43,9 @@
     - name: clear logs 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id001
-
     - name: send log with error regex match 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id002
-
     - name: fetch logs with command specific error regex
       register: result
       vars:

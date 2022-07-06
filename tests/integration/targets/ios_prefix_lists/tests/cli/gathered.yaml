@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START ios_prefix_lists gathered integration tests on connection={{ ansible_connection
-      }}
+    msg: START ios_prefix_lists gathered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 - include_tasks: _populate_config.yaml
@@ -18,7 +16,6 @@
       assert:
         that:
           - result.changed == false
-          - "{{ merged['after'] | symmetric_difference(result['gathered']) |length\
-            \ == 0 }}"
+          - "{{ merged['after'] | symmetric_difference(result['gathered']) |length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml

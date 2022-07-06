@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Configure interface (setup)
   register: result
@@ -227,6 +225,4 @@
     that:
       - result.changed == false
 
-- debug:
-    msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection }}"

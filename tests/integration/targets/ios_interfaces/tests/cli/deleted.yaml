@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start Deleted integration state for ios_interfaces ansible_connection={{
-      ansible_connection }}
+    msg: Start Deleted integration state for ios_interfaces ansible_connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -11,7 +9,7 @@
 - block:
     - name: Delete attributes of all configured interfaces
       register: result
-      cisco.ios.ios_interfaces: &id001
+      cisco.ios.ios_interfaces:
         config:
           - name: GigabitEthernet0/1
           - name: GigabitEthernet0/2
@@ -26,19 +24,16 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml

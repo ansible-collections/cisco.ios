@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection }}"
 
 - name: setup - remove configuration
   ansible.netcommon.cli_config:
@@ -21,7 +19,6 @@
 - name: block replace (Idempotence)
   register: result
   ansible.netcommon.cli_config: *id001
-
 - assert:
     that:
       - result.changed == false
@@ -31,6 +28,4 @@
     config: no ip access-list extended test
     diff_match: none
 
-- debug:
-    msg="END cli_config/cli_block_replace.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="END cli_config/cli_block_replace.yaml on connection={{ ansible_connection }}"

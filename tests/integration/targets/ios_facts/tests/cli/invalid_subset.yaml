@@ -1,6 +1,5 @@
 ---
-- debug: msg="START cli/invalid_subset.yaml on connection={{ ansible_connection
-    }}"
+- debug: msg="START cli/invalid_subset.yaml on connection={{ ansible_connection }}"
 
 - name: test invalid subset (foobar)
   register: result
@@ -13,8 +12,7 @@
     that:
       - result.changed == false
       - result.failed == true
-      - result.msg == 'Subset must be one of [config, default, hardware, interfaces],
-        got foobar'
+      - result.msg == 'Subset must be one of [config, default, hardware, interfaces], got foobar'
 
 - name: test subset specified multiple times
   register: result

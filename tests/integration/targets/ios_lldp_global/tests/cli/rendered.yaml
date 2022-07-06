@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start ios_lldp_global rendered integration tests ansible_connection={{
-      ansible_connection }}
+    msg: Start ios_lldp_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided  configuration
