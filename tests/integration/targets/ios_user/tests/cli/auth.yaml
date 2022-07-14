@@ -8,22 +8,21 @@
         state: present
         configured_password: pass123
 
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: test login for {{ ansible_user }} user with password
-      expect:
+    - name: Test login for {{ ansible_user }} user with password
+      ansible.builtin.expect:
         command:
-          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
-          }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
+          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
           (?i)password: pass123
 
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: test login with invalid password (should fail)
+    - name: Test login with invalid password (should fail)
       cisco.ios.ios_command:
         commands:
           - show version
@@ -34,23 +33,23 @@
         ansible_ssh_password: badpass
         ansible_private_key_file: ""
 
-    - name: check that attempt failed
-      assert:
+    - name: Check that attempt failed
+      ansible.builtin.assert:
         that:
           - results.failed
   always:
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: delete user
+    - name: Delete user
       register: result
       cisco.ios.ios_user:
         name: auth_user
         state: absent
 
 - block:
-    - name: Ensure ssh key is not world readable
-      file:
+    - name: Ensure SSH key is not world readable
+      ansible.builtin.file:
         path: "{{ role_path }}/files/test_rsa"
         mode: 384
 
@@ -62,10 +61,10 @@
         state: present
         sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
 
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: test sshkey login for {{ ansible_user }} user
+    - name: Test sshkey login for {{ ansible_user }} user
       cisco.ios.ios_command:
         commands:
           - show version
@@ -73,10 +72,10 @@
         ansible_ssh_user: ssh_user
         ansible_ssh_private_key_file: "{{ role_path }}/files/test_rsa"
 
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: test with {{ ansible_user }} user without keys
+    - name: Test with {{ ansible_user }} user without keys
       cisco.ios.ios_command:
         commands:
           - show version
@@ -86,15 +85,15 @@
         ansible_user: ssh_user
         ansible_private_key_file: ""
 
-    - name: check that attempt failed
-      assert:
+    - name: Check that attempt failed
+      ansible.builtin.assert:
         that:
           - results.failed
   always:
-    - name: reset connection with {{ ansible_user }}
-      meta: reset_connection
+    - name: Reset connection with {{ ansible_user }}
+      ansible.builtin.meta: reset_connection
 
-    - name: delete user
+    - name: Delete user
       register: result
       cisco.ios.ios_user:
         name: ssh_user

@@ -1,15 +1,14 @@
 ---
-- debug:
-    msg: START ios_ospfv2 round trip integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START ios_ospfv2 round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _initial_vrf_setup.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
-      cisco.ios.ios_ospfv2: &id001
+      cisco.ios.ios_ospfv2:
         config:
           processes:
             - process_id: 1
@@ -63,7 +62,7 @@
                     direction: in
         state: merged
 
-    - name: Gather OSPFV2 facts
+    - name: Gather ospfv2 facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -110,22 +109,22 @@
                     translate: suppress-fa
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 18
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_ospfv2:
         config: "{{ ansible_facts['network_resources']['ospfv2'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.commands|length == 24
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

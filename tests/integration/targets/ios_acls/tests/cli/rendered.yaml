@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      Start ios_acls rendered integration tests ansible_connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start ios_acls rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Rendered the provided configuration with the existing running configuration
@@ -53,7 +51,7 @@
                       eq: 10
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []

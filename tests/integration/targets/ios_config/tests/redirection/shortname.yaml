@@ -1,18 +1,18 @@
 ---
-- debug: msg="START cli/shortname.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/shortname.yaml on connection={{ ansible_connection }}"
 
 - name: Use src with module alias
   register: result
   cisco.ios.config:
     src: basic/config.j2
 
-- assert:
+- ansible.builtin.assert:
     that:
       # make sure that the template content was read and not the path
       - result.changed == true
       - result.updates is defined
 
-- name: use module alias to take configuration backup
+- name: Use module alias to take configuration backup
   register: result
   cisco.ios.config:
     backup: true
@@ -20,18 +20,18 @@
       filename: backup_with_alias.cfg
       dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: check if the backup file-4 exist
+- name: Check if the backup file-4 exist
   ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
   register: backup_file
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_file.files is defined
 
-- debug: msg="END cli/shortname.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/shortname.yaml on connection={{ ansible_connection }}"

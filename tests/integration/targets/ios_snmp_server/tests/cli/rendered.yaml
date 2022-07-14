@@ -1,10 +1,9 @@
 ---
-- debug:
-    msg: Start ios_snmp_server rendered integration tests ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start ios_snmp_server rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
-    - name: ios_snmp_server render - Play
+    - name: Ios_snmp_server render - play
       register: result
       cisco.ios.ios_snmp_server:
         config:
@@ -27,7 +26,7 @@
                 udp_port: 25
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered == rendered['commands']

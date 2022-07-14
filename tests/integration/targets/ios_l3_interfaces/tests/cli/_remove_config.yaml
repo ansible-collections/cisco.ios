@@ -1,8 +1,8 @@
 ---
-- name: l3_interface - Remove Config
+- name: L3_interface - remove configuration
   vars:
     lines:
-      "interface Loopback 999\nno ip address\ninterface GigabitEthernet 0/1\nno ip address\nno ipv6 address\ninterface\
-      \ GigabitEthernet 0/2\nno ip address\nno ipv6 address\n"
+      "interface Loopback 999\nno ip address\ninterface GigabitEthernet 0/1\nno ip address\nno ipv6 address\ninterface GigabitEthernet 0/2\nno ip address\nno\
+      \ ipv6 address\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

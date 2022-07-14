@@ -1,13 +1,12 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} ios_l2_interface sanity
-    test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} ios_l2_interface sanity test"
 
 - name: Setup interface
   cisco.ios.ios_config: &id009
     lines:
       - default interface {{ test_interface }}
 
-- name: set trunk encapsulation type
+- name: Set trunk encapsulation type
   cisco.ios.ios_config:
     lines:
       - switchport trunk encapsulation dot1q
@@ -37,22 +36,21 @@
         name: "{{ test_interface }}"
         state: unconfigured
 
-    - name: Ensure interface is configured for access vlan 20
+    - name: Ensure interface is configured for access VLAN 20
       register: result
       cisco.ios.ios_l2_interface: &id001
         name: "{{ test_interface }}"
         mode: access
         access_vlan: 20
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: access vlan Idempotence
+    - name: Access VLAN idempotent
       register: result
       cisco.ios.ios_l2_interface: *id001
-
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -64,17 +62,12 @@
         native_vlan: 10
         trunk_allowed_vlans: 5-10
 
-    - assert: *id002
-
-    - name: trunk vlan Idempotence
+    - ansible.builtin.assert: *id002
+    - name: Trunk VLAN idempotent
       register: result
       cisco.ios.ios_l2_interface: *id003
-
-    - assert: *id004
-
-    - name:
-        Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't
-        mean others aren't also being tagged)
+    - ansible.builtin.assert: *id004
+    - name: Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't mean others aren't also being tagged)
       register: result
       cisco.ios.ios_l2_interface: &id005
         name: "{{ test_interface }}"
@@ -82,15 +75,12 @@
         native_vlan: 10
         trunk_vlans: 2-50
 
-    - assert: *id002
-
-    - name: tag vlan Idempotence
+    - ansible.builtin.assert: *id002
+    - name: Tag VLAN idempotent
       register: result
       cisco.ios.ios_l2_interface: *id005
-
-    - assert: *id004
-
-    - name: Remove full trunk vlan range 2-50
+    - ansible.builtin.assert: *id004
+    - name: Remove full trunk VLAN range 2-50
       register: result
       cisco.ios.ios_l2_interface: &id006
         name: "{{ test_interface }}"
@@ -98,29 +88,20 @@
         trunk_vlans: 2-50
         state: absent
 
-    - assert: *id002
-
-    - name: Check Idempotence Remove full trunk vlan range 2-50
+    - ansible.builtin.assert: *id002
+    - name: Check idempotent remove full trunk VLAN range 2-50
       register: result
       cisco.ios.ios_l2_interface: *id006
-
-    - assert: *id004
-
+    - ansible.builtin.assert: *id004
     - name: Reconfigure interface trunk port and ensure 2-50 are being tagged
       register: result
       cisco.ios.ios_l2_interface: *id005
-
-    - assert: *id002
-
-    - name:
-        Check Idempotence Reconfigure interface trunk port and ensure 2-50 are
-        being tagged
+    - ansible.builtin.assert: *id002
+    - name: Check idempotent reconfigure interface trunk port and ensure 2-50 are being tagged
       register: result
       cisco.ios.ios_l2_interface: *id005
-
-    - assert: *id004
-
-    - name: Remove partial trunk vlan range 30-4094 are removed
+    - ansible.builtin.assert: *id004
+    - name: Remove partial trunk VLAN range 30-4094 are removed
       register: result
       cisco.ios.ios_l2_interface: &id007
         name: "{{ test_interface }}"
@@ -128,27 +109,21 @@
         trunk_vlans: 30-4094
         state: absent
 
-    - assert: *id002
-
-    - name: Check Idempotence Remove partial trunk vlan range 30-4094 are removed
+    - ansible.builtin.assert: *id002
+    - name: Check idempotent remove partial trunk VLAN range 30-4094 are removed
       register: result
       cisco.ios.ios_l2_interface: *id007
-
-    - assert: *id004
-
-    - name: put interface default state
+    - ansible.builtin.assert: *id004
+    - name: Put interface default state
       register: result
       cisco.ios.ios_l2_interface: *id008
-
-    - assert: *id002
-
-    - name: default state idempotence
+    - ansible.builtin.assert: *id002
+    - name: Default state idempotent
       register: result
       cisco.ios.ios_l2_interface: *id008
-
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-    - name: remove vlans
+    - name: Remove vlans
       ignore_errors: true
       cisco.ios.ios_vlan:
         aggregate:
@@ -167,8 +142,8 @@
           - vlan_id: 20
         state: absent
 
-    - name: default interface
+    - name: Default interface
       ignore_errors: true
       cisco.ios.ios_config: *id009
 
-- debug: msg="END connection={{ ansible_connection }} ios_l2_interface sanity test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} ios_l2_interface sanity test"

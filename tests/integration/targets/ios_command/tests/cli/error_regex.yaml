@@ -1,8 +1,8 @@
 ---
-- debug: msg="START cli/error_regex.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/error_regex.yaml on connection={{ ansible_connection }}"
 
 - block:
-    - name: clear logs 1
+    - name: Clear logs 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id001
         command: clear logging
@@ -11,44 +11,42 @@
         answer:
           - "\r"
 
-    - name: increase log buffer size
+    - name: Increase log buffer size
       ansible.netcommon.cli_config:
         config: logging buffered 9600000
 
-    - name: send log with error regex match 1
+    - name: Send log with error regex match 1
       ignore_errors: true
       ansible.netcommon.cli_command: &id002
         command: "send log 'IPSEC-3-REPLAY_ERROR: test log_1'\n"
 
-    - name: pause to avoid rate limiting-1
-      pause:
+    - name: Pause to avoid rate limiting-1
+      ansible.builtin.pause:
         seconds: 20
 
-    - name: fetch logs without command specific error regex
+    - name: Fetch logs without command specific error regex
       register: result
       ignore_errors: true
       cisco.ios.ios_command:
         commands:
           - show logging
 
-    - name: ensure task fails due to mismatched regex
-      assert:
+    - name: Ensure task fails due to mismatched regex
+      ansible.builtin.assert:
         that:
           - result.failed == true
 
-    - name: pause to avoid rate limiting-2
-      pause:
+    - name: Pause to avoid rate limiting-2
+      ansible.builtin.pause:
         seconds: 20
 
-    - name: clear logs 2
+    - name: Clear logs 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id001
-
-    - name: send log with error regex match 2
+    - name: Send log with error regex match 2
       ignore_errors: true
       ansible.netcommon.cli_command: *id002
-
-    - name: fetch logs with command specific error regex
+    - name: Fetch logs with command specific error regex
       register: result
       vars:
         ansible_terminal_stderr_re:
@@ -58,10 +56,10 @@
         commands:
           - show logging
 
-    - name: ensure task with modified error regex is success
-      assert:
+    - name: Ensure task with modified error regex is success
+      ansible.builtin.assert:
         that:
           - result.failed == false
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-- debug: msg="END cli/error_regex.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/error_regex.yaml on connection={{ ansible_connection }}"

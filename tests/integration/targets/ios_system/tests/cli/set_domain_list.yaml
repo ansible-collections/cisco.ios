@@ -1,114 +1,111 @@
 ---
-- debug:
-    msg="START cli/set_domain_search.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START cli/set_domain_search.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
     match: none
 
-- name: configure domain_search
+- name: Configure domain_search
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain list ansible.com' in result.commands"
       - "'ip domain list redhat.com' in result.commands"
 
-- name: verify domain_search
+- name: Verify domain_search
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: remove one entry
+- name: Remove one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no ip domain list redhat.com' in result.commands"
 
-- name: verify remove one entry
+- name: Verify remove one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: add one entry
+- name: Add one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain list redhat.com' in result.commands"
 
-- name: verify add one entry
+- name: Verify add one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: add and remove one entry
+- name: Add and remove one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no ip domain list redhat.com' in result.commands"
       - "'ip domain list eng.ansible.com' in result.commands"
       - result.commands|length == 2
 
-- name: verify add and remove one entry
+- name: Verify add and remove one entry
   register: result
   cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
       - no ip domain-list eng.ansible.com
     match: none
-- debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection }}"

@@ -1,14 +1,11 @@
 ---
-- debug:
-    msg:
-      Start ios_acl_interfaces replced integration tests ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start ios_acl_interfaces replced integration tests ansible_connection={{ ansible_connection }}
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replaces device configuration of listed acl_interfaces with provided
-        configuration
+    - name: Replaces device configuration of listed acl_interfaces with provided configuration
       become: true
       register: result
       cisco.ios.ios_acl_interfaces: &id001
@@ -24,20 +21,18 @@
                     direction: in
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 
-    - name: Replaces device configuration of listed acl_interfaces with provided
-        configuration (IDEMPOTENT)
+    - name: Replaces device configuration of listed acl_interfaces with provided configuration (idempotent)
       become: true
       register: result
       cisco.ios.ios_acl_interfaces: *id001
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

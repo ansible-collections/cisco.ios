@@ -1,15 +1,13 @@
 ---
-- debug:
-    msg:
-      Start Deleted integration state for ios_l3_interfaces ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_l3_interfaces ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: l3_interface deleted - Delete attributes of provided configured interfaces
+    - name: L3_interface deleted - delete attributes of provided configured interfaces
       register: result
       cisco.ios.ios_l3_interfaces: &id001
         config:
@@ -18,31 +16,27 @@
           - name: GigabitEthernet0/2
         state: deleted
 
-    - name: l3_interface deleted - Assert that correct set of commands were generated
-      assert:
+    - name: L3_interface deleted - assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: l3_interface deleted - Assert that before dicts are correctly generated
-      assert:
+    - name: L3_interface deleted - assert that before dicts are correctly generated
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
-    - name: l3_interface deleted - Assert that after dict is correctly generated
-      assert:
+    - name: L3_interface deleted - assert that after dict is correctly generated
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: l3_interface deleted - Delete attributes of all configured interfaces (IDEMPOTENT)
+    - name: L3_interface deleted - delete attributes of all configured interfaces (idempotent)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
-
-    - name: l3_interface deleted - Assert that the previous task was idempotent
-      assert:
+    - name: L3_interface deleted - assert that the previous task was idempotent
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

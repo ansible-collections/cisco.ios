@@ -1,12 +1,10 @@
 ---
-- debug:
-    msg:
-      START Merged ios_static_routes state for integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START Merged ios_static_routes state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _initial_setup_config.yaml
-- include_tasks: _add_extra_ipv6_data.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _initial_setup_config.yaml
+- ansible.builtin.include_tasks: _add_extra_ipv6_data.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -57,22 +55,21 @@
                         tag: 105
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 6
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_static_routes: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result['changed'] == false
   always:
-    - include_tasks: _populate_config.yaml
-    - include_tasks: _remove_config.yaml
-    - include_tasks: _remove_extra_ipv6_data.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_extra_ipv6_data.yaml

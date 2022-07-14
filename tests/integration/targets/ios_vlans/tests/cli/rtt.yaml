@@ -1,12 +1,11 @@
 ---
-- debug:
-    msg: START ios_vlans round trip integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START ios_vlans round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_vlans:
         config:
@@ -28,7 +27,7 @@
             shutdown: enabled
         state: merged
 
-    - name: Gather VLANs interfaces facts
+    - name: Gather vlans interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -49,23 +48,23 @@
             mtu: 850
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 8
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_vlans:
         config: "{{ ansible_facts['network_resources']['vlans'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - revert.commands|length == 14
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

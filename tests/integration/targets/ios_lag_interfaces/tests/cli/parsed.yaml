@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      START ios_lag_interfaces parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_lag_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - block:
     - name: Parse the commands for provided configuration
@@ -12,7 +10,7 @@
         running_config: "{{ lookup('file', '_parsed.cfg') }}"
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - parsed['config']|symmetric_difference(result.parsed) == []

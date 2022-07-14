@@ -1,16 +1,14 @@
 ---
-- debug:
-    msg:
-      START ios_ntp_global parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_ntp_global parsed integration tests on connection={{ ansible_connection }}
 
-- name: ios_ntp_global parsed - Play
+- name: Ios_ntp_global parsed - play
   register: result
   cisco.ios.ios_ntp_global:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - parsed['config'] == result['parsed']

@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      Start ios_lldp_interfaces rendered integration tests ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start ios_lldp_interfaces rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided  configuration
@@ -20,7 +18,7 @@
             receive: true
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(merged.commands) == []

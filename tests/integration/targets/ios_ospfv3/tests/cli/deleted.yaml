@@ -1,14 +1,13 @@
 ---
-- debug:
-    msg: Start Deleted integration state for ios_ospfv3 ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_ospfv3 ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _initial_vrf_setup.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete provided OSPF V3 processes
+    - name: Delete provided OSPF v3 processes
       register: result
       cisco.ios.ios_ospfv3: &id001
         config:
@@ -18,50 +17,46 @@
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['after'] == {} }}"
 
-    - name: Delete provided OSPF V3 processes (IDEMPOTENT)
+    - name: Delete provided OSPF v3 processes (idempotent)
       register: result
       cisco.ios.ios_ospfv3: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete provided OSPF V3 processes without any config
+    - name: Delete provided OSPF v3 processes without any configuration
       register: result
       cisco.ios.ios_ospfv3: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['after'] == {} }}"
 
-    - name: Delete provided OSPF V3 processes without any config (IDEMPOTENT)
+    - name: Delete provided OSPF v3 processes without any configuration (idempotent)
       register: result
       cisco.ios.ios_ospfv3: *id002
-
     - name: Assert that the merge task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

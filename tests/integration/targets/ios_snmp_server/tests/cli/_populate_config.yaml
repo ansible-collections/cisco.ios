@@ -1,5 +1,5 @@
 ---
-- name: PRE POST TASK Populate snmp-server config
+- name: Pre post task populate snmp-server configuration
   cisco.ios.ios_snmp_server:
     config:
       communities:

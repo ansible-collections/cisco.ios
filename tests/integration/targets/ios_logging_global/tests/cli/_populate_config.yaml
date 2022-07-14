@@ -1,5 +1,5 @@
 ---
-- name: CONFIG APPLY - [merged] Apply provided configuration
+- name: Config apply - [merged] apply provided configuration
   cisco.ios.ios_logging_global:
     config:
       buffered:

@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      START ios_bgp_global parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_bgp_global parsed integration tests on connection={{ ansible_connection }}
 
 - name: Parse the commands for provided configuration
   register: result
@@ -10,7 +8,7 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - parsed['after'] == result['parsed']

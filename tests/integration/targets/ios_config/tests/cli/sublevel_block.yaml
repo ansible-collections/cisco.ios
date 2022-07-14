@@ -1,8 +1,7 @@
 ---
-- debug: msg="START cli/sublevel_block.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START cli/sublevel_block.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
@@ -16,7 +15,7 @@
       - exit
     match: none
 
-- name: configure sub level command using block resplace
+- name: Configure sub level command using block replace
   register: result
   cisco.ios.ios_config:
     lines:
@@ -30,7 +29,7 @@
     after:
       - exit
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list extended test' in result.updates"
@@ -39,7 +38,7 @@
       - "'permit ip host 192.0.2.3 any log' in result.updates"
       - "'permit ip host 192.0.2.4 any log' in result.updates"
 
-- name: check sub level command using block replace
+- name: Check sub level command using block replace
   register: result
   cisco.ios.ios_config:
     lines:
@@ -53,14 +52,14 @@
     after:
       - exit
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none
 
-- debug: msg="END cli/sublevel_block.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/sublevel_block.yaml on connection={{ ansible_connection }}"

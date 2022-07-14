@@ -1,5 +1,5 @@
 ---
-- name: POPULATE CONFIG ntp_global
+- name: Populate configuration ntp_global
   cisco.ios.ios_ntp_global:
     config:
       broadcast_delay: 22

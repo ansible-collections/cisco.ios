@@ -1,14 +1,12 @@
 ---
-- debug:
-    msg:
-      START Replaced ios_logging_global state for integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START Replaced ios_logging_global state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: TEST - [replaced] Replace provided logging configuration
+    - name: Test - [replaced] replace provided logging configuration
       register: result
       cisco.ios.ios_logging_global: &replacedid001
         config:
@@ -23,30 +21,28 @@
               stream: 15
         state: replaced
 
-    - name: TEST - [replaced] Assert that correct set of commands were generated
-      assert:
+    - name: Test - [replaced] assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: TEST - [replaced] Assert that before dicts are correctly generated
-      assert:
+    - name: Test - [replaced] assert that before dicts are correctly generated
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['before']
 
-    - name: TEST - [replaced] Assert that after dicts are correctly generated
-      assert:
+    - name: Test - [replaced] assert that after dicts are correctly generated
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
-    - name: TEST - [replaced] Replaced provided ios logging global configuration idempotent
+    - name: Test - [replaced] replaced provided IOS logging global configuration idempotent
       register: result
       cisco.ios.ios_logging_global: *replacedid001
-
-    - name: TEST - [replaced] Assert that task was idempotent
-      assert:
+    - name: Test - [replaced] assert that task was idempotent
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

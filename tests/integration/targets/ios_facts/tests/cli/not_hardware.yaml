@@ -1,15 +1,13 @@
 ---
-- debug:
-    msg="START cli/not_hardware_facts.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START cli/not_hardware_facts.yaml on connection={{ ansible_connection }}"
 
-- name: test not hardware
+- name: Test not hardware
   register: result
   cisco.ios.ios_facts:
     gather_subset:
       - "!hardware"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'config' in result.ansible_facts.ansible_net_gather_subset"
@@ -20,6 +18,4 @@
       - result.ansible_facts.ansible_net_filesystems is not defined
       - result.ansible_facts.ansible_net_filesystems_info is not defined
 
-- debug:
-    msg="END cli/not_hardware_facts.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END cli/not_hardware_facts.yaml on connection={{ ansible_connection }}"

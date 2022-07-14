@@ -1,14 +1,12 @@
 ---
-- debug:
-    msg:
-      START Replaced ios_bgp_global state for integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START Replaced ios_bgp_global state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replaced provided BGP Global configuration
+    - name: Replaced provided BGP global configuration
       register: result
       cisco.ios.ios_bgp_global: &id001
         config:
@@ -36,24 +34,21 @@
         state: replaced
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
-    - name: Replaced provided BGP Global configuration
-        (IDEMPOTENT)
+    - name: Replaced provided BGP global configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_global: *id001
-
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

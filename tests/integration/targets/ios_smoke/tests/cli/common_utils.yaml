@@ -6,7 +6,7 @@
 
 # ComplexList already covered
 
-- debug: msg="START ios_smoke cli/common_utils.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios_smoke cli/common_utils.yaml on connection={{ ansible_connection }}"
 
 # hit is_netmask(), is_masklen(), to_netmask(), to_masklen()
 - name: Delete interface ipv4 and ipv6 address(setup)
@@ -15,7 +15,7 @@
     state: absent
   register: result
 
-- name: Setup - Ensure interfaces are switchport
+- name: Setup - ensure interfaces are switch port
   cisco.ios.ios_config:
     lines:
       - no shutdown
@@ -32,13 +32,13 @@
     state: present
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == true"
       - '"interface {{ test_interface }}" in result.commands'
       - '"ip address 192.168.20.1 255.255.255.0" in result.commands'
 
-- name: test invalid subnet
+- name: Test invalid subnet
   cisco.ios.ios_l3_interface:
     name: "{{ test_interface }}"
     ipv4: 192.168.20.1/45
@@ -46,9 +46,9 @@
   register: result
   ignore_errors: true
 
-- debug: var=result
+- ansible.builtin.debug: var=result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == true"
 
@@ -63,7 +63,7 @@
         ipv6: "fd5b:12c9:2201:5::5/90"
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == true"
       - '"interface {{ test_interface }}" in result.commands'
@@ -101,7 +101,7 @@
     state: up
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == false"
 
@@ -112,7 +112,7 @@
   ignore_errors: true
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == true"
       - "'state eq(down)' in result.failed_conditions"
@@ -124,7 +124,7 @@
     state: down
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == false"
 
@@ -136,9 +136,9 @@
   ignore_errors: true
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.failed == true"
       - "'state eq(up)' in result.failed_conditions"
 
-- debug: msg="END ios_smoke cli/common_utils.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios_smoke cli/common_utils.yaml on connection={{ ansible_connection }}"

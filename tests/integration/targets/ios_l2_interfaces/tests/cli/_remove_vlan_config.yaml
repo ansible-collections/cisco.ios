@@ -1,5 +1,5 @@
 ---
-- name: Remove ALL VLAN Config
+- name: Remove all VLAN configuration
   cisco.ios.ios_vlans:
     state: deleted
   when: ansible_net_version != "15.6(2)T"

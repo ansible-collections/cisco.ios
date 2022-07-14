@@ -1,5 +1,5 @@
 ---
-- name: Populate OSPFv3 Configuration
+- name: Populate ospfv3 configuration
   cisco.ios.ios_ospfv3:
     config:
       processes:

@@ -1,10 +1,8 @@
 ---
-- debug:
-    msg:
-      START Merged ios_l2_interfaces state for integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START Merged ios_l2_interfaces state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -26,29 +24,25 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_l2_interfaces: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
 
@@ -63,33 +57,29 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged_again['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged_again['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged_again['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ merged_again['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Merge new configuration with already merged configuration (IDEMPOTENT)
+    - name: Merge new configuration with already merged configuration (idempotent)
       register: result
       cisco.ios.ios_l2_interfaces: *id002
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
 
   when: ansible_net_version != "15.6(2)T"
   always:
-    - include_tasks: _remove_config.yaml
-    - include_tasks: _remove_vlan_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_vlan_config.yaml

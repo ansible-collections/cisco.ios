@@ -1,13 +1,11 @@
 ---
-- debug:
-    msg:
-      START Merged ios_acls state for integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START Merged ios_acls state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Merge initial config with device configuration
+    - name: Merge initial configuration with device configuration
       cisco.ios.ios_acls:
         config:
           - afi: ipv4
@@ -143,20 +141,19 @@
                     dscp: af11
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 9
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_acls: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.commands|length == 0
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

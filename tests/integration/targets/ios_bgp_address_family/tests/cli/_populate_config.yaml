@@ -1,6 +1,6 @@
 ---
-- include_tasks: _initial_vrf_setup.yaml
-- name: Populate BGP Address family Configuration
+- ansible.builtin.include_tasks: _initial_vrf_setup.yaml
+- name: Populate BGP address family configuration
   cisco.ios.ios_bgp_address_family:
     config:
       as_number: 65000

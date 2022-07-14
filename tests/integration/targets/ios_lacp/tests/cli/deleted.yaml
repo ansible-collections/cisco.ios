@@ -1,43 +1,39 @@
 ---
-- debug:
-    msg:
-      Start Deleted integration state for ios_lacp  ansible_connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_lacp  ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete configured System LACP
+    - name: Delete configured system lacp
       register: result
       cisco.ios.ios_lacp: &id001
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['before'] == result['before'] }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['before'] == result['before'] }}"
 
-    - name: Delete configured System LACP (IDEMPOTENT)
+    - name: Delete configured system lacp (idempotent)
       register: result
       cisco.ios.ios_lacp: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
   when: ansible_net_version != "15.6(2)T"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

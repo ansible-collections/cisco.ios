@@ -1,46 +1,40 @@
 ---
-- debug:
-    msg:
-      Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_lldp_interfaces  ansible_connection={{ ansible_connection }}
 
-- include_tasks: _enable_lldp.yaml
+- ansible.builtin.include_tasks: _enable_lldp.yaml
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete LLDP attributes for respective configured interfaces
+    - name: Delete lldp attributes for respective configured interfaces
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
         state: deleted
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Delete LLDP attributes for respective configured interfaces (IDEMPOTENT)
+    - name: Delete lldp attributes for respective configured interfaces (idempotent)
       register: result
       cisco.ios.ios_lldp_interfaces: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

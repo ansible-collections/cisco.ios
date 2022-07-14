@@ -1,15 +1,13 @@
 ---
-- debug:
-    msg:
-      START Replaced ios_vlans state for integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START Replaced ios_vlans state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replaces device configuration of listed VLANs with provided configuration
+    - name: Replaces device configuration of listed vlans with provided configuration
       register: result
       cisco.ios.ios_vlans: &id001
         config:
@@ -28,33 +26,27 @@
         state: replaced
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ | length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['before'] | symmetric_difference(result['before']) | length\
-            \ == 0 }}"
+          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['after'] | symmetric_difference(result['after']) | length\
-            \ == 0 }}"
+          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name:
-        Replaces device configuration of listed interfaces with provided configuration
-        (IDEMPOTENT)
+    - name: Replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_vlans: *id001
-
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

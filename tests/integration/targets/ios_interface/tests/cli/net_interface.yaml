@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START ios cli/net_interface.yaml on connection={{ ansible_connection }}"
 
 - name: Configure interface (setup)
   register: result
@@ -19,7 +17,7 @@
     description: test-interface-initial
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -33,13 +31,11 @@
     mtu: 2000
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
       - '"description test-interface" in result.commands'
       - '"mtu 2000" in result.commands'
 
-- debug:
-    msg="START ios cli/net_interface.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START ios cli/net_interface.yaml on connection={{ ansible_connection }}"

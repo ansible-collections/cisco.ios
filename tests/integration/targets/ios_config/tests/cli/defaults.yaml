@@ -1,7 +1,7 @@
 ---
-- debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     commands:
       - no description
@@ -10,27 +10,27 @@
       - interface Loopback999
     match: none
 
-- name: configure device with defaults included
+- name: Configure device with defaults included
   register: result
   cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug: var=result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: check device with defaults included
+- name: Check device with defaults included
   register: result
   cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug: var=result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.updates is not defined
@@ -41,18 +41,18 @@
     lines:
       - mac-address-table notification mac-move
 
-- name: show interfaces brief to ensure deivce goes to valid prompt
+- name: Show interfaces brief to ensure device goes to valid prompt
   register: result
   cisco.ios.ios_command:
     commands:
       - show interfaces
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
 
-- name: Validate Terminal Error Regex
+- name: Validate terminal error regex
   ios_config:
     lines:
       - switchport private-vlan mapping 10 6000
@@ -60,8 +60,8 @@
   register: result
   ignore_errors: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
 
-- debug: msg="END cli/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/defaults.yaml on connection={{ ansible_connection }}"

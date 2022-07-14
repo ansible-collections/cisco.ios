@@ -1,10 +1,8 @@
 ---
-- debug:
-    msg:
-      START Merged ios_bgp_global state for integration tests on connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: START Merged ios_bgp_global state for integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -54,28 +52,26 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |\
-            \ length == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - merged['before'] == {}
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
 
-    - name: Merge provided configuration with device configuration (IDEMPOTENT)
+    - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_global: *id001
-
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

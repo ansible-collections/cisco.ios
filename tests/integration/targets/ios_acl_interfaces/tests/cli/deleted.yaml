@@ -1,36 +1,34 @@
 ---
-- debug:
-    msg:
-      Start ios_acl_interfaces deleted integration tests ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start ios_acl_interfaces deleted integration tests ansible_connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete module attributes of given Interface.
+    - name: Delete module attributes of given interface.
       register: result
       cisco.ios.ios_acl_interfaces:
         config:
           - name: GigabitEthernet0/1
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands|length == 5
           - result.changed == true
           - result.commands|symmetric_difference(deleted.commands) == []
 
-    - name: Delete module attributes of given Interface (IDEMPOTENT)
+    - name: Delete module attributes of given interface (idempotent)
       register: result
       cisco.ios.ios_acl_interfaces:
         config:
           - name: GigabitEthernet0/1
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

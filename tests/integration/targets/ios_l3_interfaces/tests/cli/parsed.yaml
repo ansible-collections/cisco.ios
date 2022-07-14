@@ -1,17 +1,15 @@
 ---
-- debug:
-    msg:
-      START ios_l3_interfaces parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_l3_interfaces parsed integration tests on connection={{ ansible_connection }}
 
-- name: l3_interface parsed - Parse the commands for provided configuration
+- name: L3_interface parsed - parse the commands for provided configuration
   become: true
   register: result
   cisco.ios.ios_l3_interfaces:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - parsed['config']|symmetric_difference(result.parsed) == []

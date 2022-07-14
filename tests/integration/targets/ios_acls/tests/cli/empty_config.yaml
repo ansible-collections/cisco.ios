@@ -1,61 +1,58 @@
 ---
-- debug:
-    msg:
-      START ios_acls empty_config.yaml integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_acls empty_config.yaml integration tests on connection={{ ansible_connection }}
 
-- name: Merged with empty config should give appropriate error message
+- name: Merged with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
   cisco.ios.ios_acls:
     config:
     state: merged
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state merged'
 
-- name: Replaced with empty config should give appropriate error message
+- name: Replaced with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
   cisco.ios.ios_acls:
     config:
     state: replaced
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state replaced'
 
-- name: Overridden with empty config should give appropriate error message
+- name: Overridden with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
   cisco.ios.ios_acls:
     config:
     state: overridden
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state overridden'
 
-- name: Rendered with empty config should give appropriate error message
+- name: Rendered with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
   cisco.ios.ios_acls:
     config:
     state: rendered
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state rendered'
 
-- name: Parsed with empty config should give appropriate error message
+- name: Parsed with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
   cisco.ios.ios_acls:
     running_config:
     state: parsed
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result.msg == 'value of running_config parameter must not be empty for state
-        parsed'
+      - result.msg == 'value of running_config parameter must not be empty for state parsed'

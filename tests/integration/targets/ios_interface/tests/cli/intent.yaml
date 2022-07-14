@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios_interface cli/intent.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START ios_interface cli/intent.yaml on connection={{ ansible_connection }}"
 
 - name: Check intent arguments
   register: result
@@ -9,7 +7,7 @@
     name: "{{ test_interface }}"
     state: up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -20,7 +18,7 @@
     name: "{{ test_interface }}"
     state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - "'state eq(down)' in result.failed_conditions"
@@ -32,7 +30,7 @@
     enabled: false
     state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -44,7 +42,7 @@
     enabled: false
     state: up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - "'state eq(up)' in result.failed_conditions"
@@ -64,7 +62,7 @@
           - port: eth0
             host: netdev
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == false
 
@@ -77,14 +75,14 @@
           - port: dummy_port
             host: dummy_host
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == true
           - "'host dummy_host' in result.failed_conditions"
           - "'port dummy_port' in result.failed_conditions"
   when: '"netdev" in show_lldp_neighbors_result.stdout[0]'
 
-- name: Aggregate config + intent (pass)
+- name: Aggregate configuration + intent (pass)
   ignore_errors: true
   register: result
   cisco.ios.ios_interface:
@@ -93,7 +91,7 @@
         enabled: true
         state: up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -108,7 +106,7 @@
               - port: eth0
                 host: netdev
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == false
 
@@ -125,7 +123,7 @@
           - port: dummy_port
             host: dummy_host
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == true
           - "'host dummy_host' in result.failed_conditions"

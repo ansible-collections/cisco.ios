@@ -1,8 +1,7 @@
 ---
-- debug: msg="START ios cli/net_banner.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START ios cli/net_banner.yaml on connection={{ ansible_connection }}"
 
-- name: setup - remove login
+- name: Setup - remove login
   ansible.netcommon.net_banner:
     banner: login
     state: absent
@@ -16,16 +15,15 @@
     state: present
     authorize: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
-      - "'banner login @\nthis is my login banner confgiured by net_banner\n@' in\
-        \ result.commands"
+      - "'banner login @\nthis is my login banner confgiured by net_banner\n@' in result.commands"
 
-- name: teardown - remove login
+- name: Teardown - remove login
   ansible.netcommon.net_banner:
     banner: login
     state: absent
     authorize: true
 
-- debug: msg="END ios cli/net_banner.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios cli/net_banner.yaml on connection={{ ansible_connection }}"

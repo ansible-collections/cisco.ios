@@ -1,9 +1,7 @@
 ---
-- debug:
-    msg="START cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines:
       - class-map c1
@@ -15,7 +13,7 @@
       - no class-map c1
     match: none
 
-- name: configure sub level command using strict match
+- name: Configure sub level command using strict match
   register: result
   cisco.ios.ios_config:
     lines:
@@ -26,13 +24,13 @@
       - class c1
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'set ip precedence 5' in result.updates"
       - "'police cir percent 10' in result.updates"
 
-- name: change sub level command order and config with strict match
+- name: Change sub level command order and configuration with strict match
   register: result
   cisco.ios.ios_config:
     lines:
@@ -43,13 +41,13 @@
       - class c1
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'set ip precedence 5' in result.updates"
       - "'police cir percent 10' in result.updates"
 
-- name: Config sub level command with strict match (Idempotency)
+- name: Config sub level command with strict match (idempotent)
   register: result
   cisco.ios.ios_config:
     lines:
@@ -60,17 +58,15 @@
       - class c1
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - no policy-map p1
       - no class-map c1
     match: none
 
-- debug:
-    msg="END cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END cli/sublevel_strict_mul_parents.yaml on connection={{ ansible_connection }}"

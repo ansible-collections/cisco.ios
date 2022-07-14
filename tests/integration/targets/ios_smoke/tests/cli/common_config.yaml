@@ -2,63 +2,73 @@
 # ios_linkagg -> CustomNetworkConfig
 # cisco.ios.ios_config -> dumps, NetworkConfig
 
-- debug: msg="START cli/common_config.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START cli/common_config.yaml on connection={{ ansible_connection }}"
 
 # Hit NetworkConfig
-- name: set hostname
+- name: Set hostname
   cisco.ios.ios_config:
-    lines: ["hostname ios-smoke"]
+    lines:
+      - "hostname ios-smoke"
     match: none
 
-- name: hit diff_ignore_lines
+- name: Hit diff_ignore_lines
   cisco.ios.ios_config:
-    lines: ["hostname ios-smoke-diff"]
+    lines:
+      - "hostname ios-smoke-diff"
     diff_ignore_lines:
       - hostname ios-smoke
     save_when: modified
 
-- name: return hostname
+- name: Return hostname
   cisco.ios.ios_config:
-    lines: ["hostname {{ shorter_hostname }}"]
+    lines:
+      - "hostname {{ shorter_hostname }}"
     match: none
 
-- name: hit items with parents
+- name: Hit items with parents
   cisco.ios.ios_config:
-    lines: ["permit ip any any log"]
-    parents: ["ip access-list extended test"]
+    lines:
+      - "permit ip any any log"
+    parents:
+      - "ip access-list extended test"
     match: exact
   register: result
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines:
       - "no ip access-list extended test"
     match: none
 
-- name: setup test NetworkConfig.difference, replace=block
+- name: Setup test networkconfig.difference, replace=block
   cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
       - permit ip host 192.0.2.3 any log
-    parents: ["ip access-list extended test"]
-    before: ["no ip access-list extended test"]
-    after: ["exit"]
+    parents:
+      - "ip access-list extended test"
+    before:
+      - "no ip access-list extended test"
+    after:
+      - "exit"
     match: none
 
-- name: test NetworkConfig.difference, replace=block
+- name: Test networkconfig.difference, replace=block
   cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
       - permit ip host 192.0.2.3 any log
       - permit ip host 192.0.2.4 any log
-    parents: ["ip access-list extended test"]
+    parents:
+      - "ip access-list extended test"
     replace: block
-    after: ["exit"]
+    after:
+      - "exit"
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == true"
       - "'ip access-list extended test' in result.updates"
@@ -67,7 +77,7 @@
       - "'permit ip host 192.0.2.3 any log' in result.updates"
       - "'permit ip host 192.0.2.4 any log' in result.updates"
 
-- name: teardown- NetworkConfig.difference, replace=block
+- name: Teardown- networkconfig.difference, replace=block
   cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
@@ -78,19 +88,19 @@
 - ansible.builtin.set_fact: switch_type="{{ switch_type }}"
 
 - block:
-    - name: setup - remove config used in test(part1)
+    - name: Setup - remove configuration used in test(part1)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
       ignore_errors: true
 
-    - name: setup - remove config used in test(part2)
+    - name: Setup - remove configuration used in test(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
       ignore_errors: true
 
-    - name: setup - remove config used in test(part3)
+    - name: Setup - remove configuration used in test(part3)
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
@@ -99,19 +109,19 @@
         - interface GigabitEthernet0/1
         - interface GigabitEthernet0/2
 
-    - name: create linkagg
-      ios_linkagg: &create
+    - name: Create linkagg
+      ios_linkagg:
         group: 20
         state: present
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'interface port-channel 20' in result.commands"
 
-    - name: set link aggregation group to members
-      ios_linkagg: &configure_member
+    - name: Set link aggregation group to members
+      ios_linkagg:
         group: 20
         mode: active
         members:
@@ -119,7 +129,7 @@
           - GigabitEthernet0/2
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'interface GigabitEthernet0/1' in result.commands"
@@ -127,39 +137,42 @@
           - "'interface GigabitEthernet0/2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
-    - name: remove link aggregation group from member
-      ios_linkagg: &remove_member
+    - name: Remove link aggregation group from member
+      ios_linkagg:
         group: 20
         mode: active
         members:
           - GigabitEthernet0/2
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'interface GigabitEthernet0/1' in result.commands"
           - "'no channel-group 20 mode active' in result.commands"
 
-    - name: remove linkagg
-      ios_linkagg: &remove
+    - name: Remove linkagg
+      ios_linkagg:
         group: 20
         state: absent
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'no interface port-channel 20' in result.commands"
 
-    - name: create aggregate of linkagg definitions
-      ios_linkagg: &create_agg
+    - name: Create aggregate of linkagg definitions
+      ios_linkagg:
         aggregate:
-          - { group: 5 }
-          - { group: 20, mode: active, members: ["GigabitEthernet0/1"] }
+          - group: 5
+          - group: 20
+            mode: active
+            members:
+              - "GigabitEthernet0/1"
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'interface port-channel 5' in result.commands"
@@ -167,19 +180,19 @@
           - "'interface GigabitEthernet0/1' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
-    - name: teardown(part1)
+    - name: Teardown(part1)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
       ignore_errors: true
 
-    - name: teardown(part2)
+    - name: Teardown(part2)
       cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
       ignore_errors: true
 
-    - name: teardown(part3)
+    - name: Teardown(part3)
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
@@ -190,4 +203,4 @@
 
   when: switch_type == 'L2'
 
-- debug: msg="END cli/common_config.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/common_config.yaml on connection={{ ansible_connection }}"

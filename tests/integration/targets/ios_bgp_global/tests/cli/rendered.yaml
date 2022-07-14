@@ -1,12 +1,11 @@
 ---
-- debug:
-    msg: Start ios_bgp_global rendered integration tests ansible_connection={{
-      ansible_connection }}
+- ansible.builtin.debug:
+    msg: Start ios_bgp_global rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
     - name: Render the commands for provided  configuration
       register: result
-      cisco.ios.ios_bgp_global: &id001
+      cisco.ios.ios_bgp_global:
         config:
           as_number: 65000
           bgp:
@@ -49,7 +48,7 @@
             min_holdtime: 150
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []

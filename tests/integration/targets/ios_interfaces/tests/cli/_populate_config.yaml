@@ -1,9 +1,8 @@
 ---
-- name: Populate Config
+- name: Populate configuration
   vars:
     lines:
-      "interface GigabitEthernet 0/1\ndescription this is interface1\nmtu 65\n\
-      speed 10\nno shutdown\ninterface GigabitEthernet 0/2\ndescription this is interface\
+      "interface GigabitEthernet 0/1\ndescription this is interface1\nmtu 65\nspeed 10\nno shutdown\ninterface GigabitEthernet 0/2\ndescription this is interface\
       \ for testing\nmtu 110\nduplex auto\nspeed 100\nshutdown\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

@@ -1,7 +1,5 @@
 ---
-- debug:
-    msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START ios_interface cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Configure interface (setup)
   register: result
@@ -19,24 +17,24 @@
     description: test-interface-initial
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
       - '"description test-interface-initial" in result.commands'
 
-- name: Confgure interface (idempotent)
+- name: Configure interface (idempotent)
   register: result
   cisco.ios.ios_interface:
     name: "{{ test_interface }}"
     description: test-interface-initial
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: Confgure interface parameters
+- name: Configure interface parameters
   register: result
   cisco.ios.ios_interface:
     name: "{{ test_interface }}"
@@ -44,7 +42,7 @@
     mtu: 2000
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -59,7 +57,7 @@
     mtu: 1800
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -72,7 +70,7 @@
     name: "{{ test_interface }}"
     enabled: false
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -84,13 +82,13 @@
     name: "{{ test_interface }}"
     enabled: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
       - '"no shutdown" in result.commands'
 
-- name: Confgure second interface (setup)
+- name: Configure second interface (setup)
   register: result
   cisco.ios.ios_interface:
     name: "{{ test_interface2 }}"
@@ -113,7 +111,7 @@
     speed: 1000
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -136,7 +134,7 @@
     speed: 1000
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -150,7 +148,7 @@
     enabled: false
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -168,7 +166,7 @@
     enabled: true
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ test_interface }}" in result.commands'
@@ -176,7 +174,7 @@
       - '"interface {{ test_interface2 }}" in result.commands'
       - '"no shutdown" in result.commands'
 
-- name: loopback interface setup
+- name: Loopback interface setup
   cisco.ios.ios_interface:
     aggregate:
       - name: Loopback9
@@ -193,7 +191,7 @@
       - name: Loopback10
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface Loopback9" in result.commands'
@@ -208,7 +206,7 @@
       - name: Loopback10
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no interface Loopback9" in result.commands'
@@ -223,10 +221,8 @@
       - name: Loopback10
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug:
-    msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END ios_interface cli/basic.yaml on connection={{ ansible_connection }}"

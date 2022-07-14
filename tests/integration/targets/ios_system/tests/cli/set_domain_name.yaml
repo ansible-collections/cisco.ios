@@ -1,33 +1,32 @@
 ---
-- debug: msg="START cli/set_domain_name.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START cli/set_domain_name.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.ios.ios_config:
     lines: no ip domain-name
     match: none
 
-- name: configure domain_name
+- name: Configure domain_name
   register: result
   cisco.ios.ios_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify domain_name
+- name: Verify domain_name
   register: result
   cisco.ios.ios_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.ios.ios_config:
     lines: no ip domain-name
     match: none
 
-- debug: msg="END cli/set_domain_name.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END cli/set_domain_name.yaml on connection={{ ansible_connection }}"

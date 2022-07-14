@@ -1,13 +1,13 @@
 ---
-- debug: msg="START ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"
 
-- name: Clear existing BGP config
+- name: Clear existing BGP configuration
   ignore_errors: true
   cisco.ios.ios_bgp:
     operation: delete
 
 - block:
-    - name: Add fake config with 'bgp' string
+    - name: Add fake configuration with 'bgp' string
       cisco.ios.ios_config:
         match: none
         replace: block
@@ -16,23 +16,23 @@
           - ip access-list extended BGP_ACL
           - permit tcp any any eq bgp
 
-    - name: Try delete fake bgp config
+    - name: Try delete fake BGP configuration
       register: result
       cisco.ios.ios_bgp:
         operation: delete
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Clean fake config with 'bgp' string
+    - name: Clean fake configuration with 'bgp' string
       cisco.ios.ios_config:
         match: none
         replace: block
         lines:
           - no ip access-list extended BGP_ACL
 
-    - name: Add fake bgp-like config
+    - name: Add fake bgp-like configuration
       cisco.ios.ios_config:
         match: none
         replace: block
@@ -47,23 +47,23 @@
           - remark exit-address-family
           - permit tcp any any eq bgp
 
-    - name: Try delete fake bgp-like config
+    - name: Try delete fake bgp-like configuration
       register: result
       cisco.ios.ios_bgp:
         operation: delete
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: Clean fake bgp-like config
+    - name: Clean fake bgp-like configuration
       cisco.ios.ios_config:
         match: none
         replace: block
         lines:
           - no ip access-list extended BGP_ACL_2
 
-    - name: Configure BGP with AS 64496 and a router-id
+    - name: Configure BGP with as 64496 and a router-id
       register: result
       cisco.ios.ios_bgp: &id001
         operation: merge
@@ -71,17 +71,16 @@
           bgp_as: 64496
           router_id: 192.0.2.2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
           - "'bgp router-id 192.0.2.2' in result.commands"
 
-    - name: Configure BGP with AS 64496 and a router-id (idempotent)
+    - name: Configure BGP with as 64496 and a router-id (idempotent)
       register: result
       cisco.ios.ios_bgp: *id001
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -107,7 +106,7 @@
               description: IBGP_NBR_2
               ebgp_multihop: 150
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
@@ -122,8 +121,7 @@
     - name: Configure BGP neighbors (idempotent)
       register: result
       cisco.ios.ios_bgp: *id002
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -149,7 +147,7 @@
               description: BGP_NBR_2
               ebgp_multihop: 100
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'neighbor 203.0.113.10 remote-as 64511' in result.commands"
@@ -162,8 +160,7 @@
     - name: Configure BGP neighbors with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id003
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -182,7 +179,7 @@
               masklen: 27
               route_map: RMAP_2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'router bgp 64496' in result.commands"
@@ -192,8 +189,7 @@
     - name: Configure root-level networks for BGP (idempotent)
       register: result
       cisco.ios.ios_bgp: *id004
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -211,19 +207,17 @@
             - prefix: 198.51.100.16
               masklen: 28
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'router bgp 64496' in result.commands"
           - "'network 198.51.100.16 mask 255.255.255.240' in result.commands"
-          - "'no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2' in\
-            \ result.commands"
+          - "'no network 203.0.113.32 mask 255.255.255.224 route-map RMAP_2' in result.commands"
 
     - name: Configure root-level networks for BGP with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id005
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -251,7 +245,7 @@
                   prefix_list_in: incoming-prefixes
                   prefix_list_out: outgoing-prefixes
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
@@ -268,8 +262,7 @@
     - name: Configure BGP neighbors under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id006
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -300,7 +293,7 @@
                 - prefix: 198.51.100.64
                   masklen: 28
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
@@ -316,8 +309,7 @@
     - name: Configure networks under address family (idempotent)
       register: result
       cisco.ios.ios_bgp: *id007
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -346,24 +338,21 @@
                 - prefix: 198.51.100.64
                   masklen: 28
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"router bgp 64496" in result.commands'
           - '"address-family ipv4 multicast" in result.commands'
           - '"network 198.51.100.80 mask 255.255.255.240" in result.commands'
           - '"network 203.0.113.192 mask 255.255.255.224" in result.commands'
-          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in
-            result.commands'
-          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in
-            result.commands'
+          - '"no network 198.51.100.48 mask 255.255.255.240 route-map RMAP_1" in result.commands'
+          - '"no network 203.0.113.160 mask 255.255.255.224 route-map RMAP_2" in result.commands'
           - '"exit-address-family" in result.commands'
 
     - name: Configure networks under address family with operation replace (idempotent)
       register: result
       cisco.ios.ios_bgp: *id008
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -385,7 +374,7 @@
                   id: 233
                   metric: 256
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
@@ -397,8 +386,7 @@
     - name: Configure redistribute information under address family mode (idempotent)
       register: result
       cisco.ios.ios_bgp: *id009
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -406,9 +394,7 @@
       cisco.ios.ios_facts:
         gather_subset: all
 
-    - name:
-        Configure redistribute information under address family mode with operation
-        replace
+    - name: Configure redistribute information under address family mode with operation replace
       register: result
       cisco.ios.ios_bgp: &id010
         operation: replace
@@ -422,7 +408,7 @@
                   id: 112
                   metric: 64
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64496' in result.commands"
@@ -430,19 +416,16 @@
           - "'no redistribute eigrp 233' in result.commands"
           - "'exit-address-family' in result.commands"
 
-    - name:
-        Configure redistribute information under address family mode with operation
-        replace (idempotent)
+    - name: Configure redistribute information under address family mode with operation replace (idempotent)
       register: result
       when: ansible_net_version != "15.6(2)T"
       cisco.ios.ios_bgp: *id010
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
       when: ansible_net_version != "15.6(2)T"
 
-    - name: Override all the existing BGP config
+    - name: Override all the existing BGP configuration
       register: result
       cisco.ios.ios_bgp:
         operation: override
@@ -451,7 +434,7 @@
           router_id: 192.0.2.10
           log_neighbor_changes: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no router bgp 64496' in result.commands"
@@ -473,7 +456,7 @@
               masklen: 24
         operation: merge
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'router bgp 64497' in result.commands"
@@ -483,8 +466,7 @@
     - name: Configure BGP neighbors with classful boundary (idempotent)
       register: result
       cisco.ios.ios_bgp: *id011
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
@@ -493,7 +475,7 @@
       cisco.ios.ios_bgp: &id012
         operation: delete
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no router bgp 64497' in result.commands"
@@ -501,9 +483,8 @@
     - name: Teardown again (idempotent)
       register: result
       cisco.ios.ios_bgp: *id012
-
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-- debug: msg="END ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END ios cli/ios_bgp.yaml on connection={{ ansible_connection }}"

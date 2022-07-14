@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      START ios_prefix_lists parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_prefix_lists parsed integration tests on connection={{ ansible_connection }}
 
 - name: Parse the commands for provided configuration
   register: result
@@ -10,8 +8,7 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
-      - "{{ merged['after'] | symmetric_difference(result['parsed']) |length\
-        \ == 0 }}"
+      - "{{ merged['after'] | symmetric_difference(result['parsed']) |length == 0 }}"

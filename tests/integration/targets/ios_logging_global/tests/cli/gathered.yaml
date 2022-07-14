@@ -1,22 +1,20 @@
 ---
-- debug:
-    msg:
-      START ios_logging_global gathered integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START ios_logging_global gathered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: TEST - [gathered] Gather the provided configuration with the existing running configuration
+    - name: Test - [gathered] gather the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_logging_global:
         config:
         state: gathered
 
-    - name: TEST - [gathered] Assert
-      assert:
+    - name: Test - [gathered] assert
+      ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
