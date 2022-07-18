@@ -3,6 +3,7 @@
 
 # A collection directory, resulting from the use of the pytest-ansible-units plugin
 collections/
+files_all/
 
 
 # Byte-compiled / optimized / DLL files
