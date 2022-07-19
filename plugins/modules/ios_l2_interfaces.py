@@ -541,6 +541,7 @@ commands:
   type: list
   sample: ['interface GigabitEthernet0/1', 'switchport access vlan 20']
 """
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
@@ -549,10 +550,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
     L2_Interfaces,
 )
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():
