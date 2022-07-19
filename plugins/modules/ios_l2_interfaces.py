@@ -55,6 +55,10 @@ options:
             description:
             - Configure given VLAN in access port. It's used as the access VLAN ID.
             type: int
+          vlan_name:
+            description:
+            - Set VLAN when interface is in access mode.
+            type: str
       voice:
         description:
         - Switchport mode voice command to configure the interface with a voice vlan.
@@ -65,6 +69,18 @@ options:
             - Configure given voice VLAN on access port. It's used as the voice VLAN
               ID.
             type: int
+          vlan_option:
+            description:
+            - Set VLAN options.
+            choices:
+            - dot1q
+            - none
+            - untagged
+            type: str
+          vlan_name:
+            description:
+            - Set VLAN when interface is in access mode.
+            type: str
       trunk:
         description:
         - Switchport mode trunk command to configure the interface as a Layer 2 trunk.
@@ -533,6 +549,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
     L2_Interfaces,
 )
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():

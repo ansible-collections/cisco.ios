@@ -116,11 +116,19 @@ class L2_InterfacesFacts(object):
                 config["mode"] = has_mode
             has_access = utils.parse_conf_arg(conf, "switchport access vlan")
             if has_access:
-                config["access"] = {"vlan": int(has_access)}
+                if len(list(has_access.split(" "))) == 2 and has_access.split(" ")[0] == "name":
+                    config["access"] = {"vlan_name": has_access.split(" ")[1]}
+                else:
+                    config["access"] = {"vlan": int(has_access)}
 
             has_voice = utils.parse_conf_arg(conf, "switchport voice vlan")
             if has_voice:
-                config["voice"] = {"vlan": int(has_voice)}
+                if len(list(has_voice.split(" "))) == 2 and has_voice.split(" ")[0] == "name":
+                    config["voice"] = {"vlan_name": has_voice.split(" ")[1]}
+                elif type(has_voice) != int:
+                    config["voice"] = {"vlan_option": has_voice}
+                else:
+                    config["voice"] = {"vlan": int(has_voice)}
 
             trunk = dict()
             trunk["encapsulation"] = utils.parse_conf_arg(

@@ -32,8 +32,6 @@ __metaclass__ = type
 
 
 class L2_InterfacesArgs(object):
-    def __init__(self, **kwargs):
-        pass
 
     argument_spec = {
         "config": {
@@ -43,11 +41,25 @@ class L2_InterfacesArgs(object):
                 "mode": {"type": "str", "choices": ["access", "trunk"]},
                 "access": {
                     "type": "dict",
-                    "options": {"vlan": {"type": "int"}},
+                    "options": {
+                        "vlan": {"type": "int"},
+                        "vlan_name": {
+                            "type": "str",
+                        },
+                    },
                 },
                 "voice": {
                     "type": "dict",
-                    "options": {"vlan": {"type": "int"}},
+                    "options": {
+                        "vlan": {"type": "int"},
+                        "vlan_option": {
+                            "type": "str",
+                            "choices": ["dot1q", "none", "untagged"],
+                        },
+                        "vlan_name": {
+                            "type": "str",
+                        },
+                    },
                 },
                 "trunk": {
                     "type": "dict",
