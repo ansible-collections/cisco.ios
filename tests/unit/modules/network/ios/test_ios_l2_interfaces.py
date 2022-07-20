@@ -492,6 +492,16 @@ class TestIosL2InterfacesModule(TestIosModule):
                         mode="trunk",
                         name="FiveGigabitEthernet1/0/1",
                     ),
+                    dict(
+                        access=dict(vlan_name="vlan12"),
+                        mode="trunk",
+                        name="FiveGigabitEthernet1/0/2",
+                    ),
+                    dict(
+                        voice=dict(vlan_option="dot1q"),
+                        mode="trunk",
+                        name="FiveGigabitEthernet1/0/3",
+                    ),
                 ],
                 state="merged",
             ),
@@ -500,6 +510,12 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface FiveGigabitEthernet1/0/1",
             "switchport access vlan 20",
             "switchport mode trunk",
+            "interface FiveGigabitEthernet1/0/2",
+            "switchport access vlan name vlan12",
+            "switchport mode trunk",
+            "interface FiveGigabitEthernet1/0/3",
+            "switchport voice vlan dot1q",
+            "switchport mode trunk",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

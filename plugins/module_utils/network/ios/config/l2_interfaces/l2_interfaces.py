@@ -19,8 +19,10 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+    remove_empties,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     add_command_to_config_list,
@@ -153,7 +155,15 @@ class L2_Interfaces(ConfigBase):
                     self.state,
                 ),
             )
-
+        if want:
+            # _want = []
+            for each in want:
+                if each.get("access"):
+                    each["access"] = remove_empties(each.get("access"))
+                if each.get("voice"):
+                    each["voice"] = remove_empties(each.get("voice"))
+            #     _want.append(remove_empties(each))
+            # want = _want
         if self.state == "overridden":
             commands = self._state_overridden(want, have, self._module)
         elif self.state == "deleted":
@@ -345,13 +355,21 @@ class L2_Interfaces(ConfigBase):
             trunk = diff.get("trunk")
 
             if access:
-                cmd = "switchport access vlan {0}".format(access[0][1])
+                if access[0][0] == "vlan":
+                    cmd = "switchport access vlan {0}".format(access[0][1])
+                if access[0][0] == "vlan_name":
+                    cmd = "switchport access vlan name {0}".format(access[0][1])
                 add_command_to_config_list(interface, cmd, commands)
 
             if diff.get("voice"):
-                cmd = "switchport voice vlan {0}".format(
-                    diff.get("voice")[0][1],
-                )
+                if diff.get("voice")[0][0] == "vlan" or diff.get("voice")[0][0] == "vlan_option":
+                    cmd = "switchport voice vlan {0}".format(
+                        diff.get("voice")[0][1],
+                    )
+                if diff.get("voice")[0][0] == "vlan_name":
+                    cmd = "switchport voice vlan name {0}".format(
+                        diff.get("voice")[0][1],
+                    )
                 add_command_to_config_list(interface, cmd, commands)
 
             if want_trunk:
