@@ -157,14 +157,11 @@ class L2_Interfaces(ConfigBase):
                 ),
             )
         if want:
-            # _want = []
             for each in want:
                 if each.get("access"):
                     each["access"] = remove_empties(each.get("access"))
                 if each.get("voice"):
                     each["voice"] = remove_empties(each.get("voice"))
-            #     _want.append(remove_empties(each))
-            # want = _want
         if self.state == "overridden":
             commands = self._state_overridden(want, have, self._module)
         elif self.state == "deleted":
