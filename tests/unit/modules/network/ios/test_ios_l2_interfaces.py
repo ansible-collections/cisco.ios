@@ -518,4 +518,4 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport mode trunk",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
