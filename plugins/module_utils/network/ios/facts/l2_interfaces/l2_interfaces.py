@@ -115,7 +115,12 @@ class L2_InterfacesFacts(object):
             if has_mode:
                 config["mode"] = has_mode
             has_access = utils.parse_conf_arg(conf, "switchport access vlan")
-            if has_access:
+            if has_access and has_access != "dynamic":
+                # switchport access vlan dynamic
+                # the above being a valid config is not configurable from CLI
+                # being enabled via a VLAN Membership Policy Server it is used
+                # to assign switch ports to VLANs dynamically, based on the
+                # source MAC address of the device connected to the port
                 if len(list(has_access.split(" "))) == 2 and has_access.split(" ")[0] == "name":
                     config["access"] = {"vlan_name": has_access.split(" ")[1]}
                 else:
