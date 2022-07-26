@@ -781,9 +781,9 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {"icmp": {"echo_reply": True}},
                             },
                         ],
-                    }
+                    },
                 ],
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
