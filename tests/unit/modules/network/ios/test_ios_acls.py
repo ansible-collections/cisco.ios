@@ -740,7 +740,8 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10\n20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply",
+                running_config="""IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10\n
+                20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
                 state="parsed",
             ),
         )
