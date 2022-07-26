@@ -740,39 +740,50 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10",
+                running_config="IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10\n20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply",
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
             {
+                "afi": "ipv6",
                 "acls": [
                     {
+                        "name": "R1_TRAFFIC",
                         "aces": [
                             {
-                                "destination": {
-                                    "any": True,
-                                    "port_protocol": {
-                                        "range": {"start": 10, "end": 20},
-                                    },
-                                },
-                                "dscp": "af11",
+                                "sequence": 10,
                                 "grant": "deny",
                                 "protocol": "tcp",
-                                "protocol_options": {"tcp": {"ack": True}},
-                                "sequence": 10,
-                                "source": {
+                                "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                "destination": {
                                     "any": True,
-                                    "port_protocol": {"eq": "www"},
+                                    "port_protocol": {"range": {"start": 10, "end": 20}},
                                 },
+                                "dscp": "af11",
+                                "protocol_options": {"tcp": {"ack": True}},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "source": {"host": "192.0.2.1"},
+                                "destination": {"host": "192.0.2.2"},
+                                "protocol_options": {"icmp": {"echo": True}},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "source": {"host": "192.0.2.3"},
+                                "destination": {"host": "192.0.2.4"},
+                                "protocol_options": {"icmp": {"echo_reply": True}},
                             },
                         ],
-                        "name": "R1_TRAFFIC",
-                    },
+                    }
                 ],
-                "afi": "ipv6",
-            },
+            }
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
