@@ -676,7 +676,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<route_map>\S+)*
                 \s*(?P<action>deny|permit)*
                 \s*(?P<sequence>\d+)*
-                $""",
+                (\s|$)""",
                 re.VERBOSE,
             ),
             "setval": "",
