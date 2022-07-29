@@ -1,5 +1,6 @@
 # Stuff we don't want priettier to ever to look into
 .*/
+tests/output
 
 # Environments
 .env
