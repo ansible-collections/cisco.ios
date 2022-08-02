@@ -603,3 +603,25 @@ releases:
       - interface_testfix.yml
       - ios_ping_update.yml
     release_date: "2022-07-01"
+  3.3.0:
+    changes:
+      bugfixes:
+        - "`ios_acls` - Fix regex to parse echo-reply command."
+        - "`ios_route_maps` - Fix route maps failing on config parsed with tailing space."
+        - "`ios_snmp_server` - Fix parsers for views and host + acl doc"
+      minor_changes:
+        - "`ios_l2_interfaces` - Add vlan_name attribute to access."
+        - "`ios_l2_interfaces` - Add vlan_name, vlan_tag attribute to voice."
+    fragments:
+      - add_ansible_lint_gha.yml
+      - add_prettier.yml
+      - add_redirects_action.yml
+      - enable_commas.yml
+      - fix_route_maps_618.yml
+      - format_task_names_fqnc.yml
+      - include_task_update.yml
+      - isort_add.yml
+      - l2_interfaes_add_op.yml
+      - re_order_regex_acl.yml
+      - snmp-server_special_names.yml
+    release_date: "2022-08-02"

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_snmp_server` - Fix parsers for views and host + acl doc"

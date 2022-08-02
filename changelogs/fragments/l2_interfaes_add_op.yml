@@ -1,4 +1,0 @@
----
-minor_changes:
-  - "`ios_l2_interfaces` - Add vlan_name attribute to access."
-  - "`ios_l2_interfaces` - Add vlan_name, vlan_tag attribute to voice."

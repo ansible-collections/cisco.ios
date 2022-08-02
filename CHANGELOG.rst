@@ -5,6 +5,22 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.3.0
+======
+
+Minor Changes
+-------------
+
+- `ios_l2_interfaces` - Add vlan_name attribute to access.
+- `ios_l2_interfaces` - Add vlan_name, vlan_tag attribute to voice.
+
+Bugfixes
+--------
+
+- `ios_acls` - Fix regex to parse echo-reply command.
+- `ios_route_maps` - Fix route maps failing on config parsed with tailing space.
+- `ios_snmp_server` - Fix parsers for views and host + acl doc
+
 v3.2.0
 ======
 
