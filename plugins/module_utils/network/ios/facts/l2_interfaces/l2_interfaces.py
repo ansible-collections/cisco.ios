@@ -115,12 +115,25 @@ class L2_InterfacesFacts(object):
             if has_mode:
                 config["mode"] = has_mode
             has_access = utils.parse_conf_arg(conf, "switchport access vlan")
-            if has_access:
-                config["access"] = {"vlan": int(has_access)}
+            if has_access and has_access != "dynamic":
+                # switchport access vlan dynamic
+                # the above being a valid config is not configurable from CLI
+                # being enabled via a VLAN Membership Policy Server it is used
+                # to assign switch ports to VLANs dynamically, based on the
+                # source MAC address of the device connected to the port
+                if len(list(has_access.split(" "))) == 2 and has_access.split(" ")[0] == "name":
+                    config["access"] = {"vlan_name": has_access.split(" ")[1]}
+                else:
+                    config["access"] = {"vlan": int(has_access)}
 
             has_voice = utils.parse_conf_arg(conf, "switchport voice vlan")
             if has_voice:
-                config["voice"] = {"vlan": int(has_voice)}
+                if len(list(has_voice.split(" "))) == 2 and has_voice.split(" ")[0] == "name":
+                    config["voice"] = {"vlan_name": has_voice.split(" ")[1]}
+                elif type(has_voice) != int:
+                    config["voice"] = {"vlan_tag": has_voice}
+                else:
+                    config["voice"] = {"vlan": int(has_voice)}
 
             trunk = dict()
             trunk["encapsulation"] = utils.parse_conf_arg(
