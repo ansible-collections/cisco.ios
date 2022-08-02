@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`ios_route_maps` - Fix route maps failing on config parsed with tailing space."
