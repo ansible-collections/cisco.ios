@@ -293,13 +293,13 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>dot1q</li>
+                                    <li>dot1p</li>
                                     <li>none</li>
                                     <li>untagged</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Set VLAN options.</div>
+                        <div>Set VLAN Tag. dot1p (Priority tagged on PVID) none (Don&#x27;t tell telephone about voice vlan) untagged (Untagged on PVID)</div>
                 </td>
             </tr>
 

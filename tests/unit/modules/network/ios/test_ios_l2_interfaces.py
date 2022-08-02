@@ -498,7 +498,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                         name="FiveGigabitEthernet1/0/2",
                     ),
                     dict(
-                        voice=dict(vlan_option="dot1q"),
+                        voice=dict(vlan_tag="dot1p"),
                         mode="trunk",
                         name="FiveGigabitEthernet1/0/3",
                     ),
@@ -514,7 +514,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport access vlan name vlan12",
             "switchport mode trunk",
             "interface FiveGigabitEthernet1/0/3",
-            "switchport voice vlan dot1q",
+            "switchport voice vlan dot1p",
             "switchport mode trunk",
         ]
         result = self.execute_module(changed=True)

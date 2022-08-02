@@ -52,9 +52,9 @@ class L2_InterfacesArgs(object):
                     "type": "dict",
                     "options": {
                         "vlan": {"type": "int"},
-                        "vlan_option": {
+                        "vlan_tag": {
                             "type": "str",
-                            "choices": ["dot1q", "none", "untagged"],
+                            "choices": ["dot1p", "none", "untagged"],
                         },
                         "vlan_name": {
                             "type": "str",

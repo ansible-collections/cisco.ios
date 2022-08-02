@@ -360,7 +360,7 @@ class L2_Interfaces(ConfigBase):
                 add_command_to_config_list(interface, cmd, commands)
 
             if diff.get("voice"):
-                if diff.get("voice")[0][0] == "vlan" or diff.get("voice")[0][0] == "vlan_option":
+                if diff.get("voice")[0][0] == "vlan" or diff.get("voice")[0][0] == "vlan_tag":
                     cmd = "switchport voice vlan {0}".format(
                         diff.get("voice")[0][1],
                     )

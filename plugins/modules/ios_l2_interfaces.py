@@ -71,9 +71,12 @@ options:
             type: int
           vlan_tag:
             description:
-            - Set VLAN options.
+            - Set VLAN Tag.
+              dot1p (Priority tagged on PVID)
+              none (Don't tell telephone about voice vlan)
+              untagged (Untagged on PVID)
             choices:
-            - dot1q
+            - dot1p
             - none
             - untagged
             type: str
