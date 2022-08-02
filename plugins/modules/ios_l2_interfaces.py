@@ -69,7 +69,7 @@ options:
             - Configure given voice VLAN on access port. It's used as the voice VLAN
               ID.
             type: int
-          vlan_option:
+          vlan_tag:
             description:
             - Set VLAN options.
             choices:
