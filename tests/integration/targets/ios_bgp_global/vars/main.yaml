@@ -217,4 +217,4 @@ deleted:
 rtt:
   commands:
     - router bgp 65000
-    - no network 192.0.2.4
+    - no network 192.0.4.2
