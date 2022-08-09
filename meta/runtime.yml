@@ -19,8 +19,6 @@ plugin_routing:
       redirect: cisco.ios.ios
     hostname:
       redirect: cisco.ios.ios
-    interface:
-      redirect: cisco.ios.ios
     interfaces:
       redirect: cisco.ios.ios
     ios_acl_interfaces:
@@ -40,8 +38,6 @@ plugin_routing:
     ios_facts:
       redirect: cisco.ios.ios
     ios_hostname:
-      redirect: cisco.ios.ios
-    ios_interface:
       redirect: cisco.ios.ios
     ios_l2_interface:
       redirect: cisco.ios.ios
@@ -77,11 +73,7 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_vlan:
       redirect: cisco.ios.ios
-    l2_interface:
-      redirect: cisco.ios.ios
     l2_interfaces:
-      redirect: cisco.ios.ios
-    l3_interface:
       redirect: cisco.ios.ios
     l3_interfaces:
       redirect: cisco.ios.ios
@@ -117,15 +109,11 @@ plugin_routing:
       redirect: cisco.ios.ios
     snmp_server:
       redirect: cisco.ios.ios
-    static_route:
-      redirect: cisco.ios.ios
     static_routes:
       redirect: cisco.ios.ios
     system:
       redirect: cisco.ios.ios
     user:
-      redirect: cisco.ios.ios
-    vlan:
       redirect: cisco.ios.ios
     vlans:
       redirect: cisco.ios.ios
@@ -153,28 +141,11 @@ plugin_routing:
       redirect: cisco.ios.ios_facts
     hostname:
       redirect: cisco.ios.ios_hostname
-    interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_interface
     interfaces:
       redirect: cisco.ios.ios_interfaces
     ios_bgp:
       deprecation:
         removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
-    ios_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_l2_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_l3_interface:
-      deprecation:
-        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     ios_linkagg:
       deprecation:
@@ -200,18 +171,8 @@ plugin_routing:
       deprecation:
         removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
-    l2_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_l2_interface
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
-    l3_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_l3_interface
     l3_interfaces:
       redirect: cisco.ios.ios_l3_interfaces
     lacp:
@@ -258,22 +219,12 @@ plugin_routing:
       redirect: cisco.ios.ios_route_maps
     snmp_server:
       redirect: cisco.ios.ios_snmp_server
-    static_route:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_static_route
     static_routes:
       redirect: cisco.ios.ios_static_routes
     system:
       redirect: cisco.ios.ios_system
     user:
       redirect: cisco.ios.ios_user
-    vlan:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_vlan
     vlans:
       redirect: cisco.ios.ios_vlans
     vrf:
