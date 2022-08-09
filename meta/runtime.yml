@@ -163,14 +163,6 @@ plugin_routing:
       deprecation:
         removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
-    ios_static_route:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_vlan:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
