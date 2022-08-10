@@ -33,9 +33,7 @@ def cmd_option_engine_id(config_data):
             if rm.get("host"):
                 cmd += "remote {host}".format(host=rm.get("host"))
             if rm.get("udp_port"):
-                cmd += " udp-port {udp_port}".format(
-                    udp_port=rm.get("udp_port"),
-                )
+                cmd += " udp-port {udp_port}".format(udp_port=rm.get("udp_port"))
             if rm.get("vrf"):
                 cmd += " vrf {vrf}".format(vrf=rm.get("vrf"))
         if config_data.get("id"):
@@ -66,13 +64,9 @@ def cmd_option_hosts(config_data):  # contain sub list attr
         if config_data.get("informs"):
             cmd += " informs"
         if config_data.get("version"):
-            cmd += " version {version}".format(
-                version=config_data.get("version"),
-            )
+            cmd += " version {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
-            cmd += " {version}".format(
-                version=config_data.get("version_option"),
-            )
+            cmd += " {version}".format(version=config_data.get("version_option"))
         if config_data.get("vrf"):
             cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
@@ -111,11 +105,7 @@ def cmd_option_trap_bgp(config_data):
 
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Snmp_serverTemplate, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
@@ -1046,6 +1036,160 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "traps": {
                     "tty": True,
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.shutdown",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sshutdown
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon shutdown",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "shutdown": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.status",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sstatus
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon status",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.supply",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\ssupply
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon supply",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "supply": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.temperature",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\stemperature
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon temperature",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "temperature": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.fan.enable",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sfan
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon fan",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "fan": {
+                            "enable": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.fan.shutdown",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sfan\sshutdown
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon fan shutdown",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "fan": {
+                            "shutdown": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.fan.status",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sfan\sstatus
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon fan status",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "fan": {
+                            "status": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.fan.supply",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sfan\ssupply
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon fan supply",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "fan": {
+                            "supply": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "traps.envmon.fan.temperature",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\senvmon\sfan\stemperature
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps envmon fan temperature",
+            "result": {
+                "traps": {
+                    "envmon": {
+                        "fan": {
+                            "temperature": True,
+                        },
+                    },
                 },
             },
         },
