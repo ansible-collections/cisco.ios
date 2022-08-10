@@ -34,10 +34,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
     argument_spec = {
         "config": {
             "options": {
-                "accounting": {
-                    "options": {"command": {"type": "str"}},
-                    "type": "dict",
-                },
+                "accounting": {"options": {"command": {"type": "str"}}, "type": "dict"},
                 "cache": {"type": "int"},
                 "chassis_id": {"type": "str"},
                 "communities": {
@@ -55,10 +52,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                 "contact": {"type": "str"},
                 "context": {"elements": "str", "type": "list"},
                 "drop": {
-                    "options": {
-                        "unknown_user": {"type": "bool"},
-                        "vrf_traffic": {"type": "bool"},
-                    },
+                    "options": {"unknown_user": {"type": "bool"}, "vrf_traffic": {"type": "bool"}},
                     "type": "dict",
                 },
                 "engine_id": {
@@ -88,10 +82,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "context": {"type": "str"},
-                        "version_option": {
-                            "choices": ["auth", "noauth", "priv"],
-                            "type": "str",
-                        },
+                        "version_option": {"choices": ["auth", "noauth", "priv"], "type": "str"},
                         "group": {"type": "str"},
                         "notify": {"type": "str"},
                         "read": {"type": "str"},
@@ -110,10 +101,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "community_string": {"type": "str"},
                         "traps": {"type": "list", "elements": "str"},
                         "version": {"choices": ["1", "2c", "3"], "type": "str"},
-                        "version_option": {
-                            "choices": ["auth", "noauth", "priv"],
-                            "type": "str",
-                        },
+                        "version_option": {"choices": ["auth", "noauth", "priv"], "type": "str"},
                         "vrf": {"type": "str"},
                     },
                     "type": "list",
@@ -128,10 +116,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "ip": {
-                    "options": {
-                        "dscp": {"type": "int"},
-                        "precedence": {"type": "int"},
-                    },
+                    "options": {"dscp": {"type": "int"}, "precedence": {"type": "int"}},
                     "type": "dict",
                 },
                 "location": {"type": "str"},
@@ -139,6 +124,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                 "packet_size": {"type": "int"},
                 "password_policy": {
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "change": {"type": "int"},
                         "digits": {"type": "int"},
@@ -218,10 +204,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "config_copy": {"type": "bool"},
                         "config_ctid": {"type": "bool"},
                         "cpu": {
-                            "options": {
-                                "enable": {"type": "bool"},
-                                "threshold": {"type": "bool"},
-                            },
+                            "options": {"enable": {"type": "bool"}, "threshold": {"type": "bool"}},
                             "type": "dict",
                         },
                         "dhcp": {"type": "bool"},
@@ -237,10 +220,8 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "entity": {"type": "bool"},
                         "energywise": {"type": "bool"},
                         "envmon": {
-                            "elements": "dict",
                             "options": {
                                 "fan": {
-                                    "elements": "dict",
                                     "options": {
                                         "shutdown": {"type": "bool"},
                                         "enable": {"type": "bool"},
@@ -381,17 +362,11 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                         "retransmit": {"type": "bool"},
                                         "state_change": {
                                             "options": {
-                                                "nssa_trans_change": {
-                                                    "type": "bool",
-                                                },
+                                                "nssa_trans_change": {"type": "bool"},
                                                 "shamlink": {
                                                     "options": {
-                                                        "interface": {
-                                                            "type": "bool",
-                                                        },
-                                                        "neighbor": {
-                                                            "type": "bool",
-                                                        },
+                                                        "interface": {"type": "bool"},
+                                                        "neighbor": {"type": "bool"},
                                                     },
                                                     "type": "dict",
                                                 },
@@ -455,22 +430,16 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "authentication": {
                             "type": "dict",
                             "options": {
-                                "algorithm": {
-                                    "type": "str",
-                                    "choices": ["md5", "sha"],
-                                },
-                                "password": {"type": "str"},
+                                "algorithm": {"type": "str", "choices": ["md5", "sha"]},
+                                "password": {"type": "str", "no_log": True},
                             },
                         },
                         "encryption": {
                             "type": "dict",
                             "options": {
-                                "priv": {
-                                    "type": "str",
-                                    "choices": ["3des", "aes", "des"],
-                                },
+                                "priv": {"type": "str", "choices": ["3des", "aes", "des"]},
                                 "priv_option": {"type": "str"},
-                                "password": {"type": "str"},
+                                "password": {"type": "str", "no_log": True},
                             },
                         },
                         "group": {"type": "str"},
@@ -478,10 +447,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "udp_port": {"type": "int"},
                         "username": {"type": "str"},
                         "version": {"choices": ["v1", "v2c", "v3"], "type": "str"},
-                        "version_option": {
-                            "choices": ["encrypted"],
-                            "type": "str",
-                        },
+                        "version_option": {"choices": ["encrypted"], "type": "str"},
                         "vrf": {"type": "str"},
                     },
                     "type": "list",

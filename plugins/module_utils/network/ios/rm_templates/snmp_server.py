@@ -1043,7 +1043,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.shutdown",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sshutdown
+                ^snmp-server\senable\straps\senvmon\sshutdown$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon shutdown",
@@ -1059,7 +1059,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.status",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sstatus
+                ^snmp-server\senable\straps\senvmon\sstatus$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon status",
@@ -1075,7 +1075,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.supply",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\ssupply
+                ^snmp-server\senable\straps\senvmon\ssupply$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon supply",
@@ -1091,7 +1091,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.temperature",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\stemperature
+                ^snmp-server\senable\straps\senvmon\stemperature$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon temperature",
@@ -1107,7 +1107,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.fan.enable",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sfan
+                ^snmp-server\senable\straps\senvmon\sfan$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon fan",
@@ -1125,7 +1125,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.fan.shutdown",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sfan\sshutdown
+                ^snmp-server\senable\straps\senvmon\sfan\sshutdown$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon fan shutdown",
@@ -1143,7 +1143,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.fan.status",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sfan\sstatus
+                ^snmp-server\senable\straps\senvmon\sfan\sstatus$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon fan status",
@@ -1161,7 +1161,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.fan.supply",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sfan\ssupply
+                ^snmp-server\senable\straps\senvmon\sfan\ssupply$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon fan supply",
@@ -1179,7 +1179,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.envmon.fan.temperature",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\senvmon\sfan\stemperature
+                ^snmp-server\senable\straps\senvmon\sfan\stemperature$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon fan temperature",
