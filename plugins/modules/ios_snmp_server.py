@@ -1958,20 +1958,21 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
-    Snmp_serverArgs,
-)
+# from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
+#     Snmp_serverArgs,
+# )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
     Snmp_server,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     convert_doc_to_ansible_module_kwargs,
+    convert_doc_to_ansible_module_kwargs_mod_no_log,
 )
 
-import debugpy
+# import debugpy
 
-debugpy.listen(3000)
-debugpy.wait_for_client()
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 
 def main():
@@ -1980,12 +1981,20 @@ def main():
 
     :returns: the result form module invocation
     """
+
     argument_spec = (convert_doc_to_ansible_module_kwargs(DOCUMENTATION))["argument_spec"]
     no_log_true = ["password"]
-    no_log_false = ["authentication"]
+    no_log_false = ["authentication", "encryption", "password_policy"]
     argument_spec["config"] = mod_argpec_with_no_log(
         argument_spec.get("config"), no_log_true, no_log_false
     )
+
+    # no_log_true = ["password"]
+    # no_log_false = ["authentication", "encryption", "password_policy"]
+    # # argument_spec = (convert_doc_to_ansible_module_kwargs(DOCUMENTATION))["argument_spec"]
+    # argument_spec = convert_doc_to_ansible_module_kwargs_mod_no_log(
+    #     DOCUMENTATION, no_log_true, no_log_false
+    # )
 
     module = AnsibleModule(
         argument_spec=argument_spec,
