@@ -1981,6 +1981,12 @@ def main():
     :returns: the result form module invocation
     """
     argument_spec = (convert_doc_to_ansible_module_kwargs(DOCUMENTATION))["argument_spec"]
+    no_log_true = ["password"]
+    no_log_false = ["authentication"]
+    argument_spec["config"] = mod_argpec_with_no_log(
+        argument_spec.get("config"), no_log_true, no_log_false
+    )
+
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=[["config", "running_config"]],
@@ -1996,6 +2002,23 @@ def main():
 
     result = Snmp_server(module).execute_module()
     module.exit_json(**result)
+
+
+def mod_argpec_with_no_log(_argument_spec, no_log_true, no_log_false):
+    if isinstance(_argument_spec, dict):
+        for key in [y for x in [no_log_true, no_log_false] for y in x]:
+            for k in list(_argument_spec.keys()):
+                if k == key and _argument_spec[key].get("type") != "bool":
+                    if key in no_log_true:
+                        _argument_spec[key].update({"no_log": True})
+                    if key in no_log_false:
+                        _argument_spec[key].update({"no_log": False})
+        for k, v in _argument_spec.items():
+            mod_argpec_with_no_log(v, no_log_true, no_log_false)
+    elif isinstance(_argument_spec, list):
+        for i in _argument_spec:
+            mod_argpec_with_no_log(i, no_log_true, no_log_false)
+    return _argument_spec
 
 
 if __name__ == "__main__":
