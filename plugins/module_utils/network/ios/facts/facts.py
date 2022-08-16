@@ -92,12 +92,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
 )
 
 
-FACT_LEGACY_SUBSETS = dict(
-    default=Default,
-    hardware=Hardware,
-    interfaces=Interfaces,
-    config=Config,
-)
+FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
 
 FACT_RESOURCE_SUBSETS = dict(
     interfaces=InterfacesFacts,
@@ -135,13 +130,55 @@ class Facts(FactsBase):
     def __init__(self, module):
         super(Facts, self).__init__(module)
 
-    def get_facts(
-        self,
-        legacy_facts_type=None,
-        resource_facts_type=None,
-        data=None,
-    ):
-        """Collect the facts for ios
+    def get_restorun(self, resource_facts_type=None):
+        """
+        Update the ansible_net_gather_network_resources list
+        with target resources
+        :param resource_facts_type:
+        :return:
+        """
+        restorun_subsets = {}
+        if self.VALID_RESOURCE_SUBSETS:
+            if not resource_facts_type:
+                resource_facts_type = self._gather_network_resources
+            restorun_subsets = self.gen_runable(
+                resource_facts_type, frozenset(FACT_RESOURCE_SUBSETS.keys()), resource_facts=True
+            )
+            if restorun_subsets:
+                self.ansible_facts["ansible_net_gather_network_resources"] = list(restorun_subsets)
+        return list(restorun_subsets)
+
+    def get_legacy_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
+        """ Collect the facts for ios
+        :param legacy_facts_type: List of legacy facts types
+        :param resource_facts_type: List of resource fact types
+        :param data: previously collected conf
+        :rtype: dict
+        :return: the facts gathered
+        """
+        if not legacy_facts_type:
+            legacy_facts_type = self._gather_subset
+            # fetch old style facts only when explicitly mentioned in gather_subset option
+            # if "ofacts" in legacy_facts_type:
+            #     if HAS_PYEZ:
+            #         self.ansible_facts.update(OFacts(self._module).populate())
+            #     else:
+            #         self._warnings.extend(
+            #             [
+            #                 "junos-eznc is required to gather old style facts but does not appear to be installed. "
+            #                 "It can be installed using `pip install junos-eznc`"
+            #             ]
+            #         )
+            #     self.ansible_facts["ansible_net_gather_subset"].append("ofacts")
+            #     legacy_facts_type.remove("ofacts")
+
+        if self.VALID_LEGACY_GATHER_SUBSETS:
+            self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)
+
+        return self.ansible_facts, self._warnings
+
+    def get_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
+        """ Collect the facts for ios
         :param legacy_facts_type: List of legacy facts types
         :param resource_facts_type: List of resource fact types
         :param data: previously collected conf
@@ -149,16 +186,5 @@ class Facts(FactsBase):
         :return: the facts gathered
         """
         if self.VALID_RESOURCE_SUBSETS:
-            self.get_network_resources_facts(
-                FACT_RESOURCE_SUBSETS,
-                resource_facts_type,
-                data,
-            )
-
-        if self.VALID_LEGACY_GATHER_SUBSETS:
-            self.get_network_legacy_facts(
-                FACT_LEGACY_SUBSETS,
-                legacy_facts_type,
-            )
-
+            self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)
         return self.ansible_facts, self._warnings

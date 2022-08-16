@@ -1964,6 +1964,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
     Snmp_server,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    convert_doc_to_ansible_module_kwargs,
+)
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():
@@ -1972,8 +1980,9 @@ def main():
 
     :returns: the result form module invocation
     """
+    argument_spec = (convert_doc_to_ansible_module_kwargs(DOCUMENTATION))["argument_spec"]
     module = AnsibleModule(
-        argument_spec=Snmp_serverArgs.argument_spec,
+        argument_spec=argument_spec,
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],
