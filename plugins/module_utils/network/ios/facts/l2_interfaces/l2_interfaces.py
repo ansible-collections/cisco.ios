@@ -73,10 +73,7 @@ class L2_InterfacesFacts(object):
         facts = {}
         if objs:
             facts["l2_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec,
-                {"config": objs},
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["l2_interfaces"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
@@ -98,17 +95,7 @@ class L2_InterfacesFacts(object):
         if get_interface_type(intf) == "unknown":
             return {}
 
-        if intf.upper()[:2] in (
-            "HU",
-            "FO",
-            "FI",
-            "TW",
-            "TE",
-            "GI",
-            "FA",
-            "ET",
-            "PO",
-        ):
+        if intf.upper()[:2] in ("HU", "FO", "FI", "TW", "TE", "GI", "FA", "ET", "PO"):
             # populate the facts from the configuration
             config["name"] = normalize_interface(intf)
             has_mode = utils.parse_conf_arg(conf, "switchport mode")
@@ -130,16 +117,13 @@ class L2_InterfacesFacts(object):
             if has_voice:
                 if len(list(has_voice.split(" "))) == 2 and has_voice.split(" ")[0] == "name":
                     config["voice"] = {"vlan_name": has_voice.split(" ")[1]}
-                elif type(has_voice) != int:
+                elif type(has_voice) in ["dot1p", "none", "untagged"]:
                     config["voice"] = {"vlan_tag": has_voice}
                 else:
                     config["voice"] = {"vlan": int(has_voice)}
 
             trunk = dict()
-            trunk["encapsulation"] = utils.parse_conf_arg(
-                conf,
-                "switchport trunk encapsulation",
-            )
+            trunk["encapsulation"] = utils.parse_conf_arg(conf, "switchport trunk encapsulation")
             native_vlan = utils.parse_conf_arg(conf, "native vlan")
             if native_vlan:
                 trunk["native_vlan"] = int(native_vlan)
@@ -149,9 +133,7 @@ class L2_InterfacesFacts(object):
             allowed_vlan_add_all = re.findall("allowed vlan add.*", conf)
             if allowed_vlan_add_all:
                 for each in allowed_vlan_add_all:
-                    trunk["allowed_vlans"].extend(
-                        each.split("allowed vlan add ")[1].split(","),
-                    )
+                    trunk["allowed_vlans"].extend(each.split("allowed vlan add ")[1].split(","))
             pruning_vlan = utils.parse_conf_arg(conf, "pruning vlan")
             if pruning_vlan:
                 trunk["pruning_vlans"] = pruning_vlan.split(",")
