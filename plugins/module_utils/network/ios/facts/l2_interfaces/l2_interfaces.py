@@ -117,7 +117,7 @@ class L2_InterfacesFacts(object):
             if has_voice:
                 if len(list(has_voice.split(" "))) == 2 and has_voice.split(" ")[0] == "name":
                     config["voice"] = {"vlan_name": has_voice.split(" ")[1]}
-                elif type(has_voice) in ["dot1p", "none", "untagged"]:
+                elif has_voice in ["dot1p", "none", "untagged"]:
                     config["voice"] = {"vlan_tag": has_voice}
                 else:
                     config["voice"] = {"vlan": int(has_voice)}
