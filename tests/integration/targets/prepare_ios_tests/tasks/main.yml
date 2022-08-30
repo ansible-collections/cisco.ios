@@ -7,7 +7,7 @@
 
 - name: Set test facts shorter_hostname
   ansible.builtin.set_fact:
-    shorter_hostname: '{{ inventory_hostname_short| truncate(10, True, "") }}'
+    shorter_hostname: '{{ inventory_hostname_short | truncate(10, True, "") }}'
 
 - name: Discover IOS l2/l3 switch type
   connection: ansible.netcommon.network_cli
