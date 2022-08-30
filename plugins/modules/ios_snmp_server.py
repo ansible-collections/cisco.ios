@@ -415,11 +415,9 @@ options:
             type: bool
           envmon:
             description: Allow envmon related traps
-            elements: dict
             suboptions:
               fan:
                 description: Enable SNMP envmon fan traps
-                elements: dict
                 suboptions:
                   shutdown:
                     description: Enable SNMP environmental monitor shutdown traps
