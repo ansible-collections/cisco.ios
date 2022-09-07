@@ -5,6 +5,15 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.3.1
+======
+
+Bugfixes
+--------
+
+- `l2_interfaces` - vlan_tag options fix.
+- `snmp_server` - add envmon options for traps.
+
 v3.3.0
 ======
 
