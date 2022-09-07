@@ -625,3 +625,12 @@ releases:
       - re_order_regex_acl.yml
       - snmp-server_special_names.yml
     release_date: "2022-08-02"
+  3.3.1:
+    changes:
+      bugfixes:
+        - "`l2_interfaces` - vlan_tag options fix."
+        - "`snmp_server` - add envmon options for traps."
+    fragments:
+      - l2_vlan_tag.yaml
+      - snmp_envmon.yaml
+    release_date: "2022-09-07"
