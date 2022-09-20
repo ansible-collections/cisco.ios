@@ -43,6 +43,29 @@ options:
     default: []
     vars:
     - name: ansible_ios_config_commands
+  configure_revert:
+    description:
+    - enable or disable the use of the Configuration Revert feature
+    version_added: x.x.x
+    type: boolean
+    default: false
+    vars:
+    - name: ansible_ios_configure_revert  
+  configure_revert_timer_idle:
+    description:
+    - The type of timer used for rollback. Idle (true) or absolute (false)
+    type: boolean
+    default: true
+    vars:
+    - name: ansible_ios_configure_revert_timer_idle      
+  configure_revert_timer:
+    description:
+    - The rollback timer in minutes
+    version_added: x.x.x
+    type: int
+    default: 5
+    vars:
+    - name: ansible_ios_configure_revert_timer    
 """
 
 import json
@@ -206,7 +229,8 @@ class Cliconf(CliconfBase):
         results = []
         requests = []
         if commit:
-            self.send_command("configure terminal")
+            global_configuration_command = self._get_global_configuration_command()
+            self.send_command(global_configuration_command)
             for line in to_list(candidate):
                 if not isinstance(line, Mapping):
                     line = {"command": line}
@@ -512,3 +536,13 @@ class Cliconf(CliconfBase):
             if value != have.get(key):
                 candidate[key] = value
         return candidate
+
+    def _get_global_configuration_command(self):
+        cmd = 'configure terminal'
+        idle = " idle " if self.get_option("configure_revert_timer_idle") else " "
+        timer = self.get_option("configure_revert_timer")
+
+        if self.get_option('configure_revert'):
+            cmd += f' revert timer{idle}{timer}'
+
+        return cmd
