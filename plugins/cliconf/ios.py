@@ -46,7 +46,6 @@ options:
   configure_revert:
     description:
     - enable or disable the use of the Configuration Revert feature
-    version_added: x.x.x
     type: boolean
     default: false
     vars:
@@ -61,7 +60,6 @@ options:
   configure_revert_timer:
     description:
     - The rollback timer in minutes
-    version_added: x.x.x
     type: int
     default: 5
     vars:
