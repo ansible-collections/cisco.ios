@@ -1,0 +1,2 @@
+minor_changes:
+  - added support for configuration revert feature by allowing more variants of the configure terminal command
