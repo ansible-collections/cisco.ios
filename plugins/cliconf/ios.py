@@ -49,21 +49,21 @@ options:
     type: boolean
     default: false
     vars:
-    - name: ansible_ios_configure_revert  
+    - name: ansible_ios_configure_revert
   configure_revert_timer_idle:
     description:
     - The type of timer used for rollback. Idle (true) or absolute (false)
     type: boolean
     default: true
     vars:
-    - name: ansible_ios_configure_revert_timer_idle      
+    - name: ansible_ios_configure_revert_timer_idle
   configure_revert_timer:
     description:
     - The rollback timer in minutes
     type: int
     default: 5
     vars:
-    - name: ansible_ios_configure_revert_timer    
+    - name: ansible_ios_configure_revert_timer
 """
 
 import json
@@ -536,11 +536,11 @@ class Cliconf(CliconfBase):
         return candidate
 
     def _get_global_configuration_command(self):
-        cmd = 'configure terminal'
+        cmd = "configure terminal"
         idle = " idle " if self.get_option("configure_revert_timer_idle") else " "
         timer = self.get_option("configure_revert_timer")
 
-        if self.get_option('configure_revert'):
-            cmd += f' revert timer{idle}{timer}'
+        if self.get_option("configure_revert"):
+            cmd += f" revert timer{idle}{timer}"
 
         return cmd

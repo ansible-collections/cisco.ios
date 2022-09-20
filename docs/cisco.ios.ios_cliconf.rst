@@ -56,6 +56,63 @@ Parameters
                         <div>When `ansible_network_single_user_mode` is enabled, if a command sent to the device is present in this list, the existing cache is invalidated.</div>
                 </td>
             </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>configure_revert</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"no"</div>
+                </td>
+                    <td>
+                                <div>var: ansible_ios_configure_revert</div>
+                    </td>
+                <td>
+                        <div>enable or disable the use of the Configuration Revert feature</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>configure_revert_timer</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">5</div>
+                </td>
+                    <td>
+                                <div>var: ansible_ios_configure_revert_timer</div>
+                    </td>
+                <td>
+                        <div>The rollback timer in minutes</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>configure_revert_timer_idle</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"yes"</div>
+                </td>
+                    <td>
+                                <div>var: ansible_ios_configure_revert_timer_idle</div>
+                    </td>
+                <td>
+                        <div>The type of timer used for rollback. Idle (true) or absolute (false)</div>
+                </td>
+            </tr>
     </table>
     <br/>
 
