@@ -233,25 +233,25 @@ class Cliconf(CliconfBase):
 
             if self.get_option("commit_delay") >= commit_timeout * 60:
                 raise ValueError(
-                    "commit_delay can't be longer or equal to commit_confirmed_timeout. "
-                    "Please adjust and try again",
+                    "commit_delay can\'t be longer or equal to commit_confirmed_timeout. "
+                    "Please adjust and try again"
                 )
 
-            if command_timeout < self.get_option("commit_delay"):
+            if command_timeout < self.get_option('commit_delay'):
                 raise ValueError(
-                    "ansible_command_timeout must be longer than commit_delay",
+                    "ansible_command_timeout must be longer than commit_delay"
                 )
 
             if re.search(r"Archive.*not.enabled", archive_state):
                 raise ValueError(
                     "commit_confirmed option set, but archiving not enabled on device. "
-                    "Please set up archiving and try again",
+                    "Please set up archiving and try again"
                 )
 
             if not re.search(r"%No Rollback Confirmed Change pending", rollback_state):
                 raise ValueError(
                     "Existing rollback change already pending. "
-                    "Please resolve by either issuing 'configure confirm' or 'configure revert now'",
+                    "Please resolve by either issuing 'configure confirm' or 'configure revert now'"
                 )
 
             self.send_command(f"configure terminal revert timer {commit_timeout}")
@@ -301,7 +301,7 @@ class Cliconf(CliconfBase):
 
             except Exception as exc:
                 error_msg = to_text(exc, errors="surrogate_or_strict").strip()
-                if "command timeout triggered" in error_msg and commit_confirmed:
+                if 'command timeout triggered' in error_msg and commit_confirmed:
                     exp_return = commit_confirmed_timeout * 60 - command_timeout
                     error_msg = (
                         f"Got command timeout error. Rollback timer active. "
@@ -439,7 +439,7 @@ class Cliconf(CliconfBase):
     def get_device_operations(self):
         return {
             "supports_diff_replace": True,
-            "supports_commit": True,
+            "supports_commit": False,
             "supports_rollback": False,
             "supports_defaults": True,
             "supports_onbox_diff": False,
