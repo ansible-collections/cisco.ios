@@ -117,14 +117,14 @@ class Prefix_listsFacts(object):
                 None,
             )
 
-            params = utils.remove_empties(
-                utils.validate_config(
-                    self.argument_spec,
-                    {"config": final_objs},
-                ),
-            )
+        params = utils.remove_empties(
+            utils.validate_config(
+                self.argument_spec,
+                {"config": final_objs},
+            ),
+        )
 
-            facts["prefix_lists"] = params["config"]
-            ansible_facts["ansible_network_resources"].update(facts)
+        facts["prefix_lists"] = params.get("config", [])
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
