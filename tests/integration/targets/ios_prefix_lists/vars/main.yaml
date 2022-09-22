@@ -197,51 +197,51 @@ deleted_all:
   before:
     - afi: ipv4
       prefix_lists:
-      - description: this is test description
-        entries:
-        - action: deny
-          le: 15
-          prefix: 1.0.0.0/8
-          sequence: 5
-        - action: deny
-          ge: 10
-          prefix: 35.0.0.0/8
-          sequence: 10
-        - action: deny
-          ge: 15
-          prefix: 12.0.0.0/8
-          sequence: 15
-        - action: deny
-          ge: 20
-          le: 21
-          prefix: 14.0.0.0/8
-          sequence: 20
-        name: '10'
-      - description: this is test
-        entries:
-        - action: deny
-          ge: 15
-          prefix: 12.0.0.0/8
-          sequence: 50
-        name: test
-      - description: this is for prefix-list
-        entries:
-        - action: deny
-          ge: 10
-          le: 15
-          prefix: 35.0.0.0/8
-          sequence: 5
-        - action: deny
-          ge: 20
-          prefix: 35.0.0.0/8
-          sequence: 10
-        name: test_prefix
+        - description: this is test description
+          entries:
+            - action: deny
+              le: 15
+              prefix: 1.0.0.0/8
+              sequence: 5
+            - action: deny
+              ge: 10
+              prefix: 35.0.0.0/8
+              sequence: 10
+            - action: deny
+              ge: 15
+              prefix: 12.0.0.0/8
+              sequence: 15
+            - action: deny
+              ge: 20
+              le: 21
+              prefix: 14.0.0.0/8
+              sequence: 20
+          name: "10"
+        - description: this is test
+          entries:
+            - action: deny
+              ge: 15
+              prefix: 12.0.0.0/8
+              sequence: 50
+          name: test
+        - description: this is for prefix-list
+          entries:
+            - action: deny
+              ge: 10
+              le: 15
+              prefix: 35.0.0.0/8
+              sequence: 5
+            - action: deny
+              ge: 20
+              prefix: 35.0.0.0/8
+              sequence: 10
+          name: test_prefix
     - afi: ipv6
       prefix_lists:
-      - description: this is ipv6 prefix-list
-        entries:
-        - action: deny
-          ge: 80
-          prefix: 2001:DB8:0:4::/64
-          sequence: 10
-        name: test_ipv6
+        - description: this is ipv6 prefix-list
+          entries:
+            - action: deny
+              ge: 80
+              prefix: 2001:DB8:0:4::/64
+              sequence: 10
+          name: test_ipv6
