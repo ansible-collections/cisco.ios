@@ -11,8 +11,8 @@ v3.3.2
 Bugfixes
 --------
 
-- `prefix_lists` - fix prefix list facts generation to handle empty configuration correctly.
-- `cliconf` - get_device_info now tries to exit config mode if necessary before requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
+- cliconf - get_device_info now tries to exit config mode if necessary before requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
+- prefix_lists - fix prefix list facts generation to handle empty configuration correctly.
 
 v3.3.1
 ======
@@ -20,8 +20,8 @@ v3.3.1
 Bugfixes
 --------
 
-- `l2_interfaces` - vlan_tag options fix.
-- `snmp_server` - add envmon options for traps.
+- l2_interfaces - vlan_tag options fix.
+- snmp_server - add envmon options for traps.
 
 v3.3.0
 ======
@@ -29,15 +29,15 @@ v3.3.0
 Minor Changes
 -------------
 
-- `ios_l2_interfaces` - Add vlan_name attribute to access.
-- `ios_l2_interfaces` - Add vlan_name, vlan_tag attribute to voice.
+- ios_l2_interfaces - Add vlan_name attribute to access.
+- ios_l2_interfaces - Add vlan_name, vlan_tag attribute to voice.
 
 Bugfixes
 --------
 
-- `ios_acls` - Fix regex to parse echo-reply command.
-- `ios_route_maps` - Fix route maps failing on config parsed with tailing space.
-- `ios_snmp_server` - Fix parsers for views and host + acl doc
+- ios_acls - Fix regex to parse echo-reply command.
+- ios_route_maps - Fix route maps failing on config parsed with tailing space.
+- ios_snmp_server - Fix parsers for views and host + acl doc
 
 v3.2.0
 ======
@@ -45,12 +45,12 @@ v3.2.0
 Minor Changes
 -------------
 
-- `ios_ping` - Add ipv6 options.
+- ios_ping - Add ipv6 options.
 
 Bugfixes
 --------
 
-- `ios_interfaces` - Fix enable attribute.
+- ios_interfaces - Fix enable attribute.
 
 v3.1.0
 ======
@@ -60,7 +60,7 @@ Minor Changes
 
 - Also collect a list of serial numbers comprised in a vss system as virtual_switch_serialnums
 - Fixing Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/471)
-- `ios_interfaces` - Add purged state to ios_interfaces.
+- ios_interfaces - Add purged state to ios_interfaces.
 
 Deprecated Features
 -------------------
@@ -70,14 +70,14 @@ Deprecated Features
 Bugfixes
 --------
 
-- `ios_acl` - Handle ACL config parsing when match/matches are present.
-- `ios_bgp_global` - Parse local_as commands correctly.
-- `ios_interfaces` - Parse interface shutdown config correctly.
-- `ios_lag_interfaces` - Fix commands generation on action states.
-- `ios_lag_interfaces` - Module functionality not restricted to GigabitEthernet.
-- `ios_logging_global` - Parse monitor and buffered config correctly.
-- `ios_ntp` - Handle regex matching server attributes gracefully.
-- `ios_snmp_server` - Render group and views commands correctly when having common names.
+- ios_acl - Handle ACL config parsing when match/matches are present.
+- ios_bgp_global - Parse local_as commands correctly.
+- ios_interfaces - Parse interface shutdown config correctly.
+- ios_lag_interfaces - Fix commands generation on action states.
+- ios_lag_interfaces - Module functionality not restricted to GigabitEthernet.
+- ios_logging_global - Parse monitor and buffered config correctly.
+- ios_ntp - Handle regex matching server attributes gracefully.
+- ios_snmp_server - Render group and views commands correctly when having common names.
 
 v3.0.0
 ======
@@ -87,16 +87,16 @@ Major Changes
 
 - Minimum required ansible.netcommon version is 2.5.1.
 - Updated base plugin references to ansible.netcommon.
-- `facts` - default value for `gather_subset` is changed to min instead of !config.
+- facts - default value for gather_subset is changed to min instead of !config.
 
 Bugfixes
 --------
 
 - Fix become raises error when exec prompt timestamp is configured.
-- `acl_interfaces` - optimization and bugfixes.
-- `ios_l3_interface` - config code to generate proper ordering of commands on action states.
-- `ios_logging_global` - Added alias to render host under hosts not hostname.
+- acl_interfaces - optimization and bugfixes.
 - acls parser didn't only checked if the proto_options variable existed without validating that it was a dictionary before trying to use it as one.
+- ios_l3_interface - config code to generate proper ordering of commands on action states.
+- ios_logging_global - Added alias to render host under hosts not hostname.
 
 v2.8.1
 ======
@@ -110,12 +110,12 @@ Bugfixes
 --------
 
 - Add symlink of modules under plugins/action.
-- `ios_acls` - Fix commands sequencing for replaced state.
-- `ios_acls` - Fix remarks breaking idempotent behavior.
-- `ios_bgp_address_family` - Fix multiple bgp_address_family issues. Add `set` option in `send_community` to allow backwards compatibility with older configs. Add `set` option in `redistribute.connected` to allow ospf redistribution. Fix issue with ipv6 and peer-group neighbor identification. Add ability to pull `redistribute` information for address families to conform to argspec. Fix issue with not pulling `local_as` when defined for neighbors.
-- `ios_facts` - Fix Line protocol parser for legacy facts where state information per interface is present.
-- `ios_route_maps` - Fix parsers for correct rendering of as_number as list.
-- `ios_snmp_server` - Fix parsers for views facts collection.
+- ios_acls - Fix commands sequencing for replaced state.
+- ios_acls - Fix remarks breaking idempotent behavior.
+- ios_bgp_address_family - Fix multiple bgp_address_family issues. Add set option in send_community to allow backwards compatibility with older configs. Add set option in redistribute.connected to allow ospf redistribution. Fix issue with ipv6 and peer-group neighbor identification. Add ability to pull redistribute information for address families to conform to argspec. Fix issue with not pulling local_as when defined for neighbors.
+- ios_facts - Fix Line protocol parser for legacy facts where state information per interface is present.
+- ios_route_maps - Fix parsers for correct rendering of as_number as list.
+- ios_snmp_server - Fix parsers for views facts collection.
 
 v2.8.0
 ======
@@ -123,30 +123,30 @@ v2.8.0
 Minor Changes
 -------------
 
-- `ios_bgp_global` - Deprecate aggregate_address with aggregate_address which supports list of dict attributes.
-- `ios_bgp_global` - Deprecate bestpath with bestpath_options which supports a dict attribute.
-- `ios_bgp_global` - Deprecate distribute_list with distributes which supports list of dict attributes.
-- `ios_bgp_global` - Deprecate inject_map with inject_maps which supports list of dict attributes.
-- `ios_bgp_global` - Deprecate listen.ipv4_with_subnet/ipv6_with_subnet with host_with_subnet which enables common attribute for facts rendering.
-- `ios_bgp_global` - Deprecate neighbors.address/tag/ipv6_adddress with neighbor_address which enables common attribute for facts rendering.
-- `ios_bgp_global` - Deprecate neighbors.password with password_options which allows encryption and password.
-- `ios_bgp_global` - Deprecate neighbors.route_map with route_maps which supports list of dict attributes.
-- `ios_bgp_global` - Deprecate nopeerup_delay with nopeerup_delay_options which supports a dict attribute.
-- `ios_bgp_global` - Deprecates route_server_context, scope, template as they were not implemented with the scope of the module.
+- ios_bgp_global - Deprecate aggregate_address with aggregate_address which supports list of dict attributes.
+- ios_bgp_global - Deprecate bestpath with bestpath_options which supports a dict attribute.
+- ios_bgp_global - Deprecate distribute_list with distributes which supports list of dict attributes.
+- ios_bgp_global - Deprecate inject_map with inject_maps which supports list of dict attributes.
+- ios_bgp_global - Deprecate listen.ipv4_with_subnet/ipv6_with_subnet with host_with_subnet which enables common attribute for facts rendering.
+- ios_bgp_global - Deprecate neighbors.address/tag/ipv6_adddress with neighbor_address which enables common attribute for facts rendering.
+- ios_bgp_global - Deprecate neighbors.password with password_options which allows encryption and password.
+- ios_bgp_global - Deprecate neighbors.route_map with route_maps which supports list of dict attributes.
+- ios_bgp_global - Deprecate nopeerup_delay with nopeerup_delay_options which supports a dict attribute.
+- ios_bgp_global - Deprecates route_server_context, scope, template as they were not implemented with the scope of the module.
 
 Bugfixes
 --------
 
-- `ios_bgp_global` - Added bmp.server_options.
-- `ios_bgp_global` - Added capability of configure network options.
-- `ios_bgp_global` - Added community and local_preference for route_reflector_client.
-- `ios_bgp_global` - Added update_source for neighbors.
-- `ios_bgp_global` - Correct misspelled attributes with alternates/alias.
-- `ios_bgp_global` - Facts and config code optimized for using rm_templates.
-- `ios_bgp_global` - Parsers added for non-implemented attributes.
-- `ios_bgp_global` - client_to_client.cluster_id corrected to take string input.
-- `ios_bgp_global` - neighbors.path_attribute to support float format.
-- `ios_static_routes` - Consider only config containing routes to render facts.
+- ios_bgp_global - Added bmp.server_options.
+- ios_bgp_global - Added capability of configure network options.
+- ios_bgp_global - Added community and local_preference for route_reflector_client.
+- ios_bgp_global - Added update_source for neighbors.
+- ios_bgp_global - Correct misspelled attributes with alternates/alias.
+- ios_bgp_global - Facts and config code optimized for using rm_templates.
+- ios_bgp_global - Parsers added for non-implemented attributes.
+- ios_bgp_global - client_to_client.cluster_id corrected to take string input.
+- ios_bgp_global - neighbors.path_attribute to support float format.
+- ios_static_routes - Consider only config containing routes to render facts.
 
 v2.7.2
 ======
@@ -170,31 +170,31 @@ v2.7.0
 Minor Changes
 -------------
 
-- `ios_acls` - Added enable_fragment attribute to enable fragments under ace.
-- `ios_hostname` - New Resource module added.
-- `ios_snmp_server` - Enables configuration of v3 auth and encryption password for each user.
+- ios_acls - Added enable_fragment attribute to enable fragments under ace.
+- ios_hostname - New Resource module added.
+- ios_snmp_server - Enables configuration of v3 auth and encryption password for each user.
 
 Deprecated Features
 -------------------
 
-- `ios_acls` - Deprecated fragment attribute added boolean alternate as enable_fragment.
+- ios_acls - Deprecated fragment attribute added boolean alternate as enable_fragment.
 
 Bugfixes
 --------
 
-- `ios_acls` - Fixes protocol_options not rendering command properly when range is specified.
-- `ios_acls` - Fixes standard acls getting wrongly parsed in v2.6.0
-- `ios_l2_interfaces` - fix unable to identify FiveGigabitEthernet names on facts gathering.
-- `ios_snmp_server` - Change key from `users` to `views` in rm template to fix failure when collecting snmp server facts from devices that have a view defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
-- `ios_static_routes` - Fixes static routes unable to identify interface names when supplied with destination attribute.
-- `ios_vlans` - fix parsing of VLAN names with spaces.
-- `ios_vlans` - fix parsing of VLAN ranges under remote span.
+- ios_acls - Fixes protocol_options not rendering command properly when range is specified.
+- ios_acls - Fixes standard acls getting wrongly parsed in v2.6.0
+- ios_l2_interfaces - fix unable to identify FiveGigabitEthernet names on facts gathering.
+- ios_snmp_server - Change key from users to views in rm template to fix failure when collecting snmp server facts from devices that have a view defined in the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
+- ios_static_routes - Fixes static routes unable to identify interface names when supplied with destination attribute.
+- ios_vlans - fix parsing of VLAN names with spaces.
+- ios_vlans - fix parsing of VLAN ranges under remote span.
 
 Documentation Changes
 ---------------------
 
-- `ios_acls` - Documentation updated with commands used for fetching remarks data under aces.
 - fixes fqcn in older module documentation.
+- ios_acls - Documentation updated with commands used for fetching remarks data under aces.
 
 New Modules
 -----------
@@ -207,8 +207,8 @@ v2.6.0
 Minor Changes
 -------------
 
-- `ios_acls` - feature: Remarks can be configured for ACLs.
-- `ios_snmp_server` - New Resource module added.
+- ios_acls - feature: Remarks can be configured for ACLs.
+- ios_snmp_server - New Resource module added.
 
 Bugfixes
 --------
@@ -216,10 +216,10 @@ Bugfixes
 - 'ios_banner' - Bugfix for presence of multiple delimitation chars in the banner's declaration and idempotence improvement.
 - Fix ntp_global - remove no_log for key_id under peer and server attributes.
 - Fix ntp_global - to handle when attribute value is false.
-- `ios_acls` - bugfixes and optimization for ACLs.
-- `ios_l2_interfaces` - fix unable to set switchport mode properly.
-- `ios_logging_global` - fix host ipv6 commands not parsed correctly.
-- `ios_logging_global` - fix wrong ordering of commands fired on replaced state.
+- ios_acls - bugfixes and optimization for ACLs.
+- ios_l2_interfaces - fix unable to set switchport mode properly.
+- ios_logging_global - fix host ipv6 commands not parsed correctly.
+- ios_logging_global - fix wrong ordering of commands fired on replaced state.
 
 Documentation Changes
 ---------------------
@@ -312,7 +312,7 @@ Minor Changes
 -------------
 
 - Deprecated next_hop_self type bool and introduced nexthop_self as dict under bgp_address_family.
-- Move ios_config idempotent warning message with the task response under `warnings` key if `changed` is `True`
+- Move ios_config idempotent warning message with the task response under warnings key if changed is True
 - PR adds the implementation of object group param to acls source and destination parameters (https://github.com/ansible-collections/cisco.ios/issues/339).
 - PR to fix the bgp global activate rendering and fix bgp address family round trip failure (https://github.com/ansible-collections/cisco.ios/issues/353).
 - To add ospfv2 passive_interfaces param with added functionality (https://github.com/ansible-collections/cisco.ios/issues/336).
@@ -402,14 +402,14 @@ v2.0.0
 Major Changes
 -------------
 
-- Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_ for more details.
-- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
+- Please refer to ansible.netcommon changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>_ for more details.
+- Requires ansible.netcommon v2.0.0+ to support ansible_network_single_user_mode and ansible_network_import_modules.
 
 Minor Changes
 -------------
 
 - Add ios_bgp_address_family Resource Module. (https://github.com/ansible-collections/cisco.ios/pull/219).
-- Adds support for `single_user_mode` command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
+- Adds support for single_user_mode command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
 
 Bugfixes
 --------
@@ -531,7 +531,7 @@ Minor Changes
 Bugfixes
 --------
 
-- Make `src`, `backup` and `backup_options` in ios_config work when module alias is used (https://github.com/ansible-collections/cisco.ios/pull/107).
+- Make src, backup and backup_options in ios_config work when module alias is used (https://github.com/ansible-collections/cisco.ios/pull/107).
 
 v1.0.0
 ======
