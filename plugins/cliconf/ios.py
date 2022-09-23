@@ -314,6 +314,8 @@ class Cliconf(CliconfBase):
             device_info = {}
 
             device_info["network_os"] = "ios"
+            # Ensure we are not in config mode
+            self._update_cli_prompt_context(config_context=")#", exit_command="end")
             reply = self.get(command="show version")
             data = to_text(reply, errors="surrogate_or_strict").strip()
             match = re.search(r"Version (\S+)", data)
