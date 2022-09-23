@@ -44,7 +44,8 @@ options:
     type: int
     default: 1
     description:
-    - Commits the configuration on a trial basis for the time specified in minutes.
+    - Commits the configuration on a trial basis for the time 
+      specified in minutes.
     env:
     - name: ANSIBLE_IOS_COMMIT_CONFIRMED_TIMEOUT
     vars:
@@ -54,13 +55,14 @@ options:
     default: 0
     description:
     - Wait the specified amount of time in seconds before committing changes.
-    - Some changes like interface shutdown will take effect immediately.
-      However, other changes like changing route protocol parameters, may take
-      some time before leaving the device unreachable.
+    - Some changes, like interface shutdown, will take effect immediately.
+      However, other changes, like changing routing protocol parameters, may 
+      take some time before leaving the device unreachable.
     - The commit_delay makes the task wait the specified amount of
-      time before committing changes thus reducing the risk of committing changes before
-      the device becomes unreachable.
-    - Make sure commit_delay is lower than commit_confirmed_timeout and ansible_command_timeout.
+      time before committing changes thus reducing the risk of committing 
+      changes before the device becomes unreachable.
+    - Make sure commit_delay is lower than commit_confirmed_timeout and 
+      ansible_command_timeout.
     env:
     - name: ANSIBLE_IOS_COMMIT_DELAY
     vars:
@@ -222,39 +224,51 @@ class Cliconf(CliconfBase):
     @enable_mode
     def configure(self):
         """
-        Enter global configuration mode based on the status of commit_confirmed
+        Enter global configuration mode based on the
+        status of commit_confirmed
         :return: None
         """
         if self.get_option("commit_confirmed"):
-            commit_timeout = self.get_option("commit_confirmed_timeout")
-            command_timeout = self._connection.get_option("persistent_command_timeout")
-            archive_state = self.send_command("show archive")
-            rollback_state = self.send_command("show archive config rollback timer")
+            commit_timeout = self.get_option(
+                "commit_confirmed_timeout")
+            command_timeout = self._connection.get_option(
+                "persistent_command_timeout")
+            archive_state = self.send_command(
+                "show archive")
+            rollback_state = self.send_command(
+                "show archive config rollback timer")
 
-            if self.get_option("commit_delay") >= commit_timeout * 60:
+            if self.get_option(
+                    "commit_delay") >= commit_timeout * 60:
                 raise ValueError(
-                    "commit_delay can\'t be longer or equal to commit_confirmed_timeout. "
+                    "commit_delay can\'t be longer or equal to "
+                    "commit_confirmed_timeout. "
                     "Please adjust and try again"
                 )
 
             if command_timeout < self.get_option('commit_delay'):
                 raise ValueError(
-                    "ansible_command_timeout must be longer than commit_delay"
+                    "ansible_command_timeout must be longer "
+                    "than commit_delay"
                 )
 
             if re.search(r"Archive.*not.enabled", archive_state):
                 raise ValueError(
-                    "commit_confirmed option set, but archiving not enabled on device. "
+                    "commit_confirmed option set, but archiving "
+                    "not enabled on device. "
                     "Please set up archiving and try again"
                 )
 
-            if not re.search(r"%No Rollback Confirmed Change pending", rollback_state):
+            if not re.search(r"%No Rollback Confirmed Change pending",
+                             rollback_state):
                 raise ValueError(
                     "Existing rollback change already pending. "
-                    "Please resolve by either issuing 'configure confirm' or 'configure revert now'"
+                    "Please resolve by issuing 'configure confirm' "
+                    "or 'configure revert now'"
                 )
 
-            self.send_command(f"configure terminal revert timer {commit_timeout}")
+            self.send_command(
+                f"configure terminal revert timer {commit_timeout}")
         else:
             self.send_command("configure terminal")
 
@@ -278,10 +292,14 @@ class Cliconf(CliconfBase):
 
         results = []
         requests = []
-        commit_delay = self.get_option("commit_delay")
-        commit_confirmed = self.get_option("commit_confirmed")
-        commit_confirmed_timeout = self.get_option("commit_confirmed_timeout")
-        command_timeout = self._connection.get_option("persistent_command_timeout")
+        commit_delay = self.get_option(
+            "commit_delay")
+        commit_confirmed = self.get_option(
+            "commit_confirmed")
+        commit_confirmed_timeout = self.get_option(
+            "commit_confirmed_timeout")
+        command_timeout = self._connection.get_option(
+            "persistent_command_timeout")
         if commit:
             self.configure()
             try:
@@ -300,14 +318,19 @@ class Cliconf(CliconfBase):
                     self.send_command("configure confirm")
 
             except Exception as exc:
-                error_msg = to_text(exc, errors="surrogate_or_strict").strip()
-                if 'command timeout triggered' in error_msg and commit_confirmed:
-                    exp_return = commit_confirmed_timeout * 60 - command_timeout
+                error_msg = to_text(exc,
+                                    errors="surrogate_or_strict").strip()
+
+                if ('command timeout triggered' in error_msg and
+                        commit_confirmed):
+                    exp_return = (commit_confirmed_timeout * 60
+                                  - command_timeout)
                     error_msg = (
-                        f"Got command timeout error. Rollback timer active. "
-                        f"Allow approximately {exp_return} seconds for "
-                        "the device to become reachable again"
+                        "Got command timeout error. Rollback timer active. "
+                        f"Allow approximately {exp_return} seconds from now "
+                        "for the device to become reachable again"
                     )
+
                 raise Exception(error_msg)
 
         else:
