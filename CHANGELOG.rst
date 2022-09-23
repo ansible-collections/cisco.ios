@@ -5,6 +5,15 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v3.3.2
+======
+
+Bugfixes
+--------
+
+- `prefix_lists` - fix prefix list facts generation to handle empty configuration correctly.
+- `cliconf` - get_device_info now tries to exit config mode if necessary before requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
+
 v3.3.1
 ======
 
