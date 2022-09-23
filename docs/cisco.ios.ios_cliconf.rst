@@ -92,7 +92,7 @@ Parameters
                     </td>
                 <td>
                         <div>Wait the specified amount of time in seconds before committing changes.</div>
-                        <div>Some changes like interface shutdown will take effect immediately. However, other changes like changing route protocol parameters, may take some time before leaving the device unreachable.</div>
+                        <div>Some changes, like interface shutdown, will take effect immediately. However, other changes, like changing routing protocol parameters, may take some time before leaving the device unreachable.</div>
                         <div>The commit_delay makes the task wait the specified amount of time before committing changes thus reducing the risk of committing changes before the device becomes unreachable.</div>
                         <div>Make sure commit_delay is lower than commit_confirmed_timeout and ansible_command_timeout.</div>
                 </td>
