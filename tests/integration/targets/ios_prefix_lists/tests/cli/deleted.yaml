@@ -64,6 +64,8 @@
       ansible.builtin.assert:
         that:
           - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted_all['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - result['after'] == {}
 
     - name: Delete all provided prefix lists configuration (idempotent)
       register: result
