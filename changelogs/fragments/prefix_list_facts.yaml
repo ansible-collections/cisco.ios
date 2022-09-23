@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`prefix_lists` - fix prefix list facts generation to handle empty configuration correctly."

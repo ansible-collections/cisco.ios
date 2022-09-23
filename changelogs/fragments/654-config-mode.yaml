@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cliconf - get_device_info now tries to exit config mode if necessary before requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
