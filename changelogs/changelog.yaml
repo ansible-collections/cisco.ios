@@ -442,7 +442,7 @@ releases:
     fragments:
       - 492-snmp-fact-view-key-correction.yaml
       - acl_2_6.yaml
-      - acls_bugfix_and_option_depreciation.yaml
+      - acls_bugfix_and_option_deprication.yaml
       - fix_fiveGigabit_name.yaml
       - fix_ip_ranges.yaml
       - fix_vlan.yaml
