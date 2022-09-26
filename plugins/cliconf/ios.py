@@ -31,6 +31,42 @@ description:
   commands from Cisco IOS network devices.
 version_added: 1.0.0
 options:
+  commit_confirmed:
+    type: boolean
+    default: false
+    description:
+    - enable or disable commit confirmed mode
+    env:
+    - name: ANSIBLE_IOS_COMMIT_CONFIRMED
+    vars:
+    - name: ansible_ios_commit_confirmed
+  commit_confirmed_timeout:
+    type: int
+    default: 1
+    description:
+    - Commits the configuration on a trial basis for the time
+      specified in minutes.
+    env:
+    - name: ANSIBLE_IOS_COMMIT_CONFIRMED_TIMEOUT
+    vars:
+    - name: ansible_ios_commit_confirmed_timeout
+  commit_delay:
+    type: int
+    default: 0
+    description:
+    - Wait the specified amount of time in seconds before committing changes.
+    - Some changes, like interface shutdown, will take effect immediately.
+      However, other changes, like changing routing protocol parameters, may
+      take some time before leaving the device unreachable.
+    - The commit_delay makes the task wait the specified amount of
+      time before committing changes thus reducing the risk of committing
+      changes before the device becomes unreachable.
+    - Make sure commit_delay is lower than commit_confirmed_timeout and
+      ansible_command_timeout.
+    env:
+    - name: ANSIBLE_IOS_COMMIT_DELAY
+    vars:
+    - name: ansible_ios_commit_delay
   config_commands:
     description:
     - Specifies a list of commands that can make configuration changes
@@ -186,6 +222,67 @@ class Cliconf(CliconfBase):
         return diff
 
     @enable_mode
+    def configure(self):
+        """
+        Enter global configuration mode based on the
+        status of commit_confirmed
+        :return: None
+        """
+        if self.get_option("commit_confirmed"):
+            commit_timeout = self.get_option(
+                "commit_confirmed_timeout",
+            )
+            command_timeout = self._connection.get_option(
+                "persistent_command_timeout",
+            )
+            archive_state = self.send_command(
+                "show archive",
+            )
+            rollback_state = self.send_command(
+                "show archive config rollback timer",
+            )
+
+            if (
+                self.get_option(
+                    "commit_delay",
+                )
+                >= commit_timeout * 60
+            ):
+                raise ValueError(
+                    "commit_delay can't be longer or equal to "
+                    "commit_confirmed_timeout. "
+                    "Please adjust and try again",
+                )
+
+            if command_timeout < self.get_option("commit_delay"):
+                raise ValueError(
+                    "ansible_command_timeout must be longer " "than commit_delay",
+                )
+
+            if re.search(r"Archive.*not.enabled", archive_state):
+                raise ValueError(
+                    "commit_confirmed option set, but archiving "
+                    "not enabled on device. "
+                    "Please set up archiving and try again",
+                )
+
+            if not re.search(
+                r"%No Rollback Confirmed Change pending",
+                rollback_state,
+            ):
+                raise ValueError(
+                    "Existing rollback change already pending. "
+                    "Please resolve by issuing 'configure confirm' "
+                    "or 'configure revert now'",
+                )
+
+            self.send_command(
+                f"configure terminal revert timer {commit_timeout}",
+            )
+        else:
+            self.send_command("configure terminal")
+
+    @enable_mode
     def edit_config(
         self,
         candidate=None,
@@ -205,18 +302,51 @@ class Cliconf(CliconfBase):
 
         results = []
         requests = []
+        commit_delay = self.get_option(
+            "commit_delay",
+        )
+        commit_confirmed = self.get_option(
+            "commit_confirmed",
+        )
+        commit_confirmed_timeout = self.get_option(
+            "commit_confirmed_timeout",
+        )
+        command_timeout = self._connection.get_option(
+            "persistent_command_timeout",
+        )
         if commit:
-            self.send_command("configure terminal")
-            for line in to_list(candidate):
-                if not isinstance(line, Mapping):
-                    line = {"command": line}
+            self.configure()
+            try:
+                for line in to_list(candidate):
+                    if not isinstance(line, Mapping):
+                        line = {"command": line}
 
-                cmd = line["command"]
-                if cmd != "end" and cmd[0] != "!":
-                    results.append(self.send_command(**line))
-                    requests.append(cmd)
+                    cmd = line["command"]
+                    if cmd != "end" and cmd[0] != "!":
+                        results.append(self.send_command(**line))
+                        requests.append(cmd)
 
-            self.send_command("end")
+                self.send_command("end")
+                if commit_confirmed:
+                    time.sleep(commit_delay)
+                    self.send_command("configure confirm")
+
+            except Exception as exc:
+                error_msg = to_text(
+                    exc,
+                    errors="surrogate_or_strict",
+                ).strip()
+
+                if "command timeout triggered" in error_msg and commit_confirmed:
+                    exp_return = commit_confirmed_timeout * 60 - command_timeout
+                    error_msg = (
+                        "Got command timeout error. Rollback timer active. "
+                        f"Allow approximately {exp_return} seconds from now "
+                        "for the device to become reachable again"
+                    )
+
+                raise Exception(error_msg)
+
         else:
             raise ValueError("check mode is not supported")
 
