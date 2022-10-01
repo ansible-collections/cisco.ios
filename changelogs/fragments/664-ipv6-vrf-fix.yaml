@@ -1,2 +1,2 @@
 bugfixes:
-  - fixes vrf support for ipv6 static routes
+  - cisco.ios.ios_static_routes - fix vrf for ipv6 static routes.
