@@ -111,7 +111,7 @@ class Route_maps(ResourceModule):
             if have.get("entries"):
                 for k, v in iteritems(want["entries"]):
                     have_entry = have["entries"].pop(k, {})
-                    if have_entry and want["entries"][k] != have_entry:
+                    if want["entries"][k] != have_entry:
                         # description gets merged with existing description, so explicit delete is required
                         # replaced and overridden state
                         if (
