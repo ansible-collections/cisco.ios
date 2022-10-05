@@ -93,6 +93,7 @@ class Static_RoutesArgs(object):
                 "gathered",
                 "rendered",
                 "parsed",
+                "summarized",
             ],
             "default": "merged",
             "type": "str",

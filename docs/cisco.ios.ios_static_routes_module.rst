@@ -429,6 +429,7 @@ Parameters
                                     <li>gathered</li>
                                     <li>rendered</li>
                                     <li>parsed</li>
+                                    <li>summarized</li>
                         </ul>
                 </td>
                 <td>
@@ -437,6 +438,7 @@ Parameters
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | include ip route|ipv6 route</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>summarized</em> will add static routes only if there are no existing static summary routes respectively. The check applies per VRF, but does not consider additional attributes like tag or metric. Besides, it behaves like the <em>merged</em> state.</div>
                 </td>
             </tr>
     </table>
@@ -919,6 +921,39 @@ Examples
     #         "ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105"
     #     ]
 
+    # Using summarized
+
+    # Before state:
+    # -------------
+
+    # vios#show running-config | include ip route|ipv6 route
+    # ip route 198.51.100.0 255.255.255.0 198.51.101.1
+
+    - name: Merge configuration if no summary route exists
+      cisco.ios.ios_static_routes:
+        config:
+        - address_families:
+          - afi: ipv4
+            routes:
+            - dest: 198.51.100.0/30
+              next_hops:
+              - forward_router_address: 198.51.101.1
+            - dest: 198.51.102.0/30
+              next_hops:
+              - forward_router_address: 198.51.101.1
+        state: summarized
+
+    # After state:
+    # ------------
+
+    # vios#show running-config | include ip route|ipv6 route
+    # ip route 198.51.100.0 255.255.255.0 198.51.101.1
+    # ip route 198.51.102.0 255.255.255.252 198.51.101.1
+
+    # Commands fired:
+    # ---------------
+
+    # ip route 198.51.102.0 255.255.255.252 198.51.101.1
 
 
 Return Values

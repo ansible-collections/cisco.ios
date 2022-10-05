@@ -144,6 +144,9 @@ options:
         option should be the same format as the output of command I(show running-config
         | include ip route|ipv6 route) executed on device. For state I(parsed) active
         connection to remote host is not required.
+      - The state I(summarized) will add static routes only if there are no existing static
+        summary routes respectively. The check applies per VRF, but does not consider
+        additional attributes like tag or metric. Besides, it behaves like the I(merged) state.
     type: str
     choices:
     - merged
@@ -153,6 +156,7 @@ options:
     - gathered
     - rendered
     - parsed
+    - summarized
     default: merged
 """
 EXAMPLES = """
@@ -617,6 +621,40 @@ EXAMPLES = """
 #         "ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3",
 #         "ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105"
 #     ]
+
+# Using summarized
+
+# Before state:
+# -------------
+
+# vios#show running-config | include ip route|ipv6 route
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1
+
+- name: Merge configuration if no summary route exists
+  cisco.ios.ios_static_routes:
+    config:
+    - address_families:
+      - afi: ipv4
+        routes:
+        - dest: 198.51.100.0/30
+          next_hops:
+          - forward_router_address: 198.51.101.1
+        - dest: 198.51.102.0/30
+          next_hops:
+          - forward_router_address: 198.51.101.1
+    state: summarized
+
+# After state:
+# ------------
+
+# vios#show running-config | include ip route|ipv6 route
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1
+# ip route 198.51.102.0 255.255.255.252 198.51.101.1
+
+# Commands fired:
+# ---------------
+
+# ip route 198.51.102.0 255.255.255.252 198.51.101.1
 """
 RETURN = """
 before:
@@ -680,6 +718,7 @@ def main():
         ("state", "overridden", ("config",)),
         ("state", "rendered", ("config",)),
         ("state", "parsed", ("running_config",)),
+        ("state", "summarized", ("config",)),
     ]
     mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
