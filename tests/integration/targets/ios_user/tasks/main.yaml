@@ -1,2 +1,3 @@
 ---
-- ansible.builtin.include: cli.yaml
+- name: Main task for user module
+  ansible.builtin.include_tasks: cli.yaml
