@@ -176,12 +176,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -189,41 +184,15 @@ class TestIosSnmpServerModule(TestIosModule):
                 "context": ["contextWord2", "contextWord1"],
                 "engine_id": [
                     {"id": "AB0C5342FA0A", "local": True},
-                    {
-                        "id": "AB0C5342FAAA",
-                        "remote": {"host": "172.16.0.1", "udp_port": 22},
-                    },
-                    {
-                        "id": "AB0C5342FAAB",
-                        "remote": {"host": "172.16.0.2", "udp_port": 23},
-                    },
+                    {"id": "AB0C5342FAAA", "remote": {"host": "172.16.0.1", "udp_port": 22}},
+                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
                 ],
-                "file_transfer": {
-                    "access_group": "testAcl",
-                    "protocol": ["ftp", "rcp"],
-                },
+                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "version": "v3",
-                        "version_option": "noauth",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
+                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                 ],
                 "hosts": [
                     {
@@ -260,16 +229,8 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {
-                        "community_string": "check",
-                        "host": "172.16.2.99",
-                        "traps": ["slb"],
-                    },
-                    {
-                        "community_string": "checktrap",
-                        "host": "172.16.2.99",
-                        "traps": ["isis"],
-                    },
+                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
+                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -311,11 +272,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "auth_framework": {"enable": True},
                     "bfd": {"enable": True},
                     "bgp": {"cbgp2": True, "enable": True},
-                    "bridge": {
-                        "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
-                    },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -343,11 +300,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -359,12 +312,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {
-                            "add": True,
-                            "attach": True,
-                            "delete": True,
-                            "detach": True,
-                        },
+                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -381,10 +329,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -418,23 +363,9 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {
-                        "acl_v4": "24",
-                        "group": "newfamily",
-                        "username": "newuser",
-                        "version": "v1",
-                    },
-                    {
-                        "acl_v4": "ipv6",
-                        "group": "familypaul",
-                        "username": "paul",
-                        "version": "v3",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "username": "replaceUser",
-                        "version": "v3",
-                    },
+                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
             },
         }
@@ -480,12 +411,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -495,43 +421,16 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"id": "AB0C5342FA0A", "local": True},
                     {
                         "id": "AB0C5342FAAA",
-                        "remote": {
-                            "host": "172.16.0.1",
-                            "udp_port": 22,
-                            "vrf": "mgmt",
-                        },
+                        "remote": {"host": "172.16.0.1", "udp_port": 22, "vrf": "mgmt"},
                     },
-                    {
-                        "id": "AB0C5342FAAB",
-                        "remote": {"host": "172.16.0.2", "udp_port": 23},
-                    },
+                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
                 ],
-                "file_transfer": {
-                    "access_group": "testAcl",
-                    "protocol": ["ftp", "rcp"],
-                },
+                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "version": "v3",
-                        "version_option": "noauth",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
+                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                 ],
                 "hosts": [
                     {
@@ -568,16 +467,8 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {
-                        "community_string": "check",
-                        "host": "172.16.2.99",
-                        "traps": ["slb"],
-                    },
-                    {
-                        "community_string": "checktrap",
-                        "host": "172.16.2.99",
-                        "traps": ["isis"],
-                    },
+                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
+                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -629,11 +520,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "backward_trans": True,
                         },
                     },
-                    "bridge": {
-                        "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
-                    },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -661,11 +548,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -677,12 +560,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {
-                            "add": True,
-                            "attach": True,
-                            "delete": True,
-                            "detach": True,
-                        },
+                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -699,10 +577,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -736,23 +611,9 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {
-                        "acl_v4": "24",
-                        "group": "newfamily",
-                        "username": "newuser",
-                        "version": "v1",
-                    },
-                    {
-                        "acl_v4": "ipv6",
-                        "group": "familypaul",
-                        "username": "paul",
-                        "version": "v3",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "username": "replaceUser",
-                        "version": "v3",
-                    },
+                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
             },
         }
@@ -1116,12 +977,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "cache": 2,
                 "chassis_id": "this is a chassis id string",
                 "communities": [
-                    {
-                        "acl_v6": "te",
-                        "name": "commu1",
-                        "ro": True,
-                        "view": "view1",
-                    },
+                    {"acl_v6": "te", "name": "commu1", "ro": True, "view": "view1"},
                     {"acl_v4": "1322", "name": "commu2", "ro": True},
                     {"acl_v4": "paul", "name": "commu3", "rw": True},
                 ],
@@ -1129,41 +985,15 @@ class TestIosSnmpServerModule(TestIosModule):
                 "context": ["contextWord2", "contextWord1"],
                 "engine_id": [
                     {"id": "AB0C5342FA0A", "local": True},
-                    {
-                        "id": "AB0C5342FAAA",
-                        "remote": {"host": "172.16.0.1", "udp_port": 22},
-                    },
-                    {
-                        "id": "AB0C5342FAAB",
-                        "remote": {"host": "172.16.0.2", "udp_port": 23},
-                    },
+                    {"id": "AB0C5342FAAA", "remote": {"host": "172.16.0.1", "udp_port": 22}},
+                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
                 ],
-                "file_transfer": {
-                    "access_group": "testAcl",
-                    "protocol": ["ftp", "rcp"],
-                },
+                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
-                    {
-                        "group": "group0",
-                        "version": "v3",
-                        "version_option": "auth",
-                    },
-                    {
-                        "acl_v4": "2",
-                        "group": "group1",
-                        "notify": "me",
-                        "version": "v1",
-                    },
-                    {
-                        "group": "group2",
-                        "version": "v3",
-                        "version_option": "priv",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "version": "v3",
-                        "version_option": "noauth",
-                    },
+                    {"group": "group0", "version": "v3", "version_option": "auth"},
+                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {"group": "group2", "version": "v3", "version_option": "priv"},
+                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                 ],
                 "hosts": [
                     {
@@ -1200,16 +1030,8 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {
-                        "community_string": "check",
-                        "host": "172.16.2.99",
-                        "traps": ["slb"],
-                    },
-                    {
-                        "community_string": "checktrap",
-                        "host": "172.16.2.99",
-                        "traps": ["isis"],
-                    },
+                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
+                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -1251,11 +1073,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "auth_framework": {"enable": True},
                     "bfd": {"enable": True},
                     "bgp": {"cbgp2": True, "enable": True},
-                    "bridge": {
-                        "enable": True,
-                        "newroot": True,
-                        "topologychange": True,
-                    },
+                    "bridge": {"enable": True, "newroot": True, "topologychange": True},
                     "casa": True,
                     "cef": {
                         "enable": True,
@@ -1283,11 +1101,7 @@ class TestIosSnmpServerModule(TestIosModule):
                                 "service_up": True,
                             },
                         },
-                        "evc": {
-                            "create": True,
-                            "delete": True,
-                            "status": True,
-                        },
+                        "evc": {"create": True, "delete": True, "status": True},
                     },
                     "event_manager": True,
                     "flowmon": True,
@@ -1299,12 +1113,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {
-                            "add": True,
-                            "attach": True,
-                            "delete": True,
-                            "detach": True,
-                        },
+                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -1321,10 +1130,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "retransmit": True,
                             "state_change": {
                                 "nssa_trans_change": True,
-                                "shamlink": {
-                                    "interface": True,
-                                    "neighbor": True,
-                                },
+                                "shamlink": {"interface": True, "neighbor": True},
                             },
                         },
                         "error": True,
@@ -1358,35 +1164,13 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {
-                        "acl_v4": "24",
-                        "group": "newfamily",
-                        "username": "newuser",
-                        "version": "v1",
-                    },
-                    {
-                        "acl_v4": "ipv6",
-                        "group": "familypaul",
-                        "username": "paul",
-                        "version": "v3",
-                    },
-                    {
-                        "group": "replaceUser",
-                        "username": "replaceUser",
-                        "version": "v3",
-                    },
+                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
                 "views": [
-                    {
-                        "name": "no-write.test",
-                        "family_name": "testiso",
-                        "excluded": True,
-                    },
-                    {
-                        "name": "newView",
-                        "family_name": "TestFamilyName",
-                        "included": True,
-                    },
+                    {"name": "no-write.test", "family_name": "testiso", "excluded": True},
+                    {"name": "newView", "family_name": "TestFamilyName", "included": True},
                 ],
             },
         }
@@ -1458,11 +1242,7 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {
-                        "community_string": "check",
-                        "host": "172.16.2.99",
-                        "traps": ["slb"],
-                    },
+                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
                 ],
             },
         }
@@ -1493,6 +1273,11 @@ class TestIosSnmpServerModule(TestIosModule):
                     snmp-server enable traps ospf cisco-specific errors
                     snmp-server enable traps ospf cisco-specific retransmit
                     snmp-server enable traps ospf cisco-specific lsa
+                    snmp-server enable traps envmon status
+                    snmp-server enable traps envmon supply
+                    snmp-server enable traps envmon temperature
+                    snmp-server enable traps envmon fan supply
+                    snmp-server enable traps envmon fan temperature
                     snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config
                     snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up
                     snmp-server host 172.16.2.99 informs version 2c check  msdp stun
@@ -1510,18 +1295,10 @@ class TestIosSnmpServerModule(TestIosModule):
         parsed = {
             "engine_id": [
                 {"id": "AB0C5342FA0A", "local": True},
-                {
-                    "id": "AB0C5342FAAB",
-                    "remote": {"host": "172.16.0.2", "udp_port": 23},
-                },
+                {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
             ],
             "users": [
-                {
-                    "username": "paul",
-                    "group": "familypaul",
-                    "version": "v3",
-                    "acl_v4": "ipv6",
-                },
+                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v4": "ipv6"},
             ],
             "traps": {
                 "ospf": {
@@ -1538,6 +1315,12 @@ class TestIosSnmpServerModule(TestIosModule):
                         "retransmit": True,
                         "lsa": True,
                     },
+                },
+                "envmon": {
+                    "status": True,
+                    "supply": True,
+                    "temperature": True,
+                    "fan": {"supply": True, "temperature": True},
                 },
                 "ethernet": {
                     "cfm": {
@@ -1591,21 +1374,13 @@ class TestIosSnmpServerModule(TestIosModule):
                     "traps": ["msdp", "stun"],
                     "version": "2c",
                 },
-                {
-                    "host": "172.16.2.99",
-                    "community_string": "check",
-                    "traps": ["slb", "pki"],
-                },
-                {
-                    "host": "172.16.2.99",
-                    "community_string": "checktrap",
-                    "traps": ["isis", "hsrp"],
-                },
+                {"host": "172.16.2.99", "community_string": "check", "traps": ["slb", "pki"]},
+                {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
             ],
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["parsed"]), sorted(parsed))
+        self.assertEqual(result["parsed"], parsed)
 
     def test_ios_snmp_server_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -1632,11 +1407,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "version": "3",
                     "version_option": "noauth",
                 },
-                {
-                    "host": "172.16.2.99",
-                    "community_string": "checktrap",
-                    "traps": ["isis", "hsrp"],
-                },
+                {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
             ],
         }
         result = self.execute_module(changed=False)
@@ -1649,24 +1420,13 @@ class TestIosSnmpServerModule(TestIosModule):
                 "config": {
                     "engine_id": [
                         {"id": "AB0C5342FA0A", "local": True},
-                        {
-                            "id": "AB0C5342FAAB",
-                            "remote": {"host": "172.16.0.2", "udp_port": 23},
-                        },
+                        {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
                     ],
                     "views": [
                         {"family_name": "iso", "name": "ro"},
-                        {
-                            "family_name": "internet",
-                            "included": True,
-                            "name": "ro",
-                        },
+                        {"family_name": "internet", "included": True, "name": "ro"},
                         {"family_name": "iso", "included": True, "name": "rw"},
-                        {
-                            "family_name": "internet",
-                            "included": True,
-                            "name": "rw",
-                        },
+                        {"family_name": "internet", "included": True, "name": "rw"},
                     ],
                     "users": [
                         {
@@ -1685,10 +1445,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "cisco_specific": {
                                 "state_change": {
                                     "nssa_trans_change": True,
-                                    "shamlink": {
-                                        "interface": True,
-                                        "neighbor": True,
-                                    },
+                                    "shamlink": {"interface": True, "neighbor": True},
                                 },
                                 "error": True,
                                 "retransmit": True,
@@ -1748,16 +1505,8 @@ class TestIosSnmpServerModule(TestIosModule):
                             "traps": ["msdp"],
                             "version": "2c",
                         },
-                        {
-                            "host": "172.16.2.99",
-                            "community_string": "check",
-                            "traps": ["slb"],
-                        },
-                        {
-                            "host": "172.16.2.99",
-                            "community_string": "checktrap",
-                            "traps": ["isis"],
-                        },
+                        {"host": "172.16.2.99", "community_string": "check", "traps": ["slb"]},
+                        {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis"]},
                     ],
                 },
                 "state": "rendered",
@@ -1804,10 +1553,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "username": "paul",
                             "group": "familypaul",
                             "version": "v3",
-                            "authentication": {
-                                "algorithm": "md5",
-                                "password": "somepass",
-                            },
+                            "authentication": {"algorithm": "md5", "password": "somepass"},
                             "encryption": {
                                 "priv": "aes",
                                 "priv_option": 128,
@@ -1819,9 +1565,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "state": "rendered",
             },
         )
-        rendered = [
-            "snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass",
-        ]
+        rendered = ["snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"]
         result = self.execute_module(changed=False)
         self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
