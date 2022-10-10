@@ -39,10 +39,6 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_hostname:
       redirect: cisco.ios.ios
-    ios_l2_interface:
-      redirect: cisco.ios.ios
-    ios_l3_interface:
-      redirect: cisco.ios.ios
     ios_linkagg:
       redirect: cisco.ios.ios
     ios_lldp:
@@ -65,13 +61,9 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_snmp_server:
       redirect: cisco.ios.ios
-    ios_static_route:
-      redirect: cisco.ios.ios
     ios_static_routes:
       redirect: cisco.ios.ios
     ios_system:
-      redirect: cisco.ios.ios
-    ios_vlan:
       redirect: cisco.ios.ios
     l2_interfaces:
       redirect: cisco.ios.ios
