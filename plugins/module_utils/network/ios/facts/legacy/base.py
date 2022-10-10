@@ -41,11 +41,7 @@ class FactsBase(object):
         self.responses = None
 
     def populate(self):
-        self.responses = run_commands(
-            self.module,
-            commands=self.COMMANDS,
-            check_rc=False,
-        )
+        self.responses = run_commands(self.module, commands=self.COMMANDS, check_rc=False)
 
     def run(self, cmd):
         return run_commands(self.module, commands=cmd, check_rc=False)
@@ -85,11 +81,7 @@ class Default(FactsBase):
         if match:
             self.facts["stacked_models"] = match
 
-        match = re.findall(
-            r"^System [Ss]erial [Nn]umber\s+: (\S+)",
-            data,
-            re.M,
-        )
+        match = re.findall(r"^System [Ss]erial [Nn]umber\s+: (\S+)", data, re.M)
         if match:
             self.facts["stacked_serialnums"] = match
 
@@ -97,11 +89,7 @@ class Default(FactsBase):
             self.facts["virtual_switch"] = "STACK"
 
     def parse_virtual_switch(self, data):
-        match = re.search(
-            r"^Virtual switch domain number : ([0-9]+)",
-            data,
-            re.M,
-        )
+        match = re.search(r"^Virtual switch domain number : ([0-9]+)", data, re.M)
         if match:
             self.facts["virtual_switch"] = "VSS"
             self.facts["virtual_switch_domain"] = match.group(1)
@@ -227,9 +215,7 @@ class Interfaces(FactsBase):
         if data and not any(err in data for err in lldp_errs):
             neighbors = self.run(["show lldp neighbors detail"])
             if neighbors:
-                self.facts["neighbors"].update(
-                    self.parse_neighbors(neighbors[0]),
-                )
+                self.facts["neighbors"].update(self.parse_neighbors(neighbors[0]))
 
         data = self.responses[4]
         cdp_errs = ["CDP is not enabled"]
@@ -237,9 +223,7 @@ class Interfaces(FactsBase):
         if data and not any(err in data for err in cdp_errs):
             cdp_neighbors = self.run(["show cdp neighbors detail"])
             if cdp_neighbors:
-                self.facts["neighbors"].update(
-                    self.parse_cdp_neighbors(cdp_neighbors[0]),
-                )
+                self.facts["neighbors"].update(self.parse_cdp_neighbors(cdp_neighbors[0]))
 
     def populate_interfaces(self, interfaces):
         facts = dict()
@@ -263,11 +247,7 @@ class Interfaces(FactsBase):
         for key, value in data.items():
             self.facts["interfaces"][key]["ipv4"] = list()
             primary_address = addresses = []
-            primary_address = re.findall(
-                r"Internet address is (.+)$",
-                value,
-                re.M,
-            )
+            primary_address = re.findall(r"Internet address is (.+)$", value, re.M)
             addresses = re.findall(r"Secondary address (.+)$", value, re.M)
             if len(primary_address) == 0:
                 continue
@@ -300,9 +280,7 @@ class Interfaces(FactsBase):
 
     def parse_neighbors(self, neighbors):
         facts = dict()
-        for entry in neighbors.split(
-            "------------------------------------------------",
-        ):
+        for entry in neighbors.split("------------------------------------------------"):
             if entry == "":
                 continue
             intf = self.parse_lldp_intf(entry)
@@ -399,7 +377,7 @@ class Interfaces(FactsBase):
     def parse_operstatus(self, data):
         match = re.search(r"^(?:.+) is (.+),", data, re.M)
         if match:
-            return match.group(1)
+            return (match.group(1)).lstrip()
 
     def parse_lldp_intf(self, data):
         match = re.search(r"^Local Intf: (.+)$", data, re.M)
@@ -417,11 +395,7 @@ class Interfaces(FactsBase):
             return match.group(1)
 
     def parse_cdp_intf_port(self, data):
-        match = re.search(
-            r"^Interface: (.+),  Port ID \(outgoing port\): (.+)$",
-            data,
-            re.M,
-        )
+        match = re.search(r"^Interface: (.+),  Port ID \(outgoing port\): (.+)$", data, re.M)
         if match:
             return match.group(1), match.group(2)
 
