@@ -1,4 +1,5 @@
 ---
-- ansible.builtin.include: cli.yaml
+- name: Main task for l3_interfaces module
+  ansible.builtin.include_tasks: cli.yaml
   tags:
     - network_cli

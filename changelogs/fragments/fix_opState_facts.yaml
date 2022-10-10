@@ -1,0 +1,2 @@
+bugfixes:
+  - facts - fix operstatus having a white space after value.

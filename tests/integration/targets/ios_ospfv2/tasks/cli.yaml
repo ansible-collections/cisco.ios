@@ -12,7 +12,7 @@
   delegate_to: localhost
 
 - name: Run test case (connection=ansible.netcommon.network_cli)
-  ansible.builtin.include: "{{ test_case_to_run }}"
+  ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   vars:
     ansible_connection: ansible.netcommon.network_cli
   with_items: "{{ test_items }}"

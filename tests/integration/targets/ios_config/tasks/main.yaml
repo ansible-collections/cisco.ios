@@ -1,11 +1,14 @@
 ---
-- ansible.builtin.include: cli.yaml
+- name: Main task for config module
+  ansible.builtin.include_tasks: cli.yaml
   tags:
     - network_cli
 
-- ansible.builtin.include: cli_config.yaml
+- name: Main task for vli_config tasks on config module
+  ansible.builtin.include_tasks: cli_config.yaml
   tags:
     - network_cli
 
-- ansible.builtin.include: redirection.yaml
+- name: Main task for specific Ansible version
+  ansible.builtin.include_tasks: redirection.yaml
   when: ansible_version.full is version('2.10.0', '>=')
