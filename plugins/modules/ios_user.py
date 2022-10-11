@@ -30,7 +30,7 @@ description:
   from the configuration that are not explicitly defined.
 version_added: 1.0.0
 notes:
-  - Tested against IOS 15.6
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -325,9 +325,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 def validate_privilege(value, module):
     if value and not 1 <= value <= 15:
-        module.fail_json(
-            msg="privilege must be between 1 and 15, got %s" % value,
-        )
+        module.fail_json(msg="privilege must be between 1 and 15, got %s" % value)
 
 
 def user_del_cmd(username):
@@ -367,9 +365,7 @@ def map_obj_to_commands(updates, module):
         command.append("username %s %s" % (want["name"], x))
 
     def add_hashed_password(command, want, x):
-        command.append(
-            "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
-        )
+        command.append("username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")))
 
     def add_ssh(command, want, x=None):
         command.append("ip ssh pubkey-chain")
@@ -402,11 +398,7 @@ def map_obj_to_commands(updates, module):
                         msg="Can not have both a user password and a user secret."
                         + " Please choose one or the other.",
                     )
-                add(
-                    commands,
-                    want,
-                    "%s %s" % (password_type, want["configured_password"]),
-                )
+                add(commands, want, "%s %s" % (password_type, want["configured_password"]))
         if needs_update(want, have, "hashed_password"):
             add_hashed_password(commands, want, want["hashed_password"])
         if needs_update(want, have, "nopassword"):
@@ -428,11 +420,7 @@ def parse_sshkey(data, user):
     sshcfg = re.search(sshregex, data, re.M)
     key_list = []
     if sshcfg:
-        match = re.findall(
-            "key-hash (\\S+ \\S+(?: .+)?)$",
-            sshcfg.group(),
-            re.M,
-        )
+        match = re.findall("key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M)
         if match:
             key_list = match
     return key_list
@@ -555,16 +543,9 @@ def main():
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
-        hashed_password=dict(
-            no_log=True,
-            type="dict",
-            options=hashed_password_spec,
-        ),
+        hashed_password=dict(no_log=True, type="dict", options=hashed_password_spec),
         nopassword=dict(type="bool"),
-        update_password=dict(
-            default="always",
-            choices=["on_create", "always"],
-        ),
+        update_password=dict(default="always", choices=["on_create", "always"]),
         password_type=dict(default="secret", choices=["secret", "password"]),
         privilege=dict(type="int"),
         view=dict(aliases=["role"]),

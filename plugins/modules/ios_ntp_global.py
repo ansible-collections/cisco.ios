@@ -22,7 +22,7 @@ version_added: 2.5.0
 author:
 - Sagar Paul (@KB-perByte)
 notes:
-- Tested against Cisco IOSv Version 15.6.
+- Tested against Cisco IOSXE Version 17.3 on CML.
 - This module works with connection C(network_cli).
 options:
   config:
