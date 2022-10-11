@@ -20,7 +20,7 @@ short_description: Resource module to configure logging.
 description: This module manages the logging attributes of Cisco IOS network devices
 author: Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.6
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
   - The Configuration defaults of the Cisco IOS network devices

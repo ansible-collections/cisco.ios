@@ -4,7 +4,7 @@
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS network appliances.
 
-This collection has been tested against Cisco IOSv version 15.2 on VIRL.
+This collection has been tested against Cisco IOSXE Version 17.3 on CML.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility

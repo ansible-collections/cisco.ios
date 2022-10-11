@@ -31,7 +31,7 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-  - Tested against IOS 15.6
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -408,28 +408,14 @@ def map_obj_to_commands(updates, module):
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
         if want["interfaces"] is not None:
-            for intf in set(have.get("interfaces", [])).difference(
-                want["interfaces"],
-            ):
-                commands.extend(
-                    [
-                        "interface %s" % intf,
-                        "no vrf forwarding %s" % want["name"],
-                    ],
-                )
-            for intf in set(want["interfaces"]).difference(
-                have.get("interfaces", []),
-            ):
+            for intf in set(have.get("interfaces", [])).difference(want["interfaces"]):
+                commands.extend(["interface %s" % intf, "no vrf forwarding %s" % want["name"]])
+            for intf in set(want["interfaces"]).difference(have.get("interfaces", [])):
                 cfg = get_config(module)
                 configobj = NetworkConfig(indent=1, contents=cfg)
                 children = configobj["interface %s" % intf].children
                 intf_config = "\n".join(children)
-                commands.extend(
-                    [
-                        "interface %s" % intf,
-                        "vrf forwarding %s" % want["name"],
-                    ],
-                )
+                commands.extend(["interface %s" % intf, "vrf forwarding %s" % want["name"]])
                 match = re.search("ip address .+", intf_config, re.M)
                 if match:
                     commands.append(match.group())
@@ -570,18 +556,10 @@ def map_config_to_obj(module):
             "route_both": parse_both(configobj, item),
             "route_import_ipv4": parse_import_ipv4(configobj, item),
             "route_export_ipv4": parse_export_ipv4(configobj, item),
-            "route_both_ipv4": parse_both(
-                configobj,
-                item,
-                address_family="ipv4",
-            ),
+            "route_both_ipv4": parse_both(configobj, item, address_family="ipv4"),
             "route_import_ipv6": parse_import_ipv6(configobj, item),
             "route_export_ipv6": parse_export_ipv6(configobj, item),
-            "route_both_ipv6": parse_both(
-                configobj,
-                item,
-                address_family="ipv6",
-            ),
+            "route_both_ipv6": parse_both(configobj, item, address_family="ipv6"),
         }
         instances.append(obj)
     return instances
@@ -682,10 +660,7 @@ def check_declarative_intent_params(want, module, result):
         if result["changed"]:
             time.sleep(module.params["delay"])
         name = module.params["name"]
-        rc, out, err = exec_command(
-            module,
-            "show vrf | include {0}".format(name),
-        )
+        rc, out, err = exec_command(module, "show vrf | include {0}".format(name))
         if rc == 0:
             data = out.strip().split()
             if not data:
@@ -697,9 +672,7 @@ def check_declarative_intent_params(want, module, result):
                     if w.get("associated_interfaces") is None:
                         continue
                     for i in w["associated_interfaces"]:
-                        if get_interface_type(i) is not get_interface_type(
-                            interface,
-                        ):
+                        if get_interface_type(i) is not get_interface_type(interface):
                             module.fail_json(
                                 msg="Interface %s not configured on vrf %s" % (interface, name),
                             )
