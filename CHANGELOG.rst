@@ -11,7 +11,6 @@ v4.0.0
 Removed Features (previously deprecated)
 ----------------------------------------
 
-- This release removes the following deprecated plugins that have reached their end-of-life.
 - ios_interface
 - ios_l2_interface
 - ios_l3_interface
