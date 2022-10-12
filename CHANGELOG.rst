@@ -15,7 +15,7 @@ Removed Features (previously deprecated)
 - ios_l2_interface - use ios_l2_interfaces instead.
 - ios_l3_interface - use ios_l3_interfaces instead.
 - ios_static_route - use ios_static_routes instead.
-- ios_vlan - use with ios_vlans instead.
+- ios_vlan - use ios_vlans instead.
 
 Bugfixes
 --------
