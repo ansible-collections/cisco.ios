@@ -5,6 +5,31 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- This includes the following modules:
+- This release removes all deprecated plugins that have reached their end-of-life.
+- ios_interface
+- ios_l2_interface
+- ios_l3_interface
+- ios_static_route
+- ios_vlan
+
+Bugfixes
+--------
+
+- facts - fix operstatus having a white space after value.
+- ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
+
+Documentation Changes
+---------------------
+
+- Update supported IOSXE version for modules.
+
 v3.3.2
 ======
 
