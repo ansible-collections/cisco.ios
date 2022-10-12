@@ -1,3 +1,0 @@
----
-trivial:
-  - Remove tests for to-be-removed net_* modules. (https://github.com/ansible-collections/ansible.netcommon/pull/458)
