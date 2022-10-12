@@ -4910,7 +4910,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version 15.6.
+   - Tested against Cisco IOSXE Version 17.3 on CML.
    - This module works with connection ``network_cli``.
 
 

@@ -23,7 +23,7 @@ author:
  - Sumit Jaiswal (@justjais)
  - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.2
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:

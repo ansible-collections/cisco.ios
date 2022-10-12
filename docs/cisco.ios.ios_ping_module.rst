@@ -207,7 +207,7 @@ Notes
 -----
 
 .. note::
-   - Tested against IOS 16.4.0.
+   - Tested against Cisco IOSXE Version 17.3 on CML.
    - For a general purpose network module, see the `net_ping <https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html>`_ module.
    - For Windows targets, use the `win_ping <https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html>`_ module instead.
    - For targets running Python, use the `ping <https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html>`_ module instead.

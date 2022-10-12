@@ -3,7 +3,7 @@
 
 - name: Setup
   cisco.ios.ios_config:
-    lines: no ip domain-name
+    lines: no ip domain name
     match: none
 
 - name: Configure domain_name
@@ -26,7 +26,7 @@
 
 - name: Teardown
   cisco.ios.ios_config:
-    lines: no ip domain-name
+    lines: no ip domain name
     match: none
 
 - ansible.builtin.debug: msg="END cli/set_domain_name.yaml on connection={{ ansible_connection }}"
