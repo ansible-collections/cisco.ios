@@ -8,8 +8,8 @@ Cisco Ios Collection Release Notes
 v4.0.0
 ======
 
-Major Changes
--------------
+Removed Features (previously deprecated)
+----------------------------------------
 
 - This includes the following modules:
 - This release removes all deprecated plugins that have reached their end-of-life.

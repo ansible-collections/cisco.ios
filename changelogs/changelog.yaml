@@ -2,668 +2,662 @@ ancestor: null
 releases:
   1.0.0:
     modules:
-      - description: ACL interfaces resource module
-        name: ios_acl_interfaces
-        namespace: ""
-      - description: ACLs resource module
-        name: ios_acls
-        namespace: ""
-      - description: Manage multiline banners on Cisco IOS devices
-        name: ios_banner
-        namespace: ""
-      - description: Configure global BGP protocol settings on Cisco IOS.
-        name: ios_bgp
-        namespace: ""
-      - description: Run commands on remote devices running Cisco IOS
-        name: ios_command
-        namespace: ""
-      - description: Manage Cisco IOS configuration sections
-        name: ios_config
-        namespace: ""
-      - description: Collect facts from remote devices running Cisco IOS
-        name: ios_facts
-        namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Interface on Cisco
-          IOS network devices
-        name: ios_interface
-        namespace: ""
-      - description: Interfaces resource module
-        name: ios_interfaces
-        namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Layer-2 interface
-          on Cisco IOS devices.
-        name: ios_l2_interface
-        namespace: ""
-      - description: L2 interfaces resource module
-        name: ios_l2_interfaces
-        namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
-          on Cisco IOS network devices.
-        name: ios_l3_interface
-        namespace: ""
-      - description: L3 interfaces resource module
-        name: ios_l3_interfaces
-        namespace: ""
-      - description: LACP resource module
-        name: ios_lacp
-        namespace: ""
-      - description: LACP interfaces resource module
-        name: ios_lacp_interfaces
-        namespace: ""
-      - description: LAG interfaces resource module
-        name: ios_lag_interfaces
-        namespace: ""
-      - description: Manage link aggregation groups on Cisco IOS network devices
-        name: ios_linkagg
-        namespace: ""
-      - description: Manage LLDP configuration on Cisco IOS network devices.
-        name: ios_lldp
-        namespace: ""
-      - description: LLDP resource module
-        name: ios_lldp_global
-        namespace: ""
-      - description: LLDP interfaces resource module
-        name: ios_lldp_interfaces
-        namespace: ""
-      - description: Manage logging on network devices
-        name: ios_logging
-        namespace: ""
-      - description: Manages core NTP configuration.
-        name: ios_ntp
-        namespace: ""
-      - description: OSPFv2 resource module
-        name: ios_ospfv2
-        namespace: ""
-      - description: Tests reachability using ping from Cisco IOS network devices
-        name: ios_ping
-        namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage static IP routes
-          on Cisco IOS network devices
-        name: ios_static_route
-        namespace: ""
-      - description: Static routes resource module
-        name: ios_static_routes
-        namespace: ""
-      - description: Manage the system attributes on Cisco IOS devices
-        name: ios_system
-        namespace: ""
-      - description: Manage the aggregate of local users on Cisco IOS device
-        name: ios_user
-        namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
-          devices
-        name: ios_vlan
-        namespace: ""
-      - description: VLANs resource module
-        name: ios_vlans
-        namespace: ""
-      - description: Manage the collection of VRF definitions on Cisco IOS devices
-        name: ios_vrf
-        namespace: ""
+    - description: ACL interfaces resource module
+      name: ios_acl_interfaces
+      namespace: ''
+    - description: ACLs resource module
+      name: ios_acls
+      namespace: ''
+    - description: Manage multiline banners on Cisco IOS devices
+      name: ios_banner
+      namespace: ''
+    - description: Configure global BGP protocol settings on Cisco IOS.
+      name: ios_bgp
+      namespace: ''
+    - description: Run commands on remote devices running Cisco IOS
+      name: ios_command
+      namespace: ''
+    - description: Manage Cisco IOS configuration sections
+      name: ios_config
+      namespace: ''
+    - description: Collect facts from remote devices running Cisco IOS
+      name: ios_facts
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Interface on Cisco
+        IOS network devices
+      name: ios_interface
+      namespace: ''
+    - description: Interfaces resource module
+      name: ios_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Layer-2 interface
+        on Cisco IOS devices.
+      name: ios_l2_interface
+      namespace: ''
+    - description: L2 interfaces resource module
+      name: ios_l2_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
+        on Cisco IOS network devices.
+      name: ios_l3_interface
+      namespace: ''
+    - description: L3 interfaces resource module
+      name: ios_l3_interfaces
+      namespace: ''
+    - description: LACP resource module
+      name: ios_lacp
+      namespace: ''
+    - description: LACP interfaces resource module
+      name: ios_lacp_interfaces
+      namespace: ''
+    - description: LAG interfaces resource module
+      name: ios_lag_interfaces
+      namespace: ''
+    - description: Manage link aggregation groups on Cisco IOS network devices
+      name: ios_linkagg
+      namespace: ''
+    - description: Manage LLDP configuration on Cisco IOS network devices.
+      name: ios_lldp
+      namespace: ''
+    - description: LLDP resource module
+      name: ios_lldp_global
+      namespace: ''
+    - description: LLDP interfaces resource module
+      name: ios_lldp_interfaces
+      namespace: ''
+    - description: Manage logging on network devices
+      name: ios_logging
+      namespace: ''
+    - description: Manages core NTP configuration.
+      name: ios_ntp
+      namespace: ''
+    - description: OSPFv2 resource module
+      name: ios_ospfv2
+      namespace: ''
+    - description: Tests reachability using ping from Cisco IOS network devices
+      name: ios_ping
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage static IP routes
+        on Cisco IOS network devices
+      name: ios_static_route
+      namespace: ''
+    - description: Static routes resource module
+      name: ios_static_routes
+      namespace: ''
+    - description: Manage the system attributes on Cisco IOS devices
+      name: ios_system
+      namespace: ''
+    - description: Manage the aggregate of local users on Cisco IOS device
+      name: ios_user
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
+        devices
+      name: ios_vlan
+      namespace: ''
+    - description: VLANs resource module
+      name: ios_vlans
+      namespace: ''
+    - description: Manage the collection of VRF definitions on Cisco IOS devices
+      name: ios_vrf
+      namespace: ''
     plugins:
       cliconf:
-        - description: Use ios cliconf to run command on Cisco IOS platform
-          name: ios
-          namespace: null
-    release_date: "2020-06-23"
+      - description: Use ios cliconf to run command on Cisco IOS platform
+        name: ios
+        namespace: null
+    release_date: '2020-06-23'
   1.0.1:
     changes:
       bugfixes:
-        - Make src, backup and backup_options in ios_config work when module alias is
-          used (https://github.com/ansible-collections/cisco.ios/pull/107).
+      - Make src, backup and backup_options in ios_config work when module alias is
+        used (https://github.com/ansible-collections/cisco.ios/pull/107).
       minor_changes:
-        - Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
-        - Updated docs.
+      - Removes IOS sanity ignores and sync for argspec and docstring (https://github.com/ansible-collections/cisco.ios/pull/114).
+      - Updated docs.
     fragments:
-      - 1.1.0_update_docs.yaml
-      - 90-add-change-log-1.0.0.yaml
-      - handle_src_backup_with_module_alias.yaml
-      - remove_ios_ignore.yaml
-    release_date: "2020-08-03"
+    - 1.1.0_update_docs.yaml
+    - 90-add-change-log-1.0.0.yaml
+    - handle_src_backup_with_module_alias.yaml
+    - remove_ios_ignore.yaml
+    release_date: '2020-08-03'
   1.0.2:
     changes:
       release_summary: Re-releasing 1.0.1 with updated changelog.
     fragments:
-      - 1.0.2.yaml
-    release_date: "2020-08-07"
+    - 1.0.2.yaml
+    release_date: '2020-08-07'
   1.0.3:
     changes:
       bugfixes:
-        - To fix IOS l2 interfaces for traceback error and merge operation not working
-          as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
-        - To fix the issue where ios acls was complaining in absence of protocol option
-          value (https://github.com/ansible-collections/cisco.ios/pull/124).
-      release_summary:
-        Releasing 1.0.3 with updated readme with changelog link, galaxy
+      - To fix IOS l2 interfaces for traceback error and merge operation not working
+        as expected (https://github.com/ansible-collections/cisco.ios/pull/103).
+      - To fix the issue where ios acls was complaining in absence of protocol option
+        value (https://github.com/ansible-collections/cisco.ios/pull/124).
+      release_summary: Releasing 1.0.3 with updated readme with changelog link, galaxy
         description, and bugfix.
-    release_date: "2020-08-28"
+    release_date: '2020-08-28'
   1.1.0:
     changes:
       bugfixes:
-        - Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
-        - Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
-        - Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
-        - To fix the incorrect command displayed under ios_l3_interfaces resource module
-          docs (https://github.com/ansible-collections/cisco.ios/pull/149).
+      - Add support for interface type Virtual-Template (https://github.com/ansible-collections/cisco.ios/pull/154).
+      - Added support for interface Tunnel (https://github.com/ansible-collections/cisco.ios/pull/145).
+      - Fix element type of ios_command's command parameter (https://github.com/ansible-collections/cisco.ios/pull/151).
+      - To fix the incorrect command displayed under ios_l3_interfaces resource module
+        docs (https://github.com/ansible-collections/cisco.ios/pull/149).
       minor_changes:
-        - Add ios_ospfv3 module.
+      - Add ios_ospfv3 module.
     modules:
-      - description: OSPFv3 resource module
-        name: ios_ospfv3
-        namespace: ""
-    release_date: "2020-10-01"
+    - description: OSPFv3 resource module
+      name: ios_ospfv3
+      namespace: ''
+    release_date: '2020-10-01'
   1.2.0:
     changes:
       bugfixes:
-        - To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
-        - To fix IOS static routes idempotency issue coz of netmask to cidr conversion
-          (https://github.com/ansible-collections/cisco.ios/pull/177).
-        - To fix ios_static_routes where interface ip route-cache config was being parsed
-          and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
-        - To fix ios_vlans traceback bug when the name had Remote in it and added unit
-          TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
-        - To fix the traceback issue for longer vlan name having more than 32 characters
-          (https://github.com/ansible-collections/cisco.ios/pull/182).
+      - To enable ios ospfv3 integration tests (https://github.com/ansible-collections/cisco.ios/pull/165).
+      - To fix IOS static routes idempotency issue coz of netmask to cidr conversion
+        (https://github.com/ansible-collections/cisco.ios/pull/177).
+      - To fix ios_static_routes where interface ip route-cache config was being parsed
+        and resulted traceback (https://github.com/ansible-collections/cisco.ios/pull/176).
+      - To fix ios_vlans traceback bug when the name had Remote in it and added unit
+        TC for the module (https://github.com/ansible-collections/cisco.ios/pull/179).
+      - To fix the traceback issue for longer vlan name having more than 32 characters
+        (https://github.com/ansible-collections/cisco.ios/pull/182).
       minor_changes:
-        - Add ios_ospf_interfaces module.
+      - Add ios_ospf_interfaces module.
     modules:
-      - description: OSPF Interfaces resource module
-        name: ios_ospf_interfaces
-        namespace: ""
-    release_date: "2020-11-01"
+    - description: OSPF Interfaces resource module
+      name: ios_ospf_interfaces
+      namespace: ''
+    release_date: '2020-11-01'
   1.2.1:
     changes:
       bugfixes:
-        - Add version key to galaxy.yaml to work around ansible-galaxy bug.
-        - To fix ios_ospf_interfaces resource module authentication param behaviour
-          (https://github.com/ansible-collections/cisco.ios/issues/209).
-    release_date: "2020-11-26"
+      - Add version key to galaxy.yaml to work around ansible-galaxy bug.
+      - To fix ios_ospf_interfaces resource module authentication param behaviour
+        (https://github.com/ansible-collections/cisco.ios/issues/209).
+    release_date: '2020-11-26'
   1.3.0:
     changes:
       bugfixes:
-        - Add support size and df_bit options for ios_ping (https://github.com/ansible-collections/cisco.ios/pull/228).
-        - IOS resource modules minor doc updates (https://github.com/ansible-collections/cisco.ios/pull/233).
-        - IOS_CONFIG, incorrectly claims success when Command Rejected (https://github.com/ansible-collections/cisco.ios/pull/215).
-        - To fix ios_static_routes facts parsing in presence of interface (https://github.com/ansible-collections/cisco.ios/pull/225).
-        - Update doc to clarify on input config pattern (https://github.com/ansible-collections/cisco.ios/pull/220).
-        - Updating ios acls module to use newer CLI RM approach to resolve all of the
-          ACL related bugs (https://github.com/ansible-collections/cisco.ios/pull/211).
+      - Add support size and df_bit options for ios_ping (https://github.com/ansible-collections/cisco.ios/pull/228).
+      - IOS resource modules minor doc updates (https://github.com/ansible-collections/cisco.ios/pull/233).
+      - IOS_CONFIG, incorrectly claims success when Command Rejected (https://github.com/ansible-collections/cisco.ios/pull/215).
+      - To fix ios_static_routes facts parsing in presence of interface (https://github.com/ansible-collections/cisco.ios/pull/225).
+      - Update doc to clarify on input config pattern (https://github.com/ansible-collections/cisco.ios/pull/220).
+      - Updating ios acls module to use newer CLI RM approach to resolve all of the
+        ACL related bugs (https://github.com/ansible-collections/cisco.ios/pull/211).
       minor_changes:
-        - Add ios_bgp_global module.
+      - Add ios_bgp_global module.
     modules:
-      - description: BGP Global resource module
-        name: ios_bgp_global
-        namespace: ""
-    release_date: "2021-01-29"
+    - description: BGP Global resource module
+      name: ios_bgp_global
+      namespace: ''
+    release_date: '2021-01-29'
   2.0.0:
     changes:
       bugfixes:
-        - To fix ios_acls parsed state example under module doc (https://github.com/ansible-collections/cisco.ios/pull/244).
-        - fix error when comparing two vlan using string instead of the int value (https://github.com/ansible-collections/cisco.ios/pull/249).
+      - To fix ios_acls parsed state example under module doc (https://github.com/ansible-collections/cisco.ios/pull/244).
+      - fix error when comparing two vlan using string instead of the int value (https://github.com/ansible-collections/cisco.ios/pull/249).
       major_changes:
-        - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
-          for more details.
-        - Requires ansible.netcommon v2.0.0+ to support ansible_network_single_user_mode
-          and ansible_network_import_modules.
+      - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
+        for more details.
+      - Requires ansible.netcommon v2.0.0+ to support ansible_network_single_user_mode
+        and ansible_network_import_modules.
       minor_changes:
-        - Add ios_bgp_address_family Resource Module. (https://github.com/ansible-collections/cisco.ios/pull/219).
-        - Adds support for single_user_mode command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
+      - Add ios_bgp_address_family Resource Module. (https://github.com/ansible-collections/cisco.ios/pull/219).
+      - Adds support for single_user_mode command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
     modules:
-      - description: BGP Address Family resource module.
-        name: ios_bgp_address_family
-        namespace: ""
-    release_date: "2021-02-25"
+    - description: BGP Address Family resource module.
+      name: ios_bgp_address_family
+      namespace: ''
+    release_date: '2021-02-25'
   2.0.1:
     changes:
       bugfixes:
-        - Doc update to update users WRT to idempotence issue in ios_logging when logging
-          is ON (https://github.com/ansible-collections/cisco.ios/pull/287).
-        - PR to fix ios_l2_interfaces issue where it wasn't working with range of vlans
-          as expected (https://github.com/ansible-collections/cisco.ios/pull/264).
-        - To add support for TwoGigabitEthernet interface option from IOS standpoint
-          (https://github.com/ansible-collections/cisco.ios/pull/262).
-        - To fix ios_acls Nonetype error when aces are empty (https://github.com/ansible-collections/cisco.ios/pull/260).
-        - To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
-        - To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
-        - To fix ios_vlans traceback error when empty line with just Ports information
-          is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
+      - Doc update to update users WRT to idempotence issue in ios_logging when logging
+        is ON (https://github.com/ansible-collections/cisco.ios/pull/287).
+      - PR to fix ios_l2_interfaces issue where it wasn't working with range of vlans
+        as expected (https://github.com/ansible-collections/cisco.ios/pull/264).
+      - To add support for TwoGigabitEthernet interface option from IOS standpoint
+        (https://github.com/ansible-collections/cisco.ios/pull/262).
+      - To fix ios_acls Nonetype error when aces are empty (https://github.com/ansible-collections/cisco.ios/pull/260).
+      - To fix ios_acls log and log_input params (https://github.com/ansible-collections/cisco.ios/pull/265).
+      - To fix ios_acls resource module acl_name traceback over some switches (https://github.com/ansible-collections/cisco.ios/pull/285).
+      - To fix ios_vlans traceback error when empty line with just Ports information
+        is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
       minor_changes:
-        - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
-    release_date: "2021-03-30"
+      - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
+    release_date: '2021-03-30'
   2.1.0:
     changes:
       bugfixes:
-        - To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
+      - To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
       minor_changes:
-        - Add ios_route_maps Resource Module (https://github.com/ansible-collections/cisco.ios/pull/297).
-        - Add support for ansible_network_resources key allows to fetch the available
-          resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
+      - Add ios_route_maps Resource Module (https://github.com/ansible-collections/cisco.ios/pull/297).
+      - Add support for ansible_network_resources key allows to fetch the available
+        resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
       security_fixes:
-        - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
+      - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
     modules:
-      - description: Route Maps resource module.
-        name: ios_route_maps
-        namespace: ""
-    release_date: "2021-04-27"
+    - description: Route Maps resource module.
+      name: ios_route_maps
+      namespace: ''
+    release_date: '2021-04-27'
   2.2.0:
     changes:
       bugfixes:
-        - Fix IOS bgp global RM tracback while there's no bestpath/nopeerup_delay configured.
-        - Fix logging commands for v12 versions (https://github.com/ansible-collections/cisco.ios/issues/207).
-        - To fix IOS vlans RM where traceback was thrown if show vlan wasn't supported
-          on the device and also fix replace and overridden state behaviour.
-        - To fix Spelling glitch.
-        - To fix ios acls overridden and replaced state of their inconsistent behaviour
-          (https://github.com/ansible-collections/cisco.ios/issues/250).
-        - To fix ios_bgp_address_family neighbor next_hop_self param (https://github.com/ansible-collections/cisco.ios/issues/319).
+      - Fix IOS bgp global RM tracback while there's no bestpath/nopeerup_delay configured.
+      - Fix logging commands for v12 versions (https://github.com/ansible-collections/cisco.ios/issues/207).
+      - To fix IOS vlans RM where traceback was thrown if show vlan wasn't supported
+        on the device and also fix replace and overridden state behaviour.
+      - To fix Spelling glitch.
+      - To fix ios acls overridden and replaced state of their inconsistent behaviour
+        (https://github.com/ansible-collections/cisco.ios/issues/250).
+      - To fix ios_bgp_address_family neighbor next_hop_self param (https://github.com/ansible-collections/cisco.ios/issues/319).
       minor_changes:
-        - Add ios_logging_global module.
-        - IOS Prefix list resource module.
+      - Add ios_logging_global module.
+      - IOS Prefix list resource module.
     modules:
-      - description: Logging resource module.
-        name: ios_logging_global
-        namespace: ""
-      - description: Prefix Lists resource module.
-        name: ios_prefix_lists
-        namespace: ""
-    release_date: "2021-05-18"
+    - description: Logging resource module.
+      name: ios_logging_global
+      namespace: ''
+    - description: Prefix Lists resource module.
+      name: ios_prefix_lists
+      namespace: ''
+    release_date: '2021-05-18'
   2.3.0:
     changes:
       bugfixes:
-        - Add support for autoconfig and dhcp keywords for IPv6 addresses in l3_interfaces
-          (https://github.com/ansible-collections/cisco.ios/pull/269).
-        - Reordering names of interface for proper value assignment
-        - fixes Serial interface configuration for l3_interfaces module and Unit Test
-          cases added.
-        - fixes banner module with new attribute introduced
-        - fixes soft_reconfiguration and prefix_list command formation.
+      - Add support for autoconfig and dhcp keywords for IPv6 addresses in l3_interfaces
+        (https://github.com/ansible-collections/cisco.ios/pull/269).
+      - Reordering names of interface for proper value assignment
+      - fixes Serial interface configuration for l3_interfaces module and Unit Test
+        cases added.
+      - fixes banner module with new attribute introduced
+      - fixes soft_reconfiguration and prefix_list command formation.
       minor_changes:
-        - Deprecated next_hop_self type bool and introduced nexthop_self as dict under
-          bgp_address_family.
-        - Move ios_config idempotent warning message with the task response under warnings
-          key if changed is True
-        - PR adds the implementation of object group param to acls source and destination
-          parameters (https://github.com/ansible-collections/cisco.ios/issues/339).
-        - PR to fix the bgp global activate rendering and fix bgp address family round
-          trip failure (https://github.com/ansible-collections/cisco.ios/issues/353).
-        - To add ospfv2 passive_interfaces param with added functionality (https://github.com/ansible-collections/cisco.ios/issues/336).
-        - To add updated prefix lists and route maps params to Bgp AF RM (https://github.com/ansible-collections/cisco.ios/issues/267).
-        - To update prefix list and acls merge behaviour and update prefix list description
-          position in model (https://github.com/ansible-collections/cisco.ios/issues/345).
+      - Deprecated next_hop_self type bool and introduced nexthop_self as dict under
+        bgp_address_family.
+      - Move ios_config idempotent warning message with the task response under warnings
+        key if changed is True
+      - PR adds the implementation of object group param to acls source and destination
+        parameters (https://github.com/ansible-collections/cisco.ios/issues/339).
+      - PR to fix the bgp global activate rendering and fix bgp address family round
+        trip failure (https://github.com/ansible-collections/cisco.ios/issues/353).
+      - To add ospfv2 passive_interfaces param with added functionality (https://github.com/ansible-collections/cisco.ios/issues/336).
+      - To add updated prefix lists and route maps params to Bgp AF RM (https://github.com/ansible-collections/cisco.ios/issues/267).
+      - To update prefix list and acls merge behaviour and update prefix list description
+        position in model (https://github.com/ansible-collections/cisco.ios/issues/345).
     fragments:
-      - 267_update_bgp_af_prefix_lists_route_maps_params.yaml
-      - 313_reordering_interface.yaml
-      - 317-authorize.yaml
-      - 336_add_updated_passive_interfaces_ospfv2.yaml
-      - 339_fix_acls_og_source_destination.yaml
-      - 345_update_prefix_list_and_acls_merge_behaviour.yaml
-      - 353_fix_bgp_global_activate_bgp_af_rt.yaml
-      - 355_l3_interace_fix.yaml
-      - add-autoconfig-dhcp-to-l3_interfaces.yaml
-      - banner_issue_fix.yaml
-      - config_module_warning_msg.yaml
-      - depricated_next_hop_self_bgpAddFamilt.yaml
-      - readme_freenode_to_liberachat.yml
-    release_date: "2021-06-23"
+    - 267_update_bgp_af_prefix_lists_route_maps_params.yaml
+    - 313_reordering_interface.yaml
+    - 317-authorize.yaml
+    - 336_add_updated_passive_interfaces_ospfv2.yaml
+    - 339_fix_acls_og_source_destination.yaml
+    - 345_update_prefix_list_and_acls_merge_behaviour.yaml
+    - 353_fix_bgp_global_activate_bgp_af_rt.yaml
+    - 355_l3_interace_fix.yaml
+    - add-autoconfig-dhcp-to-l3_interfaces.yaml
+    - banner_issue_fix.yaml
+    - config_module_warning_msg.yaml
+    - depricated_next_hop_self_bgpAddFamilt.yaml
+    - readme_freenode_to_liberachat.yml
+    release_date: '2021-06-23'
   2.3.1:
     changes:
       bugfixes:
-        - Updated ios_command module doc example section with appropriate punctuation.
-        - ios_user fails to add password when configured in separate task with update_password.
+      - Updated ios_command module doc example section with appropriate punctuation.
+      - ios_user fails to add password when configured in separate task with update_password.
       doc_changes:
-        - Broken link in documentation fixed.
+      - Broken link in documentation fixed.
     fragments:
-      - 166_ios_command_doc_fix.yaml
-      - doc_broken_link.yaml
-      - ios_user_issue.yaml
-    release_date: "2021-07-27"
+    - 166_ios_command_doc_fix.yaml
+    - doc_broken_link.yaml
+    - ios_user_issue.yaml
+    release_date: '2021-07-27'
   2.4.0:
     changes:
       bugfixes:
-        - Logging command template fixed supporting Jinja version for centos-8 EEs.
-        - Updated ios_l3_interface as the newer Resource Module implementation and added
-          features.
+      - Logging command template fixed supporting Jinja version for centos-8 EEs.
+      - Updated ios_l3_interface as the newer Resource Module implementation and added
+        features.
       deprecated_features:
-        - Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
-        - Remove testing with provider for ansible-test integration jobs. This helps
-          prepare us to move to network-ee integration tests.
+      - Deprecated ios_bgp in favor of ios_bgp_global and ios_bgp_address_family.
+      - Remove testing with provider for ansible-test integration jobs. This helps
+        prepare us to move to network-ee integration tests.
       doc_changes:
-        - Sample commands added for l3_interfaces.
-        - Updated ios_logging_global Resource Module documentation with proper examples.
+      - Sample commands added for l3_interfaces.
+      - Updated ios_logging_global Resource Module documentation with proper examples.
       minor_changes:
-        - Add support for VRF configuration under NTP server.
+      - Add support for VRF configuration under NTP server.
     fragments:
-      - 291_add_vrf_support_ios_ntp.yaml
-      - ios_l3_interfaces_module_rm_implimentation.yaml
-      - ios_logging_command_template.yaml
-      - ios_logging_doc_update_test_fix.yaml
-      - ios_ntp_foc_update.yaml
-      - provider_testing.yaml
-      - sample_commands_added_l3_interface.yaml
-    release_date: "2021-08-27"
+    - 291_add_vrf_support_ios_ntp.yaml
+    - ios_l3_interfaces_module_rm_implimentation.yaml
+    - ios_logging_command_template.yaml
+    - ios_logging_doc_update_test_fix.yaml
+    - ios_ntp_foc_update.yaml
+    - provider_testing.yaml
+    - sample_commands_added_l3_interface.yaml
+    release_date: '2021-08-27'
   2.5.0:
     changes:
       bugfixes:
-        - Fixed bgp_address_family, for rendering multiple neighbors when available
-          in config.
-        - fixed become functionality on privilege level not 15.
-        - ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
-        - ios_vlans - for playbook execution module fails with an error when target
-          device does not support VLANs, The offline states rendered and parsed will
-          work as expected.
+      - Fixed bgp_address_family, for rendering multiple neighbors when available
+        in config.
+      - fixed become functionality on privilege level not 15.
+      - ios_facts - fix for devices which have no support for VLANs, such as L3 devices.
+      - ios_vlans - for playbook execution module fails with an error when target
+        device does not support VLANs, The offline states rendered and parsed will
+        work as expected.
       deprecated_features:
-        - Deprecated ios_ntp modules.
+      - Deprecated ios_ntp modules.
       doc_changes:
-        - Doc fix for ios_acl_interfaces.
-        - Doc fix for ios_logging_global.
+      - Doc fix for ios_acl_interfaces.
+      - Doc fix for ios_logging_global.
       minor_changes:
-        - Added ios_ntp_global resource module.
-        - Terminal plugin to support IOS device running in SD-WAN mode.
+      - Added ios_ntp_global resource module.
+      - Terminal plugin to support IOS device running in SD-WAN mode.
     fragments:
-      - 199_become_not_working.yaml
-      - add_ios_ntp_global.yaml
-      - added_entry_galaxy.yaml
-      - bgp_add_fam_issue.yaml
-      - ee_migration.yaml
-      - facts_vlan_issue.yaml
-      - ios_acl_interfaces_doc_fix.yaml
-      - ios_logging_global_doc_fix.yaml
-      - ios_user_test_fix.yaml
-      - sd_wan_support.yaml
-      - set_allow_duplicates.yaml
+    - 199_become_not_working.yaml
+    - add_ios_ntp_global.yaml
+    - added_entry_galaxy.yaml
+    - bgp_add_fam_issue.yaml
+    - ee_migration.yaml
+    - facts_vlan_issue.yaml
+    - ios_acl_interfaces_doc_fix.yaml
+    - ios_logging_global_doc_fix.yaml
+    - ios_user_test_fix.yaml
+    - sd_wan_support.yaml
+    - set_allow_duplicates.yaml
     modules:
-      - description: ntp_global resource module
-        name: ios_ntp_global
-        namespace: ""
-    release_date: "2021-09-24"
+    - description: ntp_global resource module
+      name: ios_ntp_global
+      namespace: ''
+    release_date: '2021-09-24'
   2.6.0:
     changes:
       bugfixes:
-        - "'ios_banner' - Bugfix for presence of multiple delimitation chars in the
-          banner's declaration and idempotence improvement."
-        - Fix ntp_global - remove no_log for key_id under peer and server attributes.
-        - Fix ntp_global - to handle when attribute value is false.
-        - ios_acls - bugfixes and optimization for ACLs.
-        - ios_l2_interfaces - fix unable to set switchport mode properly.
-        - ios_logging_global - fix host ipv6 commands not parsed correctly.
-        - ios_logging_global - fix wrong ordering of commands fired on replaced state.
+      - '''ios_banner'' - Bugfix for presence of multiple delimitation chars in the
+        banner''s declaration and idempotence improvement.'
+      - Fix ntp_global - remove no_log for key_id under peer and server attributes.
+      - Fix ntp_global - to handle when attribute value is false.
+      - ios_acls - bugfixes and optimization for ACLs.
+      - ios_l2_interfaces - fix unable to set switchport mode properly.
+      - ios_logging_global - fix host ipv6 commands not parsed correctly.
+      - ios_logging_global - fix wrong ordering of commands fired on replaced state.
       doc_changes:
-        - Added connection network_cli in note for missing modules.
-        - Fixed ios_commands module example as per documentation.
+      - Added connection network_cli in note for missing modules.
+      - Fixed ios_commands module example as per documentation.
       minor_changes:
-        - "ios_acls - feature: Remarks can be configured for ACLs."
-        - ios_snmp_server - New Resource module added.
+      - 'ios_acls - feature: Remarks can be configured for ACLs.'
+      - ios_snmp_server - New Resource module added.
     fragments:
-      - 0-copy_ignore_txt.yml
-      - acl_refactor.yaml
-      - documentation_update_connection.yaml
-      - ios_banner_deliminters_and_idempotence.yaml
-      - l2_interface_issue.yaml
-      - logging_global_issue.yaml
-      - ntp_global_fix_false.yml
-      - sanity-213.yaml
-      - snmp_server_resource_module.yaml
+    - 0-copy_ignore_txt.yml
+    - acl_refactor.yaml
+    - documentation_update_connection.yaml
+    - ios_banner_deliminters_and_idempotence.yaml
+    - l2_interface_issue.yaml
+    - logging_global_issue.yaml
+    - ntp_global_fix_false.yml
+    - sanity-213.yaml
+    - snmp_server_resource_module.yaml
     modules:
-      - description: snmp_server resource module
-        name: ios_snmp_server
-        namespace: ""
-    release_date: "2021-12-07"
+    - description: snmp_server resource module
+      name: ios_snmp_server
+      namespace: ''
+    release_date: '2021-12-07'
   2.7.0:
     changes:
       bugfixes:
-        - ios_acls - Fixes protocol_options not rendering command properly when range
-          is specified.
-        - ios_acls - Fixes standard acls getting wrongly parsed in v2.6.0
-        - ios_l2_interfaces - fix unable to identify FiveGigabitEthernet names on facts
-          gathering.
-        - ios_snmp_server - Change key from users to views in rm template to fix failure
-          when collecting snmp server facts from devices that have a view defined in
-          the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
-        - ios_static_routes - Fixes static routes unable to identify interface names
-          when supplied with destination attribute.
-        - ios_vlans - fix parsing of VLAN names with spaces.
-        - ios_vlans - fix parsing of VLAN ranges under remote span.
+      - ios_acls - Fixes protocol_options not rendering command properly when range
+        is specified.
+      - ios_acls - Fixes standard acls getting wrongly parsed in v2.6.0
+      - ios_l2_interfaces - fix unable to identify FiveGigabitEthernet names on facts
+        gathering.
+      - ios_snmp_server - Change key from users to views in rm template to fix failure
+        when collecting snmp server facts from devices that have a view defined in
+        the configuration (https://github.com/ansible-collections/cisco.ios/issues/491).
+      - ios_static_routes - Fixes static routes unable to identify interface names
+        when supplied with destination attribute.
+      - ios_vlans - fix parsing of VLAN names with spaces.
+      - ios_vlans - fix parsing of VLAN ranges under remote span.
       deprecated_features:
-        - ios_acls - Deprecated fragment attribute added boolean alternate as enable_fragment.
+      - ios_acls - Deprecated fragment attribute added boolean alternate as enable_fragment.
       doc_changes:
-        - fixes fqcn in older module documentation.
-        - ios_acls - Documentation updated with commands used for fetching remarks data
-          under aces.
+      - fixes fqcn in older module documentation.
+      - ios_acls - Documentation updated with commands used for fetching remarks data
+        under aces.
       minor_changes:
-        - ios_acls - Added enable_fragment attribute to enable fragments under ace.
-        - ios_hostname - New Resource module added.
-        - ios_snmp_server - Enables configuration of v3 auth and encryption password
-          for each user.
+      - ios_acls - Added enable_fragment attribute to enable fragments under ace.
+      - ios_hostname - New Resource module added.
+      - ios_snmp_server - Enables configuration of v3 auth and encryption password
+        for each user.
     fragments:
-      - 492-snmp-fact-view-key-correction.yaml
-      - acl_2_6.yaml
-      - acls_bugfix_and_option_deprication.yaml
-      - fix_fiveGigabit_name.yaml
-      - fix_ip_ranges.yaml
-      - fix_vlan.yaml
-      - fqcn_corrected_doc.yaml
-      - hostname_redirects.yaml
-      - hostname_resource_module.yaml
-      - snmp_server_feature_user.yaml
-      - static_route_interface_issue.yaml
+    - 492-snmp-fact-view-key-correction.yaml
+    - acl_2_6.yaml
+    - acls_bugfix_and_option_deprication.yaml
+    - fix_fiveGigabit_name.yaml
+    - fix_ip_ranges.yaml
+    - fix_vlan.yaml
+    - fqcn_corrected_doc.yaml
+    - hostname_redirects.yaml
+    - hostname_resource_module.yaml
+    - snmp_server_feature_user.yaml
+    - static_route_interface_issue.yaml
     modules:
-      - description: hostname resource module
-        name: ios_hostname
-        namespace: ""
-    release_date: "2022-01-31"
+    - description: hostname resource module
+      name: ios_hostname
+      namespace: ''
+    release_date: '2022-01-31'
   2.7.1:
     changes:
       release_summary: Re-releasing 2.7.0 due to Automation Hub uploading issue.
     fragments:
-      - reflexive_acls_fix.yaml
-    release_date: "2022-02-21"
+    - reflexive_acls_fix.yaml
+    release_date: '2022-02-21'
   2.7.2:
     changes:
       bugfixes:
-        - "'ios_acls'- filters out dynamically generated reflexive type acls."
+      - '''ios_acls''- filters out dynamically generated reflexive type acls.'
     fragments:
-      - reflexive_acls_fix.yaml
-    release_date: "2022-03-02"
+    - reflexive_acls_fix.yaml
+    release_date: '2022-03-02'
   2.8.0:
     changes:
       bugfixes:
-        - ios_bgp_global - Added bmp.server_options.
-        - ios_bgp_global - Added capability of configure network options.
-        - ios_bgp_global - Added community and local_preference for route_reflector_client.
-        - ios_bgp_global - Added update_source for neighbors.
-        - ios_bgp_global - Correct misspelled attributes with alternates/alias.
-        - ios_bgp_global - Facts and config code optimized for using rm_templates.
-        - ios_bgp_global - Parsers added for non-implemented attributes.
-        - ios_bgp_global - client_to_client.cluster_id corrected to take string input.
-        - ios_bgp_global - neighbors.path_attribute to support float format.
-        - ios_static_routes - Consider only config containing routes to render facts.
+      - ios_bgp_global - Added bmp.server_options.
+      - ios_bgp_global - Added capability of configure network options.
+      - ios_bgp_global - Added community and local_preference for route_reflector_client.
+      - ios_bgp_global - Added update_source for neighbors.
+      - ios_bgp_global - Correct misspelled attributes with alternates/alias.
+      - ios_bgp_global - Facts and config code optimized for using rm_templates.
+      - ios_bgp_global - Parsers added for non-implemented attributes.
+      - ios_bgp_global - client_to_client.cluster_id corrected to take string input.
+      - ios_bgp_global - neighbors.path_attribute to support float format.
+      - ios_static_routes - Consider only config containing routes to render facts.
       minor_changes:
-        - ios_bgp_global - Deprecate aggregate_address with aggregate_address which
-          supports list of dict attributes.
-        - ios_bgp_global - Deprecate bestpath with bestpath_options which supports a
-          dict attribute.
-        - ios_bgp_global - Deprecate distribute_list with distributes which supports
-          list of dict attributes.
-        - ios_bgp_global - Deprecate inject_map with inject_maps which supports list
-          of dict attributes.
-        - ios_bgp_global - Deprecate listen.ipv4_with_subnet/ipv6_with_subnet with host_with_subnet
-          which enables common attribute for facts rendering.
-        - ios_bgp_global - Deprecate neighbors.address/tag/ipv6_adddress with neighbor_address
-          which enables common attribute for facts rendering.
-        - ios_bgp_global - Deprecate neighbors.password with password_options which
-          allows encryption and password.
-        - ios_bgp_global - Deprecate neighbors.route_map with route_maps which supports
-          list of dict attributes.
-        - ios_bgp_global - Deprecate nopeerup_delay with nopeerup_delay_options which
-          supports a dict attribute.
-        - ios_bgp_global - Deprecates route_server_context, scope, template as they
-          were not implemented with the scope of the module.
+      - ios_bgp_global - Deprecate aggregate_address with aggregate_address which
+        supports list of dict attributes.
+      - ios_bgp_global - Deprecate bestpath with bestpath_options which supports a
+        dict attribute.
+      - ios_bgp_global - Deprecate distribute_list with distributes which supports
+        list of dict attributes.
+      - ios_bgp_global - Deprecate inject_map with inject_maps which supports list
+        of dict attributes.
+      - ios_bgp_global - Deprecate listen.ipv4_with_subnet/ipv6_with_subnet with host_with_subnet
+        which enables common attribute for facts rendering.
+      - ios_bgp_global - Deprecate neighbors.address/tag/ipv6_adddress with neighbor_address
+        which enables common attribute for facts rendering.
+      - ios_bgp_global - Deprecate neighbors.password with password_options which
+        allows encryption and password.
+      - ios_bgp_global - Deprecate neighbors.route_map with route_maps which supports
+        list of dict attributes.
+      - ios_bgp_global - Deprecate nopeerup_delay with nopeerup_delay_options which
+        supports a dict attribute.
+      - ios_bgp_global - Deprecates route_server_context, scope, template as they
+        were not implemented with the scope of the module.
     fragments:
-      - bgp_global_optimization copy.yaml
-      - bgp_global_optimization.yaml
-      - sanity_fix_docs.yaml
-    release_date: "2022-03-15"
+    - bgp_global_optimization copy.yaml
+    - bgp_global_optimization.yaml
+    - sanity_fix_docs.yaml
+    release_date: '2022-03-15'
   2.8.1:
     changes:
       bugfixes:
-        - Add symlink of modules under plugins/action.
-        - ios_acls - Fix commands sequencing for replaced state.
-        - ios_acls - Fix remarks breaking idempotent behavior.
-        - ios_bgp_address_family - Fix multiple bgp_address_family issues. Add set option
-          in send_community to allow backwards compatibility with older configs. Add
-          set option in redistribute.connected to allow ospf redistribution. Fix issue
-          with ipv6 and peer-group neighbor identification. Add ability to pull redistribute
-          information for address families to conform to argspec. Fix issue with not
-          pulling local_as when defined for neighbors.
-        - ios_facts - Fix Line protocol parser for legacy facts where state information
-          per interface is present.
-        - ios_route_maps - Fix parsers for correct rendering of as_number as list.
-        - ios_snmp_server - Fix parsers for views facts collection.
+      - Add symlink of modules under plugins/action.
+      - ios_acls - Fix commands sequencing for replaced state.
+      - ios_acls - Fix remarks breaking idempotent behavior.
+      - ios_bgp_address_family - Fix multiple bgp_address_family issues. Add set option
+        in send_community to allow backwards compatibility with older configs. Add
+        set option in redistribute.connected to allow ospf redistribution. Fix issue
+        with ipv6 and peer-group neighbor identification. Add ability to pull redistribute
+        information for address families to conform to argspec. Fix issue with not
+        pulling local_as when defined for neighbors.
+      - ios_facts - Fix Line protocol parser for legacy facts where state information
+        per interface is present.
+      - ios_route_maps - Fix parsers for correct rendering of as_number as list.
+      - ios_snmp_server - Fix parsers for views facts collection.
       deprecated_features:
-        - Deprecates lldp module.
+      - Deprecates lldp module.
     fragments:
-      - 499-fix-bgp-af-issues.yaml
-      - acls_bug_remarks_state.yml
-      - add_symlink_redirects.yml
-      - fix_sanity_trivial.yml
-      - legacy_base_lineprotocol.yml
-      - rename_module_desc.yml
-      - route_maps_as_numbr.yml
-      - snmp_server_views_facts.yaml
-    release_date: "2022-04-04"
+    - 499-fix-bgp-af-issues.yaml
+    - acls_bug_remarks_state.yml
+    - add_symlink_redirects.yml
+    - fix_sanity_trivial.yml
+    - legacy_base_lineprotocol.yml
+    - rename_module_desc.yml
+    - route_maps_as_numbr.yml
+    - snmp_server_views_facts.yaml
+    release_date: '2022-04-04'
   3.0.0:
     changes:
       bugfixes:
-        - Fix become raises error when exec prompt timestamp is configured.
-        - acl_interfaces - optimization and bugfixes.
-        - acls parser didn't only checked if the proto_options variable existed without
-          validating that it was a dictionary before trying to use it as one.
-        - ios_l3_interface - config code to generate proper ordering of commands on
-          action states.
-        - ios_logging_global - Added alias to render host under hosts not hostname.
+      - Fix become raises error when exec prompt timestamp is configured.
+      - acl_interfaces - optimization and bugfixes.
+      - acls parser didn't only checked if the proto_options variable existed without
+        validating that it was a dictionary before trying to use it as one.
+      - ios_l3_interface - config code to generate proper ordering of commands on
+        action states.
+      - ios_logging_global - Added alias to render host under hosts not hostname.
       major_changes:
-        - Minimum required ansible.netcommon version is 2.5.1.
-        - Updated base plugin references to ansible.netcommon.
-        - facts - default value for gather_subset is changed to min instead of !config.
+      - Minimum required ansible.netcommon version is 2.5.1.
+      - Updated base plugin references to ansible.netcommon.
+      - facts - default value for gather_subset is changed to min instead of !config.
     fragments:
-      - 0-ignore.yml
-      - acl_interfaces_fix.yml
-      - acl_proto_options_fix.yml
-      - add_alias_to_logging_g_hosts.yml
-      - fix_become_with_exec_prompt_timestamp.yml
-      - fix_fqcn_netcommon.yml
-      - gather_subset_update.yml
-      - netcommon_ref_update.yaml
-      - ordering_commands_l3_interface.yml
-    release_date: "2022-04-26"
+    - 0-ignore.yml
+    - acl_interfaces_fix.yml
+    - acl_proto_options_fix.yml
+    - add_alias_to_logging_g_hosts.yml
+    - fix_become_with_exec_prompt_timestamp.yml
+    - fix_fqcn_netcommon.yml
+    - gather_subset_update.yml
+    - netcommon_ref_update.yaml
+    - ordering_commands_l3_interface.yml
+    release_date: '2022-04-26'
   3.1.0:
     changes:
       bugfixes:
-        - ios_acl - Handle ACL config parsing when match/matches are present.
-        - ios_bgp_global - Parse local_as commands correctly.
-        - ios_interfaces - Parse interface shutdown config correctly.
-        - ios_lag_interfaces - Fix commands generation on action states.
-        - ios_lag_interfaces - Module functionality not restricted to GigabitEthernet.
-        - ios_logging_global - Parse monitor and buffered config correctly.
-        - ios_ntp - Handle regex matching server attributes gracefully.
-        - ios_snmp_server - Render group and views commands correctly when having common
-          names.
+      - ios_acl - Handle ACL config parsing when match/matches are present.
+      - ios_bgp_global - Parse local_as commands correctly.
+      - ios_interfaces - Parse interface shutdown config correctly.
+      - ios_lag_interfaces - Fix commands generation on action states.
+      - ios_lag_interfaces - Module functionality not restricted to GigabitEthernet.
+      - ios_logging_global - Parse monitor and buffered config correctly.
+      - ios_ntp - Handle regex matching server attributes gracefully.
+      - ios_snmp_server - Render group and views commands correctly when having common
+        names.
       deprecated_features:
-        - Deprecated ios_linkagg_module in favor of ios_lag_interfaces.
+      - Deprecated ios_linkagg_module in favor of ios_lag_interfaces.
       minor_changes:
-        - Also collect a list of serial numbers comprised in a vss system as virtual_switch_serialnums
-        - Fixing Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/471)
-        - ios_interfaces - Add purged state to ios_interfaces.
+      - Also collect a list of serial numbers comprised in a vss system as virtual_switch_serialnums
+      - Fixing Detection of Virtual Switch System to facts (https://github.com/ansible-collections/cisco.ios/pull/471)
+      - ios_interfaces - Add purged state to ios_interfaces.
     fragments:
-      - 471-virtual_switch_system_detections.yaml
-      - acl_550.yaml
-      - bgp_global_569.yaml
-      - bug_fix_ntp.yaml
-      - fix_sanity_issues.yaml
-      - ios_interfaces_bugfix.yaml
-      - lag_interfaces_bug.yaml
-      - logging_global_571.yaml
-      - snmp_server_view_group_fix.yaml
-    release_date: "2022-05-23"
+    - 471-virtual_switch_system_detections.yaml
+    - acl_550.yaml
+    - bgp_global_569.yaml
+    - bug_fix_ntp.yaml
+    - fix_sanity_issues.yaml
+    - ios_interfaces_bugfix.yaml
+    - lag_interfaces_bug.yaml
+    - logging_global_571.yaml
+    - snmp_server_view_group_fix.yaml
+    release_date: '2022-05-23'
   3.2.0:
     changes:
       bugfixes:
-        - ios_interfaces - Fix enable attribute.
+      - ios_interfaces - Fix enable attribute.
       minor_changes:
-        - ios_ping - Add ipv6 options.
+      - ios_ping - Add ipv6 options.
     fragments:
-      - gha_update.yml
-      - interface_605.yml
-      - interface_testfix.yml
-      - ios_ping_update.yml
-    release_date: "2022-07-01"
+    - gha_update.yml
+    - interface_605.yml
+    - interface_testfix.yml
+    - ios_ping_update.yml
+    release_date: '2022-07-01'
   3.3.0:
     changes:
       bugfixes:
-        - ios_acls - Fix regex to parse echo-reply command.
-        - ios_route_maps - Fix route maps failing on config parsed with tailing space.
-        - ios_snmp_server - Fix parsers for views and host + acl doc
+      - ios_acls - Fix regex to parse echo-reply command.
+      - ios_route_maps - Fix route maps failing on config parsed with tailing space.
+      - ios_snmp_server - Fix parsers for views and host + acl doc
       minor_changes:
-        - ios_l2_interfaces - Add vlan_name attribute to access.
-        - ios_l2_interfaces - Add vlan_name, vlan_tag attribute to voice.
+      - ios_l2_interfaces - Add vlan_name attribute to access.
+      - ios_l2_interfaces - Add vlan_name, vlan_tag attribute to voice.
     fragments:
-      - add_ansible_lint_gha.yml
-      - add_prettier.yml
-      - add_redirects_action.yml
-      - enable_commas.yml
-      - fix_route_maps_618.yml
-      - format_task_names_fqnc.yml
-      - include_task_update.yml
-      - isort_add.yml
-      - l2_interfaes_add_op.yml
-      - re_order_regex_acl.yml
-      - snmp-server_special_names.yml
-    release_date: "2022-08-02"
+    - add_ansible_lint_gha.yml
+    - add_prettier.yml
+    - add_redirects_action.yml
+    - enable_commas.yml
+    - fix_route_maps_618.yml
+    - format_task_names_fqnc.yml
+    - include_task_update.yml
+    - isort_add.yml
+    - l2_interfaes_add_op.yml
+    - re_order_regex_acl.yml
+    - snmp-server_special_names.yml
+    release_date: '2022-08-02'
   3.3.1:
     changes:
       bugfixes:
-        - l2_interfaces - vlan_tag options fix.
-        - snmp_server - add envmon options for traps.
+      - l2_interfaces - vlan_tag options fix.
+      - snmp_server - add envmon options for traps.
     fragments:
-      - l2_vlan_tag.yaml
-      - snmp_envmon.yaml
-    release_date: "2022-09-07"
+    - l2_vlan_tag.yaml
+    - snmp_envmon.yaml
+    release_date: '2022-09-07'
   3.3.2:
     changes:
       bugfixes:
-        - cliconf - get_device_info now tries to exit config mode if necessary before
-          requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
-        - prefix_lists - fix prefix list facts generation to handle empty configuration
-          correctly.
+      - cliconf - get_device_info now tries to exit config mode if necessary before
+        requesting device info. (https://github.com/ansible-collections/cisco.ios/pull/654)
+      - prefix_lists - fix prefix list facts generation to handle empty configuration
+        correctly.
     fragments:
-      - 654-config-mode.yaml
-      - arguments-renamed.yaml
-      - prefix_list_facts.yaml
-    release_date: "2022-09-23"
+    - 654-config-mode.yaml
+    - arguments-renamed.yaml
+    - prefix_list_facts.yaml
+    release_date: '2022-09-23'
   4.0.0:
     changes:
       bugfixes:
-        - facts - fix operstatus having a white space after value.
-        - ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
+      - facts - fix operstatus having a white space after value.
+      - ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
       doc_changes:
-        - Update supported IOSXE version for modules.
-      major_changes:
-        - "This includes the following modules:"
-        - This release removes all deprecated plugins that have reached their end-of-life.
-        - ios_interface
-        - ios_l2_interface
-        - ios_l3_interface
-        - ios_static_route
-        - ios_vlan
+      - Update supported IOSXE version for modules.
+      removed_features:
+      - 'This includes the following modules:'
+      - This release removes all deprecated plugins that have reached their end-of-life.
+      - ios_interface
+      - ios_l2_interface
+      - ios_l3_interface
+      - ios_static_route
+      - ios_vlan
     fragments:
-      - 664-ipv6-vrf-fix.yaml
-      - docs_upgrade.yaml
-      - fix_opState_facts.yaml
-      - fix_test_ios_image_upgrade.yaml
-      - remove_deprecated.yaml
-    release_date: "2022-10-12"
+    - 664-ipv6-vrf-fix.yaml
+    - docs_upgrade.yaml
+    - fix_opState_facts.yaml
+    - fix_test_ios_image_upgrade.yaml
+    - remove_deprecated.yaml
+    release_date: '2022-10-12'
