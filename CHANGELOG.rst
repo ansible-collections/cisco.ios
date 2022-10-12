@@ -11,12 +11,11 @@ v4.0.0
 Removed Features (previously deprecated)
 ----------------------------------------
 
-- This release removes the following deprecated plugins that have reached their end-of-life.
-- ios_interface
-- ios_l2_interface
-- ios_l3_interface
-- ios_static_route
-- ios_vlan
+- ios_interface - use ios_interfaces instead.
+- ios_l2_interface - use ios_l2_interfaces instead.
+- ios_l3_interface - use ios_l3_interfaces instead.
+- ios_static_route - use ios_static_routes instead.
+- ios_vlan - use with ios_vlans instead.
 
 Bugfixes
 --------
