@@ -419,7 +419,7 @@ def save_config(module, result):
         run_commands(module, "copy running-config startup-config\r")
     else:
         module.warn(
-            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage"
+            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage",
         )
 
 
@@ -556,7 +556,7 @@ def main():
                     before = base_config
                     after = running_config
                 result.update(
-                    {"changed": True, "diff": {"before": str(before), "after": str(after)}}
+                    {"changed": True, "diff": {"before": str(before), "after": str(after)}},
                 )
 
     if result.get("changed") and any((module.params["src"], module.params["lines"])):

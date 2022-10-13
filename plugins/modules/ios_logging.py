@@ -240,7 +240,7 @@ def map_obj_to_commands(updates, module, os_version):
                     commands.append("no logging {0}".format(dest))
                 else:
                     module.fail_json(
-                        msg="dest must be among console, monitor, buffered, host, on, trap"
+                        msg="dest must be among console, monitor, buffered, host, on, trap",
                     )
             if facility:
                 commands.append("no logging facility {0}".format(facility))
@@ -353,7 +353,7 @@ def map_config_to_obj(module):
                         "size": parse_size(line, dest),
                         "facility": parse_facility(line, dest),
                         "level": parse_level(line, dest),
-                    }
+                    },
                 )
             elif validate_ip_address(match.group(1)):
                 dest = "host"
@@ -364,7 +364,7 @@ def map_config_to_obj(module):
                         "size": parse_size(line, dest),
                         "facility": parse_facility(line, dest),
                         "level": parse_level(line, dest),
-                    }
+                    },
                 )
             else:
                 ip_match = re.search("\\d+\\.\\d+\\.\\d+\\.\\d+", match.group(1), re.M)
@@ -377,7 +377,7 @@ def map_config_to_obj(module):
                             "size": parse_size(line, dest),
                             "facility": parse_facility(line, dest),
                             "level": parse_level(line, dest),
-                        }
+                        },
                     )
     return obj
 
@@ -424,7 +424,7 @@ def map_params_to_obj(module, required_if=None):
                     "facility": module.params["facility"],
                     "level": module.params["level"],
                     "state": module.params["state"],
-                }
+                },
             )
         else:
             obj.append(
@@ -435,7 +435,7 @@ def map_params_to_obj(module, required_if=None):
                     "facility": module.params["facility"],
                     "level": module.params["level"],
                     "state": module.params["state"],
-                }
+                },
             )
     return obj
 
@@ -470,7 +470,9 @@ def main():
     argument_spec.update(element_spec)
     required_if = [("dest", "host", ["name"])]
     module = AnsibleModule(
-        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True
+        argument_spec=argument_spec,
+        required_if=required_if,
+        supports_check_mode=True,
     )
     device_info = get_capabilities(module)
     os_version = device_info["device_info"]["network_os_version"]

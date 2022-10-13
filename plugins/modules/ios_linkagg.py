@@ -241,7 +241,7 @@ def map_params_to_obj(module):
                 "mode": module.params["mode"],
                 "members": module.params["members"],
                 "state": module.params["state"],
-            }
+            },
         )
     return obj
 

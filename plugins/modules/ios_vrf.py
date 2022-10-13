@@ -342,7 +342,7 @@ def map_obj_to_commands(updates, module):
                         k
                         for k, v in module.params.items()
                         if (k.endswith("_ipv6") or k.endswith("_both")) and v
-                    ]
+                    ],
                 )
                 != 0
             )
@@ -352,7 +352,7 @@ def map_obj_to_commands(updates, module):
                         k
                         for k, v in module.params.items()
                         if (k.endswith("_ipv4") or k.endswith("_both")) and v
-                    ]
+                    ],
                 )
                 != 0
             )
@@ -622,10 +622,10 @@ def map_params_to_obj(module):
                 if not item["route_import%s" % address_family]:
                     item["route_import%s" % address_family] = list()
                 item["route_export%s" % address_family].extend(
-                    get_value("route_both%s" % address_family)
+                    get_value("route_both%s" % address_family),
                 )
                 item["route_import%s" % address_family].extend(
-                    get_value("route_both%s" % address_family)
+                    get_value("route_both%s" % address_family),
                 )
         item["associated_interfaces"] = get_value("associated_interfaces")
         objects.append(item)
@@ -673,7 +673,7 @@ def check_declarative_intent_params(want, module, result):
                     for i in w["associated_interfaces"]:
                         if get_interface_type(i) is not get_interface_type(interface):
                             module.fail_json(
-                                msg="Interface %s not configured on vrf %s" % (interface, name)
+                                msg="Interface %s not configured on vrf %s" % (interface, name),
                             )
 
 
@@ -701,7 +701,9 @@ def main():
     )
     mutually_exclusive = [("name", "vrfs")]
     module = AnsibleModule(
-        argument_spec=argument_spec, mutually_exclusive=mutually_exclusive, supports_check_mode=True
+        argument_spec=argument_spec,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
     result = {"changed": False}
     warnings = list()

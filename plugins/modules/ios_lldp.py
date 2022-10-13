@@ -86,7 +86,7 @@ def has_lldp(module):
 def main():
     """main entry point for module execution"""
     argument_spec = dict(
-        state=dict(default="present", choices=["present", "absent", "enabled", "disabled"])
+        state=dict(default="present", choices=["present", "absent", "enabled", "disabled"]),
     )
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()

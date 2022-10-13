@@ -129,7 +129,9 @@ def parse_server(line, dest):
     if dest == "server":
         vrf, server = None, None
         match = re.search(
-            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)?(\\d+\\.\\d+\\.\\d+\\.\\d+)", line, re.M
+            "(ntp\\sserver\\s)(vrf\\s\\w+\\s)?(\\d+\\.\\d+\\.\\d+\\.\\d+)",
+            line,
+            re.M,
         )
 
         if match and match.group(2) and match.group(3):
@@ -239,7 +241,7 @@ def map_params_to_obj(module):
             "auth_key": module.params["auth_key"],
             "key_id": module.params["key_id"],
             "vrf": module.params["vrf"],
-        }
+        },
     )
 
     return obj
@@ -289,7 +291,7 @@ def map_obj_to_commands(want, have, module):
             if auth_key and auth_key_have:
                 if key_id and key_id_have:
                     commands.append(
-                        "no ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key)
+                        "no ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key),
                     )
         elif state == "present":
             if server is not None and (vrf, server) not in server_have:

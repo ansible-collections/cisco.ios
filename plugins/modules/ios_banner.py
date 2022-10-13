@@ -180,7 +180,9 @@ def main():
     )
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
-        argument_spec=argument_spec, required_if=required_if, supports_check_mode=True
+        argument_spec=argument_spec,
+        required_if=required_if,
+        supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False}

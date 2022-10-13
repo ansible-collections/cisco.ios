@@ -395,7 +395,7 @@ def map_obj_to_commands(updates, module):
                 if have and have["password_type"] and password_type != have["password_type"]:
                     module.fail_json(
                         msg="Can not have both a user password and a user secret."
-                        + " Please choose one or the other."
+                        + " Please choose one or the other.",
                     )
                 add(commands, want, "%s %s" % (password_type, want["configured_password"]))
         if needs_update(want, have, "hashed_password"):
@@ -536,7 +536,8 @@ def update_objects(want, have):
 def main():
     """main entry point for module execution"""
     hashed_password_spec = dict(
-        type=dict(type="int", required=True), value=dict(no_log=True, required=True)
+        type=dict(type="int", required=True),
+        value=dict(no_log=True, required=True),
     )
     element_spec = dict(
         name=dict(),
@@ -556,7 +557,10 @@ def main():
     remove_default_spec(aggregate_spec)
     argument_spec = dict(
         aggregate=dict(
-            type="list", elements="dict", options=aggregate_spec, aliases=["users", "collection"]
+            type="list",
+            elements="dict",
+            options=aggregate_spec,
+            aliases=["users", "collection"],
         ),
         purge=dict(type="bool", default=False),
     )
@@ -566,7 +570,9 @@ def main():
         ("nopassword", "hashed_password", "configured_password"),
     ]
     module = AnsibleModule(
-        argument_spec=argument_spec, mutually_exclusive=mutually_exclusive, supports_check_mode=True
+        argument_spec=argument_spec,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False, "warnings": warnings}
