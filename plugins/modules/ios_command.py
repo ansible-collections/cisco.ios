@@ -149,10 +149,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     transform_commands,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    ios_argument_spec,
-    run_commands,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
 
 
 def parse_commands(module, warnings):
@@ -162,7 +159,7 @@ def parse_commands(module, warnings):
             if not item["command"].startswith("show"):
                 warnings.append(
                     "Only show commands are supported when using check mode, not executing %s"
-                    % item["command"],
+                    % item["command"]
                 )
                 commands.remove(item)
     return commands
@@ -177,7 +174,6 @@ def main():
         retries=dict(default=10, type="int"),
         interval=dict(default=1, type="int"),
     )
-    argument_spec.update(ios_argument_spec)
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     result = {"changed": False, "warnings": warnings}

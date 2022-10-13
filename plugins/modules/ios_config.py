@@ -372,7 +372,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     get_connection,
     get_defaults_flag,
-    ios_argument_spec,
     run_commands,
 )
 
@@ -420,7 +419,7 @@ def save_config(module, result):
         run_commands(module, "copy running-config startup-config\r")
     else:
         module.warn(
-            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage",
+            "Skipping command `copy running-config startup-config` due to check_mode.  Configuration not copied to non-volatile storage"
         )
 
 
@@ -445,7 +444,6 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-    argument_spec.update(ios_argument_spec)
     mutually_exclusive = [("lines", "src"), ("parents", "src")]
     required_if = [
         ("match", "strict", ["lines"]),
@@ -558,7 +556,7 @@ def main():
                     before = base_config
                     after = running_config
                 result.update(
-                    {"changed": True, "diff": {"before": str(before), "after": str(after)}},
+                    {"changed": True, "diff": {"before": str(before), "after": str(after)}}
                 )
 
     if result.get("changed") and any((module.params["src"], module.params["lines"])):

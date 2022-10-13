@@ -10,13 +10,6 @@
       - interface Loopback999
     match: none
 
-- name: Collect any backup files
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_files
-  connection: local
-
 - name: Delete backup files
   ansible.builtin.file:
     path: "{{ item.path }}"
@@ -32,13 +25,6 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- name: Collect any backup files
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_files
-  connection: local
 
 - ansible.builtin.assert:
     that:
@@ -65,12 +51,6 @@
     that:
       - result.changed == true
 
-- name: Check if the backup file-1 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
-  register: backup_file
-  connection: local
-
 - ansible.builtin.assert:
     that:
       - backup_file.files is defined
@@ -87,12 +67,6 @@
     that:
       - result.changed == true
 
-- name: Check if the backup file-2 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup/backup.cfg"
-  register: backup_file
-  connection: local
-
 - ansible.builtin.assert:
     that:
       - backup_file.files is defined
@@ -108,13 +82,6 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- name: Check if the backup file-3 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_file
-  connection: local
 
 - ansible.builtin.assert:
     that:
