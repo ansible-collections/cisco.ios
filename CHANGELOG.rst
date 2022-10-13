@@ -8,6 +8,12 @@ Cisco Ios Collection Release Notes
 v4.0.0
 ======
 
+Major Changes
+-------------
+
+- Only valid connection types for this collection is network_cli.
+- This release drops support for `connection: local` and provider dictionary.
+
 Removed Features (previously deprecated)
 ----------------------------------------
 
