@@ -10,12 +10,6 @@
       - interface Loopback999
     match: none
 
-- name: Delete backup files
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items: "{{backup_files.files|default([])}}"
-
 - name: Configure device with configuration
   register: result
   cisco.ios.ios_config:
@@ -25,10 +19,6 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- ansible.builtin.assert:
-    that:
-      - backup_files.files is defined
 
 - name: Delete configurable backup file path
   ansible.builtin.file:
@@ -51,10 +41,6 @@
     that:
       - result.changed == true
 
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
-
 - name: Take configuration backup in custom filename
   become: true
   register: result
@@ -67,10 +53,6 @@
     that:
       - result.changed == true
 
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
-
 - name: Take configuration backup in custom path and default filename
   become: true
   register: result
@@ -82,9 +64,5 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
 
 - ansible.builtin.debug: msg="END cli/cli_backup.yaml on connection={{ ansible_connection }}"
