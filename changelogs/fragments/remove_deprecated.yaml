@@ -1,9 +1,0 @@
----
-major_changes:
-  - "This release removes all deprecated plugins that have reached their end-of-life."
-  - "This includes the following modules:"
-  - "ios_interface"
-  - "ios_l2_interface"
-  - "ios_l3_interface"
-  - "ios_static_route"
-  - "ios_vlan"

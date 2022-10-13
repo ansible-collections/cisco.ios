@@ -1,2 +1,0 @@
-bugfixes:
-  - ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).

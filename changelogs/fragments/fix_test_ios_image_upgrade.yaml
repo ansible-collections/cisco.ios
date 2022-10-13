@@ -1,4 +1,0 @@
----
-trivial:
-  - Fix breaking tests for Cisco IOS image upgrade.
-  - Remove tests for deprecated modules.
