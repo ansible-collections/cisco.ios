@@ -218,7 +218,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
     FACT_RESOURCE_SUBSETS,
     Facts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import ios_argument_spec
 
 
 def main():
@@ -228,7 +227,6 @@ def main():
     :returns: ansible_facts
     """
     argument_spec = FactsArgs.argument_spec
-    argument_spec.update(ios_argument_spec)
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = []
 

@@ -111,7 +111,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    ios_argument_spec,
     load_config,
 )
 
@@ -179,7 +178,6 @@ def main():
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
-    argument_spec.update(ios_argument_spec)
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
         argument_spec=argument_spec,

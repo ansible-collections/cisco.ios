@@ -125,7 +125,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    ios_argument_spec,
     load_config,
 )
 
@@ -330,7 +329,6 @@ def main():
         lookup_enabled=dict(type="bool"),
         state=dict(choices=["present", "absent"], default="present"),
     )
-    argument_spec.update(ios_argument_spec)
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     result = {"changed": False}
     warnings = list()
