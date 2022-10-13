@@ -10,19 +10,6 @@
       - interface Loopback999
     match: none
 
-- name: Collect any backup files
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_files
-  connection: local
-
-- name: Delete backup files
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: absent
-  with_items: "{{backup_files.files|default([])}}"
-
 - name: Configure device with configuration
   register: result
   cisco.ios.ios_config:
@@ -32,17 +19,6 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- name: Collect any backup files
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_files
-  connection: local
-
-- ansible.builtin.assert:
-    that:
-      - backup_files.files is defined
 
 - name: Delete configurable backup file path
   ansible.builtin.file:
@@ -65,16 +41,6 @@
     that:
       - result.changed == true
 
-- name: Check if the backup file-1 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
-  register: backup_file
-  connection: local
-
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
-
 - name: Take configuration backup in custom filename
   become: true
   register: result
@@ -87,16 +53,6 @@
     that:
       - result.changed == true
 
-- name: Check if the backup file-2 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup/backup.cfg"
-  register: backup_file
-  connection: local
-
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
-
 - name: Take configuration backup in custom path and default filename
   become: true
   register: result
@@ -108,16 +64,5 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-
-- name: Check if the backup file-3 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
-    pattern: "{{ inventory_hostname_short }}_config*"
-  register: backup_file
-  connection: local
-
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
 
 - ansible.builtin.debug: msg="END cli/cli_backup.yaml on connection={{ ansible_connection }}"

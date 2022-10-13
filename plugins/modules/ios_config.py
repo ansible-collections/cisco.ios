@@ -372,7 +372,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     get_connection,
     get_defaults_flag,
-    ios_argument_spec,
     run_commands,
 )
 
@@ -445,7 +444,6 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-    argument_spec.update(ios_argument_spec)
     mutually_exclusive = [("lines", "src"), ("parents", "src")]
     required_if = [
         ("match", "strict", ["lines"]),
