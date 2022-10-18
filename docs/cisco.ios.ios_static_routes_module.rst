@@ -411,6 +411,25 @@ Parameters
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
                 </td>
             </tr>
+
+           <tr>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_subroutes</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>This option is used only with state <em>merged</em>. For other states, it will be ignored.</div>
+                        <div>The default is False.</div>
+                        <div>If set to True, it will add static routes only if there are no existing static summary routes respectively. The check applies per VRF, but does not consider additional attributes like tag or metric.</div>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -518,6 +537,40 @@ Examples
     # ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name merged_route_2
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name merged_route_1 multicast
     # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name merged_v6
+
+    # Using merged with 'no_subroutes'
+
+    # Before state:
+    # -------------
+
+    # vios#show running-config | include ip route|ipv6 route
+    # ip route 198.51.100.0 255.255.255.0 198.51.101.1
+
+    - name: Merge configuration if no summary route exists
+      cisco.ios.ios_static_routes:
+        config:
+        - address_families:
+          - afi: ipv4
+            routes:
+            - dest: 198.51.100.0/30
+              next_hops:
+              - forward_router_address: 198.51.101.1
+            - dest: 198.51.102.0/30
+              next_hops:
+              - forward_router_address: 198.51.101.1
+        no_subroutes: True
+
+    # After state:
+    # ------------
+
+    # vios#show running-config | include ip route|ipv6 route
+    # ip route 198.51.100.0 255.255.255.0 198.51.101.1
+    # ip route 198.51.102.0 255.255.255.252 198.51.101.1
+
+    # Commands fired:
+    # ---------------
+
+    # ip route 198.51.102.0 255.255.255.252 198.51.101.1
 
     # Using replaced
 

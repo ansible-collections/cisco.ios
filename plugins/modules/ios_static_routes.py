@@ -116,6 +116,14 @@ options:
                     - Tracking does not support multicast
                     - Refer to vendor documentation for valid values.
                     type: int
+  no_subroutes:
+    description:
+      - This option is used only with state I(merged). For other states, it will be ignored.
+      - The default is False.
+      - If set to True, it will add static routes only if there are no existing static
+        summary routes respectively. The check applies per VRF, but does not consider
+        additional attributes like tag or metric.
+    type: bool
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -217,6 +225,40 @@ EXAMPLES = """
 # ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name merged_route_2
 # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name merged_route_1 multicast
 # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name merged_v6
+
+# Using merged with 'no_subroutes'
+
+# Before state:
+# -------------
+
+# vios#show running-config | include ip route|ipv6 route
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1
+
+- name: Merge configuration if no summary route exists
+  cisco.ios.ios_static_routes:
+    config:
+    - address_families:
+      - afi: ipv4
+        routes:
+        - dest: 198.51.100.0/30
+          next_hops:
+          - forward_router_address: 198.51.101.1
+        - dest: 198.51.102.0/30
+          next_hops:
+          - forward_router_address: 198.51.101.1
+    no_subroutes: True
+
+# After state:
+# ------------
+
+# vios#show running-config | include ip route|ipv6 route
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1
+# ip route 198.51.102.0 255.255.255.252 198.51.101.1
+
+# Commands fired:
+# ---------------
+
+# ip route 198.51.102.0 255.255.255.252 198.51.101.1
 
 # Using replaced
 

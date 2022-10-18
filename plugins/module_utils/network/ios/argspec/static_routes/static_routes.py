@@ -83,6 +83,10 @@ class Static_RoutesArgs(object):
             },
             "type": "list",
         },
+        "no_subroutes": {
+            "type": "bool",
+            "default": False,
+        },
         "running_config": {"type": "str"},
         "state": {
             "choices": [
