@@ -397,6 +397,27 @@ Parameters
             <tr>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_subroutes</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>This option is used only with state <em>merged</em>. For other states, it will be ignored.</div>
+                        <div>The default is False.</div>
+                        <div>If set to True, it will add static routes only if there are no existing static summary routes respectively. The check applies per VRF, but does not consider additional attributes like tag or metric.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -411,25 +432,6 @@ Parameters
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
                 </td>
             </tr>
-
-           <tr>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>no_subroutes</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>This option is used only with state <em>merged</em>. For other states, it will be ignored.</div>
-                        <div>The default is False.</div>
-                        <div>If set to True, it will add static routes only if there are no existing static summary routes respectively. The check applies per VRF, but does not consider additional attributes like tag or metric.</div>
-                </td>
-            </tr>
-
             <tr>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>

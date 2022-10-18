@@ -17,6 +17,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import copy
+
 from ipaddress import IPv4Network, IPv6Network
 
 from ansible.module_utils.six import iteritems
@@ -164,62 +165,79 @@ class Static_Routes(ConfigBase):
         return commands
 
     def remove_sub_routes(self, want, have):
-        """ Check if for the desired static routes there are any summary routes,
+        """Check if for the desired static routes there are any summary routes,
             remove routes with destinations that are a subnet of any existing route
         :rtype: A list
         :returns: the 'want' dictionary without routes for which summary routes exists
         """
         # Iterate over VRFs
         for vrf in want:
-            vrf_name = vrf['vrf']
+            vrf_name = vrf["vrf"]
             # Iterate over address families
-            for af in vrf['address_families']:
+            for af in vrf["address_families"]:
                 # Iterate over routes in 'want' and remove them if a summary route is found
-                for wanted_route in reversed(af['routes']):
+                for wanted_route in reversed(af["routes"]):
                     summary_route_found = False
                     # Iterate over routes in 'have'
                     # Default VRF case:
                     if vrf_name is None:
                         # Find route item without VRF key
-                        default_vrf = next((route for route in have if 'vrf' not in route), None)
+                        default_vrf = next((route for route in have if "vrf" not in route), None)
                         # Find routes of respective address family
-                        default_af_routes = [route for route in default_vrf['address_families'] if route['afi'] == af['afi']]
+                        default_af_routes = [
+                            route
+                            for route in default_vrf["address_families"]
+                            if route["afi"] == af["afi"]
+                        ]
                         for existing_route in default_af_routes:
                             # Check if wanted route is a subnet of existing route, except for default route
-                            if af['afi'] == 'ipv4':
-                                if existing_route['routes'][0]['dest'] != '0.0.0.0/0':
-                                    if IPv4Network(wanted_route['dest']).subnet_of(IPv4Network(existing_route['routes'][0]['dest'])):
+                            if af["afi"] == "ipv4":
+                                if existing_route["routes"][0]["dest"] != "0.0.0.0/0":
+                                    if IPv4Network(wanted_route["dest"]).subnet_of(
+                                        IPv4Network(existing_route["routes"][0]["dest"])
+                                    ):
                                         summary_route_found = True
-                            elif af['afi'] == 'ipv6':
-                                if existing_route['routes'][0]['dest'] != '::/0':
-                                    if IPv6Network(wanted_route['dest']).subnet_of(IPv6Network(existing_route['routes'][0]['dest'])):
+                            elif af["afi"] == "ipv6":
+                                if existing_route["routes"][0]["dest"] != "::/0":
+                                    if IPv6Network(wanted_route["dest"]).subnet_of(
+                                        IPv6Network(existing_route["routes"][0]["dest"])
+                                    ):
                                         summary_route_found = True
                     # Non-default VRF case:
                     else:
                         # Find and iterate over route items for respective VRF and address family
-                        vrf_af_routes = [route for route in have if 'vrf' in route and route['vrf'] == vrf_name and
-                                         route['address_families'][0]['afi'] == af['afi']]
+                        vrf_af_routes = [
+                            route
+                            for route in have
+                            if "vrf" in route
+                            and route["vrf"] == vrf_name
+                            and route["address_families"][0]["afi"] == af["afi"]
+                        ]
                         for existing_route in vrf_af_routes:
-                            dest = existing_route['address_families'][0]['routes'][0]['dest']
+                            dest = existing_route["address_families"][0]["routes"][0]["dest"]
                             # Check if wanted route is a subnet of existing route, except for default route
-                            if af['afi'] == 'ipv4':
-                                if dest != '0.0.0.0/0':
-                                    if IPv4Network(wanted_route['dest']).subnet_of(IPv4Network(dest)):
+                            if af["afi"] == "ipv4":
+                                if dest != "0.0.0.0/0":
+                                    if IPv4Network(wanted_route["dest"]).subnet_of(
+                                        IPv4Network(dest)
+                                    ):
                                         summary_route_found = True
-                            elif af['afi'] == 'ipv6':
-                                if dest != '::/0':
-                                    if IPv6Network(wanted_route['dest']).subnet_of(IPv6Network(dest)):
+                            elif af["afi"] == "ipv6":
+                                if dest != "::/0":
+                                    if IPv6Network(wanted_route["dest"]).subnet_of(
+                                        IPv6Network(dest)
+                                    ):
                                         summary_route_found = True
                     # Remove wanted route if existing summary route has been found
                     if summary_route_found is True:
-                        af['routes'].remove(wanted_route)
+                        af["routes"].remove(wanted_route)
             # Remove address family with empty route list
-            for af in list(vrf['address_families']):
-                if len(af['routes']) == 0:
-                    vrf['address_families'].remove(af)
+            for af in list(vrf["address_families"]):
+                if len(af["routes"]) == 0:
+                    vrf["address_families"].remove(af)
         # Remove VRFs with empty address family list
         for vrf in list(want):
-            if len(vrf['address_families']) == 0:
+            if len(vrf["address_families"]) == 0:
                 want.remove(vrf)
         return want
 
