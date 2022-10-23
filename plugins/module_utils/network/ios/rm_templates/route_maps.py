@@ -1037,7 +1037,8 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "number": "{{ community.split(' ')[1] if community is defined and 'additive' not in community.split(' ')\
                                                  and 'gshut' not in community.split(' ') and 'internet' not in community.split(' ')\
                                                      and 'internet' not in community.split(' ') and 'local_as' not in community.split(' ')\
-                                                         and 'no_advertise' not in community.split(' ') and 'no_export' not in community.split(' ') }}",
+                                                         and 'no_advertise' not in community.split(' ') and 'no_export' not in community.split(' ')\
+                                                             and 'none' not in community.split(' ') }}",
                                     "additive": "{{ True if community is defined and 'additive' in community }}",
                                     "gshut": "{{ True if community is defined and 'gshut' in community }}",
                                     "internet": "{{ True if community is defined and 'internet' in community }}",
