@@ -366,9 +366,7 @@ def _tmplt_route_map_set(config_data):
             if set["as_path"].get("prepend"):
                 cmd += " prepend"
                 if set["as_path"]["prepend"].get("as_number"):
-                    cmd += " {0}".format(
-                        " ".join(set["as_path"]["prepend"].get("as_number")),
-                    )
+                    cmd += " {0}".format(set["as_path"]["prepend"].get("as_number"))
                 elif set["as_path"]["prepend"].get("last_as"):
                     cmd += " last-as {last_as}".format(**set["as_path"]["prepend"])
             if set["as_path"].get("tag"):
@@ -987,7 +985,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+set*
                 \s*(?P<aigp_metric>aigp-metric\sigp-metric|aigp-metric\s\d+)*
-                \s*(?P<as_path>as-path\s(prepend\s(last-as\s\d+|\S+)|tag))*
+                \s*(?P<as_path>as-path\s(prepend\s(last-as\s\d+|\d+(?:\s\d+)*)|tag))*
                 \s*(?P<automatic_tag>automatic-tag)*
                 \s*(?P<clns>clns\snext-hop\s\S.*)*
                 \s*(?P<comm_list>comm-list\s\S+\sdelete)*

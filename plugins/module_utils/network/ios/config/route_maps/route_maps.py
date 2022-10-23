@@ -68,6 +68,7 @@ class Route_maps(ResourceModule):
             wantd = {(entry["route_map"]): entry for entry in self.want}
         else:
             wantd = {}
+
         if self.have:
             haved = {(entry["route_map"]): entry for entry in self.have}
         else:
@@ -146,6 +147,7 @@ class Route_maps(ResourceModule):
                             )
                         have_set = have_entry.get("set")
                         want_set = v.get("set")
+
                         if have_set and want_set:
                             self.list_type_compare(
                                 "set",
@@ -158,6 +160,7 @@ class Route_maps(ResourceModule):
                                 want=want_set,
                                 have=dict(),
                             )
+
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
                         if want["entries"][k].get("action"):
@@ -195,6 +198,7 @@ class Route_maps(ResourceModule):
                             route_map_cmd += " {sequence}".format(**want["entries"][k])
                         self.commands.insert(cmd_len, route_map_cmd)
                         cmd_len = len(self.commands)
+
         if (self.state == "replaced" or self.state == "overridden") and have.get("entries"):
             cmd_len = len(self.commands)
             for k, v in iteritems(have["entries"]):
@@ -226,6 +230,7 @@ class Route_maps(ResourceModule):
                         want={compare_type: {k: v}},
                         have=dict(),
                     )
+
             if k in ["ip", "ipv6"]:
                 for key, val in iteritems(v):
                     have_val = have_v.pop(key, {})
@@ -255,6 +260,7 @@ class Route_maps(ResourceModule):
                             want=dict(),
                             have={compare_type: {k: {key: val}}},
                         )
+
         if have and (self.state == "replaced" or self.state == "overridden"):
             for k, v in iteritems(have):
                 if k in ["ip", "ipv6"]:
@@ -274,7 +280,6 @@ class Route_maps(ResourceModule):
 
     def list_to_dict(self, param):
         if param:
-
             def convert_to_dict(inner_match, key):
                 temp = dict()
                 for each in inner_match:
@@ -371,6 +376,12 @@ class Route_maps(ResourceModule):
                                     set["interfaces"],
                                     "interface",
                                 )
+                            if set.get("as_path"):
+                                _k = set.get("as_path").get("prepend")
+                                if _k:
+                                    if _k.get('as_number'):
+                                        _k['as_number'] = ' '.join(_k['as_number'])
+
                         action = every.get("action")
                         sequence = every.get("sequence")
                         temp_entries.update(
