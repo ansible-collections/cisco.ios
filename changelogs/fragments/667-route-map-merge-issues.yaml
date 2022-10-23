@@ -3,3 +3,4 @@ bugfixes:
   - fix merge issues with route-maps where wanted config is not deployed
     if route map has existing sequence numbers (https://github.com/ansible-collections/cisco.ios/issues/641)
   - fix idempotency issues with as-path prepend (https://github.com/ansible-collections/cisco.ios/issues/678)
+  - fix idempotency issues with set community none (https://github.com/ansible-collections/cisco.ios/issues/679
