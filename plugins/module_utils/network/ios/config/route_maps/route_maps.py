@@ -280,6 +280,7 @@ class Route_maps(ResourceModule):
 
     def list_to_dict(self, param):
         if param:
+
             def convert_to_dict(inner_match, key):
                 temp = dict()
                 for each in inner_match:
@@ -379,8 +380,8 @@ class Route_maps(ResourceModule):
                             if set.get("as_path"):
                                 _k = set.get("as_path").get("prepend")
                                 if _k:
-                                    if _k.get('as_number'):
-                                        _k['as_number'] = ' '.join(_k['as_number'])
+                                    if _k.get("as_number"):
+                                        _k["as_number"] = " ".join(_k["as_number"])
 
                         action = every.get("action")
                         sequence = every.get("sequence")

@@ -17,7 +17,7 @@
                   as_path:
                     prepend:
                       as_number:
-                       - 64512
+                        - 64512
                 match:
                   ip:
                     next_hop:
