@@ -29,7 +29,7 @@ description: This module configures and manages the static routes on IOS platfor
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL.
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:

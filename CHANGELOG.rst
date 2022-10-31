@@ -5,6 +5,35 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- Only valid connection types for this collection is network_cli.
+- This release drops support for `connection: local` and provider dictionary.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- ios_interface - use ios_interfaces instead.
+- ios_l2_interface - use ios_l2_interfaces instead.
+- ios_l3_interface - use ios_l3_interfaces instead.
+- ios_static_route - use ios_static_routes instead.
+- ios_vlan - use ios_vlans instead.
+
+Bugfixes
+--------
+
+- facts - fix operstatus having a white space after value.
+- ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
+
+Documentation Changes
+---------------------
+
+- Update supported IOSXE version for modules.
+
 v3.3.2
 ======
 

@@ -21,7 +21,7 @@ description:
   - This module provides declarative management of SNMP server on Cisco IOS devices.
 module: ios_snmp_server
 notes:
-  - Tested against Cisco IOSv Version 15.6.
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
 options:
   config:

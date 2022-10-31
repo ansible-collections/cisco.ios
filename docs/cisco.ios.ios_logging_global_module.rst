@@ -2171,7 +2171,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version 15.6
+   - Tested against Cisco IOSXE Version 17.3 on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
    - The Configuration defaults of the Cisco IOS network devices are supposed to hinder idempotent behavior of plays
 

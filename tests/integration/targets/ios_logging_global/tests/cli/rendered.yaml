@@ -52,8 +52,6 @@
             tag: hostname
           persistent:
             batch: 4444
-          policy_firewall:
-            rate_limit: 10
           queue_limit:
             esm: 150
           rate_limit:

@@ -1,17 +1,7 @@
 plugins/modules/ios_bgp.py validate-modules:deprecation-mismatch
 plugins/modules/ios_bgp.py validate-modules:invalid-documentation
-plugins/modules/ios_interface.py validate-modules:deprecation-mismatch
-plugins/modules/ios_interface.py validate-modules:invalid-documentation
 plugins/modules/ios_lldp.py validate-modules:deprecation-mismatch
 plugins/modules/ios_lldp.py validate-modules:invalid-documentation
-plugins/modules/ios_l2_interface.py validate-modules:deprecation-mismatch
-plugins/modules/ios_l2_interface.py validate-modules:invalid-documentation
-plugins/modules/ios_l3_interface.py validate-modules:deprecation-mismatch
-plugins/modules/ios_l3_interface.py validate-modules:invalid-documentation
-plugins/modules/ios_static_route.py validate-modules:deprecation-mismatch
-plugins/modules/ios_static_route.py validate-modules:invalid-documentation
-plugins/modules/ios_vlan.py validate-modules:deprecation-mismatch
-plugins/modules/ios_vlan.py validate-modules:invalid-documentation
 plugins/modules/ios_logging.py validate-modules:deprecation-mismatch
 plugins/modules/ios_logging.py validate-modules:invalid-documentation
 plugins/modules/ios_ntp.py validate-modules:deprecation-mismatch

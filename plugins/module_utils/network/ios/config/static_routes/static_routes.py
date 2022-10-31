@@ -655,14 +655,16 @@ class Static_Routes(ConfigBase):
                 for each_want in each:
                     temp_want.update(dict(each_want))
 
+                vrf = temp_want.get("vrf")
                 if temp_want.get("afi") == "ipv4":
                     cmd = "ip route "
-                    vrf = temp_want.get("vrf")
                     if vrf:
                         cmd = cmd + "vrf {0} ".format(vrf)
                     cmd = self.prepare_config_commands(temp_want, cmd)
                 elif temp_want.get("afi") == "ipv6":
                     cmd = "ipv6 route "
+                    if vrf:
+                        cmd = cmd + "vrf {0} ".format(vrf)
                     cmd = self.prepare_config_commands(temp_want, cmd)
                 commands.append(cmd)
 
@@ -734,14 +736,16 @@ class Static_Routes(ConfigBase):
                 for each_want in each:
                     temp_want.update(dict(each_want))
 
+                vrf = temp_want.get("vrf")
                 if temp_want.get("afi") == "ipv4":
                     cmd = "no ip route "
-                    vrf = temp_want.get("vrf")
                     if vrf:
                         cmd = cmd + "vrf {0} ".format(vrf)
                     cmd = self.prepare_config_commands(temp_want, cmd)
                 elif temp_want.get("afi") == "ipv6":
                     cmd = "no ipv6 route "
+                    if vrf:
+                        cmd = cmd + "vrf {0} ".format(vrf)
                     cmd = self.prepare_config_commands(temp_want, cmd)
                 commands.append(cmd)
 

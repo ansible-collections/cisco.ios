@@ -121,7 +121,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
-    ios_argument_spec,
     load_config,
 )
 
@@ -155,11 +154,7 @@ def parse_source_int(line, dest):
 
 def parse_acl(line, dest):
     if dest == "access-group":
-        match = re.search(
-            "ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)",
-            line,
-            re.M,
-        )
+        match = re.search("ntp\\saccess-group\\s(?:peer|serve)(?:\\s+)(\\S+)", line, re.M)
         if match:
             acl = match.group(1)
             return acl
@@ -173,11 +168,7 @@ def parse_logging(line, dest):
 
 def parse_auth_key(line, dest):
     if dest == "authentication-key":
-        match = re.search(
-            "(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)",
-            line,
-            re.M,
-        )
+        match = re.search("(ntp\\sauthentication-key\\s\\d+\\smd5\\s)(\\w+)", line, re.M)
         if match:
             auth_key = match.group(2)
             return auth_key
@@ -197,14 +188,11 @@ def parse_auth(dest):
 
 
 def map_config_to_obj(module):
-
     obj_dict = dict()
     obj = list()
     server_list = list()
     config = get_config(module, flags=["| include ntp"])
-
     for line in config.splitlines():
-
         match = re.search("ntp\\s(\\S+)", line, re.M)
 
         if match:
@@ -222,29 +210,20 @@ def map_config_to_obj(module):
                     server_list.append((server[0], server[1]))
                 else:
                     server_list.append((server[0].split()[1], server[1]))
-
             if source_int:
                 obj_dict["source_int"] = source_int
-
             if acl:
                 obj_dict["acl"] = acl
-
             if logging:
                 obj_dict["logging"] = True
-
             if auth:
                 obj_dict["auth"] = True
-
             if auth_key:
                 obj_dict["auth_key"] = auth_key
-
             if key_id:
                 obj_dict["key_id"] = key_id
-
     obj_dict["server"] = server_list
-
     obj.append(obj_dict)
-
     return obj
 
 
@@ -294,71 +273,45 @@ def map_obj_to_commands(want, have, module):
             vrf = None
 
         if state == "absent":
-
             if server_have and (vrf, server) in server_have:
                 if vrf is not None:
-                    commands.append(
-                        "no ntp server vrf {0} {1}".format(vrf, server),
-                    )
+                    commands.append("no ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("no ntp server {0}".format(server))
-
             if source_int and source_int_have:
                 commands.append("no ntp source {0}".format(source_int))
-
             if acl and acl_have:
                 commands.append("no ntp access-group peer {0}".format(acl))
-
             if logging is True and logging_have:
                 commands.append("no ntp logging")
-
             if auth is True and auth_have:
                 commands.append("no ntp authenticate")
-
             if key_id and key_id_have:
                 commands.append("no ntp trusted-key {0}".format(key_id))
-
             if auth_key and auth_key_have:
                 if key_id and key_id_have:
                     commands.append(
-                        "no ntp authentication-key {0} md5 {1} 7".format(
-                            key_id,
-                            auth_key,
-                        ),
+                        "no ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key),
                     )
         elif state == "present":
-
             if server is not None and (vrf, server) not in server_have:
                 if vrf is not None:
-                    commands.append(
-                        "ntp server vrf {0} {1}".format(vrf, server),
-                    )
+                    commands.append("ntp server vrf {0} {1}".format(vrf, server))
                 else:
                     commands.append("ntp server {0}".format(server))
-
             if source_int is not None and source_int != source_int_have:
                 commands.append("ntp source {0}".format(source_int))
-
             if acl is not None and acl != acl_have:
                 commands.append("ntp access-group peer {0}".format(acl))
-
             if logging is not None and logging != logging_have and logging is not False:
                 commands.append("ntp logging")
-
             if auth is not None and auth != auth_have and auth is not False:
                 commands.append("ntp authenticate")
-
             if key_id is not None and key_id != key_id_have:
                 commands.append("ntp trusted-key {0}".format(key_id))
-
             if auth_key is not None and auth_key != auth_key_have:
                 if key_id is not None:
-                    commands.append(
-                        "ntp authentication-key {0} md5 {1} 7".format(
-                            key_id,
-                            auth_key,
-                        ),
-                    )
+                    commands.append("ntp authentication-key {0} md5 {1} 7".format(key_id, auth_key))
     return commands
 
 
@@ -375,32 +328,19 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
         vrf=dict(),
     )
-
-    argument_spec.update(ios_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec,
-        supports_check_mode=True,
-    )
-
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     result = {"changed": False}
-
     warnings = list()
-
     if warnings:
         result["warnings"] = warnings
-
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
     commands = map_obj_to_commands(want, have, module)
-
     result["commands"] = commands
-
     if commands:
         if not module.check_mode:
             load_config(module, commands)
         result["changed"] = True
-
     module.exit_json(**result)
 
 

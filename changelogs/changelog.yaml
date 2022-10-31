@@ -645,3 +645,28 @@ releases:
       - arguments-renamed.yaml
       - prefix_list_facts.yaml
     release_date: "2022-09-23"
+  4.0.0:
+    changes:
+      bugfixes:
+        - facts - fix operstatus having a white space after value.
+        - ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
+      doc_changes:
+        - Update supported IOSXE version for modules.
+      major_changes:
+        - Only valid connection types for this collection is network_cli.
+        - "This release drops support for `connection: local` and provider dictionary."
+      removed_features:
+        - ios_interface - use ios_interfaces instead.
+        - ios_l2_interface - use ios_l2_interfaces instead.
+        - ios_l3_interface - use ios_l3_interfaces instead.
+        - ios_static_route - use ios_static_routes instead.
+        - ios_vlan - use ios_vlans instead.
+    fragments:
+      - 664-ipv6-vrf-fix.yaml
+      - docs_upgrade.yaml
+      - fix_opState_facts.yaml
+      - fix_test_ios_image_upgrade.yaml
+      - net_remove.yaml
+      - remove_deprecated.yaml
+      - remove_provider.yaml
+    release_date: "2022-10-12"
