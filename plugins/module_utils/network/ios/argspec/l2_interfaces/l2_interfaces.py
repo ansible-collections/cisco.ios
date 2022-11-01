@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -28,8 +29,7 @@ The arg spec for the ios_l2_interfaces module
 
 
 class L2_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_l2_interfaces module
-    """
+    """The arg spec for the ios_l2_interfaces module"""
 
     argument_spec = {
         "config": {
