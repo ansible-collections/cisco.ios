@@ -12,6 +12,11 @@
               - sequence: 10
                 action: deny
                 description: this is test route
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 64512
                 match:
                   ip:
                     next_hop:
@@ -75,6 +80,11 @@
                 set:
                   aigp_metric:
                     value: 100
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 65111
+                        - 65111
                   automatic_tag: true
                   extcommunity:
                     cost:
