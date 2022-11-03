@@ -5,6 +5,6 @@
 
 - name: Delete and clean ipv6 configuration
   vars:
-    lines: "interface GigabitEthernet 2\nno ipv6 address 2001:DB8:0:1::/64\ninterface GigabitEthernet 0/2\nno ipv6 address 2001:DB8:0:2::/64\n"
+    lines: "interface GigabitEthernet 2\nno ipv6 address 2001:DB8:0:1::/64\ninterface GigabitEthernet 3\nno ipv6 address 2001:DB8:0:2::/64\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
