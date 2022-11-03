@@ -1,7 +1,7 @@
 ---
 - name: Remove configuration
   vars:
-    lines: "interface GigabitEthernet 2\nno channel-group\ninterface GigabitEthernet 3\nno channel-group\nno interface Port-channel11\nno interface Port-channel22"
+    lines: "interface GigabitEthernet 2\nno channel-group\ninterface GigabitEthernet 3\nno channel-group"
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

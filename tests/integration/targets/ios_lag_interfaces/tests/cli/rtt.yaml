@@ -52,7 +52,7 @@
 
     - ansible.builtin.assert:
         that:
-          - revert.commands|length == 4
+          - revert.commands|length == 2
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"
