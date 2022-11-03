@@ -8,7 +8,7 @@
       register: result
       cisco.ios.ios_lldp_interfaces:
         config:
-          - name: GigabitEthernet0/0
+          - name: GigabitEthernet1
             receive: true
             transmit: true
           - name: GigabitEthernet2
@@ -21,4 +21,4 @@
     - ansible.builtin.assert:
         that:
           - result.changed == false
-          - result.rendered|symmetric_difference(merged.commands) == []
+          - result.rendered|symmetric_difference(rendered.commands) == []
