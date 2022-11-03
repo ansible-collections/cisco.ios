@@ -13,13 +13,7 @@
         config:
           - name: GigabitEthernet2
             description: Configured and Replaced by Ansible-Network
-            speed: auto
-            duplex: auto
-            mtu: 110
-          - name: GigabitEthernet3
-            description: Configured and Replaced by Ansible-Network
-            duplex: auto
-            speed: 10
+            mtu: 2000
         state: replaced
 
     - name: Assert that correct set of commands were generated

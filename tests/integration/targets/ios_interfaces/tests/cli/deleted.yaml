@@ -15,12 +15,6 @@
           - name: GigabitEthernet3
         state: deleted
 
-    - ansible.builtin.debug:
-        msg:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) }}"
-          - "{{ deleted['before'] | symmetric_difference(result['before']) }}"
-          - "{{ deleted['after'] | symmetric_difference(result['after']) }}"
-
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:

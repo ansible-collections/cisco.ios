@@ -15,22 +15,18 @@
             name: Loopback888
           - enabled: true
             name: Loopback999
-          - duplex: auto
-            enabled: true
-            name: GigabitEthernet0/0
-            speed: auto
+          - enabled: true
+            name: GigabitEthernet1
+            description: mgmt interface do not change
           - description: this is interface1
-            duplex: auto
             enabled: true
-            mtu: 65
             name: GigabitEthernet2
-            speed: "10"
           - name: GigabitEthernet3
             description: Configured and Overridden by Ansible-Network
             enabled: true
-            duplex: full
             mtu: 2000
-            speed: auto
+          - enabled: false
+            name: GigabitEthernet4
         state: overridden
 
     - name: Assert that correct set of commands were generated

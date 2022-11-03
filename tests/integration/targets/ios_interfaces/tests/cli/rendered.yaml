@@ -12,13 +12,11 @@
             description: Configured by Ansible-Network
             mtu: 110
             enabled: true
-            duplex: half
           - name: GigabitEthernet3
             description: Configured by Ansible-Network
             mtu: 2800
             enabled: false
             speed: 100
-            duplex: full
         state: rendered
 
     - ansible.builtin.assert:
