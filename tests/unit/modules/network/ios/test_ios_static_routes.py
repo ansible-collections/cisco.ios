@@ -24,35 +24,35 @@ class TestIosStaticRoutesModule(TestIosModule):
         super(TestIosStaticRoutesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
+            "get_resource_connection"
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts."
-            "get_resource_connection",
+            "get_resource_connection"
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
-            "Static_RoutesFacts.get_static_routes_data",
+            "Static_RoutesFacts.get_static_routes_data"
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -89,7 +89,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -108,11 +108,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf",
                                                 tag=50,
                                                 track=150,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -129,16 +129,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=40,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                 ],
                 state="merged",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -153,11 +153,11 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100
             ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50
             ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner
-            ip route vrf ansible_vrf_2 192.51.111.0 255.255.255.255 GigabitEthernet2
+            ip route vrf ansible_vrf_2 192.51.111.0 255.255.255.255 GigabitEthernet0/1
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -176,11 +176,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_1",
                                                 tag=100,
                                                 track=150,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -197,11 +197,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -218,11 +218,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="192.51.111.1",
                                                 interface="GigabitEthernet0/2",
                                                 name="partner",
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -233,10 +233,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 routes=[
                                     dict(
                                         dest="192.51.111.0/32",
-                                        next_hops=[dict(interface="GigabitEthernet2")],
-                                    ),
+                                        next_hops=[dict(interface="GigabitEthernet0/1")],
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -253,12 +253,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         address_families=[
@@ -273,12 +273,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 interface="GigabitEthernet0/2",
                                                 name="test_v6",
                                                 tag=105,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         vrf="ansible_vrf",
@@ -293,16 +293,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="2001:DB8:0:4::2",
                                                 name="test_v6_vrf",
                                                 tag=115,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                 ],
                 state="merged",
-            ),
+            )
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
@@ -315,7 +315,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -334,11 +334,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="replaced_vrf",
                                                 tag=10,
                                                 track=170,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -355,16 +355,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                 ],
                 state="replaced",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -382,7 +382,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -401,11 +401,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_1",
                                                 tag=100,
                                                 track=150,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -422,11 +422,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -443,11 +443,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="192.51.111.1",
                                                 interface="GigabitEthernet0/2",
                                                 name="partner",
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -464,12 +464,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         address_families=[
@@ -484,12 +484,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 interface="GigabitEthernet0/2",
                                                 name="test_v6",
                                                 tag=105,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         vrf="ansible_vrf",
@@ -504,16 +504,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="2001:DB8:0:4::2",
                                                 name="test_v6_vrf",
                                                 tag=115,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                 ],
                 state="replaced",
-            ),
+            )
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
@@ -526,7 +526,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -545,16 +545,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=150,
                                                 tag=50,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
-                    ),
+                            )
+                        ]
+                    )
                 ],
                 state="overridden",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -578,7 +578,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -597,11 +597,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_1",
                                                 tag=100,
                                                 track=150,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -618,11 +618,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf_2",
                                                 tag=50,
                                                 track=175,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -639,11 +639,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="192.51.111.1",
                                                 interface="GigabitEthernet0/2",
                                                 name="partner",
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -660,12 +660,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         address_families=[
@@ -680,12 +680,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 interface="GigabitEthernet0/2",
                                                 name="test_v6",
                                                 tag=105,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                     dict(
                         vrf="ansible_vrf",
@@ -700,16 +700,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 forward_router_address="2001:DB8:0:4::2",
                                                 name="test_v6_vrf",
                                                 tag=115,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                 ],
                 state="overridden",
-            ),
+            )
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
@@ -722,7 +722,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -741,11 +741,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf",
                                                 tag=50,
                                                 track=175,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
                     ),
                     dict(
@@ -762,16 +762,16 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 distance_metric=110,
                                                 tag=60,
                                                 multicast=True,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
-                        ],
+                            )
+                        ]
                     ),
                 ],
                 state="deleted",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -789,21 +789,19 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])]
-                    ),
+                    dict(address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])])
                 ],
                 state="deleted",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60"
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -816,7 +814,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -824,14 +822,14 @@ class TestIosStaticRoutesModule(TestIosModule):
                     dict(
                         vrf="ansible_vrf",
                         address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])],
-                    ),
+                    )
                 ],
                 state="deleted",
-            ),
+            )
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50",
+            "no ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50"
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -844,7 +842,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
             ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
             ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -863,19 +861,19 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 name="test_vrf",
                                                 tag=50,
                                                 track=175,
-                                            ),
+                                            )
                                         ],
-                                    ),
+                                    )
                                 ],
-                            ),
+                            )
                         ],
-                    ),
+                    )
                 ],
                 state="rendered",
-            ),
+            )
         )
         commands = [
-            "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 175 tag 50",
+            "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 175 tag 50"
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
@@ -884,7 +882,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip route 10.0.0.0 255.0.0.0 Null0 permanent
-            """,
+            """
         )
         set_module_args(dict(state="gathered"))
         gathered = [
@@ -896,11 +894,11 @@ class TestIosStaticRoutesModule(TestIosModule):
                             {
                                 "dest": "10.0.0.0/8",
                                 "next_hops": [{"interface": "Null0", "permanent": True}],
-                            },
+                            }
                         ],
-                    },
-                ],
-            },
+                    }
+                ]
+            }
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None

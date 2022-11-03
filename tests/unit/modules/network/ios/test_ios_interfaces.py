@@ -24,35 +24,35 @@ class TestIosInterfacesModule(TestIosModule):
         super(TestIosInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
+            "get_resource_connection"
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection",
+            "get_resource_connection"
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces."
-            "InterfacesFacts.get_interfaces_data",
+            "InterfacesFacts.get_interfaces_data"
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -73,7 +73,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -97,7 +97,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             {
@@ -110,16 +110,16 @@ class TestIosInterfacesModule(TestIosModule):
                     {
                         "description": "This interface should be enabled",
                         "enabled": False,
-                        "name": "GigabitEthernet2",
+                        "name": "GigabitEthernet0/1",
                     },
                 ],
                 "state": "merged",
-            },
+            }
         )
         commands = [
             "interface GigabitEthernet1",
             "description This interface should be disabled",
-            "interface GigabitEthernet2",
+            "interface GigabitEthernet0/1",
             "description This interface should be enabled",
             "shutdown",
         ]
@@ -134,7 +134,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -158,24 +158,21 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             {
                 "config": [
-                    {
-                        "description": "Ansible UT interface 1",
-                        "name": "GigabitEthernet1",
-                    },
+                    {"description": "Ansible UT interface 1", "name": "GigabitEthernet1"},
                     {
                         "description": "Ansible UT interface 2",
-                        "name": "GigabitEthernet2",
+                        "name": "GigabitEthernet0/1",
                         "speed": 1000,
                         "mtu": 1500,
                     },
                 ],
                 "state": "merged",
-            },
+            }
         )
         self.execute_module(changed=False, commands=[])
 
@@ -187,7 +184,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -211,22 +208,19 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             {
                 "config": [
-                    {
-                        "description": "Ansible UT interface 1",
-                        "name": "GigabitEthernet1",
-                    },
-                    {"name": "GigabitEthernet2", "speed": 1200, "mtu": 1800},
+                    {"description": "Ansible UT interface 1", "name": "GigabitEthernet1"},
+                    {"name": "GigabitEthernet0/1", "speed": 1200, "mtu": 1800},
                 ],
                 "state": "replaced",
-            },
+            }
         )
         commands = [
-            "interface GigabitEthernet2",
+            "interface GigabitEthernet0/1",
             "no description Ansible UT interface 2",
             "speed 1200",
             "mtu 1800",
@@ -242,7 +236,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -266,24 +260,21 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             {
                 "config": [
-                    {
-                        "description": "Ansible UT interface 1",
-                        "name": "GigabitEthernet1",
-                    },
+                    {"description": "Ansible UT interface 1", "name": "GigabitEthernet1"},
                     {
                         "description": "Ansible UT interface 2",
-                        "name": "GigabitEthernet2",
+                        "name": "GigabitEthernet0/1",
                         "speed": 1000,
                         "mtu": 1500,
                     },
                 ],
                 "state": "replaced",
-            },
+            }
         )
         self.execute_module(changed=False, commands=[])
 
@@ -295,7 +286,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -319,7 +310,7 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             {
@@ -337,11 +328,11 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 "state": "overridden",
-            },
+            }
         )
 
         commands = [
-            "interface GigabitEthernet2",
+            "interface GigabitEthernet0/1",
             "no description Ansible UT interface 2",
             "no speed 1000",
             "no mtu 1500",
@@ -373,7 +364,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -397,11 +388,9 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet1")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet1")], state="deleted"))
         commands = [
             "interface GigabitEthernet1",
             "no description Ansible UT interface 1",
@@ -418,7 +407,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -442,13 +431,13 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             dict(
                 config=[
                     {
-                        "name": "GigabitEthernet2",
+                        "name": "GigabitEthernet0/1",
                         "description": "Ansible UT interface 2",
                         "speed": "1000",
                         "mtu": 1500,
@@ -462,12 +451,9 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 state="purged",
-            ),
+            )
         )
-        commands = [
-            "no interface GigabitEthernet2",
-            "no interface GigabitEthernet3",
-        ]
+        commands = ["no interface GigabitEthernet0/1", "no interface GigabitEthernet3"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
@@ -479,7 +465,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
              speed 1000
@@ -503,12 +489,12 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(dict(config=[], state="purged"))
         commands = [
             "no interface GigabitEthernet1",
-            "no interface GigabitEthernet2",
+            "no interface GigabitEthernet0/1",
             "no interface GigabitEthernet3",
             "no interface GigabitEthernet4",
             "no interface GigabitEthernet5",
@@ -526,7 +512,7 @@ class TestIosInterfacesModule(TestIosModule):
                      no shutdown
                      ip address dhcp
                      negotiation auto
-                    interface GigabitEthernet2
+                    interface GigabitEthernet0/1
                      description Ansible UT interface 2
                      ip address dhcp
                      speed 1000
@@ -550,20 +536,16 @@ class TestIosInterfacesModule(TestIosModule):
                      duplex full
                      negotiation auto
                      ipv6 dhcp server
-                    """,
+                    """
                 ),
                 state="parsed",
-            ),
+            )
         )
         result = self.execute_module(changed=False)
         parsed_list = [
+            {"name": "GigabitEthernet1", "description": "Ansible UT interface 1", "enabled": True},
             {
-                "name": "GigabitEthernet1",
-                "description": "Ansible UT interface 1",
-                "enabled": True,
-            },
-            {
-                "name": "GigabitEthernet2",
+                "name": "GigabitEthernet0/1",
                 "description": "Ansible UT interface 2",
                 "speed": "1000",
                 "mtu": 1500,
@@ -575,11 +557,7 @@ class TestIosInterfacesModule(TestIosModule):
                 "enabled": False,
                 "duplex": "auto",
             },
-            {
-                "name": "GigabitEthernet4",
-                "description": "Ansible UT interface 4",
-                "enabled": False,
-            },
+            {"name": "GigabitEthernet4", "description": "Ansible UT interface 4", "enabled": False},
             {
                 "name": "GigabitEthernet5",
                 "description": "Ansible UT interface 5",
@@ -594,7 +572,7 @@ class TestIosInterfacesModule(TestIosModule):
             """\
             interface GigabitEthernet1
              description Ansible UT interface 1
-            interface GigabitEthernet2
+            interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
             interface GigabitEthernet3
@@ -603,7 +581,7 @@ class TestIosInterfacesModule(TestIosModule):
              negotiation auto
             interface GigabitEthernet5
              ipv6 dhcp server
-            """,
+            """
         )
         set_module_args(
             dict(
@@ -614,7 +592,7 @@ class TestIosInterfacesModule(TestIosModule):
                         "enabled": False,
                     },
                     {
-                        "name": "GigabitEthernet2",
+                        "name": "GigabitEthernet0/1",
                         "description": "Ansible UT interface 2",
                         "speed": "1000",
                         "mtu": 1500,
@@ -639,14 +617,14 @@ class TestIosInterfacesModule(TestIosModule):
                     },
                 ],
                 state="rendered",
-            ),
+            )
         )
 
         commands = [
             "interface GigabitEthernet1",
             "description Ansible UT interface 1",
             "shutdown",
-            "interface GigabitEthernet2",
+            "interface GigabitEthernet0/1",
             "description Ansible UT interface 2",
             "speed 1000",
             "mtu 1500",
