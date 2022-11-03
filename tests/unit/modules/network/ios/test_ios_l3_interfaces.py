@@ -24,35 +24,35 @@ class TestIosL3InterfacesModule(TestIosModule):
         super(TestIosL3InterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces."
-            "L3_InterfacesFacts.get_l3_interfaces_data"
+            "L3_InterfacesFacts.get_l3_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -74,7 +74,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             interface Serial3/0
              ipv6 address fd5d:12c9:2201:1::1/64
             interface Serial7/0
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -86,7 +86,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     dict(name="Serial3/0", ipv6=[dict(address="FD5D:12C9:2201:1::1/64", cga=True)]),
                 ],
                 state="merged",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -110,7 +110,7 @@ class TestIosL3InterfacesModule(TestIosModule):
              ip address 192.168.0.3 255.255.255.0
             interface Serial1/0
              description Configured by PAUL
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -123,7 +123,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     dict(name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -159,7 +159,7 @@ class TestIosL3InterfacesModule(TestIosModule):
              ip address 192.168.0.3 255.255.255.0
             interface Serial1/0
              description Configured by PAUL
-            """
+            """,
         )
         set_module_args(dict(state="deleted"))
         commands = [
@@ -191,7 +191,7 @@ class TestIosL3InterfacesModule(TestIosModule):
              ip address 192.168.0.3 255.255.255.0
             interface Serial1/0
              description Configured by PAUL
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -202,7 +202,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.4/24")]),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -225,7 +225,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             dict(
                 running_config="interface GigabitEthernet0/3.100\nencapsulation dot1Q 20\n ip address 192.168.0.3 255.255.255.0\n",
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [{"name": "GigabitEthernet0/3.100", "ipv4": [{"address": "192.168.0.3/24"}]}]
@@ -242,7 +242,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                                 address="dhcp",
                                 dhcp_client="GigabitEthernet0/3",
                                 dhcp_hostname="abc.com",
-                            )
+                            ),
                         ],
                         ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
                     ),
@@ -254,7 +254,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -290,7 +290,7 @@ class TestIosL3InterfacesModule(TestIosModule):
              ip address 192.168.0.3 255.255.255.0
             interface Serial1/0
              description Configured by PAUL
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -316,21 +316,23 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="Serial7/0",
                         ipv6=[
                             dict(
-                                address="FD5D:12C9:2201:5::1/64", segment_routing=dict(ipv6_sr=True)
-                            )
+                                address="FD5D:12C9:2201:5::1/64",
+                                segment_routing=dict(ipv6_sr=True),
+                            ),
                         ],
                     ),
                     dict(
                         name="Serial8/0",
                         ipv6=[
                             dict(
-                                address="FD5D:12C9:2201:6::1/64", segment_routing=dict(default=True)
-                            )
+                                address="FD5D:12C9:2201:6::1/64",
+                                segment_routing=dict(default=True),
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -380,7 +382,7 @@ class TestIosL3InterfacesModule(TestIosModule):
              ipv6 address fd5d:12c9:2201:4::1/64 link-local
             interface Serial5/0
              ipv6 address fd5d:12c9:2201:3::1/64 eui
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -405,21 +407,23 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="Serial7/0",
                         ipv6=[
                             dict(
-                                address="FD5D:12C9:2201:5::1/64", segment_routing=dict(ipv6_sr=True)
-                            )
+                                address="FD5D:12C9:2201:5::1/64",
+                                segment_routing=dict(ipv6_sr=True),
+                            ),
                         ],
                     ),
                     dict(
                         name="Serial8/0",
                         ipv6=[
                             dict(
-                                address="FD5D:12C9:2201:6::1/64", segment_routing=dict(default=True)
-                            )
+                                address="FD5D:12C9:2201:6::1/64",
+                                segment_routing=dict(default=True),
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = []
         result = self.execute_module(changed=False)

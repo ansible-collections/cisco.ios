@@ -3,8 +3,8 @@
     msg: START Replaced ios_l2_interfaces state for integration tests on connection={{ ansible_connection }}
 
 - block:
-  - ansible.builtin.include_tasks: _remove_config.yaml
-  - ansible.builtin.include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
   when: ansible_net_version == "15.6(2)T"
 
 - block:

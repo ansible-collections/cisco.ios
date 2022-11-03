@@ -27,10 +27,13 @@ class TestIosBgpModule(TestIosModule):
         obj = Provider(
             params=dict(
                 config=dict(
-                    bgp_as=64496, router_id="192.0.2.2", networks=None, address_family=None
+                    bgp_as=64496,
+                    router_id="192.0.2.2",
+                    networks=None,
+                    address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, ["router bgp 64496", "bgp router-id 192.0.2.2", "exit"])
@@ -39,10 +42,13 @@ class TestIosBgpModule(TestIosModule):
         obj = Provider(
             params=dict(
                 config=dict(
-                    bgp_as=64496, router_id="192.0.2.1", networks=None, address_family=None
+                    bgp_as=64496,
+                    router_id="192.0.2.1",
+                    networks=None,
+                    address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -50,8 +56,9 @@ class TestIosBgpModule(TestIosModule):
     def test_ios_bgp_remove(self):
         obj = Provider(
             params=dict(
-                config=dict(bgp_as=64496, networks=None, address_family=None), operation="delete"
-            )
+                config=dict(bgp_as=64496, networks=None, address_family=None),
+                operation="delete",
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, ["no router bgp 64496"])
@@ -66,11 +73,12 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(
-            commands, ["router bgp 64496", "neighbor 192.51.100.2 remote-as 64496", "exit"]
+            commands,
+            ["router bgp 64496", "neighbor 192.51.100.2 remote-as 64496", "exit"],
         )
 
     def test_ios_bgp_neighbor_idempotent(self):
@@ -83,13 +91,13 @@ class TestIosBgpModule(TestIosModule):
                             neighbor="192.51.100.1",
                             remote_as=64496,
                             timers=dict(keepalive=120, holdtime=360, min_neighbor_holdtime=360),
-                        )
+                        ),
                     ],
                     networks=None,
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -103,7 +111,7 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(
@@ -113,7 +121,7 @@ class TestIosBgpModule(TestIosModule):
                     "router bgp 64496",
                     "network 192.0.1.0 mask 255.255.254.0 route-map RMAP_1",
                     "exit",
-                ]
+                ],
             ),
         )
 
@@ -129,7 +137,7 @@ class TestIosBgpModule(TestIosModule):
                     address_family=None,
                 ),
                 operation="merge",
-            )
+            ),
         )
         commands = obj.render(self._bgp_config)
         self.assertEqual(commands, [])
@@ -262,7 +270,10 @@ class TestIosBgpModule(TestIosModule):
         af_1 = dict(afi="ipv4", safi="unicast", neighbors=[af_nbr_1, af_nbr_2])
         af_2 = dict(afi="ipv4", safi="multicast", networks=[net_1, net_2])
         config = dict(
-            bgp_as=64496, neighbors=[nbr_1, nbr_2], address_family=[af_1, af_2], networks=None
+            bgp_as=64496,
+            neighbors=[nbr_1, nbr_2],
+            address_family=[af_1, af_2],
+            networks=None,
         )
 
         obj = Provider(params=dict(config=config, operation="override"))

@@ -176,7 +176,6 @@ gathered:
     - enabled: true
       name: Loopback999
 
-
 parsed:
   config:
     - description: interfaces 0/1

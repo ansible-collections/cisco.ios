@@ -65,7 +65,6 @@ replaced:
       port_priority: 20
     - name: GigabitEthernet4
 
-
 overridden:
   before:
     - name: loopback888
@@ -103,7 +102,6 @@ overridden:
     - name: GigabitEthernet3
       port_priority: 40
     - name: GigabitEthernet4
-
 
 deleted:
   before:
@@ -151,7 +149,6 @@ gathered:
     - name: GigabitEthernet3
       port_priority: 20
     - name: GigabitEthernet4
-
 
 parsed:
   config:

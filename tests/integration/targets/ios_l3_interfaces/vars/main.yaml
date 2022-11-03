@@ -142,20 +142,20 @@ overridden:
 deleted:
   before:
     - ipv4:
-      - dhcp:
-          enable: true
+        - dhcp:
+            enable: true
       name: GigabitEthernet1
     - ipv4:
-      - address: 203.0.113.27/24
+        - address: 203.0.113.27/24
       name: GigabitEthernet2
     - ipv4:
-      - address: 192.0.2.1/24
-        secondary: true
-      - address: 192.0.2.2/24
+        - address: 192.0.2.1/24
+          secondary: true
+        - address: 192.0.2.2/24
       ipv6:
-      - address: 2001:DB8:0:3::/64
-      - autoconfig:
-          enable: true
+        - address: 2001:DB8:0:3::/64
+        - autoconfig:
+            enable: true
       name: GigabitEthernet3
     - name: GigabitEthernet4
     - name: Loopback888
