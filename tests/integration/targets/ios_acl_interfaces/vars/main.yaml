@@ -49,7 +49,7 @@ gathered:
             - direction: out
               name: test_v6
           afi: ipv6
-      name: GigabitEthernet2
+      name: GigabitEthernet1
     - access_groups:
         - acls:
             - direction: in
@@ -57,7 +57,7 @@ gathered:
             - direction: out
               name: 123
           afi: ipv4
-      name: GigabitEthernet3
+      name: GigabitEthernet2
 parsed:
   config:
     - access_groups:
