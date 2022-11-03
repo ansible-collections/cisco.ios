@@ -21,7 +21,7 @@
               - dhcp:
                   client_id: GigabitEthernet0/0
                   hostname: test.com
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
                 secondary: true

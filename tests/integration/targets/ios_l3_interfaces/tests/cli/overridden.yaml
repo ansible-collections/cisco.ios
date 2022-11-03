@@ -16,7 +16,7 @@
               - dhcp:
                   enable: true
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
 

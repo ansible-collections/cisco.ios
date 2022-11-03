@@ -107,7 +107,7 @@
         parents: "{{ item }}"
       loop:
         - interface GigabitEthernet2
-        - interface GigabitEthernet0/2
+        - interface GigabitEthernet3
 
     - name: Create linkagg
       ios_linkagg:
@@ -126,7 +126,7 @@
         mode: active
         members:
           - GigabitEthernet2
-          - GigabitEthernet0/2
+          - GigabitEthernet3
       register: result
 
     - ansible.builtin.assert:
@@ -134,7 +134,7 @@
           - "result.changed == true"
           - "'interface GigabitEthernet2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
-          - "'interface GigabitEthernet0/2' in result.commands"
+          - "'interface GigabitEthernet3' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
     - name: Remove link aggregation group from member
@@ -142,7 +142,7 @@
         group: 20
         mode: active
         members:
-          - GigabitEthernet0/2
+          - GigabitEthernet3
       register: result
 
     - ansible.builtin.assert:
@@ -199,7 +199,7 @@
         parents: "{{ item }}"
       loop:
         - interface GigabitEthernet2
-        - interface GigabitEthernet0/2
+        - interface GigabitEthernet3
 
   when: switch_type == 'L2'
 

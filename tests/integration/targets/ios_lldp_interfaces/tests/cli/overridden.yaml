@@ -17,7 +17,7 @@
             receive: true
             transmit: true
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             receive: true
         state: overridden
 

@@ -11,7 +11,7 @@ merged:
       speed: auto
     - duplex: auto
       enabled: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: auto
     - enabled: true
       name: Loopback888
@@ -22,7 +22,7 @@ merged:
     - description Configured and Merged by Ansible-Network
     - mtu 110
     - duplex half
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - description Configured and Merged by Ansible-Network
     - mtu 2800
     - speed 100
@@ -43,7 +43,7 @@ merged:
       duplex: full
       enabled: false
       mtu: 2800
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
     - enabled: true
       name: Loopback888
@@ -56,7 +56,7 @@ replaced:
     - description Configured and Replaced by Ansible-Network
     - speed auto
     - mtu 110
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - description Configured and Replaced by Ansible-Network
     - speed 10
     - no mtu 110
@@ -75,7 +75,7 @@ replaced:
     - description: Configured and Replaced by Ansible-Network
       duplex: auto
       enabled: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "10"
     - enabled: true
       name: Loopback888
@@ -96,7 +96,7 @@ replaced:
       duplex: auto
       enabled: false
       mtu: 110
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
     - enabled: true
       name: Loopback888
@@ -123,10 +123,10 @@ overridden:
       duplex: auto
       enabled: false
       mtu: 110
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
   commands:
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - speed auto
     - description Configured and Overridden by Ansible-Network
     - mtu 2000
@@ -151,7 +151,7 @@ overridden:
       duplex: full
       enabled: true
       mtu: 2000
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: auto
 
 deleted:
@@ -170,7 +170,7 @@ deleted:
       duplex: auto
       enabled: false
       mtu: 110
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
     - enabled: true
       name: Loopback888
@@ -183,7 +183,7 @@ deleted:
     - no mtu 65
     - no duplex auto
     - shutdown
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no description this is interface for testing
     - no speed 100
     - no mtu 110
@@ -199,7 +199,7 @@ deleted:
       speed: auto
     - duplex: auto
       enabled: false
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: auto
     - enabled: true
       name: Loopback888
@@ -222,7 +222,7 @@ gathered:
       duplex: auto
       enabled: false
       mtu: 110
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
     - enabled: true
       name: Loopback888
@@ -240,7 +240,7 @@ parsed:
       duplex: full
       enabled: false
       mtu: 2800
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       speed: "100"
 
 rendered:
@@ -250,7 +250,7 @@ rendered:
     - mtu 110
     - duplex half
     - no shutdown
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - description Configured by Ansible-Network
     - mtu 2800
     - speed 100

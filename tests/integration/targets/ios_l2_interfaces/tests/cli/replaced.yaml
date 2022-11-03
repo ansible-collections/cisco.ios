@@ -16,7 +16,7 @@
               vlan: 40
             voice:
               vlan: 20
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             trunk:
               native_vlan: 20
               pruning_vlans: 10-20,30

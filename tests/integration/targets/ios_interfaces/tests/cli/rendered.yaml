@@ -13,7 +13,7 @@
             mtu: 110
             enabled: true
             duplex: half
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             description: Configured by Ansible-Network
             mtu: 2800
             enabled: false

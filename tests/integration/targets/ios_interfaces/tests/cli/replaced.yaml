@@ -16,7 +16,7 @@
             speed: auto
             duplex: auto
             mtu: 110
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             description: Configured and Replaced by Ansible-Network
             duplex: auto
             speed: 10

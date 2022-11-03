@@ -25,7 +25,7 @@
             mtu: 65
             name: GigabitEthernet2
             speed: "10"
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             description: Configured and Overridden by Ansible-Network
             enabled: true
             duplex: full

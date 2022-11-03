@@ -5,11 +5,11 @@ merged:
     - name: Port-channel40
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
   commands:
     - interface GigabitEthernet2
     - lacp port-priority 30
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - lacp port-priority 20
     - interface Port-channel10
     - lacp max-bundle 2
@@ -22,7 +22,7 @@ merged:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 30
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
 replaced:
   before:
@@ -34,7 +34,7 @@ replaced:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 30
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
   commands:
     - interface GigabitEthernet2
@@ -51,7 +51,7 @@ replaced:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 10
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
 overridden:
   before:
@@ -63,12 +63,12 @@ overridden:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 30
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
   commands:
     - interface GigabitEthernet2
     - no lacp port-priority
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - lacp port-priority 40
     - interface Port-channel10
     - no lacp fast-switchover
@@ -83,7 +83,7 @@ overridden:
       name: Port-channel40
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 40
 deleted:
   before:
@@ -95,12 +95,12 @@ deleted:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 30
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
   commands:
     - interface GigabitEthernet2
     - no lacp port-priority
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no lacp port-priority
     - interface Port-channel10
     - no lacp fast-switchover
@@ -112,7 +112,7 @@ deleted:
     - name: Port-channel40
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
 gathered:
   config:
     - fast_switchover: true
@@ -123,13 +123,13 @@ gathered:
     - name: GigabitEthernet0/0
     - name: GigabitEthernet2
       port_priority: 30
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
 parsed:
   config:
     - name: GigabitEthernet2
       port_priority: 10
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       port_priority: 20
     - fast_switchover: true
       max_bundle: 2
@@ -144,5 +144,5 @@ rtt:
     - no lacp fast-switchover
     - interface GigabitEthernet2
     - lacp port-priority 30
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - lacp port-priority 20

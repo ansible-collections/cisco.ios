@@ -11,7 +11,7 @@
       register: result
       cisco.ios.ios_l2_interfaces: &id001
         config:
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             trunk:
               allowed_vlans: 30-35,40
               native_vlan: 30

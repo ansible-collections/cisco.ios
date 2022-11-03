@@ -5,7 +5,7 @@
     - ansible.builtin.set_fact:
         interfaces:
           - interface GigabitEthernet2
-          - interface GigabitEthernet0/2
+          - interface GigabitEthernet3
 
     - name: Setup
       cisco.ios.ios_config: &rem
@@ -32,7 +32,7 @@
             enabled: true
             duplex: auto
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             description: Configured by Ansible (L3)
             enabled: true
             duplex: full
@@ -43,7 +43,7 @@
           - '"interface GigabitEthernet2" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
           - '"no shutdown" in result.commands'
-          - '"interface GigabitEthernet0/2" in result.commands'
+          - '"interface GigabitEthernet3" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
           - '"no shutdown" in result.commands'
           - '"duplex full" in result.commands'
@@ -64,7 +64,7 @@
               - address: dhcp
                 dhcp_client: GigabitEthernet0/0
                 dhcp_hostname: test.com
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
                 secondary: true
@@ -78,7 +78,7 @@
         that:
           - '"interface GigabitEthernet2" in result.commands'
           - '"ip address dhcp client-id GigabitEthernet0/0 hostname test.com" in result.commands'
-          - '"interface GigabitEthernet0/2" in result.commands'
+          - '"interface GigabitEthernet3" in result.commands'
           - '"ip address 198.51.100.1 255.255.255.0 secondary" in result.commands'
           - '"ip address 198.51.100.2 255.255.255.0" in result.commands'
           - '"ipv6 address 2001:db8:0:3::/64" in result.commands'

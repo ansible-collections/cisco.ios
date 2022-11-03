@@ -16,7 +16,7 @@
                 mode: active
           - name: Port-channel22
             members:
-              - member: GigabitEthernet0/2
+              - member: GigabitEthernet3
                 mode: passive
         state: merged
 

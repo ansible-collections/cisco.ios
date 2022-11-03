@@ -1,7 +1,7 @@
 ---
 interfaces:
   int1: GigabitEthernet2
-  int2: GigabitEthernet0/2
+  int2: GigabitEthernet3
 merged:
   commands:
     - interface GigabitEthernet2
@@ -9,7 +9,7 @@ merged:
     - ip access-group 123 out
     - ipv6 traffic-filter temp_v6 in
     - ipv6 traffic-filter test_v6 out
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ip access-group 110 in
     - ip access-group 123 out
 replaced:
@@ -24,7 +24,7 @@ overridden:
     - no ipv6 traffic-filter test_v6 out
     - no ipv6 traffic-filter temp_v6 in
     - ip access-group 100 out
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no ip access-group 110 in
     - no ip access-group 123 out
 deleted:
@@ -57,7 +57,7 @@ gathered:
             - direction: out
               name: 123
           afi: ipv4
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
 parsed:
   config:
     - access_groups:
@@ -81,13 +81,13 @@ parsed:
             - direction: out
               name: 123
           afi: ipv4
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
 rtt:
   commands:
     - interface GigabitEthernet2
     - ip access-group 123 out
     - ipv6 traffic-filter temp_v6 in
     - ipv6 traffic-filter test_v6 out
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ip access-group 110 in
     - ip access-group 123 out

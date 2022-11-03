@@ -12,7 +12,7 @@
             access:
               vlan: 30
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             trunk:
               allowed_vlans: 10-20,40
               native_vlan: 20

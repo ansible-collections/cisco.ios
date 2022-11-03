@@ -57,11 +57,11 @@ merged:
           priority: 55
           transmit_delay: 45
       name: GigabitEthernet2
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
 
 replaced:
   commands:
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ipv6 ospf adjacency stagger disable
     - ipv6 ospf priority 20
     - ipv6 ospf transmit-delay 30
@@ -106,11 +106,11 @@ replaced:
           afi: ipv6
           priority: 20
           transmit_delay: 30
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
 
 overridden:
   commands:
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ip ospf 10 area 20
     - ip ospf adjacency stagger disable
     - ip ospf cost 30
@@ -155,7 +155,7 @@ overridden:
             id: 10
           ttl_security:
             hops: 50
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
 
 deleted:
   commands:
@@ -182,7 +182,7 @@ deleted:
 
 rtt:
   commands:
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no ip ospf 10 area 20
     - no ip ospf adjacency stagger disable
     - no ip ospf cost 30

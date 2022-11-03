@@ -26,7 +26,7 @@
                   - name: temp_v6
                     direction: in
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             access_groups:
               - afi: ipv4
                 acls:

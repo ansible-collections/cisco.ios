@@ -12,7 +12,7 @@
           - name: GigabitEthernet2
             port_priority: 30
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             port_priority: 20
 
           - name: Port-channel10
