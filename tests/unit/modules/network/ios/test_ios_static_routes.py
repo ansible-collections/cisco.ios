@@ -795,7 +795,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])]
+                        address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])],
                     ),
                 ],
                 state="deleted",
