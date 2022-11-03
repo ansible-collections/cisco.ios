@@ -13,10 +13,6 @@
             ipv4:
               - address: 192.0.2.1/24
           - name: GigabitEthernet2
-            ipv4:
-              - dhcp:
-                  client_id: GigabitEthernet0/0
-                  hostname: test.com
             ipv6:
               - autoconfig:
                   enable: true

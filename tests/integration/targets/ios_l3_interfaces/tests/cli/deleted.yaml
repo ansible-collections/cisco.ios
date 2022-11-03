@@ -12,7 +12,6 @@
       cisco.ios.ios_l3_interfaces: &id001
         config:
           - name: GigabitEthernet2
-
           - name: GigabitEthernet3
         state: deleted
 
