@@ -27,7 +27,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
+          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:

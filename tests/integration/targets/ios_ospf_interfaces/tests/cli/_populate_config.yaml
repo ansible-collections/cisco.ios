@@ -28,9 +28,10 @@
           - afi: ipv6
             adjacency: true
             database_filter: true
-            manet:
-              link_metrics:
-                cost_threshold: 10
+            # manet:
+            #   link_metrics:
+            #     cost_threshold: 10
             priority: 55
             transmit_delay: 45
     state: merged
+  # check_mode: True
