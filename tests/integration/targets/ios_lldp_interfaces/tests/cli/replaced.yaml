@@ -13,7 +13,7 @@
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             transmit: true
 
           - name: GigabitEthernet0/2

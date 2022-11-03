@@ -16,7 +16,7 @@
             ipv4:
               - dhcp:
                   enable: true
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             ipv4:
               - dhcp:
                   client_id: GigabitEthernet0/0

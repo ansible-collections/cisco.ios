@@ -1,13 +1,13 @@
 ---
 merged:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - channel-group 11 mode active
     - interface GigabitEthernet0/2
     - channel-group 22 mode passive
   after:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -17,7 +17,7 @@ merged:
 replaced:
   before:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -25,11 +25,11 @@ replaced:
           mode: active
       name: Port-channel22
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - channel-group 11 mode passive
   after:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: passive
       name: Port-channel11
     - members:
@@ -39,7 +39,7 @@ replaced:
 overridden:
   before:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -47,7 +47,7 @@ overridden:
           mode: active
       name: Port-channel22
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no channel-group 11 mode active
     - interface GigabitEthernet0/2
     - channel-group 22 mode passive
@@ -59,7 +59,7 @@ overridden:
 deleted:
   before:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -67,14 +67,14 @@ deleted:
           mode: active
       name: Port-channel22
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no channel-group 11 mode active
     - interface GigabitEthernet0/2
     - no channel-group 22 mode active
 gathered:
   config:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -84,7 +84,7 @@ gathered:
 parsed:
   config:
     - members:
-        - member: GigabitEthernet0/1
+        - member: GigabitEthernet2
           mode: active
       name: Port-channel11
     - members:
@@ -93,7 +93,7 @@ parsed:
       name: Port-channel22
 rtt:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - channel-group 11 mode active
     - interface GigabitEthernet0/2
     - channel-group 22 mode active

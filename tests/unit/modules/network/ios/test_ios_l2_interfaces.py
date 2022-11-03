@@ -76,7 +76,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                     dict(
                         access=dict(vlan=20),
                         mode="access",
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         voice=dict(vlan=40),
                     ),
                     dict(
@@ -89,17 +89,13 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["9-15", "20"],
                         ),
                     ),
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="TwoGigabitEthernet1/0/1",
-                    ),
+                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
                 ],
                 state="merged",
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "switchport access vlan 20",
             "switchport voice vlan 40",
             "interface GigabitEthernet0/2",
@@ -115,11 +111,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        access=dict(vlan=10),
-                        mode="access",
-                        name="GigabitEthernet0/1",
-                    ),
+                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet2"),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -204,11 +196,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        access=dict(vlan=10),
-                        mode="access",
-                        name="GigabitEthernet0/1",
-                    ),
+                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet2"),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -219,11 +207,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="TwoGigabitEthernet1/0/1",
-                    ),
+                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/3",
@@ -283,7 +267,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "no switchport mode",
             "no switchport access vlan",
             "interface GigabitEthernet0/2",
@@ -310,11 +294,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        access=dict(vlan=10),
-                        mode="access",
-                        name="GigabitEthernet0/1",
-                    ),
+                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet2"),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -325,11 +305,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="TwoGigabitEthernet1/0/1",
-                    ),
+                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/3",
@@ -373,20 +349,14 @@ class TestIosL2InterfacesModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_l2_interfaces_deleted_interface(self):
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"),
-        )
-        commands = [
-            "interface GigabitEthernet0/1",
-            "no switchport mode",
-            "no switchport access vlan",
-        ]
+        set_module_args(dict(config=[dict(name="GigabitEthernet2")], state="deleted"))
+        commands = ["interface GigabitEthernet2", "no switchport mode", "no switchport access vlan"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_l2_interfaces_deleted_all(self):
         set_module_args(dict(config=[], state="deleted"))
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "no switchport mode",
             "no switchport access vlan",
             "interface GigabitEthernet0/2",
@@ -410,7 +380,7 @@ class TestIosL2InterfacesModule(TestIosModule):
     def test_ios_l2_interfaces_parsed(self):
         set_module_args(
             dict(
-                running_config="interface GigabitEthernet0/1\nswitchport mode trunk\nswitchport trunk native vlan 10\nswitchport trunk encapsulation dot1q\n",
+                running_config="interface GigabitEthernet2\nswitchport mode trunk\nswitchport trunk native vlan 10\nswitchport trunk encapsulation dot1q\n",
                 state="parsed",
             ),
         )
@@ -418,7 +388,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         parsed_list = [
             {
                 "mode": "trunk",
-                "name": "GigabitEthernet0/1",
+                "name": "GigabitEthernet2",
                 "trunk": {"encapsulation": "dot1q", "native_vlan": 10},
             },
         ]
@@ -431,7 +401,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                     dict(
                         access=dict(vlan=20),
                         mode="access",
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         voice=dict(vlan=40),
                     ),
                     dict(
@@ -449,7 +419,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "switchport access vlan 20",
             "switchport voice vlan 40",
             "switchport mode access",
@@ -466,20 +436,11 @@ class TestIosL2InterfacesModule(TestIosModule):
     def test_ios_l2_interfaces_merged_mode_change(self):
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        access=dict(vlan=20),
-                        mode="trunk",
-                        name="TwoGigabitEthernet1/0/1",
-                    ),
-                ],
+                config=[dict(access=dict(vlan=20), mode="trunk", name="TwoGigabitEthernet1/0/1")],
                 state="merged",
             ),
         )
-        commands = [
-            "interface TwoGigabitEthernet1/0/1",
-            "switchport mode trunk",
-        ]
+        commands = ["interface TwoGigabitEthernet1/0/1", "switchport mode trunk"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
@@ -487,11 +448,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        access=dict(vlan=20),
-                        mode="trunk",
-                        name="FiveGigabitEthernet1/0/1",
-                    ),
+                    dict(access=dict(vlan=20), mode="trunk", name="FiveGigabitEthernet1/0/1"),
                     dict(
                         access=dict(vlan_name="vlan12"),
                         mode="trunk",

@@ -8,7 +8,7 @@
       register: result
       cisco.ios.ios_l2_interfaces:
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             access:
               vlan: 30
 

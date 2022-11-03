@@ -7,7 +7,7 @@ merged:
       speed: auto
     - duplex: auto
       enabled: true
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: auto
     - duplex: auto
       enabled: true
@@ -18,7 +18,7 @@ merged:
     - enabled: true
       name: Loopback999
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - description Configured and Merged by Ansible-Network
     - mtu 110
     - duplex half
@@ -37,7 +37,7 @@ merged:
       duplex: half
       enabled: true
       mtu: 110
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: auto
     - description: Configured and Merged by Ansible-Network
       duplex: full
@@ -52,7 +52,7 @@ merged:
 
 replaced:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - description Configured and Replaced by Ansible-Network
     - speed auto
     - mtu 110
@@ -70,7 +70,7 @@ replaced:
       duplex: auto
       enabled: true
       mtu: 110
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: auto
     - description: Configured and Replaced by Ansible-Network
       duplex: auto
@@ -90,7 +90,7 @@ replaced:
       duplex: auto
       enabled: true
       mtu: 65
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: "10"
     - description: this is interface for testing
       duplex: auto
@@ -117,7 +117,7 @@ overridden:
       duplex: auto
       enabled: true
       mtu: 65
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: "10"
     - description: this is interface for testing
       duplex: auto
@@ -145,7 +145,7 @@ overridden:
       duplex: auto
       enabled: true
       mtu: 65
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: "10"
     - description: Configured and Overridden by Ansible-Network
       duplex: full
@@ -164,7 +164,7 @@ deleted:
       duplex: auto
       enabled: true
       mtu: 65
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: "10"
     - description: this is interface for testing
       duplex: auto
@@ -177,7 +177,7 @@ deleted:
     - enabled: true
       name: Loopback999
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no description this is interface1
     - no speed 10
     - no mtu 65
@@ -195,7 +195,7 @@ deleted:
       speed: auto
     - duplex: auto
       enabled: false
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: auto
     - duplex: auto
       enabled: false
@@ -216,7 +216,7 @@ gathered:
       duplex: auto
       enabled: true
       mtu: 65
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       speed: "10"
     - description: this is interface for testing
       duplex: auto
@@ -235,7 +235,7 @@ parsed:
       duplex: half
       enabled: true
       mtu: 110
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - description: interfaces 0/2
       duplex: full
       enabled: false
@@ -245,7 +245,7 @@ parsed:
 
 rendered:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - description Configured by Ansible-Network
     - mtu 110
     - duplex half

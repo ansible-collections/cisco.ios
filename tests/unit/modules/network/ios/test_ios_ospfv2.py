@@ -84,29 +84,13 @@ class TestIosOspfV2Module(TestIosModule):
                                 ],
                             ),
                             network=[
-                                dict(
-                                    address="198.51.100.0",
-                                    wildcard_bits="0.0.0.255",
-                                    area=5,
-                                ),
-                                dict(
-                                    address="192.0.2.0",
-                                    wildcard_bits="0.0.0.255",
-                                    area=5,
-                                ),
+                                dict(address="198.51.100.0", wildcard_bits="0.0.0.255", area=5),
+                                dict(address="192.0.2.0", wildcard_bits="0.0.0.255", area=5),
                             ],
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
+                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                             passive_interfaces=dict(
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/2"],
-                                ),
+                                interface=dict(set_interface=False, name=["GigabitEthernet0/2"]),
                             ),
                             vrf="blue",
                         ),
@@ -143,22 +127,14 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ],
                             ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
+                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                             areas=[dict(area_id="10", capability=True)],
                             passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=[
-                                        "GigabitEthernet0/1",
-                                        "GigabitEthernet0/2",
-                                    ],
+                                    name=["GigabitEthernet2", "GigabitEthernet0/2"],
                                 ),
                             ),
                             vrf="blue",
@@ -178,13 +154,8 @@ class TestIosOspfV2Module(TestIosModule):
                         dict(
                             process_id="200",
                             auto_cost=dict(reference_bandwidth="4"),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.1.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=200),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.1.1")),
+                            max_metric=dict(on_startup=dict(time=200), router_lsa=True),
                             areas=[dict(area_id="10", capability=True)],
                             vrf="blue",
                         ),
@@ -218,22 +189,14 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ],
                             ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
+                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                             areas=[dict(area_id="10", capability=True)],
                             passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=[
-                                        "GigabitEthernet0/1",
-                                        "GigabitEthernet0/2",
-                                    ],
+                                    name=["GigabitEthernet2", "GigabitEthernet0/2"],
                                 ),
                             ),
                             vrf="blue",
@@ -253,13 +216,8 @@ class TestIosOspfV2Module(TestIosModule):
                         dict(
                             process_id="200",
                             auto_cost=dict(reference_bandwidth="4"),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.1.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=200),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.1.1")),
+                            max_metric=dict(on_startup=dict(time=200), router_lsa=True),
                             areas=[dict(area_id="10", capability=True)],
                             vrf="blue",
                         ),
@@ -292,22 +250,14 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ],
                             ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
+                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                             areas=[dict(area_id="10", capability=True)],
                             passive_interfaces=dict(
                                 default=True,
                                 interface=dict(
                                     set_interface=False,
-                                    name=[
-                                        "GigabitEthernet0/1",
-                                        "GigabitEthernet0/2",
-                                    ],
+                                    name=["GigabitEthernet2", "GigabitEthernet0/2"],
                                 ),
                             ),
                             vrf="blue",
@@ -321,10 +271,7 @@ class TestIosOspfV2Module(TestIosModule):
 
     def test_ios_ospfv2_deleted(self):
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="200", vrf="blue")]),
-                state="deleted",
-            ),
+            dict(config=dict(processes=[dict(process_id="200", vrf="blue")]), state="deleted"),
         )
         commands = ["no router ospf 200 vrf blue"]
         self.execute_module(changed=True, commands=commands)
@@ -341,11 +288,7 @@ class TestIosOspfV2Module(TestIosModule):
             "processes": [
                 {
                     "areas": [
-                        {
-                            "area_id": "5",
-                            "authentication": {"enable": True},
-                            "capability": True,
-                        },
+                        {"area_id": "5", "authentication": {"enable": True}, "capability": True},
                     ],
                     "process_id": 1,
                 },
@@ -368,13 +311,8 @@ class TestIosOspfV2Module(TestIosModule):
                                     dict(direction="in", name="123"),
                                 ],
                             ),
-                            domain_id=dict(
-                                ip_address=dict(address="192.0.3.1"),
-                            ),
-                            max_metric=dict(
-                                on_startup=dict(time=100),
-                                router_lsa=True,
-                            ),
+                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
+                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                         ),
                     ],
                 ),

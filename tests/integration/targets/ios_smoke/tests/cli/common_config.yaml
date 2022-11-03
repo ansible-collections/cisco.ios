@@ -106,7 +106,7 @@
           - no channel-group 20 mode active
         parents: "{{ item }}"
       loop:
-        - interface GigabitEthernet0/1
+        - interface GigabitEthernet2
         - interface GigabitEthernet0/2
 
     - name: Create linkagg
@@ -125,14 +125,14 @@
         group: 20
         mode: active
         members:
-          - GigabitEthernet0/1
+          - GigabitEthernet2
           - GigabitEthernet0/2
       register: result
 
     - ansible.builtin.assert:
         that:
           - "result.changed == true"
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
           - "'interface GigabitEthernet0/2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
@@ -148,7 +148,7 @@
     - ansible.builtin.assert:
         that:
           - "result.changed == true"
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'no channel-group 20 mode active' in result.commands"
 
     - name: Remove linkagg
@@ -169,7 +169,7 @@
           - group: 20
             mode: active
             members:
-              - "GigabitEthernet0/1"
+              - "GigabitEthernet2"
       register: result
 
     - ansible.builtin.assert:
@@ -177,7 +177,7 @@
           - "result.changed == true"
           - "'interface port-channel 5' in result.commands"
           - "'interface port-channel 20' in result.commands"
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
     - name: Teardown(part1)
@@ -198,7 +198,7 @@
           - no channel-group 20 mode active
         parents: "{{ item }}"
       loop:
-        - interface GigabitEthernet0/1
+        - interface GigabitEthernet2
         - interface GigabitEthernet0/2
 
   when: switch_type == 'L2'

@@ -8,7 +8,7 @@
       register: result
       cisco.ios.ios_acl_interfaces:
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             access_groups:
               - afi: ipv4
                 acls:

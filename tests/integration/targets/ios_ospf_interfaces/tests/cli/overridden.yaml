@@ -11,7 +11,7 @@
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             address_family:
               - afi: ipv6
                 adjacency: true

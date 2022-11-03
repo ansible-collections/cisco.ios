@@ -7,7 +7,7 @@
       register: result
       cisco.ios.ios_ospf_interfaces:
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             address_family:
               - afi: ipv4
                 authentication:

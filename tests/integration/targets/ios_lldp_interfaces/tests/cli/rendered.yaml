@@ -11,7 +11,7 @@
           - name: GigabitEthernet0/0
             receive: true
             transmit: true
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             receive: true
             transmit: true
           - name: GigabitEthernet0/2

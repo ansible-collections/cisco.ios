@@ -9,7 +9,7 @@
       register: result
       cisco.ios.ios_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             description: Configured and Merged by Ansible-Network
             mtu: 110
             enabled: true

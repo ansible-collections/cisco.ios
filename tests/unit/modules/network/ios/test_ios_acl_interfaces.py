@@ -74,7 +74,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -88,7 +88,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -101,10 +101,7 @@ class TestIosAclInterfacesModule(TestIosModule):
                                 afi="ipv6",
                                 acls=[
                                     dict(name="merge_temp_v6", direction="in"),
-                                    dict(
-                                        name="merge_test_v6",
-                                        direction="out",
-                                    ),
+                                    dict(name="merge_test_v6", direction="out"),
                                 ],
                             ),
                         ],
@@ -126,7 +123,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "ip access-group merge_110 in",
             "ip access-group merge_123 out",
             "ipv6 traffic-filter merge_temp_v6 in",
@@ -141,7 +138,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -155,7 +152,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -194,7 +191,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -208,7 +205,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -224,7 +221,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "ip access-group replace_100 out",
             "no ipv6 traffic-filter temp_v6 in",
             "no ipv6 traffic-filter test_v6 out",
@@ -235,7 +232,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -249,7 +246,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -276,7 +273,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -290,7 +287,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -310,7 +307,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             "interface GigabitEthernet0/2",
             "no ip access-group 110 in",
             "no ip access-group 123 out",
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "ip access-group 100 out",
             "no ipv6 traffic-filter temp_v6 in",
             "no ipv6 traffic-filter test_v6 out",
@@ -321,7 +318,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -335,7 +332,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -374,7 +371,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_deleted_interface(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -384,11 +381,9 @@ class TestIosAclInterfacesModule(TestIosModule):
              ip access-group 123 out
             """,
         )
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet2")], state="deleted"))
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "no ip access-group 110 in",
             "no ip access-group 123 out",
             "no ipv6 traffic-filter test_v6 out",
@@ -399,7 +394,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -409,11 +404,9 @@ class TestIosAclInterfacesModule(TestIosModule):
              ip access-group 123 out
             """,
         )
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet2")], state="deleted"))
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "no ip access-group 110 in",
             "no ip access-group 123 out",
             "no ipv6 traffic-filter test_v6 out",
@@ -424,23 +417,17 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_parsed(self):
         set_module_args(
             dict(
-                running_config="interface GigabitEthernet0/1\n ip access-group 110 in\n ipv6 traffic-filter test_v6 out",
+                running_config="interface GigabitEthernet2\n ip access-group 110 in\n ipv6 traffic-filter test_v6 out",
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
             {
-                "name": "GigabitEthernet0/1",
+                "name": "GigabitEthernet2",
                 "access_groups": [
-                    {
-                        "afi": "ipv4",
-                        "acls": [{"name": 110, "direction": "in"}],
-                    },
-                    {
-                        "afi": "ipv6",
-                        "acls": [{"name": "test_v6", "direction": "out"}],
-                    },
+                    {"afi": "ipv4", "acls": [{"name": 110, "direction": "in"}]},
+                    {"afi": "ipv6", "acls": [{"name": "test_v6", "direction": "out"}]},
                 ],
             },
         ]
@@ -449,7 +436,7 @@ class TestIosAclInterfacesModule(TestIosModule):
     def test_ios_acl_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet0/1
+            interface GigabitEthernet2
              ip access-group 110 in
              ip access-group 123 out
              ipv6 traffic-filter temp_v6 in
@@ -463,7 +450,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        name="GigabitEthernet0/1",
+                        name="GigabitEthernet2",
                         access_groups=[
                             dict(
                                 afi="ipv4",
@@ -486,7 +473,7 @@ class TestIosAclInterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/1",
+            "interface GigabitEthernet2",
             "ip access-group 110 in",
             "ip access-group 123 out",
             "ipv6 traffic-filter temp_v6 in",

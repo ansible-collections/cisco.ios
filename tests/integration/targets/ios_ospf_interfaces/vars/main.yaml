@@ -3,7 +3,7 @@ merged:
   before: {}
 
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - ip ospf 10 area 30
     - ip ospf adjacency stagger disable
     - ip ospf authentication message-digest
@@ -56,7 +56,7 @@ merged:
               cost_threshold: 10
           priority: 55
           transmit_delay: 45
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - name: GigabitEthernet0/2
 
 replaced:
@@ -100,7 +100,7 @@ replaced:
               cost_threshold: 10
           priority: 55
           transmit_delay: 45
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - address_family:
         - adjacency: true
           afi: ipv6
@@ -116,7 +116,7 @@ overridden:
     - ip ospf cost 30
     - ip ospf priority 40
     - ip ospf ttl-security hops 50
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no ipv6 ospf database-filter all out
     - no ipv6 ospf manet peering link-metrics 10
     - ipv6 ospf priority 20
@@ -143,7 +143,7 @@ overridden:
           afi: ipv6
           priority: 20
           transmit_delay: 30
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - address_family:
         - adjacency: true
           afi: ipv4
@@ -159,7 +159,7 @@ overridden:
 
 deleted:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no ip ospf 10 area 30
     - no ip ospf adjacency stagger disable
     - no ip ospf authentication message-digest
@@ -188,7 +188,7 @@ rtt:
     - no ip ospf cost 30
     - no ip ospf priority 40
     - no ip ospf ttl-security hops 50
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - ip ospf 10 area 30
     - ip ospf adjacency stagger disable
     - ip ospf authentication message-digest

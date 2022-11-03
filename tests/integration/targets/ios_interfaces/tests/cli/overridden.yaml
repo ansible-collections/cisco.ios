@@ -23,7 +23,7 @@
             duplex: auto
             enabled: true
             mtu: 65
-            name: GigabitEthernet0/1
+            name: GigabitEthernet2
             speed: "10"
           - name: GigabitEthernet0/2
             description: Configured and Overridden by Ansible-Network

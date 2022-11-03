@@ -8,7 +8,7 @@
       register: result
       cisco.ios.ios_lacp_interfaces:
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             port_priority: 30
           - name: GigabitEthernet0/2
             port_priority: 20
