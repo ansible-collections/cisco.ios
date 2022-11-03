@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -31,6 +29,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
 )
 
 
@@ -47,7 +48,16 @@ class L2_interfaces(ResourceModule):
             resource="l2_interfaces",
             tmplt=L2_interfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "access.vlan",
+            "access.vlan_name",
+            "voice.vlan",
+            "voice.vlan_tag",
+            "voice.vlan_name",
+            "mode",
+            "trunk.encapsulation",
+            "trunk.native_vlan",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -66,6 +76,9 @@ class L2_interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
+
+        for each in wantd, haved:
+            self.list_to_dict(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -91,4 +104,24 @@ class L2_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the L2_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def compare_list(self, wants, have):
+        pass
+
+    def list_to_dict(self, param):
+        if param:
+            for _k, val in iteritems(param):
+                val["name"] = normalize_interface(val["name"])
+                if val.get("trunk"):
+                    if val.get("trunk").get("allowed_vlans"):
+                        val["trunk"]["allowed_vlans"] = {
+                            i: i for i in val["trunk"]["allowed_vlans"]
+                        }
+                    if val.get("trunk").get("pruning_vlans"):
+                        val["trunk"]["pruning_vlans"] = {
+                            i: i for i in val["trunk"]["pruning_vlans"]
+                        }
