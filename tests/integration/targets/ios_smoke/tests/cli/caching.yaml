@@ -12,7 +12,6 @@
         lines:
           - "no description"
           - "no mtu"
-          - "no duplex"
           - "no speed"
           - "shutdown"
           - "no ip address"
@@ -30,12 +29,9 @@
           - name: GigabitEthernet2
             description: Configured by Ansible (L3)
             enabled: true
-            duplex: auto
-
           - name: GigabitEthernet3
             description: Configured by Ansible (L3)
             enabled: true
-            duplex: full
         state: merged
 
     - ansible.builtin.assert:
@@ -46,7 +42,6 @@
           - '"interface GigabitEthernet3" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
           - '"no shutdown" in result.commands'
-          - '"duplex full" in result.commands'
           - result.commands|length == 7
 
     - name: Merge base interfaces configuration (idempotent)
@@ -62,8 +57,6 @@
           - name: GigabitEthernet2
             ipv4:
               - address: dhcp
-                dhcp_client: GigabitEthernet0/0
-                dhcp_hostname: test.com
           - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
@@ -77,7 +70,7 @@
     - ansible.builtin.assert:
         that:
           - '"interface GigabitEthernet2" in result.commands'
-          - '"ip address dhcp client-id GigabitEthernet0/0 hostname test.com" in result.commands'
+          - '"ip address dhcp" in result.commands'
           - '"interface GigabitEthernet3" in result.commands'
           - '"ip address 198.51.100.1 255.255.255.0 secondary" in result.commands'
           - '"ip address 198.51.100.2 255.255.255.0" in result.commands'
