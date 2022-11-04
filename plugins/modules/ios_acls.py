@@ -26,12 +26,12 @@ notes:
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: A dictionary of ACL options.
+    description: A list of ACL configuration options.
     elements: dict
     suboptions:
       acls:
         description:
-          - A list of Access Control Lists (ACL).
+          - A list of Access Control Lists (ACL) attributes.
         elements: dict
         suboptions:
           aces:
