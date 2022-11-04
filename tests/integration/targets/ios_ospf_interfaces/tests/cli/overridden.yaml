@@ -11,13 +11,13 @@
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             address_family:
               - afi: ipv6
                 adjacency: true
                 priority: 20
                 transmit_delay: 30
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             address_family:
               - afi: ipv4
                 process:

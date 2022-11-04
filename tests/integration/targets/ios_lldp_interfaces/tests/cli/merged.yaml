@@ -11,15 +11,13 @@
       register: result
       cisco.ios.ios_lldp_interfaces: &id001
         config:
-          - name: GigabitEthernet0/0
+          - name: GigabitEthernet1
             receive: true
             transmit: true
-
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             receive: true
             transmit: true
-
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             receive: true
             transmit: false
         state: merged

@@ -4,7 +4,6 @@
 
 - ansible.builtin.include_tasks: _populate_port_channel.yaml
 - ansible.builtin.include_tasks: _remove_config.yaml
-
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:

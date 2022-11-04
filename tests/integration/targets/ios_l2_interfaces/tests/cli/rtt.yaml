@@ -2,18 +2,20 @@
 - ansible.builtin.debug:
     msg: START ios_l2_interfaces round trip integration tests on connection={{ ansible_connection }}
 
-- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+  when: ansible_net_version == "15.6(2)T"
 
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_l2_interfaces:
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             access:
               vlan: 30
           - mode: trunk
-            name: GigabitEthernet0/2
+            name: GigabitEthernet3
             trunk:
               allowed_vlans: 15-20,40
               native_vlan: 20
@@ -33,7 +35,7 @@
       register: result
       cisco.ios.ios_l2_interfaces:
         config:
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             trunk:
               allowed_vlans: 30-35,40
               native_vlan: 30
@@ -57,6 +59,6 @@
           - revert.commands|length == 7
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
-  when: ansible_net_version != "15.6(2)T"
+  when: ansible_net_version == "15.6(2)T"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

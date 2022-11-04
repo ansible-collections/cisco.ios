@@ -80,14 +80,8 @@ class TestIosFactsModule(TestIosModule):
     def test_ios_facts_stacked(self):
         set_module_args(dict(gather_subset="default"))
         result = self.execute_module()
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_model"],
-            "WS-C3750-24TS",
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_serialnum"],
-            "CAT0726R0ZU",
-        )
+        self.assertEqual(result["ansible_facts"]["ansible_net_model"], "WS-C3750-24TS")
+        self.assertEqual(result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU")
         self.assertEqual(
             result["ansible_facts"]["ansible_net_stacked_models"],
             ["WS-C3750-24TS-E", "WS-C3750-24TS-E", "WS-C3750G-12S-E"],
@@ -146,16 +140,8 @@ class TestIosFactsModule(TestIosModule):
             self,
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet1"],
             [
-                {
-                    "platform": "cisco CSR1000V",
-                    "host": "R2",
-                    "port": "GigabitEthernet2",
-                },
-                {
-                    "platform": "cisco CSR1000V",
-                    "host": "R3",
-                    "port": "GigabitEthernet3",
-                },
+                {"platform": "cisco CSR1000V", "host": "R2", "port": "GigabitEthernet0/1"},
+                {"platform": "cisco CSR1000V", "host": "R3", "port": "GigabitEthernet3"},
             ],
         )
         assertCountEqual(

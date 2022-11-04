@@ -101,10 +101,7 @@ class TestIosAclInterfacesModule(TestIosModule):
                                 afi="ipv6",
                                 acls=[
                                     dict(name="merge_temp_v6", direction="in"),
-                                    dict(
-                                        name="merge_test_v6",
-                                        direction="out",
-                                    ),
+                                    dict(name="merge_test_v6", direction="out"),
                                 ],
                             ),
                         ],
@@ -384,9 +381,7 @@ class TestIosAclInterfacesModule(TestIosModule):
              ip access-group 123 out
             """,
         )
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"))
         commands = [
             "interface GigabitEthernet0/1",
             "no ip access-group 110 in",
@@ -409,9 +404,7 @@ class TestIosAclInterfacesModule(TestIosModule):
              ip access-group 123 out
             """,
         )
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"))
         commands = [
             "interface GigabitEthernet0/1",
             "no ip access-group 110 in",
@@ -433,14 +426,8 @@ class TestIosAclInterfacesModule(TestIosModule):
             {
                 "name": "GigabitEthernet0/1",
                 "access_groups": [
-                    {
-                        "afi": "ipv4",
-                        "acls": [{"name": 110, "direction": "in"}],
-                    },
-                    {
-                        "afi": "ipv6",
-                        "acls": [{"name": "test_v6", "direction": "out"}],
-                    },
+                    {"afi": "ipv4", "acls": [{"name": 110, "direction": "in"}]},
+                    {"afi": "ipv6", "acls": [{"name": "test_v6", "direction": "out"}]},
                 ],
             },
         ]

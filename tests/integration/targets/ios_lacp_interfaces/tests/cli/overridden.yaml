@@ -11,7 +11,7 @@
       register: result
       cisco.ios.ios_lacp_interfaces: &id001
         config:
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             port_priority: 40
 
           - name: Port-channel40

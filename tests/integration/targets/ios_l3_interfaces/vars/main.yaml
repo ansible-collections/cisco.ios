@@ -6,16 +6,16 @@ merged:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+      name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
   commands:
     - interface loopback999
     - ip address 192.0.2.1 255.255.255.0
-    - interface GigabitEthernet0/1
-    - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
+    - interface GigabitEthernet2
     - ipv6 address autoconfig
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
     - ipv6 address 2001:db8:0:3::/64
@@ -27,23 +27,19 @@ merged:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
-    - ipv4:
-        - dhcp:
-            client_id: GigabitEthernet0/0
-            enable: true
-            hostname: test.com
-      ipv6:
+      name: GigabitEthernet1
+    - ipv6:
         - autoconfig:
             enable: true
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 198.51.100.1/24
           secondary: true
         - address: 198.51.100.2/24
       ipv6:
         - address: 2001:DB8:0:3::/64
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
 
 replaced:
   before:
@@ -52,10 +48,10 @@ replaced:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
+      name: GigabitEthernet1
     - ipv4:
         - address: 203.0.113.27/24
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 192.0.2.1/24
           secondary: true
@@ -64,12 +60,13 @@ replaced:
         - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no ip address 203.0.113.27 255.255.255.0
     - ip address 203.0.114.1 255.255.255.0
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no ipv6 address autoconfig
     - no ipv6 address 2001:db8:0:3::/64
     - no ip address 192.0.2.2 255.255.255.0
@@ -83,17 +80,18 @@ replaced:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
+      name: GigabitEthernet1
     - ipv4:
         - address: 203.0.114.1/24
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 198.51.100.1/24
           secondary: true
         - address: 198.51.100.2/24
       ipv6:
         - address: 2001:DB8:1:1::/64
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
 
 overridden:
   before:
@@ -102,10 +100,10 @@ overridden:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
+      name: GigabitEthernet1
     - ipv4:
         - address: 203.0.113.27/24
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 192.0.2.1/24
           secondary: true
@@ -114,11 +112,12 @@ overridden:
         - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no ip address 203.0.113.27 255.255.255.0
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no ipv6 address autoconfig
     - no ipv6 address 2001:db8:0:3::/64
     - no ip address 192.0.2.2 255.255.255.0
@@ -131,25 +130,24 @@ overridden:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
+      name: GigabitEthernet1
+    - name: GigabitEthernet2
     - ipv4:
         - address: 198.51.100.2/24
           secondary: true
         - address: 198.51.100.1/24
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
 
 deleted:
   before:
-    - name: Loopback888
-    - name: Loopback999
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
+      name: GigabitEthernet1
     - ipv4:
         - address: 203.0.113.27/24
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 192.0.2.1/24
           secondary: true
@@ -158,11 +156,14 @@ deleted:
         - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
+    - name: Loopback888
+    - name: Loopback999
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no ip address 203.0.113.27 255.255.255.0
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no ip address 192.0.2.1 255.255.255.0 secondary
     - no ip address 192.0.2.2 255.255.255.0
     - no ipv6 address 2001:db8:0:3::/64
@@ -173,9 +174,10 @@ deleted:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+      name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
 
 gathered:
   config:
@@ -184,10 +186,10 @@ gathered:
     - ipv4:
         - dhcp:
             enable: true
-      name: GigabitEthernet0/0
+      name: GigabitEthernet1
     - ipv4:
         - address: 203.0.113.27/24
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 192.0.2.1/24
           secondary: true
@@ -196,7 +198,8 @@ gathered:
         - address: 2001:DB8:0:3::/64
         - autoconfig:
             enable: true
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
 
 parsed:
   config:
@@ -205,7 +208,7 @@ parsed:
             client_id: GigabitEthernet0/0
             enable: true
             hostname: test.com
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - ipv4:
         - address: 198.51.100.1/24
           secondary: true
@@ -214,7 +217,7 @@ parsed:
         - autoconfig:
             enable: true
         - address: 2001:db8:0:3::/64
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
 
 rtt:
   commands:
@@ -226,10 +229,10 @@ rendered:
   commands:
     - interface loopback999
     - ip address 192.0.2.1 255.255.255.0
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - ip address dhcp client-id GigabitEthernet0/0 hostname test.com
     - ipv6 address autoconfig
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
     - ipv6 address dhcp
