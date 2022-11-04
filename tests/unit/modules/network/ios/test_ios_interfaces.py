@@ -117,11 +117,11 @@ class TestIosInterfacesModule(TestIosModule):
             },
         )
         commands = [
-            "interface GigabitEthernet1",
-            "description This interface should be disabled",
             "interface GigabitEthernet0/1",
             "description This interface should be enabled",
             "shutdown",
+            "interface GigabitEthernet1",
+            "description This interface should be disabled",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -493,8 +493,8 @@ class TestIosInterfacesModule(TestIosModule):
         )
         set_module_args(dict(config=[], state="purged"))
         commands = [
-            "no interface GigabitEthernet1",
             "no interface GigabitEthernet0/1",
+            "no interface GigabitEthernet1",
             "no interface GigabitEthernet3",
             "no interface GigabitEthernet4",
             "no interface GigabitEthernet5",
@@ -543,7 +543,6 @@ class TestIosInterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         parsed_list = [
-            {"name": "GigabitEthernet1", "description": "Ansible UT interface 1", "enabled": True},
             {
                 "name": "GigabitEthernet0/1",
                 "description": "Ansible UT interface 2",
@@ -551,6 +550,7 @@ class TestIosInterfacesModule(TestIosModule):
                 "mtu": 1500,
                 "enabled": True,
             },
+            {"name": "GigabitEthernet1", "description": "Ansible UT interface 1", "enabled": True},
             {
                 "name": "GigabitEthernet3",
                 "description": "Ansible UT interface 3",
