@@ -16,11 +16,11 @@
     after:
       - snmp-server contact bar
 
-- ansible.builtin.assert:
-    that:
-      - result.changed == true
-      - "'hostname foo' in result.updates"
-      - "'snmp-server contact bar' in result.updates"
+# - ansible.builtin.assert:
+#     that:
+#       - result.changed == true
+#       - "'hostname foo' in result.updates"
+#       - "'snmp-server contact bar' in result.updates"
 
 - name: Configure top level command with before idempotent check
   register: result
