@@ -82,7 +82,7 @@ class L2_interfacesFacts(object):
             ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
         params = utils.remove_empties(
-            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["l2_interfaces"] = params.get("config", [])
