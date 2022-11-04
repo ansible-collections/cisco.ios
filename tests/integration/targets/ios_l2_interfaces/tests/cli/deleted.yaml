@@ -2,9 +2,10 @@
 - ansible.builtin.debug:
     msg: Start Deleted integration state for ios_l2_interfaces ansible_connection={{ ansible_connection }}
 
-- ansible.builtin.include_tasks: _remove_config.yaml
-
-- ansible.builtin.include_tasks: _populate_config.yaml
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+  when: ansible_net_version == "15.6(2)T"
 
 - block:
     - name: Delete layer 2 attributes from all configured interfaces
@@ -34,7 +35,7 @@
       ansible.builtin.assert:
         that:
           - result.changed == false
-  when: ansible_net_version != "15.6(2)T"
+  when: ansible_net_version == "15.6(2)T"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
     - ansible.builtin.include_tasks: _remove_vlan_config.yaml

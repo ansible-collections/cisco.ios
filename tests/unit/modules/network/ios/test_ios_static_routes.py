@@ -233,11 +233,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 routes=[
                                     dict(
                                         dest="192.51.111.0/32",
-                                        next_hops=[
-                                            dict(
-                                                interface="GigabitEthernet0/1",
-                                            ),
-                                        ],
+                                        next_hops=[dict(interface="GigabitEthernet0/1")],
                                     ),
                                 ],
                             ),
@@ -799,12 +795,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             dict(
                 config=[
                     dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[dict(dest="198.51.100.0/24")],
-                            ),
-                        ],
+                        address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])],
                     ),
                 ],
                 state="deleted",
@@ -832,12 +823,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                 config=[
                     dict(
                         vrf="ansible_vrf",
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[dict(dest="192.0.2.0/24")],
-                            ),
-                        ],
+                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])],
                     ),
                 ],
                 state="deleted",
@@ -909,9 +895,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                         "routes": [
                             {
                                 "dest": "10.0.0.0/8",
-                                "next_hops": [
-                                    {"interface": "Null0", "permanent": True},
-                                ],
+                                "next_hops": [{"interface": "Null0", "permanent": True}],
                             },
                         ],
                     },

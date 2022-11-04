@@ -9,7 +9,7 @@
       register: result
       cisco.ios.ios_acl_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             access_groups:
               - afi: ipv4
                 acls:
@@ -27,7 +27,7 @@
                   - name: test_v6
                     direction: out
 
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             access_groups:
               - afi: ipv4
                 acls:

@@ -18,6 +18,7 @@ merged:
     - set ip address prefix-list 192.0.2.1
     - set automatic-tag
     - set aigp-metric 100
+    - set as-path prepend 65111 65111
     - route-map test_1 deny 20
     - continue 100
     - match track 105
@@ -28,6 +29,7 @@ merged:
     - match additional-paths advertise-set all group-best
     - route-map test_1 deny 10
     - description this is test route
+    - set as-path prepend 64512
     - match security-group source tag 10 20
     - match ip next-hop prefix-list test_1_new test_2_new
     - match ip route-source 10
@@ -38,6 +40,11 @@ merged:
     - entries:
         - action: deny
           description: this is test route
+          set:
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
           match:
             ip:
               next_hop:
@@ -106,6 +113,11 @@ merged:
           set:
             aigp_metric:
               value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
             automatic_tag: true
             extcommunity:
               cost:
@@ -145,6 +157,7 @@ overridden:
     - set ip address prefix-list 192.0.2.1
     - set automatic-tag
     - set aigp-metric 100
+    - set as-path prepend last-as 2
     - route-map test_1 deny 10
     - no description this is test route
     - description this is override route
@@ -157,6 +170,7 @@ overridden:
     - no match local-preference 100 50
     - set extcommunity vpn-distinguisher 192.0.2.1:12 additive
     - set metric 100 +100 10 20 30
+    - set as-path prepend 64512 64512
     - no route-map test_1 deny 20
 
   after:
@@ -191,6 +205,11 @@ overridden:
               vpn_distinguisher:
                 additive: true
                 address: "192.0.2.1:12"
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
+                  - "64512"
             metric:
               deviation: plus
               eigrp_delay: 100
@@ -222,6 +241,9 @@ overridden:
           set:
             aigp_metric:
               value: 100
+            as_path:
+              prepend:
+                last_as: 2
             automatic_tag: true
             extcommunity:
               cost:
@@ -260,6 +282,7 @@ replaced:
     - set ip address prefix-list 192.0.2.1
     - set automatic-tag
     - set aigp-metric 100
+    - set as-path prepend 65111 65111
     - route-map test_1 deny 10
     - no description this is test route
     - description this is replaced route
@@ -271,6 +294,7 @@ replaced:
     - match length 10 100
     - no match local-preference 100 50
     - set extcommunity vpn-distinguisher 192.0.2.1:12 additive
+    - set as-path prepend 64512 64512
     - set metric 100 +100 10 20 30
     - no route-map test_1 deny 20
 
@@ -306,6 +330,11 @@ replaced:
               vpn_distinguisher:
                 additive: true
                 address: "192.0.2.1:12"
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
+                  - "64512"
             metric:
               deviation: plus
               eigrp_delay: 100
@@ -337,6 +366,11 @@ replaced:
           set:
             aigp_metric:
               value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
             automatic_tag: true
             extcommunity:
               cost:
@@ -380,6 +414,11 @@ replaced:
           set:
             aigp_metric:
               value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
             automatic_tag: true
             extcommunity:
               cost:

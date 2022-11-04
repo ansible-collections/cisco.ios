@@ -91,23 +91,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
-                            {
-                                "member": "GigabitEthernet0/3",
-                                "mode": "passive",
-                            },
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"member": "GigabitEthernet0/3", "mode": "passive"},
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -116,10 +107,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                 state="merged",
             ),
         )
-        commands = [
-            "interface GigabitEthernet0/3",
-            "channel-group 22 mode passive",
-        ]
+        commands = ["interface GigabitEthernet0/3", "channel-group 22 mode passive"]
         result = self.execute_module(changed=True)
         # print(result["commands"])
         self.assertEqual(result["commands"], commands)
@@ -150,20 +138,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -200,20 +182,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/3", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/3", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/1", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "on"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -261,20 +237,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -314,11 +284,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -366,20 +332,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -451,9 +411,7 @@ class TestIosLagInterfacesModule(TestIosModule):
              channel-group 22 link 22
             """,
         )
-        set_module_args(
-            dict(config=[dict(name="Port-channel11")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="Port-channel11")], state="deleted"))
         commands = [
             "interface GigabitEthernet0/1",
             "no channel-group 11 mode active",
@@ -503,11 +461,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                 "name": "Port-channel22",
                 "members": [
                     {"member": "GigabitEthernet0/2", "mode": "active"},
-                    {
-                        "member": "GigabitEthernet0/4",
-                        "link": 20,
-                        "mode": "active",
-                    },
+                    {"member": "GigabitEthernet0/4", "link": 20, "mode": "active"},
                     {"member": "GigabitEthernet0/5", "link": 22},
                 ],
             },
@@ -523,20 +477,14 @@ class TestIosLagInterfacesModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "members": [
-                            {"member": "GigabitEthernet0/1", "mode": "active"},
-                        ],
+                        "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
                     },
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {
-                                "link": 20,
-                                "member": "GigabitEthernet0/4",
-                                "mode": "active",
-                            },
+                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",

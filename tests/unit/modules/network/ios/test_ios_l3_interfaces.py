@@ -83,12 +83,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/3.100",
                         ipv4=[dict(address="192.168.0.3/24", secondary=True)],
                     ),
-                    dict(
-                        name="Serial3/0",
-                        ipv6=[
-                            dict(address="FD5D:12C9:2201:1::1/64", cga=True),
-                        ],
-                    ),
+                    dict(name="Serial3/0", ipv6=[dict(address="FD5D:12C9:2201:1::1/64", cga=True)]),
                 ],
                 state="merged",
             ),
@@ -124,14 +119,8 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="GigabitEthernet0/1",
                         ipv4=[dict(address="192.168.0.1/24", secondary=True)],
                     ),
-                    dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
-                    ),
-                    dict(
-                        name="Serial1/0",
-                        ipv4=[dict(address="192.168.0.3/24")],
-                    ),
+                    dict(name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]),
                 ],
                 state="overridden",
             ),
@@ -207,22 +196,10 @@ class TestIosL3InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        name="GigabitEthernet0/3",
-                        ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
-                    ),
-                    dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
-                    ),
-                    dict(
-                        name="Serial1/0",
-                        ipv4=[dict(address="192.168.0.5/24")],
-                    ),
-                    dict(
-                        name="GigabitEthernet0/3.100",
-                        ipv4=[dict(address="192.168.0.4/24")],
-                    ),
+                    dict(name="GigabitEthernet0/3", ipv6=[dict(address="FD5D:12C9:2202:1::1/64")]),
+                    dict(name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
+                    dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.4/24")]),
                 ],
                 state="replaced",
             ),
@@ -251,12 +228,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=False)
-        parsed_list = [
-            {
-                "name": "GigabitEthernet0/3.100",
-                "ipv4": [{"address": "192.168.0.3/24"}],
-            },
-        ]
+        parsed_list = [{"name": "GigabitEthernet0/3.100", "ipv4": [{"address": "192.168.0.3/24"}]}]
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_l3_interfaces_rendered(self):
@@ -274,18 +246,12 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ],
                         ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
                     ),
-                    dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(address="192.168.0.2/24")],
-                    ),
+                    dict(name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]),
                     dict(
                         name="GigabitEthernet0/4",
                         ipv4=[dict(address="192.168.0.4/24", secondary=True)],
                     ),
-                    dict(
-                        name="Serial1/0",
-                        ipv4=[dict(address="192.168.0.5/24")],
-                    ),
+                    dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                 ],
                 state="rendered",
             ),
@@ -331,56 +297,20 @@ class TestIosL3InterfacesModule(TestIosModule):
                 config=[
                     dict(
                         name="GigabitEthernet0/1",
-                        ipv4=[
-                            dict(
-                                dhcp=dict(
-                                    client_id="GigabitEthernet0/2",
-                                    hostname="test.com",
-                                ),
-                            ),
-                        ],
+                        ipv4=[dict(dhcp=dict(client_id="GigabitEthernet0/2", hostname="test.com"))],
                     ),
-                    dict(
-                        name="GigabitEthernet0/2",
-                        ipv4=[dict(pool="PoolName1")],
-                    ),
-                    dict(
-                        name="Serial1/0",
-                        ipv6=[dict(autoconfig=dict(default=True))],
-                    ),
-                    dict(
-                        name="Serial2/0",
-                        ipv6=[dict(dhcp=dict(rapid_commit=True))],
-                    ),
+                    dict(name="GigabitEthernet0/2", ipv4=[dict(pool="PoolName1")]),
+                    dict(name="Serial1/0", ipv6=[dict(autoconfig=dict(default=True))]),
+                    dict(name="Serial2/0", ipv6=[dict(dhcp=dict(rapid_commit=True))]),
                     dict(
                         name="Serial3/0",
-                        ipv6=[
-                            dict(
-                                address="FD5D:12C9:2201:1::1/64",
-                                anycast=True,
-                            ),
-                        ],
+                        ipv6=[dict(address="FD5D:12C9:2201:1::1/64", anycast=True)],
                     ),
-                    dict(
-                        name="Serial4/0",
-                        ipv6=[
-                            dict(address="FD5D:12C9:2201:2::1/64", cga=True),
-                        ],
-                    ),
-                    dict(
-                        name="Serial5/0",
-                        ipv6=[
-                            dict(address="FD5D:12C9:2201:3::1/64", eui=True),
-                        ],
-                    ),
+                    dict(name="Serial4/0", ipv6=[dict(address="FD5D:12C9:2201:2::1/64", cga=True)]),
+                    dict(name="Serial5/0", ipv6=[dict(address="FD5D:12C9:2201:3::1/64", eui=True)]),
                     dict(
                         name="Serial6/0",
-                        ipv6=[
-                            dict(
-                                address="FD5D:12C9:2201:4::1/64",
-                                link_local=True,
-                            ),
-                        ],
+                        ipv6=[dict(address="FD5D:12C9:2201:4::1/64", link_local=True)],
                     ),
                     dict(
                         name="Serial7/0",
@@ -459,52 +389,19 @@ class TestIosL3InterfacesModule(TestIosModule):
                 config=[
                     dict(
                         name="GigabitEthernet0/1",
-                        ipv4=[
-                            dict(
-                                dhcp=dict(
-                                    client_id="GigabitEthernet0/2",
-                                    hostname="test.com",
-                                ),
-                            ),
-                        ],
+                        ipv4=[dict(dhcp=dict(client_id="GigabitEthernet0/2", hostname="test.com"))],
                     ),
-                    dict(
-                        name="GigabitEthernet0/3.100",
-                        ipv4=[dict(address="192.168.0.3/24")],
-                    ),
-                    dict(
-                        name="Serial2/0",
-                        ipv6=[dict(dhcp=dict(rapid_commit=True))],
-                    ),
+                    dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.3/24")]),
+                    dict(name="Serial2/0", ipv6=[dict(dhcp=dict(rapid_commit=True))]),
                     dict(
                         name="Serial3/0",
-                        ipv6=[
-                            dict(
-                                address="FD5D:12C9:2201:1::1/64",
-                                anycast=True,
-                            ),
-                        ],
+                        ipv6=[dict(address="FD5D:12C9:2201:1::1/64", anycast=True)],
                     ),
-                    dict(
-                        name="Serial4/0",
-                        ipv6=[
-                            dict(address="FD5D:12C9:2201:2::1/64", cga=True),
-                        ],
-                    ),
-                    dict(
-                        name="Serial5/0",
-                        ipv6=[
-                            dict(address="FD5D:12C9:2201:3::1/64", eui=True),
-                        ],
-                    ),
+                    dict(name="Serial4/0", ipv6=[dict(address="FD5D:12C9:2201:2::1/64", cga=True)]),
+                    dict(name="Serial5/0", ipv6=[dict(address="FD5D:12C9:2201:3::1/64", eui=True)]),
                     dict(
                         name="Serial6/0",
-                        ipv6=[
-                            dict(
-                                address="FD5D:12C9:2201:4::1/64",
-                                link_local=True,
-                            ),
-                        ],
+                        ipv6=[dict(address="FD5D:12C9:2201:4::1/64", link_local=True)],
                     ),
                     dict(
                         name="Serial7/0",

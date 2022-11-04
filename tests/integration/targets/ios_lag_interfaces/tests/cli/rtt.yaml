@@ -12,11 +12,11 @@
         config:
           - name: Port-channel11
             members:
-              - member: GigabitEthernet0/1
+              - member: GigabitEthernet2
                 mode: active
           - name: Port-channel22
             members:
-              - member: GigabitEthernet0/2
+              - member: GigabitEthernet3
                 mode: active
         state: merged
 
@@ -34,7 +34,7 @@
         config:
           - name: Port-channel22
             members:
-              - member: GigabitEthernet0/2
+              - member: GigabitEthernet3
                 mode: passive
         state: overridden
 
@@ -52,7 +52,7 @@
 
     - ansible.builtin.assert:
         that:
-          - revert.commands|length == 4
+          - revert.commands|length == 2
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"

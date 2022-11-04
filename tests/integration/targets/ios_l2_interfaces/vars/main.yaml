@@ -2,13 +2,13 @@
 merged:
   before:
     - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - switchport access vlan 30
     - switchport voice vlan 40
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - switchport trunk encapsulation dot1q
     - switchport trunk native vlan 20
     - switchport trunk allowed vlan 15-20,40
@@ -20,9 +20,9 @@ merged:
         vlan: 30
       voice:
         vlan: 40
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 15-20
@@ -34,16 +34,16 @@ merged:
           - "20"
 merged_again:
   commands:
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - switchport trunk allowed vlan 200,15-20,40
     - switchport trunk pruning vlan 40-60,10,20
   after:
     - name: GigabitEthernet0/0
     - access:
         vlan: 30
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 15-20
@@ -60,9 +60,9 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 10-20
@@ -73,10 +73,10 @@ replaced:
           - "10"
           - "20"
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - switchport access vlan 40
     - switchport voice vlan 20
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no switchport mode
     - no switchport trunk allowed vlan
     - switchport trunk native vlan 20
@@ -85,10 +85,10 @@ replaced:
     - name: GigabitEthernet0/0
     - access:
         vlan: 40
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
       voice:
         vlan: 20
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet3
       trunk:
         encapsulation: dot1q
         native_vlan: 20
@@ -100,9 +100,9 @@ overridden:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 10-20
@@ -113,9 +113,9 @@ overridden:
           - "10"
           - "20"
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no switchport access vlan
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no switchport mode
     - no switchport trunk pruning vlan
     - switchport trunk encapsulation isl
@@ -123,8 +123,8 @@ overridden:
     - switchport trunk allowed vlan 30-35,40
   after:
     - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 30-35
@@ -136,9 +136,9 @@ deleted:
     - name: GigabitEthernet0/0
     - access:
         vlan: 10
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - 10-20
@@ -149,9 +149,9 @@ deleted:
           - "10"
           - "20"
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - no switchport access vlan
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - no switchport mode
     - no switchport trunk encapsulation
     - no switchport trunk native vlan
@@ -159,15 +159,15 @@ deleted:
     - no switchport trunk pruning vlan
   after:
     - name: GigabitEthernet0/0
-    - name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
 gathered:
   config:
     - access:
         vlan: 30
-      name: GigabitEthernet0/1
+      name: GigabitEthernet2
     - mode: trunk
-      name: GigabitEthernet0/2
+      name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - "10-20"
@@ -182,8 +182,8 @@ parsed:
     - access:
         vlan: 30
       mode: access
-      name: GigabitEthernet0/1
-    - name: GigabitEthernet0/2
+      name: GigabitEthernet2
+    - name: GigabitEthernet3
       trunk:
         allowed_vlans:
           - "15-20"
@@ -195,18 +195,18 @@ parsed:
           - "20"
 rendered:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - switchport access vlan 30
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - switchport trunk encapsulation dot1q
     - switchport trunk native vlan 20
     - switchport trunk allowed vlan 10-20,40
     - switchport trunk pruning vlan 10,20
 rtt:
   commands:
-    - interface GigabitEthernet0/1
+    - interface GigabitEthernet2
     - switchport access vlan 30
-    - interface GigabitEthernet0/2
+    - interface GigabitEthernet3
     - switchport trunk encapsulation dot1q
     - switchport trunk native vlan 20
     - switchport trunk allowed vlan 15-20,40

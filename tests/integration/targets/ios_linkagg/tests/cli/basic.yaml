@@ -18,8 +18,8 @@
 
     - name: Setup - remove configuration used in test(part3)
       loop:
-        - interface GigabitEthernet0/1
-        - interface GigabitEthernet0/2
+        - interface GigabitEthernet2
+        - interface GigabitEthernet3
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
@@ -49,15 +49,15 @@
         group: 20
         mode: active
         members:
-          - GigabitEthernet0/1
-          - GigabitEthernet0/2
+          - GigabitEthernet2
+          - GigabitEthernet3
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
-          - "'interface GigabitEthernet0/2' in result.commands"
+          - "'interface GigabitEthernet3' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
     - name: Set link aggregation group to members (idempotent)
@@ -73,12 +73,12 @@
         group: 20
         mode: active
         members:
-          - GigabitEthernet0/2
+          - GigabitEthernet3
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'no channel-group 20 mode active' in result.commands"
 
     - name: Remove link aggregation group from member (idempotent)
@@ -115,14 +115,14 @@
           - group: 20
             mode: active
             members:
-              - GigabitEthernet0/1
+              - GigabitEthernet2
 
     - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface port-channel 5' in result.commands"
           - "'interface port-channel 20' in result.commands"
-          - "'interface GigabitEthernet0/1' in result.commands"
+          - "'interface GigabitEthernet2' in result.commands"
           - "'channel-group 20 mode active' in result.commands"
 
     - name: Create aggregate of linkagg definitions (idempotent)
@@ -146,8 +146,8 @@
 
     - name: Teardown(part3)
       loop:
-        - interface GigabitEthernet0/1
-        - interface GigabitEthernet0/2
+        - interface GigabitEthernet2
+        - interface GigabitEthernet3
       cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active

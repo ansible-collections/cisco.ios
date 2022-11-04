@@ -38,6 +38,11 @@
                       - 20
                   mpls_label: true
                 set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 64512
+                        - 64512
                   extcommunity:
                     vpn_distinguisher:
                       address: 192.0.2.1:12
@@ -73,6 +78,9 @@
                 set:
                   aigp_metric:
                     value: 100
+                  as_path:
+                    prepend:
+                      last_as: 2
                   automatic_tag: true
                   extcommunity:
                     cost:
