@@ -24,4 +24,3 @@
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []
-  # when: ansible_net_version == "15.6(2)T"
