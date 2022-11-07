@@ -78,7 +78,9 @@ def _tmplt_bgp_af_config(config_data):
     if "bgp" in config_data:
         cmd = []
         if config_data["bgp"].get("aggregate_timer"):
-            cmd.append("bgp aggregate-timer {aggregate_timer}".format(**config_data["bgp"]))
+            cmd.append(
+                "bgp aggregate-timer {aggregate_timer}".format(**config_data["bgp"]),
+            )
         if config_data["bgp"].get("dmzlink_bw"):
             cmd.append("bgp dmzlink-bw")
         if "nexthop" in config_data["bgp"]:
@@ -98,7 +100,9 @@ def _tmplt_bgp_af_config(config_data):
         if config_data["bgp"].get("route_map"):
             cmd.append("bgp route-map priority")
         if config_data["bgp"].get("scan_time"):
-            cmd.append("bgp scan-time {scan_time}".format(**config_data["bgp"]))
+            cmd.append(
+                "bgp scan-time {scan_time}".format(**config_data["bgp"]),
+            )
         if config_data["bgp"].get("soft_reconfig_backup"):
             cmd.append("bgp soft-reconfig-backup")
         if config_data["bgp"].get("update_group"):
@@ -148,9 +152,6 @@ def _tmplt_af_distance(config_data):
         return cmd
 
 
-UNIQUE_ADD = "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}"
-
-
 def _tmplt_af_neighbor(config_data):
     if "neighbor" in config_data:
         commands = []
@@ -162,9 +163,13 @@ def _tmplt_af_neighbor(config_data):
         elif "ipv6_adddress" in config_data["neighbor"]:
             cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
         if "peer_group" in config_data["neighbor"]:
-            commands.append("{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]),
+            )
         if "remote_as" in config_data["neighbor"]:
-            commands.append("{0} remote-as {remote_as}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} remote-as {remote_as}".format(cmd, **config_data["neighbor"]),
+            )
         if "activate" in config_data["neighbor"]:
             commands.append("{0} activate".format(cmd))
         if "additional_paths" in config_data["neighbor"]:
@@ -214,28 +219,30 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} advertisement-interval {advertisement_interval}".format(
                     cmd, **config_data["neighbor"]
-                )
+                ),
             )
         if config_data["neighbor"].get("aigp"):
             self_cmd = "{0} aigp".format(cmd)
             if config_data["neighbor"]["aigp"].get("send"):
                 self_cmd += " send"
-                if config_data["neighbor"]["aigp"]["send"].get("cost_community"):
+                if config_data["neighbor"]["aigp"]["send"].get(
+                    "cost_community",
+                ):
                     self_cmd += " cost-community {id}".format(
                         **config_data["neighbor"]["aigp"]["send"]["cost_community"]
                     )
                     if config_data["neighbor"]["aigp"]["send"]["cost_community"].get("poi"):
                         self_cmd += " poi"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "igp_cost"
+                            "igp_cost",
                         ):
                             self_cmd += " igp-cost"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "pre_bestpath"
+                            "pre_bestpath",
                         ):
                             self_cmd += " pre-bestpath"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "transitive"
+                            "transitive",
                         ):
                             self_cmd += " transitive"
                 if config_data["neighbor"]["aigp"]["send"].get("med"):
@@ -244,7 +251,9 @@ def _tmplt_af_neighbor(config_data):
         if config_data["neighbor"].get("allow_policy"):
             commands.append("{0} allow-policy".format(cmd))
         if config_data["neighbor"].get("allowas_in"):
-            commands.append("{0} allowas-in {allowas_in}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} allowas-in {allowas_in}".format(cmd, **config_data["neighbor"]),
+            )
         if config_data["neighbor"].get("as_override"):
             commands.append("{0} as-override".format(cmd))
         if "bmp_activate" in config_data["neighbor"]:
@@ -264,7 +273,9 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " send"
             commands.append(self_cmd)
         if config_data["neighbor"].get("cluster_id"):
-            commands.append("{0} cluster-id {cluster_id}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} cluster-id {cluster_id}".format(cmd, **config_data["neighbor"]),
+            )
         if "default_originate" in config_data["neighbor"]:
             self_cmd = "{0} default-originate".format(cmd)
             if config_data["neighbor"]["default_originate"].get("route_map"):
@@ -273,7 +284,9 @@ def _tmplt_af_neighbor(config_data):
                 )
             commands.append(self_cmd)
         if "description" in config_data["neighbor"]:
-            commands.append("{0} description {description}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} description {description}".format(cmd, **config_data["neighbor"]),
+            )
         if config_data["neighbor"].get("disable_connected_check"):
             commands.append("{0} disable-connected-check".format(cmd))
         if "distribute_list" in config_data["neighbor"]:
@@ -296,9 +309,13 @@ def _tmplt_af_neighbor(config_data):
             self_cmd = "{0} fall-over".format(cmd)
             if "bfd" in config_data["neighbor"]["fall_over"]:
                 self_cmd += " bfd"
-                if config_data["neighbor"]["fall_over"]["bfd"].get("multi_hop"):
+                if config_data["neighbor"]["fall_over"]["bfd"].get(
+                    "multi_hop",
+                ):
                     self_cmd += " multi-hop"
-                elif config_data["neighbor"]["fall_over"]["bfd"].get("single_hop"):
+                elif config_data["neighbor"]["fall_over"]["bfd"].get(
+                    "single_hop",
+                ):
                     self_cmd += " single-hop"
             elif "route_map" in config_data["neighbor"]["fall_over"]:
                 self_cmd += " {route_map}".format(**config_data["neighbor"]["route_map"])
@@ -370,12 +387,16 @@ def _tmplt_af_neighbor(config_data):
                 self_cmd += " out"
             commands.append(self_cmd)
         if "peer_group" in config_data["neighbor"]:
-            commands.append("{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]),
+            )
         if "remove_private_as" in config_data["neighbor"]:
             self_cmd = "{0} remove-private-as".format(cmd)
             if config_data["neighbor"]["remove_private_as"].get("all"):
                 self_cmd += " all"
-            elif config_data["neighbor"]["remove_private_as"].get("replace_as"):
+            elif config_data["neighbor"]["remove_private_as"].get(
+                "replace_as",
+            ):
                 self_cmd += " replace_as"
             commands.append(self_cmd)
         if "route_map" in config_data["neighbor"] and "route_maps" not in config_data["neighbor"]:
@@ -404,15 +425,21 @@ def _tmplt_af_neighbor(config_data):
         if "soft_reconfiguration" in config_data["neighbor"]:
             commands.append("{0} soft-reconfiguration inbound".format(cmd))
         if "soo" in config_data["neighbor"]:
-            commands.append("{0} soo {soo}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} soo {soo}".format(cmd, **config_data["neighbor"]),
+            )
         if "unsuppress_map" in config_data["neighbor"]:
             commands.append(
-                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"])
+                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"]),
             )
         if "version" in config_data["neighbor"]:
-            commands.append("{0} version {version}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} version {version}".format(cmd, **config_data["neighbor"]),
+            )
         if "weight" in config_data["neighbor"]:
-            commands.append("{0} weight {weight}".format(cmd, **config_data["neighbor"]))
+            commands.append(
+                "{0} weight {weight}".format(cmd, **config_data["neighbor"]),
+            )
         return commands
 
 
@@ -619,11 +646,17 @@ def _tmplt_af_redistribute(config_data):
             if config_data["redistribute"]["ospf"].get("match"):
                 external_type = None
                 commands[-1] += " match"
-                if config_data["redistribute"]["ospf"]["match"].get("internal"):
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "internal",
+                ):
                     commands[-1] += " internal"
-                if config_data["redistribute"]["ospf"]["match"].get("external"):
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "external",
+                ):
                     external_type = " external"
-                if config_data["redistribute"]["ospf"]["match"].get("nssa_external"):
+                if config_data["redistribute"]["ospf"]["match"].get(
+                    "nssa_external",
+                ):
                     external_type = " nssa-external"
                 if config_data["redistribute"]["ospf"]["match"].get("type_1") and external_type:
                     commands[-1] += "{0} 1".format(external_type)
@@ -635,15 +668,25 @@ def _tmplt_af_redistribute(config_data):
             cmd = "{0} ospfv3 {process_id}".format(command, **config_data["redistribute"]["ospfv3"])
             if config_data["redistribute"]["ospfv3"].get("match"):
                 cmd += " match"
-                if config_data["redistribute"]["ospfv3"]["match"].get("external"):
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "external",
+                ):
                     cmd += " external"
-                if config_data["redistribute"]["ospfv3"]["match"].get("internal"):
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "internal",
+                ):
                     cmd += " internal"
-                if config_data["redistribute"]["ospfv3"]["match"].get("nssa_external"):
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "nssa_external",
+                ):
                     cmd += " nssa-external"
-                if config_data["redistribute"]["ospfv3"]["match"].get("type_1"):
+                if config_data["redistribute"]["ospfv3"]["match"].get(
+                    "type_1",
+                ):
                     cmd += " 1"
-                elif config_data["redistribute"]["ospfv3"]["match"].get("type_2"):
+                elif config_data["redistribute"]["ospfv3"]["match"].get(
+                    "type_2",
+                ):
                     cmd += " 2"
             common_config(cmd, "ospf")
         if config_data["redistribute"].get("static"):
@@ -661,18 +704,23 @@ def _tmplt_af_redistribute(config_data):
 
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Bgp_address_familyTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Bgp_address_familyTemplate, self).__init__(
+            lines=lines,
+            tmplt=self,
+            module=module,
+        )
 
     PARSERS = [
         {
             "name": "as_number",
             "getval": re.compile(
-                r"""
-                ^router\sbgp
-                (\s(?P<as_number>\S+))?
-                $""",
+                r"""^router*
+                    \s*bgp*
+                    \s*(?P<as_number>\d+)*
+                    $""",
                 re.VERBOSE,
             ),
+            "compval": "as_number",
             "setval": "router bgp {{ as_number }}",
             "result": {"as_number": "{{ as_number }}"},
             "shared": True,
@@ -680,14 +728,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "afi",
             "getval": re.compile(
-                r"""
-                \s+address-family
-                (\s(?P<afi>ipv4|ipv6|l2vpn|nsap|rtfilter|vpnv4|vpnv6))?
-                (\s(?P<safi>flowspec|mdt|multicast|mvpn|unicast|evpn|vpls))?
-                (\svrf\s(?P<vrf>\S+))?
-                $""",
+                r"""\s*address-family*
+                    \s*(?P<afi>ipv4|ipv6|l2vpn|nsap|rtfilter|vpnv4|vpnv6)*
+                    \s*(?P<safi>flowspec|mdt|multicast|mvpn|unicast|evpn|vpls)*
+                    \s*(?P<vrf>vrf\s\S+)*
+                    $""",
                 re.VERBOSE,
             ),
+            "compval": "afi",
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
@@ -695,75 +743,60 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "afi": "{{ afi }}",
                         "safi": "{{ safi }}",
                         "vrf": "{{ vrf.split('vrf ')[1] if vrf is defined }}",
-                    }
-                }
+                    },
+                },
             },
             "shared": True,
         },
         {
-            "name": "aggregate_addresses",
+            "name": "aggregate_address",
             "getval": re.compile(
-                r"""
-                \s+aggregate-address
-                (\s(?P<address>\S+))?
-                (\s(?P<netmask>\S+))?
-                (\s(?P<as_set>as-set))?
-                (\s(?P<summary_only>summary-only))?
-                (\s(?P<as_confed_set>as-confed-set))?
-                (\sadvertise-map\s(?P<advertise_map>\S+))?
-                (\sattribute-map\s(?P<attribute_map>\S+))?
-                (\ssuppress-map\s(?P<suppress_map>\S+))?
-                $""",
+                r"""\s*aggregate-address*
+                    \s*(?P<address>(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s(?:[0-9]{1,3}\.){3}[0-9]{1,3})*
+                    \s*(?P<as_confed_set>as-confed-set)*
+                    \s*(?P<as_set>as-set)*
+                    \s*(?P<route_map>route-map\s\S+)*
+                    \s*(?P<summary_only>summary-only)*
+                    \s*(?P<attribute_map>attribute-map\s\S+)*
+                    \s*(?P<advertise_map>advertise-map\s\S+)*
+                    \s*(?P<suppress_map>suppress-map\s\S+)*
+                    $""",
                 re.VERBOSE,
             ),
-            "setval": "aggregate-address "
-            "{{ address }} {{ netmask }}"
-            "{{ ' as-set' if as_set|d(False) else ''}}"
-            "{{ ' summary-only' if summary_only|d(False) else ''}}"
-            "{{ ' as-confed-set' if as_confed_set|d(False) else ''}}"
-            "{{ (' advertise-map ' + advertise_map) if advertise_map is defined else '' }}"
-            "{{ (' attribute-map ' + attribute_map) if attribute_map is defined else '' }}"
-            "{{ (' suppress-map ' + suppress_map) if suppress_map is defined else '' }}",
+            "compval": "aggregate_address",
+            "setval": _tmplt_af_aggregate_address,
             "result": {
-                "aggregate_addresses": [
-                    {
-                        "address": "{{ address }}",
-                        "netmask": "{{ netmask }}",
-                        "advertise_map": "{{ advertise_map }}",
-                        "as_confed_set": "{{ not not as_confed_set }}",
-                        "as_set": "{{ not not as_set }}",
-                        "attribute_map": "{{ attribute_map }}",
-                        "suppress_map": "{{ suppress_map }}",
-                        "summary_only": "{{ not not summary_only }}",
-                    }
-                ]
+                "address_family": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "aggregate_address": [
+                            {
+                                "address": "{{ address.split(' ')[0] }}",
+                                "netmask": "{{ address.split(' ')[1] }}",
+                                "advertise_map": "{{ advertise_map.split('advertise-map ')[1] if advertise_map is defined }}",
+                                "as_confed_set": "{{ True if as_confed_set is defined }}",
+                                "as_set": "{{ True if as_set is defined }}",
+                                "attribute_map": "{{ attribute_map.split('attribute-map ')[1] if attribute_map is defined }}",
+                                "summary_only": "{{ True if summary_only is defined }}",
+                                "suppress_map": "{{ suppress_map.split('suppress-map ')[1] if suppress_map is defined }}",
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
-            "name": "auto_summary",
-            "getval": re.compile(
-                r"""
-                ((\sauto-summary))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "auto-summary",
-            "result": {"auto_summary": True},
-        },
-        # bgp starts
-        {
             "name": "bgp.additional_paths",
             "getval": re.compile(
-                r"""
-                \s\sbgp\sadditional-paths
-                (\s(?P<select>select))?
-                (\s(?P<select_all>all))?
-                (\s(?P<select_backup>backup))?
-                (\s(?P<receive>receive))?
-                (\sbest\s(?P<select_best>\d))?
-                (\s(?P<select_group_best>group-best))?
-                (\s(?P<send>send))?
-                $""",
+                r"""\s*bgp*
+                    \s*additional-paths*
+                    \s*(?P<receive>receive)*
+                    \s*(?P<select>select)*
+                    \s*(?P<select_all>all)*
+                    \s*(?P<select_backup>backup)*
+                    \s*(?P<select_best>best\s\d)*
+                    \s*(?P<select_group_best>group-best)*
+                    \s*(?P<send>send)*
+                    $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_bgp_af_additional_paths,
@@ -776,193 +809,66 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "select": {
                                     "all": "{{ True if select_all is defined }}",
                                     "backup": "{{ True if select_backup is defined }}",
-                                    "best": "{{ select_best }}",
+                                    "best": "{{ select_best.split('best ')[1] if select_best is defined }}",
                                     "group_best": "{{ True if select_group_best is defined }}",
                                 },
                                 "send": "{{ True if send is defined }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
-            "name": "bgp.aggregate_timer",
+            "name": "bgp.config",
             "getval": re.compile(
-                r"""
-                \s+bgp\saggregate-timer
-                (\s(?P<aggregate_timer>\d+))?
-                $""",
+                r"""\s*bgp*
+                    \s*(?P<aggregate_timer>aggregate-timer\s\d+)*
+                    \s*(?P<dmzlink_bw>dmzlink-bw)*
+                    \s*(?P<nexthop>nexthop\s(route-map\s\S+|trigger\s(delay\s\d+|enable)))*
+                    \s*(?P<redistribute_internal>redistribute-internal)*
+                    \s*(?P<route_map>route-map\spriority)*
+                    \s*(?P<scan_time>scan-time\s\d+)*
+                    \s*(?P<soft_reconfig_backup>soft-reconfig-backup)*
+                    \s*(?P<update_group>update-group\ssplit\sas-override)*
+                    $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": _tmplt_bgp_af_config,
+            "compval": "bgp",
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"aggregate_timer": "{{ aggregate_timer }}"}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.dmzlink-bw",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sdmzlink-bw
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_af,
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {"bgp": {"dmzlink_bw": True}}
-                }
-            },
-        },
-        {
-            "name": "bgp.nexthop.route_map",
-            "getval": re.compile(
-                r"""
-                \s+bgp\snexthop\sroute-map
-                (\s(?P<route_map>\S+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_af,
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"nexthop": {"route_map": "{{ route_map }}"}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.nexthop.trigger.delay",
-            "getval": re.compile(
-                r"""
-                \s+bgp\snexthop\strigger\sdelay
-                (\s(?P<delay>\d+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_af,
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.nexthop.trigger.enable",
-            "getval": re.compile(
-                r"""
-                \s+bgp\snexthop\strigger\sdelay\senable
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp nexthop trigger delay enable",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"nexthop": {"trigger": {"enable": True}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.redistribute_internal",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sredistribute-internal
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp redistribute-internal",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"redistribute_internal": True}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.route_map",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sroute-map\spriority
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp route-map priority",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {"bgp": {"route_map": True}}
-                }
-            },
-        },
-        {
-            "name": "bgp.scan_time",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sscan-time
-                (\s(?P<scan_time>\d+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp scan-time {{ scan_time }}",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"scan_time": "{{ scan_time }}"}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.soft_reconfig_backup",
-            "getval": re.compile(
-                r"""
-                \s+bgp\ssoft-reconfig-backup
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp soft-reconfig-backup",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"soft_reconfig_backup": True}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.update_group",
-            "getval": re.compile(
-                r"""
-                \s+bgp\supdate-group\ssplit\sas-override
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp update-group split as-override",
-            "result": {
-                "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {"bgp": {"update_group": True}}
-                }
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "bgp": {
+                            "aggregate_timer": "{{ aggregate_timer.split('aggregate-timer ')[1] if aggregate_timer is defined }}",
+                            "dmzlink_bw": "{{ True if dmzlink_bw is defined }}",
+                            "nexthop": {
+                                "route_map": "{{ nexthop.split('route-map ')[1] if nexthop is defined and 'route-map' in nexthop }}",
+                                "trigger": {
+                                    "delay": "{{ nexthop.split('delay ')[1] if nexthop is defined and 'delay' in nexthop }}",
+                                    "enable": "{{ True if nexthop is defined and 'enable' in nexthop }}",
+                                },
+                            },
+                            "redistribute_internal": "{{ True if redistribute_internal is defined }}",
+                            "route_map": "{{ True if route_map is defined }}",
+                            "scan_time": "{{ scan_time.split('scan-time ')[1] if scan_time is defined }}",
+                            "soft_reconfig_backup": "{{ True if soft_reconfig_backup is defined }}",
+                            "update_group": "{{ True if update_group is defined }}",
+                        },
+                    },
+                },
             },
         },
         {
             "name": "bgp.dampening",
             "getval": re.compile(
-                r"""\s+bgp\sdampening
-                    (\s(?P<penalty_half_time>\d+))?
-                    (\s(?P<reuse_route_val>\d+))?
-                    (\s(?P<suppress_route_val>\d+))?
-                    (\s(?P<max_suppress>\d+))?
-                    (\sroute-map\s(?P<route_map>\S+))?
+                r"""\s*bgp*
+                    \s*dampening*
+                    \s*(?P<penalty_half_time>\d+)*
+                    \s*(?P<reuse_route_val>\d+)*
+                    \s*(?P<suppress_route_val>\d+)*
+                    \s*(?P<max_suppress>\d+)*
+                    \s*(?P<route_map>\S+)*
                     $""",
                 re.VERBOSE,
             ),
@@ -972,545 +878,116 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "bgp": {
                             "dampening": {
-                                "penalty_half_time": "{{ penalty_half_time  }}",
-                                "reuse_route_val": "{{ reuse_route_val  }}",
-                                "suppress_route_val": "{{ suppress_route_val  }}",
-                                "max_suppress": "{{ max_suppress  }}",
-                                "route_map": "{{ route_map }}",
-                            }
-                        }
-                    }
-                }
+                                "penalty_half_time": "{{ penalty_half_time if penalty_half_time is defined }}",
+                                "reuse_route_val": "{{ reuse_route_val if penalty_half_time is defined }}",
+                                "suppress_route_val": "{{ suppress_route_val if penalty_half_time is defined }}",
+                                "max_suppress": "{{ max_suppress if penalty_half_time is defined }}",
+                                "route_map": "{{ dampening.split('route-map ')[1] if dampening is defined and 'route-map' in dampening }}",
+                            },
+                        },
+                    },
+                },
             },
         },
         {
-            "name": "bgp.slow_peer.detection.enable",
-            "getval": re.compile(r"""\s+bgp\sslow-peer\sdetection$""", re.VERBOSE),
-            "setval": "bgp slow-peer detection",
-            "result": {
-                "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"slow_peer": {"detection": {"enable": True}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.slow_peer.detection.threshold",
+            "name": "bgp.slow_peer",
             "getval": re.compile(
-                r"""
-                \s+bgp\sslow-peer\sdetection\sthreshold
-                (\s(?P<threshold>\d+))?
-                $""",
+                r"""\s*bgp*
+                    \s*(?P<slow_peer>slow-peer((\sdetection\sthreshold\s\d+|\sdetection)|(\ssplit-update-group\sdynamic\spermanent|\ssplit-update-group\sdynamic)))*
+                    $""",
                 re.VERBOSE,
             ),
-            "setval": "bgp slow-peer detection threshold {{ threshold }}",
+            "setval": _tmplt_bgp_af_slow_peer,
+            "compval": "bgp",
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"slow_peer": {"detection": {"threshold": "{{ threshold }}"}}}
-                    }
-                }
+                        "bgp": {
+                            "slow_peer": [
+                                {
+                                    "detection": {
+                                        "set": "{{ True if slow_peer is defined and 'detection' in slow_peer and 'threshold' not in slow_peer }}",
+                                        "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
+                                    },
+                                    "split_update_group": {
+                                        "dynamic": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                            'dynamic' in slow_peer }}",
+                                        "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
+                                            'permanent' in slow_peer }}",
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
             },
         },
-        {
-            "name": "bgp.slow_peer.split_update_group.dynamic",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sslow-peer\ssplit-update-group\sdynamic$""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp slow-peer split-update-group dynamic",
-            "result": {
-                "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"slow_peer": {"split_update_group": {"dynamic": True}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "bgp.slow_peer.split_update_group.permanent",
-            "getval": re.compile(
-                r"""
-                \s+bgp\sslow-peer\ssplit-update-group\sdynamic\spermanent$""",
-                re.VERBOSE,
-            ),
-            "setval": "bgp slow-peer split-update-group dynamic permanent",
-            "result": {
-                "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "bgp": {"slow_peer": {"split_update_group": {"permanent": True}}}
-                    }
-                }
-            },
-        },
-        # bgp ends
         {
             "name": "default",
-            "getval": re.compile(r"""\s+default$""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(?P<default>default)*
+                    $""",
+                re.VERBOSE,
+            ),
             "setval": "default",
             "result": {
                 "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {"default": True}
-                }
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "default": "{{ True if default is defined }}",
+                    },
+                },
             },
         },
         {
             "name": "default_information",
-            "getval": re.compile(r"""\s+default-information\soriginate$""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\s*(?P<default>default-information\soriginate)*
+                    $""",
+                re.VERBOSE,
+            ),
             "setval": "default-information originate",
             "result": {
                 "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {"default_information": True}
-                }
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "default_information": "{{ True if default_information is defined }}",
+                    },
+                },
             },
         },
         {
             "name": "default_metric",
             "getval": re.compile(
-                r"""\s+default-metric
-                    (\s(?P<default_metric>\d+))
+                r"""\s*(?P<default_metric>default-metric\s\d+)*
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "default-metric {{ default_metric|string }}",
+            "setval": "default-metric {{ default_metric }}",
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "default_metric": "{{ default_metric }}"
-                    }
-                }
+                        "default_metric": "{{ default_metric.split('default-metric ')[1] if default_metric is defined }}",
+                    },
+                },
             },
         },
         {
             "name": "distance",
             "getval": re.compile(
-                r"""\s+distance\sbgp
-                    (\s(?P<external>\d+))
-                    (\s(?P<internal>\d+))
-                    (\s(?P<local>\d+))
+                r"""\s*distance\sbgp(?P<distance>\s\d+\s\d+\s\d+)*
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "distance bgp {{ external|string }} {{ internal|string }} {{ local|string }}",
+            "setval": _tmplt_af_distance,
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
                         "distance": {
-                            "external": "{{ external }}",
-                            "internal": "{{ internal }}",
-                            "local": "{{ local }}",
-                        }
-                    }
-                }
-            },
-        },
-        # neighbor starts
-        {
-            "name": "activate",
-            "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""", re.VERBOSE
-            ),
-            "setval": "neighbor {{ neighbor_address }} activate",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "neighbor_address": "{{ neighbor_address }}",
-                                "activate": True,
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "additional_paths",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadditional-paths
-                (\s(?P<disable>disable))?
-                (\s(?P<receive>receive))?
-                (\s(?P<send>send))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} additional-paths"
-            "{{ (' disable') if  additional_paths.disable|d(False) else '' }}"
-            "{{ (' receive') if additional_paths.receive|d(False) else '' }}"
-            "{{ (' send') if additional_paths.send|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "additional_paths": {
-                                    "disable": "{{ not not disable }}",
-                                    "receive": "{{ not not receive }}",
-                                    "send": "{{ not not send }}",
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "advertises.additional_paths",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sadditional-paths
-                (\s(?P<all>all))?
-                (\sbest\s(?P<receive>\d+))?
-                (\s(?P<group_best>group-best))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} advertise additional-paths"
-            "{{ (' all') if  advertise.additional_paths.all|d(False) else '' }}"
-            "{{ (' best '+ best|string) if advertise.additional_paths.best|d(False) else '' }}"
-            "{{ (' group-best') if advertise.additional_paths.group_best|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "advertises": {
-                                    "additional_paths": {
-                                        "all": "{{ not not all }}",
-                                        "best": "{{ receive }}",
-                                        "group_best": "{{ not not group_best }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "advertises.best_external",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sbest-external
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' advertise best-external') if  advertise.best_external|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {"advertises": {"best-external": True}}
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "advertises.diverse_path",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sdiverse-path
-                (\s(?P<backup>backup))?
-                (\s(?P<mpath>mpath))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} advertise diverse-path"
-            "{{ (' backup') if  advertise.diverse_path.backup|d(False) else '' }}"
-            "{{ (' mpath') if advertise.diverse_path.mpath|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "advertises": {
-                                    "diverse_path": {
-                                        "backup": "{{ not not backup }}",
-                                        "mpath": "{{ not not mpath }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "advertise_map",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise-map
-                (\s(?P<name>\S+))?
-                (\sexist-map\s(?P<exist_map>\S+))?
-                (\snon-exist-map\s(?P<non_exist_map>\S+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} advertise-map"
-            "{{ (' ' + name) if  advertise_map.name is defined else '' }}"
-            "{{ (' exist-map ' + exist_map) if  advertise_map.exist_map is defined else '' }}"
-            "{{ (' non-exist-map ' + non_exist_map) if advertise_map.non_exist_map is defined else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "advertise_map": {
-                                    "name": "{{ name }}",
-                                    "exist_map": "{{ exist_map }}",
-                                    "non_exist_map": "{{ non_exist_map }}",
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "advertisement_interval",
-            "getval": re.compile(
-                r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\sadvertisement-interval
-                (\s(?P<advertisement_interval>\d+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} advertisement-interval"
-            "{{ (' ' + advertisement_interval|string) if advertisement_interval is defined else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "advertisement_interval": "{{ advertisement_interval }}"
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "aigp",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "{{ ('neighbor ' + neighbor_address + ' aigp') if aigp.enable|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {"{{ neighbor_address }}": {"aigp": {"enable": True}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "aigp.send.cost_community",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\scost-community
-                (\s(?P<id>\d+))\spoi
-                (\s(?P<igp_cost>igp-cost))?
-                (\s(?P<pre_bestpath>pre-bestpath))?
-                (\s(?P<transitive>transitive))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} aigp send cost-community"
-            "{{ (' ' + aigp.send.cost_community.id|string + ' poi') if  aigp.send.cost_community.id is defined else '' }}"
-            "{{ (' igp-cost') if  aigp.send.cost_community.poi.igp_cost|d(False) else '' }}"
-            "{{ (' pre-bestpath') if  aigp.send.cost_community.poi.pre_bestpath|d(False) else '' }}"
-            "{{ (' transitive') if  aigp.send.cost_community.poi.transitive|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "aigp": {
-                                    "send": {
-                                        "cost_community": {
-                                            "id": "{{ id }}",
-                                            "poi": {
-                                                "igp_cost": "{{ not not igp_cost }}",
-                                                "pre_bestpath": "{{ not not pre_bestpath }}",
-                                                "transitive": "{{ not not transitive }}",
-                                            },
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "aigp.send.med",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\smed
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' aigp send med') if aigp.send.med|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {"{{ neighbor_address }}": {"aigp": {"send": {"med": True}}}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "allow_policy",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sallow-policy
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "{{ ('neighbor ' + neighbor_address  + ' allow-policy') if allow_policy|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {"neighbors": {"{{ neighbor_address }}": {"allow_policy": True}}}
-                }
-            },
-        },
-        {
-            "name": "allowas_in",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sallowas-in
-                (\s(?P<allowas_in>\d+))
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' allowas-in ' + allowas_in|string) if allowas_in is defined else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {"{{ neighbor_address }}": {"allowas_in": "{{ allowas_in }}"}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "as_override",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sas-override
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' as-override') if as_override|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {"neighbors": {"{{ neighbor_address }}": {"as_override": True}}}
-                }
-            },
-        },
-        {
-            "name": "bmp_activate",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sbmp-activate
-                (\sserver\s(?P<server>\d+))?
-                (\s(?P<all>all))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} bmp-activate"
-            "{{ (' server '+ bmp_activate.server|string) if bmp_activate.server is defined else '' }}"
-            "{{ (' all') if bmp_activate.all|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "neighbor_address": "{{ neighbor_address }}",
-                                "bmp_activate": {
-                                    "server": "{{ server }}",
-                                    "all": "{{ not not  all }}",
-                                },
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "capability",
-            "getval": re.compile(
-                r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\scapability\sorf\sprefix-list
-                (\s(?P<both>both))?
-                (\s(?P<receive>receive))?
-                (\s(?P<send>send))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} capability orf prefix-list"
-            "{{ (' both') if capability.both|d(False) else '' }}"
-            "{{ (' receive') if capability.receive|d(False) else '' }}"
-            "{{ (' send') if capability.send|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {
-                                "capability": {
-                                    "both": "{{ not not both }}",
-                                    "receive": "{{ not not receive }}",
-                                    "send": "{{ not not  send }}",
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "cluster_id",
-            "getval": re.compile(
-                r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\scluster-id(\s(?P<cluster_id>\s\d+))$""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} cluster-id {{ cluster_id }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {"{{ neighbor_address }}": {"cluster_id": "{{ cluster_id }}"}}
-                    }
-                }
-            },
-        },
-        {
-            "name": "default_originate",
-            "getval": re.compile(
-                r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate$""",
-                re.VERBOSE,
-            ),
-            "setval": "{{ ('neighbor ' + neighbor_address  + ' default-originate') if default_originate.set|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_ADD: {
-                        "neighbors": {
-                            "{{ neighbor_address }}": {"default_originate": {"set": True}}
-                        }
-                    }
-                }
+                            "external": "{{ distance.split(' ')[1] }}",
+                            "internal": "{{ distance.split(' ')[2] }}",
+                            "local": "{{ distance.split(' ')[3] }}",
+                        },
+                    },
+                },
             },
         },
         {
@@ -1536,12 +1013,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ prefix_list.split(' ')[1] if prefix_list is defined }}",
                                         "in": "{{ True if prefix_list is defined and 'in' in prefix_list }}",
                                         "out": "{{ True if prefix_list is defined and 'out' in prefix_list }}",
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1567,12 +1044,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
                                         "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
                                         "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1808,10 +1285,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "unsuppress_map": "{{ unsuppress_map.split('unsuppress-map ')[1] if unsuppress_map is defined }}",
                                 "version": "{{ version.split('version ')[1] if version is defined }}",
                                 "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1852,12 +1329,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                             },
                                             "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
                                         },
-                                    }
+                                    },
                                 ],
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1881,10 +1358,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "mask": "{{ mask.split('mask ')[1] if mask is defined }}",
                                 "backdoor": "{{ True if backdoor is defined }}",
                                 "route_map": "{{ route_map.split('route-map ')[1] if route_map is defined }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1943,10 +1420,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "credential": "{{ True if credential is defined }}",
                                     "encrypted": "{{ True if encrypted is defined }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1965,9 +1442,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "table_map": {
                             "name": "{{ name if name is defined }}",
                             "filter": "{{ True if filter is defined }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -2082,10 +1559,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ vrf.split('vrf ')[1].split(' ')[0] if vrf is defined and 'vrf' in vrf and 'global' not in vrf }}",
                                     "global": "{{ True if vrf is defined and 'vrf' in vrf and 'global' in vrf }}",
                                 },
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
     ]

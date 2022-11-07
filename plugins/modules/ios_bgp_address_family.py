@@ -18,7 +18,9 @@ module: ios_bgp_address_family
 short_description: Resource module to configure BGP Address family.
 description: This module configures and manages the attributes of bgp address family on Cisco IOS.
 version_added: 1.2.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -234,22 +236,39 @@ options:
               local:
                 description: Distance for local routes
                 type: int
-          neighbor:
+          neighbors:
             description: Specify a neighbor router
             type: list
             elements: dict
+            aliases:
+              - neighbor
             suboptions:
+              neighbor_address:
+                description:
+                - Neighbor address (A.B.C.D)
+                - Neighbor tag
+                - Neighbor ipv6 address (X:X:X:X::X)
+                type: str
               address:
-                description: Neighbor address (A.B.C.D)
+                description:
+                - Neighbor address (A.B.C.D)
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
               tag:
-                description: Neighbor tag
+                description:
+                - Neighbor tag
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
-              ipv6_adddress:
-                description: Neighbor ipv6 address (X:X:X:X::X)
+              ipv6_address:
+                description:
+                - Neighbor ipv6 address (X:X:X:X::X)
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
                 aliases:
-                  - ipv6_address
+                  - ipv6_adddress
               activate:
                 description: Enable the Address Family for this Neighbor
                 type: bool
@@ -281,6 +300,36 @@ options:
                   group_best:
                     description: Select group-best path
                     type: bool
+              advertises:
+                description: Advertise to this neighbor
+                type: dict
+                suboptions:
+                  additional_paths:
+                    description: Advertise additional paths
+                    type: dict
+                    suboptions:
+                      all:
+                        description: Select all available paths
+                        type: bool
+                      best:
+                        description: Select best N paths (2-3).
+                        type: int
+                      group_best:
+                        description: Select group-best path
+                        type: bool
+                  best_external:
+                    description: Advertise best-external (at RRs best-internal) path
+                    type: bool
+                  diverse_path:
+                    description: Advertise additional paths
+                    type: dict
+                    suboptions:
+                      backup:
+                        description: Diverse path can be backup path
+                        type: bool
+                      mpath:
+                        description: Diverse path can be multipath
+                        type: bool
               advertise_map:
                 description: specify route-map for conditional advertisement
                 type: dict
