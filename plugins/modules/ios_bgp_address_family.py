@@ -608,11 +608,33 @@ options:
                     description: Enable next-hop-self for both eBGP and iBGP received paths
                     type: bool
               next_hop_unchanged:
-                description: Propagate next hop unchanged for iBGP paths to this neighbor
-                type: bool
+                description:
+                  - Propagate next hop unchanged for iBGP paths to this neighbor
+                  - Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable next-hop-unchanged
+                    type: bool
+                  allpaths:
+                    description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
+                    type: bool
               password:
-                description: Set a password
+                description:
+                - Set a password
+                - This option is DEPRECATED and is replaced with password_options which
+                  accepts dict as input, this attribute will be removed after 2024-06-01.
                 type: str
+              password_options:
+                description: Set a password with encryption type
+                type: dict
+                suboptions:
+                  encryption:
+                    description: Encryption type (0 to disable encryption, 7 for proprietary)
+                    type: int
+                  pass_key:
+                    description: The password
+                    type: str
               path_attribute:
                 description: BGP optional attribute filtering
                 type: dict
@@ -891,10 +913,12 @@ options:
               weight:
                 description: Set default weight for routes from this neighbor
                 type: int
-          network:
+          networks:
             description: Specify a network to announce via BGP
             type: list
             elements: dict
+            aliases:
+              - network
             suboptions:
               address:
                 description: Network number (A.B.C.D)
@@ -904,6 +928,9 @@ options:
                 type: str
               backdoor:
                 description: Specify a BGP backdoor route
+                type: bool
+              evpn:
+                description: Advertise or Export to EVPN address-family
                 type: bool
               route_map:
                 description: Route-map to modify the attributes
@@ -2255,6 +2282,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
     Bgp_address_family,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():

@@ -1499,7 +1499,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "default_originate",
             "getval": re.compile(
                 r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate$""",
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate$""",
                 re.VERBOSE,
             ),
             "setval": "{{ ('neighbor ' + neighbor_address  + ' default-originate') if default_originate.set|d(False) else '' }}",
@@ -1514,28 +1514,604 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "neighbor.prefix_lists",
+            "name": "default_originate.route_map",
             "getval": re.compile(
-                r"""\s*neighbor*
-                    \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<prefix_list>prefix-list\s\S+\s(in|out))*
-                    $""",
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                (\sroute-map\s(?P<route_map>\S+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} default-originate"
+            "{{ (' route-map' + default_originate.route_map) if default_originate.route_map is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "default-originate": {"route_map": "{{ route_map }}"}
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "description",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdescription\s(?P<description>\S.+)$""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} description {{ description }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "description": "{{ description }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "disable_connected_check",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<disable_connected_check>disable-connected-check)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} disable-connected-check",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "disable_connected_check": "{{ not not disable_connected_check }}"
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "ebgp_multihop",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<enable>ebgp_multihop)
+                (\s(?P<hop_count>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ebgp-multihop"
+            "{{ (' ' + hop_count|string) if hop_count is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "ebgp_multihop": {
+                                    "enable": "{{ not not enable }}",
+                                    "hop_count": "{{ hop_count }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "distribute_list",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdistribute-list
+                (\s(?P<acl>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} distribute-list"
+            "{{ (' ' + distribute_list.acl) if distribute_list.acl is defined else '' }}"
+            "{{ (' in') if distribute_list.in|d(False) else '' }}"
+            "{{ (' out') if distribute_list.out|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "distribute_list": {
+                                    "acl": "{{ acl }}",
+                                    "in": "{{ not not in }}",
+                                    "out": "{{ not not out }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "dmzlink_bw",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sdmzlink-bw
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' dmzlink-bw') if dmzlink_bw|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {"neighbors": {"{{ neighbor_address }}": {"dmzlink_bw": True}}}
+                }
+            },
+        },
+        {
+            "name": "filter_list",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sfilter-list
+                (\s(?P<acl>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} filter-list"
+            "{{ (' ' + filter_list.path_acl) if filter_list.path_acl is defined else '' }}"
+            "{{ (' in') if filter_list.in|d(False) else '' }}"
+            "{{ (' out') if filter_list.out|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "filter_list": {
+                                    "path_acl": "{{ acl }}",
+                                    "in": "{{ not not in }}",
+                                    "out": "{{ not not out }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "fall_over.bfd",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sfall-over
+                \s(?P<set>bfd)
+                (\s(?P<multi_hop>multi-hop))?
+                (\s(?P<single_hop>single-hop))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} fall-over"
+            "{{ (' bfd') if fall_over.bfd.set is defined else '' }}"
+            "{{ (' multi-hop') if fall_over.bfd.multi_hop is defined else '' }}"
+            "{{ (' single-hop') if fall_over.bfd.single_hop is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "fall_over": {
+                                    "bfd": {
+                                        "set": "{{ not not set }}",
+                                        "multi_hop": "{{ not not multi_hop }}",
+                                        "single_hop": "{{ not not single_hop }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "fall_over.route_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
+                \s(?P<route_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} route-map {{ fall_over.route_map }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "fall_over": {"route_map": "{{ not not route_map }}"}
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "ha_mode",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sha-mode
+                \s(?P<set>graceful-restart)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ha-mode"
+            "{{ (' graceful-restart') if ha_mode.set is defined else '' }}"
+            "{{ (' disable') if ha_mode.disable is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "ha_mode": {
+                                    "set": "{{ not not set }}",
+                                    "disable": "{{ not not disable }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "inherit",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s(?P<inherit>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} inherit peer-session"
+            "{{ (' ' + inherit) if inherit is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"inherit": "{{ inherit }}"}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "internal_vpn_client",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sinternal-vpn-client
+                \s(?P<inherit>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} internal-vpn-client",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"internal_vpn_client": True}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "local_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
+                (\s(?P<number>\S+))?
+                (\s(?P<dual_as>dual-as))?
+                (\s(?P<no_prepend>no-prepend))?
+                (\s(?P<replace_as>replace-as))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} local-as"
+            "{{ (' ' + local_as.number|string) if local_as.number is defined else '' }}"
+            "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
+            "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
+            "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "local_as": {
+                                    "set": "{{ not not local_as }}",
+                                    "number": "{{ number }}",
+                                    "dual_as": "{{ not not dual_as }}",
+                                    "no_prepend": {
+                                        "set": "{{ not not no_prepend }}",
+                                        "replace_as": "{{ not not replace_as }}",
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "remote_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
+                (\s(?P<number>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} remote-as"
+            "{{ (' ' + remote_as|string) if remote_as is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"remote_as": "{{ number }}"}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "log_neighbor_changes",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<set>log-neighbor-changes)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' log-neighbor-changes') if log_neighbor_changes.set is defined else '' }}"
+            "{{ (' disable') if log_neighbor_changes.disable is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "log_neighbor_changes": {
+                                    "set": "{{ not not set }}",
+                                    "disable": "{{ not not disable }}",
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "maximum_prefix",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
+                (\s(?P<max_no>\d+))
+                (\s(?P<threshold_val>\d+))?
+                (\srestart(?P<restart>\d+))?
+                (\s(?P<warning_only>warning-only))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} maximum-prefix"
+            "{{ (' ' + maximum_prefix.max_no|string) if maximum_prefix.max_no is defined else '' }}"
+            "{{ (' ' + maximum_prefix.threshold_val|string) if maximum_prefix.threshold_val is defined else '' }}"
+            "{{ (' restart ' + maximum_prefix.restart|string) if maximum_prefix.restart is defined else '' }}"
+            "{{ (' warning-only') if maximum_prefix.warning_only|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "maximum_prefix": {
+                                    "number": "{{ max_no }}",
+                                    "threshold_value": "{{ threshold_val }}",
+                                    "restart": "{{ restart }}",
+                                    "warning_only": "{{ not not warning_only }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "nexthop_self.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-self') if nexthop_self.set|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"nexthop_self": {"set": True}}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "nexthop_self.all",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-self all') if nexthop_self.all|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"nexthop_self": {"all": True}}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "next_hop_unchanged.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-unchanged') if next_hop_unchanged.set|d(False) else ''}}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"next_hop_unchanged": {"set": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "next_hop_unchanged.allpaths",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged\sallpaths
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-unchanged allpaths') if next_hop_unchanged.allpaths|d(False) else ''}}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"next_hop_unchanged": {"allpaths": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "password_options",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\spassword
+                \s(?P<encryption>\d+)
+                (\s(?P<pass_key>.$))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} password"
+            "{{ (' '+ password_options.encryption|string) if password_options.encryption is defined else '' }}"
+            "{{ (' '+ password_options.pass_key) if password_options.pass_key is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "password_options": {
+                                    "encryption": "{{ encryption }}",
+                                    "pass_key": "{{ pass_key }}",
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "path_attribute.discard",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\sdiscard
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} path-attribute discard"
+            "{{ (' ' + type) if path_attribute.discard.type is defined else '' }}"
+            "{{ (' range '+ path_attribute.discard.range.start|string) if spath_attribute.discard.range.start is defined else '' }}"
+            "{{ (' '+ path_attribute.discard.range.end|string) if spath_attribute.discard.range.end is defined else '' }}"
+            "{{ (' in') if path_attribute.discard.in|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "path_attribute": {
+                                    "discard": {
+                                        "type": "{{ type }}",
+                                        "range": {"start": "{{ start }}", "end": "{{ end }}"},
+                                        "in": "{{ not not in }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "path_attribute.treat_as_withdraw",
+            "getval": re.compile(
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\streat-as-withdraw
+                (\s(?P<type>\d+))?
+                (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
+                (\s(?P<in>in))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} path-attribute treat-as-withdraw"
+            "{{ (' ' + type) if path_attribute.treat_as_withdraw.type is defined else '' }}"
+            "{{ (' range '+ path_attribute.treat_as_withdraw.range.start|string) if spath_attribute.treat_as_withdraw.range.start is defined else '' }}"
+            "{{ (' '+ path_attribute.treat_as_withdraw.range.end|string) if spath_attribute.treat_as_withdraw.range.end is defined else '' }}"
+            "{{ (' in') if path_attribute.treat_as_withdraw.in|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "path_attribute": {
+                                    "treat_as_withdraw": {
+                                        "type": "{{ type }}",
+                                        "range": {"start": "{{ start }}", "end": "{{ end }}"},
+                                        "in": "{{ not not in }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "prefix_lists",
+            "getval": re.compile(
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sprefix-list
+                (\s(?P<prefix_list>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_neighbor_af_prefix_lists,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [
+                    UNIQUE_ADD: {
+                        "neighbors": [
                             {
-                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
-                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
+                                "neighbor_address": "{{ neighbor_address }}",
                                 "prefix_lists": [
                                     {
-                                        "name": "{{ prefix_list.split(' ')[1] if prefix_list is defined }}",
-                                        "in": "{{ True if prefix_list is defined and 'in' in prefix_list }}",
-                                        "out": "{{ True if prefix_list is defined and 'out' in prefix_list }}",
+                                        "name": "{{ prefix_list }}",
+                                        "in": "{{ not not in }}",
+                                        "out": "{{ not not out }}",
                                     }
                                 ],
                             }
@@ -1545,28 +2121,50 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "neighbor.route_maps",
+            "name": "peer_group",
             "getval": re.compile(
-                r"""\s*neighbor*
-                    \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<route_map>route-map\s\S+\s(in|out))*
-                    $""",
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)
+                \speer-group\s(?P<peer_group>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' peer-group ' + peer_group) if peer_group|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "peer_group": "{{ peer_group }}",
+                                "neighbor_address": "{{ neighbor_address }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_maps",
+            "getval": re.compile(
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
+                (\s(?P<route_map>\S+))
+                (\s(?P<in>in))?
+                (\s(?P<out>out))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_neighbor_af_route_maps,
             "result": {
                 "address_family": {
-                    "{{ afi + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [
+                    UNIQUE_ADD: {
+                        "neighbors": [
                             {
-                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
-                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
+                                "neighbor_address": "{{ neighbor_address }}",
                                 "route_maps": [
                                     {
-                                        "name": "{{ route_map.split(' ')[1] if route_map is defined }}",
-                                        "in": "{{ True if route_map is defined and 'in' in route_map.split(' ') }}",
-                                        "out": "{{ True if route_map is defined and 'out' in route_map.split(' ') }}",
+                                        "name": "{{ route_map }}",
+                                        "in": "{{ not not in }}",
+                                        "out": "{{ not not out }}",
                                     }
                                 ],
                             }
@@ -1576,284 +2174,537 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "neighbor",
+            "name": "remove_private_as.set",
             "getval": re.compile(
-                r"""\s*neighbor*
-                    \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<activate>activate)*
-                    \s*(?P<additional_paths>additional-paths\s(disable|receive|send))*
-                    \s*(?P<advertise>advertise\sadditional-paths\sall\sbest\s\d+\sgroup-best|advertise\sadditional-paths\sbest\s\d+\sgroup-best|advertise\sadditional-paths\sall\sgroup-best|advertise\sbest-external|advertise\sdiverse-path\sbackup\smpath|advertise\sdiverse-path\sbackup|advertise\sdiverse-path\smpath)*
-                    \s*(?P<advertisement_interval>advertisement-interval\s\d+)*
-                    \s*(?P<aigp>aigp\ssend\scost-community\s\d+\spoi\sigp-cost\stransitive|aigp\ssend\scost-community\s\d+\spoi\spre-bestpath\stransitive|aigp\ssend\smed|aigp)*
-                    \s*(?P<allow_policy>allow-policy)*
-                    \s*(?P<allowas_in>allowas-in\s\d+)*
-                    \s*(?P<as_override>as-override)*
-                    \s*(?P<bmp_activate>bmp-activate\s(all|server\s\d+))*
-                    \s*(?P<capability>capability\s(both|receive|send))*
-                    \s*(?P<cluster_id>cluster-id\s\S+)*
-                    \s*(?P<default_originate>default-originate\sroute-map|default-originate)*
-                    \s*(?P<description>description\s\S.+)*
-                    \s*(?P<disable_connected_check>disable-connected-check)*
-                    \s*(?P<distribute_list>distribute-list\s\d+\s(in|out))*
-                    \s*(?P<dmzlink_bw>dmzlink-bw)*
-                    \s*(?P<ebgp_multihop>(ebgp-multihop\s\d+|ebgp-multihop))*
-                    \s*(?P<fall_over>fall-over\s((bfd\s(single-hop|multi-hop)|bfd)|route-map\s\S+))*
-                    \s*(?P<filter_list>filter-list\s\d+\s(in|out))*
-                    \s*(?P<ha_mode>ha-mode\s(graceful-restart\sdisable|graceful-restart))*
-                    \s*(?P<inherit>inherit\speer-session\s\S+)*
-                    \s*(?P<local_as>(local-as\s\d+\s(dual-as|(no-prepend\sreplace-as|no-prepend))|local-as|local-as\s\d+))*
-                    \s*(?P<log_neighbor_changes>log-neighbor-changes\sdisable|log-neighbor-changes)*
-                    \s*(?P<maximum_prefix>maximum-prefix\s(\d+\s\d+\s(restart\s\d+|warning-only)|\d+\s(restart\s\d+|warning-only)))*
-                    \s*(?P<nexthop_self>next-hop-self\sall|next-hop-self)*
-                    \s*(?P<next_hop_unchanged>next-hop-unchanged\sallpaths|next-hop-unchanged)*
-                    \s*(?P<password>password\s\S+)*
-                    \s*(?P<path_attribute>path-attribute\s(discard\srange\s\d+\s\d+\sin|discard\s\d+\sin)|path-attribute\s(treat-as-withdraw\srange\s\d+\s\d+\sin|treat-as-withdraw\s\d+\sin))*
-                    \s*(?P<peer_group>peer-group\s\S+|peer-group)*
-                    \s*(?P<remove_private_as>remove-private-as\sall\sreplace-as|remove-private-as\sall|remove-private-as)*
-                    \s*(?P<remote_as>remote-as\s\d+)*
-                    \s*(?P<route_reflector_client>route-reflector-client)*
-                    \s*(?P<route_server_client>route-server-client\scontext\s\S+|route-server-client)*
-                    \s*(?P<send_community>send-community\s(both|extended|standard)|send-community)*
-                    \s*(?P<soft_reconfiguration>soft-reconfiguration\sinbound)*
-                    \s*(?P<timers>(timers\s\d+\s\d+\s\d+|timers\s\d+\s\d+))*
-                    \s*(?P<transport>(transport\s(connection-mode\sactive|connection-mode\spassive)|transport\smulti-session|transport\s(path-mtu-discovery\sdisable|path-mtu-discovery)))*
-                    \s*(?P<ttl_security>ttl-security\shops\s\d+)*
-                    \s*(?P<unsuppress_map>unsuppress-map\s\S+)*
-                    \s*(?P<version>version\s\d+)*
-                    \s*(?P<weight>weight\s\d+)*
-                    $""",
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af_neighbor,
-            "compval": "neighbor",
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as') if remove_private_as.set|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [
-                            {
-                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
-                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
-                                "activate": "{{ True if activate is defined }}",
-                                "additional_paths": {
-                                    "disable": "{{ True if additional_paths is defined and 'disable' in additional_paths }}",
-                                    "receive": "{{ True if additional_paths is defined and 'receive' in additional_paths }}",
-                                    "send": "{{ True if additional_paths is defined and 'send' in additional_paths }}",
-                                },
-                                "advertise": {
-                                    "additional_paths": {
-                                        "all": "{{ True if advertise is defined and 'additional-paths' in advertise and 'all' in advertise }}",
-                                        "best": "{{ advertise.split('best ')[1].split(' ')[0] if advertise is defined and\
-                                            'additional-paths' in advertise and 'best' in advertise }}",
-                                        "group_best": "{{ True if advertise is defined and 'additional-paths' in advertise and\
-                                            'group-best' in advertise }}",
-                                    },
-                                    "best_external": "{{ True if advertise is defined and 'best-external' in advertise }}",
-                                    "diverse_path": {
-                                        "backup": "{{ True if advertise is defined and 'diverse-path' in advertise and 'backup' in advertise }}",
-                                        "mpath": "{{ True if advertise is defined and 'diverse-path' in advertise and 'mpath' in advertise }}",
-                                    },
-                                },
-                                "advertisement_interval": "{{ advertisement_interval.split('advertisement-interval ')[1] if advertisement_interval is defined\
-                                    }}",
-                                "aigp": {
-                                    "enable": "{{ True if aigp is defined and aigp.split(' ')|length == 1 }}",
-                                    "send": {
-                                        "cost_community": {
-                                            "id": "{{ aigp.split('send cost-community ')[1].split(' ')[0] if aigp is defined and\
-                                                'send cost-community' in aigp }}",
-                                            "poi": {
-                                                "igp_cost": "{{ True if aigp is defined and 'poi igp-cost' in aigp }}",
-                                                "pre_bestpath": "{{ True if aigp is defined and 'poi pre-bestpath' in aigp }}",
-                                                "transitive": "{{ True if aigp is defined and 'transitive' in aigp }}",
-                                            },
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"remove_private_as": {"set": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "remove_private_as.all",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sall
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as all') if remove_private_as.all|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"remove_private_as": {"all": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "remove_private_as.replace_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sreplace-as
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as replace-as') if remove_private_as.replace_as|d(False) else ''}}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"remove_private_as": {"replace_as": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_reflector_client",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-reflector-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' route-reflector-client') if route_reflector_client|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "route_reflector_client": True,
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "route_server_client",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' route-server-client') if route_server_client|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "route_server_client": True,
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.set",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "{{ ('neighbor ' + neighbor_address  + ' send-community') if send_community.set|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"send_community": {"set": True}}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.both",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sboth
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' both') if send_community.both|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"send_community": {"both": True}}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.extended",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sextended
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' extended') if send_community.extended|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"send_community": {"extended": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "send_community.standard",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sstandard
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} send-community"
+            "{{ (' standard') if send_community.standard|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"send_community": {"standard": True}}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "shutdown",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sshutdown
+                (\sgraceful(?P<graceful>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' shutdown') if shutdown.set is defined else '' }}"
+            "{{ (' graceful '+ shutdown.graceful|string) if shutdown.graceful is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "shutdown": {"set": True, "graceful": "{{ graceful }}"}
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "slow_peer.detection",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
+                (\s(?P<enable>enable))?
+                (\s(?P<disable>disable))?
+                (\sthreshold\s(?P<threshold>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} slow-peer detection"
+            "{{ (' enable') if slow_peer.detection.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer.detection.disable|d(False) else '' }}"
+            "{{ (' threshold ' + slow_peer.detection.threshold|string) if slow_peer.detection.threshold is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "slow_peer": {
+                                    "detection": {
+                                        "enable": "{{ not not enable }}",
+                                        "disable": "{{ not not disable }}",
+                                        "threshold": "{{ threshold }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "slow_peer.split_update_group",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
+                (\s(?P<static>static))?
+                (\s(?P<dynamic>dynamic))?
+                (\s(?P<disable>disable))?
+                (\s(?P<permanent>permanent))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} slow-peer split-update-group"
+            "{{ (' static') if slow_peer.split_update_group.static|d(False) else '' }}"
+            "{{ (' dynamic') if slow_peer.split_update_group.dynamic.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer.split_update_group.dynamic.disable|d(False) else '' }}"
+            "{{ (' permanent') if slow_peer.split_update_group.dynamic.permanent|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "slow_peer": {
+                                    "split_update_group": {
+                                        "static": "{{ not not static }}",
+                                        "dynamic": {
+                                            "enable": "{{ not not dynamic }}",
+                                            "disable": "{{ not not disable }}",
+                                            "permanent": "{{ not not permanent }}",
                                         },
-                                        "med": "{{ True if aigp is defined and 'send med' in aigp }}",
-                                    },
-                                },
-                                "allow_policy": "{{ True if allow_policy is defined }}",
-                                "allowas_in": "{{ allowas_in.split('allowas-in ')[1] if allowas_in is defined }}",
-                                "as_override": "{{ True if as_override is defined }}",
-                                "bmp_activate": {
-                                    "all": "{{ True if bmp_activate is defined and 'all' in bmp_activate }}",
-                                    "server": "{{ bmp_activate.split('server ')[1] if bmp_activate is defined and 'server' in bmp_activate }}",
-                                },
-                                "capability": {
-                                    "both": "{{ True if capability is defined and 'both' in capability }}",
-                                    "receive": "{{ True if capability is defined and 'receive' in capability }}",
-                                    "send": "{{ True if capability is defined and 'send' in capability }}",
-                                },
-                                "cluster_id": "{{ cluster_id.split('cluster-id ')[1] if bmp_activate is defined }}",
-                                "default_originate": {
-                                    "set": "{{ True if default_originate is defined and default_originate.split(' ')|length == 1 }}",
-                                    "route_map": "{{ default_originate.split(' ')[1] if default_originate is defined and\
-                                        default_originate.split(' ')|length > 1 }}",
-                                },
-                                "description": "{{ description.split('description ')[1] if description is defined }}",
-                                "distribute_list": {
-                                    "acl": "{{ distribute_list.split(' ')[1] if distribute_list is defined }}",
-                                    "in": "{{ True if distribute_list is defined and 'in' in distribute_list }}",
-                                    "out": "{{ True if distribute_list is defined and 'out' in distribute_list }}",
-                                },
-                                "disable_connected_check": "{{ True if disable_connected_check is defined }}",
-                                "dmzlink_bw": "{{ True if dmzlink_bw is defined }}",
-                                "ebgp_multihop": {
-                                    "enable": "{{ True if ebgp_multihop is defined and ebgp_multihop.split(' ')|length == 1 }}",
-                                    "hop_count": "{{ ebgp_multihop.split(' ')[1] if ebgp_multihop is defined and len(ebgp_multihop.split(' ')) > 1 }}",
-                                },
-                                "filter_list": {
-                                    "acl": "{{ filter_list.split(' ')[1] if filter_list is defined }}",
-                                    "in": "{{ True if filter_list is defined and 'in' in filter_list }}",
-                                    "out": "{{ True if filter_list is defined and 'out' in filter_list }}",
-                                },
-                                "ha_mode": {
-                                    "set": "{{ True if ha_mode is defined and 'disable' not in ha_mode }}",
-                                    "disable": "{{ True if ha_mode is defined and 'disable' in ha_mode }}",
-                                },
-                                "inherit": "{{ inherit.split('inherit peer-session ')[1] if inherit is defined }}",
-                                "local_as": {
-                                    "set": "{{ True if local_as is defined and local_as.split(' ')|length == 1 }}",
-                                    "number": "{{ local_as.split(' ')[1] if local_as is defined and local_as.split(' ')|length > 1 }}",
-                                    "dual_as": "{{ True if local_as is defined and local_as.split(' ')|length > 2 and 'dual-as' in local_as }}",
-                                    "no_prepend": {
-                                        "set": "{{\
-                                            True if local_as is defined and\
-                                                local_as.split(' ')|length > 2 and 'no-prepend' in local_as and\
-                                                    'replace-as' not in local_as }}",
-                                        "replace_as": "{{ True if local_as is defined and\
-                                            local_as.split(' ')|length > 2 and 'no-prepend' in local_as and 'replace-as' in local_as }}",
-                                    },
-                                },
-                                "log_neighbor_changes": {
-                                    "set": "{{ True if log_neighbor_changes is defined and 'disable' not in log_neighbor_changes }}",
-                                    "disable": "{{ True if log_neighbor_changes is defined and 'disable' in log_neighbor_changes }}",
-                                },
-                                "maximum_prefix": {
-                                    "number": "{{ maximum_prefix.split(' ')[1] if maximum_prefix is defined }}",
-                                    "threshold_value": "{{ maximum_prefix.split(' ')[2] if maximum_prefix is defined and\
-                                        maximum_prefix.split(' ')|length > 3 and maximum_prefix.split(' ')[1] != 'restart' }}",
-                                    "restart": "{{ maximum_prefix.split('restart ')[1] if maximum_prefix is defined and 'restart' in maximum_prefix }}",
-                                    "warning_only": "{{ True if maximum_prefix is defined and 'warning-only' in maximum_prefix }}",
-                                },
-                                "nexthop_self": {
-                                    "set": "{{ True if nexthop_self is defined and nexthop_self.split(' ')|length == 1 }}",
-                                    "all": "{{ True if nexthop_self is defined and nexthop_self.split(' ')|length > 1 }}",
-                                },
-                                "next_hop_unchanged": {
-                                    "set": "{{ True if next_hop_unchanged is defined and next_hop_unchanged.split(' ')|length == 1 }}",
-                                    "allpaths": "{{ True if next_hop_unchanged is defined and next_hop_unchanged.split(' ')|length > 1 }}",
-                                },
-                                "password": "{{ password.split(' ')[1] if password is defined }}",
-                                "path_attribute": {
-                                    "discard": {
-                                        "type": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                            path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                        "range": {
-                                            "start": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
-                                        },
-                                        "in": "{% if path_attribute is defined and 'discard range' in path_attribute and\
-                                            'in' in path_attribute %}{{ True }}{% endif %}",
-                                    },
-                                    "treat_as_withdraw": {
-                                        "type": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                            path_attribute.split(' ')|length <= 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                        "range": {
-                                            "start": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[3] }}{% endif %}",
-                                            "end": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                                path_attribute.split(' ')|length > 5 %}{{ path_attribute.split(' ')[4] }}{% endif %}",
-                                        },
-                                        "in": "{% if path_attribute is defined and 'discard treat-as-withdraw' in path_attribute and\
-                                            'in' in path_attribute %}{{ True }}{% endif %}",
-                                    },
-                                },
-                                "peer_group": "{{ True if peer_group is defined }}",
-                                "remote_as": "{{ remote_as.split('remote-as ')[1] if remote_as is defined }}",
-                                "remove_private_as": {
-                                    "set": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length == 1 }}",
-                                    "all": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
-                                        'all' in remove_private_as }}",
-                                    "replace_as": "{{ True if remove_private_as is defined and remove_private_as.split(' ')|length > 1 and\
-                                        'replace-as' in remove_private_as }}",
-                                },
-                                "route_reflector_client": "{{ True if route_reflector_client is defined }}",
-                                "route_server_client": "{{ True if route_server_client is defined }}",
-                                "send_community": {
-                                    "set": "{{ True if send_community is defined and send_community.split(' ')|length == 1 }}",
-                                    "both": "{{ True if send_community is defined and 'both' in send_community }}",
-                                    "extended": "{{ True if send_community is defined and 'extended' in send_community }}",
-                                    "standard": "{{ True if send_community is defined and 'standard' in send_community }}",
-                                },
-                                "soft_reconfiguration": "{{ True if soft_reconfiguration is defined }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "soft_reconfiguration",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration\sinbound
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' soft-reconfiguration inbound') if soft_reconfiguration|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"soft_reconfiguration": True}}
+                    }
+                }
+            },
+        },
+        {
+            "name": "soo",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\ssoo
+                (\s(?P<soo>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} soo {{ soo }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {"neighbors": {"{{ neighbor_address }}": {"soo": "{{ soo }}"}}}
+                }
+            },
+        },
+        {
+            "name": "timers",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stimers
+                (\s(?P<keepalive>\d+))?
+                (\s(?P<holdtime>\d+))?
+                (\s(?P<min_holdtime>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} timers"
+            "{{ (' ' + timers.keepalive|string) if timers.keepalive is defined else '' }}"
+            "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
+            "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
                                 "timers": {
-                                    "interval": "{{ timers.split(' ')[1] if timers is defined }}",
-                                    "holdtime": "{{ timers.split(' ')[2] if timers is defined }}",
-                                    "min_holdtime": "{{ timers.split(' ')[3] if timers is defined and timers.split(' ')|length > 3 }}",
-                                },
+                                    "keepalive": "{{ keepalive }}",
+                                    "holdtime": "{{ holdtime }}",
+                                    "min_holdtime": "{{ min_holdtime }}",
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "transport.connection_mode",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\sconnection-mode
+                (\s(?P<active>active))?
+                (\s(?P<passive>passive))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport connection-mode"
+            "{{ (' active') if transport.connection_mode.active|d(False) else '' }}"
+            "{{ (' passive') if transport.connection_mode.passive|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
                                 "transport": {
                                     "connection_mode": {
-                                        "active": "{{ True if transport is defined and 'connection-mode active' in transport }}",
-                                        "passive": "{{ True if transport is defined and 'connection-mode passive' in transport }}",
-                                    },
-                                    "multi_session": "{{ True if transport is defined and 'multi-session' in transport }}",
-                                    "path_mtu_discovery": {
-                                        "set": "{{ True if transport is defined and 'path-mtu-discovery' in transport and 'disable' not in transport }}",
-                                        "disable": "{{ True if transport is defined and 'path-mtu-discovery' in transport and 'disable' in transport }}",
-                                    },
-                                },
-                                "ttl_security": "{{ ttl_security.split('ttl-security hops ')[1] if ttl_security is defined }}",
-                                "unsuppress_map": "{{ unsuppress_map.split('unsuppress-map ')[1] if unsuppress_map is defined }}",
-                                "version": "{{ version.split('version ')[1] if version is defined }}",
-                                "weight": "{{ weight.split('weight ')[1] if weight is defined }}",
-                            }
-                        ]
-                    }
-                }
-            },
-        },
-        {
-            "name": "neighbor.slow_peer",
-            "getval": re.compile(
-                r"""\s*neighbor*
-                    \s*(?P<neighbor>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|host\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<slow_peer>slow-peer\s(detection.*|split-update-group.*))*
-                    $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_neighbor_af_slow_peer,
-            "compval": "neighbor",
-            "result": {
-                "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "neighbor": [
-                            {
-                                "address": "{{ neighbor if ':' not in neighbor and '.' in neighbor }}",
-                                "ipv6_adddress": "{{ neighbor if ':' in neighbor and '.' not in neighbor }}",
-                                "tag": "{{ neighbor if ':' not in neighbor and '.' not in neighbor }}",
-                                "slow_peer": [
-                                    {
-                                        "detection": {
-                                            "enable": "{{ True if slow_peer is defined and 'detection' in slow_peer and\
-                                                'disable' not in slow_peer and 'threshold' not in slow_peer }}",
-                                            "disable": "{{ True if slow_peer is defined and 'disable' in slow_peer }}",
-                                            "threshold": "{{ slow_peer.split('threshold ')[1] if slow_peer is defined and 'threshold' in slow_peer }}",
-                                        },
-                                        "split_update_group": {
-                                            "dynamic": {
-                                                "enable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
-                                                    'disable' not in slow_peer and 'threshold' not in slow_peer }}",
-                                                "disable": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
-                                                    'disable' in slow_peer }}",
-                                                "permanent": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and\
-                                                    'permanent' in slow_peer }}",
-                                            },
-                                            "static": "{{ True if slow_peer is defined and 'split-update-group' in slow_peer and 'static' in slow_peer }}",
-                                        },
+                                        "active": "{{ not not active }}",
+                                        "passive": "{{ not not passive }}",
                                     }
-                                ],
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "transport.multi_session",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\smulti-session
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport multi-session",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "transport": {"multi_session": True},
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "transport.path_mtu_discovery",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\spath-mtu-discovery
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} transport"
+            "{{ (' path-mtu-discovery') if transport.path_mtu_discovery.set|d(False) else '' }}"
+            "{{ (' disable') if transport.path_mtu_discovery.disable|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "transport": {
+                                    "path_mtu_discovery": {
+                                        "set": True,
+                                        "disable": "{{ not not disable }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "ttl_security",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sttl-security
+                (\shops(?P<ttl_security>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} ttl-security"
+            "{{ (' hops '+ ttl_security|string) if ttl_security is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"ttl_security": "{{ ttl_security }}"}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "unsuppress_map",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sunsuppress-map
+                (\s(?P<unsuppress_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} unsuppress-map"
+            "{{ (' ' + unsuppress_map) if unsuppress_map is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {"unsuppress_map": "{{ unsuppress_map }}"}
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "version",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sversion
+                (\s(?P<version>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} version"
+            "{{ (' ' + version|string) if version is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "neighbor_address": "{{ neighbor_address }}",
+                                "version": "{{ version }}",
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "weight",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)\sweight
+                (\s(?P<weight>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} weight"
+            "{{ (' ' + weight|string) if weight is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_ADD: {
+                        "neighbors": {"{{ neighbor_address }}": {"weight": "{{ weight }}"}}
+                    }
+                }
+            },
+        },
+        # neighbors end
+        {
+            "name": "networks",
+            "getval": re.compile(
+                r"""
+                \snetwork
+                (\s(?P<address>\S+))?
+                (\smask\s(?P<netmask>\S+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                (\s(?P<backdoor>backdoor))?
+                (\s(?P<evpn>evpn))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "network"
+            "{{ (' ' + address) if address is defined else '' }}"
+            "{{ (' mask ' + netmask) if netmask is defined else '' }}"
+            "{{ (' route-map ' + route_map) if route_map is defined else '' }}"
+            "{{ (' backdoor' ) if backdoor|d(False) else '' }}"
+            "{{ (' evpn' ) if evpn|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
+                        "networks": [
+                            {
+                                "address": "{{ address }}",
+                                "netmask": "{{ netmask }}",
+                                "route_map": "{{ route_map }}",
+                                "evpn": "{{ not not evpn }}",
+                                "backdoor": "{{ not not backdoor }}",
                             }
                         ]
                     }
@@ -1861,28 +2712,22 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "network",
+            "name": "table_map",
             "getval": re.compile(
-                r"""\s*network*
-                    \s*(?P<address>(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+|\S+)*
-                    \s*(?P<mask>mask\s(?:[0-9]{1,3}\.){3}[0-9]{1,3})*
-                    \s*(?P<backdoor>backdoor)*
-                    \s*(?P<route_map>route-map\s\S+)*
-                    $""",
+                r"""
+                \stable-map
+                (\s(?P<name>\S+))?
+                (\s(?P<filter>filter))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af_network,
+            "setval": "table-map"
+            "{{ (' ' + name) if name is defined else '' }}"
+            "{{ (' filter' ) if filter|d(False) else '' }}",
             "result": {
                 "address_family": {
                     "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "network": [
-                            {
-                                "address": "{{ address if address is defined }}",
-                                "mask": "{{ mask.split('mask ')[1] if mask is defined }}",
-                                "backdoor": "{{ True if backdoor is defined }}",
-                                "route_map": "{{ route_map.split('route-map ')[1] if route_map is defined }}",
-                            }
-                        ]
+                        "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"}
                     }
                 }
             },
@@ -1890,20 +2735,20 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "snmp",
             "getval": re.compile(
-                r"""\s*snmp*
-                    \s*(?P<context>context\s\S+)*
-                    \s*(?P<community>community\s\S+)*
-                    \s*(?P<user>user\s\S+)*
-                    \s*(?P<ro>ro|RO)*
-                    \s*(?P<rw>rw|RW)*
-                    \s*(?P<credential>credential\s\S+)*
-                    \s*(?P<encrypted>encrypted)*
-                    \s*(?P<auth>auth)*
-                    \s*(?P<md5>md5\s\S+)*
-                    \s*(?P<sha>sha\s\S+)*
-                    \s*(?P<priv>priv\s(3des\s\S+|aes\s128\s\S+|aes\s192\s\S+|aes\s256\s\S+|des\s\S+))*
-                    \s*(?P<access>access\s(ipv6\s\S+|\S+))*
-                    \s*(?P<acl>ipv6\s\S+|\S+)*
+                r"""\s+snmp
+                    (\s(?P<context>\S+))?
+                    (\scontext\s(?P<community>community\s\S+))?
+                    (\suser\s(?P<user>\S+))?
+                    (\s(?P<ro>ro|RO))?
+                    (\s(?P<rw>rw|RW))?
+                    (\scredential\s(?P<credential>\S+))?
+                    (\s(?P<encrypted>encrypted))?
+                    (\s(?P<auth>auth))?
+                    (\smd5\s(?P<md5>\S+))?
+                    (\ssha\s(?P<sha>\S+))?
+                    (\spriv\s(?P<priv>(3des\s\S+|aes\s128\s\S+|aes\s192\s\S+|aes\s256\s\S+|des\s\S+)))?
+                    (\saccess\s(?P<access>(ipv6\s\S+|\S+)))?
+                    (\sipv6\s(?P<acl>\S+|\S+))?
                     $""",
                 re.VERBOSE,
             ),
@@ -1944,27 +2789,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "encrypted": "{{ True if encrypted is defined }}",
                                 },
                             }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "table_map",
-            "getval": re.compile(
-                r"""\s*table-map*
-                    \s*(?P<name>\S+)*
-                    \s*(?P<filter>filter)*
-                    $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_af_table_map,
-            "result": {
-                "address_family": {
-                    "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}": {
-                        "table_map": {
-                            "name": "{{ name if name is defined }}",
-                            "filter": "{{ True if filter is defined }}",
                         }
                     }
                 }
