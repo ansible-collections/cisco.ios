@@ -46,7 +46,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of ACL options.</div>
+                        <div>A list of ACL configuration options.</div>
                 </td>
             </tr>
                                 <tr>
@@ -63,7 +63,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A list of Access Control Lists (ACL).</div>
+                        <div>A list of Access Control Lists (ACL) attributes.</div>
                 </td>
             </tr>
                                 <tr>
