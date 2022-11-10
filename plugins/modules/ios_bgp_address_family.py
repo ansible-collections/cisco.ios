@@ -99,14 +99,23 @@ options:
                       all:
                         description: Select all available paths
                         type: bool
+                      backup:
+                        description: Select backup path
+                        type: bool
                       best:
                         description: Select best N paths (2-3).
                         type: int
+                      best_external:
+                        description: Select best-external path
+                        type: bool
                       group_best:
                         description: Select group-best path
                         type: bool
                   send:
                     description: Send additional paths to neighbors
+                    type: bool
+                  install:
+                    description: Additional paths to install into RIB
                     type: bool
               aggregate_timer:
                 description:
@@ -694,6 +703,9 @@ options:
               peer_group:
                 description: Member of the peer-group
                 type: bool
+              peer_group_name:
+                description: Member of the peer-group
+                type: str
               prefix_list:
                 description:
                   - Filter updates to/from this neighbor
@@ -936,7 +948,8 @@ options:
                 description: Route-map to modify the attributes
                 type: str
           redistribute:
-            description: Redistribute information from another routing protocol
+            description:
+            - Redistribute information from another routing protocol
             type: list
             elements: dict
             suboptions:
@@ -1027,6 +1040,9 @@ options:
                 description: Locator ID Separation Protocol (LISP)
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1037,6 +1053,9 @@ options:
                 description: Mobile routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1047,6 +1066,9 @@ options:
                 description: On Demand stub Routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1124,6 +1146,9 @@ options:
                 description: Routing Information Protocol (RIP)
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1134,6 +1159,9 @@ options:
                 description: Static routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   clns:
                     description: Redistribution of OSI static routes
                     type: bool
