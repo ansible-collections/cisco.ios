@@ -2800,7 +2800,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "application",
             "getval": re.compile(
                 r"""
-                \sredistribute\sapplication\s(?P<name>\S+)
+                \s+redistribute\sapplication\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2830,7 +2830,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp",
             "getval": re.compile(
                 r"""
-                \sredistribute\sbgp\s(?P<name>\S+)
+                \s+redistribute\sbgp\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2860,7 +2860,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "connected",
             "getval": re.compile(
                 r"""
-                \sredistribute\sconnected
+                \s+redistribute\sconnected
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2890,7 +2890,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "eigrp",
             "getval": re.compile(
                 r"""
-                \sredistribute\seigrp\s(?P<name>\S+)
+                \s+redistribute\seigrp\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2920,7 +2920,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "isis",
             "getval": re.compile(
                 r"""
-                \sredistribute\sisis\s(?P<name>\S+)
+                \s+redistribute\sisis\s(?P<name>\S+)
                 (\s(?P<clns>clns))?
                 (\s(?P<ip>ip))?
                 (\smetric\s(?P<metric>\d+))?
@@ -2956,7 +2956,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "iso_igrp",
             "getval": re.compile(
                 r"""
-                \sredistribute\siso-igrp\s(?P<name>\S+)
+                \s+redistribute\siso-igrp\s(?P<name>\S+)
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
                 re.VERBOSE,
@@ -2978,7 +2978,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "lisp",
             "getval": re.compile(
                 r"""
-                \sredistribute\slisp
+                \s+redistribute\slisp
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -3008,7 +3008,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "mobile",
             "getval": re.compile(
                 r"""
-                \sredistribute\smobile
+                \s+redistribute\smobile
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -3038,7 +3038,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "odr",
             "getval": re.compile(
                 r"""
-                \sredistribute\sodr
+                \s+redistribute\sodr
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -3068,7 +3068,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "ospf",
             "getval": re.compile(
                 r"""
-                \sredistribute\sospf\s(?P<process_id>\S+)
+                \s+redistribute\sospf\s(?P<process_id>\S+)
                 (\s(?P<type_1>1))?
                 (\s(?P<type_2>2))?
                 (\s(?P<external>external))?
@@ -3118,7 +3118,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "ospfv3",
             "getval": re.compile(
                 r"""
-                \sredistribute\sospfv3\s(?P<process_id>\S+)
+                \s+redistribute\sospfv3\s(?P<process_id>\S+)
                 (\s(?P<type_1>1))?
                 (\s(?P<type_2>2))?
                 (\s(?P<external>external))?
@@ -3165,7 +3165,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "rip",
             "getval": re.compile(
                 r"""
-                \sredistribute\srip
+                \s+redistribute\srip
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -3195,7 +3195,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "static",
             "getval": re.compile(
                 r"""
-                \sredistribute\sstatic
+                \s+redistribute\sstatic
                 (\s(?P<clns>clns))?
                 (\s(?P<ip>ip))?
                 (\smetric\s(?P<metric>\d+))?
@@ -3231,7 +3231,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "vrf",
             "getval": re.compile(
                 r"""
-                \sredistribute\svrf
+                \s+redistribute\svrf
                 (\s(?P<name>\S+))?
                 (\s(?P<global>global))?
                 $""",
