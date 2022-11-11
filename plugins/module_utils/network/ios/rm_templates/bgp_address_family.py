@@ -692,11 +692,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
+<<<<<<< Updated upstream
                     UNIQUE_AFI: {
                         "afi": "{{ afi }}",
                         "safi": "{{ safi }}",
                         "vrf": "{{ vrf }}",
                     },
+=======
+                    UNIQUE_AFI: {"afi": "{{ afi }}", "safi": "{{ safi }}", "vrf": "{{ vrf }}"},
+>>>>>>> Stashed changes
                 },
             },
             "shared": True,
@@ -798,6 +802,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select install",
             "result": {
+<<<<<<< Updated upstream
                 "address_family": {
                     UNIQUE_AFI: {
                         "bgp": {
@@ -807,6 +812,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         },
                     },
                 },
+=======
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"install": True}}}},
+>>>>>>> Stashed changes
             },
         },
         {
@@ -818,6 +826,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select receive",
             "result": {
+<<<<<<< Updated upstream
                 "address_family": {
                     UNIQUE_AFI: {
                         "bgp": {
@@ -827,6 +836,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         },
                     },
                 },
+=======
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"receive": True}}}},
+>>>>>>> Stashed changes
             },
         },
         {
@@ -838,6 +850,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select send",
             "result": {
+<<<<<<< Updated upstream
                 "address_family": {
                     UNIQUE_AFI: {
                         "bgp": {
@@ -847,6 +860,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         },
                     },
                 },
+=======
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"send": True}}}},
+>>>>>>> Stashed changes
             },
         },
         {
@@ -2754,7 +2770,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     (\s(?P<encrypted>encrypted))?
                     (\sauth\smd5\s(?P<md5>\S+))?
                     (\sauth\ssha\s(?P<sha>\S+))?
-                    (\spriv\s3des\s(?P<3des>\S+))?
+                    (\spriv\s3des\s(?P<s3des>\S+))?
                     (\spriv\saes\s128\s(?P<a>\S+))?
                     (\spriv\saes\s192\s(?P<b>\S+))?
                     (\spriv\saes\s256\s(?P<c>\S+))?
@@ -2773,16 +2789,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "name": "{{ context }}",
                                 "user": {
                                     "name": "{{ user }}",
-                                    "access": {
-                                        "acl": "{{ acl }}",
-                                        "ipv6": "{{ aclv6 }}",
-                                    },
-                                    "auth": {
-                                        "md5": "{{ md5 }}",
-                                        "sha": "{{ sha }}",
-                                    },
+                                    "access": {"acl": "{{ acl }}", "ipv6": "{{ aclv6 }}"},
+                                    "auth": {"md5": "{{ md5 }}", "sha": "{{ sha }}"},
                                     "priv": {
-                                        "3des": "{{ 3des }}",
+                                        "3des": "{{ s3des }}",
                                         "aes": {
                                             "128": "{{ a }}",
                                             "192": "{{ b }}",
