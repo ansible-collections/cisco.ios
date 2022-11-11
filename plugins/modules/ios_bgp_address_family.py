@@ -2250,7 +2250,6 @@ EXAMPLES = """
 
 """
 
-"""
 
 RETURN = """
 before:
@@ -2315,6 +2314,7 @@ import debugpy
 
 debugpy.listen(3000)
 debugpy.wait_for_client()
+
 
 def main():
     """
