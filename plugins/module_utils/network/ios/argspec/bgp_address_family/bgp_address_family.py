@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -28,8 +29,7 @@ The arg spec for the ios_bgp_address_family module
 
 
 class Bgp_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bgp_address_family module
-    """
+    """The arg spec for the ios_bgp_address_family module"""
 
     argument_spec = {
         "config": {
@@ -725,7 +725,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "table_map": {
