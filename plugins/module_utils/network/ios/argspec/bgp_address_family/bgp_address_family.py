@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 #############################################
@@ -29,7 +28,8 @@ The arg spec for the ios_bgp_address_family module
 
 
 class Bgp_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bgp_address_family module"""
+    """The arg spec for the ios_bgp_address_family module
+    """
 
     argument_spec = {
         "config": {
@@ -83,11 +83,14 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "all": {"type": "bool"},
+                                                "backup": {"type": "bool"},
                                                 "best": {"type": "int"},
+                                                "best_external": {"type": "bool"},
                                                 "group_best": {"type": "bool"},
                                             },
                                         },
                                         "send": {"type": "bool"},
+                                        "install": {"type": "bool"},
                                     },
                                 },
                                 "aggregate_timer": {"type": "int"},
@@ -161,7 +164,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "neighbor_address": {"type": "str"},
                                 "address": {"type": "str"},
                                 "tag": {"type": "str"},
-                                "ipv6_adddress": {"type": "str", "aliases": ["ipv6_address"]},
+                                "ipv6_address": {"type": "str", "aliases": ["ipv6_adddress"]},
                                 "activate": {"type": "bool"},
                                 "additional_paths": {
                                     "type": "dict",
@@ -177,6 +180,27 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "all": {"type": "bool"},
                                         "best": {"type": "int"},
                                         "group_best": {"type": "bool"},
+                                    },
+                                },
+                                "advertises": {
+                                    "type": "dict",
+                                    "options": {
+                                        "additional_paths": {
+                                            "type": "dict",
+                                            "options": {
+                                                "all": {"type": "bool"},
+                                                "best": {"type": "int"},
+                                                "group_best": {"type": "bool"},
+                                            },
+                                        },
+                                        "best_external": {"type": "bool"},
+                                        "diverse_path": {
+                                            "type": "dict",
+                                            "options": {
+                                                "backup": {"type": "bool"},
+                                                "mpath": {"type": "bool"},
+                                            },
+                                        },
                                     },
                                 },
                                 "advertise_map": {
@@ -378,6 +402,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "peer_group": {"type": "bool"},
+                                "peer_group_name": {"type": "str"},
                                 "prefix_list": {
                                     "type": "dict",
                                     "options": {
@@ -503,13 +528,15 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "weight": {"type": "int"},
                             },
                         },
-                        "network": {
+                        "networks": {
                             "type": "list",
                             "elements": "dict",
+                            "aliases": ["network"],
                             "options": {
                                 "address": {"type": "str"},
                                 "mask": {"type": "str"},
                                 "backdoor": {"type": "bool"},
+                                "evpn": {"type": "bool"},
                                 "route_map": {"type": "str"},
                             },
                         },
@@ -569,6 +596,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "lisp": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "metric": {"type": "int"},
                                         "route_map": {"type": "str"},
                                     },
@@ -576,6 +604,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "mobile": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "metric": {"type": "int"},
                                         "route_map": {"type": "str"},
                                     },
@@ -583,6 +612,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "odr": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "metric": {"type": "int"},
                                         "route_map": {"type": "str"},
                                     },
@@ -627,6 +657,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "rip": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "metric": {"type": "int"},
                                         "route_map": {"type": "str"},
                                     },
@@ -634,6 +665,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "static": {
                                     "type": "dict",
                                     "options": {
+                                        "set": {"type": "bool"},
                                         "clns": {"type": "bool"},
                                         "ip": {"type": "bool"},
                                         "metric": {"type": "int"},
