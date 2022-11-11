@@ -160,7 +160,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "{{ bmp.server_options.address.host }} port-number {{ bmp.server_options.address.port|string }}\nexit-bmp-server-mode",
             "result": {
                 "bmp": {
-                    "server_options": {"address": {"host": "{{ host }}", "port": "{{ port }}"}}
+                    "server_options": {"address": {"host": "{{ host }}", "port": "{{ port }}"}},
                 },
             },
         },
@@ -2395,7 +2395,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address + ' remove-private-as replace-as') if remove_private_as.replace_as|d(False) else ''}}",
             "result": {
                 "neighbors": {
-                    "{{ neighbor_address }}": {"remove_private_as": {"replace_as": True}}
+                    "{{ neighbor_address }}": {"remove_private_as": {"replace_as": True}},
                 },
             },
         },
@@ -2883,7 +2883,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                             "set": True,
                             "metric": "{{ metric }}",
                             "route_map": "{{ route_map }}",
-                        }
+                        },
                     },
                 ],
             },
@@ -2998,7 +2998,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                             "set": True,
                             "metric": "{{ metric }}",
                             "route_map": "{{ route_map }}",
-                        }
+                        },
                     },
                 ],
             },
