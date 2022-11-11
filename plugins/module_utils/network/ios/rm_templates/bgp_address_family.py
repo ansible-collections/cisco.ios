@@ -2733,23 +2733,23 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 }
             },
         },
-        {  # TODO
-            "name": "snmp",
+        {
+            "name": "snmp.context.user",
             "getval": re.compile(
                 r"""\s+snmp
-                    (\s(?P<context>\S+))?
-                    (\scontext\s(?P<community>community\s\S+))?
-                    (\suser\s(?P<user>\S+))?
-                    (\s(?P<ro>ro|RO))?
-                    (\s(?P<rw>rw|RW))?
-                    (\scredential\s(?P<credential>\S+))?
+                    (\scontext\s(?P<context>\S+))
+                    (\suser\s(?P<user>\S+))
+                    (\s(?P<credential>credential))?
                     (\s(?P<encrypted>encrypted))?
-                    (\s(?P<auth>auth))?
-                    (\smd5\s(?P<md5>\S+))?
-                    (\ssha\s(?P<sha>\S+))?
-                    (\spriv\s(?P<priv>(3des\s\S+|aes\s128\s\S+|aes\s192\s\S+|aes\s256\s\S+|des\s\S+)))?
-                    (\saccess\s(?P<access>(ipv6\s\S+|\S+)))?
-                    (\sipv6\s(?P<acl>\S+|\S+))?
+                    (\sauth\smd5\s(?P<md5>\S+))?
+                    (\sauth\ssha\s(?P<sha>\S+))?
+                    (\spriv\s3des\s(?P<3des>\S+))?
+                    (\spriv\saes\s128\s(?P<a>\S+))?
+                    (\spriv\saes\s192\s(?P<b>\S+))?
+                    (\spriv\saes\s256\s(?P<c>\S+))?
+                    (\spriv\sdes\s(?P<des>\S+))?
+                    (\saccess\sipv6\s(?P<aclv6>\S+))?
+                    (\saccess\s(?P<acl>\S+))?
                     $""",
                 re.VERBOSE,
             ),
@@ -2759,35 +2759,61 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "snmp": {
                             "context": {
-                                "name": "{{ context.split('context ')[1] if context is defined }}",
-                                "community": {
-                                    "snmp_community": "{{ community.split('community ')[1] if community is defined }}",
-                                    "acl": "{{ acl if acl is defined and 'ipv6' not in acl }}",
-                                    "ro": "{{ True if ro is defined }}",
-                                    "rw": "{{ True if rw is defined }}",
-                                    "ipv6": "{{ acl.split('ipv6 ')[1] if acl is defined and 'ipv6' in acl }}",
-                                },
+                                "name": "{{ context }}",
                                 "user": {
-                                    "name": "{{ user.split('user ')[1] if user is defined }}",
+                                    "name": "{{ user }}",
                                     "access": {
-                                        "acl": "{{ access.split('access ')[1] if access is defined and 'ipv6' not in access }}",
-                                        "ipv6": "{{ access.split('access ipv6 ')[1] if access is defined and 'ipv6' in access }}",
+                                        "acl": "{{ acl }}",
+                                        "ipv6": "{{ aclv6 }}",
                                     },
                                     "auth": {
-                                        "md5": "{{ md5.split('md5 ')[1] if md5 is defined }}",
-                                        "sha": "{{ sha.split('sha ')[1] if sha is defined }}",
+                                        "md5": "{{ md5 }}",
+                                        "sha": "{{ sha }}",
                                     },
                                     "priv": {
-                                        "3des": "{{ priv.split('priv 3des ')[1] if priv is defined and '3des' in priv }}",
+                                        "3des": "{{ 3des }}",
                                         "aes": {
-                                            "128": "{{ priv.split('priv aes 128 ')[1] if priv is defined and 'aes 128' in priv }}",
-                                            "192": "{{ priv.split('priv aes 192 ')[1] if priv is defined and 'aes 192' in priv }}",
-                                            "256": "{{ priv.split('priv aes 256 ')[1] if priv is defined and 'aes 256' in priv }}",
+                                            "128": "{{ a }}",
+                                            "192": "{{ b }}",
+                                            "256": "{{ c }}",
                                         },
-                                        "des": "{{ priv.split('priv des ')[1] if priv is defined and 'des' in priv }}",
+                                        "des": "{{ des }}",
                                     },
-                                    "credential": "{{ True if credential is defined }}",
-                                    "encrypted": "{{ True if encrypted is defined }}",
+                                    "credential": "{{ not not credential }}",
+                                    "encrypted": "{{ not not encrypted }}",
+                                },
+                            }
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "snmp.context.community",
+            "getval": re.compile(
+                r"""\s+snmp
+                    (\scontext\s(?P<context>\S+))
+                    (\scommunity\s(?P<community>\S+))
+                    (\s(?P<ro>RO))?
+                    (\s(?P<rw>RW))?
+                    (\sipv6\s(?P<ip6acl>\S+))?
+                    (\s(?P<acl>\S+))?
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": _tmplt_af_snmp,
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "snmp": {
+                            "context": {
+                                "name": "{{ context }}",
+                                "community": {
+                                    "snmp_community": "{{ community }}",
+                                    "acl": "{{ acl }}",
+                                    "ro": "{{ not not ro }}",
+                                    "rw": "{{ not not rw }}",
+                                    "ipv6": "{{ ip6acl }}",
                                 },
                             }
                         }
