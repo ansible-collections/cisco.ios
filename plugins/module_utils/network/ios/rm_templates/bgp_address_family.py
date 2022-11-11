@@ -211,7 +211,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append(
                 "{0} advertisement-interval {advertisement_interval}".format(
                     cmd, **config_data["neighbor"]
-                ),
+                )
             )
         if config_data["neighbor"].get("aigp"):
             self_cmd = "{0} aigp".format(cmd)
@@ -224,15 +224,15 @@ def _tmplt_af_neighbor(config_data):
                     if config_data["neighbor"]["aigp"]["send"]["cost_community"].get("poi"):
                         self_cmd += " poi"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "igp_cost",
+                            "igp_cost"
                         ):
                             self_cmd += " igp-cost"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "pre_bestpath",
+                            "pre_bestpath"
                         ):
                             self_cmd += " pre-bestpath"
                         if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "transitive",
+                            "transitive"
                         ):
                             self_cmd += " transitive"
                 if config_data["neighbor"]["aigp"]["send"].get("med"):
@@ -404,7 +404,7 @@ def _tmplt_af_neighbor(config_data):
             commands.append("{0} soo {soo}".format(cmd, **config_data["neighbor"]))
         if "unsuppress_map" in config_data["neighbor"]:
             commands.append(
-                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"]),
+                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"])
             )
         if "version" in config_data["neighbor"]:
             commands.append("{0} version {version}".format(cmd, **config_data["neighbor"]))
@@ -692,16 +692,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
-<<<<<<< Updated upstream
-                    UNIQUE_AFI: {
-                        "afi": "{{ afi }}",
-                        "safi": "{{ safi }}",
-                        "vrf": "{{ vrf }}",
-                    },
-=======
-                    UNIQUE_AFI: {"afi": "{{ afi }}", "safi": "{{ safi }}", "vrf": "{{ vrf }}"},
->>>>>>> Stashed changes
-                },
+                    UNIQUE_AFI: {"afi": "{{ afi }}", "safi": "{{ safi }}", "vrf": "{{ vrf }}"}
+                }
             },
             "shared": True,
         },
@@ -740,8 +732,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "attribute_map": "{{ attribute_map }}",
                         "suppress_map": "{{ suppress_map }}",
                         "summary_only": "{{ not not summary_only }}",
-                    },
-                ],
+                    }
+                ]
             },
         },
         {
@@ -786,11 +778,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "best": "{{ select_best }}",
                                     "group_best": "{{ not not select_group_best }}",
                                     "best_external": "{{ not not select_best_ext }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -802,19 +794,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select install",
             "result": {
-<<<<<<< Updated upstream
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "bgp": {
-                            "additional_paths": {
-                                "install": True,
-                            },
-                        },
-                    },
-                },
-=======
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"install": True}}}},
->>>>>>> Stashed changes
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"install": True}}}}
             },
         },
         {
@@ -826,19 +806,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select receive",
             "result": {
-<<<<<<< Updated upstream
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "bgp": {
-                            "additional_paths": {
-                                "receive": True,
-                            },
-                        },
-                    },
-                },
-=======
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"receive": True}}}},
->>>>>>> Stashed changes
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"receive": True}}}}
             },
         },
         {
@@ -850,19 +818,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select send",
             "result": {
-<<<<<<< Updated upstream
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "bgp": {
-                            "additional_paths": {
-                                "send": True,
-                            },
-                        },
-                    },
-                },
-=======
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"send": True}}}},
->>>>>>> Stashed changes
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"send": True}}}}
             },
         },
         {
@@ -877,8 +833,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"aggregate_timer": "{{ aggregate_timer }}"}},
-                },
+                    UNIQUE_AFI: {"bgp": {"aggregate_timer": "{{ aggregate_timer }}"}}
+                }
             },
         },
         {
@@ -904,8 +860,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"nexthop": {"route_map": "{{ route_map }}"}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"nexthop": {"route_map": "{{ route_map }}"}}}
+                }
             },
         },
         {
@@ -920,8 +876,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_af,
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}}
+                }
             },
         },
         {
@@ -934,7 +890,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp nexthop trigger delay enable",
             "result": {
-                "address_family": {UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"enable": True}}}}},
+                "address_family": {UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"enable": True}}}}}
             },
         },
         {
@@ -1016,10 +972,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "suppress_route_val": "{{ suppress_route_val  }}",
                                 "max_suppress": "{{ max_suppress  }}",
                                 "route_map": "{{ route_map }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1028,8 +984,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "bgp slow-peer detection",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"detection": {"enable": True}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"slow_peer": {"detection": {"enable": True}}}}
+                }
             },
         },
         {
@@ -1045,9 +1001,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "bgp": {"slow_peer": {"detection": {"threshold": "{{ threshold }}"}}},
-                    },
-                },
+                        "bgp": {"slow_peer": {"detection": {"threshold": "{{ threshold }}"}}}
+                    }
+                }
             },
         },
         {
@@ -1060,8 +1016,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "bgp slow-peer split-update-group dynamic",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"dynamic": True}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"dynamic": True}}}}
+                }
             },
         },
         {
@@ -1074,8 +1030,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "bgp slow-peer split-update-group dynamic permanent",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"permanent": True}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"permanent": True}}}}
+                }
             },
         },
         # bgp ends
@@ -1120,30 +1076,26 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "external": "{{ external }}",
                             "internal": "{{ internal }}",
                             "local": "{{ local }}",
-                        },
-                    },
-                },
+                        }
+                    }
+                }
             },
         },
         # neighbor starts
         {
             "name": "activate",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""",
-                re.VERBOSE,
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""", re.VERBOSE
             ),
             "setval": "neighbor {{ neighbor_address }} activate",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "neighbor_address": UNIQUE_NEIB_ADD,
-                                "activate": True,
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"neighbor_address": UNIQUE_NEIB_ADD, "activate": True}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1170,11 +1122,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "disable": "{{ not not disable }}",
                                     "receive": "{{ not not receive }}",
                                     "send": "{{ not not send }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1202,12 +1154,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "all": "{{ not not all }}",
                                         "best": "{{ receive }}",
                                         "group_best": "{{ not not group_best }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1223,9 +1175,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"advertises": {"best-external": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"advertises": {"best-external": True}}}
+                    }
+                }
             },
         },
         {
@@ -1250,12 +1202,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "diverse_path": {
                                         "backup": "{{ not not backup }}",
                                         "mpath": "{{ not not mpath }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1282,11 +1234,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ name }}",
                                     "exist_map": "{{ exist_map }}",
                                     "non_exist_map": "{{ non_exist_map }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1305,11 +1257,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "advertisement_interval": "{{ advertisement_interval }}",
-                            },
-                        },
-                    },
-                },
+                                "advertisement_interval": "{{ advertisement_interval }}"
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1323,8 +1275,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address + ' aigp') if aigp.enable|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"enable": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"enable": True}}}}
+                }
             },
         },
         {
@@ -1358,13 +1310,13 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                                 "pre_bestpath": "{{ not not pre_bestpath }}",
                                                 "transitive": "{{ not not transitive }}",
                                             },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1379,8 +1331,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' aigp send med') if aigp.send.med|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"send": {"med": True}}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"send": {"med": True}}}}}
+                }
             },
         },
         {
@@ -1394,8 +1346,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' allow-policy') if allow_policy|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allow_policy": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allow_policy": True}}}
+                }
             },
         },
         {
@@ -1411,10 +1363,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' allowas-in ' + allowas_in|string) if allowas_in is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}}
+                }
             },
         },
         {
@@ -1429,8 +1379,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' as-override') if as_override|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"as_override": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"as_override": True}}}
+                }
             },
         },
         {
@@ -1456,10 +1406,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "server": "{{ server }}",
                                     "all": "{{ not not  all }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1486,11 +1436,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "both": "{{ not not both }}",
                                     "receive": "{{ not not receive }}",
                                     "send": "{{ not not  send }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1503,10 +1453,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} cluster-id {{ cluster_id }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}}
+                }
             },
         },
         {
@@ -1520,9 +1468,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"default_originate": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"default_originate": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -1540,12 +1488,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"}
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"default-originate": {"route_map": "{{ route_map }}"}}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1563,10 +1509,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "description": "{{ description }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1584,11 +1530,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "disable_connected_check": "{{ not not disable_connected_check }}",
-                            },
-                        },
-                    },
-                },
+                                "disable_connected_check": "{{ not not disable_connected_check }}"
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1611,11 +1557,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "ebgp_multihop": {
                                     "enable": "{{ not not enable }}",
                                     "hop_count": "{{ hop_count }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1642,11 +1588,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "acl": "{{ acl }}",
                                     "in": "{{ not not in }}",
                                     "out": "{{ not not out }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1660,8 +1606,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' dmzlink-bw') if dmzlink_bw|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"dmzlink_bw": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"dmzlink_bw": True}}}
+                }
             },
         },
         {
@@ -1688,11 +1634,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "path_acl": "{{ acl }}",
                                     "in": "{{ not not in }}",
                                     "out": "{{ not not out }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1720,12 +1666,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "set": "{{ not not set }}",
                                         "multi_hop": "{{ not not multi_hop }}",
                                         "single_hop": "{{ not not single_hop }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1742,12 +1688,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "fall_over": {"route_map": "{{ not not route_map }}"}
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"fall_over": {"route_map": "{{ not not route_map }}"}}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1771,11 +1715,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "ha_mode": {
                                     "set": "{{ not not set }}",
                                     "disable": "{{ not not disable }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1791,8 +1735,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + inherit) if inherit is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}}}
+                }
             },
         },
         {
@@ -1807,8 +1751,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} internal-vpn-client",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"internal_vpn_client": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"internal_vpn_client": True}}}
+                }
             },
         },
         {
@@ -1841,11 +1785,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "set": "{{ not not no_prepend }}",
                                         "replace_as": "{{ not not replace_as }}",
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1861,8 +1805,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + remote_as|string) if remote_as is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}}
+                }
             },
         },
         {
@@ -1888,10 +1832,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": "{{ not not set }}",
                                     "disable": "{{ not not disable }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1921,11 +1865,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "threshold_value": "{{ threshold_val }}",
                                     "restart": "{{ restart }}",
                                     "warning_only": "{{ not not warning_only }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1939,8 +1883,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-self') if nexthop_self.set|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"set": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"set": True}}}}
+                }
             },
         },
         {
@@ -1954,8 +1898,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-self all') if nexthop_self.all|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"all": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"all": True}}}}
+                }
             },
         },
         {
@@ -1970,9 +1914,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -1987,9 +1931,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"allpaths": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"allpaths": True}}}
+                    }
+                }
             },
         },
         {
@@ -2015,10 +1959,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "encryption": "{{ encryption }}",
                                     "pass_key": "{{ pass_key }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2047,12 +1991,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "type": "{{ type }}",
                                         "range": {"start": "{{ start }}", "end": "{{ end }}"},
                                         "in": "{{ not not in }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2080,12 +2024,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "type": "{{ type }}",
                                         "range": {"start": "{{ start }}", "end": "{{ end }}"},
                                         "in": "{{ not not in }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2110,12 +2054,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ route_map }}",
                                         "in": "{{ not not in }}",
                                         "out": "{{ not not out }}",
-                                    },
+                                    }
                                 ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2140,12 +2084,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ prefix_list }}",
                                         "in": "{{ not not in }}",
                                         "out": "{{ not not out }}",
-                                    },
+                                    }
                                 ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2165,17 +2109,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "peer_group_name": "{{ peer_group_name }}",
                                 "neighbor_address": UNIQUE_NEIB_ADD,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
             "name": "peer_group",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\speer-group$""",
-                re.VERBOSE,
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\speer-group$""", re.VERBOSE
             ),
             "setval": "neighbor {{ neighbor_address }} peer-group",
             "result": {
@@ -2185,10 +2128,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "peer_group": True,
                                 "neighbor_address": UNIQUE_NEIB_ADD,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2213,12 +2156,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ route_map }}",
                                         "in": "{{ not not in }}",
                                         "out": "{{ not not out }}",
-                                    },
+                                    }
                                 ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2233,9 +2176,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -2250,9 +2193,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"all": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"all": True}}}
+                    }
+                }
             },
         },
         {
@@ -2267,9 +2210,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"replace_as": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"replace_as": True}}}
+                    }
+                }
             },
         },
         {
@@ -2288,10 +2231,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "route_reflector_client": True,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2310,10 +2253,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "route_server_client": True,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2327,8 +2270,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' send-community') if send_community.set|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"set": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"set": True}}}}
+                }
             },
         },
         {
@@ -2343,10 +2286,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' both') if send_community.both|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}}
+                }
             },
         },
         {
@@ -2362,9 +2303,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"extended": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"extended": True}}}
+                    }
+                }
             },
         },
         {
@@ -2380,9 +2321,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"standard": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"standard": True}}}
+                    }
+                }
             },
         },
         {
@@ -2402,11 +2343,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "shutdown": {"set": True, "graceful": "{{ graceful }}"},
-                            },
-                        },
-                    },
-                },
+                                "shutdown": {"set": True, "graceful": "{{ graceful }}"}
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2434,12 +2375,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "enable": "{{ not not enable }}",
                                         "disable": "{{ not not disable }}",
                                         "threshold": "{{ threshold }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2472,12 +2413,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                             "disable": "{{ not not disable }}",
                                             "permanent": "{{ not not permanent }}",
                                         },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2492,8 +2433,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' soft-reconfiguration inbound') if soft_reconfiguration|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soft_reconfiguration": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soft_reconfiguration": True}}}
+                }
             },
         },
         {
@@ -2508,8 +2449,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} soo {{ soo }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soo": "{{ soo }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soo": "{{ soo }}"}}}
+                }
             },
         },
         {
@@ -2524,7 +2465,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} timers"
-            "{{ (' ' + timers.keepalive|string) if timers.keepalive is defined else '' }}"
+            "{{ (' ' + timers.interval|string) if timers.keepalive is defined else '' }}"
             "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
             "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
             "result": {
@@ -2533,14 +2474,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
                                 "timers": {
-                                    "keepalive": "{{ keepalive }}",
+                                    "interval": "{{ keepalive }}",
                                     "holdtime": "{{ holdtime }}",
                                     "min_holdtime": "{{ min_holdtime }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2565,12 +2506,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "connection_mode": {
                                         "active": "{{ not not active }}",
                                         "passive": "{{ not not passive }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2589,10 +2530,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "transport": {"multi_session": True},
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2616,12 +2557,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "path_mtu_discovery": {
                                         "set": True,
                                         "disable": "{{ not not disable }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2638,9 +2579,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"ttl_security": "{{ ttl_security }}"}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"ttl_security": "{{ ttl_security }}"}}
+                    }
+                }
             },
         },
         {
@@ -2657,9 +2598,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"unsuppress_map": "{{ unsuppress_map }}"}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"unsuppress_map": "{{ unsuppress_map }}"}}
+                    }
+                }
             },
         },
         {
@@ -2680,10 +2621,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "version": "{{ version }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2699,8 +2640,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + weight|string) if weight is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"weight": "{{ weight }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"weight": "{{ weight }}"}}}
+                }
             },
         },
         # neighbors end
@@ -2719,7 +2660,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "network"
             "{{ (' ' + address) if address is defined else '' }}"
-            "{{ (' mask ' + netmask) if netmask is defined else '' }}"
+            "{{ (' mask ' + mask) if mask is defined else '' }}"
             "{{ (' route-map ' + route_map) if route_map is defined else '' }}"
             "{{ (' backdoor' ) if backdoor|d(False) else '' }}"
             "{{ (' evpn' ) if evpn|d(False) else '' }}",
@@ -2729,14 +2670,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "networks": [
                             {
                                 "address": "{{ address }}",
-                                "netmask": "{{ netmask }}",
+                                "mask": "{{ netmask }}",
                                 "route_map": "{{ route_map }}",
                                 "evpn": "{{ not not evpn }}",
                                 "backdoor": "{{ not not backdoor }}",
-                            },
-                        ],
-                    },
-                },
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2755,9 +2696,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"},
-                    },
-                },
+                        "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"}
+                    }
+                }
             },
         },
         {
@@ -2803,10 +2744,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "credential": "{{ not not credential }}",
                                     "encrypted": "{{ not not encrypted }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2836,10 +2777,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "rw": "{{ not not rw }}",
                                     "ipv6": "{{ ip6acl }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         # redistribute starts
@@ -2866,11 +2807,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2896,11 +2837,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "as_number": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2926,11 +2867,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2956,11 +2897,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "as_number": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2992,11 +2933,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "ip": "{{ not not ip }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3015,15 +2956,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "redistribute": [
-                            {
-                                "iso_igrp": {
-                                    "area_tag": "{{ name }}",
-                                    "route_map": "{{ route_map }}",
-                                }
-                            },
-                        ],
-                    },
-                },
+                            {"iso_igrp": {"area_tag": "{{ name }}", "route_map": "{{ route_map }}"}}
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3049,11 +2985,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3079,11 +3015,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3109,11 +3045,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3159,11 +3095,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
                                     "vrf": "{{ vrf }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3206,11 +3142,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     },
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3236,11 +3172,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3272,11 +3208,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "ip": "{{ not not ip }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -3296,10 +3232,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "redistribute": [
-                            {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}},
-                        ],
-                    },
-                },
+                            {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}}
+                        ]
+                    }
+                }
             },
         },
         # redistribute ends

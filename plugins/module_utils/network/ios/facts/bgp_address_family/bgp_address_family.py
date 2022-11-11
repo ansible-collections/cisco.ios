@@ -38,100 +38,26 @@ class Bgp_address_familyFacts(object):
 
     def _process_facts(self, objs):
         """makes data as per the facts after data obtained from parsers"""
+        addr_fam_facts = {}
         temp_af = []
+
+        addr_fam_facts["as_number"] = objs["as_number"]
         if objs.get("address_family"):
-            for k, v in iteritems(objs["address_family"]):
-                if k == "__":  # prepare dicts keys to operate on post spliting the keys
-                    continue
-                temp_dict = {}
-                temp = [every for every in k.split("_") if every != ""]
-                temp_dict["afi"] = temp.pop(0)
-                if len(temp) > 1:
-                    temp_dict["vrf"] = [each.split(" ")[1] for each in temp if "vrf" in each][0]
-                    temp_dict["safi"] = [each for each in temp if "vrf" not in each][0]
-                elif len(temp) == 1:
-                    if "vrf" in temp[0]:
-                        temp_dict["vrf"] = temp[0].split("vrf ")[1]
+            for kaf, afs in (objs["address_family"]).items():  # remove unique value from add_fam
+                af = {}
+                for af_key, afs_val in afs.items():
+                    if af_key == "neighbors":
+                        temp_neighbor = []
+                        for tag, neighbor in afs_val.items():  # remove unique value from neighbor
+                            temp_neighbor.append(neighbor)
+                        af[af_key] = temp_neighbor
                     else:
-                        temp_dict["safi"] = temp[0]
-                neighbor = v.get("neighbor")
+                        af[af_key] = afs_val
+                temp_af.append(af)
 
-                if neighbor:
-
-                    def _update_neighor_list(neighbor_list, temp, alter=None):
-                        set = False
-                        temp = utils.remove_empties(temp)
-                        for each in neighbor_list:
-                            for neighbor_type in [
-                                "address",
-                                "ipv6_adddress",
-                                "tag",
-                            ]:
-                                try:
-                                    if neighbor_identifier == each[neighbor_type]:
-                                        each.update(temp)
-                                        set = True
-                                        break
-                                except KeyError:
-                                    continue
-                        if not neighbor_list or not set:
-                            if alter:
-                                neighbor_list.extend(list(alter.values()))
-                            else:
-                                neighbor_list.append(temp)
-
-                    neighbor_list, temp_param_list = [], []
-                    temp, al = {}, {}
-                    temp_param, neighbor_identifier = None, None
-
-                    neighbor_type_list = ["address", "ipv6_adddress", "tag"]
-
-                    for each in neighbor:
-                        if temp_param and not each.get(temp_param) and temp:
-                            temp.update({temp_param: temp_param_list})
-                            _update_neighor_list(neighbor_list, temp)
-                            temp_param_list = []
-                            temp = {}
-                        for neighbor_type in neighbor_type_list:
-                            try:
-                                temp[neighbor_type] = each[neighbor_type]
-                                temp.update(each)
-                                if not al.get(each.get(neighbor_type)):
-                                    al[each.get(neighbor_type)] = each
-                                else:
-                                    al.get(each.get(neighbor_type)).update(
-                                        each,
-                                    )
-                                break
-                            except KeyError:
-                                continue
-                        for param in [
-                            "prefix_lists",
-                            "route_maps",
-                            "slow_peer",
-                        ]:
-                            param_val = each.get(param)
-                            if param_val:
-                                temp_param_list.append(param_val[0])
-                                temp_param = param
-                                break
-                    if temp:
-                        if temp_param:
-                            temp.update({temp_param: temp_param_list})
-                        _update_neighor_list(neighbor_list, temp, al)
-                        temp_param_list = []
-                        temp = {}
-                    v["neighbor"] = neighbor_list
-                v.update(temp_dict)
-                temp_af.append(v)
-
-            objs["address_family"] = temp_af
-
-            objs["address_family"] = sorted(
-                objs["address_family"],
-                key=lambda k, sk="afi": k[sk],
-            )
-        return objs
+        if temp_af:
+            addr_fam_facts["address_family"] = temp_af
+        return addr_fam_facts
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Bgp_address_family network resource
@@ -150,27 +76,17 @@ class Bgp_address_familyFacts(object):
             data = self.get_bgp_address_family_data(connection)
 
         # parse native config using the Bgp_address_family template
-        bgp_af_parser = Bgp_address_familyTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        bgp_af_parser = Bgp_address_familyTemplate(lines=data.splitlines(), module=self._module)
         objs = bgp_af_parser.parse()
 
         if objs:
 
             objs = self._process_facts(utils.remove_empties(objs))
 
-            ansible_facts["ansible_network_resources"].pop(
-                "bgp_address_family",
-                None,
-            )
+            ansible_facts["ansible_network_resources"].pop("bgp_address_family", None)
 
             params = utils.remove_empties(
-                bgp_af_parser.validate_config(
-                    self.argument_spec,
-                    {"config": objs},
-                    redact=True,
-                ),
+                bgp_af_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
             )
 
             facts["bgp_address_family"] = params["config"]
