@@ -1368,7 +1368,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}
+                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}},
                     },
                 },
             },
@@ -1460,7 +1460,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}
+                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}},
                     },
                 },
             },
@@ -1497,7 +1497,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"}
+                                "default-originate": {"route_map": "{{ route_map }}"},
                             },
                         },
                     },
@@ -1699,7 +1699,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "fall_over": {"route_map": "{{ not not route_map }}"}
+                                "fall_over": {"route_map": "{{ not not route_map }}"},
                             },
                         },
                     },
@@ -2300,7 +2300,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}},
                     },
                 },
             },
@@ -2975,7 +2975,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "iso_igrp": {
                                     "area_tag": "{{ name }}",
                                     "route_map": "{{ route_map }}",
-                                }
+                                },
                             },
                         ],
                     },
