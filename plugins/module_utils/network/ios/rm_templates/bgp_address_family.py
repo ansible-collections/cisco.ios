@@ -16,7 +16,8 @@ the given network resource.
 """
 
 import re
-
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import dict_merge
+from copy import deepcopy
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -1566,3 +1567,68 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
     ]
+
+    def parse(self):
+        """
+        This is an override of NetworkTemplate.parse. It stores the keys
+        from the parser capturing groups (capdict) to use as lookup keys
+        in self._deepformat
+        """
+        result = {}
+        shared = {}
+
+        for line in self._lines:
+            for parser in self._tmplt.PARSERS:
+                cap = re.match(parser["getval"], line)
+                if cap:
+                    capdict = cap.groupdict()
+                    lookup_keys = capdict.keys()
+                    capdict = dict(
+                        (k, v) for k, v in capdict.items() if v is not None
+                    )
+                    if parser.get("shared"):
+                        shared = capdict
+                    vals = dict_merge(capdict, shared)
+                    res = self._deepformat(deepcopy(parser["result"]), vals, lookup_keys)
+                    result = dict_merge(result, res)
+                    break
+        return result
+
+    def _deepformat(self, tmplt, data, lookup_keys):
+        """
+        This is an override of NetworkTemplate._deepformat
+        which uses lookup_keys to only iterate over relevant keys
+        instead of all keys.
+
+        This improves performance by approx 20 times compared to the original
+        """
+        wtmplt = deepcopy(tmplt)
+        if isinstance(tmplt, str):
+            res = self._template(
+                value=tmplt, variables=data, fail_on_undefined=False
+            )
+            return res
+        if isinstance(tmplt, dict):
+            for tkey, tval in tmplt.items():
+                ftkey = self._template(tkey, data)
+                if ftkey != tkey:
+                    wtmplt.pop(tkey)
+                if isinstance(tval, dict):
+                    wtmplt[ftkey] = self._deepformat(tval, data, lookup_keys)
+                elif isinstance(tval, list):
+                    # optimization start
+                    for idx, entry in enumerate(tval):
+                        tval.pop(idx)
+                        _entry = deepcopy(entry)
+                        for k, v in _entry.items():
+                            # Remove non-relevant keys from tval
+                            if k not in data.keys() and k in lookup_keys:
+                                entry.pop(k)
+                        tval.append(entry)
+                    # optimization end
+                    wtmplt[ftkey] = [self._deepformat(x, data, lookup_keys) for x in tval]
+                elif isinstance(tval, str):
+                    wtmplt[ftkey] = self._deepformat(tval, data, lookup_keys)
+                    if wtmplt[ftkey] is None:
+                        wtmplt.pop(ftkey)
+        return wtmplt
