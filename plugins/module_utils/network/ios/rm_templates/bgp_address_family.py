@@ -1368,7 +1368,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}
                     },
                 },
             },
@@ -2108,7 +2108,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "peer_group_name",
             "getval": re.compile(
                 r"""\s+neighbor\s(?P<neighbor_address>\S+)
-                \speer-group\s(?P<peer_group>\S+)
+                \speer-group\s(?P<peer_group_name>\S+)
                 $""",
                 re.VERBOSE,
             ),
