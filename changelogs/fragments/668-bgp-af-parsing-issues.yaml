@@ -1,0 +1,4 @@
+-bugfixes:
+   - ios_bgp_addressa_family - Fix / reduce chance of  socket timeout issue when deploying playbooks 
+     to routers with massive BGP configurations (https://github.com/ansible-collections/cisco.ios/issues/682)
+
