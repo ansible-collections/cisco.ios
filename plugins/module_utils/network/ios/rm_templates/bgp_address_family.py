@@ -16,10 +16,14 @@ the given network resource.
 """
 
 import re
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import dict_merge
+
 from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
 
 
@@ -1583,9 +1587,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 if cap:
                     capdict = cap.groupdict()
                     lookup_keys = capdict.keys()
-                    capdict = dict(
-                        (k, v) for k, v in capdict.items() if v is not None
-                    )
+                    capdict = dict((k, v) for k, v in capdict.items() if v is not None)
                     if parser.get("shared"):
                         shared = capdict
                     vals = dict_merge(capdict, shared)
@@ -1605,7 +1607,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         wtmplt = deepcopy(tmplt)
         if isinstance(tmplt, str):
             res = self._template(
-                value=tmplt, variables=data, fail_on_undefined=False
+                value=tmplt,
+                variables=data,
+                fail_on_undefined=False,
             )
             return res
         if isinstance(tmplt, dict):
