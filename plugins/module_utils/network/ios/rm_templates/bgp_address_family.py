@@ -22,642 +22,46 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
-def _tmplt_af(config_data):
-    if "address_family" in config_data:
-        cmd = "address-family {{ afi }}".format(**config_data["address_family"])
-        if config_data["address_family"].get("safi"):
-            cmd += " {{ safi }}".format(**config_data["address_family"])
-        if config_data["address_family"].get("vrf"):
-            cmd += " vrf {{ vrf }}".format(**config_data["address_family"])
-        return cmd
-
-
-def _tmplt_af_aggregate_address(config_data):
-    if "aggregate_address" in config_data:
-        cmd = "aggregate-address {address} {netmask}".format(**config_data["aggregate_address"])
-        if "advertise_map" in config_data["aggregate_address"]:
-            cmd += " advertise-map {advertise_map}".format(**config_data["aggregate_address"])
-        if "as_confed_set" in config_data["aggregate_address"]:
-            cmd += " as-confed-set"
-        if "as_set" in config_data["aggregate_address"]:
-            cmd += " as-set"
-        if "attribute_map" in config_data["aggregate_address"]:
-            cmd += " attribute-map {attribute_map}".format(**config_data["aggregate_address"])
-        if "summary_only" in config_data["aggregate_address"]:
-            cmd += " summary-only"
-        if "suppress_map" in config_data["aggregate_address"]:
-            cmd += " suppress-map {suppress_map}".format(**config_data["aggregate_address"])
-
-        return cmd
-
-
-def _tmplt_bgp_af_additional_paths(config_data):
-    if "bgp" in config_data:
-        if "additional_paths" in config_data["bgp"]:
-            cmd = "bgp additional-paths"
-            if "install" in config_data["bgp"]["additional_paths"]:
-                cmd += " install"
-            elif "select" in config_data["bgp"]["additional_paths"]:
-                cmd += " select"
-                if "all" in config_data["bgp"]["additional_paths"]["select"]:
-                    cmd += " all"
-                elif "best" in config_data["bgp"]["additional_paths"]["select"]:
-                    cmd += " best {best}".format(**config_data["bgp"]["additional_paths"]["select"])
-                elif "best_external" in config_data["bgp"]["additional_paths"]["select"]:
-                    cmd += " best-external"
-                elif "group_best" in config_data["bgp"]["additional_paths"]["select"]:
-                    cmd += " group-best"
-            if "receive" in config_data["bgp"]["additional_paths"]:
-                cmd += " receive"
-            if "send" in config_data["bgp"]["additional_paths"]:
-                cmd += " send"
-            return cmd
-
-
-def _tmplt_bgp_af_config(config_data):
-    if "bgp" in config_data:
-        cmd = []
-        if config_data["bgp"].get("aggregate_timer"):
-            cmd.append("bgp aggregate-timer {aggregate_timer}".format(**config_data["bgp"]))
-        if config_data["bgp"].get("dmzlink_bw"):
-            cmd.append("bgp dmzlink-bw")
-        if "nexthop" in config_data["bgp"]:
-            command = "bgp nexthop"
-            if "route_map" in config_data["bgp"]["nexthop"]:
-                command += " route-map {route_map}".format(**config_data["bgp"]["nexthop"])
-            elif "trigger" in config_data["bgp"]["nexthop"]:
-                if config_data["bgp"]["nexthop"]["trigger"].get("delay"):
-                    command += " trigger delay {delay}".format(
-                        **config_data["bgp"]["nexthop"]["trigger"]
-                    )
-                elif config_data["bgp"]["nexthop"]["trigger"].get("delay"):
-                    command += " trigger enable"
-            cmd.append(command)
-        if config_data["bgp"].get("redistribute_internal"):
-            cmd.append("bgp redistribute-internal")
-        if config_data["bgp"].get("route_map"):
-            cmd.append("bgp route-map priority")
-        if config_data["bgp"].get("scan_time"):
-            cmd.append("bgp scan-time {scan_time}".format(**config_data["bgp"]))
-        if config_data["bgp"].get("soft_reconfig_backup"):
-            cmd.append("bgp soft-reconfig-backup")
-        if config_data["bgp"].get("update_group"):
-            cmd.append("bgp update-group split as-override")
-        return cmd
-
-
-def _tmplt_bgp_af_dampening(config_data):
-    if "bgp" in config_data and "dampening" in config_data["bgp"]:
-        if config_data["bgp"]["dampening"].get("penalty_half_time"):
-            command = "bgp dampening {penalty_half_time}".format(**config_data["bgp"]["dampening"])
-            if config_data["bgp"]["dampening"].get("reuse_route_val"):
-                command += " {reuse_route_val}".format(**config_data["bgp"]["dampening"])
-            if config_data["bgp"]["dampening"].get("suppress_route_val"):
-                command += " {suppress_route_val}".format(**config_data["bgp"]["dampening"])
-            if config_data["bgp"]["dampening"].get("max_suppress"):
-                command += " {max_suppress}".format(**config_data["bgp"]["dampening"])
-        elif config_data["bgp"]["dampening"].get("route_map"):
-            command = "bgp dampening {route_map}".format(**config_data["bgp"]["dampening"])
-        return command
-
-
-def _tmplt_bgp_af_slow_peer(config_data):
-    if "bgp" in config_data and "slow_peer" in config_data["bgp"]:
-        if "slow_peer" in config_data["bgp"]:
-            cmd = "bgp slow-peer"
-            if "detection" in config_data["bgp"]["slow_peer"]:
-                cmd += " detection"
-                if "threshold" in config_data["bgp"]["slow_peer"]["detection"]:
-                    cmd += " threshold {threshold}".format(
-                        **config_data["bgp"]["slow_peer"]["detection"]
-                    )
-            elif "split_update_group" in config_data["bgp"]["slow_peer"]:
-                cmd += " split-update-group"
-                if "dynamic" in config_data["bgp"]["slow_peer"]["split_update_group"]:
-                    cmd += " dynamic"
-                    if "permanent" in config_data["bgp"]["slow_peer"]["split_update_group"]:
-                        cmd += " permanent {permanent}".format(
-                            **config_data["bgp"]["slow_peer"]["split_update_group"]
-                        )
-        return cmd
-
-
-def _tmplt_af_distance(config_data):
-    if config_data.get("distance"):
-        cmd = "distance bgp {external} {internal} {local}".format(**config_data["distance"])
-        return cmd
-
-
-def _tmplt_af_neighbor(config_data):
-    if "neighbor" in config_data:
-        commands = []
-        cmd = "neighbor"
-        if "address" in config_data["neighbor"]:
-            cmd += " {address}".format(**config_data["neighbor"])
-        elif "tag" in config_data["neighbor"]:
-            cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        if "peer_group" in config_data["neighbor"]:
-            commands.append("{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]))
-        if "remote_as" in config_data["neighbor"]:
-            commands.append("{0} remote-as {remote_as}".format(cmd, **config_data["neighbor"]))
-        if "activate" in config_data["neighbor"]:
-            commands.append("{0} activate".format(cmd))
-        if "additional_paths" in config_data["neighbor"]:
-            self_cmd = "{0} additional-paths".format(cmd)
-            if "disable" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " disable"
-            elif "receive" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " receive"
-            elif "send" in config_data["neighbor"]["additional_paths"]:
-                self_cmd += " send"
-            commands.append(self_cmd)
-        if "advertise" in config_data["neighbor"]:
-            self_cmd = "{0} advertise".format(cmd)
-            if "additional_paths" in config_data["neighbor"]["advertise"]:
-                self_cmd += " additional-paths"
-                if "all" in config_data["neighbor"]["advertise"]["additional_paths"]:
-                    self_cmd += " all"
-                elif "best" in config_data["neighbor"]["advertise"]["additional_paths"]:
-                    self_cmd += " best {best}".format(
-                        **config_data["neighbor"]["advertise"]["additional_paths"]
-                    )
-                elif "group_best" in config_data["neighbor"]["advertise"]["additional_paths"]:
-                    self_cmd += " group-best"
-            elif "best_external" in config_data["neighbor"]["advertise"]:
-                self_cmd += " best-external"
-            elif "diverse_path" in config_data["neighbor"]["advertise"]:
-                self_cmd += "diverse-path"
-                if "backup" in config_data["neighbor"]["advertise"]["diverse_path"]:
-                    self_cmd += " backup"
-                elif "mpath" in config_data["neighbor"]["advertise"]["diverse_path"]:
-                    self_cmd += " mpath"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("advertise_map"):
-            self_cmd = "{0} advertise-map {name}".format(
-                cmd, **config_data["neighbor"]["advertise_map"]
-            )
-            if "exist_map" in config_data["neighbor"]["advertise_map"]:
-                self_cmd += " exist-map {exist_map}".format(
-                    **config_data["neighbor"]["advertise_map"]
-                )
-            elif "non_exist_map" in config_data["neighbor"]["advertise_map"]:
-                self_cmd += " exist-map {non_exist_map}".format(
-                    **config_data["neighbor"]["advertise_map"]
-                )
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("advertisement_interval"):
-            commands.append(
-                "{0} advertisement-interval {advertisement_interval}".format(
-                    cmd, **config_data["neighbor"]
-                ),
-            )
-        if config_data["neighbor"].get("aigp"):
-            self_cmd = "{0} aigp".format(cmd)
-            if config_data["neighbor"]["aigp"].get("send"):
-                self_cmd += " send"
-                if config_data["neighbor"]["aigp"]["send"].get("cost_community"):
-                    self_cmd += " cost-community {id}".format(
-                        **config_data["neighbor"]["aigp"]["send"]["cost_community"]
-                    )
-                    if config_data["neighbor"]["aigp"]["send"]["cost_community"].get("poi"):
-                        self_cmd += " poi"
-                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "igp_cost",
-                        ):
-                            self_cmd += " igp-cost"
-                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "pre_bestpath",
-                        ):
-                            self_cmd += " pre-bestpath"
-                        if config_data["neighbor"]["aigp"]["send"]["cost_community"]["poi"].get(
-                            "transitive",
-                        ):
-                            self_cmd += " transitive"
-                if config_data["neighbor"]["aigp"]["send"].get("med"):
-                    self_cmd += " med"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("allow_policy"):
-            commands.append("{0} allow-policy".format(cmd))
-        if config_data["neighbor"].get("allowas_in"):
-            commands.append("{0} allowas-in {allowas_in}".format(cmd, **config_data["neighbor"]))
-        if config_data["neighbor"].get("as_override"):
-            commands.append("{0} as-override".format(cmd))
-        if "bmp_activate" in config_data["neighbor"]:
-            self_cmd = "{0} bmp-activate".format(cmd)
-            if config_data["neighbor"]["bmp_activate"].get("all"):
-                self_cmd += " all"
-            if "server" in config_data["neighbor"]["bmp_activate"]:
-                self_cmd += " server {server}".format(**config_data["neighbor"]["bmp_activate"])
-            commands.append(self_cmd)
-        if "capability" in config_data["neighbor"]:
-            self_cmd = "{0} capability".format(cmd)
-            if config_data["neighbor"]["capability"].get("both"):
-                self_cmd += " both"
-            elif config_data["neighbor"]["capability"].get("receive"):
-                self_cmd += " receive"
-            elif config_data["neighbor"]["capability"].get("send"):
-                self_cmd += " send"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("cluster_id"):
-            commands.append("{0} cluster-id {cluster_id}".format(cmd, **config_data["neighbor"]))
-        if "default_originate" in config_data["neighbor"]:
-            self_cmd = "{0} default-originate".format(cmd)
-            if config_data["neighbor"]["default_originate"].get("route_map"):
-                self_cmd += " route-map {route_map}".format(
-                    **config_data["neighbor"]["default_originate"]
-                )
-            commands.append(self_cmd)
-        if "description" in config_data["neighbor"]:
-            commands.append("{0} description {description}".format(cmd, **config_data["neighbor"]))
-        if config_data["neighbor"].get("disable_connected_check"):
-            commands.append("{0} disable-connected-check".format(cmd))
-        if "distribute_list" in config_data["neighbor"]:
-            self_cmd = "{0} distribute-list".format(cmd)
-            if "acl" in config_data["neighbor"]["distribute_list"]:
-                self_cmd += " {acl}".format(**config_data["neighbor"]["distribute_list"])
-            if config_data["neighbor"]["distribute_list"].get("in"):
-                self_cmd += " in"
-            elif config_data["neighbor"]["distribute_list"].get("out"):
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("dmzlink_bw"):
-            commands.append("{0} dmzlink-bw".format(cmd))
-        if "ebgp_multihop" in config_data["neighbor"]:
-            self_cmd = "{0} ebgp-multihop".format(cmd)
-            if "hop_count" in config_data["neighbor"]["ebgp_multihop"]:
-                self_cmd += " {hop_count}".format(**config_data["neighbor"]["ebgp_multihop"])
-            commands.append(self_cmd)
-        if "fall_over" in config_data["neighbor"]:
-            self_cmd = "{0} fall-over".format(cmd)
-            if "bfd" in config_data["neighbor"]["fall_over"]:
-                self_cmd += " bfd"
-                if config_data["neighbor"]["fall_over"]["bfd"].get("multi_hop"):
-                    self_cmd += " multi-hop"
-                elif config_data["neighbor"]["fall_over"]["bfd"].get("single_hop"):
-                    self_cmd += " single-hop"
-            elif "route_map" in config_data["neighbor"]["fall_over"]:
-                self_cmd += " {route_map}".format(**config_data["neighbor"]["route_map"])
-            commands.append(self_cmd)
-        if "filter_list" in config_data["neighbor"]:
-            self_cmd = "{0} filter-list".format(cmd)
-            if "path_acl" in config_data["neighbor"]["filter_list"]:
-                self_cmd += " {path_acl}".format(**config_data["neighbor"]["filter_list"])
-            if config_data["neighbor"]["filter_list"].get("in"):
-                self_cmd += " in"
-            elif config_data["neighbor"]["filter_list"].get("out"):
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if "ha_mode" in config_data["neighbor"]:
-            self_cmd = "{0} ha-mode".format(cmd)
-            if config_data["neighbor"]["ha_mode"].get("disable"):
-                self_cmd += " disable"
-            commands.append(self_cmd)
-        if "inherit" in config_data["neighbor"]:
-            self_cmd = "{0} inherit {inherit}".format(cmd, **config_data["neighbor"])
-            commands.append(self_cmd)
-        if config_data["neighbor"].get("local_as"):
-            self_cmd = "{0} local-as".format(cmd)
-            if "number" in config_data["neighbor"]["local_as"]:
-                self_cmd += " {number}".format(**config_data["neighbor"]["local_as"])
-            if config_data["neighbor"]["local_as"].get("dual_as"):
-                self_cmd += " dual-as"
-            elif config_data["neighbor"]["local_as"].get("no_prepend"):
-                self_cmd += " no-prepend"
-                if config_data["neighbor"]["local_as"]["no_prepend"]:
-                    self_cmd += " replace-as"
-            commands.append(self_cmd)
-        if "log_neighbor_changes" in config_data["neighbor"]:
-            self_cmd = "{0} log-neighbor-changes".format(cmd)
-            if config_data["neighbor"]["log_neighbor_changes"].get("disable"):
-                self_cmd += " disable"
-            commands.append(self_cmd)
-        if "maximum_prefix" in config_data["neighbor"]:
-            self_cmd = "{0} maximum-prefix".format(cmd)
-            if "number" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {number}".format(**config_data["neighbor"]["maximum_prefix"])
-            if "threshold_value" in config_data["neighbor"]["maximum_prefix"]:
-                self_cmd += " {threshold_value}".format(**config_data["neighbor"]["maximum_prefix"])
-            if config_data["neighbor"]["maximum_prefix"].get("restart"):
-                self_cmd += " restart {restart}".format(**config_data["neighbor"]["maximum_prefix"])
-            elif config_data["neighbor"]["filter_list"].get("warning_only"):
-                self_cmd += " warning-only"
-            commands.append(self_cmd)
-        if "nexthop_self" in config_data["neighbor"]:
-            self_cmd = "{0} next-hop-self".format(cmd)
-            if config_data["neighbor"]["nexthop_self"].get("all"):
-                self_cmd += " all"
-            commands.append(self_cmd)
-        if "next_hop_unchanged" in config_data["neighbor"]:
-            self_cmd = "{0} next-hop-unchanged".format(cmd)
-            if config_data["neighbor"]["next_hop_unchanged"].get("allpaths"):
-                self_cmd += " allpaths"
-            commands.append(self_cmd)
-        if (
-            "prefix_list" in config_data["neighbor"]
-            and "prefix_lists" not in config_data["neighbor"]
-        ):
-            self_cmd = "{0} prefix-list {name}".format(
-                cmd, **config_data["neighbor"]["prefix_list"]
-            )
-            if config_data["neighbor"]["prefix_list"].get("in"):
-                self_cmd += " in"
-            elif config_data["neighbor"]["prefix_list"].get("out"):
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if "peer_group" in config_data["neighbor"]:
-            commands.append("{0} peer-group {peer_group}".format(cmd, **config_data["neighbor"]))
-        if "remove_private_as" in config_data["neighbor"]:
-            self_cmd = "{0} remove-private-as".format(cmd)
-            if config_data["neighbor"]["remove_private_as"].get("all"):
-                self_cmd += " all"
-            elif config_data["neighbor"]["remove_private_as"].get("replace_as"):
-                self_cmd += " replace_as"
-            commands.append(self_cmd)
-        if "route_map" in config_data["neighbor"] and "route_maps" not in config_data["neighbor"]:
-            self_cmd = "{0} route-map".format(cmd)
-            if "name" in config_data["neighbor"]["route_map"]:
-                self_cmd += " {name}".format(**config_data["neighbor"]["route_map"])
-            if "in" in config_data["neighbor"]["route_map"]:
-                self_cmd += " in"
-            elif "out" in config_data["neighbor"]["route_map"]:
-                self_cmd += " out"
-            commands.append(self_cmd)
-        if "route_reflector_client" in config_data["neighbor"]:
-            commands.append("{0} route-reflector-client".format(cmd))
-        if "route_server_client" in config_data["neighbor"]:
-            self_cmd = "{0} route-server-client".format(cmd)
-            commands.append(self_cmd)
-        if "send_community" in config_data["neighbor"]:
-            self_cmd = "{0} send-community".format(cmd)
-            if config_data["neighbor"]["send_community"].get("both"):
-                self_cmd += " both"
-            elif config_data["neighbor"]["send_community"].get("extended"):
-                self_cmd += " extended"
-            elif config_data["neighbor"]["send_community"].get("standard"):
-                self_cmd += " standard"
-            commands.append(self_cmd)
-        if "soft_reconfiguration" in config_data["neighbor"]:
-            commands.append("{0} soft-reconfiguration inbound".format(cmd))
-        if "soo" in config_data["neighbor"]:
-            commands.append("{0} soo {soo}".format(cmd, **config_data["neighbor"]))
-        if "unsuppress_map" in config_data["neighbor"]:
-            commands.append(
-                "{0} unsuppress-map {unsuppress_map}".format(cmd, **config_data["neighbor"]),
-            )
-        if "version" in config_data["neighbor"]:
-            commands.append("{0} version {version}".format(cmd, **config_data["neighbor"]))
-        if "weight" in config_data["neighbor"]:
-            commands.append("{0} weight {weight}".format(cmd, **config_data["neighbor"]))
-        return commands
-
-
-def _tmplt_neighbor_af_prefix_lists(config_data):
-    if "prefix_lists" in config_data["neighbor"]:
-        cmd = "neighbor"
-        if "address" in config_data["neighbor"]:
-            cmd += " {address}".format(**config_data["neighbor"])
-        elif "tag" in config_data["neighbor"]:
-            cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        cmd = "{0} prefix-list {name}".format(cmd, **config_data["neighbor"]["prefix_lists"])
-        if config_data["neighbor"]["prefix_lists"].get("in"):
-            cmd += " in"
-        elif config_data["neighbor"]["prefix_lists"].get("out"):
-            cmd += " out"
-        return cmd
-
-
-def _tmplt_neighbor_af_route_maps(config_data):
-    if (
-        "neighbor" in config_data
-        and "route_maps" in config_data["neighbor"]
-        and len(config_data["neighbor"]) == 2
-    ):
-        cmd = "neighbor"
-        if "address" in config_data["neighbor"]:
-            cmd += " {address}".format(**config_data["neighbor"])
-        elif "tag" in config_data["neighbor"]:
-            cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        cmd = "{0} route-map".format(cmd)
-        if "name" in config_data["neighbor"]["route_maps"]:
-            cmd += " {name}".format(**config_data["neighbor"]["route_maps"])
-        if "in" in config_data["neighbor"]["route_maps"]:
-            cmd += " in"
-        elif "out" in config_data["neighbor"]["route_maps"]:
-            cmd += " out"
-        return cmd
-
-
-def _tmplt_neighbor_af_slow_peer(config_data):
-    if "neighbor" in config_data and "slow_peer" in config_data["neighbor"]:
-        cmd = "neighbor"
-        if "address" in config_data["neighbor"]:
-            cmd += " {address}".format(**config_data["neighbor"])
-        elif "tag" in config_data["neighbor"]:
-            cmd += " {tag}".format(**config_data["neighbor"])
-        elif "ipv6_adddress" in config_data["neighbor"]:
-            cmd += " {ipv6_adddress}".format(**config_data["neighbor"])
-        cmd = "{0} slow-peer".format(cmd)
-        if "detection" in config_data["neighbor"]["slow_peer"]:
-            cmd += " detection"
-            if "disable" in config_data["neighbor"]["slow_peer"]["detection"]:
-                cmd += " disable"
-            elif "threshold" in config_data["neighbor"]["slow_peer"]["detection"]:
-                cmd += " threshold {threshold}".format(
-                    **config_data["neighbor"]["slow_peer"]["detection"]
-                )
-        elif "split_update_group" in config_data["neighbor"]["slow_peer"]:
-            cmd += " split-update-group"
-            if "dynamic" in config_data["neighbor"]["slow_peer"]["split_update_group"]:
-                cmd += " dynamic"
-                if (
-                    "disable"
-                    in config_data["neighbor"]["slow_peer"]["split_update_group"]["dynamic"]
-                ):
-                    cmd += " disable"
-                elif (
-                    "permanent"
-                    in config_data["neighbor"]["slow_peer"]["split_update_group"]["dynamic"]
-                ):
-                    cmd += " permanent"
-            elif "static" in config_data["neighbor"]["slow_peer"]["split_update_group"]:
-                cmd += " static"
-        return cmd
-
-
-def _tmplt_af_network(config_data):
-    if "network" in config_data:
-        cmd = "network {address}".format(**config_data["network"])
-        if "mask" in config_data["network"]:
-            cmd += " mask {mask}".format(**config_data["network"])
-        if "backdoor" in config_data["network"]:
-            cmd += " backdoor"
-        if "route_map" in config_data["network"]:
-            cmd += " route-map {route_map}".format(**config_data["network"])
-        return cmd
+UNIQUE_AFI = "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}"
+UNIQUE_NEIB_ADD = "{{ neighbor_address }}"
 
 
 def _tmplt_af_snmp(config_data):
-    if "snmp" in config_data:
-        cmd = "snmp context {name}".format(**config_data["snmp"])
-        if config_data["snmp"].get("community"):
-            cmd += " community {snmp_community}".format(**config_data["snmp"]["community"])
-            if config_data["snmp"]["community"].get("ro"):
-                cmd += " ro"
-            elif config_data["snmp"]["community"].get("rw"):
-                cmd += " rw"
-            if config_data["snmp"]["community"].get("acl"):
-                cmd += " {acl}".format(**config_data["snmp"]["community"])
-            elif config_data["snmp"]["community"].get("ipv6"):
-                cmd += " ipv6 {ipv6}".format(**config_data["snmp"]["community"])
-        if config_data["snmp"].get("user"):
-            cmd += " user {name}".format(**config_data["snmp"]["user"])
-            if config_data["snmp"]["user"].get("credential"):
-                cmd += " credential"
-            elif config_data["snmp"]["user"].get("encrypted"):
-                cmd += " encrypted"
-            if config_data["snmp"]["user"].get("auth"):
-                cmd += " auth"
-                if config_data["snmp"]["user"]["auth"].get("md5"):
-                    cmd += " md5 {md5}".format(**config_data["snmp"]["user"]["auth"])
-                elif config_data["snmp"]["user"]["auth"].get("sha"):
-                    cmd += " sha {sha}".format(**config_data["snmp"]["user"]["auth"])
-            if config_data["snmp"]["user"].get("access"):
-                cmd += " access"
-                if config_data["snmp"]["user"]["access"].get("acl"):
-                    cmd += " {acl}".format(**config_data["snmp"]["user"]["access"])
-                elif config_data["snmp"]["user"]["access"].get("ipv6"):
-                    cmd += " ipv6 {ipv6}".format(**config_data["snmp"]["user"]["access"])
-            if config_data["snmp"]["user"].get("priv"):
-                cmd += " priv"
-                if config_data["snmp"]["user"]["priv"].get("3des"):
-                    cmd += " 3des {3des}".format(**config_data["snmp"]["user"]["priv"])
-                elif config_data["snmp"]["user"]["priv"].get("des"):
-                    cmd += " des {des}".format(**config_data["snmp"]["user"]["priv"])
-                elif config_data["snmp"]["user"]["priv"].get("aes"):
-                    cmd += " aes"
-                    if config_data["snmp"]["user"]["priv"]["aes"].get("128"):
-                        cmd += " 128 {128}".format(**config_data["snmp"]["user"]["priv"]["aes"])
-                    if config_data["snmp"]["user"]["priv"]["aes"].get("192"):
-                        cmd += " 192 {192}".format(**config_data["snmp"]["user"]["priv"]["aes"])
-                    if config_data["snmp"]["user"]["priv"]["aes"].get("256"):
-                        cmd += " 256 {256}".format(**config_data["snmp"]["user"]["priv"]["aes"])
-        return cmd
-
-
-def _tmplt_af_table_map(config_data):
-    if "table_map" in config_data:
-        cmd = "table-map {name}".format(**config_data["table_map"])
-        if config_data["table_map"].get("filter"):
-            cmd += " filter"
-        return cmd
-
-
-def _tmplt_af_redistribute(config_data):
-    if "redistribute" in config_data:
-        commands = []
-
-        def common_config(command, param):
-            if config_data["redistribute"][param].get("metric"):
-                command += " metric {metric}".format(**config_data["redistribute"][param])
-            if config_data["redistribute"][param].get("route_map"):
-                command += " route-map {route_map}".format(**config_data["redistribute"][param])
-            commands.append(command)
-
-        command = "redistribute"
-        if config_data["redistribute"].get("application"):
-            cmd = "{0} application {name}".format(
-                command, **config_data["redistribute"]["application"]
-            )
-            common_config(cmd, "application")
-        if config_data["redistribute"].get("bgp"):
-            cmd = "{0} bgp {as_number}".format(command, **config_data["redistribute"]["bgp"])
-            common_config(cmd, "bgp")
-        if config_data["redistribute"].get("connected"):
-            cmd = "{0} connected".format(command)
-            common_config(cmd, "connected")
-        if config_data["redistribute"].get("eigrp"):
-            cmd = "{0} eigrp {as_number}".format(command, **config_data["redistribute"]["eigrp"])
-            common_config(cmd, "eigrp")
-        if config_data["redistribute"].get("isis"):
-            cmd = "{0} isis {area_tag}".format(command, **config_data["redistribute"]["isis"])
-            if config_data["redistribute"]["isis"].get("clns"):
-                cmd += " clns"
-            elif config_data["redistribute"]["isis"].get("ip"):
-                cmd += " ip"
-            common_config(cmd, "isis")
-        if config_data["redistribute"].get("iso_igrp"):
-            cmd = "{0} iso-igrp {area_tag}".format(
-                command, **config_data["redistribute"]["iso_igrp"]
-            )
-            if config_data["redistribute"]["iso_igrp"].get("route_map"):
-                cmd += " route-map {route_map}".format(**config_data["redistribute"]["iso_igrp"])
-            common_config(cmd, "iso_igrp")
-        if config_data["redistribute"].get("lisp"):
-            cmd = "{0} lisp".format(command)
-            common_config(cmd, "lisp")
-        if config_data["redistribute"].get("mobile"):
-            cmd = "{0} mobile".format(command)
-            common_config(cmd, "mobile")
-        if config_data["redistribute"].get("odr"):
-            cmd = "{0} odr".format(command)
-            common_config(cmd, "odr")
-        if config_data["redistribute"].get("rip"):
-            cmd = "{0} rip".format(command)
-            common_config(cmd, "rip")
-        if config_data["redistribute"].get("ospf"):
-            cmd = "{0} ospf {process_id}".format(command, **config_data["redistribute"]["ospf"])
-            common_config(cmd, "ospf")
-            if config_data["redistribute"]["ospf"].get("match"):
-                external_type = None
-                commands[-1] += " match"
-                if config_data["redistribute"]["ospf"]["match"].get("internal"):
-                    commands[-1] += " internal"
-                if config_data["redistribute"]["ospf"]["match"].get("external"):
-                    external_type = " external"
-                if config_data["redistribute"]["ospf"]["match"].get("nssa_external"):
-                    external_type = " nssa-external"
-                if config_data["redistribute"]["ospf"]["match"].get("type_1") and external_type:
-                    commands[-1] += "{0} 1".format(external_type)
-                if config_data["redistribute"]["ospf"]["match"].get("type_2") and external_type:
-                    commands[-1] += "{0} 2".format(external_type)
-            if config_data["redistribute"]["ospf"].get("vrf"):
-                commands[-1] += " vrf"
-        if config_data["redistribute"].get("ospfv3"):
-            cmd = "{0} ospfv3 {process_id}".format(command, **config_data["redistribute"]["ospfv3"])
-            if config_data["redistribute"]["ospfv3"].get("match"):
-                cmd += " match"
-                if config_data["redistribute"]["ospfv3"]["match"].get("external"):
-                    cmd += " external"
-                if config_data["redistribute"]["ospfv3"]["match"].get("internal"):
-                    cmd += " internal"
-                if config_data["redistribute"]["ospfv3"]["match"].get("nssa_external"):
-                    cmd += " nssa-external"
-                if config_data["redistribute"]["ospfv3"]["match"].get("type_1"):
-                    cmd += " 1"
-                elif config_data["redistribute"]["ospfv3"]["match"].get("type_2"):
-                    cmd += " 2"
-            common_config(cmd, "ospf")
-        if config_data["redistribute"].get("static"):
-            cmd += "{0} static".format(command)
-            common_config(cmd, "static")
-        if config_data["redistribute"].get("vrf"):
-            if config_data["redistribute"]["vrf"].get("name"):
-                cmd = "{0} vrf {name}".format(command, **config_data["redistribute"]["vrf"])
-            elif config_data["redistribute"]["vrf"].get("global"):
-                cmd = "{0} vrf global".format(command)
-            common_config(cmd, "vrf")
-
-        return commands
-
-
-UNIQUE_AFI = "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}"
-UNIQUE_NEIB_ADD = "{{ neighbor_address }}"
+    snmp_user = config_data.get("snmp").get("context").get("user")
+    cmd = "snmp context {name}".format(**config_data.get("snmp").get("context"))
+    if snmp_user:
+        cmd += " user {name}".format(**snmp_user)
+        if snmp_user.get("credential"):
+            cmd += " credential"
+        elif snmp_user.get("encrypted"):
+            cmd += " encrypted"
+        if snmp_user.get("auth"):
+            cmd += " auth"
+            if snmp_user["auth"].get("md5"):
+                cmd += " md5 {md5}".format(**snmp_user["auth"])
+            elif snmp_user["auth"].get("sha"):
+                cmd += " sha {sha}".format(**snmp_user["auth"])
+        if snmp_user.get("access"):
+            cmd += " access"
+            if snmp_user["access"].get("acl"):
+                cmd += " {acl}".format(**snmp_user["access"])
+            elif snmp_user["access"].get("ipv6"):
+                cmd += " ipv6 {ipv6}".format(**snmp_user["access"])
+        if snmp_user.get("priv"):
+            cmd += " priv"
+            if snmp_user["priv"].get("3des"):
+                cmd += " 3des {3des}".format(**snmp_user["priv"])
+            elif snmp_user["priv"].get("des"):
+                cmd += " des {des}".format(**snmp_user["priv"])
+            elif snmp_user["priv"].get("aes"):
+                cmd += " aes"
+                if snmp_user["priv"]["aes"].get("128"):
+                    cmd += " 128 {128}".format(**snmp_user["priv"]["aes"])
+                if snmp_user["priv"]["aes"].get("192"):
+                    cmd += " 192 {192}".format(**snmp_user["priv"]["aes"])
+                if snmp_user["priv"]["aes"].get("256"):
+                    cmd += " 256 {256}".format(**snmp_user["priv"]["aes"])
+    return cmd
 
 
 class Bgp_address_familyTemplate(NetworkTemplate):
@@ -689,11 +93,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": "address-family"
+            "{{ (' ' + afi) if afi is defined else '' }}"
+            "{{ (' ' + safi) if safi is defined else '' }}"
+            "{{ (' vrf ' + vrf) if vrf is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"afi": "{{ afi }}", "safi": "{{ safi }}", "vrf": "{{ vrf }}"},
-                },
+                    UNIQUE_AFI: {"afi": "{{ afi }}", "safi": "{{ safi }}", "vrf": "{{ vrf }}"}
+                }
             },
             "shared": True,
         },
@@ -732,8 +139,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                         "attribute_map": "{{ attribute_map }}",
                         "suppress_map": "{{ suppress_map }}",
                         "summary_only": "{{ not not summary_only }}",
-                    },
-                ],
+                    }
+                ]
             },
         },
         {
@@ -766,7 +173,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' backup' ) if bgp.additional_paths.select.backup|d(False) else '' }}"
             "{{ (' best-external' ) if bgp.additional_paths.select.best_external|d(False) else '' }}"
             "{{ (' group-best' ) if bgp.additional_paths.select.group_best|d(False) else '' }}"
-            "{{ (' best ' + bgp.additional_paths.select.best ) if bgp.additional_paths.select.best else '' }}",
+            "{{ (' best ' + bgp.additional_paths.select.best|string ) if bgp.additional_paths.select.best is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -778,11 +185,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "best": "{{ select_best }}",
                                     "group_best": "{{ not not select_group_best }}",
                                     "best_external": "{{ not not select_best_ext }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -794,7 +201,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select install",
             "result": {
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"install": True}}}},
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"install": True}}}}
             },
         },
         {
@@ -806,7 +213,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select receive",
             "result": {
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"receive": True}}}},
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"receive": True}}}}
             },
         },
         {
@@ -818,7 +225,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp additional-paths select send",
             "result": {
-                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"send": True}}}},
+                "address_family": {UNIQUE_AFI: {"bgp": {"additional_paths": {"send": True}}}}
             },
         },
         {
@@ -830,11 +237,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": "bgp aggregate-timer {{ bgp.aggregate_timer }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"aggregate_timer": "{{ aggregate_timer }}"}},
-                },
+                    UNIQUE_AFI: {"bgp": {"aggregate_timer": "{{ aggregate_timer }}"}}
+                }
             },
         },
         {
@@ -845,7 +252,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": "bgp dmzlink-bw",
             "result": {"address_family": {UNIQUE_AFI: {"bgp": {"dmzlink_bw": True}}}},
         },
         {
@@ -857,11 +264,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": "bgp nexthop route-map {{ bgp.nexthop.route_map }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"nexthop": {"route_map": "{{ route_map }}"}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"nexthop": {"route_map": "{{ route_map }}"}}}
+                }
             },
         },
         {
@@ -873,11 +280,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af,
+            "setval": "bgp nexthop trigger delay {{ bgp.nexthop.trigger.delay|string }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"delay": "{{ delay }}"}}}}
+                }
             },
         },
         {
@@ -890,7 +297,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "bgp nexthop trigger delay enable",
             "result": {
-                "address_family": {UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"enable": True}}}}},
+                "address_family": {UNIQUE_AFI: {"bgp": {"nexthop": {"trigger": {"enable": True}}}}}
             },
         },
         {
@@ -961,7 +368,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_bgp_af_dampening,
+            "setval": "bgp dampening"
+            "{{ bgp.dampening.penalty_half_time|string if bgp.dampening.penalty_half_time is defined else '' }}"
+            "{{ bgp.dampening.reuse_route_val|string if bgp.dampening.reuse_route_val is defined else '' }}"
+            "{{ bgp.dampening.suppress_route_val|string if bgp.dampening.suppress_route_val is defined else '' }}"
+            "{{ bgp.dampening.max_suppress|string if bgp.dampening.max_suppress is defined else '' }}"
+            "{{ (' route-map ' + bgp.dampening.route_map ) if bgp.dampening.route_map is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -972,24 +384,24 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "suppress_route_val": "{{ suppress_route_val  }}",
                                 "max_suppress": "{{ max_suppress  }}",
                                 "route_map": "{{ route_map }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
-            "name": "bgp.slow_peer.detection.enable",
+            "name": "bgp.slow_peer_options.detection.enable",
             "getval": re.compile(r"""\s+bgp\sslow-peer\sdetection$""", re.VERBOSE),
             "setval": "bgp slow-peer detection",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"detection": {"enable": True}}}},
-                },
+                    UNIQUE_AFI: {"bgp": {"slow_peer_options": {"detection": {"enable": True}}}}
+                }
             },
         },
         {
-            "name": "bgp.slow_peer.detection.threshold",
+            "name": "bgp.slow_peer_options.detection.threshold",
             "getval": re.compile(
                 r"""
                 \s+bgp\sslow-peer\sdetection\sthreshold
@@ -1001,13 +413,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "bgp": {"slow_peer": {"detection": {"threshold": "{{ threshold }}"}}},
-                    },
-                },
+                        "bgp": {
+                            "slow_peer_options": {"detection": {"threshold": "{{ threshold }}"}}
+                        }
+                    }
+                }
             },
         },
         {
-            "name": "bgp.slow_peer.split_update_group.dynamic",
+            "name": "bgp.slow_peer_options.split_update_group.dynamic",
             "getval": re.compile(
                 r"""
                 \s+bgp\sslow-peer\ssplit-update-group\sdynamic$""",
@@ -1016,8 +430,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "bgp slow-peer split-update-group dynamic",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"dynamic": True}}}},
-                },
+                    UNIQUE_AFI: {
+                        "bgp": {"slow_peer_options": {"split_update_group": {"dynamic": True}}}
+                    }
+                }
             },
         },
         {
@@ -1030,8 +446,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "bgp slow-peer split-update-group dynamic permanent",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"bgp": {"slow_peer": {"split_update_group": {"permanent": True}}}},
-                },
+                    UNIQUE_AFI: {
+                        "bgp": {"slow_peer_options": {"split_update_group": {"permanent": True}}}
+                    }
+                }
             },
         },
         # bgp ends
@@ -1076,30 +494,37 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "external": "{{ external }}",
                             "internal": "{{ internal }}",
                             "local": "{{ local }}",
-                        },
-                    },
-                },
+                        }
+                    }
+                }
             },
         },
         # neighbor starts
         {
+            "name": "neighbor_address",
+            "getval": re.compile(
+                r"""
+                \sneighbordelDummy(?P<neighbor_address>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}",
+            "result": {"dummy_neighbor": True},
+        },
+        {
             "name": "activate",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""",
-                re.VERBOSE,
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""", re.VERBOSE
             ),
             "setval": "neighbor {{ neighbor_address }} activate",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "neighbor_address": UNIQUE_NEIB_ADD,
-                                "activate": True,
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"neighbor_address": UNIQUE_NEIB_ADD, "activate": True}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1126,11 +551,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "disable": "{{ not not disable }}",
                                     "receive": "{{ not not receive }}",
                                     "send": "{{ not not send }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1158,12 +583,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "all": "{{ not not all }}",
                                         "best": "{{ receive }}",
                                         "group_best": "{{ not not group_best }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1179,9 +604,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"advertises": {"best-external": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"advertises": {"best-external": True}}}
+                    }
+                }
             },
         },
         {
@@ -1206,12 +631,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "diverse_path": {
                                         "backup": "{{ not not backup }}",
                                         "mpath": "{{ not not mpath }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1238,11 +663,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ name }}",
                                     "exist_map": "{{ exist_map }}",
                                     "non_exist_map": "{{ non_exist_map }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1261,11 +686,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "advertisement_interval": "{{ advertisement_interval }}",
-                            },
-                        },
-                    },
-                },
+                                "advertisement_interval": "{{ advertisement_interval }}"
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1279,8 +704,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address + ' aigp') if aigp.enable|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"enable": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"enable": True}}}}
+                }
             },
         },
         {
@@ -1314,13 +739,13 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                                 "pre_bestpath": "{{ not not pre_bestpath }}",
                                                 "transitive": "{{ not not transitive }}",
                                             },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1335,8 +760,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' aigp send med') if aigp.send.med|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"send": {"med": True}}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"aigp": {"send": {"med": True}}}}}
+                }
             },
         },
         {
@@ -1350,8 +775,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' allow-policy') if allow_policy|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allow_policy": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allow_policy": True}}}
+                }
             },
         },
         {
@@ -1367,10 +792,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' allowas-in ' + allowas_in|string) if allowas_in is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}},
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}}
+                }
             },
         },
         {
@@ -1385,8 +808,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' as-override') if as_override|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"as_override": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"as_override": True}}}
+                }
             },
         },
         {
@@ -1412,10 +835,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "server": "{{ server }}",
                                     "all": "{{ not not  all }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1442,11 +865,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "both": "{{ not not both }}",
                                     "receive": "{{ not not receive }}",
                                     "send": "{{ not not  send }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1459,10 +882,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} cluster-id {{ cluster_id }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}},
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}}
+                }
             },
         },
         {
@@ -1476,9 +897,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"default_originate": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"default_originate": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -1496,12 +917,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"},
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"default-originate": {"route_map": "{{ route_map }}"}}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1519,10 +938,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "description": "{{ description }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1540,11 +959,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "disable_connected_check": "{{ not not disable_connected_check }}",
-                            },
-                        },
-                    },
-                },
+                                "disable_connected_check": "{{ not not disable_connected_check }}"
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1567,11 +986,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "ebgp_multihop": {
                                     "enable": "{{ not not enable }}",
                                     "hop_count": "{{ hop_count }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1598,11 +1017,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "acl": "{{ acl }}",
                                     "in": "{{ not not in }}",
                                     "out": "{{ not not out }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1616,8 +1035,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' dmzlink-bw') if dmzlink_bw|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"dmzlink_bw": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"dmzlink_bw": True}}}
+                }
             },
         },
         {
@@ -1644,11 +1063,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "path_acl": "{{ acl }}",
                                     "in": "{{ not not in }}",
                                     "out": "{{ not not out }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1676,12 +1095,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "set": "{{ not not set }}",
                                         "multi_hop": "{{ not not multi_hop }}",
                                         "single_hop": "{{ not not single_hop }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1698,12 +1117,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "fall_over": {"route_map": "{{ not not route_map }}"},
-                            },
-                        },
-                    },
-                },
+                            UNIQUE_NEIB_ADD: {"fall_over": {"route_map": "{{ not not route_map }}"}}
+                        }
+                    }
+                }
             },
         },
         {
@@ -1727,11 +1144,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "ha_mode": {
                                     "set": "{{ not not set }}",
                                     "disable": "{{ not not disable }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1747,8 +1164,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + inherit) if inherit is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}}}
+                }
             },
         },
         {
@@ -1763,8 +1180,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} internal-vpn-client",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"internal_vpn_client": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"internal_vpn_client": True}}}
+                }
             },
         },
         {
@@ -1797,11 +1214,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "set": "{{ not not no_prepend }}",
                                         "replace_as": "{{ not not replace_as }}",
                                     },
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1817,8 +1234,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + remote_as|string) if remote_as is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}}
+                }
             },
         },
         {
@@ -1844,10 +1261,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": "{{ not not set }}",
                                     "disable": "{{ not not disable }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1877,11 +1294,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "threshold_value": "{{ threshold_val }}",
                                     "restart": "{{ restart }}",
                                     "warning_only": "{{ not not warning_only }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -1895,8 +1312,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' next-hop-self') if nexthop_self.set|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"set": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"set": True}}}}
+                }
             },
         },
         {
@@ -1910,8 +1327,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address + ' next-hop-self all') if nexthop_self.all|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"all": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"nexthop_self": {"all": True}}}}
+                }
             },
         },
         {
@@ -1926,9 +1343,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -1943,9 +1360,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"allpaths": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"next_hop_unchanged": {"allpaths": True}}}
+                    }
+                }
             },
         },
         {
@@ -1971,10 +1388,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "encryption": "{{ encryption }}",
                                     "pass_key": "{{ pass_key }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2003,12 +1420,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "type": "{{ type }}",
                                         "range": {"start": "{{ start }}", "end": "{{ end }}"},
                                         "in": "{{ not not in }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2036,12 +1453,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "type": "{{ type }}",
                                         "range": {"start": "{{ start }}", "end": "{{ end }}"},
                                         "in": "{{ not not in }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2054,7 +1471,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_neighbor_af_route_maps,
+            "setval": "neighbor {{ route_maps.neighbor_address }} route-map"
+            "{{ (' ' + route_maps.name) if route_maps.name is defined else '' }}"
+            "{{ (' in') if route_maps.in|d(False) else '' }}"
+            "{{ (' out') if route_maps.out|d(False) else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2066,12 +1486,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ route_map }}",
                                         "in": "{{ not not in }}",
                                         "out": "{{ not not out }}",
-                                    },
+                                    }
                                 ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2084,7 +1504,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_neighbor_af_prefix_lists,
+            "setval": "neighbor {{ prefix_lists.neighbor_address }} prefix-list"
+            "{{ (' ' + prefix_lists.name) if prefix_lists.name is defined else '' }}"
+            "{{ (' in') if prefix_lists.in|d(False) else '' }}"
+            "{{ (' out') if prefix_lists.out|d(False) else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2096,12 +1519,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ prefix_list }}",
                                         "in": "{{ not not in }}",
                                         "out": "{{ not not out }}",
-                                    },
+                                    }
                                 ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2121,17 +1544,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "peer_group_name": "{{ peer_group_name }}",
                                 "neighbor_address": UNIQUE_NEIB_ADD,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
             "name": "peer_group",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\speer-group$""",
-                re.VERBOSE,
+                r"""\s+neighbor\s(?P<neighbor_address>\S+)\speer-group$""", re.VERBOSE
             ),
             "setval": "neighbor {{ neighbor_address }} peer-group",
             "result": {
@@ -2141,40 +1563,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "peer_group": True,
                                 "neighbor_address": UNIQUE_NEIB_ADD,
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "route_maps",
-            "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
-                (\s(?P<route_map>\S+))
-                (\s(?P<in>in))?
-                (\s(?P<out>out))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_neighbor_af_route_maps,
-            "result": {
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "neighbor_address": UNIQUE_NEIB_ADD,
-                                "route_maps": [
-                                    {
-                                        "name": "{{ route_map }}",
-                                        "in": "{{ not not in }}",
-                                        "out": "{{ not not out }}",
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2189,9 +1581,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"set": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"set": True}}}
+                    }
+                }
             },
         },
         {
@@ -2206,9 +1598,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"all": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"all": True}}}
+                    }
+                }
             },
         },
         {
@@ -2223,9 +1615,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"replace_as": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"remove_private_as": {"replace_as": True}}}
+                    }
+                }
             },
         },
         {
@@ -2244,10 +1636,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "route_reflector_client": True,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2266,10 +1658,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "route_server_client": True,
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2283,8 +1675,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "{{ ('neighbor ' + neighbor_address  + ' send-community') if send_community.set|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"set": True}}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"set": True}}}}
+                }
             },
         },
         {
@@ -2299,10 +1691,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' both') if send_community.both|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}},
-                    },
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}}
+                }
             },
         },
         {
@@ -2318,9 +1708,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"extended": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"extended": True}}}
+                    }
+                }
             },
         },
         {
@@ -2336,9 +1726,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"standard": True}}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"standard": True}}}
+                    }
+                }
             },
         },
         {
@@ -2358,15 +1748,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "shutdown": {"set": True, "graceful": "{{ graceful }}"},
-                            },
-                        },
-                    },
-                },
+                                "shutdown": {"set": True, "graceful": "{{ graceful }}"}
+                            }
+                        }
+                    }
+                }
             },
         },
         {
-            "name": "slow_peer.detection",
+            "name": "slow_peer_options.detection",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
@@ -2377,29 +1767,29 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} slow-peer detection"
-            "{{ (' enable') if slow_peer.detection.enable|d(False) else '' }}"
-            "{{ (' disable') if slow_peer.detection.disable|d(False) else '' }}"
-            "{{ (' threshold ' + slow_peer.detection.threshold|string) if slow_peer.detection.threshold is defined else '' }}",
+            "{{ (' enable') if slow_peer_options.detection.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer_options.detection.disable|d(False) else '' }}"
+            "{{ (' threshold ' + slow_peer_options.detection.threshold|string) if slow_peer_options.detection.threshold is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "slow_peer": {
+                                "slow_peer_options": {
                                     "detection": {
                                         "enable": "{{ not not enable }}",
                                         "disable": "{{ not not disable }}",
                                         "threshold": "{{ threshold }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
-            "name": "slow_peer.split_update_group",
+            "name": "slow_peer_options.split_update_group",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
@@ -2411,16 +1801,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} slow-peer split-update-group"
-            "{{ (' static') if slow_peer.split_update_group.static|d(False) else '' }}"
-            "{{ (' dynamic') if slow_peer.split_update_group.dynamic.enable|d(False) else '' }}"
-            "{{ (' disable') if slow_peer.split_update_group.dynamic.disable|d(False) else '' }}"
-            "{{ (' permanent') if slow_peer.split_update_group.dynamic.permanent|d(False) else '' }}",
+            "{{ (' static') if slow_peer_options.split_update_group.static|d(False) else '' }}"
+            "{{ (' dynamic') if slow_peer_options.split_update_group.dynamic.enable|d(False) else '' }}"
+            "{{ (' disable') if slow_peer_options.split_update_group.dynamic.disable|d(False) else '' }}"
+            "{{ (' permanent') if slow_peer_options.split_update_group.dynamic.permanent|d(False) else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "slow_peer": {
+                                "slow_peer_options": {
                                     "split_update_group": {
                                         "static": "{{ not not static }}",
                                         "dynamic": {
@@ -2428,12 +1818,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                             "disable": "{{ not not disable }}",
                                             "permanent": "{{ not not permanent }}",
                                         },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2448,8 +1838,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' soft-reconfiguration inbound') if soft_reconfiguration|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soft_reconfiguration": True}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soft_reconfiguration": True}}}
+                }
             },
         },
         {
@@ -2464,8 +1854,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "neighbor {{ neighbor_address }} soo {{ soo }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soo": "{{ soo }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"soo": "{{ soo }}"}}}
+                }
             },
         },
         {
@@ -2480,7 +1870,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} timers"
-            "{{ (' ' + timers.interval|string) if timers.keepalive is defined else '' }}"
+            "{{ (' ' + timers.interval|string) if timers.interval is defined else '' }}"
             "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
             "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
             "result": {
@@ -2492,11 +1882,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "interval": "{{ keepalive }}",
                                     "holdtime": "{{ holdtime }}",
                                     "min_holdtime": "{{ min_holdtime }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2521,12 +1911,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "connection_mode": {
                                         "active": "{{ not not active }}",
                                         "passive": "{{ not not passive }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2545,10 +1935,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "transport": {"multi_session": True},
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2572,12 +1962,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "path_mtu_discovery": {
                                         "set": True,
                                         "disable": "{{ not not disable }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2594,9 +1984,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"ttl_security": "{{ ttl_security }}"}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"ttl_security": "{{ ttl_security }}"}}
+                    }
+                }
             },
         },
         {
@@ -2613,9 +2003,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"unsuppress_map": "{{ unsuppress_map }}"}},
-                    },
-                },
+                        "neighbors": {UNIQUE_NEIB_ADD: {"unsuppress_map": "{{ unsuppress_map }}"}}
+                    }
+                }
             },
         },
         {
@@ -2636,10 +2026,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "version": "{{ version }}",
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2655,8 +2045,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' ' + weight|string) if weight is defined else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"weight": "{{ weight }}"}}},
-                },
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"weight": "{{ weight }}"}}}
+                }
             },
         },
         # neighbors end
@@ -2689,10 +2079,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "route_map": "{{ route_map }}",
                                 "evpn": "{{ not not evpn }}",
                                 "backdoor": "{{ not not backdoor }}",
-                            },
-                        ],
-                    },
-                },
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
@@ -2711,9 +2101,9 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"},
-                    },
-                },
+                        "table_map": {"name": "{{ name }}", "filter": "{{ not not filter }}"}
+                    }
+                }
             },
         },
         {
@@ -2759,10 +2149,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "credential": "{{ not not credential }}",
                                     "encrypted": "{{ not not encrypted }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         {
@@ -2778,7 +2168,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af_snmp,
+            "setval": "snmp context {{ snmp.context.name }} community"
+            "{{ (' ' + snmp.context.community.snmp_community) if snmp.context.community.snmp_community is defined else '' }}"
+            "{{ (' ro' ) if snmp.context.community.ro|d(False) else '' }}"
+            "{{ (' rw' ) if snmp.context.community.rw|d(False) else '' }}"
+            "{{ (' ' + snmp.context.community.acl) if snmp.context.community.acl is defined else '' }}"
+            "{{ (' ipv6 ' + snmp.context.community.ipv6) if snmp.context.community.ipv6 is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2792,15 +2187,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "rw": "{{ not not rw }}",
                                     "ipv6": "{{ ip6acl }}",
                                 },
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             },
         },
         # redistribute starts
         {
-            "name": "application",
+            "name": "redistribute.application",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sapplication\s(?P<name>\S+)
@@ -2809,10 +2204,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute application {{ application.name }}"
-            "{{ (' metric ' + application.metric|string) if application.metric is defined else '' }}"
-            "{{ (' route-map ' + application.route_map) if application.route_map is defined else '' }}",
-            "remval": "redistribute application {{ application.name }}",
+            "setval": "redistribute application {{ redistribute.application.name }}"
+            "{{ (' metric ' + redistribute.application.metric|string) if redistribute.application.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.application.route_map) if redistribute.application.route_map is defined else '' }}",
+            "remval": "redistribute application {{ redistribute.application.name }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2822,15 +2217,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "name": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "bgp",
+            "name": "redistribute.bgp",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sbgp\s(?P<name>\S+)
@@ -2839,10 +2234,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute bgp {{ bgp.as_number }}"
-            "{{ (' metric ' + bgp.metric|string) if bgp.metric is defined else '' }}"
-            "{{ (' route-map ' + bgp.route_map) if bgp.route_map is defined else '' }}",
-            "remval": "redistribute bgp {{ bgp.as_number }}",
+            "setval": "redistribute bgp {{ redistribute.bgp.as_number }}"
+            "{{ (' metric ' + redistribute.bgp.metric|string) if redistribute.bgp.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.bgp.route_map) if redistribute.bgp.route_map is defined else '' }}",
+            "remval": "redistribute bgp {{ redistribute.bgp.as_number }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2852,15 +2247,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "as_number": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "connected",
+            "name": "redistribute.connected",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sconnected
@@ -2870,8 +2265,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute connected"
-            "{{ (' metric ' + connected.metric|string) if connected.metric is defined else '' }}"
-            "{{ (' route-map ' + connected.route_map) if connected.route_map is defined else '' }}",
+            "{{ (' metric ' + redistribute.connected.metric|string) if redistribute.connected.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.connected.route_map) if redistribute.connected.route_map is defined else '' }}",
             "remval": "redistribute connected",
             "result": {
                 "address_family": {
@@ -2882,15 +2277,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "eigrp",
+            "name": "redistribute.eigrp",
             "getval": re.compile(
                 r"""
                 \s+redistribute\seigrp\s(?P<name>\S+)
@@ -2899,10 +2294,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute eigrp {{ eigrp.name|string }}"
-            "{{ (' metric ' + eigrp.metric|string) if eigrp.metric is defined else '' }}"
-            "{{ (' route-map ' + eigrp.route_map) if eigrp.route_map is defined else '' }}",
-            "remval": "redistribute eigrp {{ eigrp.name|string }}",
+            "setval": "redistribute eigrp {{ redistribute.eigrp.name|string }}"
+            "{{ (' metric ' + redistribute.eigrp.metric|string) if redistribute.eigrp.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.eigrp.route_map) if redistribute.eigrp.route_map is defined else '' }}",
+            "remval": "redistribute eigrp {{ redistribute.eigrp.name|string }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2912,15 +2307,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "as_number": "{{ name }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "isis",
+            "name": "redistribute.isis",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sisis\s(?P<name>\S+)
@@ -2931,12 +2326,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute isis {{ isis.area_tag }}"
-            "{{ (' clns') if isis.clns|d(False) else '' }}"
-            "{{ (' ip') if isis.ip|d(False) else '' }}"
-            "{{ (' metric ' + isis.metric|string) if isis.metric is defined else '' }}"
-            "{{ (' route-map ' + isis.route_map) if isis.route_map is defined else '' }}",
-            "remval": "redistribute isis {{ isis.area_tag }}",
+            "setval": "redistribute isis {{ redistribute.isis.area_tag }}"
+            "{{ (' clns') if redistribute.isis.clns|d(False) else '' }}"
+            "{{ (' ip') if redistribute.isis.ip|d(False) else '' }}"
+            "{{ (' metric ' + redistribute.isis.metric|string) if redistribute.isis.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.isis.route_map) if redistribute.isis.route_map is defined else '' }}",
+            "remval": "redistribute isis {{ redistribute.isis.area_tag }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2948,15 +2343,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "ip": "{{ not not ip }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "iso_igrp",
+            "name": "redistribute.iso_igrp",
             "getval": re.compile(
                 r"""
                 \s+redistribute\siso-igrp\s(?P<name>\S+)
@@ -2964,26 +2359,21 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute iso-igrp {{ iso_igrp.area_tag }}"
-            "{{ (' route-map ' + iso_igrp.route_map) if iso_igrp.route_map is defined else '' }}",
-            "remval": "redistribute iso-igrp {{ iso_igrp.area_tag }}",
+            "setval": "redistribute iso-igrp {{ redistribute.iso_igrp.area_tag }}"
+            "{{ (' route-map ' + redistribute.iso_igrp.route_map) if redistribute.iso_igrp.route_map is defined else '' }}",
+            "remval": "redistribute iso-igrp {{ redistribute.iso_igrp.area_tag }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "redistribute": [
-                            {
-                                "iso_igrp": {
-                                    "area_tag": "{{ name }}",
-                                    "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                            {"iso_igrp": {"area_tag": "{{ name }}", "route_map": "{{ route_map }}"}}
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "lisp",
+            "name": "redistribute.lisp",
             "getval": re.compile(
                 r"""
                 \s+redistribute\slisp
@@ -2993,8 +2383,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute lisp"
-            "{{ (' metric ' + lisp.metric|string) if lisp.metric is defined else '' }}"
-            "{{ (' route-map ' + lisp.route_map) if lisp.route_map is defined else '' }}",
+            "{{ (' metric ' + redistribute.lisp.metric|string) if redistribute.lisp.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.lisp.route_map) if redistribute.lisp.route_map is defined else '' }}",
             "remval": "redistribute lisp",
             "result": {
                 "address_family": {
@@ -3005,15 +2395,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "mobile",
+            "name": "redistribute.mobile",
             "getval": re.compile(
                 r"""
                 \s+redistribute\smobile
@@ -3023,8 +2413,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute mobile"
-            "{{ (' metric ' + mobile.metric|string) if mobile.metric is defined else '' }}"
-            "{{ (' route-map ' + mobile.route_map) if mobile.route_map is defined else '' }}",
+            "{{ (' metric ' + redistribute.mobile.metric|string) if redistribute.mobile.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.mobile.route_map) if redistribute.mobile.route_map is defined else '' }}",
             "remval": "redistribute mobile",
             "result": {
                 "address_family": {
@@ -3035,15 +2425,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "odr",
+            "name": "redistribute.odr",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sodr
@@ -3053,8 +2443,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute odr"
-            "{{ (' metric ' + odr.metric|string) if odr.metric is defined else '' }}"
-            "{{ (' route-map ' + odr.route_map) if odr.route_map is defined else '' }}",
+            "{{ (' metric ' + redistribute.odr.metric|string) if redistribute.odr.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.odr.route_map) if redistribute.odr.route_map is defined else '' }}",
             "remval": "redistribute odr",
             "result": {
                 "address_family": {
@@ -3065,15 +2455,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "ospf",
+            "name": "redistribute.ospf",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sospf\s(?P<process_id>\S+)
@@ -3088,16 +2478,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute ospf {{ ospf.process_id }}"
-            "{{ (' 1') if ospf.match.type_1|d(False) else '' }}"
-            "{{ (' 2') if ospf.match.type_2|d(False) else '' }}"
-            "{{ (' external') if ospf.match.external|d(False) else '' }}"
-            "{{ (' internal') if ospf.match.internal|d(False) else '' }}"
-            "{{ (' nssa-external') if ospf.match.nssa_external|d(False) else '' }}"
-            "{{ (' metric ' + ospf.metric|string) if ospf.metric is defined else '' }}"
-            "{{ (' route-map ' + ospf.route_map) if ospf.route_map is defined else '' }}"
-            "{{ (' vrf ' + ospf.vrf) if ospf.vrf is defined else '' }}",
-            "remval": "redistribute ospf {{ ospf.process_id }}",
+            "setval": "redistribute ospf {{ redistribute.ospf.process_id }}"
+            "{{ (' 1') if redistribute.ospf.match.type_1|d(False) else '' }}"
+            "{{ (' 2') if redistribute.ospf.match.type_2|d(False) else '' }}"
+            "{{ (' external') if redistribute.ospf.match.external|d(False) else '' }}"
+            "{{ (' internal') if redistribute.ospf.match.internal|d(False) else '' }}"
+            "{{ (' nssa-external') if redistribute.ospf.match.nssa_external|d(False) else '' }}"
+            "{{ (' metric ' + redistribute.ospf.metric|string) if redistribute.ospf.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.ospf.route_map) if redistribute.ospf.route_map is defined else '' }}"
+            "{{ (' vrf ' + redistribute.ospf.vrf) if ospf.vrf is defined else '' }}",
+            "remval": "redistribute ospf {{ redistribute.ospf.process_id }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -3115,15 +2505,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
                                     "vrf": "{{ vrf }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "ospfv3",
+            "name": "redistribute.ospfv3",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sospfv3\s(?P<process_id>\S+)
@@ -3137,15 +2527,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute ospfv3 {{ ospfv3.process_id }}"
-            "{{ (' 1') if ospfv3.match.type_1|d(False) else '' }}"
-            "{{ (' 2') if ospfv3.match.type_2|d(False) else '' }}"
-            "{{ (' external') if ospfv3.match.external|d(False)  else '' }}"
-            "{{ (' internal') if ospfv3.match.internal|d(False)  else '' }}"
-            "{{ (' nssa-external') if ospfv3.match.nssa_external|d(False) else '' }}"
-            "{{ (' metric ' + ospfv3.metric|string) if ospfv3.metric is defined else '' }}"
-            "{{ (' route-map ' + ospfv3.route_map) if ospfv3.route_map is defined else '' }}",
-            "remval": "redistribute ospfv3 {{ ospfv3.process_id }}",
+            "setval": "redistribute ospfv3 {{ redistribute.ospfv3.process_id }}"
+            "{{ (' 1') if redistribute.ospfv3.match.type_1|d(False) else '' }}"
+            "{{ (' 2') if redistribute.ospfv3.match.type_2|d(False) else '' }}"
+            "{{ (' external') if redistribute.ospfv3.match.external|d(False)  else '' }}"
+            "{{ (' internal') if redistribute.ospfv3.match.internal|d(False)  else '' }}"
+            "{{ (' nssa-external') if redistribute.ospfv3.match.nssa_external|d(False) else '' }}"
+            "{{ (' metric ' + redistribute.ospfv3.metric|string) if redistribute.ospfv3.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.ospfv3.route_map) if redistribute.ospfv3.route_map is defined else '' }}",
+            "remval": "redistribute ospfv3 {{ redistribute.ospfv3.process_id }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -3162,15 +2552,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     },
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "rip",
+            "name": "redistribute.rip",
             "getval": re.compile(
                 r"""
                 \s+redistribute\srip
@@ -3180,8 +2570,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute rip"
-            "{{ (' metric ' + rip.metric|string) if rip.metric is defined else '' }}"
-            "{{ (' route-map ' + rip.route_map) if rip.route_map is defined else '' }}",
+            "{{ (' metric ' + redistribute.rip.metric|string) if redistribute.rip.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.rip.route_map) if redistribute.rip.route_map is defined else '' }}",
             "remval": "redistribute rip",
             "result": {
                 "address_family": {
@@ -3192,15 +2582,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "set": True,
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "static",
+            "name": "redistribute.static",
             "getval": re.compile(
                 r"""
                 \s+redistribute\sstatic
@@ -3212,10 +2602,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "redistribute static"
-            "{{ (' clns') if static.clns|d(False) else '' }}"
-            "{{ (' ip') if static.ip|d(False) else '' }}"
-            "{{ (' metric ' + static.metric|string) if static.metric is defined else '' }}"
-            "{{ (' route-map ' + static.route_map) if static.route_map is defined else '' }}",
+            "{{ (' clns') if redistribute.static.clns|d(False) else '' }}"
+            "{{ (' ip') if redistribute.static.ip|d(False) else '' }}"
+            "{{ (' metric ' + redistribute.static.metric|string) if redistribute.static.metric is defined else '' }}"
+            "{{ (' route-map ' + redistribute.static.route_map) if redistribute.static.route_map is defined else '' }}",
             "remval": "redistribute static",
             "result": {
                 "address_family": {
@@ -3228,15 +2618,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "ip": "{{ not not ip }}",
                                     "metric": "{{ metric }}",
                                     "route_map": "{{ route_map }}",
-                                },
-                            },
-                        ],
-                    },
-                },
+                                }
+                            }
+                        ]
+                    }
+                }
             },
         },
         {
-            "name": "vrf",
+            "name": "redistribute.vrf",
             "getval": re.compile(
                 r"""
                 \s+redistribute\svrf
@@ -3245,17 +2635,17 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute vrf {{ vrf.name }}"
-            "{{ (' global') if vrf.global|d(False) else '' }}",
-            "remval": "redistribute vrf {{ vrf.name }}",
+            "setval": "redistribute vrf {{ redistribute.vrf.name }}"
+            "{{ (' global') if redistribute.vrf.global|d(False) else '' }}",
+            "remval": "redistribute vrf {{ redistribute.vrf.name }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
                         "redistribute": [
-                            {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}},
-                        ],
-                    },
-                },
+                            {"vrf": {"name": "{{ name }}", "global": "{{ not not global }}"}}
+                        ]
+                    }
+                }
             },
         },
         # redistribute ends

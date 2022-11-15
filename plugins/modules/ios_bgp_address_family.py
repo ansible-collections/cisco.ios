@@ -185,9 +185,39 @@ options:
                   - Please refer vendor documentation for valid values
                 type: int
               slow_peer:
-                description: Nexthop triggering
+                description:
+                - Nexthop triggering
+                - This option is DEPRECATED and replaced with slow_peer_options,
+                  this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
+                suboptions:
+                  detection:
+                    description: Slow-peer detection
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable slow-peer detection
+                        type: bool
+                      threshold:
+                        description:
+                          - Set the slow-peer detection threshold
+                          - Threshold value (seconds)
+                          - Please refer vendor documentation for valid values
+                        type: int
+                  split_update_group:
+                    description: Configure slow-peer split-update-group
+                    type: dict
+                    suboptions:
+                      dynamic:
+                        description: Dynamically split the slow peer to slow-update group
+                        type: bool
+                      permanent:
+                        description: Keep the slow-peer permanently in slow-update group
+                        type: bool
+              slow_peer_options:
+                description: Nexthop triggering
+                type: dict
                 suboptions:
                   detection:
                     description: Slow-peer detection
@@ -822,9 +852,49 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
               slow_peer:
-                description: Configure slow-peer
+                description:
+                - Configure slow-peer
+                - This option is DEPRECATED and replaced with slow_peer_options,
+                  this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
+                suboptions:
+                  detection:
+                    description: Configure slow-peer
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable slow-peer detection
+                        type: bool
+                      disable:
+                        description: Disable slow-peer detection
+                        type: bool
+                      threshold:
+                        description: Set the slow-peer detection threshold
+                        type: int
+                  split_update_group:
+                    description: Configure slow-peer
+                    type: dict
+                    suboptions:
+                      dynamic:
+                        description: Configure slow-peer
+                        type: dict
+                        suboptions:
+                          enable:
+                            description: Configure slow-peer
+                            type: bool
+                          disable:
+                            description: Configure slow-peer
+                            type: bool
+                          permanent:
+                            description: Configure slow-peer
+                            type: bool
+                      static:
+                        description: Configure slow-peer
+                        type: bool
+              slow_peer_options:
+                description: Configure slow-peer options
+                type: dict
                 suboptions:
                   detection:
                     description: Configure slow-peer

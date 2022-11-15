@@ -40,14 +40,54 @@ class Bgp_address_family(ResourceModule):
     gather_subset = ["!all", "!min"]
 
     parsers = [
-        "as_number",
-        "afi",
+        "as_number",  # top level starts
+        "aggregate_addresses",
+        "auto_summary",
         "default",
+        "default_information",
         "default_metric",
         "distance",
-        "table_map",
-        "redistribute",
+        "table_map",  # top level
+        "bgp.additional_paths.select",  # bgp starts
+        "bgp.additional_paths.install",
+        "bgp.additional_paths.receive",
+        "bgp.additional_paths.send",
+        "bgp.aggregate_timer",
+        "bgp.dmzlink-bw",
+        "bgp.nexthop.route_map",
+        "bgp.nexthop.trigger.delay",
+        "bgp.nexthop.trigger.enable",
+        "bgp.redistribute_internal",
+        "bgp.route_map",
+        "bgp.scan_time",
+        "bgp.soft_reconfig_backup",
+        "bgp.update_group",
+        "bgp.dampening",
+        "bgp.slow_peer_options.detection.enable",
+        "bgp.slow_peer_options.detection.threshold",
+        "bgp.slow_peer_options.split_update_group.dynamic",
+        "bgp.slow_peer.split_update_group.permanent",  # bgp ends
+        "snmp.context.user",  # snmp start
+        "snmp.context.community",  # snmp ends
+        "redistribute.application",  # redistribute start
+        "redistribute.bgp",
+        "redistribute.connected",
+        "redistribute.eigrp",
+        "redistribute.isis",
+        "redistribute.iso_igrp",
+        "redistribute.lisp",
+        "redistribute.mobile",
+        "redistribute.odr",
+        "redistribute.ospf",
+        "redistribute.ospfv3",
+        "redistribute.rip",
+        "redistribute.static",
+        "redistribute.vrf",  # redistribute ends
     ]
+
+    neighbor_parsers = []  # neighbor ends
+
+    network_parsers = ["networks"]  # network list
 
     def __init__(self, module):
         super(Bgp_address_family, self).__init__(
@@ -73,375 +113,144 @@ class Bgp_address_family(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        if self.state in ["merged", "replaced"]:
-            w_asn = self.want.get("as_number")
-            h_asn = self.have.get("as_number")
-
-            if h_asn and w_asn != h_asn:
+        if self.state in ["merged", "replaced", "overridden"]:
+            if self.have.get("as_number") and self.want.get("as_number") != self.have.get(
+                "as_number"
+            ):
                 self._module.fail_json(
-                    msg="BGP is already configured with ASN {0}. "
-                    "Please remove it with state: purged before "
-                    "configuring new ASN".format(h_asn),
+                    msg="BGP is already running. Only one BGP instance is allowed per device."
                 )
-
-        if self.want:
-            self.handle_deprecates(self.want)
 
         for each in self.want, self.have:
-            self._bgp_global_list_to_dict(each)
+            each["address_family"] = self._bgp_add_fam_list_to_dict(each.get("address_family", []))
 
-        # if state is merged, merge want onto have and then compare
-        if self.state == "merged":
-            wantd = dict_merge(haved, wantd)
-            if len(wantd) > 1:
-                self._module.fail_json(
-                    msg="BGP is already running. Only one BGP instance is allowed per device.",
-                )
-        # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            as_number = None
-            if wantd:
-                temp = dict()
-                for key, val in iteritems(haved):
-                    as_number = key
-                    if wantd.get(key):
-                        for k, v in iteritems(val.get("address_family")):
-                            w = wantd[key].get("address_family")
-                            if k in w:
-                                temp.update({k: v})
-                    val["address_family"] = temp
-            elif haved:
-                as_number = list(haved)[0]
-                temp = {}
-                for k, v in iteritems(haved):
-                    if not wantd:
-                        temp.update({k: v})
-                haved = temp
-            wantd = dict()
+            # deleted, clean up global params
+            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
+                self._compare(want={}, have=self.have)
+
+        else:
+            wantd = self.want
+            # if state is merged, merge want with have and then compare
+            if self.state == "merged":
+                wantd = dict_merge(self.have, self.want)
+
+        # remove superfluous config for overridden and deleted
+        if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want=wantd, have=have, as_number=as_number)
+                    self._compare(want={}, have=have)
 
-        # remove superfluous config for overridden
-        if self.state == "overridden":
-            for key, have in iteritems(haved):
-                if wantd.get(key):
-                    if have.get("address_family"):
-                        for k, v in iteritems(have.get("address_family")):
-                            w = wantd[key].get("address_family")
-                            if k not in w:
-                                self._compare(
-                                    want=dict(),
-                                    have={"address_family": {k: v}},
-                                    as_number=key,
-                                )
+        for k, want in iteritems(wantd.get("address_family")):
+            self._compare(want=want, have=self.have["address_family"].pop(k, {}))
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, dict()), as_number=k)
+    def _compare(self, want, have):
+        begin = len(self.commands)
+        # for everything else
+        self.compare(parsers=self.parsers, want=want, have=have)
+        # for neighbors
+        self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
+        # for networks
+        self._compare_network_lists(want.get("networks", {}), have.get("networks", {}))
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "afi", False))
 
-    def _compare(self, want, have, as_number):
-        """Leverages the base class `compare()` method and
-        populates the list of commands to be run by comparing
-        the `want` and `have` data with the `parsers` defined
-        for the Bgp_address_family network resource.
-        """
-        if want != have and self.state != "deleted":
-            self._compare_af(want, have)
-        elif self.state == "deleted":
-            self._delete_af(have)
+    def _compare_neighbor_lists(self, want, have):
+        """Compare neighbor list of dict"""
+        neig_parses = [
+            "activate",  # neighbor starts
+            "additional_paths",
+            "advertises.additional_paths",
+            "advertises.best_external",
+            "advertises.diverse_path",
+            "advertise_map",
+            "advertisement_interval",
+            "aigp",
+            "aigp.send.cost_community",
+            "aigp.send.med",
+            "allow_policy",
+            "allowas_in",
+            "as_override",
+            "bmp_activate",
+            "capability",
+            "cluster_id",
+            "default_originate",
+            "default_originate.route_map",
+            "description",
+            "disable_connected_check",
+            "ebgp_multihop",
+            "distribute_list",
+            "dmzlink_bw",
+            "filter_list",
+            "fall_over.bfd",
+            "fall_over.route_map",
+            "ha_mode",
+            "inherit",
+            "internal_vpn_client",
+            "local_as",
+            "remote_as",
+            "log_neighbor_changes",
+            "maximum_prefix",
+            "nexthop_self.set",
+            "nexthop_self.all",
+            "next_hop_unchanged.set",
+            "next_hop_unchanged.allpaths",
+            "password_options",
+            "path_attribute.discard",
+            "path_attribute.treat_as_withdraw",
+            "peer_group_name",
+            "peer_group",
+            "route_maps",
+            "remove_private_as.set",
+            "remove_private_as.all",
+            "remove_private_as.replace_as",
+            "route_reflector_client",
+            "route_server_client",
+            "send_community.set",
+            "send_community.both",
+            "send_community.extended",
+            "send_community.standard",
+            "shutdown",
+            "slow_peer_options.detection",
+            "slow_peer_options.split_update_group",
+            "soft_reconfiguration",
+            "soo",
+            "timers",
+            "transport.connection_mode",
+            "transport.multi_session",
+            "transport.path_mtu_discovery",
+            "ttl_security",
+            "unsuppress_map",
+            "version",
+            "weight",
+        ]
 
-        if self.commands and "router bgp" not in self.commands[0]:
-            self.commands.insert(0, "router bgp {0}".format(as_number))
+        for name, w_neighbor in want.items():
+            have_nbr = have.pop(name, {})
+            self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
+            for i in ["route_maps", "prefix_lists"]:
+                want_route = w_neighbor.pop(i, {})
+                have_route = have_nbr.pop(i, {})
+                if want_route:
+                    for k_rmps, w_rmps in want_route.items():
+                        have_rmps = have_route.pop(k_rmps, {})
+                        w_rmps["neighbor_address"] = w_neighbor.get("neighbor_address")
+                        if have_rmps:
+                            have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
+                            have_rmps = {i: have_rmps}
+                        self.compare(parsers=[i], want={i: w_rmps}, have=have_rmps)
+        for name, h_neighbor in have.items():
+            self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
 
-    def _compare_af(self, want, have):
-        w = want.get("address_family", dict())
-        h = have.get("address_family", dict())
+    def _compare_network_lists(self, w_attr, h_attr):
+        """Handling of gereric list options."""
+        for wkey, wentry in iteritems(w_attr):
+            if wentry != h_attr.pop(wkey, {}):
+                self.addcmd(wentry, "networks", False)
 
-        for key, val in iteritems(w):
-            cmd_len = len(self.commands)
-            if h.get(key):
-                h_key = h.get(key)
-            else:
-                h_key = dict()
-            if val != h_key:
-                self._aggregate_address_af_config_compare(val, have=h_key)
-                self._bgp_af_config_compare(val, have=h_key)
-                self._compare_neighbor(val, have=h_key)
-                self._compare_network(val, have=h_key)
-                self._compare_snmp(val, have=h_key)
-                self.compare(parsers=self.parsers, want=val, have=h.pop(key, dict()))
-            if cmd_len != len(self.commands):
-                af_cmd = "address-family {afi}".format(**val)
-                if val.get("safi"):
-                    af_cmd += " {safi}".format(**val)
-                if val.get("vrf"):
-                    af_cmd += " vrf {vrf}".format(**val)
-                self.commands.insert(cmd_len, af_cmd)
-        if not w and self.state == "overridden":
-            self._delete_af(have)
-
-    def _aggregate_address_af_config_compare(self, want, have):
-        parsers = ["aggregate_address"]
-        w_aggregate_address = want.get("aggregate_address", {})
-        if have:
-            h_aggregate_address = have.get("aggregate_address", {})
-        else:
-            h_aggregate_address = {}
-        for key, val in iteritems(w_aggregate_address):
-            if h_aggregate_address and h_aggregate_address.get(key):
-                self.compare(
-                    parsers=parsers,
-                    want={"aggregate_address": val},
-                    have={"aggregate_address": h_aggregate_address.pop(key)},
-                )
-            else:
-                self.compare(parsers=parsers, want={"aggregate_address": val}, have=dict())
-        if self.state == "replaced" or self.state == "overridden":
-            if h_aggregate_address:
-                for key, val in iteritems(h_aggregate_address):
-                    self.compare(parsers=parsers, want=dict(), have={"aggregate_address": val})
-            elif have.get("aggregate_address"):
-                for key, val in iteritems(have.pop("aggregate_address")):
-                    self.compare(parsers=parsers, want=dict(), have={"aggregate_address": val})
-
-    def _bgp_af_config_compare(self, want, have):
-        parsers = ["bgp.additional_paths", "bgp.dampening", "bgp.config", "bgp.slow_peer"]
-        w_bgp = want.get("bgp", dict())
-        if have:
-            h_bgp = have.get("bgp", dict())
-        else:
-            h_bgp = dict()
-        for key, val in iteritems(w_bgp):
-            if h_bgp and h_bgp.get(key):
-                self.compare(
-                    parsers=parsers,
-                    want={"bgp": {key: val}},
-                    have={"bgp": {key: h_bgp.pop(key)}},
-                )
-            else:
-                self.compare(parsers=parsers, want={"bgp": {key: val}}, have=dict())
-        if self.state == "replaced" or self.state == "overridden":
-            if h_bgp:
-                for key, val in iteritems(h_bgp):
-                    self.compare(parsers=parsers, want=dict(), have={"bgp": {key: val}})
-            elif have.get("bgp"):
-                for key, val in iteritems(have.pop("bgp")):
-                    self.compare(parsers=parsers, want=dict(), have={"bgp": {key: val}})
-
-    def _compare_neighbor(self, want, have):
-        parsers = ["neighbor", "neighbor.prefix_lists", "neighbor.route_maps", "neighbor.slow_peer"]
-        neighbor_key = ["address", "ipv6_adddress", "tag"]
-        deprecated = False
-        w = want.get("neighbor", {}) if want else {}
-        if have:
-            h = have.get("neighbor", {})
-        else:
-            h = {}
-
-        def _handle_neighbor_deprecated(w_key, h_key, want, have):
-            # function to handle idempotency, when deprecated params are present
-            # in want and their equivalent supported param are present inside have
-            keys = w_key + "s"
-            if have[h_key].get(keys):
-                temp_have = have[h_key][keys]
-                if want["name"] in temp_have:
-                    param_name = want["name"]
-                    if have[h_key][keys][param_name] == want:
-                        k = keys
-                        v = {param_name: want}
-                        deprecated = True
-                    return k, v, deprecated
-
-        for key, val in iteritems(w):
-            val = self.handle_deprecated(val)
-            if h and h.get(key):
-                neighbor_tag = [each for each in neighbor_key if each in val][0]
-                for k, v in iteritems(val):
-                    if k == "route_map" or k == "prefix_list":
-                        k, v, deprecated = _handle_neighbor_deprecated(k, key, v, h)
-                    if h[key].get(k) and k not in neighbor_key:
-                        if k not in ["prefix_lists", "route_maps"]:
-                            self.compare(
-                                parsers=parsers,
-                                want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v}},
-                                have={
-                                    "neighbor": {
-                                        neighbor_tag: val[neighbor_tag],
-                                        k: h[key].pop(k, {}),
-                                    },
-                                },
-                            )
-                        if k in ["prefix_lists", "route_maps"]:
-                            for k_param, v_param in iteritems(val[k]):
-                                self.compare(
-                                    parsers=parsers,
-                                    want={
-                                        "neighbor": {neighbor_tag: val[neighbor_tag], k: v_param},
-                                    },
-                                    have={
-                                        "neighbor": {
-                                            neighbor_tag: val[neighbor_tag],
-                                            k: h[key][k].pop(k_param, {}),
-                                        },
-                                    },
-                                )
-                    elif k not in neighbor_key:
-                        if k not in ["prefix_lists", "route_maps"]:
-                            self.compare(
-                                parsers=parsers,
-                                want={"neighbor": {neighbor_tag: val[neighbor_tag], k: v}},
-                                have=dict(),
-                            )
-                        elif k in ["prefix_lists", "route_maps"] and not deprecated:
-                            for k_param, v_param in iteritems(val[k]):
-                                self.compare(
-                                    parsers=parsers,
-                                    want={
-                                        "neighbor": {neighbor_tag: val[neighbor_tag], k: v_param},
-                                    },
-                                    have=dict(),
-                                )
-            else:
-                self.compare(parsers=parsers, want={"neighbor": val}, have=dict())
-                for param in ["prefix_lists", "route_maps"]:
-                    if param in val:
-                        for k_param, v_param in iteritems(val[param]):
-                            self.compare(
-                                parsers=parsers,
-                                want={"neighbor": {"address": val["address"], param: v_param}},
-                                have=dict(),
-                            )
-                        val.pop(param)
-        if self.state == "replaced" or self.state == "overridden":
-            for key, val in iteritems(h):
-                self.compare(parsers=parsers, want=dict(), have={"neighbor": val})
-            count = 0
-            remote = 0
-            activate = 0
-            for each in self.commands:
-                if "no" in each and "remote-as" in each:
-                    remote = count
-                if "no" in each and "activate" in each:
-                    activate = count
-                count += 1
-            if activate and activate > remote:
-                if count > 0 or "activate" in self.commands[activate]:
-                    self.commands.append(self.commands.pop(activate))
-            if remote and activate > remote:
-                if count > 0 or "remote-as" in self.commands[remote]:
-                    self.commands.append(self.commands.pop(remote))
-
-    def _compare_network(self, want, have):
-        parsers = ["network"]
-        w = want.get("network", dict())
-        h = have.get("network", dict())
-        for key, val in iteritems(w):
-            if h and h.get(key):
-                h_network = h.pop(key)
-                if h_network != val:
-                    self.compare(parsers=parsers, want={"network": val}, have={"network": val})
-            else:
-                self.compare(parsers=parsers, want={"network": val}, have=dict())
-        if self.state == "replaced" or self.state == "overridden":
-            for key, val in iteritems(h):
-                self.compare(parsers=parsers, want=dict(), have={"network": val})
-
-    def _compare_snmp(self, want, have):
-        parsers = ["snmp"]
-        w = want.get("snmp", dict())
-        h = have.get("snmp", dict())
-        if w:
-            for key, val in iteritems(w["context"]):
-                if h:
-                    h_snmp_param = h["context"].pop(key)
-                    if h_snmp_param and key != "name":
-                        self.compare(
-                            parsers=parsers,
-                            want={"snmp": {key: val, "name": w["context"]["name"]}},
-                            have={"snmp": {key: h_snmp_param, "name": w["context"]["name"]}},
-                        )
-                elif key == "community" or key == "user":
-                    self.compare(
-                        parsers=parsers,
-                        want={"snmp": {key: val, "name": w["context"]["name"]}},
-                        have=dict(),
-                    )
-        elif h and self.state == "replaced" or self.state == "overridden":
-            for key, val in iteritems(h):
-                self.compare(
-                    parsers=parsers,
-                    want=dict(),
-                    have={"snmp": {key: val, "name": h["context"]["name"]}},
-                )
-
-    def _delete_af(self, have):
-        h = have.get("address_family", dict())
-        for key, val in iteritems(h):
-            if "safi" in val and "vrf" in val:
-                cmd = "no address-family {afi} {safi} vrf {vrf}".format(**val)
-            elif "safi" in val:
-                cmd = "no address-family {afi} {safi}".format(**val)
-            else:
-                cmd = "no address-family {afi}".format(**val)
-            self.commands.append(cmd)
-
-    def list_to_dict(self, param):
-        if param:
-            for key, val in iteritems(param):
-                if val.get("address_family"):
-                    temp = {}
-                    for each in val.get("address_family", []):
-                        temp.update(
-                            {
-                                each["afi"]
-                                + "_"
-                                + each.get("safi", "")
-                                + "_"
-                                + each.get("vrf", ""): each,
-                            },
-                        )
-                    val["address_family"] = temp
-                    self.list_to_dict(val["address_family"])
-                if "aggregate_address" in val:
-                    temp = {}
-                    for each in val["aggregate_address"]:
-                        temp.update({each["address"]: each})
-                    val["aggregate_address"] = temp
-                if "bgp" in val and "slow_peer" in val["bgp"]:
-                    temp = {}
-                    for each in val["bgp"]["slow_peer"]:
-                        temp.update({list(each)[0]: each[list(each)[0]]})
-                    val["bgp"]["slow_peer"] = temp
-                if "neighbor" in val:
-                    for each in val["neighbor"]:
-                        if each.get("prefix_lists"):
-                            temp = {}
-                            for every in each["prefix_lists"]:
-                                temp.update({every["name"]: every})
-                            each["prefix_lists"] = temp
-                        if each.get("route_maps"):
-                            temp = {}
-                            for every in each["route_maps"]:
-                                temp.update({every["name"]: every})
-                            each["route_maps"] = temp
-                        if each.get("slow_peer"):
-                            each["slow_peer"] = {
-                                list(every)[0]: every[list(every)[0]] for every in each["slow_peer"]
-                            }
-                    val["neighbor"] = {
-                        each.get("address") or each.get("ipv6_adddress") or each.get("tag"): each
-                        for each in val.get("neighbor", [])
-                    }
-                if "network" in val:
-                    temp = {}
-                    for each in val.get("network", []):
-                        temp.update({each["address"]: each})
-                    val["network"] = temp
-                if "redistribute" in val:
-                    temp = {}
-                    for each in val.get("redistribute", []):
-                        temp.update(each)
-                    val["redistribute"] = temp
+        # remove remaining items in have for replaced state
+        for hkey, hentry in iteritems(h_attr):
+            self.addcmd(hentry, "networks", True)
 
     def handle_deprecated(self, want_to_validate):
         if want_to_validate.get("next_hop_self") and want_to_validate.get("nexthop_self"):
@@ -450,3 +259,66 @@ class Bgp_address_family(ResourceModule):
             del want_to_validate["next_hop_self"]
             want_to_validate["nexthop_self"] = {"all": True}
         return want_to_validate
+
+    def _bgp_add_fam_list_to_dict(self, tmp_data):
+        """Convert all list of dicts to dicts of dicts"""
+        p_key = {
+            "aggregate_address": "address",
+            "neighbor": "neighbor_address",
+            "neighbors": "neighbor_address",
+            "route_maps": "name",
+            "prefix_lists": "name",
+            "networks": "address",
+            "network": "address",
+        }
+        af_data = {}
+        for af in tmp_data:
+            for k, val in af.items():
+                if k == "neighbor" or k == "neighbors":
+                    tmp = {}
+                    for neib in val:
+                        # address/ tag/ ipv6_address to neighbor_address
+                        if neib.get("address"):
+                            neib["neighbor_address"] = neib.pop("address")
+                        if neib.get("tag"):
+                            neib["neighbor_address"] = neib.pop("tag")
+                        if neib.get("ipv6_address"):
+                            neib["neighbor_address"] = neib.pop("ipv6_address")
+                        if neib.get("ipv6_adddress"):
+                            neib["neighbor_address"] = neib.pop("ipv6_adddress")
+                        # prefix_list and prefix_lists
+                        if neib.get("prefix_list"):  # deprecated made list
+                            neib["prefix_lists"] = [neib.get("prefix_list")]
+                        if neib.get("prefix_lists"):
+                            neib["prefix_lists"] = {
+                                str(i[p_key["prefix_lists"]]): i for i in neib.get("prefix_lists")
+                            }
+                        # route_map and route_maps
+                        if neib.get("route_map"):  # deprecated made list
+                            neib["route_maps"] = [neib.get("route_map")]
+                        if neib.get("route_maps"):
+                            neib["route_maps"] = {
+                                str(i[p_key["route_maps"]]): i for i in neib.get("route_maps")
+                            }
+                        # slow_peer to slow_peer_options
+                        if neib.get("slow_peer"):  # only one slow_peer is allowed
+                            neib["slow_peer_options"] = neib.get("slow_peer")[0]
+                        # make dict neighbors dict
+                        tmp[neib[p_key[k]]] = neib
+                    af["neighbors"] = tmp
+                # make dict networks dict
+                elif k == "network" or k == "networks":
+                    af["networks"] = {str(i[p_key[k]]): i for i in val}
+                # make dict aggregate_addresses dict
+                elif k == "aggregate_address":
+                    af["aggregate_address"] = {str(i[p_key[k]]): i for i in val}
+                # slow_peer to slow_peer_options
+                elif k == "bgp":
+                    if val.get("slow_peer"):  # only one slow_peer is allowed
+                        af["bgp"]["slow_peer_options"] = val.get("slow_peer")[0]
+                # keep single dict to compare redistribute
+                elif k == "redistribute":
+                    for i in val:
+                        af["redistribute"] = {m: v for m, v in i.items()}
+            af_data[af.get("afi", "") + "_" + af.get("safi", "") + "_" + af.get("vrf", "")] = af
+        return af_data

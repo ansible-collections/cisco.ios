@@ -141,6 +141,25 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         },
                                     },
                                 },
+                                "slow_peer_options": {
+                                    "type": "dict",
+                                    "options": {
+                                        "detection": {
+                                            "type": "dict",
+                                            "options": {
+                                                "enable": {"type": "bool"},
+                                                "threshold": {"type": "int"},
+                                            },
+                                        },
+                                        "split_update_group": {
+                                            "type": "dict",
+                                            "options": {
+                                                "dynamic": {"type": "bool"},
+                                                "permanent": {"type": "bool"},
+                                            },
+                                        },
+                                    },
+                                },
                                 "soft_reconfig_backup": {"type": "bool"},
                                 "update_group": {"type": "bool"},
                             },
@@ -492,6 +511,33 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         },
                                     },
                                 },
+                                "slow_peer_options": {
+                                    "type": "dict",
+                                    "options": {
+                                        "detection": {
+                                            "type": "dict",
+                                            "options": {
+                                                "enable": {"type": "bool"},
+                                                "disable": {"type": "bool"},
+                                                "threshold": {"type": "int"},
+                                            },
+                                        },
+                                        "split_update_group": {
+                                            "type": "dict",
+                                            "options": {
+                                                "dynamic": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "enable": {"type": "bool"},
+                                                        "disable": {"type": "bool"},
+                                                        "permanent": {"type": "bool"},
+                                                    },
+                                                },
+                                                "static": {"type": "bool"},
+                                            },
+                                        },
+                                    },
+                                },
                                 "soft_reconfiguration": {"type": "bool"},
                                 "soo": {"type": "str"},
                                 "timers": {
@@ -725,7 +771,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                },
+                                }
                             },
                         },
                         "table_map": {
