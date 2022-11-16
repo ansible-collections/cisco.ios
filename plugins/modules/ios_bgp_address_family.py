@@ -2375,8 +2375,6 @@ parsed:
     module argspec.
 """
 
-import debugpy
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
@@ -2385,10 +2383,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
     Bgp_address_family,
 )
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():
