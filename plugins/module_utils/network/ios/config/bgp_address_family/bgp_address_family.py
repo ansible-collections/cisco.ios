@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
@@ -37,18 +36,16 @@ class Bgp_address_family(ResourceModule):
     The cisco.ios_bgp_address_family config class
     """
 
-    gather_subset = ["!all", "!min"]
-
     parsers = [
-        "as_number",  # top level starts
+        "as_number",  # generic
         "aggregate_addresses",
         "auto_summary",
         "default",
         "default_information",
         "default_metric",
         "distance",
-        "table_map",  # top level
-        "bgp.additional_paths.select",  # bgp starts
+        "table_map",
+        "bgp.additional_paths.select",  # bgp
         "bgp.additional_paths.install",
         "bgp.additional_paths.receive",
         "bgp.additional_paths.send",
@@ -66,10 +63,10 @@ class Bgp_address_family(ResourceModule):
         "bgp.slow_peer_options.detection.enable",
         "bgp.slow_peer_options.detection.threshold",
         "bgp.slow_peer_options.split_update_group.dynamic",
-        "bgp.slow_peer.split_update_group.permanent",  # bgp ends
-        "snmp.context.user",  # snmp start
-        "snmp.context.community",  # snmp ends
-        "redistribute.application",  # redistribute start
+        "bgp.slow_peer.split_update_group.permanent",
+        "snmp.context.user",  # snmp
+        "snmp.context.community",
+        "redistribute.application",  # redistribute
         "redistribute.bgp",
         "redistribute.connected",
         "redistribute.eigrp",
@@ -82,12 +79,8 @@ class Bgp_address_family(ResourceModule):
         "redistribute.ospfv3",
         "redistribute.rip",
         "redistribute.static",
-        "redistribute.vrf",  # redistribute ends
+        "redistribute.vrf",  # redistribute
     ]
-
-    neighbor_parsers = []  # neighbor ends
-
-    network_parsers = ["networks"]  # network list
 
     def __init__(self, module):
         super(Bgp_address_family, self).__init__(
@@ -137,12 +130,16 @@ class Bgp_address_family(ResourceModule):
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd.get("address_family")):
+        for k, want in wantd.get("address_family").items():
             self._compare(want=want, have=self.have["address_family"].pop(k, {}))
+
+        # adds router bgp AS_NUMB command
+        if len(self.commands) > 0:
+            self.commands.insert(0, self._tmplt.render(self.want or self.have, "as_number", False))
 
     def _compare(self, want, have):
         begin = len(self.commands)
@@ -152,13 +149,14 @@ class Bgp_address_family(ResourceModule):
         self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
         # for networks
         self._compare_network_lists(want.get("networks", {}), have.get("networks", {}))
+        # add af command
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "afi", False))
 
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
         neig_parses = [
-            "activate",  # neighbor starts
+            "activate",
             "additional_paths",
             "advertises.additional_paths",
             "advertises.best_external",
@@ -228,12 +226,12 @@ class Bgp_address_family(ResourceModule):
         for name, w_neighbor in want.items():
             have_nbr = have.pop(name, {})
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
-            for i in ["route_maps", "prefix_lists"]:
-                want_route = w_neighbor.pop(i, {})
-                have_route = have_nbr.pop(i, {})
-                if want_route:
-                    for k_rmps, w_rmps in want_route.items():
-                        have_rmps = have_route.pop(k_rmps, {})
+            for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
+                want_route_or_prefix = w_neighbor.pop(i, {})
+                have_route_or_prefix = have_nbr.pop(i, {})
+                if want_route_or_prefix:
+                    for k_rmps, w_rmps in want_route_or_prefix.items():
+                        have_rmps = have_route_or_prefix.pop(k_rmps, {})
                         w_rmps["neighbor_address"] = w_neighbor.get("neighbor_address")
                         if have_rmps:
                             have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
@@ -244,24 +242,16 @@ class Bgp_address_family(ResourceModule):
 
     def _compare_network_lists(self, w_attr, h_attr):
         """Handling of gereric list options."""
-        for wkey, wentry in iteritems(w_attr):
+        for wkey, wentry in w_attr.items():
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, "networks", False)
 
         # remove remaining items in have for replaced state
-        for hkey, hentry in iteritems(h_attr):
+        for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "networks", True)
 
-    def handle_deprecated(self, want_to_validate):
-        if want_to_validate.get("next_hop_self") and want_to_validate.get("nexthop_self"):
-            del want_to_validate["next_hop_self"]
-        elif want_to_validate.get("next_hop_self"):
-            del want_to_validate["next_hop_self"]
-            want_to_validate["nexthop_self"] = {"all": True}
-        return want_to_validate
-
     def _bgp_add_fam_list_to_dict(self, tmp_data):
-        """Convert all list of dicts to dicts of dicts"""
+        """Convert all list of dicts to dicts of dicts, also deals with deprecated attributes"""
         p_key = {
             "aggregate_address": "address",
             "neighbor": "neighbor_address",
@@ -286,6 +276,9 @@ class Bgp_address_family(ResourceModule):
                             neib["neighbor_address"] = neib.pop("ipv6_address")
                         if neib.get("ipv6_adddress"):
                             neib["neighbor_address"] = neib.pop("ipv6_adddress")
+                        # next_hop_self deprecated added nexthop_self
+                        if neib.get("next_hop_self"):
+                            neib["nexthop_self"] = {"set": neib.pop("next_hop_self")}
                         # prefix_list and prefix_lists
                         if neib.get("prefix_list"):  # deprecated made list
                             neib["prefix_lists"] = [neib.get("prefix_list")]
@@ -320,5 +313,6 @@ class Bgp_address_family(ResourceModule):
                 elif k == "redistribute":
                     for i in val:
                         af["redistribute"] = {m: v for m, v in i.items()}
+            # make distinct address family entires
             af_data[af.get("afi", "") + "_" + af.get("safi", "") + "_" + af.get("vrf", "")] = af
         return af_data
