@@ -108,10 +108,10 @@ class Bgp_address_family(ResourceModule):
         """
         if self.state in ["merged", "replaced", "overridden"]:
             if self.have.get("as_number") and self.want.get("as_number") != self.have.get(
-                "as_number"
+                "as_number",
             ):
                 self._module.fail_json(
-                    msg="BGP is already running. Only one BGP instance is allowed per device."
+                    msg="BGP is already running. Only one BGP instance is allowed per device.",
                 )
 
         for each in self.want, self.have:
@@ -151,7 +151,8 @@ class Bgp_address_family(ResourceModule):
         self._compare_network_lists(want.get("networks", {}), have.get("networks", {}))
         # for aggregate_addresses
         self._compare_agg_add_lists(
-            want.get("aggregate_addresses", {}), have.get("aggregate_addresses", {})
+            want.get("aggregate_addresses", {}),
+            have.get("aggregate_addresses", {}),
         )
         # add af command
         if len(self.commands) != begin:
