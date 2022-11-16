@@ -117,25 +117,25 @@ class Bgp_address_family(ResourceModule):
         for each in self.want, self.have:
             each["address_family"] = self._bgp_add_fam_list_to_dict(each.get("address_family", []))
 
+        wantd = self.want
+        haved = self.have
+
+        if self.state == "merged":
+            wantd = dict_merge(haved, wantd)
+
         if self.state == "deleted":
-            # deleted, clean up global params
-            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
-                self._compare(want={}, have=self.have)
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            wantd = {}
 
-        else:
-            wantd = self.want
-            # if state is merged, merge want with have and then compare
-            if self.state == "merged":
-                wantd = dict_merge(self.have, self.want)
-
-        # remove superfluous config for overridden and deleted
+        # remove superfluous config
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
+        # sand end
         for k, want in wantd.get("address_family").items():
-            self._compare(want=want, have=self.have["address_family"].pop(k, {}))
+            self._compare(want=want, have=haved["address_family"].pop(k, {}))
 
         # adds router bgp AS_NUMB command
         if len(self.commands) > 0:

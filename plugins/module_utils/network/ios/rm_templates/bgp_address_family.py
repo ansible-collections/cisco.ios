@@ -86,7 +86,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "afi",
             "getval": re.compile(
                 r"""
-                \s+address-family
+                \saddress-family
                 (\s(?P<afi>ipv4|ipv6|l2vpn|nsap|rtfilter|vpnv4|vpnv6))?
                 (\s(?P<safi>flowspec|mdt|multicast|mvpn|unicast|evpn|vpls))?
                 (\svrf\s(?P<vrf>\S+))?
@@ -108,7 +108,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "aggregate_addresses",
             "getval": re.compile(
                 r"""
-                \s+aggregate-address
+                \s\saggregate-address
                 (\s(?P<address>\S+))?
                 (\s(?P<netmask>\S+))?
                 (\s(?P<as_set>as-set))?
@@ -159,7 +159,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.additional_paths.select",
             "getval": re.compile(
                 r"""
-                \s+bgp\sadditional-paths\sselect
+                \s\sbgp\sadditional-paths\sselect
                 (\s(?P<select_all>all))?
                 (\s(?P<select_backup>backup))?
                 (\s(?P<select_best_ext>best-external))?
@@ -196,7 +196,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.additional_paths.install",
             "getval": re.compile(
                 r"""
-                \s+bgp\sadditional-paths\sinstall$""",
+                \s\sbgp\sadditional-paths\sinstall$""",
                 re.VERBOSE,
             ),
             "setval": "bgp additional-paths select install",
@@ -208,7 +208,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.additional_paths.receive",
             "getval": re.compile(
                 r"""
-                \s+bgp\sadditional-paths\sreceive$""",
+                \s\sbgp\sadditional-paths\sreceive$""",
                 re.VERBOSE,
             ),
             "setval": "bgp additional-paths select receive",
@@ -220,7 +220,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.additional_paths.send",
             "getval": re.compile(
                 r"""
-                \s+bgp\sadditional-paths\ssend$""",
+                \s\sbgp\sadditional-paths\ssend$""",
                 re.VERBOSE,
             ),
             "setval": "bgp additional-paths select send",
@@ -232,7 +232,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.aggregate_timer",
             "getval": re.compile(
                 r"""
-                \s+bgp\saggregate-timer
+                \s\sbgp\saggregate-timer
                 (\s(?P<aggregate_timer>\d+))?
                 $""",
                 re.VERBOSE,
@@ -248,7 +248,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.dmzlink-bw",
             "getval": re.compile(
                 r"""
-                \s+bgp\sdmzlink-bw
+                \s\sbgp\sdmzlink-bw
                 $""",
                 re.VERBOSE,
             ),
@@ -259,7 +259,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.nexthop.route_map",
             "getval": re.compile(
                 r"""
-                \s+bgp\snexthop\sroute-map
+                \s\sbgp\snexthop\sroute-map
                 (\s(?P<route_map>\S+))?
                 $""",
                 re.VERBOSE,
@@ -275,7 +275,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.nexthop.trigger.delay",
             "getval": re.compile(
                 r"""
-                \s+bgp\snexthop\strigger\sdelay
+                \s\sbgp\snexthop\strigger\sdelay
                 (\s(?P<delay>\d+))?
                 $""",
                 re.VERBOSE,
@@ -291,7 +291,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.nexthop.trigger.enable",
             "getval": re.compile(
                 r"""
-                \s+bgp\snexthop\strigger\sdelay\senable
+                \s\sbgp\snexthop\strigger\sdelay\senable
                 $""",
                 re.VERBOSE,
             ),
@@ -304,7 +304,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.redistribute_internal",
             "getval": re.compile(
                 r"""
-                \s+bgp\sredistribute-internal
+                \s\sbgp\sredistribute-internal
                 $""",
                 re.VERBOSE,
             ),
@@ -315,7 +315,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.route_map",
             "getval": re.compile(
                 r"""
-                \s+bgp\sroute-map\spriority
+                \s\sbgp\sroute-map\spriority
                 $""",
                 re.VERBOSE,
             ),
@@ -326,7 +326,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.scan_time",
             "getval": re.compile(
                 r"""
-                \s+bgp\sscan-time
+                \s\sbgp\sscan-time
                 (\s(?P<scan_time>\d+))?
                 $""",
                 re.VERBOSE,
@@ -338,7 +338,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.soft_reconfig_backup",
             "getval": re.compile(
                 r"""
-                \s+bgp\ssoft-reconfig-backup
+                \s\sbgp\ssoft-reconfig-backup
                 $""",
                 re.VERBOSE,
             ),
@@ -349,7 +349,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.update_group",
             "getval": re.compile(
                 r"""
-                \s+bgp\supdate-group\ssplit\sas-override
+                \s\sbgp\supdate-group\ssplit\sas-override
                 $""",
                 re.VERBOSE,
             ),
@@ -359,7 +359,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "bgp.dampening",
             "getval": re.compile(
-                r"""\s+bgp\sdampening
+                r"""\s\sbgp\sdampening
                     (\s(?P<penalty_half_time>\d+))?
                     (\s(?P<reuse_route_val>\d+))?
                     (\s(?P<suppress_route_val>\d+))?
@@ -392,7 +392,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.slow_peer_options.detection.enable",
-            "getval": re.compile(r"""\s+bgp\sslow-peer\sdetection$""", re.VERBOSE),
+            "getval": re.compile(r"""\s\sbgp\sslow-peer\sdetection$""", re.VERBOSE),
             "setval": "bgp slow-peer detection",
             "result": {
                 "address_family": {
@@ -404,7 +404,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.slow_peer_options.detection.threshold",
             "getval": re.compile(
                 r"""
-                \s+bgp\sslow-peer\sdetection\sthreshold
+                \s\sbgp\sslow-peer\sdetection\sthreshold
                 (\s(?P<threshold>\d+))?
                 $""",
                 re.VERBOSE,
@@ -424,7 +424,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.slow_peer_options.split_update_group.dynamic",
             "getval": re.compile(
                 r"""
-                \s+bgp\sslow-peer\ssplit-update-group\sdynamic$""",
+                \s\sbgp\sslow-peer\ssplit-update-group\sdynamic$""",
                 re.VERBOSE,
             ),
             "setval": "bgp slow-peer split-update-group dynamic",
@@ -440,7 +440,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bgp.slow_peer.split_update_group.permanent",
             "getval": re.compile(
                 r"""
-                \s+bgp\sslow-peer\ssplit-update-group\sdynamic\spermanent$""",
+                \s\sbgp\sslow-peer\ssplit-update-group\sdynamic\spermanent$""",
                 re.VERBOSE,
             ),
             "setval": "bgp slow-peer split-update-group dynamic permanent",
@@ -455,20 +455,20 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         # bgp ends
         {
             "name": "default",
-            "getval": re.compile(r"""\s+default$""", re.VERBOSE),
+            "getval": re.compile(r"""\s\sdefault$""", re.VERBOSE),
             "setval": "default",
             "result": {"address_family": {UNIQUE_AFI: {"default": True}}},
         },
         {
             "name": "default_information",
-            "getval": re.compile(r"""\s+default-information\soriginate$""", re.VERBOSE),
+            "getval": re.compile(r"""\s\sdefault-information\soriginate$""", re.VERBOSE),
             "setval": "default-information originate",
             "result": {"address_family": {UNIQUE_AFI: {"default_information": True}}},
         },
         {
             "name": "default_metric",
             "getval": re.compile(
-                r"""\s+default-metric
+                r"""\s\sdefault-metric
                     (\s(?P<default_metric>\d+))
                     $""",
                 re.VERBOSE,
@@ -479,7 +479,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "distance",
             "getval": re.compile(
-                r"""\s+distance\sbgp
+                r"""\s\sdistance\sbgp
                     (\s(?P<external>\d+))
                     (\s(?P<internal>\d+))
                     (\s(?P<local>\d+))
@@ -514,7 +514,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "activate",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sactivate$""",
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\sactivate$""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} activate",
@@ -535,7 +535,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "additional_paths",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadditional-paths
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadditional-paths
                 (\s(?P<disable>disable))?
                 (\s(?P<receive>receive))?
                 (\s(?P<send>send))?
@@ -566,7 +566,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertises.additional_paths",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sadditional-paths
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sadditional-paths
                 (\s(?P<all>all))?
                 (\sbest\s(?P<receive>\d+))?
                 (\s(?P<group_best>group-best))?
@@ -599,7 +599,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertises.best_external",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sbest-external
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sbest-external
                 $""",
                 re.VERBOSE,
             ),
@@ -617,7 +617,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertises.diverse_path",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise\sdiverse-path
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadvertise\sdiverse-path
                 (\s(?P<backup>backup))?
                 (\s(?P<mpath>mpath))?
                 $""",
@@ -647,7 +647,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertise_map",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sadvertise-map
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadvertise-map
                 (\s(?P<name>\S+))?
                 (\sexist-map\s(?P<exist_map>\S+))?
                 (\snon-exist-map\s(?P<non_exist_map>\S+))?
@@ -678,7 +678,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertisement_interval",
             "getval": re.compile(
                 r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\sadvertisement-interval
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sadvertisement-interval
                 (\s(?P<advertisement_interval>\d+))?
                 $""",
                 re.VERBOSE,
@@ -701,7 +701,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "aigp",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp
+                \s\sneighbor\s(?P<neighbor_address>\S+)\saigp
                 $""",
                 re.VERBOSE,
             ),
@@ -716,7 +716,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "aigp.send.cost_community",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\scost-community
+                \s\sneighbor\s(?P<neighbor_address>\S+)\saigp\ssend\scost-community
                 (\s(?P<id>\d+))\spoi
                 (\s(?P<igp_cost>igp-cost))?
                 (\s(?P<pre_bestpath>pre-bestpath))?
@@ -756,7 +756,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "aigp.send.med",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\saigp\ssend\smed
+                \s\sneighbor\s(?P<neighbor_address>\S+)\saigp\ssend\smed
                 $""",
                 re.VERBOSE,
             ),
@@ -772,7 +772,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "allow_policy",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sallow-policy
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sallow-policy
                 $""",
                 re.VERBOSE,
             ),
@@ -787,7 +787,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "allowas_in",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sallowas-in
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sallowas-in
                 (\s(?P<allowas_in>\d+))
                 $""",
                 re.VERBOSE,
@@ -797,7 +797,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}
                     },
                 },
             },
@@ -806,7 +806,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "as_override",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sas-override
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sas-override
                 $""",
                 re.VERBOSE,
             ),
@@ -822,7 +822,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "bmp_activate",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sbmp-activate
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sbmp-activate
                 (\sserver\s(?P<server>\d+))?
                 (\s(?P<all>all))?
                 $""",
@@ -851,7 +851,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "capability",
             "getval": re.compile(
                 r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\scapability\sorf\sprefix-list
+                \s\sneighbor\s(?P<neighbor_address>\S+)\scapability\sorf\sprefix-list
                 (\s(?P<both>both))?
                 (\s(?P<receive>receive))?
                 (\s(?P<send>send))?
@@ -882,14 +882,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "cluster_id",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\scluster-id(\s(?P<cluster_id>\s\d+))$""",
+                \s\sneighbor\s(?P<neighbor_address>\S+)\scluster-id(\s(?P<cluster_id>\s\d+))$""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} cluster-id {{ cluster_id }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}
                     },
                 },
             },
@@ -898,7 +898,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "default_originate",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate$""",
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate$""",
                 re.VERBOSE,
             ),
             "setval": "{{ ('neighbor ' + neighbor_address  + ' default-originate') if default_originate.set|d(False) else '' }}",
@@ -914,7 +914,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "default_originate.route_map",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sdefault-originate
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sdefault-originate
                 (\sroute-map\s(?P<route_map>\S+))
                 $""",
                 re.VERBOSE,
@@ -926,7 +926,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"},
+                                "default-originate": {"route_map": "{{ route_map }}"}
                             },
                         },
                     },
@@ -937,7 +937,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "description",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sdescription\s(?P<description>\S.+)$""",
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sdescription\s(?P<description>\S.+)$""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} description {{ description }}",
@@ -958,7 +958,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "disable_connected_check",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s\sneighbor\s(?P<neighbor_address>\S+)
                 \s(?P<disable_connected_check>disable-connected-check)
                 $""",
                 re.VERBOSE,
@@ -980,7 +980,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "ebgp_multihop",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s\sneighbor\s(?P<neighbor_address>\S+)
                 \s(?P<enable>ebgp_multihop)
                 (\s(?P<hop_count>\d+))?
                 $""",
@@ -1007,7 +1007,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "distribute_list",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sdistribute-list
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sdistribute-list
                 (\s(?P<acl>\S+))
                 (\s(?P<in>in))?
                 (\s(?P<out>out))?
@@ -1038,7 +1038,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "dmzlink_bw",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sdmzlink-bw
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sdmzlink-bw
                 $""",
                 re.VERBOSE,
             ),
@@ -1053,7 +1053,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "filter_list",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sfilter-list
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sfilter-list
                 (\s(?P<acl>\S+))
                 (\s(?P<in>in))?
                 (\s(?P<out>out))?
@@ -1084,7 +1084,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "fall_over.bfd",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sfall-over
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sfall-over
                 \s(?P<set>bfd)
                 (\s(?P<multi_hop>multi-hop))?
                 (\s(?P<single_hop>single-hop))?
@@ -1117,7 +1117,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "fall_over.route_map",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sroute-map
                 \s(?P<route_map>\S+)
                 $""",
                 re.VERBOSE,
@@ -1128,7 +1128,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "fall_over": {"route_map": "{{ not not route_map }}"},
+                                "fall_over": {"route_map": "{{ not not route_map }}"}
                             },
                         },
                     },
@@ -1139,7 +1139,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "ha_mode",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sha-mode
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sha-mode
                 \s(?P<set>graceful-restart)
                 (\s(?P<disable>disable))?
                 $""",
@@ -1167,7 +1167,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "inherit",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
                 \s(?P<inherit>\S+)
                 $""",
                 re.VERBOSE,
@@ -1184,7 +1184,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "internal_vpn_client",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sinternal-vpn-client
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sinternal-vpn-client
                 \s(?P<inherit>\S+)
                 $""",
                 re.VERBOSE,
@@ -1200,7 +1200,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "local_as",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
+                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
                 (\s(?P<number>\S+))?
                 (\s(?P<dual_as>dual-as))?
                 (\s(?P<no_prepend>no-prepend))?
@@ -1237,7 +1237,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "remote_as",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
+                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
                 (\s(?P<number>\S+))?
                 $""",
                 re.VERBOSE,
@@ -1254,7 +1254,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "log_neighbor_changes",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s\sneighbor\s(?P<neighbor_address>\S+)
                 \s(?P<set>log-neighbor-changes)
                 (\s(?P<disable>disable))?
                 $""",
@@ -1283,7 +1283,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "maximum_prefix",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
+                \s\sneighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
                 (\s(?P<max_no>\d+))
                 (\s(?P<threshold_val>\d+))?
                 (\srestart(?P<restart>\d+))?
@@ -1317,7 +1317,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "nexthop_self.set",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self
+                \s\sneighbor\s(?P<neighbor_address>\S+)\snext-hop-self
                 $""",
                 re.VERBOSE,
             ),
@@ -1332,7 +1332,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "nexthop_self.all",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-self\sall
+                \s\sneighbor\s(?P<neighbor_address>\S+)\snext-hop-self\sall
                 $""",
                 re.VERBOSE,
             ),
@@ -1347,7 +1347,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "next_hop_unchanged.set",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged
+                \s\sneighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged
                 $""",
                 re.VERBOSE,
             ),
@@ -1364,7 +1364,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "next_hop_unchanged.allpaths",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged\sallpaths
+                \s\sneighbor\s(?P<neighbor_address>\S+)\snext-hop-unchanged\sallpaths
                 $""",
                 re.VERBOSE,
             ),
@@ -1381,7 +1381,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "password_options",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\spassword
+                \s\sneighbor\s(?P<neighbor_address>\S+)\spassword
                 \s(?P<encryption>\d+)
                 (\s(?P<pass_key>.$))?
                 $""",
@@ -1410,7 +1410,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "path_attribute.discard",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\sdiscard
+                \s\sneighbor\s(?P<neighbor_address>\S+)\spath-attribute\sdiscard
                 (\s(?P<type>\d+))?
                 (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
                 (\s(?P<in>in))?
@@ -1443,7 +1443,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "path_attribute.treat_as_withdraw",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\spath-attribute\streat-as-withdraw
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\spath-attribute\streat-as-withdraw
                 (\s(?P<type>\d+))?
                 (\srange\s(?P<start>\d+)\s(?P<end>\d+))?
                 (\s(?P<in>in))?
@@ -1476,7 +1476,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "route_maps",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sroute-map
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\sroute-map
                 (\s(?P<route_map>\S+))
                 (\s(?P<in>in))?
                 (\s(?P<out>out))?
@@ -1509,7 +1509,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "prefix_lists",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\sprefix-list
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\sprefix-list
                 (\s(?P<prefix_list>\S+))
                 (\s(?P<in>in))?
                 (\s(?P<out>out))?
@@ -1542,7 +1542,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "peer_group_name",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)
                 \speer-group\s(?P<peer_group_name>\S+)
                 $""",
                 re.VERBOSE,
@@ -1565,7 +1565,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "peer_group",
             "getval": re.compile(
-                r"""\s+neighbor\s(?P<neighbor_address>\S+)\speer-group$""",
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\speer-group$""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} peer-group",
@@ -1586,7 +1586,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "remove_private_as.set",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as
                 $""",
                 re.VERBOSE,
             ),
@@ -1603,7 +1603,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "remove_private_as.all",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sall
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sall
                 $""",
                 re.VERBOSE,
             ),
@@ -1620,7 +1620,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "remove_private_as.replace_as",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sreplace-as
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sremove-private-as\sreplace-as
                 $""",
                 re.VERBOSE,
             ),
@@ -1637,7 +1637,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "route_reflector_client",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-reflector-client
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sroute-reflector-client
                 $""",
                 re.VERBOSE,
             ),
@@ -1659,7 +1659,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "route_server_client",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sroute-server-client
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sroute-server-client
                 $""",
                 re.VERBOSE,
             ),
@@ -1681,7 +1681,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "send_community.set",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssend-community
                 $""",
                 re.VERBOSE,
             ),
@@ -1696,7 +1696,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "send_community.both",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sboth
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sboth
                 $""",
                 re.VERBOSE,
             ),
@@ -1705,7 +1705,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}
                     },
                 },
             },
@@ -1714,7 +1714,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "send_community.extended",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sextended
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sextended
                 $""",
                 re.VERBOSE,
             ),
@@ -1732,7 +1732,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "send_community.standard",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssend-community\sstandard
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssend-community\sstandard
                 $""",
                 re.VERBOSE,
             ),
@@ -1750,7 +1750,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "shutdown",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sshutdown
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sshutdown
                 (\sgraceful(?P<graceful>\d+))?
                 $""",
                 re.VERBOSE,
@@ -1774,7 +1774,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "slow_peer_options.detection",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sslow-peer\sdetection
                 (\s(?P<enable>enable))?
                 (\s(?P<disable>disable))?
                 (\sthreshold\s(?P<threshold>\d+))?
@@ -1807,7 +1807,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "slow_peer_options.split_update_group",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sslow-peer\ssplit-update-group
                 (\s(?P<static>static))?
                 (\s(?P<dynamic>dynamic))?
                 (\s(?P<disable>disable))?
@@ -1845,7 +1845,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "soft_reconfiguration",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration\sinbound
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssoft-reconfiguration\sinbound
                 $""",
                 re.VERBOSE,
             ),
@@ -1861,7 +1861,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "soo",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\ssoo
+                \s\sneighbor\s(?P<neighbor_address>\S+)\ssoo
                 (\s(?P<soo>\S+))?
                 $""",
                 re.VERBOSE,
@@ -1877,7 +1877,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "timers",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\stimers
+                \s\sneighbor\s(?P<neighbor_address>\S+)\stimers
                 (\s(?P<keepalive>\d+))?
                 (\s(?P<holdtime>\d+))?
                 (\s(?P<min_holdtime>\d+))?
@@ -1908,7 +1908,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "transport.connection_mode",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\sconnection-mode
+                \s\sneighbor\s(?P<neighbor_address>\S+)\stransport\sconnection-mode
                 (\s(?P<active>active))?
                 (\s(?P<passive>passive))?
                 $""",
@@ -1938,7 +1938,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "transport.multi_session",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\smulti-session
+                \s\sneighbor\s(?P<neighbor_address>\S+)\stransport\smulti-session
                 $""",
                 re.VERBOSE,
             ),
@@ -1960,7 +1960,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "transport.path_mtu_discovery",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\stransport\spath-mtu-discovery
+                \s\sneighbor\s(?P<neighbor_address>\S+)\stransport\spath-mtu-discovery
                 (\s(?P<disable>disable))?
                 $""",
                 re.VERBOSE,
@@ -1989,7 +1989,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "ttl_security",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sttl-security
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sttl-security
                 (\shops(?P<ttl_security>\d+))?
                 $""",
                 re.VERBOSE,
@@ -2008,7 +2008,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "unsuppress_map",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sunsuppress-map
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sunsuppress-map
                 (\s(?P<unsuppress_map>\S+))?
                 $""",
                 re.VERBOSE,
@@ -2027,7 +2027,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "version",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sversion
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sversion
                 (\s(?P<version>\d+))?
                 $""",
                 re.VERBOSE,
@@ -2051,7 +2051,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "weight",
             "getval": re.compile(
                 r"""
-                \s+neighbor\s(?P<neighbor_address>\S+)\sweight
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sweight
                 (\s(?P<weight>\d+))?
                 $""",
                 re.VERBOSE,
@@ -2069,7 +2069,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "networks",
             "getval": re.compile(
                 r"""
-                \s+network
+                \s\snetwork
                 (\s(?P<address>\S+))?
                 (\smask\s(?P<netmask>\S+))?
                 (\sroute-map\s(?P<route_map>\S+))?
@@ -2124,7 +2124,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "snmp.context.user",
             "getval": re.compile(
-                r"""\s+snmp
+                r"""\s\ssnmp
                     (\scontext\s(?P<context>\S+))
                     (\suser\s(?P<user>\S+))
                     (\s(?P<credential>credential))?
@@ -2173,7 +2173,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         {
             "name": "snmp.context.community",
             "getval": re.compile(
-                r"""\s+snmp
+                r"""\s\ssnmp
                     (\scontext\s(?P<context>\S+))
                     (\scommunity\s(?P<community>\S+))
                     (\s(?P<ro>RO))?
@@ -2213,7 +2213,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.application",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sapplication\s(?P<name>\S+)
+                \s\sredistribute\sapplication\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2243,7 +2243,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.bgp",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sbgp\s(?P<name>\S+)
+                \s\sredistribute\sbgp\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2273,7 +2273,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.connected",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sconnected
+                \s\sredistribute\sconnected
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2303,7 +2303,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.eigrp",
             "getval": re.compile(
                 r"""
-                \s+redistribute\seigrp\s(?P<name>\S+)
+                \s\sredistribute\seigrp\s(?P<name>\S+)
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2333,7 +2333,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.isis",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sisis\s(?P<name>\S+)
+                \s\sredistribute\sisis\s(?P<name>\S+)
                 (\s(?P<clns>clns))?
                 (\s(?P<ip>ip))?
                 (\smetric\s(?P<metric>\d+))?
@@ -2369,7 +2369,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.iso_igrp",
             "getval": re.compile(
                 r"""
-                \s+redistribute\siso-igrp\s(?P<name>\S+)
+                \s\sredistribute\siso-igrp\s(?P<name>\S+)
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
                 re.VERBOSE,
@@ -2385,7 +2385,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "iso_igrp": {
                                     "area_tag": "{{ name }}",
                                     "route_map": "{{ route_map }}",
-                                },
+                                }
                             },
                         ],
                     },
@@ -2396,7 +2396,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.lisp",
             "getval": re.compile(
                 r"""
-                \s+redistribute\slisp
+                \s\sredistribute\slisp
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2426,7 +2426,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.mobile",
             "getval": re.compile(
                 r"""
-                \s+redistribute\smobile
+                \s\sredistribute\smobile
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2456,7 +2456,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.odr",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sodr
+                \s\sredistribute\sodr
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2486,7 +2486,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.ospf",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sospf\s(?P<process_id>\S+)
+                \s\sredistribute\sospf\s(?P<process_id>\S+)
                 (\s(?P<type_1>1))?
                 (\s(?P<type_2>2))?
                 (\s(?P<external>external))?
@@ -2536,7 +2536,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.ospfv3",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sospfv3\s(?P<process_id>\S+)
+                \s\sredistribute\sospfv3\s(?P<process_id>\S+)
                 (\s(?P<type_1>1))?
                 (\s(?P<type_2>2))?
                 (\s(?P<external>external))?
@@ -2583,7 +2583,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.rip",
             "getval": re.compile(
                 r"""
-                \s+redistribute\srip
+                \s\sredistribute\srip
                 (\smetric\s(?P<metric>\d+))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
@@ -2613,7 +2613,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.static",
             "getval": re.compile(
                 r"""
-                \s+redistribute\sstatic
+                \s\sredistribute\sstatic
                 (\s(?P<clns>clns))?
                 (\s(?P<ip>ip))?
                 (\smetric\s(?P<metric>\d+))?
@@ -2649,7 +2649,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.vrf",
             "getval": re.compile(
                 r"""
-                \s+redistribute\svrf
+                \s\sredistribute\svrf
                 (\s(?P<name>\S+))?
                 (\s(?P<global>global))?
                 $""",
