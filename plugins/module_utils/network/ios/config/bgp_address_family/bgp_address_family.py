@@ -50,7 +50,7 @@ class Bgp_address_family(ResourceModule):
         "bgp.additional_paths.receive",
         "bgp.additional_paths.send",
         "bgp.aggregate_timer",
-        "bgp.dmzlink-bw",
+        "bgp.dmzlink_bw",
         "bgp.nexthop.route_map",
         "bgp.nexthop.trigger.delay",
         "bgp.nexthop.trigger.enable",
@@ -108,10 +108,10 @@ class Bgp_address_family(ResourceModule):
         """
         if self.state in ["merged", "replaced", "overridden"]:
             if self.have.get("as_number") and self.want.get("as_number") != self.have.get(
-                "as_number",
+                "as_number"
             ):
                 self._module.fail_json(
-                    msg="BGP is already running. Only one BGP instance is allowed per device.",
+                    msg="BGP is already running. Only one BGP instance is allowed per device."
                 )
 
         for each in self.want, self.have:
@@ -129,12 +129,12 @@ class Bgp_address_family(ResourceModule):
 
         # remove superfluous config
         if self.state in ["overridden", "deleted"]:
-            for k, have in haved.items():
-                if k not in wantd:
+            for k, have in haved.get("address_family").items():
+                if k not in wantd.get("address_family", {}):
                     self._compare(want={}, have=have)
 
         # sand end
-        for k, want in wantd.get("address_family").items():
+        for k, want in wantd.get("address_family", {}).items():
             self._compare(want=want, have=haved["address_family"].pop(k, {}))
 
         # adds router bgp AS_NUMB command
@@ -149,6 +149,10 @@ class Bgp_address_family(ResourceModule):
         self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
         # for networks
         self._compare_network_lists(want.get("networks", {}), have.get("networks", {}))
+        # for aggregate_addresses
+        self._compare_agg_add_lists(
+            want.get("aggregate_addresses", {}), have.get("aggregate_addresses", {})
+        )
         # add af command
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "afi", False))
@@ -241,7 +245,7 @@ class Bgp_address_family(ResourceModule):
             self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
 
     def _compare_network_lists(self, w_attr, h_attr):
-        """Handling of gereric list options."""
+        """Handling of network list options."""
         for wkey, wentry in w_attr.items():
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, "networks", False)
@@ -250,10 +254,21 @@ class Bgp_address_family(ResourceModule):
         for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "networks", True)
 
+    def _compare_agg_add_lists(self, w_attr, h_attr):
+        """Handling of agg_add list options."""
+        for wkey, wentry in w_attr.items():
+            if wentry != h_attr.pop(wkey, {}):
+                self.addcmd(wentry, "aggregate_addresses", False)
+
+        # remove remaining items in have for replaced state
+        for hkey, hentry in h_attr.items():
+            self.addcmd(hentry, "aggregate_addresses", True)
+
     def _bgp_add_fam_list_to_dict(self, tmp_data):
         """Convert all list of dicts to dicts of dicts, also deals with deprecated attributes"""
         p_key = {
             "aggregate_address": "address",
+            "aggregate_addresses": "address",
             "neighbor": "neighbor_address",
             "neighbors": "neighbor_address",
             "route_maps": "name",
@@ -261,9 +276,13 @@ class Bgp_address_family(ResourceModule):
             "networks": "address",
             "network": "address",
         }
+        from copy import deepcopy
+
         af_data = {}
         for af in tmp_data:
-            for k, val in af.items():
+            _af = {}
+            for k, tval in af.items():
+                val = deepcopy(tval)
                 if k == "neighbor" or k == "neighbors":
                     tmp = {}
                     for neib in val:
@@ -281,38 +300,41 @@ class Bgp_address_family(ResourceModule):
                             neib["nexthop_self"] = {"set": neib.pop("next_hop_self")}
                         # prefix_list and prefix_lists
                         if neib.get("prefix_list"):  # deprecated made list
-                            neib["prefix_lists"] = [neib.get("prefix_list")]
+                            neib["prefix_lists"] = [neib.pop("prefix_list")]
                         if neib.get("prefix_lists"):
                             neib["prefix_lists"] = {
                                 str(i[p_key["prefix_lists"]]): i for i in neib.get("prefix_lists")
                             }
                         # route_map and route_maps
                         if neib.get("route_map"):  # deprecated made list
-                            neib["route_maps"] = [neib.get("route_map")]
+                            neib["route_maps"] = [neib.pop("route_map")]
                         if neib.get("route_maps"):
                             neib["route_maps"] = {
                                 str(i[p_key["route_maps"]]): i for i in neib.get("route_maps")
                             }
                         # slow_peer to slow_peer_options
                         if neib.get("slow_peer"):  # only one slow_peer is allowed
-                            neib["slow_peer_options"] = neib.get("slow_peer")[0]
+                            neib["slow_peer_options"] = neib.pop("slow_peer")[0]
                         # make dict neighbors dict
                         tmp[neib[p_key[k]]] = neib
-                    af["neighbors"] = tmp
+                    _af["neighbors"] = tmp
                 # make dict networks dict
                 elif k == "network" or k == "networks":
-                    af["networks"] = {str(i[p_key[k]]): i for i in val}
+                    _af["networks"] = {str(i[p_key[k]]): i for i in tval}
                 # make dict aggregate_addresses dict
-                elif k == "aggregate_address":
-                    af["aggregate_address"] = {str(i[p_key[k]]): i for i in val}
+                elif k == "aggregate_address" or k == "aggregate_addresses":
+                    _af["aggregate_addresses"] = {str(i[p_key[k]]): i for i in tval}
                 # slow_peer to slow_peer_options
                 elif k == "bgp":
+                    _af["bgp"] = val
                     if val.get("slow_peer"):  # only one slow_peer is allowed
-                        af["bgp"]["slow_peer_options"] = val.get("slow_peer")[0]
+                        _af["bgp"]["slow_peer_options"] = _af["bgp"].pop("slow_peer")[0]
                 # keep single dict to compare redistribute
                 elif k == "redistribute":
-                    for i in val:
-                        af["redistribute"] = {m: v for m, v in i.items()}
+                    for i in tval:
+                        _af["redistribute"] = {m: v for m, v in i.items()}
+                else:
+                    _af[k] = tval
             # make distinct address family entires
-            af_data[af.get("afi", "") + "_" + af.get("safi", "") + "_" + af.get("vrf", "")] = af
+            af_data[af.get("afi", "") + "_" + af.get("safi", "") + "_" + af.get("vrf", "")] = _af
         return af_data

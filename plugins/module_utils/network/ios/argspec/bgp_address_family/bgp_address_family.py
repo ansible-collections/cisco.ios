@@ -57,9 +57,10 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                             "choices": ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"],
                         },
                         "vrf": {"type": "str"},
-                        "aggregate_address": {
+                        "aggregate_addresses": {
                             "type": "list",
                             "elements": "dict",
+                            "aliases": ["aggregate_address"],
                             "options": {
                                 "address": {"type": "str"},
                                 "netmask": {"type": "str"},
@@ -771,7 +772,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                },
+                                }
                             },
                         },
                         "table_map": {

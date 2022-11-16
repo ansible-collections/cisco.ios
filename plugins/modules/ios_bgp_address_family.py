@@ -49,10 +49,12 @@ options:
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
-          aggregate_address:
+          aggregate_addresses:
             description: Configure BGP aggregate entries
             type: list
             elements: dict
+            aliases:
+              - aggregate_address
             suboptions:
               address:
                 description: Aggregate address(A.B.C.D)
