@@ -96,7 +96,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>aggregate_address</b>
+                    <b>aggregate_addresses</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -107,6 +107,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure BGP aggregate entries</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: aggregate_address</div>
                 </td>
             </tr>
                                 <tr>

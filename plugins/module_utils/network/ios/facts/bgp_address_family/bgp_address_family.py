@@ -82,7 +82,7 @@ class Bgp_address_familyFacts(object):
             objs = self._process_facts(utils.remove_empties(objs))
         ansible_facts["ansible_network_resources"].pop("bgp_address_family", None)
         params = utils.remove_empties(
-            bgp_af_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            bgp_af_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
         facts["bgp_address_family"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)

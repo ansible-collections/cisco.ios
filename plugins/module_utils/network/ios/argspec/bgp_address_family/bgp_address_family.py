@@ -772,7 +772,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "table_map": {
