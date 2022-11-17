@@ -24,35 +24,35 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         super(TestIosBgpAddressFamilyModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
-            "Bgp_address_familyFacts.get_bgp_address_family_data"
+            "Bgp_address_familyFacts.get_bgp_address_family_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -113,7 +113,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
 
         set_module_args(
@@ -130,7 +130,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.3.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             bgp=dict(
                                 dampening=dict(
@@ -138,7 +138,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     reuse_route_val=10,
                                     suppress_route_val=10,
                                     max_suppress=10,
-                                )
+                                ),
                             ),
                             neighbors=[
                                 dict(
@@ -146,7 +146,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     remote_as=65100,
                                     route_maps=[dict(name="test-route-out", out="true")],
                                     prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -158,7 +158,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     ],
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -193,14 +193,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     remote_as=65001,
                                     soft_reconfiguration=True,
                                     prefix_list=dict(name="PREFIX-OUT", out=True),
-                                )
+                                ),
                             ],
                             network=[dict(address="192.0.3.1", mask="255.255.255.0")],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -262,7 +262,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -288,7 +288,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "address": "192.0.3.1",
                                     "as_confed_set": True,
                                     "netmask": "255.255.255.255",
-                                }
+                                },
                             ],
                             "default_metric": 12,
                             "distance": {"external": 10, "internal": 10, "local": 100},
@@ -297,7 +297,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "address": "198.51.111.11",
                                     "mask": "255.255.255.255",
                                     "route_map": "test",
-                                }
+                                },
                             ],
                             "safi": "multicast",
                             "table_map": {"filter": True, "name": "test_tableMap"},
@@ -323,7 +323,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "address": "192.0.2.1",
                                     "as_confed_set": True,
                                     "netmask": "255.255.255.255",
-                                }
+                                },
                             ],
                             "bgp": {
                                 "aggregate_timer": 10,
@@ -343,8 +343,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             "cost_community": {
                                                 "id": 100,
                                                 "poi": {"igp_cost": True, "transitive": True},
-                                            }
-                                        }
+                                            },
+                                        },
                                     },
                                     "local_as": {"number": 20, "set": True},
                                     "neighbor_address": "198.51.100.1",
@@ -354,14 +354,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "route_maps": [{"name": "test-out", "out": True}],
                                     "route_server_client": True,
                                     "slow_peer_options": {"detection": {"threshold": 150}},
-                                }
+                                },
                             ],
                             "networks": [
                                 {
                                     "address": "198.51.110.10",
                                     "backdoor": True,
                                     "mask": "255.255.255.255",
-                                }
+                                },
                             ],
                             "safi": "multicast",
                             "vrf": "blue",
@@ -370,7 +370,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "as_number": "65000",
                 },
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -422,7 +422,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
 
         set_module_args(
@@ -439,10 +439,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.2.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             bgp=dict(
-                                aggregate_timer=10, slow_peer=[dict(detection=dict(threshold=200))]
+                                aggregate_timer=10,
+                                slow_peer=[dict(detection=dict(threshold=200))],
                             ),
                             redistribute=[dict(connected=dict(metric=10))],
                             neighbor=[
@@ -451,13 +452,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     activate=True,
                                     remote_as=200,
                                     route_maps=[dict(name="test-replaced-route", out=True)],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -522,7 +523,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -538,7 +539,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.2.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             bgp=dict(
                                 aggregate_timer=10,
@@ -557,9 +558,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     aigp=dict(
                                         send=dict(
                                             cost_community=dict(
-                                                id=100, poi=dict(igp_cost=True, transitive=True)
-                                            )
-                                        )
+                                                id=100,
+                                                poi=dict(igp_cost=True, transitive=True),
+                                            ),
+                                        ),
                                     ),
                                     nexthop_self=dict(all=True),
                                     prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
@@ -568,10 +570,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     local_as=dict(number=20),
                                     route_maps=[dict(name="test-out", out=True)],
                                     route_server_client=True,
-                                )
+                                ),
                             ],
                             network=[
-                                dict(address="198.51.110.10", mask="255.255.255.255", backdoor=True)
+                                dict(
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                ),
                             ],
                         ),
                         dict(
@@ -596,7 +600,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.3.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
@@ -605,14 +609,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.111.11",
                                     mask="255.255.255.255",
                                     route_map="test",
-                                )
+                                ),
                             ],
                             table_map=dict(name="test_tableMap", filter=True),
                         ),
                     ],
                 ),
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -664,7 +668,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -679,10 +683,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     connected=dict(set=True),
                                     ospf=dict(
                                         match=dict(
-                                            external=True, internal=True, type_1=True, type_2=True
-                                        )
+                                            external=True,
+                                            internal=True,
+                                            type_1=True,
+                                            type_2=True,
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                             neighbor=[
                                 dict(
@@ -702,7 +709,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.2.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             bgp=dict(
                                 aggregate_timer=10,
@@ -721,9 +728,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     aigp=dict(
                                         send=dict(
                                             cost_community=dict(
-                                                id=100, poi=dict(igp_cost=True, transitive=True)
-                                            )
-                                        )
+                                                id=100,
+                                                poi=dict(igp_cost=True, transitive=True),
+                                            ),
+                                        ),
                                     ),
                                     nexthop_self=dict(all=True),
                                     prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
@@ -732,10 +740,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     local_as=dict(number=20),
                                     route_maps=[dict(name="test-out", out=True)],
                                     route_server_client=True,
-                                )
+                                ),
                             ],
                             network=[
-                                dict(address="198.51.110.10", mask="255.255.255.255", backdoor=True)
+                                dict(
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                ),
                             ],
                         ),
                         dict(
@@ -760,7 +770,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.3.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
@@ -769,14 +779,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.111.11",
                                     mask="255.255.255.255",
                                     route_map="test",
-                                )
+                                ),
                             ],
                             table_map=dict(name="test_tableMap", filter=True),
                         ),
                     ],
                 ),
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -828,7 +838,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(dict(state="deleted"))
         commands = [
@@ -889,7 +899,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -901,7 +911,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     ],
                 ),
                 state="deleted",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -926,7 +936,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.2.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             bgp=dict(
                                 dampening=dict(
@@ -934,7 +944,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     reuse_route_val=1,
                                     suppress_route_val=1,
                                     max_suppress=1,
-                                )
+                                ),
                             ),
                             neighbor=[
                                 dict(
@@ -943,18 +953,21 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     aigp=dict(
                                         send=dict(
                                             cost_community=dict(
-                                                id=100, poi=dict(igp_cost=True, transitive=True)
-                                            )
-                                        )
+                                                id=100,
+                                                poi=dict(igp_cost=True, transitive=True),
+                                            ),
+                                        ),
                                     ),
                                     slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
                                     route_maps=[dict(name="test-route", out=True)],
                                     route_server_client=True,
-                                )
+                                ),
                             ],
                             network=[
-                                dict(address="198.51.110.10", mask="255.255.255.255", backdoor=True)
+                                dict(
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                ),
                             ],
                         ),
                         dict(
@@ -965,7 +978,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.3.1",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
-                                )
+                                ),
                             ],
                             default_metric=12,
                             distance=dict(external=10, internal=10, local=100),
@@ -974,7 +987,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.111.11",
                                     mask="255.255.255.255",
                                     route_map="test",
-                                )
+                                ),
                             ],
                             table_map=dict(name="test_tableMap", filter=True),
                             snmp=dict(
@@ -986,13 +999,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         encrypted=True,
                                     ),
                                     name="testsnmp",
-                                )
+                                ),
                             ),
                         ),
                     ],
                 ),
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -1067,10 +1080,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                       neighbor 198.51.100.1 slow-peer detection threshold 150
                       neighbor 198.51.100.1 route-map test-out out
                      exit-address-family
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = {
@@ -1094,14 +1107,18 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "safi": "multicast",
                     "table_map": {"name": "test_tableMap", "filter": True},
                     "networks": [
-                        {"address": "198.51.111.11", "mask": "255.255.255.255", "route_map": "test"}
+                        {
+                            "address": "198.51.111.11",
+                            "mask": "255.255.255.255",
+                            "route_map": "test",
+                        },
                     ],
                     "aggregate_addresses": [
                         {
                             "address": "192.0.3.1",
                             "netmask": "255.255.255.255",
                             "as_confed_set": True,
-                        }
+                        },
                     ],
                     "default_metric": 12,
                     "distance": {"external": 10, "internal": 10, "local": 100},
@@ -1135,14 +1152,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         },
                     },
                     "networks": [
-                        {"address": "198.51.110.10", "mask": "255.255.255.255", "backdoor": True}
+                        {"address": "198.51.110.10", "mask": "255.255.255.255", "backdoor": True},
                     ],
                     "aggregate_addresses": [
                         {
                             "address": "192.0.2.1",
                             "netmask": "255.255.255.255",
                             "as_confed_set": True,
-                        }
+                        },
                     ],
                     "neighbors": [
                         {
@@ -1156,14 +1173,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "cost_community": {
                                         "id": 100,
                                         "poi": {"igp_cost": True, "transitive": True},
-                                    }
-                                }
+                                    },
+                                },
                             },
                             "route_server_client": True,
                             "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
                             "slow_peer_options": {"detection": {"threshold": 150}},
                             "route_maps": [{"name": "test-out", "out": True}],
-                        }
+                        },
                     ],
                 },
             ],
@@ -1195,11 +1212,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 dict(address="192.0.2.1", mask="255.255.255.0"),
                                 dict(address="192.0.4.1", mask="255.255.255.0"),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -1263,7 +1280,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
              exit-address-family
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1289,11 +1306,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 dict(address="192.0.2.1", mask="255.255.255.0"),
                                 dict(address="192.0.4.1", mask="255.255.255.0"),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
