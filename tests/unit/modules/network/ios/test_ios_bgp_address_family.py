@@ -580,9 +580,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10",
-                                    mask="255.255.255.255",
-                                    backdoor=True,
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
                                 ),
                             ],
                         ),
@@ -752,9 +750,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10",
-                                    mask="255.255.255.255",
-                                    backdoor=True,
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
                                 ),
                             ],
                         ),
@@ -976,9 +972,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10",
-                                    mask="255.255.255.255",
-                                    backdoor=True,
+                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
                                 ),
                             ],
                         ),
@@ -1002,6 +996,16 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 ),
                             ],
                             table_map=dict(name="test_tableMap", filter=True),
+                            snmp=dict(
+                                context=dict(
+                                    user=dict(name="abc", access=dict(ipv6="ipcal")),
+                                    name="testsnmp",
+                                    credential=True,
+                                    encrypted=True,
+                                    # auth=dict(md5="topSecret", sha="topSecretToo"),
+                                    # priv=dict(des="qwerty"),
+                                ),
+                            ),
                         ),
                     ],
                 ),
@@ -1026,8 +1030,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "default-metric 12",
             "distance bgp 10 10 100",
             "table-map test_tableMap filter",
+            "snmp context testsnmp user abc access ipv6 ipcal",
         ]
         result = self.execute_module(changed=False)
+        a = 10
+        b = 20
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_bgp_address_family_parsed(self):

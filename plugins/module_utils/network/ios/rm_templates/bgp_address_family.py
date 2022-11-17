@@ -26,44 +26,6 @@ UNIQUE_AFI = "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}"
 UNIQUE_NEIB_ADD = "{{ neighbor_address }}"
 
 
-def _tmplt_af_snmp(config_data):
-    snmp_user = config_data.get("snmp").get("context").get("user")
-    cmd = "snmp context {name}".format(**config_data.get("snmp").get("context"))
-    if snmp_user:
-        cmd += " user {name}".format(**snmp_user)
-        if snmp_user.get("credential"):
-            cmd += " credential"
-        elif snmp_user.get("encrypted"):
-            cmd += " encrypted"
-        if snmp_user.get("auth"):
-            cmd += " auth"
-            if snmp_user["auth"].get("md5"):
-                cmd += " md5 {md5}".format(**snmp_user["auth"])
-            elif snmp_user["auth"].get("sha"):
-                cmd += " sha {sha}".format(**snmp_user["auth"])
-        if snmp_user.get("access"):
-            cmd += " access"
-            if snmp_user["access"].get("acl"):
-                cmd += " {acl}".format(**snmp_user["access"])
-            elif snmp_user["access"].get("ipv6"):
-                cmd += " ipv6 {ipv6}".format(**snmp_user["access"])
-        if snmp_user.get("priv"):
-            cmd += " priv"
-            if snmp_user["priv"].get("3des"):
-                cmd += " 3des {3des}".format(**snmp_user["priv"])
-            elif snmp_user["priv"].get("des"):
-                cmd += " des {des}".format(**snmp_user["priv"])
-            elif snmp_user["priv"].get("aes"):
-                cmd += " aes"
-                if snmp_user["priv"]["aes"].get("128"):
-                    cmd += " 128 {128}".format(**snmp_user["priv"]["aes"])
-                if snmp_user["priv"]["aes"].get("192"):
-                    cmd += " 192 {192}".format(**snmp_user["priv"]["aes"])
-                if snmp_user["priv"]["aes"].get("256"):
-                    cmd += " 256 {256}".format(**snmp_user["priv"]["aes"])
-    return cmd
-
-
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_address_familyTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -822,7 +784,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"allowas_in": "{{ allowas_in }}"}}
                     },
                 },
             },
@@ -914,7 +876,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"cluster_id": "{{ cluster_id }}"}}
                     },
                 },
             },
@@ -951,7 +913,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"},
+                                "default-originate": {"route_map": "{{ route_map }}"}
                             },
                         },
                     },
@@ -1153,7 +1115,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "fall_over": {"route_map": "{{ not not route_map }}"},
+                                "fall_over": {"route_map": "{{ not not route_map }}"}
                             },
                         },
                     },
@@ -1730,7 +1692,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"send_community": {"both": True}}}
                     },
                 },
             },
@@ -2140,12 +2102,26 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     (\spriv\saes\s192\s(?P<b>\S+))?
                     (\spriv\saes\s256\s(?P<c>\S+))?
                     (\spriv\sdes\s(?P<des>\S+))?
+                    (\spriv\sdes56\s(?P<des56>\S+))?
                     (\saccess\sipv6\s(?P<aclv6>\S+))?
                     (\saccess\s(?P<acl>\S+))?
                     $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_af_snmp,
+            "setval": "snmp context {{ snmp.context.name }} user"
+            "{{ (' ' + snmp.context.user.name) if snmp.context.user.name is defined else '' }}"
+            "{{ (' credential' ) if snmp.context.user.credential|d(False) else '' }}"
+            "{{ (' encrypted' ) if snmp.context.user.encrypted|d(False) else '' }}"
+            "{{ (' auth md5 ' + snmp.context.user.auth.md5 ) if snmp.context.user.auth is defined and snmp.context.user.auth.acl is defined else '' }}"
+            "{{ (' auth sha ' + snmp.context.user.auth.sha ) if snmp.context.user.auth is defined and snmp.context.user.auth.sha is defined else '' }}"
+            "{{ (' priv md5 ' + snmp.context.user.priv.aes128 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes128 is defined else '' }}"
+            "{{ (' priv sha ' + snmp.context.user.priv.aes192 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes192 is defined else '' }}"
+            "{{ (' priv sha ' + snmp.context.user.priv.aes256 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes256 is defined else '' }}"
+            "{{ (' priv md5 ' + snmp.context.user.priv.3des ) if snmp.context.user.priv is defined and snmp.context.user.priv.3des is defined else '' }}"
+            "{{ (' priv sha ' + snmp.context.user.priv.des56 ) if snmp.context.user.priv is defined and snmp.context.user.priv.des56 is defined else '' }}"
+            "{{ (' priv sha ' + snmp.context.user.priv.des ) if snmp.context.user.priv is defined and snmp.context.user.priv.des is defined else '' }}"
+            "{{ (' access ' + snmp.context.user.access.acl|string ) if snmp.context.user.access is defined and snmp.context.user.access.acl is defined else '' }}"
+            "{{ (' access ipv6 ' + snmp.context.user.access.ipv6|string ) if snmp.context.user.access is defined and snmp.context.user.access.ipv6 is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2158,11 +2134,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "auth": {"md5": "{{ md5 }}", "sha": "{{ sha }}"},
                                     "priv": {
                                         "3des": "{{ s3des }}",
-                                        "aes": {
-                                            "128": "{{ a }}",
-                                            "192": "{{ b }}",
-                                            "256": "{{ c }}",
-                                        },
+                                        "des56": "{{ des56 }}",
+                                        "aes128": "{{ a }}",
+                                        "aes192": "{{ b }}",
+                                        "aes256": "{{ c }}",
                                         "des": "{{ des }}",
                                     },
                                     "credential": "{{ not not credential }}",
@@ -2389,7 +2364,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "iso_igrp": {
                                     "area_tag": "{{ name }}",
                                     "route_map": "{{ route_map }}",
-                                },
+                                }
                             },
                         ],
                     },

@@ -765,7 +765,14 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                                 },
                                                 "priv": {
                                                     "type": "dict",
-                                                    "options": {"des": {"type": "str"}},
+                                                    "options": {
+                                                        "des": {"type": "str"},
+                                                        "des56": {"type": "str"},
+                                                        "aes128": {"type": "str"},
+                                                        "aes192": {"type": "str"},
+                                                        "aes256": {"type": "str"},
+                                                        "des": {"type": "str"},
+                                                    },
                                                 },
                                                 "credential": {"type": "bool"},
                                                 "encrypted": {"type": "bool"},

@@ -1333,6 +1333,21 @@ options:
                           des:
                             description: Use 56 bit DES algorithm for encryption
                             type: str
+                          3des:
+                            description: Use 168 bit 3DES algorithm for encryption
+                            type: str
+                          des56:
+                            description: Use 56 bit DES algorithm for encryption
+                            type: str
+                          aes128:
+                            description: Use 128 bit AES algorithm for encryption
+                            type: str
+                          aes192:
+                            description: Use 192 bit 3DES algorithm for encryption
+                            type: str
+                          aes256:
+                            description: Use 256 bit DES algorithm for encryption
+                            type: str
                       credential:
                         description: If the user password is already configured and saved
                         type: bool
