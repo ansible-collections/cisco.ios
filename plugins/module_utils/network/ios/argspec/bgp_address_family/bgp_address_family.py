@@ -771,7 +771,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                                         "aes128": {"type": "str"},
                                                         "aes192": {"type": "str"},
                                                         "aes256": {"type": "str"},
-                                                        "des": {"type": "str"},
                                                     },
                                                 },
                                                 "credential": {"type": "bool"},

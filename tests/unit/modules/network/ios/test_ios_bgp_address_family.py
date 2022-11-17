@@ -1004,12 +1004,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             table_map=dict(name="test_tableMap", filter=True),
                             snmp=dict(
                                 context=dict(
-                                    user=dict(name="abc", access=dict(ipv6="ipcal")),
+                                    user=dict(
+                                        name="abc",
+                                        access=dict(ipv6="ipcal"),
+                                        credential=True,
+                                        encrypted=True,
+                                    ),
                                     name="testsnmp",
-                                    credential=True,
-                                    encrypted=True,
-                                    # auth=dict(md5="topSecret", sha="topSecretToo"),
-                                    # priv=dict(des="qwerty"),
                                 ),
                             ),
                         ),
@@ -1036,11 +1037,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "default-metric 12",
             "distance bgp 10 10 100",
             "table-map test_tableMap filter",
-            "snmp context testsnmp user abc access ipv6 ipcal",
+            "snmp context testsnmp user abc credential encrypted access ipv6 ipcal",
         ]
         result = self.execute_module(changed=False)
-        a = 10
-        b = 20
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_bgp_address_family_parsed(self):

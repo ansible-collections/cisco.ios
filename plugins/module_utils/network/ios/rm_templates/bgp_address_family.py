@@ -2097,7 +2097,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     (\s(?P<encrypted>encrypted))?
                     (\sauth\smd5\s(?P<md5>\S+))?
                     (\sauth\ssha\s(?P<sha>\S+))?
-                    (\spriv\s3des\s(?P<s3des>\S+))?
                     (\spriv\saes\s128\s(?P<a>\S+))?
                     (\spriv\saes\s192\s(?P<b>\S+))?
                     (\spriv\saes\s256\s(?P<c>\S+))?
@@ -2117,7 +2116,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' priv md5 ' + snmp.context.user.priv.aes128 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes128 is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.aes192 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes192 is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.aes256 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes256 is defined else '' }}"
-            "{{ (' priv md5 ' + snmp.context.user.priv.3des ) if snmp.context.user.priv is defined and snmp.context.user.priv.3des is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.des56 ) if snmp.context.user.priv is defined and snmp.context.user.priv.des56 is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.des ) if snmp.context.user.priv is defined and snmp.context.user.priv.des is defined else '' }}"
             "{{ (' access ' + snmp.context.user.access.acl|string ) if snmp.context.user.access is defined and snmp.context.user.access.acl is defined else '' }}"
@@ -2133,7 +2131,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "access": {"acl": "{{ acl }}", "ipv6": "{{ aclv6 }}"},
                                     "auth": {"md5": "{{ md5 }}", "sha": "{{ sha }}"},
                                     "priv": {
-                                        "3des": "{{ s3des }}",
                                         "des56": "{{ des56 }}",
                                         "aes128": "{{ a }}",
                                         "aes192": "{{ b }}",

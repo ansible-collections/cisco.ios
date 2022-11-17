@@ -1333,9 +1333,6 @@ options:
                           des:
                             description: Use 56 bit DES algorithm for encryption
                             type: str
-                          3des:
-                            description: Use 168 bit 3DES algorithm for encryption
-                            type: str
                           des56:
                             description: Use 56 bit DES algorithm for encryption
                             type: str
@@ -2334,8 +2331,6 @@ EXAMPLES = """
 #       ],
 #       "as_number": "65000"
 #   }
-
-
 """
 
 
