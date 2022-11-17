@@ -49,6 +49,8 @@ class Bgp_address_familyFacts(object):
                     if af_key == "neighbors":
                         temp_neighbor = []
                         for tag, neighbor in afs_val.items():  # remove unique value from neighbor
+                            if not neighbor.get("neighbor_address"):
+                                neighbor["neighbor_address"] = tag
                             temp_neighbor.append(neighbor)
                         af[af_key] = temp_neighbor
                     else:

@@ -8,6 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from textwrap import dedent
+
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_address_family
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -63,13 +65,63 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None):
-        def load_from_file(*args, **kwargs):
-            return load_fixture("ios_bgp_address_family.cfg")
+    # def load_fixtures(self, commands=None):
+    #     def load_from_file(*args, **kwargs):
+    #         return load_fixture("ios_bgp_address_family.cfg")
 
-        self.execute_show_command.side_effect = load_from_file
+    #     self.execute_show_command.side_effect = load_from_file
 
     def test_ios_bgp_address_family_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
+
         set_module_args(
             dict(
                 config=dict(
@@ -79,7 +131,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
-                            aggregate_address=[
+                            aggregate_addresses=[
                                 dict(
                                     address="192.0.3.1",
                                     netmask="255.255.255.255",
@@ -94,39 +146,20 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     max_suppress=10,
                                 ),
                             ),
-                            neighbor=[
+                            neighbors=[
                                 dict(
-                                    address="198.51.100.1",
+                                    neighbor_address="198.51.100.1",
                                     remote_as=65100,
-                                    route_maps=[
-                                        dict(
-                                            name="test-route-out",
-                                            out="true",
-                                        ),
-                                    ],
-                                    prefix_lists=[
-                                        dict(
-                                            name="AS65100-PREFIX-OUT",
-                                            out="true",
-                                        ),
-                                    ],
+                                    route_maps=[dict(name="test-route-out", out="true")],
+                                    prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
                                 ),
                             ],
                         ),
                         dict(
                             afi="nsap",
-                            bgp=dict(
-                                aggregate_timer=20,
-                                dmzlink_bw=True,
-                                scan_time=10,
-                            ),
+                            bgp=dict(aggregate_timer=20, dmzlink_bw=True, scan_time=10),
                             default_metric=10,
-                            network=[
-                                dict(
-                                    address="192.0.1.1",
-                                    route_map="test_route",
-                                ),
-                            ],
+                            networks=[dict(address="192.0.1.1", route_map="test_route")],
                         ),
                     ],
                 ),
@@ -165,18 +198,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="192.0.3.1",
                                     remote_as=65001,
                                     soft_reconfiguration=True,
-                                    prefix_list=dict(
-                                        name="PREFIX-OUT",
-                                        out=True,
-                                    ),
+                                    prefix_list=dict(name="PREFIX-OUT", out=True),
                                 ),
                             ],
-                            network=[
-                                dict(
-                                    address="192.0.3.1",
-                                    mask="255.255.255.0",
-                                ),
-                            ],
+                            network=[dict(address="192.0.3.1", mask="255.255.255.0")],
                         ),
                     ],
                 ),
@@ -196,118 +221,216 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(
             dict(
-                config=dict(
-                    as_number="65000",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            vrf="blue",
-                            aggregate_address=[
-                                dict(
-                                    address="192.0.2.1",
-                                    netmask="255.255.255.255",
-                                    as_confed_set=True,
-                                ),
+                config={
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "bgp": {"redistribute_internal": True},
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "TEST-PEER-GROUP",
+                                    "nexthop_self": {"all": True},
+                                    "send_community": {"set": True},
+                                },
+                                {"activate": True, "neighbor_address": "2001:db8::1"},
                             ],
-                            bgp=dict(
-                                aggregate_timer=10,
-                                dampening=dict(
-                                    penalty_half_time=1,
-                                    reuse_route_val=1,
-                                    suppress_route_val=1,
-                                    max_suppress=1,
-                                ),
-                                slow_peer=[
-                                    dict(detection=dict(threshold=150)),
-                                ],
-                            ),
-                            neighbor=[
-                                dict(
-                                    activate=True,
-                                    address="198.51.100.1",
-                                    aigp=dict(
-                                        send=dict(
-                                            cost_community=dict(
-                                                id=100,
-                                                poi=dict(
-                                                    igp_cost=True,
-                                                    transitive=True,
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                    next_hop_self=True,
-                                    nexthop_self=dict(all=True),
-                                    prefix_lists=[
-                                        dict(
-                                            name="AS65100-PREFIX-OUT",
-                                            out="true",
-                                        ),
-                                    ],
-                                    slow_peer=[
-                                        dict(detection=dict(threshold=150)),
-                                    ],
-                                    remote_as=10,
-                                    route_maps=[
-                                        dict(name="test-out", out=True),
-                                    ],
-                                    route_server_client=True,
-                                ),
+                            "redistribute": [{"connected": {"set": True}}],
+                        },
+                        {
+                            "afi": "ipv4",
+                            "aggregate_addresses": [
+                                {
+                                    "address": "192.0.3.1",
+                                    "as_confed_set": True,
+                                    "netmask": "255.255.255.255",
+                                },
                             ],
-                            network=[
-                                dict(
-                                    address="198.51.110.10",
-                                    mask="255.255.255.255",
-                                    backdoor=True,
-                                ),
+                            "default_metric": 12,
+                            "distance": {"external": 10, "internal": 10, "local": 100},
+                            "networks": [
+                                {
+                                    "address": "198.51.111.11",
+                                    "mask": "255.255.255.255",
+                                    "route_map": "test",
+                                },
                             ],
-                        ),
-                        dict(
-                            afi="ipv4",
-                            safi="mdt",
-                            bgp=dict(
-                                dmzlink_bw=True,
-                                dampening=dict(
-                                    penalty_half_time=1,
-                                    reuse_route_val=10,
-                                    suppress_route_val=100,
-                                    max_suppress=5,
-                                ),
-                                soft_reconfig_backup=True,
-                            ),
-                        ),
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            aggregate_address=[
-                                dict(
-                                    address="192.0.3.1",
-                                    netmask="255.255.255.255",
-                                    as_confed_set=True,
-                                ),
+                            "safi": "multicast",
+                            "table_map": {"filter": True, "name": "test_tableMap"},
+                        },
+                        {
+                            "afi": "ipv4",
+                            "bgp": {
+                                "dampening": {
+                                    "max_suppress": 5,
+                                    "penalty_half_time": 1,
+                                    "reuse_route_val": 10,
+                                    "suppress_route_val": 100,
+                                },
+                                "dmzlink_bw": True,
+                                "soft_reconfig_backup": True,
+                            },
+                            "safi": "mdt",
+                        },
+                        {
+                            "afi": "ipv4",
+                            "aggregate_addresses": [
+                                {
+                                    "address": "192.0.2.1",
+                                    "as_confed_set": True,
+                                    "netmask": "255.255.255.255",
+                                },
                             ],
-                            default_metric=12,
-                            distance=dict(external=10, internal=10, local=100),
-                            network=[
-                                dict(
-                                    address="198.51.111.11",
-                                    mask="255.255.255.255",
-                                    route_map="test",
-                                ),
+                            "bgp": {
+                                "aggregate_timer": 10,
+                                "dampening": {
+                                    "max_suppress": 1,
+                                    "penalty_half_time": 1,
+                                    "reuse_route_val": 1,
+                                    "suppress_route_val": 1,
+                                },
+                                "slow_peer_options": {"detection": {"threshold": 150}},
+                            },
+                            "neighbors": [
+                                {
+                                    "activate": True,
+                                    "aigp": {
+                                        "send": {
+                                            "cost_community": {
+                                                "id": 100,
+                                                "poi": {"igp_cost": True, "transitive": True},
+                                            },
+                                        },
+                                    },
+                                    "local_as": {"number": 20, "set": True},
+                                    "neighbor_address": "198.51.100.1",
+                                    "nexthop_self": {"all": True},
+                                    "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
+                                    "remote_as": 10,
+                                    "route_maps": [{"name": "test-out", "out": True}],
+                                    "route_server_client": True,
+                                    "slow_peer_options": {"detection": {"threshold": 150}},
+                                },
                             ],
-                            table_map=dict(name="test_tableMap", filter=True),
-                        ),
+                            "networks": [
+                                {
+                                    "address": "198.51.110.10",
+                                    "backdoor": True,
+                                    "mask": "255.255.255.255",
+                                },
+                            ],
+                            "safi": "multicast",
+                            "vrf": "blue",
+                        },
                     ],
-                ),
+                    "as_number": "65000",
+                },
                 state="merged",
             ),
         )
-        self.execute_module(changed=False, commands=[])
+        self.execute_module(changed=False)
 
     def test_ios_bgp_address_family_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
+
         set_module_args(
             dict(
                 config=dict(
@@ -326,9 +449,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             bgp=dict(
                                 aggregate_timer=10,
-                                slow_peer=[
-                                    dict(detection=dict(threshold=200)),
-                                ],
+                                slow_peer=[dict(detection=dict(threshold=200))],
                             ),
                             redistribute=[dict(connected=dict(metric=10))],
                             neighbor=[
@@ -336,12 +457,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     address="198.51.110.1",
                                     activate=True,
                                     remote_as=200,
-                                    route_maps=[
-                                        dict(
-                                            name="test-replaced-route",
-                                            out=True,
-                                        ),
-                                    ],
+                                    route_maps=[dict(name="test-replaced-route", out=True)],
                                 ),
                             ],
                         ),
@@ -353,25 +469,68 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         commands = [
             "router bgp 65000",
             "address-family ipv4 multicast vrf blue",
-            "redistribute connected metric 10",
             "no bgp dampening 1 1 1 1",
             "bgp slow-peer detection threshold 200",
-            "no neighbor 198.51.100.1 activate",
-            "no neighbor 198.51.100.1 next-hop-self all",
-            "no neighbor 198.51.100.1 remote-as 10",
-            "no neighbor 198.51.100.1 local-as 20",
-            "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-            "no neighbor 198.51.100.1 route-server-client",
-            "no neighbor 198.51.100.1 slow-peer detection threshold 150",
+            "redistribute connected metric 10",
             "neighbor 198.51.110.1 activate",
             "neighbor 198.51.110.1 remote-as 200",
             "neighbor 198.51.110.1 route-map test-replaced-route out",
+            "no neighbor 198.51.100.1",
             "no network 198.51.110.10 mask 255.255.255.255 backdoor",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -396,9 +555,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     suppress_route_val=1,
                                     max_suppress=1,
                                 ),
-                                slow_peer=[
-                                    dict(detection=dict(threshold=150)),
-                                ],
+                                slow_peer=[dict(detection=dict(threshold=150))],
                             ),
                             neighbor=[
                                 dict(
@@ -408,28 +565,16 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         send=dict(
                                             cost_community=dict(
                                                 id=100,
-                                                poi=dict(
-                                                    igp_cost=True,
-                                                    transitive=True,
-                                                ),
+                                                poi=dict(igp_cost=True, transitive=True),
                                             ),
                                         ),
                                     ),
                                     nexthop_self=dict(all=True),
-                                    prefix_lists=[
-                                        dict(
-                                            name="AS65100-PREFIX-OUT",
-                                            out="true",
-                                        ),
-                                    ],
-                                    slow_peer=[
-                                        dict(detection=dict(threshold=150)),
-                                    ],
+                                    prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
+                                    slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
                                     local_as=dict(number=20),
-                                    route_maps=[
-                                        dict(name="test-out", out=True),
-                                    ],
+                                    route_maps=[dict(name="test-out", out=True)],
                                     route_server_client=True,
                                 ),
                             ],
@@ -484,6 +629,55 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_bgp_address_family_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -511,10 +705,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     nexthop_self=dict(all=True),
                                     send_community=dict(set=True),
                                 ),
-                                dict(
-                                    ipv6_address="2001:db8::1",
-                                    activate=True,
-                                ),
+                                dict(ipv6_address="2001:db8::1", activate=True),
                             ],
                         ),
                         dict(
@@ -536,9 +727,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     suppress_route_val=1,
                                     max_suppress=1,
                                 ),
-                                slow_peer=[
-                                    dict(detection=dict(threshold=150)),
-                                ],
+                                slow_peer=[dict(detection=dict(threshold=150))],
                             ),
                             neighbor=[
                                 dict(
@@ -548,28 +737,16 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         send=dict(
                                             cost_community=dict(
                                                 id=100,
-                                                poi=dict(
-                                                    igp_cost=True,
-                                                    transitive=True,
-                                                ),
+                                                poi=dict(igp_cost=True, transitive=True),
                                             ),
                                         ),
                                     ),
                                     nexthop_self=dict(all=True),
-                                    prefix_lists=[
-                                        dict(
-                                            name="AS65100-PREFIX-OUT",
-                                            out="true",
-                                        ),
-                                    ],
-                                    slow_peer=[
-                                        dict(detection=dict(threshold=150)),
-                                    ],
+                                    prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
+                                    slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
                                     local_as=dict(number=20),
-                                    route_maps=[
-                                        dict(name="test-out", out=True),
-                                    ],
+                                    route_maps=[dict(name="test-out", out=True)],
                                     route_server_client=True,
                                 ),
                             ],
@@ -624,6 +801,55 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_bgp_address_family_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(dict(state="deleted"))
         commands = [
             "router bgp 65000",
@@ -636,6 +862,55 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_delete_without_config(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -689,20 +964,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         send=dict(
                                             cost_community=dict(
                                                 id=100,
-                                                poi=dict(
-                                                    igp_cost=True,
-                                                    transitive=True,
-                                                ),
+                                                poi=dict(igp_cost=True, transitive=True),
                                             ),
                                         ),
                                     ),
-                                    slow_peer=[
-                                        dict(detection=dict(threshold=150)),
-                                    ],
+                                    slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
-                                    route_maps=[
-                                        dict(name="test-route", out=True),
-                                    ],
+                                    route_maps=[dict(name="test-route", out=True)],
                                     route_server_client=True,
                                 ),
                             ],
@@ -765,24 +1033,157 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
     def test_ios_bgp_address_family_parsed(self):
         set_module_args(
             dict(
-                running_config="router bgp 65000\n address-family ipv4 multicast vrf blue\n bgp aggregate-timer 10\n bgp slow-peer detection threshold 150",
+                running_config=dedent(
+                    """\
+                    router bgp 65000
+                     bgp log-neighbor-changes
+                     bgp nopeerup-delay cold-boot 20
+                     neighbor TEST-PEER-GROUP peer-group
+                     neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+                     neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+                     !
+                     address-family ipv4
+                      bgp redistribute-internal
+                      redistribute connected
+                      redistribute ospf 200 metric 100 match internal external 1 external 2
+                      neighbor TEST-PEER-GROUP send-community
+                      neighbor TEST-PEER-GROUP next-hop-self all
+                      neighbor 2001:db8::1 activate
+                     !
+                     address-family ipv4 multicast
+                      table-map test_tableMap filter
+                      network 198.51.111.11 mask 255.255.255.255 route-map test
+                      aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+                      default-metric 12
+                      distance bgp 10 10 100
+                     exit-address-family
+                     !
+                     address-family ipv4 mdt
+                      bgp dampening 1 10 100 5
+                      bgp dmzlink-bw
+                      bgp soft-reconfig-backup
+                     exit-address-family
+                     !
+                     address-family ipv4 multicast vrf blue
+                      bgp aggregate-timer 10
+                      bgp slow-peer detection threshold 150
+                      bgp dampening 1 1 1 1
+                      network 198.51.110.10 mask 255.255.255.255 backdoor
+                      aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+                      neighbor 198.51.100.1 remote-as 10
+                      neighbor 198.51.100.1 local-as 20
+                      neighbor 198.51.100.1 activate
+                      neighbor 198.51.100.1 next-hop-self all
+                      neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+                      neighbor 198.51.100.1 route-server-client
+                      neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+                      neighbor 198.51.100.1 slow-peer detection threshold 150
+                      neighbor 198.51.100.1 route-map test-out out
+                     exit-address-family
+                    """,
+                ),
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
         parsed_list = {
+            "as_number": "65000",
             "address_family": [
                 {
                     "afi": "ipv4",
+                    "bgp": {"redistribute_internal": True},
+                    "redistribute": [{"connected": {"set": True}}],
+                    "neighbors": [
+                        {
+                            "send_community": {"set": True},
+                            "nexthop_self": {"all": True},
+                            "neighbor_address": "TEST-PEER-GROUP",
+                        },
+                        {"neighbor_address": "2001:db8::1", "activate": True},
+                    ],
+                },
+                {
+                    "afi": "ipv4",
+                    "safi": "multicast",
+                    "table_map": {"name": "test_tableMap", "filter": True},
+                    "networks": [
+                        {
+                            "address": "198.51.111.11",
+                            "mask": "255.255.255.255",
+                            "route_map": "test",
+                        },
+                    ],
+                    "aggregate_addresses": [
+                        {
+                            "address": "192.0.3.1",
+                            "netmask": "255.255.255.255",
+                            "as_confed_set": True,
+                        },
+                    ],
+                    "default_metric": 12,
+                    "distance": {"external": 10, "internal": 10, "local": 100},
+                },
+                {
+                    "afi": "ipv4",
+                    "safi": "mdt",
                     "bgp": {
-                        "aggregate_timer": 10,
-                        "slow_peer": [{"detection": {"threshold": 150}}],
+                        "dampening": {
+                            "penalty_half_time": 1,
+                            "reuse_route_val": 10,
+                            "suppress_route_val": 100,
+                            "max_suppress": 5,
+                        },
+                        "dmzlink_bw": True,
+                        "soft_reconfig_backup": True,
                     },
+                },
+                {
+                    "afi": "ipv4",
                     "safi": "multicast",
                     "vrf": "blue",
+                    "bgp": {
+                        "aggregate_timer": 10,
+                        "slow_peer_options": {"detection": {"threshold": 150}},
+                        "dampening": {
+                            "penalty_half_time": 1,
+                            "reuse_route_val": 1,
+                            "suppress_route_val": 1,
+                            "max_suppress": 1,
+                        },
+                    },
+                    "networks": [
+                        {"address": "198.51.110.10", "mask": "255.255.255.255", "backdoor": True},
+                    ],
+                    "aggregate_addresses": [
+                        {
+                            "address": "192.0.2.1",
+                            "netmask": "255.255.255.255",
+                            "as_confed_set": True,
+                        },
+                    ],
+                    "neighbors": [
+                        {
+                            "remote_as": 10,
+                            "local_as": {"set": True, "number": 20},
+                            "activate": True,
+                            "neighbor_address": "198.51.100.1",
+                            "nexthop_self": {"all": True},
+                            "aigp": {
+                                "send": {
+                                    "cost_community": {
+                                        "id": 100,
+                                        "poi": {"igp_cost": True, "transitive": True},
+                                    },
+                                },
+                            },
+                            "route_server_client": True,
+                            "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
+                            "slow_peer_options": {"detection": {"threshold": 150}},
+                            "route_maps": [{"name": "test-out", "out": True}],
+                        },
+                    ],
                 },
             ],
-            "as_number": "65000",
         }
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -807,18 +1208,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 ),
                             ],
                             network=[
-                                dict(
-                                    address="192.0.3.1",
-                                    mask="255.255.255.0",
-                                ),
-                                dict(
-                                    address="192.0.2.1",
-                                    mask="255.255.255.0",
-                                ),
-                                dict(
-                                    address="192.0.4.1",
-                                    mask="255.255.255.0",
-                                ),
+                                dict(address="192.0.3.1", mask="255.255.255.0"),
+                                dict(address="192.0.2.1", mask="255.255.255.0"),
+                                dict(address="192.0.4.1", mask="255.255.255.0"),
                             ],
                         ),
                     ],
@@ -841,6 +1233,55 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_overridden_multiple_neighbor(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             bgp nopeerup-delay cold-boot 20
+             neighbor TEST-PEER-GROUP peer-group
+             neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
+             neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             !
+             address-family ipv4
+              bgp redistribute-internal
+              redistribute connected
+              redistribute ospf 200 metric 100 match internal external 1 external 2
+              neighbor TEST-PEER-GROUP send-community
+              neighbor TEST-PEER-GROUP next-hop-self all
+              neighbor 2001:db8::1 activate
+             !
+             address-family ipv4 multicast
+              table-map test_tableMap filter
+              network 198.51.111.11 mask 255.255.255.255 route-map test
+              aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              default-metric 12
+              distance bgp 10 10 100
+             exit-address-family
+             !
+             address-family ipv4 mdt
+              bgp dampening 1 10 100 5
+              bgp dmzlink-bw
+              bgp soft-reconfig-backup
+             exit-address-family
+             !
+             address-family ipv4 multicast vrf blue
+              bgp aggregate-timer 10
+              bgp slow-peer detection threshold 150
+              bgp dampening 1 1 1 1
+              network 198.51.110.10 mask 255.255.255.255 backdoor
+              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              neighbor 198.51.100.1 remote-as 10
+              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 activate
+              neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+              neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
+              neighbor 198.51.100.1 slow-peer detection threshold 150
+              neighbor 198.51.100.1 route-map test-out out
+             exit-address-family
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -861,18 +1302,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 ),
                             ],
                             network=[
-                                dict(
-                                    address="192.0.3.1",
-                                    mask="255.255.255.0",
-                                ),
-                                dict(
-                                    address="192.0.2.1",
-                                    mask="255.255.255.0",
-                                ),
-                                dict(
-                                    address="192.0.4.1",
-                                    mask="255.255.255.0",
-                                ),
+                                dict(address="192.0.3.1", mask="255.255.255.0"),
+                                dict(address="192.0.2.1", mask="255.255.255.0"),
+                                dict(address="192.0.4.1", mask="255.255.255.0"),
                             ],
                         ),
                     ],
@@ -882,20 +1314,32 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
         commands = [
             "router bgp 65000",
-            "no address-family ipv4 multicast",
-            "no address-family ipv4 mdt",
-            "no address-family ipv4 multicast vrf blue",
+            "address-family ipv4 multicast",
+            "no default-metric 12",
+            "no distance bgp 10 10 100",
+            "no table-map test_tableMap filter",
+            "no network 198.51.111.11 mask 255.255.255.255 route-map test",
+            "no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+            "address-family ipv4 mdt",
+            "no bgp dmzlink-bw",
+            "no bgp soft-reconfig-backup",
+            "no bgp dampening 1 10 100 5",
+            "address-family ipv4 multicast vrf blue",
+            "no bgp aggregate-timer 10",
+            "no bgp dampening 1 1 1 1",
+            "no bgp slow-peer detection threshold 150",
+            "no neighbor 198.51.100.1",
+            "no network 198.51.110.10 mask 255.255.255.255 backdoor",
+            "no aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
             "address-family ipv4",
             "no bgp redistribute-internal",
             "no redistribute connected",
-            "no redistribute ospf 200 metric 100 match internal external 1 external 2",
-            "no neighbor TEST-PEER-GROUP send-community",
-            "no neighbor TEST-PEER-GROUP next-hop-self all",
-            "no neighbor 2001:db8::1 activate",
             "neighbor 192.31.39.212 activate",
             "neighbor 192.31.39.212 soft-reconfiguration inbound",
             "neighbor 192.31.47.206 activate",
             "neighbor 192.31.47.206 soft-reconfiguration inbound",
+            "no neighbor TEST-PEER-GROUP",
+            "no neighbor 2001:db8::1",
             "network 192.0.3.1 mask 255.255.255.0",
             "network 192.0.2.1 mask 255.255.255.0",
             "network 192.0.4.1 mask 255.255.255.0",

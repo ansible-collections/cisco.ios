@@ -18,6 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
@@ -124,22 +126,32 @@ class Bgp_address_family(ResourceModule):
             wantd = dict_merge(haved, wantd)
 
         if self.state == "deleted":
-            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
-            wantd = {}
+            for k, have in haved.get("address_family", {}).items():
+                if wantd.get("address_family"):
+                    if wantd["address_family"].get(k):
+                        self.commands.append(
+                            self._tmplt.render(wantd["address_family"].get(k, {}), "afi", True),
+                        )
+                else:  # to clear off all afs
+                    self.commands.append(self._tmplt.render(have, "afi", True))
 
         # remove superfluous config
-        if self.state in ["overridden", "deleted"]:
+        if self.state in ["overridden"]:
             for k, have in haved.get("address_family").items():
                 if k not in wantd.get("address_family", {}):
                     self._compare(want={}, have=have)
 
-        # sand end
-        for k, want in wantd.get("address_family", {}).items():
-            self._compare(want=want, have=haved["address_family"].pop(k, {}))
+        if self.state != "deleted":  # not deleted state
+            for k, want in wantd.get("address_family", {}).items():
+                self._compare(want=want, have=haved["address_family"].pop(k, {}))
 
         # adds router bgp AS_NUMB command
         if len(self.commands) > 0:
-            self.commands.insert(0, self._tmplt.render(self.want or self.have, "as_number", False))
+            if self.want.get("as_number"):
+                as_number = self.want
+            else:
+                as_number = self.have
+            self.commands.insert(0, self._tmplt.render(as_number, "as_number", False))
 
     def _compare(self, want, have):
         begin = len(self.commands)
@@ -277,7 +289,6 @@ class Bgp_address_family(ResourceModule):
             "networks": "address",
             "network": "address",
         }
-        from copy import deepcopy
 
         af_data = {}
         for af in tmp_data:
