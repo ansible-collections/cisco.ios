@@ -580,7 +580,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
                                 ),
                             ],
                         ),
@@ -750,7 +752,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
                                 ),
                             ],
                         ),
@@ -972,7 +976,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             ],
                             network=[
                                 dict(
-                                    address="198.51.110.10", mask="255.255.255.255", backdoor=True
+                                    address="198.51.110.10",
+                                    mask="255.255.255.255",
+                                    backdoor=True,
                                 ),
                             ],
                         ),
