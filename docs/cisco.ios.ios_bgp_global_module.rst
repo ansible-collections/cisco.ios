@@ -701,7 +701,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Change the default asplain notation</div>
+                        <div>Change the default as plain notation</div>
                         <div>asdot notation</div>
                 </td>
             </tr>
@@ -743,7 +743,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparision</div>
+                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparison</div>
                         <div>ignore</div>
                 </td>
             </tr>
@@ -916,7 +916,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparision</div>
+                        <div>if both paths doesn&#x27;t have aigp ignore on bestpath comparison</div>
                         <div>ignore</div>
                 </td>
             </tr>

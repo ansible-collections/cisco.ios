@@ -142,7 +142,7 @@ options:
             type: bool
           asnotation:
             description:
-              - Change the default asplain notation
+              - Change the default as plain notation
               - asdot notation
             type: bool
           bestpath:
@@ -155,7 +155,7 @@ options:
             suboptions:
               aigp:
                 description:
-                  - if both paths doesn't have aigp ignore on bestpath comparision
+                  - if both paths doesn't have aigp ignore on bestpath comparison
                   - ignore
                 type: bool
               compare_routerid:
@@ -186,7 +186,7 @@ options:
             suboptions:
               aigp:
                 description:
-                  - if both paths doesn't have aigp ignore on bestpath comparision
+                  - if both paths doesn't have aigp ignore on bestpath comparison
                   - ignore
                 type: bool
               compare_routerid:
