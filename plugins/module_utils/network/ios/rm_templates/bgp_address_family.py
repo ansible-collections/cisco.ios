@@ -2118,8 +2118,10 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "{{ (' priv sha ' + snmp.context.user.priv.aes256 ) if snmp.context.user.priv is defined and snmp.context.user.priv.aes256 is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.des56 ) if snmp.context.user.priv is defined and snmp.context.user.priv.des56 is defined else '' }}"
             "{{ (' priv sha ' + snmp.context.user.priv.des ) if snmp.context.user.priv is defined and snmp.context.user.priv.des is defined else '' }}"
-            "{{ (' access ' + snmp.context.user.access.acl|string ) if snmp.context.user.access is defined and snmp.context.user.access.acl is defined else '' }}"
-            "{{ (' access ipv6 ' + snmp.context.user.access.ipv6|string ) if snmp.context.user.access is defined and snmp.context.user.access.ipv6 is defined else '' }}",
+            "{{ (' access ' + snmp.context.user.access.acl|string ) if snmp.context.user.access is defined"
+            " and snmp.context.user.access.acl is defined else '' }}"
+            "{{ (' access ipv6 ' + snmp.context.user.access.ipv6|string ) if snmp.context.user.access is defined"
+            " and snmp.context.user.access.ipv6 is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
