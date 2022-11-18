@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -18,7 +18,9 @@ module: ios_bgp_address_family
 short_description: Resource module to configure BGP Address family.
 description: This module configures and manages the attributes of bgp address family on Cisco IOS.
 version_added: 1.2.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -47,10 +49,12 @@ options:
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
-          aggregate_address:
+          aggregate_addresses:
             description: Configure BGP aggregate entries
             type: list
             elements: dict
+            aliases:
+              - aggregate_address
             suboptions:
               address:
                 description: Aggregate address(A.B.C.D)
@@ -97,14 +101,23 @@ options:
                       all:
                         description: Select all available paths
                         type: bool
+                      backup:
+                        description: Select backup path
+                        type: bool
                       best:
                         description: Select best N paths (2-3).
                         type: int
+                      best_external:
+                        description: Select best-external path
+                        type: bool
                       group_best:
                         description: Select group-best path
                         type: bool
                   send:
                     description: Send additional paths to neighbors
+                    type: bool
+                  install:
+                    description: Additional paths to install into RIB
                     type: bool
               aggregate_timer:
                 description:
@@ -174,9 +187,39 @@ options:
                   - Please refer vendor documentation for valid values
                 type: int
               slow_peer:
-                description: Nexthop triggering
+                description:
+                - Nexthop triggering
+                - This option is DEPRECATED and replaced with slow_peer_options,
+                  this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
+                suboptions:
+                  detection:
+                    description: Slow-peer detection
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable slow-peer detection
+                        type: bool
+                      threshold:
+                        description:
+                          - Set the slow-peer detection threshold
+                          - Threshold value (seconds)
+                          - Please refer vendor documentation for valid values
+                        type: int
+                  split_update_group:
+                    description: Configure slow-peer split-update-group
+                    type: dict
+                    suboptions:
+                      dynamic:
+                        description: Dynamically split the slow peer to slow-update group
+                        type: bool
+                      permanent:
+                        description: Keep the slow-peer permanently in slow-update group
+                        type: bool
+              slow_peer_options:
+                description: Nexthop triggering
+                type: dict
                 suboptions:
                   detection:
                     description: Slow-peer detection
@@ -234,22 +277,39 @@ options:
               local:
                 description: Distance for local routes
                 type: int
-          neighbor:
+          neighbors:
             description: Specify a neighbor router
             type: list
             elements: dict
+            aliases:
+              - neighbor
             suboptions:
+              neighbor_address:
+                description:
+                - Neighbor address (A.B.C.D)
+                - Neighbor tag
+                - Neighbor ipv6 address (X:X:X:X::X)
+                type: str
               address:
-                description: Neighbor address (A.B.C.D)
+                description:
+                - Neighbor address (A.B.C.D)
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
               tag:
-                description: Neighbor tag
+                description:
+                - Neighbor tag
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
-              ipv6_adddress:
-                description: Neighbor ipv6 address (X:X:X:X::X)
+              ipv6_address:
+                description:
+                - Neighbor ipv6 address (X:X:X:X::X)
+                - This option is DEPRECATED and replaced with neighbor_address,
+                  this attribute will be removed after 2025-01-01.
                 type: str
                 aliases:
-                  - ipv6_address
+                  - ipv6_adddress
               activate:
                 description: Enable the Address Family for this Neighbor
                 type: bool
@@ -281,6 +341,36 @@ options:
                   group_best:
                     description: Select group-best path
                     type: bool
+              advertises:
+                description: Advertise to this neighbor
+                type: dict
+                suboptions:
+                  additional_paths:
+                    description: Advertise additional paths
+                    type: dict
+                    suboptions:
+                      all:
+                        description: Select all available paths
+                        type: bool
+                      best:
+                        description: Select best N paths (2-3).
+                        type: int
+                      group_best:
+                        description: Select group-best path
+                        type: bool
+                  best_external:
+                    description: Advertise best-external (at RRs best-internal) path
+                    type: bool
+                  diverse_path:
+                    description: Advertise additional paths
+                    type: dict
+                    suboptions:
+                      backup:
+                        description: Diverse path can be backup path
+                        type: bool
+                      mpath:
+                        description: Diverse path can be multipath
+                        type: bool
               advertise_map:
                 description: specify route-map for conditional advertisement
                 type: dict
@@ -559,11 +649,33 @@ options:
                     description: Enable next-hop-self for both eBGP and iBGP received paths
                     type: bool
               next_hop_unchanged:
-                description: Propagate next hop unchanged for iBGP paths to this neighbor
-                type: bool
+                description:
+                  - Propagate next hop unchanged for iBGP paths to this neighbor
+                  - Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
+                type: dict
+                suboptions:
+                  set:
+                    description: Enable next-hop-unchanged
+                    type: bool
+                  allpaths:
+                    description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
+                    type: bool
               password:
-                description: Set a password
+                description:
+                - Set a password
+                - This option is DEPRECATED and is replaced with password_options which
+                  accepts dict as input, this attribute will be removed after 2024-06-01.
                 type: str
+              password_options:
+                description: Set a password with encryption type
+                type: dict
+                suboptions:
+                  encryption:
+                    description: Encryption type (0 to disable encryption, 7 for proprietary)
+                    type: int
+                  pass_key:
+                    description: The password
+                    type: str
               path_attribute:
                 description: BGP optional attribute filtering
                 type: dict
@@ -623,6 +735,9 @@ options:
               peer_group:
                 description: Member of the peer-group
                 type: bool
+              peer_group_name:
+                description: Member of the peer-group
+                type: str
               prefix_list:
                 description:
                   - Filter updates to/from this neighbor
@@ -739,9 +854,49 @@ options:
                       - Please refer vendor documentation for valid values
                     type: int
               slow_peer:
-                description: Configure slow-peer
+                description:
+                - Configure slow-peer
+                - This option is DEPRECATED and replaced with slow_peer_options,
+                  this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
+                suboptions:
+                  detection:
+                    description: Configure slow-peer
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable slow-peer detection
+                        type: bool
+                      disable:
+                        description: Disable slow-peer detection
+                        type: bool
+                      threshold:
+                        description: Set the slow-peer detection threshold
+                        type: int
+                  split_update_group:
+                    description: Configure slow-peer
+                    type: dict
+                    suboptions:
+                      dynamic:
+                        description: Configure slow-peer
+                        type: dict
+                        suboptions:
+                          enable:
+                            description: Configure slow-peer
+                            type: bool
+                          disable:
+                            description: Configure slow-peer
+                            type: bool
+                          permanent:
+                            description: Configure slow-peer
+                            type: bool
+                      static:
+                        description: Configure slow-peer
+                        type: bool
+              slow_peer_options:
+                description: Configure slow-peer options
+                type: dict
                 suboptions:
                   detection:
                     description: Configure slow-peer
@@ -842,10 +997,12 @@ options:
               weight:
                 description: Set default weight for routes from this neighbor
                 type: int
-          network:
+          networks:
             description: Specify a network to announce via BGP
             type: list
             elements: dict
+            aliases:
+              - network
             suboptions:
               address:
                 description: Network number (A.B.C.D)
@@ -856,11 +1013,15 @@ options:
               backdoor:
                 description: Specify a BGP backdoor route
                 type: bool
+              evpn:
+                description: Advertise or Export to EVPN address-family
+                type: bool
               route_map:
                 description: Route-map to modify the attributes
                 type: str
           redistribute:
-            description: Redistribute information from another routing protocol
+            description:
+            - Redistribute information from another routing protocol
             type: list
             elements: dict
             suboptions:
@@ -951,6 +1112,9 @@ options:
                 description: Locator ID Separation Protocol (LISP)
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -961,6 +1125,9 @@ options:
                 description: Mobile routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -971,6 +1138,9 @@ options:
                 description: On Demand stub Routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1048,6 +1218,9 @@ options:
                 description: Routing Information Protocol (RIP)
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1058,6 +1231,9 @@ options:
                 description: Static routes
                 type: dict
                 suboptions:
+                  set:
+                    description: Set the top level attribute
+                    type: bool
                   clns:
                     description: Redistribution of OSI static routes
                     type: bool
@@ -1156,6 +1332,18 @@ options:
                         suboptions:
                           des:
                             description: Use 56 bit DES algorithm for encryption
+                            type: str
+                          des56:
+                            description: Use 56 bit DES algorithm for encryption
+                            type: str
+                          aes128:
+                            description: Use 128 bit AES algorithm for encryption
+                            type: str
+                          aes192:
+                            description: Use 192 bit 3DES algorithm for encryption
+                            type: str
+                          aes256:
+                            description: Use 256 bit DES algorithm for encryption
                             type: str
                       credential:
                         description: If the user password is already configured and saved
@@ -2143,9 +2331,8 @@ EXAMPLES = """
 #       ],
 #       "as_number": "65000"
 #   }
-
-
 """
+
 
 RETURN = """
 before:
