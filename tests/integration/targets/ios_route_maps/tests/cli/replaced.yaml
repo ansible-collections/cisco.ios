@@ -15,6 +15,9 @@
                 action: deny
                 description: this is replaced route
                 match:
+                  community:
+                    name:
+                      - test_comm_replaced
                   ip:
                     next_hop:
                       acls:
@@ -46,6 +49,8 @@
                       as_number:
                         - "64512"
                         - "64512"
+                  community:
+                    number: 65000:300
                   metric:
                     metric_value: 100
                     deviation: plus
