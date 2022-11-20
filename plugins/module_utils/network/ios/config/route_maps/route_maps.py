@@ -240,7 +240,7 @@ class Route_maps(ResourceModule):
                                 want={},
                                 have={compare_type: {k: have_v}},
                             )
-                        elif self.state == 'merged':
+                        elif self.state == "merged":
                             for _key, _val in have_v.items():
                                 if isinstance(_val, list):
                                     v[_key].extend(_val)
@@ -416,13 +416,17 @@ class Route_maps(ResourceModule):
                                 if _k and _k.get("number"):
                                     # asplain helper func
                                     def to_asplain(new_format):
-                                        _int, _remainder = (int(i) for i in new_format.split(':'))
+                                        _int, _remainder = (int(i) for i in new_format.split(":"))
                                         return str(_int * 65536 + _remainder)
 
                                     # convert to asplain for correct sorting
-                                    if ':' in _k["number"]:
-                                        _k["number"] = list(map(to_asplain,
-                                            _k["number"].split(" ")))
+                                    if ":" in _k["number"]:
+                                        _k["number"] = list(
+                                            map(
+                                                to_asplain,
+                                                _k["number"].split(" "),
+                                            ),
+                                        )
                                     else:
                                         _k["number"] = _k["number"].split(" ")
 

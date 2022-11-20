@@ -191,7 +191,7 @@ overridden:
           match:
             community:
               name:
-               - test_comm_overridden
+                - test_comm_overridden
             ip:
               flowspec:
                 acls:

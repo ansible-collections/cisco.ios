@@ -348,6 +348,8 @@ def _tmplt_route_map_match_ipv6(config_data):
             elif config_data["match"]["ipv6"]["route_source"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["route_source"])
         return cmd
+
+
 def _tmplt_route_map_set(config_data):
     if config_data.get("set"):
         command = []
@@ -379,7 +381,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("community"):
             cmd = "set community"
             if set["community"].get("number"):
-                cmd += " "+" ".join(i for i in set["community"]["number"])
+                cmd += " " + " ".join(i for i in set["community"]["number"])
             if set["community"].get("gshut"):
                 cmd += " gshut"
             if set["community"].get("internet"):
@@ -784,7 +786,6 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "next_hop": "{{ clns.split('clns next-hop ')[1] if clns is defined }}",
                                     "route_source": "{{ clns.split('clns route-source ')[1] if clns is defined }}",
                                 },
-
                                 "community": {
                                     "name": "{{ community.split('community ')[1].split(' exact-match')[0].split(' ') if community is defined }}",
                                     "exact_match": "{{ True if community is defined and 'exact-match' in community }}",

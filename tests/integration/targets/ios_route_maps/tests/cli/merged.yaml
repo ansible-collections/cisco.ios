@@ -23,7 +23,7 @@
                 match:
                   community:
                     name:
-                     - test_comm
+                      - test_comm
                   ip:
                     next_hop:
                       prefix_lists:
