@@ -226,11 +226,11 @@ overridden:
                   - "64512"
             community:
               additive: true
-              internet: yes
-              gshut: yes
-              no_export: yes
-              no_advertise: yes
-              local_as: yes
+              internet: true
+              gshut: true
+              no_export: true
+              no_advertise: true
+              local_as: true
             metric:
               deviation: plus
               eigrp_delay: 100
