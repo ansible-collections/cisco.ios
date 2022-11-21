@@ -125,7 +125,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "name": "mode",
             "getval": re.compile(
                 r"""
-                \s+switchport\smode\s(?P<mode>access|trunk|dynamic)
+                \s+switchport\smode\s(?P<mode>access|trunk|dynamic|dynamic\sauto|dynamic\sdesirable|private-vlan\shost|private-vlan\spromiscuous|private-vlan\strunk\ssecondary|dot1q-tunnel)
                 $""", re.VERBOSE,
             ),
             "setval": "switchport mode {{ mode }}",

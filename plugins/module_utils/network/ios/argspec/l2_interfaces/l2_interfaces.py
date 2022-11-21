@@ -39,19 +39,13 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 "name": {"type": "str", "required": True},
                 "access": {
                     "type": "dict",
-                    "options": {
-                        "vlan": {"type": "int"},
-                        "vlan_name": {"type": "str"},
-                    },
+                    "options": {"vlan": {"type": "int"}, "vlan_name": {"type": "str"}},
                 },
                 "voice": {
                     "type": "dict",
                     "options": {
                         "vlan": {"type": "int"},
-                        "vlan_tag": {
-                            "choices": ["dot1p", "none", "untagged"],
-                            "type": "str",
-                        },
+                        "vlan_tag": {"choices": ["dot1p", "none", "untagged"], "type": "str"},
                         "vlan_name": {"type": "str"},
                     },
                 },
@@ -60,14 +54,24 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                     "options": {
                         "allowed_vlans": {"type": "list", "elements": "str"},
                         "native_vlan": {"type": "int"},
-                        "encapsulation": {
-                            "choices": ["dot1q", "isl", "negotiate"],
-                            "type": "str",
-                        },
+                        "encapsulation": {"choices": ["dot1q", "isl", "negotiate"], "type": "str"},
                         "pruning_vlans": {"type": "list", "elements": "str"},
                     },
                 },
-                "mode": {"type": "str", "choices": ["access", "trunk"]},
+                "mode": {
+                    "type": "str",
+                    "choices": [
+                        "access",
+                        "trunk",
+                        "dot1q_tunnel",
+                        "dynamic",
+                        "dynamic_auto",
+                        "dynamic_desirable",
+                        "private_vlan_host",
+                        "private_vlan_promiscuous",
+                        "private_vlan_trunk",
+                    ],
+                },
             },
         },
         "running_config": {"type": "str"},

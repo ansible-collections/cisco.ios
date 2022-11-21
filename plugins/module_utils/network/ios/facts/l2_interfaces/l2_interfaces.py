@@ -61,6 +61,22 @@ class L2_interfacesFacts(object):
             else:
                 return vlan.split(",")
 
+        def process_mode(obj):
+            mode = ""
+            if obj == "dot1q-tunnel":
+                mode = "dot1q_tunnel"
+            elif obj == "dynamic auto":
+                mode = "dynamic_auto"
+            elif obj == "dynamic desirable":
+                mode = "dynamic_desirable"
+            elif obj == "private-vlan host":
+                mode = "private_vlan_host"
+            elif obj == "private-vlan promiscuous":
+                mode = "private_vlan_promiscuous"
+            elif obj == "private-vlan trunk secondary":
+                mode = "private_vlan_trunk"
+            return mode
+
         def process_vlans(obj, vlan_type):
             vlans = []
             _vlans = obj.get("trunk")
@@ -74,6 +90,8 @@ class L2_interfacesFacts(object):
 
         if objs:
             for obj in objs:
+                if obj.get("mode") and obj.get("mode") not in ["trunk", "access", "dynamic"]:
+                    obj["mode"] = process_mode(obj.get("mode"))
                 if obj.get("trunk"):
                     for _vlan in ["allowed_vlans", "pruning_vlans"]:
                         if obj.get("trunk", {}).get(_vlan):

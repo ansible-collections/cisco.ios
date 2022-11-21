@@ -115,7 +115,13 @@ options:
         choices:
         - access
         - trunk
+        - dot1q_tunnel
         - dynamic
+        - dynamic_auto
+        - dynamic_desirable
+        - private_vlan_host
+        - private_vlan_promiscuous
+        - private_vlan_trunk
   running_config:
     description:
       - This option is used only with state I(parsed).

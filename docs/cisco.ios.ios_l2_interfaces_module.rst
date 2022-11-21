@@ -114,7 +114,13 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>access</li>
                                     <li>trunk</li>
+                                    <li>dot1q_tunnel</li>
                                     <li>dynamic</li>
+                                    <li>dynamic_auto</li>
+                                    <li>dynamic_desirable</li>
+                                    <li>private_vlan_host</li>
+                                    <li>private_vlan_promiscuous</li>
+                                    <li>private_vlan_trunk</li>
                         </ul>
                 </td>
                 <td>
