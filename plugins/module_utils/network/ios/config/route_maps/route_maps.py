@@ -246,7 +246,7 @@ class Route_maps(ResourceModule):
                                     v[_key].extend(_val)
                                     v[_key] = list(set(v[_key]))
                                     v[_key].sort()
-                                    _val.sort()
+
                         self.compare(
                             parsers=parsers,
                             want={compare_type: {k: v}},
@@ -429,6 +429,9 @@ class Route_maps(ResourceModule):
                                         )
                                     else:
                                         _k["number"] = _k["number"].split(" ")
+
+                                    # sort the list to ensure idempotency
+                                    _k["number"].sort()
 
                         action = every.get("action")
                         sequence = every.get("sequence")
