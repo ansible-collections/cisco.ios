@@ -291,14 +291,14 @@ parsed:
   config:
     address_family:
       - afi: ipv4
-        neighbor:
+        neighbors:
           - activate: true
-            address: 198.51.110.212
+            neighbor_address: 198.51.110.212
             soft_reconfiguration: true
           - activate: true
-            address: 198.51.110.206
+            neighbor_address: 198.51.110.206
             soft_reconfiguration: true
-        network:
+        networks:
           - address: 192.0.2.0
           - address: 192.0.3.0
           - address: 192.0.4.0

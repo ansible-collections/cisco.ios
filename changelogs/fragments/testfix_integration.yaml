@@ -1,4 +1,0 @@
-bugfixes:
-  - ios_lag_interfaces - fix deleted state to delete only sub attribute values.
-trivial:
-  - Fix integration tests for image upgrade.
