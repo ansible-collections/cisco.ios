@@ -125,11 +125,13 @@ class L2_interfaces(ResourceModule):
                 if (
                     not want.get("trunk", {}).get(vlan, []) and rem_vlan
                 ):  # remove vlan all as want blank
-                    self.commands.append("no switchport trunk {0} vlan".format(vlan.split("_")[0]))
+                    self.commands.append(
+                        "no switchport trunk {0} vlan".format(vlan.split("_", maxsplit=1)[0]),
+                    )
                 elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
                         "no switchport trunk {0} vlan {1}".format(
-                            vlan.split("_")[0],
+                            vlan.split("_", maxsplit=1)[0],
                             vlan_list_to_range(sorted(rem_vlan)),
                         ),
                     )
@@ -137,7 +139,7 @@ class L2_interfaces(ResourceModule):
                 add = "add " if have.get("trunk", {}).get(vlan, []) else ""
                 self.commands.append(
                     "switchport trunk {0} vlan {1}{2}".format(
-                        vlan.split("_")[0],
+                        vlan.split("_", maxsplit=1)[0],
                         add,
                         vlan_list_to_range(sorted(cmd_always)),
                     ),
