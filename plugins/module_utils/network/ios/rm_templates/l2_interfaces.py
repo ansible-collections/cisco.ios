@@ -128,7 +128,16 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+switchport\smode\s(?P<mode>access|trunk|dynamic|dynamic\sauto|dynamic\sdesirable|private-vlan\shost|private-vlan\spromiscuous|private-vlan\strunk\ssecondary|dot1q-tunnel)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport mode {{ mode }}",
+            "setval": "switchport mode "
+                      "{{ 'trunk' if mode == 'trunk' }}"
+                      "{{ 'access' if mode == 'access' }}"
+                      "{{ 'dynamic' if mode == 'dynamic' }}"
+                      "{{ 'dynamic desirable' if mode == 'dynamic_desirable' }}"
+                      "{{ 'dynamic auto' if mode == 'dynamic_auto' }}"
+                      "{{ 'dot1q-tunnel' if mode == 'dot1q_tunnel' }}"
+                      "{{ 'private-vlan host' if mode == 'private_vlan_host' }}"
+                      "{{ 'private-vlan promiscuous' if mode == 'private_vlan_promiscuous' }}"
+                      "{{ 'private-vlan trunk secondary' if mode == 'private_vlan_trunk' }}",
             "result": {
                 "{{ name }}": {
                     "mode": "{{ mode }}",
@@ -158,7 +167,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+switchport\strunk\sallowed\svlan\sadd\s(?P<allowed_vlans_add>\S+$)
                 """, re.VERBOSE,
             ),
-            "setval": "switchport trunk allowed vlan add 30-45,47",
+            "setval": "",
             "result": {
                 "{{ name }}": {
                     "trunk": {
@@ -222,7 +231,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+switchport\strunk\spruning\svlan\sadd\s(?P<pruning_vlans_add>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport trunk pruning vlan add 30-45,47",
+            "setval": "",
             "result": {
                 "{{ name }}": {
                     "trunk": {

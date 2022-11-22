@@ -32,6 +32,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     normalize_interface,
+    vlan_list_to_range,
+    vlan_range_to_list,
 )
 
 
@@ -106,22 +108,41 @@ class L2_interfaces(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        self.compare_list(want, have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
-    def compare_list(self, wants, have):
-        pass
+    def compare_list(self, want, have):
+        for vlan in ["allowed_vlans", "pruning_vlans"]:
+            if want.get("trunk", {}).get(vlan):
+                cmd_always = list(
+                    set(want.get("trunk", {}).get(vlan, []))
+                    - set(have.get("trunk", {}).get(vlan, [])),
+                )  # find vlans to create wrt have
+                if self.state != "merged":
+                    rem_vlan = []
+                    for vl_no in have.get("trunk", {}).get(vlan, []):
+                        if vl_no not in cmd_always:
+                            rem_vlan.append(vl_no)
+                    if rem_vlan:  # remove excess vlans for replaced overridden
+                        self.commands.append(
+                            "no switchport trunk allowed vlan {0}".format(
+                                vlan_list_to_range(sorted(rem_vlan)),
+                            ),
+                        )
+                if self.state != "deleted" and cmd_always:  # add configuration needed
+                    self.commands.append(
+                        "switchport trunk allowed vlan {0}".format(
+                            vlan_list_to_range(sorted(cmd_always)),
+                        ),
+                    )
 
     def list_to_dict(self, param):
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
                 if val.get("trunk"):
-                    if val.get("trunk").get("allowed_vlans"):
-                        val["trunk"]["allowed_vlans"] = {
-                            i: i for i in val["trunk"]["allowed_vlans"]
-                        }
-                    if val.get("trunk").get("pruning_vlans"):
-                        val["trunk"]["pruning_vlans"] = {
-                            i: i for i in val["trunk"]["pruning_vlans"]
-                        }
+                    for vlan in ["allowed_vlans", "pruning_vlans"]:
+                        if val.get("trunk").get(vlan):
+                            val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
+                            # val["trunk"][vlan] = {i: i for i in val["trunk"][vlan]}
