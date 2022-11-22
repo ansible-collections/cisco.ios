@@ -49,6 +49,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport access vlan {{ access.vlan }}",
+            "remval": "switchport access vlan",
             "result": {
                 "{{ name }}": {
                     "access": {
@@ -61,10 +62,10 @@ class L2_interfacesTemplate(NetworkTemplate):
             "name": "access.vlan_name",
             "getval": re.compile(
                 r"""
-                \s+switchport\saccess\svlan\s(?P<vlan_name>\S+)
+                \s+switchport\saccess\svlan\sname\s(?P<vlan_name>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport access vlan {{ access.vlan_name }}",
+            "setval": "switchport access vlan name {{ access.vlan_name }}",
             "result": {
                 "{{ name }}": {
                     "access": {
@@ -81,6 +82,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport voice vlan {{ voice.vlan|string }}",
+            "remval": "switchport voice vlan",
             "result": {
                 "{{ name }}": {
                     "voice": {
@@ -97,6 +99,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport voice vlan {{ voice.vlan_tag }}",
+            "remval": "switchport voice vlan",
             "result": {
                 "{{ name }}": {
                     "voice": {
@@ -109,10 +112,10 @@ class L2_interfacesTemplate(NetworkTemplate):
             "name": "voice.vlan_name",
             "getval": re.compile(
                 r"""
-                \s+switchport\svoice\svlan\s(?P<vlan_name>\S+)
+                \s+switchport\svoice\svlan\sname\s(?P<vlan_name>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport voice vlan {{ voice.vlan_name }}",
+            "setval": "switchport voice vlan name {{ voice.vlan_name }}",
             "result": {
                 "{{ name }}": {
                     "voice": {
@@ -138,6 +141,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                       "{{ 'private-vlan host' if mode == 'private_vlan_host' }}"
                       "{{ 'private-vlan promiscuous' if mode == 'private_vlan_promiscuous' }}"
                       "{{ 'private-vlan trunk secondary' if mode == 'private_vlan_trunk' }}",
+            "remval": "switchport mode",
             "result": {
                 "{{ name }}": {
                     "mode": "{{ mode }}",
@@ -151,7 +155,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+switchport\strunk\sallowed\svlan\s(?P<allowed_vlan>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport trunk allowed vlan 20-25,40",
+            "setval": "",
             "result": {
                 "{{ name }}": {
                     "trunk": {
@@ -184,6 +188,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport trunk encapsulation {{ trunk.encapsulation }}",
+            "remval": "switchport trunk encapsulation",
             "result": {
                 "{{ name }}": {
                     "trunk": {
@@ -200,6 +205,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport trunk native vlan {{ trunk.native_vlan }}",
+            "remval": "switchport trunk native vlan",
             "result": {
                 "{{ name }}": {
                     "trunk": {
@@ -215,7 +221,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+switchport\strunk\spruning\svlan\s(?P<pruning_vlans>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "switchport trunk pruning vlan 20-25,40",
+            "setval": "",
             "result": {
                 "{{ name }}": {
                     "trunk": {

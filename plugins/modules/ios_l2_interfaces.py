@@ -544,17 +544,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet0/2
+    - switchport trunk allowed vlan 15-20,40
+    - switchport trunk encapsulation dot1q
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet0/1
+    - switchport access vlan 30
+    - switchport trunk encapsulation dot1q
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -571,7 +571,6 @@ parsed:
     module argspec.
 """
 
-# import debugpy
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -581,10 +580,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
     L2_interfaces,
 )
-
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 def main():

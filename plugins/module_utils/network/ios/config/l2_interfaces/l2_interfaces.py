@@ -80,7 +80,7 @@ class L2_interfaces(ResourceModule):
         haved = {entry["name"]: entry for entry in self.have}
 
         for each in wantd, haved:
-            self.list_to_dict(each)
+            self.process_list_attrs(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -114,30 +114,36 @@ class L2_interfaces(ResourceModule):
 
     def compare_list(self, want, have):
         for vlan in ["allowed_vlans", "pruning_vlans"]:
-            if want.get("trunk", {}).get(vlan):
-                cmd_always = list(
-                    set(want.get("trunk", {}).get(vlan, []))
-                    - set(have.get("trunk", {}).get(vlan, [])),
-                )  # find vlans to create wrt have
-                if self.state != "merged":
-                    rem_vlan = []
-                    for vl_no in have.get("trunk", {}).get(vlan, []):
-                        if vl_no not in cmd_always:
-                            rem_vlan.append(vl_no)
-                    if rem_vlan:  # remove excess vlans for replaced overridden
-                        self.commands.append(
-                            "no switchport trunk allowed vlan {0}".format(
-                                vlan_list_to_range(sorted(rem_vlan)),
-                            ),
-                        )
-                if self.state != "deleted" and cmd_always:  # add configuration needed
+            cmd_always = list(
+                set(want.get("trunk", {}).get(vlan, [])) - set(have.get("trunk", {}).get(vlan, [])),
+            )  # find vlans to create wrt have
+            if self.state != "merged":
+                rem_vlan = []
+                for vl_no in have.get("trunk", {}).get(vlan, []):
+                    if vl_no not in cmd_always and vl_no not in want.get("trunk", {}).get(vlan, []):
+                        rem_vlan.append(vl_no)
+                if (
+                    not want.get("trunk", {}).get(vlan, []) and rem_vlan
+                ):  # remove vlan all as want blank
+                    self.commands.append("no switchport trunk {0} vlan".format(vlan.split("_")[0]))
+                elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
-                        "switchport trunk allowed vlan {0}".format(
-                            vlan_list_to_range(sorted(cmd_always)),
+                        "no switchport trunk {0} vlan {1}".format(
+                            vlan.split("_")[0],
+                            vlan_list_to_range(sorted(rem_vlan)),
                         ),
                     )
+            if self.state != "deleted" and cmd_always:  # add configuration needed
+                add = "add " if have.get("trunk", {}).get(vlan, []) else ""
+                self.commands.append(
+                    "switchport trunk {0} vlan {1}{2}".format(
+                        vlan.split("_")[0],
+                        add,
+                        vlan_list_to_range(sorted(cmd_always)),
+                    ),
+                )
 
-    def list_to_dict(self, param):
+    def process_list_attrs(self, param):
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
@@ -145,4 +151,3 @@ class L2_interfaces(ResourceModule):
                     for vlan in ["allowed_vlans", "pruning_vlans"]:
                         if val.get("trunk").get(vlan):
                             val["trunk"][vlan] = vlan_range_to_list(val.get("trunk").get(vlan))
-                            # val["trunk"][vlan] = {i: i for i in val["trunk"][vlan]}
