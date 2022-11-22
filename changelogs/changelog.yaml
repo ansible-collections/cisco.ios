@@ -670,3 +670,35 @@ releases:
       - remove_deprecated.yaml
       - remove_provider.yaml
     release_date: "2022-10-12"
+  4.1.0:
+    changes:
+      bugfixes:
+        - ios_bgp_address_family - aliased aggregate_address to aggregate_addresses
+          that supports a list of dict attributes
+        - ios_bgp_address_family - aliased neighbor to neighbors that supports a list
+          of dict attributes
+        - ios_bgp_address_family - aliased network to networks that supports a list
+          of dict attributes
+        - ios_bgp_address_family - fix facts rendering with optimal parsers
+        - ios_bgp_address_family - fix fliter_list rendering
+        - ios_bgp_address_family - fix path_attribute to support float parameter
+        - ios_lag_interfaces - fix deleted state to delete only sub attribute values.
+        - ios_route_maps - fix idempotency issues with as-path prepend (https://github.com/ansible-collections/cisco.ios/issues/678)
+        - ios_route_maps - fix idempotency issues with set community none (https://github.com/ansible-collections/cisco.ios/issues/679
+        - ios_route_maps - fix merge issues with route-maps where wanted config is not
+          deployed if route map has existing sequence numbers (https://github.com/ansible-collections/cisco.ios/issues/641)
+      deprecated_features:
+        - ios_bgp_address_family - deprecate neighbors.address/tag/ipv6_adddress with
+          neighbor_address which enables common attributes for facts rendering
+        - ios_bgp_address_family - deprecate neighbors.password with password_options
+          which allows encryption and password
+        - ios_bgp_address_family - deprecate slow_peer with slow_peer_options which
+          supports a dict attribute
+      doc_changes:
+        - ios_acls - fix documentation with proper description.
+    fragments:
+      - 667-route-map-issues.yaml
+      - acl_doc.yaml
+      - bgp_add_fam_fix.yaml
+      - testfix_integration.yaml
+    release_date: "2022-11-18"
