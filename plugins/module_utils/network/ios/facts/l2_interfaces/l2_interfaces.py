@@ -86,7 +86,7 @@ class L2_interfacesFacts(object):
                 for vlan_grp in _vlans.get(vlan_type + "_add"):
                     vlans.extend(handle_diff_type_vlan_data(vlan_grp))
                 del _vlans[vlan_type + "_add"]
-            return vlans
+            return sorted(vlans)
 
         if objs:
             for obj in objs:

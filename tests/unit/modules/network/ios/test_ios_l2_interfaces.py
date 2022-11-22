@@ -587,9 +587,9 @@ class TestIosL2InterfacesModule(TestIosModule):
                      switchport mode access
                      switchport access vlan 20
                     interface GigabitEthernet0/3
-                     switchport trunk allowed vlan 11,59
-                     switchport trunk allowed vlan add 461
-                     switchport trunk allowed vlan add 982,986
+                     switchport trunk allowed vlan 1,2
+                     switchport trunk allowed vlan add 3,4
+                     switchport trunk allowed vlan add 5,6
                      switchport trunk encapsulation dot1q
                      switchport trunk pruning vlan 10-15
                      switchport mode private-vlan trunk secondary
@@ -615,13 +615,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             {
                 "name": "GigabitEthernet0/3",
                 "trunk": {
-                    "allowed_vlans": [
-                        "11",
-                        "59",
-                        "461",
-                        "982",
-                        "986",
-                    ],
+                    "allowed_vlans": ["1", "2", "3", "4", "5", "6"],
                     "encapsulation": "dot1q",
                     "pruning_vlans": ["10-15"],
                 },
