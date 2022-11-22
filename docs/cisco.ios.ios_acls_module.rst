@@ -46,7 +46,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of ACL options.</div>
+                        <div>A list of ACL configuration options.</div>
                 </td>
             </tr>
                                 <tr>
@@ -63,7 +63,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A list of Access Control Lists (ACL).</div>
+                        <div>A list of Access Control Lists (ACL) attributes.</div>
                 </td>
             </tr>
                                 <tr>
@@ -3894,7 +3894,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version 15.2 on VIRL
+   - Tested against Cisco IOSXE Version 17.3 on CML.
    - Module behavior is not idempotent when sequence for aces are not mentioned
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 

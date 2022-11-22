@@ -47,7 +47,7 @@
         config:
           as_number: 65000
           networks:
-            - address: 192.0.2.4
+            - address: 192.0.4.2
         state: merged
 
     - name: Ios_bgp_global RTT - revert back to base configuration using facts round trip

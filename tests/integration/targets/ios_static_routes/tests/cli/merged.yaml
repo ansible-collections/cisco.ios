@@ -25,8 +25,15 @@
                     next_hops:
                       - distance_metric: 10
                         forward_router_address: 192.51.111.1
-                        interface: GigabitEthernet0/2
+                        interface: GigabitEthernet3
                         name: partner_vrf
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: merged_v6_vrf
+                        tag: 115
 
           - address_families:
               - afi: ipv4
@@ -57,7 +64,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 6
+          - result.commands|length == 7
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 

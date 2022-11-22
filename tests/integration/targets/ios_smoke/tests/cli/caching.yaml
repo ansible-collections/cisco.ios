@@ -4,15 +4,14 @@
 
     - ansible.builtin.set_fact:
         interfaces:
-          - interface GigabitEthernet0/1
-          - interface GigabitEthernet0/2
+          - interface GigabitEthernet2
+          - interface GigabitEthernet3
 
     - name: Setup
       cisco.ios.ios_config: &rem
         lines:
           - "no description"
           - "no mtu"
-          - "no duplex"
           - "no speed"
           - "shutdown"
           - "no ip address"
@@ -27,26 +26,22 @@
       register: result
       cisco.ios.ios_interfaces: &merged
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             description: Configured by Ansible (L3)
             enabled: true
-            duplex: auto
-
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             description: Configured by Ansible (L3)
             enabled: true
-            duplex: full
         state: merged
 
     - ansible.builtin.assert:
         that:
-          - '"interface GigabitEthernet0/1" in result.commands'
+          - '"interface GigabitEthernet2" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
           - '"no shutdown" in result.commands'
-          - '"interface GigabitEthernet0/2" in result.commands'
+          - '"interface GigabitEthernet3" in result.commands'
           - '"description Configured by Ansible (L3)" in result.commands'
           - '"no shutdown" in result.commands'
-          - '"duplex full" in result.commands'
           - result.commands|length == 7
 
     - name: Merge base interfaces configuration (idempotent)
@@ -59,12 +54,10 @@
     - name: Merge layer 3 interfaces configuration
       cisco.ios.ios_l3_interfaces: &merged_l3
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             ipv4:
               - address: dhcp
-                dhcp_client: GigabitEthernet0/0
-                dhcp_hostname: test.com
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
                 secondary: true
@@ -76,9 +69,9 @@
 
     - ansible.builtin.assert:
         that:
-          - '"interface GigabitEthernet0/1" in result.commands'
-          - '"ip address dhcp client-id GigabitEthernet0/0 hostname test.com" in result.commands'
-          - '"interface GigabitEthernet0/2" in result.commands'
+          - '"interface GigabitEthernet2" in result.commands'
+          - '"ip address dhcp" in result.commands'
+          - '"interface GigabitEthernet3" in result.commands'
           - '"ip address 198.51.100.1 255.255.255.0 secondary" in result.commands'
           - '"ip address 198.51.100.2 255.255.255.0" in result.commands'
           - '"ipv6 address 2001:db8:0:3::/64" in result.commands'

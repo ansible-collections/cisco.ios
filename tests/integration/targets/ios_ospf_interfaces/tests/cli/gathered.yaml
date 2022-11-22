@@ -17,7 +17,7 @@
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - "{{ merged['after'] | symmetric_difference(result['gathered']) |length == 0 }}"
+          - "{{ gathered['config'] | symmetric_difference(result['gathered']) |length == 0 }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

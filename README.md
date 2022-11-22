@@ -4,7 +4,7 @@
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS network appliances.
 
-This collection has been tested against Cisco IOSv version 15.2 on VIRL.
+This collection has been tested against Cisco IOSXE Version 17.3 on CML.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
@@ -43,11 +43,8 @@ Name | Description
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Module to manage configuration sections.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
-[cisco.ios.ios_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
-[cisco.ios.ios_l2_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
 [cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|Resource Module to configure L2 interfaces.
-[cisco.ios.ios_l3_interface](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-3 interfaces on Cisco IOS network devices.
 [cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interfaces_module.rst)|Resource module to configure L3 interfaces.
 [cisco.ios.ios_lacp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_module.rst)|Resource module to configure LACP.
 [cisco.ios.ios_lacp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_interfaces_module.rst)|Resource module to configure LACP interfaces.
@@ -67,11 +64,9 @@ Name | Description
 [cisco.ios.ios_prefix_lists](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_prefix_lists_module.rst)|Resource module to configure prefix lists.
 [cisco.ios.ios_route_maps](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_route_maps_module.rst)|Resource module to configure route maps.
 [cisco.ios.ios_snmp_server](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_snmp_server_module.rst)|Resource module to configure snmp server.
-[cisco.ios.ios_static_route](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_route_module.rst)|(deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Resource module to configure static routes.
 [cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Module to manage the system attributes.
 [cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
-[cisco.ios.ios_vlan](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlan_module.rst)|(deprecated, removed after 2022-06-01) Manage VLANs on IOS network devices
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
 

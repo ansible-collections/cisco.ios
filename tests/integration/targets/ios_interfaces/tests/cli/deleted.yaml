@@ -11,15 +11,9 @@
       register: result
       cisco.ios.ios_interfaces:
         config:
-          - name: GigabitEthernet0/1
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
         state: deleted
-
-    - ansible.builtin.debug:
-        msg:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) }}"
-          - "{{ deleted['before'] | symmetric_difference(result['before']) }}"
-          - "{{ deleted['after'] | symmetric_difference(result['after']) }}"
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:

@@ -203,7 +203,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_capabilities,
     get_config,
-    ios_argument_spec,
     load_config,
 )
 
@@ -271,9 +270,7 @@ def map_obj_to_commands(updates, module, os_version):
                         present = True
                 if not present:
                     if level and level != "debugging":
-                        commands.append(
-                            "logging buffered {0} {1}".format(size, level),
-                        )
+                        commands.append("logging buffered {0} {1}".format(size, level))
                     else:
                         commands.append("logging buffered {0}".format(size))
             elif dest:
@@ -296,11 +293,7 @@ def parse_facility(line, dest):
 def parse_size(line, dest):
     size = None
     if dest == "buffered":
-        match = re.search(
-            "logging buffered(?: (\\d+))?(?: [a-z]+)?",
-            line,
-            re.M,
-        )
+        match = re.search("logging buffered(?: (\\d+))?(?: [a-z]+)?", line, re.M)
         if match:
             if match.group(1) is not None:
                 size = match.group(1)
@@ -334,11 +327,7 @@ def parse_level(line, dest):
         level = "debugging"
     else:
         if dest == "buffered":
-            match = re.search(
-                "logging buffered(?: \\d+)?(?: ([a-z]+))?",
-                line,
-                re.M,
-            )
+            match = re.search("logging buffered(?: \\d+)?(?: ([a-z]+))?", line, re.M)
         else:
             match = re.search("logging {0} (\\S+)".format(dest), line, re.M)
         if match and match.group(1) in level_group:
@@ -350,15 +339,7 @@ def parse_level(line, dest):
 
 def map_config_to_obj(module):
     obj = []
-    dest_group = (
-        "console",
-        "host",
-        "monitor",
-        "buffered",
-        "on",
-        "facility",
-        "trap",
-    )
+    dest_group = ("console", "host", "monitor", "buffered", "on", "facility", "trap")
     data = get_config(module, flags=["| include logging"])
     for line in data.split("\n"):
         match = re.search("^logging (\\S+)", line, re.M)
@@ -386,11 +367,7 @@ def map_config_to_obj(module):
                     },
                 )
             else:
-                ip_match = re.search(
-                    "\\d+\\.\\d+\\.\\d+\\.\\d+",
-                    match.group(1),
-                    re.M,
-                )
+                ip_match = re.search("\\d+\\.\\d+\\.\\d+\\.\\d+", match.group(1), re.M)
                 if ip_match:
                     dest = "host"
                     obj.append(
@@ -466,10 +443,7 @@ def map_params_to_obj(module, required_if=None):
 def main():
     """main entry point for module execution"""
     element_spec = dict(
-        dest=dict(
-            type="str",
-            choices=["on", "host", "console", "monitor", "buffered", "trap"],
-        ),
+        dest=dict(type="str", choices=["on", "host", "console", "monitor", "buffered", "trap"]),
         name=dict(type="str"),
         size=dict(type="int"),
         facility=dict(type="str"),
@@ -492,11 +466,8 @@ def main():
     aggregate_spec = deepcopy(element_spec)
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
-    argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
-    )
+    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
     argument_spec.update(element_spec)
-    argument_spec.update(ios_argument_spec)
     required_if = [("dest", "host", ["name"])]
     module = AnsibleModule(
         argument_spec=argument_spec,

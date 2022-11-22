@@ -53,6 +53,6 @@ repos:
       - id: black
 
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.0.0
+    rev: 1.0.1
     hooks:
       - id: update-docs

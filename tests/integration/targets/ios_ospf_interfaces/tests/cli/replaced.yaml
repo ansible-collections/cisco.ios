@@ -11,7 +11,7 @@
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
         config:
-          - name: GigabitEthernet0/2
+          - name: GigabitEthernet3
             address_family:
               - afi: ipv6
                 adjacency: true
@@ -27,7 +27,7 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
+          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:

@@ -34,7 +34,7 @@ version_added: 1.0.0
 extends_documentation_fragment:
 - cisco.ios.ios
 notes:
-  - Tested against IOS 15.6
+  - Tested against Cisco IOSXE Version 17.3 on CML and IOS 15.6 for L2 specific resource.
   - Facts gathering for L3 devices are supposed to produce blank output for unsupported
     resources like vlan.
   - This module works with connection C(network_cli).
@@ -218,7 +218,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
     FACT_RESOURCE_SUBSETS,
     Facts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import ios_argument_spec
 
 
 def main():
@@ -228,18 +227,12 @@ def main():
     :returns: ansible_facts
     """
     argument_spec = FactsArgs.argument_spec
-    argument_spec.update(ios_argument_spec)
-    module = AnsibleModule(
-        argument_spec=argument_spec,
-        supports_check_mode=True,
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = []
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
-        ansible_facts["available_network_resources"] = sorted(
-            FACT_RESOURCE_SUBSETS.keys(),
-        )
+        ansible_facts["available_network_resources"] = sorted(FACT_RESOURCE_SUBSETS.keys())
     result = Facts(module).get_facts()
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)

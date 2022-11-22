@@ -56,7 +56,7 @@
   ios_config:
     lines:
       - switchport private-vlan mapping 10 6000
-    parents: interface GigabitEthernet0/1
+    parents: interface GigabitEthernet2
   register: result
   ignore_errors: true
 

@@ -22,7 +22,7 @@ author:
   - Sumit Jaiswal (@justjais)
   - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSv Version 15.2.
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -142,7 +142,7 @@ options:
             type: bool
           asnotation:
             description:
-              - Change the default asplain notation
+              - Change the default as plain notation
               - asdot notation
             type: bool
           bestpath:
@@ -155,7 +155,7 @@ options:
             suboptions:
               aigp:
                 description:
-                  - if both paths doesn't have aigp ignore on bestpath comparision
+                  - if both paths doesn't have aigp ignore on bestpath comparison
                   - ignore
                 type: bool
               compare_routerid:
@@ -186,7 +186,7 @@ options:
             suboptions:
               aigp:
                 description:
-                  - if both paths doesn't have aigp ignore on bestpath comparision
+                  - if both paths doesn't have aigp ignore on bestpath comparison
                   - ignore
                 type: bool
               compare_routerid:

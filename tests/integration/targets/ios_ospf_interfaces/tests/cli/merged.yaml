@@ -10,7 +10,7 @@
       register: result
       cisco.ios.ios_ospf_interfaces: &id001
         config:
-          - name: GigabitEthernet0/1
+          - name: GigabitEthernet2
             address_family:
               - afi: ipv4
                 authentication:
@@ -36,9 +36,9 @@
               - afi: ipv6
                 adjacency: true
                 database_filter: true
-                manet:
-                  link_metrics:
-                    cost_threshold: 10
+                # manet:
+                #   link_metrics:
+                #     cost_threshold: 10
                 priority: 55
                 transmit_delay: 45
         state: merged

@@ -20,18 +20,18 @@ author:
 description: This module configures and manages the named or numbered ACLs on IOS platforms.
 module: ios_acls
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - Module behavior is not idempotent when sequence for aces are not mentioned
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: A dictionary of ACL options.
+    description: A list of ACL configuration options.
     elements: dict
     suboptions:
       acls:
         description:
-          - A list of Access Control Lists (ACL).
+          - A list of Access Control Lists (ACL) attributes.
         elements: dict
         suboptions:
           aces:

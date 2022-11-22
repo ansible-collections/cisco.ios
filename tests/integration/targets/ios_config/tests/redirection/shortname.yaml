@@ -24,14 +24,4 @@
     that:
       - result.changed == true
 
-- name: Check if the backup file-4 exist
-  ansible.builtin.find:
-    paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
-  register: backup_file
-  connection: local
-
-- ansible.builtin.assert:
-    that:
-      - backup_file.files is defined
-
 - ansible.builtin.debug: msg="END cli/shortname.yaml on connection={{ ansible_connection }}"

@@ -5,6 +5,64 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.1.0
+======
+
+Deprecated Features
+-------------------
+
+- ios_bgp_address_family - deprecate neighbors.address/tag/ipv6_adddress with neighbor_address which enables common attributes for facts rendering
+- ios_bgp_address_family - deprecate neighbors.password with password_options which allows encryption and password
+- ios_bgp_address_family - deprecate slow_peer with slow_peer_options which supports a dict attribute
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - aliased aggregate_address to aggregate_addresses that supports a list of dict attributes
+- ios_bgp_address_family - aliased neighbor to neighbors that supports a list of dict attributes
+- ios_bgp_address_family - aliased network to networks that supports a list of dict attributes
+- ios_bgp_address_family - fix facts rendering with optimal parsers
+- ios_bgp_address_family - fix fliter_list rendering
+- ios_bgp_address_family - fix path_attribute to support float parameter
+- ios_lag_interfaces - fix deleted state to delete only sub attribute values.
+- ios_route_maps - fix idempotency issues with as-path prepend (https://github.com/ansible-collections/cisco.ios/issues/678)
+- ios_route_maps - fix idempotency issues with set community none (https://github.com/ansible-collections/cisco.ios/issues/679
+- ios_route_maps - fix merge issues with route-maps where wanted config is not deployed if route map has existing sequence numbers (https://github.com/ansible-collections/cisco.ios/issues/641)
+
+Documentation Changes
+---------------------
+
+- ios_acls - fix documentation with proper description.
+
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- Only valid connection types for this collection is network_cli.
+- This release drops support for `connection: local` and provider dictionary.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- ios_interface - use ios_interfaces instead.
+- ios_l2_interface - use ios_l2_interfaces instead.
+- ios_l3_interface - use ios_l3_interfaces instead.
+- ios_static_route - use ios_static_routes instead.
+- ios_vlan - use ios_vlans instead.
+
+Bugfixes
+--------
+
+- facts - fix operstatus having a white space after value.
+- ios_static_routes - fix vrf for ipv6 static routes (https://github.com/ansible-collections/cisco.ios/issues/660).
+
+Documentation Changes
+---------------------
+
+- Update supported IOSXE version for modules.
+
 v3.3.2
 ======
 

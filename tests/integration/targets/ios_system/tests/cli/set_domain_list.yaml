@@ -4,8 +4,8 @@
 - name: Setup
   cisco.ios.ios_config:
     lines:
-      - no ip domain-list ansible.com
-      - no ip domain-list redhat.com
+      - no ip domain list ansible.com
+      - no ip domain list redhat.com
     match: none
 
 - name: Configure domain_search
@@ -104,8 +104,8 @@
 - name: Teardown
   cisco.ios.ios_config:
     lines:
-      - no ip domain-list ansible.com
-      - no ip domain-list redhat.com
-      - no ip domain-list eng.ansible.com
+      - no ip domain list ansible.com
+      - no ip domain list redhat.com
+      - no ip domain list eng.ansible.com
     match: none
 - ansible.builtin.debug: msg="END cli/set_domain_search.yaml on connection={{ ansible_connection }}"
