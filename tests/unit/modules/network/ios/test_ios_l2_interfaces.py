@@ -131,6 +131,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk pruning vlan 9-20",
         ]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_merged_idempotent(self):
@@ -211,6 +212,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                 state="merged",
             ),
         )
+        self.maxDiff = None
         self.execute_module(changed=False, commands=[])
 
     def test_ios_l2_interfaces_replaced(self):
@@ -263,6 +265,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport trunk pruning vlan 20",
         ]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_replaced_idempotent(self):
@@ -346,6 +349,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         commands = []
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_overridden(self):
@@ -407,6 +411,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport trunk pruning vlan",
         ]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_overridden_idempotent(self):
@@ -488,6 +493,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                 state="overridden",
             ),
         )
+        self.maxDiff = None
         self.execute_module(changed=False, commands=[])
 
     def test_ios_l2_interfaces_deleted_interface(self):
@@ -520,6 +526,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport mode",
             "no switchport access vlan",
         ]
+        self.maxDiff = None
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_l2_interfaces_deleted_all(self):
@@ -567,6 +574,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport trunk pruning vlan",
         ]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_parsed(self):
@@ -620,6 +628,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                 "mode": "private_vlan_trunk",
             },
         ]
+        self.maxDiff = None
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_l2_interfaces_rendered(self):
@@ -682,6 +691,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk pruning vlan 12-15,20",
         ]
         result = self.execute_module(changed=False)
+        self.maxDiff = None
         self.assertEqual(result["rendered"], commands)
 
     def test_ios_l2_interfaces_merged_mode_change(self):
@@ -716,6 +726,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         )
         commands = ["interface TwoGigabitEthernet1/0/1", "switchport mode trunk"]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_fiveGibBit(self):
@@ -772,5 +783,5 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport mode trunk",
         ]
         result = self.execute_module(changed=True)
-        # adding sorted as assert fails
+        self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(commands))
