@@ -1,143 +1,103 @@
-#
 # -*- coding: utf-8 -*-
-# Copyright 2019 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-"""
-The ios interfaces fact class
-It is in this file the configuration is collected from the device
-for a given resource, parsed, and the facts tree is populated
-based on the configuration.
-"""
 
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
-import re
-
-from copy import deepcopy
+"""
+The ios l2_interfaces fact class
+It is in this file the configuration is collected from the device
+for a given resource, parsed, and the facts tree is populated
+based on the configuration.
+"""
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
-    L2_InterfacesArgs,
+    L2_interfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    get_interface_type,
-    normalize_interface,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
+    L2_interfacesTemplate,
 )
 
 
-class L2_InterfacesFacts(object):
-    """The ios l2 interfaces fact class"""
+class L2_interfacesFacts(object):
+    """The ios l2_interfaces facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = L2_InterfacesArgs.argument_spec
-        spec = deepcopy(self.argument_spec)
-        if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
-        else:
-            facts_argument_spec = spec
-
-        self.generated_spec = utils.generate_dict(facts_argument_spec)
+        self.argument_spec = L2_interfacesArgs.argument_spec
 
     def get_l2_interfaces_data(self, connection):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for interfaces
+        """Populate the facts for L2_interfaces network resource
+
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
+
         :rtype: dictionary
         :returns: facts
         """
+        facts = {}
         objs = []
+
         if not data:
             data = self.get_l2_interfaces_data(connection)
 
-        # operate on a collection of resource x
-        config = ("\n" + data).split("\ninterface ")
-        for conf in config:
-            if conf:
-                obj = self.render_config(self.generated_spec, conf)
-                if obj:
-                    objs.append(obj)
+        # parse native config using the L2_interfaces template
+        l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
+        objs = list(l2_interfaces_parser.parse().values())
 
-        facts = {}
+        def process_mode(obj):
+            mode = ""
+            if obj == "dot1q-tunnel":
+                mode = "dot1q_tunnel"
+            elif obj == "dynamic auto":
+                mode = "dynamic_auto"
+            elif obj == "dynamic desirable":
+                mode = "dynamic_desirable"
+            elif obj == "private-vlan host":
+                mode = "private_vlan_host"
+            elif obj == "private-vlan promiscuous":
+                mode = "private_vlan_promiscuous"
+            elif obj == "private-vlan trunk secondary":
+                mode = "private_vlan_trunk"
+            return mode
+
+        def process_vlans(obj, vlan_type):
+            vlans = []
+            _vlans = obj.get("trunk")
+            if _vlans.get(vlan_type):
+                vlans.extend(_vlans.get(vlan_type))
+            if _vlans.get(vlan_type + "_add"):
+                for vlan_grp in _vlans.get(vlan_type + "_add"):
+                    vlans.extend(vlan_grp)
+                del _vlans[vlan_type + "_add"]
+            return vlans
+
         if objs:
-            facts["l2_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
-            for cfg in params["config"]:
-                facts["l2_interfaces"].append(utils.remove_empties(cfg))
+            for obj in objs:
+                if obj.get("mode") and obj.get("mode") not in ["trunk", "access", "dynamic"]:
+                    obj["mode"] = process_mode(obj.get("mode"))
+                if obj.get("trunk"):
+                    for _vlan in ["allowed_vlans", "pruning_vlans"]:
+                        if obj.get("trunk", {}).get(_vlan):
+                            obj["trunk"][_vlan] = process_vlans(obj, _vlan)
+
+            ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
+
+        params = utils.remove_empties(
+            l2_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+        )
+
+        facts["l2_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
-
-    def render_config(self, spec, conf):
-        """
-        Render config as dictionary structure and delete keys from spec for null values
-        :param spec: The facts tree, generated from the argspec
-        :param conf: The configuration
-        :rtype: dictionary
-        :returns: The generated config
-        """
-        config = deepcopy(spec)
-        match = re.search(r"^(\S+)", conf)
-        intf = match.group(1)
-
-        if get_interface_type(intf) == "unknown":
-            return {}
-
-        if intf.upper()[:2] in ("HU", "FO", "FI", "TW", "TE", "GI", "FA", "ET", "PO"):
-            # populate the facts from the configuration
-            config["name"] = normalize_interface(intf)
-            has_mode = utils.parse_conf_arg(conf, "switchport mode")
-            if has_mode:
-                config["mode"] = has_mode
-            has_access = utils.parse_conf_arg(conf, "switchport access vlan")
-            if has_access and has_access != "dynamic":
-                # switchport access vlan dynamic
-                # the above being a valid config is not configurable from CLI
-                # being enabled via a VLAN Membership Policy Server it is used
-                # to assign switch ports to VLANs dynamically, based on the
-                # source MAC address of the device connected to the port
-                if len(list(has_access.split(" "))) == 2 and has_access.split(" ")[0] == "name":
-                    config["access"] = {"vlan_name": has_access.split(" ")[1]}
-                else:
-                    config["access"] = {"vlan": int(has_access)}
-
-            has_voice = utils.parse_conf_arg(conf, "switchport voice vlan")
-            if has_voice:
-                if len(list(has_voice.split(" "))) == 2 and has_voice.split(" ")[0] == "name":
-                    config["voice"] = {"vlan_name": has_voice.split(" ")[1]}
-                elif has_voice in ["dot1p", "none", "untagged"]:
-                    config["voice"] = {"vlan_tag": has_voice}
-                else:
-                    config["voice"] = {"vlan": int(has_voice)}
-
-            trunk = dict()
-            trunk["encapsulation"] = utils.parse_conf_arg(conf, "switchport trunk encapsulation")
-            native_vlan = utils.parse_conf_arg(conf, "native vlan")
-            if native_vlan:
-                trunk["native_vlan"] = int(native_vlan)
-            allowed_vlan = utils.parse_conf_arg(conf, "allowed vlan")
-            if allowed_vlan:
-                trunk["allowed_vlans"] = allowed_vlan.split(",")
-            allowed_vlan_add_all = re.findall("allowed vlan add.*", conf)
-            if allowed_vlan_add_all:
-                for each in allowed_vlan_add_all:
-                    trunk["allowed_vlans"].extend(each.split("allowed vlan add ")[1].split(","))
-            pruning_vlan = utils.parse_conf_arg(conf, "pruning vlan")
-            if pruning_vlan:
-                trunk["pruning_vlans"] = pruning_vlan.split(",")
-
-            config["trunk"] = trunk
-
-        return utils.remove_empties(config)
