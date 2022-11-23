@@ -159,7 +159,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "trunk": {
-                        "allowed_vlans": "{{ allowed_vlan }}",
+                        "allowed_vlans": "{{ allowed_vlan.split(',') }}",
                     },
                 },
             },
@@ -175,7 +175,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "trunk": {
-                        "allowed_vlans_add": ["{{ allowed_vlans_add|string }}"],
+                        "allowed_vlans_add": ["{{ allowed_vlans_add.split(',') }}"],
                     },
                 },
             },
@@ -225,7 +225,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "trunk": {
-                        "pruning_vlans": "{{ pruning_vlans }}",
+                        "pruning_vlans": "{{ pruning_vlans.split(',') }}",
                     },
                 },
             },
@@ -241,7 +241,7 @@ class L2_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "trunk": {
-                        "pruning_vlans_add": ["{{ pruning_vlans_add }}"],
+                        "pruning_vlans_add": ["{{ pruning_vlans_add.split(',') }}"],
                     },
                 },
             },

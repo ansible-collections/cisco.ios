@@ -55,12 +55,6 @@ class L2_interfacesFacts(object):
         l2_interfaces_parser = L2_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(l2_interfaces_parser.parse().values())
 
-        def handle_diff_type_vlan_data(vlan):
-            if type(vlan) is tuple:
-                return list(vlan)
-            else:
-                return vlan.split(",")
-
         def process_mode(obj):
             mode = ""
             if obj == "dot1q-tunnel":
@@ -81,10 +75,10 @@ class L2_interfacesFacts(object):
             vlans = []
             _vlans = obj.get("trunk")
             if _vlans.get(vlan_type):
-                vlans.extend(handle_diff_type_vlan_data(_vlans.get(vlan_type)))
+                vlans.extend(_vlans.get(vlan_type))
             if _vlans.get(vlan_type + "_add"):
                 for vlan_grp in _vlans.get(vlan_type + "_add"):
-                    vlans.extend(handle_diff_type_vlan_data(vlan_grp))
+                    vlans.extend(vlan_grp)
                 del _vlans[vlan_type + "_add"]
             return vlans
 
