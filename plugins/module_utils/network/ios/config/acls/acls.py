@@ -106,14 +106,9 @@ class Acls(ResourceModule):
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
             acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
-            begin = len(
-                self.commands,
-            )  # to determine the index for acl command
+            begin = len(self.commands)  # to determine the index for acl command
             self._compare_aces(
-                wentry.pop("aces", {}),
-                hentry.pop("aces", {}),
-                afi,
-                wname,
+                wentry.pop("aces", {}), hentry.pop("aces", {}), afi, wname
             )  # handle aces
 
             if len(self.commands) != begin or (not have and want):
@@ -146,27 +141,16 @@ class Acls(ResourceModule):
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of ACLs {1} with state merged."
                             " Please use state replaced or overridden.".format(
-                                hentry.get("sequence", ""),
-                                name,
-                            ),
+                                hentry.get("sequence", ""), name
+                            )
                         )
                     else:  # other action states
-                        if hentry.get(
-                            "remarks",
-                        ):  # remove remark if not in want
+                        if hentry.get("remarks"):  # remove remark if not in want
                             for rems in hentry.get("remarks"):
                                 if rems not in wentry.get("remarks", {}):
-                                    self.addcmd(
-                                        {"remarks": rems},
-                                        "remarks",
-                                        negate=True,
-                                    )
+                                    self.addcmd({"remarks": rems}, "remarks", negate=True)
                         else:  # remove ace if not in want
-                            self.addcmd(
-                                add_afi(hentry, afi),
-                                "aces",
-                                negate=True,
-                            )
+                            self.addcmd(add_afi(hentry, afi), "aces", negate=True)
                 if wentry.get("remarks"):  # add remark if not in have
                     for rems in wentry.get("remarks"):
                         if rems not in hentry.get("remarks", {}):
@@ -222,9 +206,16 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             temp_rem = []  # remarks if defined in an ace
-                            for ace in acl.get(
-                                "aces",
-                            ):  # each ace turned to dict
+                            for ace in acl.get("aces"):  # each ace turned to dict
+                                if ace.get("destination") and ace.get("destination", {}).get(
+                                    "port_protocol", {}
+                                ):
+                                    for k, v in (
+                                        ace.get("destination", {}).get("port_protocol", {}).items()
+                                    ):
+                                        ace["destination"]["port_protocol"][
+                                            k
+                                        ] = self.port_protocl_no_to_protocol(v)
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
                                         if ks not in [
@@ -236,8 +227,8 @@ class Acls(ResourceModule):
                                         ]:  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
                                                 "Unsupported attribute for standard ACL - {0}.".format(
-                                                    ks,
-                                                ),
+                                                    ks
+                                                )
                                             )
 
                                 if ace.get("remarks"):
@@ -245,33 +236,61 @@ class Acls(ResourceModule):
                                     temp_rem.extend(ace.pop("remarks"))
 
                                 if ace.get("sequence"):
-                                    temp_aces.update(
-                                        {ace.get("sequence"): ace},
-                                    )
+                                    temp_aces.update({ace.get("sequence"): ace})
                                 elif ace:
                                     count += 1
                                     temp_aces.update({"_" + str(count): ace})
 
                             if temp_rem:  # add remarks to the temp ace
-                                temp_aces.update(
-                                    {en_name: {"remarks": temp_rem}},
-                                )
+                                temp_aces.update({en_name: {"remarks": temp_rem}})
 
-                        if acl.get(
-                            "acl_type",
-                        ):  # update acl dict with req info
+                        if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {
-                                    acl.get("name"): {
-                                        "aces": temp_aces,
-                                        "acl_type": acl["acl_type"],
-                                    },
-                                },
+                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}}
                             )
                         else:  # if no acl type then here eg: ipv6
-                            temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces}},
-                            )
+                            temp_acls.update({acl.get("name"): {"aces": temp_aces}})
                 each["acls"] = temp_acls
                 temp.update({each["afi"]: {"acls": temp_acls}})
             return temp
+
+    def port_protocl_no_to_protocol(self, num):
+        map_protocol = {
+            "179": "bgp",
+            "19": "chargen",
+            "514": "cmd",
+            "13": "daytime",
+            "9": "discard",
+            "53": "domain",
+            "7": "echo",
+            "512": "exec",
+            "79": "finger",
+            "21": "ftp",
+            "20": "ftp-data",
+            "70": "gopher",
+            "101": "hostname",
+            "113": "ident",
+            "194": "irc",
+            "543": "klogin",
+            "544": "kshell",
+            "513": "login",
+            "515": "lpd",
+            "135": "msrpc",
+            "119": "nntp",
+            "5001": "onep-plain",
+            "5002": "onep-tls",
+            "496": "pim-auto-rp",
+            "109": "pop2",
+            "110": "pop3",
+            "25": "smtp",
+            "111": "sunrpc",
+            "514": "syslog",
+            "49": "tacacs",
+            "517": "talk",
+            "23": "telnet",
+            "37": "time",
+            "540": "uucp",
+            "43": "whois",
+            "80": "www",
+        }
+        return map_protocol.get(num, num)
