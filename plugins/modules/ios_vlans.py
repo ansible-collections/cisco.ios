@@ -75,6 +75,24 @@ options:
         choices:
         - enabled
         - disabled
+      private_vlan:
+        description:
+        - Options for private vlan configuration.
+        type: dict
+        suboptions:
+          type:
+            description:
+            - Private VLAN type
+            type: str
+            choices:
+            - primary
+            - isolated
+            - community
+          association:
+            description:
+            - List of private VLANs associated with the primary . Only works with `type: primary`.
+            type: list
+            elements: int
   running_config:
     description:
       - This option is used only with state I(parsed).
