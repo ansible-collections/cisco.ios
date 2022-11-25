@@ -64,6 +64,7 @@ class VlansFacts(object):
         mtu_objs = []
         remote_objs = []
         final_objs = []
+        pvlan_objs = []
         if not data:
             data = self.get_vlans_data(connection)
         # operate on a collection of resource x
@@ -89,7 +90,7 @@ class VlansFacts(object):
                 vlan_info = "Hops"
                 vlan_name = False
             elif "Primary Secondary" in conf:
-                vlan_info = "Primary"
+                vlan_info = "Private"
                 vlan_name = False
             if temp:
                 conf = temp
@@ -100,6 +101,8 @@ class VlansFacts(object):
                     mtu_objs.append(obj)
                 elif "remote_span" in obj:
                     remote_objs = obj
+                elif "private_vlan" in obj:
+                    pvlan_objs.append(obj)
                 elif obj:
                     objs.append(obj)
         # Appending MTU value to the retrieved dictionary
@@ -107,7 +110,7 @@ class VlansFacts(object):
             o.update(m)
             final_objs.append(o)
 
-        # Appending Remote Span value to related VLAN:
+        # Appending Remote Span value to related VLAN
         if remote_objs:
             if remote_objs.get("remote_span"):
                 for each in remote_objs.get("remote_span"):
@@ -115,6 +118,38 @@ class VlansFacts(object):
                         if each == every.get("vlan_id"):
                             every.update({"remote_span": True})
                             break
+
+        # Appending private vlan information to related VLAN
+        if pvlan_objs:
+            pvlan_final = {}
+            if len(pvlan_objs) > 0:
+                # Sanitize and structure everything
+                for data in pvlan_objs:
+                    pvdata = data.get("tmp_pvlans")
+                    privlan = pvdata.get("primary")
+                    secvlan = pvdata.get("secondary")
+                    sectype = pvdata.get("sec_type")
+
+                    # Assemble and merge data for primary private VLANs
+                    if privlan not in pvlan_final.keys():
+                        pvlan_final[privlan] = {"private_vlan":
+                                                {
+                                                    "type": "primary",
+                                                    "association": [secvlan]}
+                                            }
+                    else:
+                        pvlan_final[privlan]["private_vlan"]["assocation"].append(secvlan)
+                                                
+                    # Also define community/isolated private VLANs
+                    pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
+
+                # Associate with the proper VLAN in final_objs
+                for vlan_id, pvdata in pvlan_final.items():
+                    for every in final_objs:
+                        if vlan_id == every.get("vlan_id"):
+                            every.update(pvdata)
+                    
+        
         facts = {}
         if final_objs:
             facts["vlans"] = []
@@ -192,5 +227,18 @@ class VlansFacts(object):
                     else:
                         remote_span.append(int(each))
                 config["remote_span"] = remote_span
+                
+        elif vlan_info == "Private":
+            conf = list(filter(None, config.split(" ")))
+
+            pri_idx = 0
+            sec_idx = 1
+            priv_type_idx = 2
+
+            config["tmp_pvlans"] = {
+                "primary": int(conf[pri_idx]),
+                "secondary": int(conf[sec_idx]),
+                "sec_type": conf[priv_type_idx]
+            }
 
         return utils.remove_empties(config)
