@@ -49,10 +49,10 @@ class Vlans(ConfigBase):
             self.gather_network_resources,
             data=data,
         )
-        interfaces_facts = facts["ansible_network_resources"].get("vlans")
-        if not interfaces_facts:
+        vlans_facts = facts["ansible_network_resources"].get("vlans")
+        if not vlans_facts:
             return []
-        return interfaces_facts
+        return vlans_facts
 
     def execute_module(self):
         """Execute the module
