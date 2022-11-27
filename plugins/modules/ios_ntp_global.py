@@ -285,7 +285,7 @@ EXAMPLES = """
 # ------------
 
 - name: Apply the provided configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
       access_group:
         peer:
@@ -448,7 +448,7 @@ EXAMPLES = """
 # -------------
 
 - name: Remove all existing configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     state: deleted
 
 # Commands Fired:
@@ -508,7 +508,7 @@ EXAMPLES = """
 # ----------------
 
 - name: Override commands with provided configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
       peers:
         - peer: ipv6DomainNew.com
@@ -562,7 +562,7 @@ EXAMPLES = """
 # --------------
 
 - name: Replace commands with provided configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
       broadcast_delay: 22
       clock_period: 5
@@ -640,7 +640,7 @@ EXAMPLES = """
 # --------------
 
 - name: Gather listed ntp config
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     state: gathered
 
 # Module Execution Result:
@@ -774,7 +774,7 @@ EXAMPLES = """
 # --------------
 
 - name: Render the commands for provided configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
       access_group:
         peer:
@@ -913,7 +913,7 @@ EXAMPLES = """
 # ------------
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1063,10 +1063,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ntp_global.ntp_global import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ntp_global.ntp_global import (
     Ntp_globalArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ntp_global.ntp_global import (
     Ntp_global,
 )
 

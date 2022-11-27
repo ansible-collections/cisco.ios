@@ -5,7 +5,7 @@
 - block:
     - name: Render the commands for provided  configuration
       register: result
-      cisco.ios.ios_bgp_address_family:
+      bentest.ios.ios_bgp_address_family:
         config:
           as_number: 65000
           address_family:

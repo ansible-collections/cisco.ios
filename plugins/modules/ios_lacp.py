@@ -98,7 +98,7 @@ EXAMPLES = """
 # 32768, 5e00.0000.8000
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     config:
       system:
         priority: 123
@@ -119,7 +119,7 @@ EXAMPLES = """
 # 500, 5e00.0000.8000
 
 - name: Replaces Global LACP configuration
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     config:
       system:
         priority: 123
@@ -140,7 +140,7 @@ EXAMPLES = """
 # 500, 5e00.0000.8000
 
 - name: Delete Global LACP attribute
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     state: deleted
 
 # After state:
@@ -158,7 +158,7 @@ EXAMPLES = """
 # 123, 5e00.0000.8000
 
 - name: Gather listed LACP with provided configurations
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     config:
     state: gathered
 
@@ -180,7 +180,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     config:
       system:
         priority: 123
@@ -201,7 +201,7 @@ EXAMPLES = """
 # lacp system-priority 123
 
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_lacp:
+  bentest.ios.ios_lacp:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -240,10 +240,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp.lacp import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.lacp.lacp import (
     LacpArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lacp.lacp import Lacp
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.lacp.lacp import Lacp
 
 
 def main():

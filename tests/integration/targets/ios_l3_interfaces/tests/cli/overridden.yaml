@@ -9,7 +9,7 @@
 - block:
     - name: L3_interface overridden - override device configuration of all interfaces with provided configuration
       register: result
-      cisco.ios.ios_l3_interfaces: &id001
+      bentest.ios.ios_l3_interfaces: &id001
         config:
           - name: GigabitEthernet1
             ipv4:
@@ -41,7 +41,7 @@
 
     - name: L3_interface overridden - override device configuration of all interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_l3_interfaces: *id001
+      bentest.ios.ios_l3_interfaces: *id001
     - name: L3_interface overridden - assert that task was idempotent
       ansible.builtin.assert:
         that:

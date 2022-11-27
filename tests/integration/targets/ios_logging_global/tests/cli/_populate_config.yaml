@@ -1,6 +1,6 @@
 ---
 - name: Config apply - [merged] apply provided configuration
-  cisco.ios.ios_logging_global:
+  bentest.ios.ios_logging_global:
     config:
       buffered:
         severity: notifications

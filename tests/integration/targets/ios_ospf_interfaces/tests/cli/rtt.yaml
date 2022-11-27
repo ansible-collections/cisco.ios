@@ -8,7 +8,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      cisco.ios.ios_ospf_interfaces:
+      bentest.ios.ios_ospf_interfaces:
         config:
           - name: GigabitEthernet2
             address_family:
@@ -44,7 +44,7 @@
         state: merged
 
     - name: Gather OSPF interfaces facts
-      cisco.ios.ios_facts:
+      bentest.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -53,7 +53,7 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
-      cisco.ios.ios_ospf_interfaces:
+      bentest.ios.ios_ospf_interfaces:
         config:
           - name: GigabitEthernet2
             address_family:
@@ -83,7 +83,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      cisco.ios.ios_ospf_interfaces:
+      bentest.ios.ios_ospf_interfaces:
         config: "{{ ansible_facts['network_resources']['ospf_interfaces'] }}"
         state: overridden
 

@@ -23,7 +23,7 @@ import re
 from ansible.module_utils.six import iteritems
 from ansible.module_utils.six.moves import zip
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
     get_capabilities,
     normalize_interface,
     run_commands,

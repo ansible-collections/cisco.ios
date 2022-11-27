@@ -5,7 +5,7 @@
 - name: Merged with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_lldp_global:
+  bentest.ios.ios_lldp_global:
     config:
     state: merged
 
@@ -16,7 +16,7 @@
 - name: Replaced with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_lldp_global:
+  bentest.ios.ios_lldp_global:
     config:
     state: replaced
 
@@ -27,7 +27,7 @@
 - name: Rendered with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_lldp_global:
+  bentest.ios.ios_lldp_global:
     config:
     state: rendered
 
@@ -38,7 +38,7 @@
 - name: Parsed with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.ios.ios_lldp_global:
+  bentest.ios.ios_lldp_global:
     running_config:
     state: parsed
 

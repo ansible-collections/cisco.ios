@@ -1,5 +1,5 @@
 ---
 - name: Pre post task remove snmp-server configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     config:
     state: deleted

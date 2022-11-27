@@ -1,6 +1,6 @@
 ---
 - name: Populate OSPF configuration
-  cisco.ios.ios_ospfv2:
+  bentest.ios.ios_ospfv2:
     config:
       processes:
         - process_id: 1

@@ -1413,7 +1413,7 @@ EXAMPLES = """
 #  bgp nopeerup-delay cold-boot 20
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
       as_number: 65000
       address_family:
@@ -1600,7 +1600,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Replaces device configuration of listed AF BGP with provided configuration
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
       as_number: 65000
       address_family:
@@ -1766,7 +1766,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Override device configuration of all AF BGP with provided configuration
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
       as_number: 65000
       address_family:
@@ -1932,7 +1932,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: "Delete AF BGP (Note: This won't delete the all configured AF BGP)"
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
       as_number: 65000
       address_family:
@@ -2013,7 +2013,7 @@ EXAMPLES = """
 
 - name: 'Delete ALL of configured AF BGP (Note: This WILL delete the all configured
     AF BGP)'
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     state: deleted
 
 # Commands fired:
@@ -2040,7 +2040,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 
 - name: Gather listed AF BGP with provided configurations
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
     state: gathered
 
@@ -2169,7 +2169,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Rendered the provided configuration with the existing running configuration
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     config:
       as_number: 65000
       address_family:
@@ -2279,7 +2279,7 @@ EXAMPLES = """
 #  !
 
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_bgp_address_family:
+  bentest.ios.ios_bgp_address_family:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -2387,10 +2387,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.bgp_address_family.bgp_address_family import (
     Bgp_address_family,
 )
 

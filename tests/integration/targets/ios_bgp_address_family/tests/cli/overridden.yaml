@@ -8,7 +8,7 @@
 - block:
     - name: Override provided BGP address family configuration
       register: result
-      cisco.ios.ios_bgp_address_family: &id001
+      bentest.ios.ios_bgp_address_family: &id001
         config:
           as_number: 65000
           address_family:
@@ -76,7 +76,7 @@
 
     - name: Override provided BGP address family configuration (idempotent)
       register: result
-      cisco.ios.ios_bgp_address_family: *id001
+      bentest.ios.ios_bgp_address_family: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

@@ -28,11 +28,11 @@ description:
   This module includes an argument that will cause the module to wait for a specific
   condition before returning or timing out if the condition is not met.
 - This module does not support running commands in configuration mode. Please use
-  L(ios_config,https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module)
+  L(ios_config,https://docs.ansible.com/ansible/latest/collections/bentest.ios/ios_config_module.html#ansible-collections-bentest.ios-ios-config-module)
   to configure IOS devices.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+- bentest.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -87,22 +87,22 @@ options:
 """
 EXAMPLES = r"""
 - name: run show version on remote devices
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands: show version
 
 - name: run show version and check to see if output contains IOS
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands: show version
     wait_for: result[0] contains IOS
 
 - name: run multiple commands on remote nodes
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
     - show version
     - show interfaces
 
 - name: run multiple commands and evaluate the output
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
     - show version
     - show interfaces
@@ -111,7 +111,7 @@ EXAMPLES = r"""
     - result[1] contains Loopback0
 
 - name: run commands that require answering a prompt
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
     - command: 'clear counters GigabitEthernet0/1'
       prompt: 'Clear "show interface" counters on this interface \[confirm\]'
@@ -149,7 +149,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     transform_commands,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import run_commands
 
 
 def parse_commands(module, warnings):

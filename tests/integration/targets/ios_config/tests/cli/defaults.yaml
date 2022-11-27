@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     commands:
       - no description
       - shutdown
@@ -12,7 +12,7 @@
 
 - name: Configure device with defaults included
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     src: defaults/config.j2
     defaults: true
 
@@ -24,7 +24,7 @@
 
 - name: Check device with defaults included
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     src: defaults/config.j2
     defaults: true
 
@@ -37,13 +37,13 @@
 
 - name: Check device is in proper prompt after error
   ignore_errors: true
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - mac-address-table notification mac-move
 
 - name: Show interfaces brief to ensure device goes to valid prompt
   register: result
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
       - show interfaces
 

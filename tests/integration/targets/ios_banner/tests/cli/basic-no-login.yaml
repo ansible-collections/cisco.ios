@@ -1,13 +1,13 @@
 ---
 - name: Setup
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: login
     text: "Junk login banner\nover multiple lines\n"
     state: present
 
 - name: Remove login
   register: result
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: login
     state: absent
 
@@ -21,7 +21,7 @@
 
 - name: Remove login (idempotent)
   register: result
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: login
     state: absent
 

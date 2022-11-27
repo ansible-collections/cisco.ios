@@ -22,8 +22,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.utils.utils import (
     add_command_to_config_list,
     dict_to_set,
     filter_dict_having_none_value,

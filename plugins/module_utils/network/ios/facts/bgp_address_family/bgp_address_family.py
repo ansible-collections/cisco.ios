@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The cisco.ios bgp_address_family fact class
+The bentest.ios bgp_address_family fact class
 It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
@@ -18,16 +18,16 @@ based on the configuration.
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
 )
 
 
 class Bgp_address_familyFacts(object):
-    """The cisco.ios_bgp_address_family facts class"""
+    """The bentest.ios_bgp_address_family facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module

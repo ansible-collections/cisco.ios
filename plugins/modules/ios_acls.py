@@ -661,7 +661,7 @@ EXAMPLES = """
 #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -688,7 +688,7 @@ EXAMPLES = """
 #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -852,7 +852,7 @@ EXAMPLES = """
 
 
 - name: Replaces device configuration of listed acls with provided configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -944,7 +944,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 - name: Override device configuration of all acls with provided configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -1034,7 +1034,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 - name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -1083,7 +1083,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 - name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
     state: deleted
@@ -1126,7 +1126,7 @@ EXAMPLES = """
 
 - name: 'Delete ALL of configured ACLs (Note: This WILL delete the all configured
     ACLs)'
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     state: deleted
 
 # Commands fired:
@@ -1164,7 +1164,7 @@ EXAMPLES = """
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 - name: Gather listed acls with provided configurations
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     state: gathered
 
@@ -1326,7 +1326,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Rendered the provided configuration with the existing running configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     config:
     - afi: ipv4
       acls:
@@ -1388,7 +1388,7 @@ EXAMPLES = """
 # deny tcp any eq www any eq telnet ack dscp af11
 
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_acls:
+  bentest.ios.ios_acls:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1479,10 +1479,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import Acls
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.acls.acls import Acls
 
 
 def main():

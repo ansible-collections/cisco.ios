@@ -24,12 +24,12 @@ __metaclass__ = type
 #############################################
 
 """
-The arg spec for the cisco.ios_route_maps module
+The arg spec for the bentest.ios_route_maps module
 """
 
 
 class Route_mapsArgs(object):  # pylint: disable=R0903
-    """The arg spec for the cisco.ios_route_maps module"""
+    """The arg spec for the bentest.ios_route_maps module"""
 
     def __init__(self, **kwargs):
         pass

@@ -4,7 +4,7 @@
 
 - name: Ios_hostname parsed - play
   register: result
-  cisco.ios.ios_hostname:
+  bentest.ios.ios_hostname:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 

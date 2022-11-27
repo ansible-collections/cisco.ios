@@ -86,35 +86,35 @@ notes:
 
 EXAMPLES = """
 - name: Test reachability to 198.51.100.251 using default vrf
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 198.51.100.251
 
 - name: Test reachability to 198.51.100.252 using prod vrf
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 198.51.100.252
     vrf: prod
     afi: ip
 
 - name: Test un reachability to 198.51.100.253 using default vrf
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 198.51.100.253
     state: absent
 
 - name: Test reachability to 198.51.100.250 using prod vrf and setting count and source
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 198.51.100.250
     source: loopback0
     vrf: prod
     count: 20
 
 - name: Test reachability to 198.51.100.249 using df-bit and size
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 198.51.100.249
     df_bit: true
     size: 1400
 
 - name: Test reachability to ipv6 address
-  cisco.ios.ios_ping:
+  bentest.ios.ios_ping:
     dest: 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff
     afi: ipv6
 """
@@ -149,10 +149,10 @@ rtt:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ping.ping import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ping.ping import (
     PingArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping import Ping
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ping.ping import Ping
 
 
 def main():

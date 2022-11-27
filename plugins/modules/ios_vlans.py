@@ -155,7 +155,7 @@ EXAMPLES = """
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     - name: Vlan_10
       vlan_id: 10
@@ -236,7 +236,7 @@ EXAMPLES = """
 # 10
 
 - name: Override device configuration of all VLANs with provided configuration
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     - name: Vlan_10
       vlan_id: 10
@@ -298,7 +298,7 @@ EXAMPLES = """
 # 10
 
 - name: Replaces device configuration of listed VLANs with provided configuration
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     - vlan_id: 20
       name: Test_VLAN20
@@ -396,7 +396,7 @@ EXAMPLES = """
 # 10
 
 - name: Delete attributes of given VLANs
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     - vlan_id: 10
     - vlan_id: 20
@@ -458,7 +458,7 @@ EXAMPLES = """
 # 10
 
 - name: Delete attributes of ALL VLANs
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     state: deleted
 
 # After state:
@@ -514,7 +514,7 @@ EXAMPLES = """
 # 10
 
 - name: Gather listed vlans with provided configurations
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     state: gathered
 
@@ -613,7 +613,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     config:
     - name: Vlan_10
       vlan_id: 10
@@ -679,7 +679,7 @@ EXAMPLES = """
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_vlans:
+  bentest.ios.ios_vlans:
     running_config: "{{ lookup('file', './parsed.cfg') }}"
     state: parsed
 
@@ -769,11 +769,11 @@ commands:
 """
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import get_connection
 
 
 def _is_l2_device(module):

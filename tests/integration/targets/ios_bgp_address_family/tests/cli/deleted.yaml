@@ -8,7 +8,7 @@
 - block:
     - name: Delete provided BGP address family
       register: result
-      cisco.ios.ios_bgp_address_family: &id001
+      bentest.ios.ios_bgp_address_family: &id001
         config:
           as_number: 65000
           address_family:
@@ -25,7 +25,7 @@
 
     - name: Delete provided BGP address family (idempotent)
       register: result
-      cisco.ios.ios_bgp_address_family: *id001
+      bentest.ios.ios_bgp_address_family: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
@@ -33,7 +33,7 @@
 
     - name: Delete all provided BGP address family
       register: result
-      cisco.ios.ios_bgp_address_family: &id002
+      bentest.ios.ios_bgp_address_family: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
@@ -43,7 +43,7 @@
 
     - name: Delete all provided BGP address family (idempotent)
       register: result
-      cisco.ios.ios_bgp_address_family: *id002
+      bentest.ios.ios_bgp_address_family: *id002
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

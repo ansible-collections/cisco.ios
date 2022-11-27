@@ -5,7 +5,7 @@
 - block:
     - name: Render the commands for provided prefix lists configuration
       register: result
-      cisco.ios.ios_prefix_lists:
+      bentest.ios.ios_prefix_lists:
         config:
           - afi: ipv4
             prefix_lists:

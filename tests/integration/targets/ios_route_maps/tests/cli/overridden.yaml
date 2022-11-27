@@ -8,7 +8,7 @@
 - block:
     - name: Override provided route maps configuration
       register: result
-      cisco.ios.ios_route_maps: &id001
+      bentest.ios.ios_route_maps: &id001
         config:
           - route_map: test_1
             entries:
@@ -119,7 +119,7 @@
 
     - name: Override provided route maps configuration (idempotent)
       register: result
-      cisco.ios.ios_route_maps: *id001
+      bentest.ios.ios_route_maps: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

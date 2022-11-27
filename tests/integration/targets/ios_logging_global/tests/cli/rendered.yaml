@@ -5,7 +5,7 @@
 - block:
     - name: Test - [rendered] render the commands for provided  configuration
       register: result
-      cisco.ios.ios_logging_global:
+      bentest.ios.ios_logging_global:
         config:
           buginf: true
           buffered:

@@ -10,7 +10,7 @@
 - block:
     - name: Replaces device layer 2 configuration from listed interfaces with provided configuration
       register: result
-      cisco.ios.ios_l2_interfaces: &id001
+      bentest.ios.ios_l2_interfaces: &id001
         config:
           - name: GigabitEthernet2
             access:
@@ -41,7 +41,7 @@
 
     - name: Replaces device layer 2 configuration from listed interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_l2_interfaces: *id001
+      bentest.ios.ios_l2_interfaces: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

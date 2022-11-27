@@ -9,7 +9,7 @@
 - block:
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      cisco.ios.ios_static_routes:
+      bentest.ios.ios_static_routes:
         config:
         state: gathered
 

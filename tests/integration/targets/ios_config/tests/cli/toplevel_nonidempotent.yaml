@@ -2,14 +2,14 @@
 - ansible.builtin.debug: msg="START cli/toplevel_nonidempotent.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - hostname {{ shorter_hostname }}
     match: none
 
 - name: Configure top level command
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - hostname foo
     match: strict
@@ -21,7 +21,7 @@
 
 - name: Configure top level command idempotent check
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - hostname foo
     match: strict
@@ -31,7 +31,7 @@
       - result.changed == true
 
 - name: Teardown
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - hostname {{ shorter_hostname }}
     match: none

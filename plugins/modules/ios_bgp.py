@@ -313,7 +313,7 @@ options:
 """
 EXAMPLES = """
 - name: configure global bgp as 64496
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     config:
       bgp_as: 64496
       router_id: 192.0.2.1
@@ -342,7 +342,7 @@ EXAMPLES = """
     operation: merge
 
 - name: Configure BGP neighbors
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     config:
       bgp_as: 64496
       neighbors:
@@ -362,7 +362,7 @@ EXAMPLES = """
     operation: merge
 
 - name: Configure root-level networks for BGP
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     config:
       bgp_as: 64496
       networks:
@@ -375,7 +375,7 @@ EXAMPLES = """
     operation: merge
 
 - name: Configure BGP neighbors under address family mode
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     config:
       bgp_as: 64496
       address_family:
@@ -392,7 +392,7 @@ EXAMPLES = """
     operation: merge
 
 - name: remove bgp as 64496 from config
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     config:
       bgp_as: 64496
     operation: delete
@@ -417,10 +417,10 @@ commands:
 """
 from ansible.module_utils._text import to_text
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     REDISTRIBUTE_PROTOCOLS,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.module import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.providers.module import (
     NetworkModule,
 )
 

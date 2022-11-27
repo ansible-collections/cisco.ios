@@ -5,7 +5,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The module file for cisco.ios_route_maps
+The module file for bentest.ios_route_maps
 """
 
 from __future__ import absolute_import, division, print_function
@@ -1106,7 +1106,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Delete provided Route maps config
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
     state: deleted
@@ -1175,7 +1175,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Delete all Route maps config
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     state: deleted
 
 # Commands Fired:
@@ -1200,7 +1200,7 @@ EXAMPLES = """
 # router-ios#
 
 - name: Merge provided Route maps configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
         entries:
@@ -1400,7 +1400,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Override provided Route maps configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
         entries:
@@ -1589,7 +1589,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Replaced provided Route maps configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
         entries:
@@ -1791,7 +1791,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Gather Route maps provided configurations
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
     state: gathered
 
@@ -1982,7 +1982,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
         entries:
@@ -2146,7 +2146,7 @@ EXAMPLES = """
 #  set ip next-hop recursive global 198.51.110.1
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -2325,10 +2325,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.route_maps.route_maps import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.route_maps.route_maps import (
     Route_mapsArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.route_maps.route_maps import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.route_maps.route_maps import (
     Route_maps,
 )
 

@@ -19,10 +19,10 @@ from itertools import groupby
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
     Lag_interfacesTemplate,
 )
 

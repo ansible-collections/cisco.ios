@@ -2,12 +2,12 @@
 - ansible.builtin.debug: msg="START ios_lldp cli/basic.yaml on connection={{ ansible_connection }}"
 
 - name: Make sure lldp is not running before tests
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines: no lldp run
 
 - name: Enable lldp service
   register: result
-  cisco.ios.ios_lldp:
+  bentest.ios.ios_lldp:
     state: present
 
 - ansible.builtin.assert:
@@ -17,7 +17,7 @@
 
 - name: Enable lldp service again (idempotent)
   register: result
-  cisco.ios.ios_lldp:
+  bentest.ios.ios_lldp:
     state: present
 
 - ansible.builtin.assert:
@@ -26,7 +26,7 @@
 
 - name: Disable lldp service
   register: result
-  cisco.ios.ios_lldp:
+  bentest.ios.ios_lldp:
     state: absent
 
 - ansible.builtin.assert:
@@ -36,7 +36,7 @@
 
 - name: Disable lldp service (idempotent)
   register: result
-  cisco.ios.ios_lldp:
+  bentest.ios.ios_lldp:
     state: absent
 
 - ansible.builtin.assert:

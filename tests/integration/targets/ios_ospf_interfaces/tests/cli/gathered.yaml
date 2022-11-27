@@ -9,7 +9,7 @@
 - block:
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      cisco.ios.ios_ospf_interfaces:
+      bentest.ios.ios_ospf_interfaces:
         config:
         state: gathered
 

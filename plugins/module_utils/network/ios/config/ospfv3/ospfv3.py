@@ -22,8 +22,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
     Ospfv3Template,
 )
 

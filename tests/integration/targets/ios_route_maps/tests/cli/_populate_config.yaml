@@ -1,6 +1,6 @@
 ---
 - name: Populate route maps configuration
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     config:
       - route_map: test_1
         entries:

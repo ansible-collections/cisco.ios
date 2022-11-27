@@ -2,14 +2,14 @@
 - ansible.builtin.debug: msg="START cli/set_name_servers.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - no ip name-server
     match: none
 
 - name: Configure name_servers
   register: result
-  cisco.ios.ios_system:
+  bentest.ios.ios_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
@@ -25,7 +25,7 @@
 
 - name: Verify name_servers
   register: result
-  cisco.ios.ios_system:
+  bentest.ios.ios_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
@@ -37,7 +37,7 @@
 
 - name: Remove one
   register: result
-  cisco.ios.ios_system:
+  bentest.ios.ios_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
@@ -49,7 +49,7 @@
       - "'no ip name-server 192.0.2.3' in result.commands"
 
 - name: Teardown
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - no ip name-server
     match: none

@@ -23,10 +23,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     NetworkTemplate,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
     Ospfv3Template,
 )
 

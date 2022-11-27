@@ -8,7 +8,7 @@
 
     - name: Delete provided route maps configuration
       register: result
-      cisco.ios.ios_route_maps: &id001
+      bentest.ios.ios_route_maps: &id001
         config:
           - route_map: test_1
         state: deleted
@@ -20,7 +20,7 @@
 
     - name: Delete provided route maps configuration (idempotent)
       register: result
-      cisco.ios.ios_route_maps: *id001
+      bentest.ios.ios_route_maps: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
@@ -31,7 +31,7 @@
 
     - name: Delete all provided route maps configuration
       register: result
-      cisco.ios.ios_route_maps: &id002
+      bentest.ios.ios_route_maps: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
@@ -41,7 +41,7 @@
 
     - name: Delete all provided route maps configuration (idempotent)
       register: result
-      cisco.ios.ios_route_maps: *id002
+      bentest.ios.ios_route_maps: *id002
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

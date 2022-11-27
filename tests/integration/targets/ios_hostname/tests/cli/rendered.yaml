@@ -5,7 +5,7 @@
 - block:
     - name: Ios_hostname render - play
       register: result
-      cisco.ios.ios_hostname:
+      bentest.ios.ios_hostname:
         config:
           hostname: "testname"
         state: rendered

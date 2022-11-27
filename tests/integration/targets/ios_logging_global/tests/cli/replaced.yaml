@@ -8,7 +8,7 @@
 - block:
     - name: Test - [replaced] replace provided logging configuration
       register: result
-      cisco.ios.ios_logging_global: &replacedid001
+      bentest.ios.ios_logging_global: &replacedid001
         config:
           buffered:
             severity: alerts
@@ -38,7 +38,7 @@
 
     - name: Test - [replaced] replaced provided IOS logging global configuration idempotent
       register: result
-      cisco.ios.ios_logging_global: *replacedid001
+      bentest.ios.ios_logging_global: *replacedid001
     - name: Test - [replaced] assert that task was idempotent
       ansible.builtin.assert:
         that:

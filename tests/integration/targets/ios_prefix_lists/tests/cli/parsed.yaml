@@ -4,7 +4,7 @@
 
 - name: Parse the commands for provided configuration
   register: result
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 

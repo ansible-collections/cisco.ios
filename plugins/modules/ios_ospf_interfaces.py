@@ -422,7 +422,7 @@ EXAMPLES = """
 #  ip ospf cost 30
 
 - name: Delete provided OSPF Interface config
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/1
     state: deleted
@@ -470,7 +470,7 @@ EXAMPLES = """
 #  ip ospf cost 30
 
 - name: Delete all OSPF config from interfaces
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     state: deleted
 
 # Commands Fired:
@@ -506,7 +506,7 @@ EXAMPLES = """
 # router-ios#
 
 - name: Merge provided OSPF Interfaces configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/1
         address_family:
@@ -619,7 +619,7 @@ EXAMPLES = """
 # interface GigabitEthernet0/2
 
 - name: Override provided OSPF Interfaces configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/1
         address_family:
@@ -718,7 +718,7 @@ EXAMPLES = """
 # interface GigabitEthernet0/2
 
 - name: Replaced provided OSPF Interfaces configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/2
         address_family:
@@ -797,7 +797,7 @@ EXAMPLES = """
 # interface GigabitEthernet0/2
 
 - name: Gather OSPF Interfaces provided configurations
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
     state: gathered
 
@@ -889,7 +889,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet0/1
         address_family:
@@ -976,7 +976,7 @@ EXAMPLES = """
 # interface GigabitEthernet0/0
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1067,10 +1067,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf_interfaces.ospf_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ospf_interfaces.ospf_interfaces import (
     Ospf_InterfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospf_interfaces.ospf_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ospf_interfaces.ospf_interfaces import (
     Ospf_Interfaces,
 )
 

@@ -5,7 +5,7 @@
 - block:
     - name: Render the commands for provided route map configuration
       register: result
-      cisco.ios.ios_route_maps:
+      bentest.ios.ios_route_maps:
         config:
           - route_map: test_1
             entries:

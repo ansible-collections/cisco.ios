@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      cisco.ios.ios_acl_interfaces:
+      bentest.ios.ios_acl_interfaces:
         config:
           - name: GigabitEthernet2
             access_groups:

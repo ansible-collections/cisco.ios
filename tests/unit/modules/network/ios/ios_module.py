@@ -24,7 +24,7 @@ __metaclass__ = type
 import json
 import os
 
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
+from ansible_collections.bentest.ios.tests.unit.modules.utils import (
     AnsibleExitJson,
     AnsibleFailJson,
     ModuleTestCase,

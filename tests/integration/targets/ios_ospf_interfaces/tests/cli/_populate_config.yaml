@@ -1,6 +1,6 @@
 ---
 - name: Populate OSPF interfaces configuration
-  cisco.ios.ios_ospf_interfaces:
+  bentest.ios.ios_ospf_interfaces:
     config:
       - name: GigabitEthernet2
         address_family:

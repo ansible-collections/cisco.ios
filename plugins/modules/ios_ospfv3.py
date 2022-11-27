@@ -1333,7 +1333,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Delete provided OSPF V3 processes
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
       processes:
       - process_id: 1
@@ -1380,7 +1380,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Delete all OSPF processes
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     state: deleted
 
 # Commands Fired:
@@ -1405,7 +1405,7 @@ EXAMPLES = """
 # router-ios#
 
 - name: Merge provided OSPFV3 configuration
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
       processes:
       - process_id: 1
@@ -1513,7 +1513,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Override provided OSPFV3 configuration
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
       processes:
         - process_id: 200
@@ -1591,7 +1591,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Replaced provided OSPFV3 configuration
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
       processes:
         - process_id: 200
@@ -1674,7 +1674,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Gather OSPFV3 provided configurations
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
     state: gathered
 
@@ -1772,7 +1772,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     config:
       processes:
       - process_id: 1
@@ -1860,7 +1860,7 @@ EXAMPLES = """
 #  exit-address-family
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_ospfv3:
+  bentest.ios.ios_ospfv3:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1940,10 +1940,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv3.ospfv3 import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ospfv3.ospfv3 import (
     Ospfv3,
 )
 

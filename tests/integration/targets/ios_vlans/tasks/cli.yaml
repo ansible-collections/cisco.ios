@@ -12,7 +12,7 @@
   delegate_to: localhost
 
 - name: Get the IOS version
-  cisco.ios.ios_facts:
+  bentest.ios.ios_facts:
     gather_subset: all
 
 - name: Run test case (connection=ansible.netcommon.network_cli)

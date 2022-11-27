@@ -9,7 +9,7 @@
 - block:
     - name: Delete lacp attributes for all configured interfaces
       register: result
-      cisco.ios.ios_lacp_interfaces: &id001
+      bentest.ios.ios_lacp_interfaces: &id001
         state: deleted
 
     - name: Assert that correct set of commands were generated
@@ -29,7 +29,7 @@
 
     - name: Delete lacp attributes for all configured interfaces (idempotent)
       register: result
-      cisco.ios.ios_lacp_interfaces: *id001
+      bentest.ios.ios_lacp_interfaces: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

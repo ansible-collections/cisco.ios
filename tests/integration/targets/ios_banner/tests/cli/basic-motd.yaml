@@ -1,12 +1,12 @@
 ---
 - name: Setup - remove MOTD
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: motd
     state: absent
 
 - name: Set MOTD
   register: result
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: motd
     text: "this is my motd banner\nthat has a multiline\nstring\n"
     state: present
@@ -21,7 +21,7 @@
 
 - name: Set MOTD again (idempotent)
   register: result
-  cisco.ios.ios_banner:
+  bentest.ios.ios_banner:
     banner: motd
     text: "this is my motd banner\nthat has a multiline\nstring"
     state: present

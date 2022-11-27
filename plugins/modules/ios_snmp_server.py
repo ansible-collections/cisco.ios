@@ -881,7 +881,7 @@ EXAMPLES = """
 # ------------
 
 - name: Apply the provided configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     config:
       communities:
       -   acl_v4: testACL
@@ -1064,7 +1064,7 @@ EXAMPLES = """
 # -------------
 
 - name: Remove all existing configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     state: deleted
 
 # Commands Fired:
@@ -1140,7 +1140,7 @@ EXAMPLES = """
 # ----------------
 
 - name: Override commands with provided configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     config:
       location: 'location entry for snmp'
       packet_size: 500
@@ -1206,7 +1206,7 @@ EXAMPLES = """
 # --------------
 
 - name: Replace commands with provided configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     config:
       location: 'updated location entry'
       packet_size: 500
@@ -1270,7 +1270,7 @@ EXAMPLES = """
 # --------------
 
 - name: Gather listed snmp config
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     state: gathered
 
 # Module Execution Result:
@@ -1408,7 +1408,7 @@ EXAMPLES = """
 # --------------
 
 - name: Render the commands for provided configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     config:
       accounting:
           command: default
@@ -1774,7 +1774,7 @@ EXAMPLES = """
 # ------------
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1993,10 +1993,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
     Snmp_serverArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.snmp_server.snmp_server import (
     Snmp_server,
 )
 

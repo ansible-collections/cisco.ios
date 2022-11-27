@@ -6,7 +6,7 @@
     - name: Parse the commands for provided configuration
       become: true
       register: result
-      cisco.ios.ios_lag_interfaces:
+      bentest.ios.ios_lag_interfaces:
         running_config: "{{ lookup('file', '_parsed.cfg') }}"
         state: parsed
 

@@ -22,7 +22,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ntp
 extends_documentation_fragment:
-- cisco.ios.ios
+- bentest.ios.ios
 short_description: (deprecated, removed after 2024-01-01) Manages core NTP configuration.
 description:
 - Manages core NTP configuration.
@@ -80,24 +80,24 @@ options:
 """
 EXAMPLES = """
 # Set new NTP server and source interface
-- cisco.ios.ios_ntp:
+- bentest.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     logging: false
     state: present
 # Remove NTP ACL and logging
-- cisco.ios.ios_ntp:
+- bentest.ios.ios_ntp:
     acl: NTP_ACL
     logging: true
     state: absent
 # Set NTP authentication
-- cisco.ios.ios_ntp:
+- bentest.ios.ios_ntp:
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
 # Set new NTP configuration
-- cisco.ios.ios_ntp:
+- bentest.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     acl: NTP_ACL
@@ -119,7 +119,7 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

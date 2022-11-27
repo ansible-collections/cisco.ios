@@ -9,7 +9,7 @@
 - block:
     - name: Ios_hostname deleted - play
       register: result
-      cisco.ios.ios_hostname:
+      bentest.ios.ios_hostname:
         config:
         state: deleted
 

@@ -2,13 +2,13 @@
 - ansible.builtin.debug: msg="START cli/set_hostname.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines: hostname switch
     match: none
 
 - name: Configure hostname
   register: result
-  cisco.ios.ios_system:
+  bentest.ios.ios_system:
     hostname: foo
 
 - ansible.builtin.assert:
@@ -17,7 +17,7 @@
 
 - name: Verify hostname
   register: result
-  cisco.ios.ios_system:
+  bentest.ios.ios_system:
     hostname: foo
 
 - ansible.builtin.assert:
@@ -25,7 +25,7 @@
       - result.changed == false
 
 - name: Teardown
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
     match: none
 

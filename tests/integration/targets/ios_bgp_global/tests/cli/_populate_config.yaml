@@ -1,6 +1,6 @@
 ---
 - name: Populate BGP global configuration
-  cisco.ios.ios_bgp_global:
+  bentest.ios.ios_bgp_global:
     config:
       as_number: 65000
       bgp:

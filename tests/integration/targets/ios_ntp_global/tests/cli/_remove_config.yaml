@@ -1,5 +1,5 @@
 ---
 - name: Remove all configuration ntp_global
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
     state: deleted

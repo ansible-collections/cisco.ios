@@ -135,45 +135,45 @@ options:
     - absent
     type: str
 extends_documentation_fragment:
-- cisco.ios.ios
+- bentest.ios.ios
 """
 EXAMPLES = """
 - name: configure host logging
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: present
 
 - name: remove host logging configuration
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: absent
 
 - name: configure console logging level and facility
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     dest: console
     facility: local7
     level: debugging
     state: present
 
 - name: enable logging to all
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     dest: on
 
 - name: configure buffer size
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     dest: buffered
     size: 5000
 
 - name: Configure logging using aggregate
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     aggregate:
     - {dest: console, level: notifications}
     - {dest: buffered, size: 9000}
 
 - name: remove logging using aggregate
-  cisco.ios.ios_logging:
+  bentest.ios.ios_logging:
     aggregate:
     - {dest: console, level: notifications}
     - {dest: buffered, size: 9000}
@@ -200,7 +200,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     validate_ip_address,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
     get_capabilities,
     get_config,
     load_config,

@@ -1,6 +1,6 @@
 ---
 - name: Populate prefix lists configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:

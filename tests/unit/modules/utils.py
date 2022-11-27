@@ -7,8 +7,8 @@ import json
 from ansible.module_utils import basic
 from ansible.module_utils._text import to_bytes
 
-from ansible_collections.cisco.ios.tests.unit.compat import unittest
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+from ansible_collections.bentest.ios.tests.unit.compat import unittest
+from ansible_collections.bentest.ios.tests.unit.compat.mock import patch
 
 
 def set_module_args(args):

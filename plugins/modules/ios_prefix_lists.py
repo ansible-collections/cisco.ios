@@ -5,7 +5,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The module file for cisco.ios_prefix_lists
+The module file for bentest.ios_prefix_lists
 """
 
 from __future__ import absolute_import, division, print_function
@@ -143,7 +143,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Delete provided Prefix lists config by Prefix name
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -187,7 +187,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Delete provided Prefix lists config by AFI
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
     state: deleted
@@ -227,7 +227,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Delete all Prefix lists config
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     state: deleted
 
 # Commands Fired:
@@ -255,7 +255,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Merge provided Prefix lists configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv6
         prefix_lists:
@@ -284,7 +284,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Merge provided Prefix lists configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -394,7 +394,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Override provided Prefix lists configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -477,7 +477,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Replaced provided Prefix lists configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -562,7 +562,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Gather Prefix lists provided configurations
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
     state: gathered
 
@@ -676,7 +676,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -768,7 +768,7 @@ EXAMPLES = """
 # ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_prefix_lists:
+  bentest.ios.ios_prefix_lists:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -887,10 +887,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
     Prefix_listsArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.prefix_lists.prefix_lists import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.prefix_lists.prefix_lists import (
     Prefix_lists,
 )
 

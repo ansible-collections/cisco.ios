@@ -7,7 +7,7 @@
 - block:
     - name: Merge the provided configuration with the existing running configuration
       register: result
-      cisco.ios.ios_acl_interfaces: &id001
+      bentest.ios.ios_acl_interfaces: &id001
         config:
           - name: GigabitEthernet2
             access_groups:
@@ -46,7 +46,7 @@
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       register: result
-      cisco.ios.ios_acl_interfaces: *id001
+      bentest.ios.ios_acl_interfaces: *id001
     - ansible.builtin.assert:
         that:
           - result.commands|length == 0

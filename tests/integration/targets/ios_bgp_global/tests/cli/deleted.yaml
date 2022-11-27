@@ -8,7 +8,7 @@
 - block:
     - name: Delete provided BGP global
       register: result
-      cisco.ios.ios_bgp_global: &id001
+      bentest.ios.ios_bgp_global: &id001
         config:
           as_number: 65000
         state: deleted
@@ -25,7 +25,7 @@
 
     - name: Delete provided BGP global (idempotent)
       register: result
-      cisco.ios.ios_bgp_global: *id001
+      bentest.ios.ios_bgp_global: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

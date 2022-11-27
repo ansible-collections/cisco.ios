@@ -8,7 +8,7 @@
 - block:
     - name: Merge provided configuration with device configuration
       register: result
-      cisco.ios.ios_lag_interfaces: &id001
+      bentest.ios.ios_lag_interfaces: &id001
         config:
           - name: Port-channel11
             members:
@@ -32,7 +32,7 @@
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
-      cisco.ios.ios_lag_interfaces: *id001
+      bentest.ios.ios_lag_interfaces: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

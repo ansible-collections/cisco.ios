@@ -4,7 +4,7 @@
 
 - name: Ios_snmp_server parsed - play
   register: result
-  cisco.ios.ios_snmp_server:
+  bentest.ios.ios_snmp_server:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 

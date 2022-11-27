@@ -7,7 +7,7 @@
 - block:
     - name: Ios_ntp_global gather - play
       register: result
-      cisco.ios.ios_ntp_global:
+      bentest.ios.ios_ntp_global:
         config:
         state: gathered
 

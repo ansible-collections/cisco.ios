@@ -3,7 +3,7 @@
 
 - name: Test not hardware
   register: result
-  cisco.ios.ios_facts:
+  bentest.ios.ios_facts:
     gather_subset:
       - "!hardware"
 

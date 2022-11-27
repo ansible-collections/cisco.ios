@@ -9,7 +9,7 @@
 - block:
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      cisco.ios.ios_l2_interfaces:
+      bentest.ios.ios_l2_interfaces:
         config:
         state: gathered
 

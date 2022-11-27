@@ -7,7 +7,7 @@
 - block:
     - name: Ios_snmp_server gather - play
       register: result
-      cisco.ios.ios_snmp_server:
+      bentest.ios.ios_snmp_server:
         config:
         state: gathered
 

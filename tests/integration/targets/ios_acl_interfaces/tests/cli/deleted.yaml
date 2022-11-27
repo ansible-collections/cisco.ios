@@ -9,7 +9,7 @@
 - block:
     - name: Delete module attributes of given interface.
       register: result
-      cisco.ios.ios_acl_interfaces:
+      bentest.ios.ios_acl_interfaces:
         config:
           - name: GigabitEthernet2
         state: deleted
@@ -22,7 +22,7 @@
 
     - name: Delete module attributes of given interface (idempotent)
       register: result
-      cisco.ios.ios_acl_interfaces:
+      bentest.ios.ios_acl_interfaces:
         config:
           - name: GigabitEthernet2
         state: deleted

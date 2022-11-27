@@ -5,7 +5,7 @@
 - block:
     - name: Ios_snmp_server render - play
       register: result
-      cisco.ios.ios_snmp_server:
+      bentest.ios.ios_snmp_server:
         config:
           communities:
             - acl_v4: test_Acl

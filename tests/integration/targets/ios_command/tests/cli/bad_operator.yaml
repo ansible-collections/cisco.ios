@@ -4,7 +4,7 @@
 - name: Test bad operator
   register: result
   ignore_errors: true
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
       - show version
       - show interfaces GigabitEthernet 0/0

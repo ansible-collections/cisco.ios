@@ -1,6 +1,6 @@
 ---
 - name: Remove ospfv2 configuration
-  cisco.ios.ios_ospfv2:
+  bentest.ios.ios_ospfv2:
     state: deleted
 
 - name: Delete and clean VRF configuration

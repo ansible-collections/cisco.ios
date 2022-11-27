@@ -3,7 +3,7 @@
 
 - name: Use src with module alias
   register: result
-  cisco.ios.config:
+  bentest.ios.config:
     src: basic/config.j2
 
 - ansible.builtin.assert:
@@ -14,7 +14,7 @@
 
 - name: Use module alias to take configuration backup
   register: result
-  cisco.ios.config:
+  bentest.ios.config:
     backup: true
     backup_options:
       filename: backup_with_alias.cfg

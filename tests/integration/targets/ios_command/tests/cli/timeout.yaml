@@ -4,7 +4,7 @@
 - name: Test bad condition
   register: result
   ignore_errors: true
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
       - show version
     wait_for:

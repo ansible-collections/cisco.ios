@@ -9,7 +9,7 @@
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
       register: result
-      cisco.ios.ios_static_routes: &id001
+      bentest.ios.ios_static_routes: &id001
         config:
           - vrf: ansible_temp_vrf
             address_families:
@@ -56,7 +56,7 @@
 
     - name: Replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_static_routes: *id001
+      bentest.ios.ios_static_routes: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

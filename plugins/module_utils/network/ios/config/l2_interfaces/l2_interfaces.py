@@ -26,11 +26,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.utils.utils import (
     normalize_interface,
     vlan_list_to_range,
     vlan_range_to_list,

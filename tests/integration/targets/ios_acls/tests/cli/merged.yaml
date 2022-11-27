@@ -6,7 +6,7 @@
 
 - block:
     - name: Merge initial configuration with device configuration
-      cisco.ios.ios_acls:
+      bentest.ios.ios_acls:
         config:
           - afi: ipv4
             acls:
@@ -35,7 +35,7 @@
 
     - name: Merge new configuration with existing device configuration
       register: result
-      cisco.ios.ios_acls: &id001
+      bentest.ios.ios_acls: &id001
         config:
           - afi: ipv4
             acls:
@@ -149,7 +149,7 @@
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
-      cisco.ios.ios_acls: *id001
+      bentest.ios.ios_acls: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

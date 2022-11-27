@@ -7,7 +7,7 @@
 - block:
     - name: L3_interface merged - merge provided configuration with device configuration
       register: result
-      cisco.ios.ios_l3_interfaces: &id001
+      bentest.ios.ios_l3_interfaces: &id001
         config:
           - name: Loopback999
             ipv4:
@@ -42,7 +42,7 @@
 
     - name: L3_interface merged - merge provided configuration with device configuration (idempotent)
       register: result
-      cisco.ios.ios_l3_interfaces: *id001
+      bentest.ios.ios_l3_interfaces: *id001
     - name: L3_interface merged - assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

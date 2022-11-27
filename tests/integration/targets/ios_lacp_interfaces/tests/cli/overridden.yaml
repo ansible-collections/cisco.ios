@@ -9,7 +9,7 @@
 - block:
     - name: Override device configuration of all lacp_interfaces with provided configuration
       register: result
-      cisco.ios.ios_lacp_interfaces: &id001
+      bentest.ios.ios_lacp_interfaces: &id001
         config:
           - name: GigabitEthernet3
             port_priority: 40
@@ -36,7 +36,7 @@
 
     - name: Override device configuration of all lacp_interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_lacp_interfaces: *id001
+      bentest.ios.ios_lacp_interfaces: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

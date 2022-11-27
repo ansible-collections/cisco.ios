@@ -9,7 +9,7 @@
 - block:
     - name: Replaced provided OSPF interfaces configuration
       register: result
-      cisco.ios.ios_ospf_interfaces: &id001
+      bentest.ios.ios_ospf_interfaces: &id001
         config:
           - name: GigabitEthernet3
             address_family:
@@ -36,7 +36,7 @@
 
     - name: Replaced provided OSPF interfaces configuration (idempotent)
       register: result
-      cisco.ios.ios_ospf_interfaces: *id001
+      bentest.ios.ios_ospf_interfaces: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

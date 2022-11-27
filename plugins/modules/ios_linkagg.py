@@ -105,21 +105,21 @@ options:
     default: false
     type: bool
 extends_documentation_fragment:
-- cisco.ios.ios
+- bentest.ios.ios
 """
 EXAMPLES = """
 - name: create link aggregation group
-  cisco.ios.ios_linkagg:
+  bentest.ios.ios_linkagg:
     group: 10
     state: present
 
 - name: delete link aggregation group
-  cisco.ios.ios_linkagg:
+  bentest.ios.ios_linkagg:
     group: 10
     state: absent
 
 - name: set link aggregation group to members
-  cisco.ios.ios_linkagg:
+  bentest.ios.ios_linkagg:
     group: 200
     mode: active
     members:
@@ -127,14 +127,14 @@ EXAMPLES = """
     - GigabitEthernet0/1
 
 - name: remove link aggregation group from GigabitEthernet0/0
-  cisco.ios.ios_linkagg:
+  bentest.ios.ios_linkagg:
     group: 200
     mode: active
     members:
     - GigabitEthernet0/1
 
 - name: Create aggregate of linkagg definitions
-  cisco.ios.ios_linkagg:
+  bentest.ios.ios_linkagg:
     aggregate:
     - {group: 3, mode: on, members: [GigabitEthernet0/1]}
     - {group: 100, mode: passive, members: [GigabitEthernet0/2]}
@@ -162,7 +162,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

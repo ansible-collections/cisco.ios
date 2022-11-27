@@ -7,7 +7,7 @@
 
 - block:
     - name: Test - [deleted] remove all configuration
-      cisco.ios.ios_logging_global:
+      bentest.ios.ios_logging_global:
         state: deleted
       register: result
 

@@ -8,7 +8,7 @@
           - interface GigabitEthernet3
 
     - name: Setup
-      cisco.ios.ios_config: &rem
+      bentest.ios.ios_config: &rem
         lines:
           - "no description"
           - "no mtu"
@@ -24,7 +24,7 @@
 
     - name: Merge base interfaces configuration
       register: result
-      cisco.ios.ios_interfaces: &merged
+      bentest.ios.ios_interfaces: &merged
         config:
           - name: GigabitEthernet2
             description: Configured by Ansible (L3)
@@ -46,13 +46,13 @@
 
     - name: Merge base interfaces configuration (idempotent)
       register: result
-      cisco.ios.ios_interfaces: *merged
+      bentest.ios.ios_interfaces: *merged
     - ansible.builtin.assert:
         that:
           - result.changed == False
 
     - name: Merge layer 3 interfaces configuration
-      cisco.ios.ios_l3_interfaces: &merged_l3
+      bentest.ios.ios_l3_interfaces: &merged_l3
         config:
           - name: GigabitEthernet2
             ipv4:
@@ -78,7 +78,7 @@
           - result.commands|length == 6
 
     - name: Merge layer 3 interfaces configuration (idempotent)
-      cisco.ios.ios_l3_interfaces: *merged_l3
+      bentest.ios.ios_l3_interfaces: *merged_l3
       register: result
 
     - ansible.builtin.assert:
@@ -86,7 +86,7 @@
 
   always:
     - name: Cleanup
-      cisco.ios.ios_config: *rem
+      bentest.ios.ios_config: *rem
       with_items: "{{ interfaces }}"
       loop_control:
         loop_var: intf

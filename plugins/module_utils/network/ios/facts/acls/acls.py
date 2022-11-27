@@ -23,10 +23,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     NetworkTemplate,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
 )
 

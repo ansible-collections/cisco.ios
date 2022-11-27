@@ -9,7 +9,7 @@
 - block:
     - name: Ios_snmp_server deleted - play
       register: result
-      cisco.ios.ios_snmp_server: &id001
+      bentest.ios.ios_snmp_server: &id001
         config:
         state: deleted
 
@@ -25,7 +25,7 @@
 
     - name: Ios_snmp_server deleted - play (idempotent)
       register: result
-      cisco.ios.ios_snmp_server: *id001
+      bentest.ios.ios_snmp_server: *id001
     - name: Ios_snmp_server deleted - assert above task was idempotent
       ansible.builtin.assert:
         that:

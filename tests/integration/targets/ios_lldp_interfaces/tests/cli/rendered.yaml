@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      cisco.ios.ios_lldp_interfaces:
+      bentest.ios.ios_lldp_interfaces:
         config:
           - name: GigabitEthernet1
             receive: true

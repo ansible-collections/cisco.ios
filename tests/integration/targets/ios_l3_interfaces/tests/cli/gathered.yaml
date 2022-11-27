@@ -7,7 +7,7 @@
 - block:
     - name: L3_interface gathered - gather the provided configuration
       register: result
-      cisco.ios.ios_l3_interfaces:
+      bentest.ios.ios_l3_interfaces:
         config:
         state: gathered
 

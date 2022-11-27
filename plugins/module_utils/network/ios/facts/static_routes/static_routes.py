@@ -20,10 +20,10 @@ from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_RoutesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.utils.utils import (
     is_valid_ip,
     netmask_to_cidr,
 )

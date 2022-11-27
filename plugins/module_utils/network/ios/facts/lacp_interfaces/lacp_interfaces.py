@@ -22,10 +22,10 @@ from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.utils.utils import (
     get_interface_type,
     normalize_interface,
 )

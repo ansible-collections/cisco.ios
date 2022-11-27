@@ -6,7 +6,7 @@
     - name: Parse the commands for provided configuration
       become: true
       register: result
-      cisco.ios.ios_lacp:
+      bentest.ios.ios_lacp:
         running_config: "{{ lookup('file', '_parsed.cfg') }}"
         state: parsed
 

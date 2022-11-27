@@ -7,7 +7,7 @@
 - block:
     - name: Replaced provided prefix lists configuration
       register: result
-      cisco.ios.ios_prefix_lists: &id001
+      bentest.ios.ios_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -59,7 +59,7 @@
 
     - name: Replaced provided prefix lists configuration (idempotent)
       register: result
-      cisco.ios.ios_prefix_lists: *id001
+      bentest.ios.ios_prefix_lists: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

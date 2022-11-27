@@ -5,7 +5,7 @@
 - block:
     - name: Rendered the provided configuration with the existing running configuration
       register: result
-      cisco.ios.ios_acls:
+      bentest.ios.ios_acls:
         config:
           - afi: ipv4
             acls:

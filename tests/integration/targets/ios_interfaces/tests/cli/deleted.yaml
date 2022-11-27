@@ -9,7 +9,7 @@
 - block:
     - name: Delete attributes of all configured interfaces
       register: result
-      cisco.ios.ios_interfaces:
+      bentest.ios.ios_interfaces:
         config:
           - name: GigabitEthernet2
           - name: GigabitEthernet3

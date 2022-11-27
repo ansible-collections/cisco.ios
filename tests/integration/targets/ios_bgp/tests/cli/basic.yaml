@@ -3,12 +3,12 @@
 
 - name: Clear existing BGP configuration
   ignore_errors: true
-  cisco.ios.ios_bgp:
+  bentest.ios.ios_bgp:
     operation: delete
 
 - block:
     - name: Add fake configuration with 'bgp' string
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         match: none
         replace: block
         lines:
@@ -18,7 +18,7 @@
 
     - name: Try delete fake BGP configuration
       register: result
-      cisco.ios.ios_bgp:
+      bentest.ios.ios_bgp:
         operation: delete
 
     - ansible.builtin.assert:
@@ -26,14 +26,14 @@
           - result.changed == false
 
     - name: Clean fake configuration with 'bgp' string
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         match: none
         replace: block
         lines:
           - no ip access-list extended BGP_ACL
 
     - name: Add fake bgp-like configuration
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         match: none
         replace: block
         lines:
@@ -49,7 +49,7 @@
 
     - name: Try delete fake bgp-like configuration
       register: result
-      cisco.ios.ios_bgp:
+      bentest.ios.ios_bgp:
         operation: delete
 
     - ansible.builtin.assert:
@@ -57,7 +57,7 @@
           - result.changed == false
 
     - name: Clean fake bgp-like configuration
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         match: none
         replace: block
         lines:
@@ -65,7 +65,7 @@
 
     - name: Configure BGP with as 64496 and a router-id
       register: result
-      cisco.ios.ios_bgp: &id001
+      bentest.ios.ios_bgp: &id001
         operation: merge
         config:
           bgp_as: 64496
@@ -79,14 +79,14 @@
 
     - name: Configure BGP with as 64496 and a router-id (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id001
+      bentest.ios.ios_bgp: *id001
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure BGP neighbors
       register: result
-      cisco.ios.ios_bgp: &id002
+      bentest.ios.ios_bgp: &id002
         operation: merge
         config:
           bgp_as: 64496
@@ -120,14 +120,14 @@
 
     - name: Configure BGP neighbors (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id002
+      bentest.ios.ios_bgp: *id002
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure BGP neighbors with operation replace
       register: result
-      cisco.ios.ios_bgp: &id003
+      bentest.ios.ios_bgp: &id003
         operation: replace
         config:
           bgp_as: 64496
@@ -159,14 +159,14 @@
 
     - name: Configure BGP neighbors with operation replace (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id003
+      bentest.ios.ios_bgp: *id003
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure root-level networks for BGP
       register: result
-      cisco.ios.ios_bgp: &id004
+      bentest.ios.ios_bgp: &id004
         operation: merge
         config:
           bgp_as: 64496
@@ -188,14 +188,14 @@
 
     - name: Configure root-level networks for BGP (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id004
+      bentest.ios.ios_bgp: *id004
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure root-level networks for BGP with operation replace
       register: result
-      cisco.ios.ios_bgp: &id005
+      bentest.ios.ios_bgp: &id005
         operation: replace
         config:
           bgp_as: 64496
@@ -216,14 +216,14 @@
 
     - name: Configure root-level networks for BGP with operation replace (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id005
+      bentest.ios.ios_bgp: *id005
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure BGP neighbors under address family mode
       register: result
-      cisco.ios.ios_bgp: &id006
+      bentest.ios.ios_bgp: &id006
         operation: merge
         config:
           bgp_as: 64496
@@ -261,14 +261,14 @@
 
     - name: Configure BGP neighbors under address family mode (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id006
+      bentest.ios.ios_bgp: *id006
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure networks under address family
       register: result
-      cisco.ios.ios_bgp: &id007
+      bentest.ios.ios_bgp: &id007
         operation: merge
         config:
           bgp_as: 64496
@@ -308,14 +308,14 @@
 
     - name: Configure networks under address family (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id007
+      bentest.ios.ios_bgp: *id007
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure networks under address family with operation replace
       register: result
-      cisco.ios.ios_bgp: &id008
+      bentest.ios.ios_bgp: &id008
         operation: replace
         config:
           bgp_as: 64496
@@ -351,14 +351,14 @@
 
     - name: Configure networks under address family with operation replace (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id008
+      bentest.ios.ios_bgp: *id008
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Configure redistribute information under address family mode
       register: result
-      cisco.ios.ios_bgp: &id009
+      bentest.ios.ios_bgp: &id009
         operation: merge
         config:
           bgp_as: 64496
@@ -385,18 +385,18 @@
 
     - name: Configure redistribute information under address family mode (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id009
+      bentest.ios.ios_bgp: *id009
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Get the IOS version
-      cisco.ios.ios_facts:
+      bentest.ios.ios_facts:
         gather_subset: all
 
     - name: Configure redistribute information under address family mode with operation replace
       register: result
-      cisco.ios.ios_bgp: &id010
+      bentest.ios.ios_bgp: &id010
         operation: replace
         config:
           bgp_as: 64496
@@ -419,7 +419,7 @@
     - name: Configure redistribute information under address family mode with operation replace (idempotent)
       register: result
       when: ansible_net_version != "15.6(2)T"
-      cisco.ios.ios_bgp: *id010
+      bentest.ios.ios_bgp: *id010
     - ansible.builtin.assert:
         that:
           - result.changed == false
@@ -427,7 +427,7 @@
 
     - name: Override all the existing BGP configuration
       register: result
-      cisco.ios.ios_bgp:
+      bentest.ios.ios_bgp:
         operation: override
         config:
           bgp_as: 64497
@@ -444,7 +444,7 @@
 
     - name: Configure BGP neighbors with classful boundary
       register: result
-      cisco.ios.ios_bgp: &id011
+      bentest.ios.ios_bgp: &id011
         config:
           bgp_as: 64497
           log_neighbor_changes: true
@@ -465,14 +465,14 @@
 
     - name: Configure BGP neighbors with classful boundary (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id011
+      bentest.ios.ios_bgp: *id011
     - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
     - name: Teardown
       register: result
-      cisco.ios.ios_bgp: &id012
+      bentest.ios.ios_bgp: &id012
         operation: delete
 
     - ansible.builtin.assert:
@@ -482,7 +482,7 @@
 
     - name: Teardown again (idempotent)
       register: result
-      cisco.ios.ios_bgp: *id012
+      bentest.ios.ios_bgp: *id012
     - ansible.builtin.assert:
         that:
           - result.changed == false

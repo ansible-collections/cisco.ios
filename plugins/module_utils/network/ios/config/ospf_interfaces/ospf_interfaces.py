@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The cisco.ios_ospf_interfaces config file.
+The bentest.ios_ospf_interfaces config file.
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
@@ -26,15 +26,15 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospf_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.ospf_interfaces import (
     Ospf_InterfacesTemplate,
 )
 
 
 class Ospf_Interfaces(ResourceModule):
     """
-    The cisco.ios_ospf_interfaces config class
+    The bentest.ios_ospf_interfaces config class
     """
 
     def __init__(self, module):

@@ -9,7 +9,7 @@
 - block:
     - name: Merge provided configuration with device configuration
       register: result
-      cisco.ios.ios_static_routes: &id001
+      bentest.ios.ios_static_routes: &id001
         config:
           - vrf: ansible_temp_vrf
             address_families:
@@ -70,7 +70,7 @@
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
-      cisco.ios.ios_static_routes: *id001
+      bentest.ios.ios_static_routes: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

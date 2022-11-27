@@ -131,7 +131,7 @@ EXAMPLES = """
 #  speed auto
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
       description: Configured and Merged by Ansible Network
@@ -203,7 +203,7 @@ EXAMPLES = """
 #  speed 100
 
 - name: Replaces device configuration of listed interfaces with provided configuration
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/3
       description: Configured and Replaced by Ansible Network
@@ -270,7 +270,7 @@ EXAMPLES = """
 #  speed 100
 
 - name: Override device configuration of all interfaces with provided configuration
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
       description: Configured and Overridden by Ansible Network
@@ -339,7 +339,7 @@ EXAMPLES = """
 #  speed 1000
 
 - name: "Delete module attributes of given interfaces (Note: This won't delete the interface itself)"
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/2
     state: deleted
@@ -397,7 +397,7 @@ EXAMPLES = """
 #  speed 1000
 
 - name: "Purge given interfaces (Note: This will delete the interface itself)"
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: Loopback888
     - name: Port-channel10
@@ -449,7 +449,7 @@ EXAMPLES = """
 #  speed 100
 
 - name: Gather listed interfaces with provided configurations
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     state: gathered
 
@@ -494,7 +494,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     config:
     - name: GigabitEthernet0/1
       description: Configured by Ansible-Network
@@ -544,7 +544,7 @@ EXAMPLES = """
 # shutdown
 
 - name: Parse the commands for provided configuration
-  cisco.ios.ios_interfaces:
+  bentest.ios.ios_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -619,10 +619,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.interfaces.interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.interfaces.interfaces import (
     Interfaces,
 )
 

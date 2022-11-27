@@ -4,7 +4,7 @@
 
 - name: Parse the commands for provided configuration
   register: result
-  cisco.ios.ios_route_maps:
+  bentest.ios.ios_route_maps:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 

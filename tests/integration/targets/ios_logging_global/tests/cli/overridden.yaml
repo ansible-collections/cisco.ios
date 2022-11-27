@@ -8,7 +8,7 @@
 - block:
     - name: Test - [overridden] override provided logging configuration
       register: result
-      cisco.ios.ios_logging_global: &overrideid001
+      bentest.ios.ios_logging_global: &overrideid001
         config:
           monitor:
             severity: critical
@@ -39,7 +39,7 @@
 
     - name: Test - [overridden] override provided IOS logging global configuration idempotent
       register: result
-      cisco.ios.ios_logging_global: *overrideid001
+      bentest.ios.ios_logging_global: *overrideid001
     - name: Test - [overridden] assert that task was idempotent
       ansible.builtin.assert:
         that:

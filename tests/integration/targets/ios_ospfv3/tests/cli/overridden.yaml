@@ -9,7 +9,7 @@
 - block:
     - name: Override provided OSPF v3 configuration
       register: result
-      cisco.ios.ios_ospfv3: &id001
+      bentest.ios.ios_ospfv3: &id001
         config:
           processes:
             - process_id: 200
@@ -43,7 +43,7 @@
 
     - name: Override provided OSPF v3 configuration (idempotent)
       register: result
-      cisco.ios.ios_ospfv3: *id001
+      bentest.ios.ios_ospfv3: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

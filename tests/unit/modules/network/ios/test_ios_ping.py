@@ -10,9 +10,9 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.ios.plugins.modules import ios_ping
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
+from ansible_collections.bentest.ios.plugins.modules import ios_ping
+from ansible_collections.bentest.ios.tests.unit.compat.mock import patch
+from ansible_collections.bentest.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
@@ -23,7 +23,7 @@ class TestIosPingModule(TestIosModule):
     def setUp(self):
         super(TestIosPingModule, self).setUp()
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ping.ping.Ping.run_command",
+            "ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ping.ping.Ping.run_command",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 

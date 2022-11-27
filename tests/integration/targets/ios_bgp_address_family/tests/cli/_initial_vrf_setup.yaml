@@ -6,7 +6,7 @@
     config: "{{ lines }}"
 - name: Create and setup VRF configuration
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     commands:
       - rd 45000:2
       - address-family ipv4

@@ -10,9 +10,9 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
+from ansible_collections.bentest.ios.plugins.modules import ios_static_routes
+from ansible_collections.bentest.ios.tests.unit.compat.mock import patch
+from ansible_collections.bentest.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
@@ -46,12 +46,12 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
+            "ansible_collections.bentest.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
+            "ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
             "Static_RoutesFacts.get_static_routes_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()

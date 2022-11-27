@@ -17,10 +17,10 @@ based on the configuration.
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
 )
 

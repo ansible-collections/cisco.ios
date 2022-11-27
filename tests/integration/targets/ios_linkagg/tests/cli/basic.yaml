@@ -6,13 +6,13 @@
 - block:
     - name: Setup - remove configuration used in test(part1)
       ignore_errors: true
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no interface port-channel 20
 
     - name: Setup - remove configuration used in test(part2)
       ignore_errors: true
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no interface port-channel 5
 
@@ -20,14 +20,14 @@
       loop:
         - interface GigabitEthernet2
         - interface GigabitEthernet3
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         parents: "{{ item }}"
 
     - name: Create linkagg
       register: result
-      cisco.ios.ios_linkagg: &id001
+      bentest.ios.ios_linkagg: &id001
         group: 20
         state: present
 
@@ -38,14 +38,14 @@
 
     - name: Create linkagg (idempotent)
       register: result
-      cisco.ios.ios_linkagg: *id001
+      bentest.ios.ios_linkagg: *id001
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Set link aggregation group to members
       register: result
-      cisco.ios.ios_linkagg: &id002
+      bentest.ios.ios_linkagg: &id002
         group: 20
         mode: active
         members:
@@ -62,14 +62,14 @@
 
     - name: Set link aggregation group to members (idempotent)
       register: result
-      cisco.ios.ios_linkagg: *id002
+      bentest.ios.ios_linkagg: *id002
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Remove link aggregation group from member
       register: result
-      cisco.ios.ios_linkagg: &id003
+      bentest.ios.ios_linkagg: &id003
         group: 20
         mode: active
         members:
@@ -83,14 +83,14 @@
 
     - name: Remove link aggregation group from member (idempotent)
       register: result
-      cisco.ios.ios_linkagg: *id003
+      bentest.ios.ios_linkagg: *id003
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Remove linkagg
       register: result
-      cisco.ios.ios_linkagg: &id004
+      bentest.ios.ios_linkagg: &id004
         group: 20
         state: absent
 
@@ -101,14 +101,14 @@
 
     - name: Remove linkagg (idempotent)
       register: result
-      cisco.ios.ios_linkagg: *id004
+      bentest.ios.ios_linkagg: *id004
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Create aggregate of linkagg definitions
       register: result
-      cisco.ios.ios_linkagg: &id005
+      bentest.ios.ios_linkagg: &id005
         aggregate:
           - group: 5
 
@@ -127,20 +127,20 @@
 
     - name: Create aggregate of linkagg definitions (idempotent)
       register: result
-      cisco.ios.ios_linkagg: *id005
+      bentest.ios.ios_linkagg: *id005
     - ansible.builtin.assert:
         that:
           - result.changed == false
 
     - name: Teardown(part1)
       ignore_errors: true
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no interface port-channel 20
 
     - name: Teardown(part2)
       ignore_errors: true
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no interface port-channel 5
 
@@ -148,7 +148,7 @@
       loop:
         - interface GigabitEthernet2
         - interface GigabitEthernet3
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         parents: "{{ item }}"

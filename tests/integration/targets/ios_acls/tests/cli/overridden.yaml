@@ -9,7 +9,7 @@
 - block:
     - name: Override device configuration of all interfaces with provided configuration
       register: result
-      cisco.ios.ios_acls: &id001
+      bentest.ios.ios_acls: &id001
         config:
           - afi: ipv4
             acls:
@@ -83,7 +83,7 @@
 
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_acls: *id001
+      bentest.ios.ios_acls: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

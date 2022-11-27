@@ -4,7 +4,7 @@
 - name: Check for macro support
   register: supports_macro
   ignore_errors: true
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
       - show parser macro brief
 
@@ -16,7 +16,7 @@
         macro_name: MACRO_ANSIBLE_TEST
 
     - name: Setup - remove configuration
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no macro name {{ macro_name }}
           - do show clock
@@ -24,7 +24,7 @@
 
     - name: Configure macro
       register: result
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         parents: macro name {{ macro_name }}
         multiline_delimiter: "@"
         after: "@"
@@ -39,7 +39,7 @@
 
     - name: Configure macro again - idempotent check
       register: result
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         parents: macro name {{ macro_name }}
         multiline_delimiter: "@"
         after: "@"
@@ -53,7 +53,7 @@
           - result.changed == false
   always:
     - name: Teardown
-      cisco.ios.ios_config:
+      bentest.ios.ios_config:
         lines:
           - no macro name {{ macro_name }}
           - do show clock

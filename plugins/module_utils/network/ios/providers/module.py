@@ -10,7 +10,7 @@ from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers import providers
+from ansible_collections.bentest.ios.plugins.module_utils.network.ios.providers import providers
 
 
 class NetworkModule(AnsibleModule):

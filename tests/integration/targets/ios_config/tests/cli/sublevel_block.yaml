@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/sublevel_block.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -17,7 +17,7 @@
 
 - name: Configure sub level command using block replace
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -40,7 +40,7 @@
 
 - name: Check sub level command using block replace
   register: result
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -57,7 +57,7 @@
 #       - result.changed == false
 
 - name: Teardown
-  cisco.ios.ios_config:
+  bentest.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none

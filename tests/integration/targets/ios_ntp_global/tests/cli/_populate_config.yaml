@@ -1,6 +1,6 @@
 ---
 - name: Populate configuration ntp_global
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     config:
       broadcast_delay: 22
       logging: true

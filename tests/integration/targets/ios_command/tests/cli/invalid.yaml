@@ -4,7 +4,7 @@
 - name: Run invalid command
   register: result
   ignore_errors: true
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands: show foo
 
 - ansible.builtin.assert:
@@ -14,7 +14,7 @@
 - name: Run commands that include invalid command
   register: result
   ignore_errors: true
-  cisco.ios.ios_command:
+  bentest.ios.ios_command:
     commands:
       - show version
       - show foo

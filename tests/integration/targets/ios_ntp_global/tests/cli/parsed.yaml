@@ -4,7 +4,7 @@
 
 - name: Ios_ntp_global parsed - play
   register: result
-  cisco.ios.ios_ntp_global:
+  bentest.ios.ios_ntp_global:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
