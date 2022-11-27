@@ -32,7 +32,7 @@
             vlan_id: 100
             private_vlan:
               type: primary
-              
+
         state: merged
 
     - name: Assert that correct set of commands were generated

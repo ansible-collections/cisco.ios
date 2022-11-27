@@ -64,7 +64,6 @@ class VlansArgs(object):
                         },
                     },
                 },
-                        
             },
             "type": "list",
         },
