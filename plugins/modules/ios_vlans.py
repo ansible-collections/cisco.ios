@@ -88,7 +88,7 @@ options:
             - primary
             - isolated
             - community
-          association:
+          associated:
             description:
             - List of private VLANs associated with the primary . Only works with `type: primary`.
             type: list
@@ -316,7 +316,7 @@ EXAMPLES = """
       name: pvlan-primary
       private_vlan:
         type: primary
-        association:
+        associated:
           - 50
           - 60
 
