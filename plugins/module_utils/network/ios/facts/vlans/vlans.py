@@ -140,7 +140,7 @@ class VlansFacts(object):
                         privlan = int(privlan)
                         if privlan not in pvlan_final.keys():
                             pvlan_final[privlan] = {
-                                "private_vlan": {"type": "primary", "associated": []}
+                                "private_vlan": {"type": "primary", "associated": []},
                             }
                         if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
                             pvlan_final[privlan]["private_vlan"]["associated"].append(int(secvlan))
