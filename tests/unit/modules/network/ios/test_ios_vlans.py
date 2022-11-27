@@ -185,6 +185,34 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         vlan_id=123,
                     ),
+                    dict(
+                        name="pvlan-primary",
+                        state="active",
+                        shutdown="disabled",
+                        private_vlan=dict(
+                            type="primary",
+                            associated=[11, 12]
+                            ),
+                        vlan_id=10
+                    ),
+                    dict(
+                        name="pvlan-community",
+                        state="active",
+                        shutdown="disabled",
+                        private_vlan=dict(
+                            type="community"
+                        ),
+                        vlan_id=11
+                    ),
+                    dict(
+                        name="pvlan-isolated",
+                        state="active",
+                        shutdown="disabled",
+                        private_vlan=dict(
+                            type="isolated"
+                        ),
+                        vlan_id=12
+                    )
                 ],
                 state="replaced",
             ),
@@ -202,6 +230,22 @@ class TestIosVlansModule(TestIosModule):
             "no mtu 610",
             "name Replace_RemoteIsInMyName",
             "remote-span",
+            "vlan 10",
+            "name pvlan-primary",
+            "state active",
+            "no shutdown",
+            "private-vlan primary",
+            "private-vlan association 11, 12"
+            "vlan 11",
+            "name pvlan-community",
+            "state active",
+            "no shutdown",
+            "private-vlan community",
+            "vlan 12",
+            "name pvlan-isolated",
+            "state active",
+            "no shutdown",
+            "private-vlan isolated"
         ]
         self.assertEqual(result["commands"], commands)
 
