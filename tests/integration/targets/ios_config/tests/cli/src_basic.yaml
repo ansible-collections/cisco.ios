@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/src_basic.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - no shutdown
@@ -12,7 +12,7 @@
 
 - name: Configure device with configuration
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: basic/config.j2
 
 - name: Debug, remove me
@@ -25,7 +25,7 @@
 
 - name: Check device with configuration
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: basic/config.j2
 
 - ansible.builtin.assert:
@@ -35,7 +35,7 @@
 - name: Check for empty diff
   check_mode: true
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     running_config: "service timestamps debug datetime msec\nservice timestamps log datetime msec\n"
     lines:
       - service timestamps debug datetime msec
@@ -48,7 +48,7 @@
 - name: Check for diff with ignore lines for running configuration
   check_mode: true
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     running_config: "service timestamps debug datetime msec\nservice timestamps log datetime msec\n"
     lines:
       - service timestamps debug datetime msec

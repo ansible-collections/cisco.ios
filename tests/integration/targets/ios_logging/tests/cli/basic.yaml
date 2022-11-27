@@ -1,25 +1,25 @@
 ---
 - name: Remove host logging
-  bentest.ios.ios_logging: &id001
+  cisco.ios.ios_logging: &id001
     dest: host
     name: 172.16.0.1
     state: absent
 
 - name: Remove console
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: console
     level: warnings
     state: absent
 
 - name: Remove buffer
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: buffered
     size: 8000
     state: absent
 
 - name: Set up host logging
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     facility: local7
@@ -33,7 +33,7 @@
 
 - name: Set up host logging again (idempotent)
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: host
     name: 172.16.0.1
     state: present
@@ -44,7 +44,7 @@
 
 - name: Delete/disable host logging
   register: result
-  bentest.ios.ios_logging: *id001
+  cisco.ios.ios_logging: *id001
 - ansible.builtin.assert:
     that:
       - result.changed == true
@@ -52,11 +52,11 @@
 
 - name: Delete/disable host logging (idempotent)
   register: result
-  bentest.ios.ios_logging: *id001
+  cisco.ios.ios_logging: *id001
 - ansible.builtin.assert: *id002
 - name: Console logging with level warnings
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: console
     level: warnings
     state: present
@@ -68,7 +68,7 @@
 
 - name: Configure buffer size
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     dest: buffered
     size: 8000
 
@@ -79,7 +79,7 @@
 
 - name: Change logging parameters using aggregate
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     aggregate:
       - dest: console
         level: notifications
@@ -95,7 +95,7 @@
 
 - name: Set both logging destination and facility
   register: result
-  bentest.ios.ios_logging: &id003
+  cisco.ios.ios_logging: &id003
     dest: buffered
     facility: uucp
     level: alerts
@@ -110,11 +110,11 @@
 
 - name: Set both logging destination and facility (idempotent)
   register: result
-  bentest.ios.ios_logging: *id003
+  cisco.ios.ios_logging: *id003
 - ansible.builtin.assert: *id002
 - name: Remove logging as collection teardown
   register: result
-  bentest.ios.ios_logging:
+  cisco.ios.ios_logging:
     aggregate:
       - dest: console
         level: notifications

@@ -7,7 +7,7 @@
 - block:
     - name: Merge the provided configuration with the existing running configuration
       register: result
-      bentest.ios.ios_lacp_interfaces: &id001
+      cisco.ios.ios_lacp_interfaces: &id001
         config:
           - name: GigabitEthernet2
             port_priority: 30
@@ -37,7 +37,7 @@
 
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       register: result
-      bentest.ios.ios_lacp_interfaces: *id001
+      cisco.ios.ios_lacp_interfaces: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

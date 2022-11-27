@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/set_domain_search.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain list ansible.com
       - no ip domain list redhat.com
@@ -10,7 +10,7 @@
 
 - name: Configure domain_search
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
@@ -23,7 +23,7 @@
 
 - name: Verify domain_search
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
@@ -34,7 +34,7 @@
 
 - name: Remove one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
 
@@ -45,7 +45,7 @@
 
 - name: Verify remove one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
 
@@ -55,7 +55,7 @@
 
 - name: Add one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
@@ -67,7 +67,7 @@
 
 - name: Verify add one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - redhat.com
@@ -78,7 +78,7 @@
 
 - name: Add and remove one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
@@ -92,7 +92,7 @@
 
 - name: Verify add and remove one entry
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
@@ -102,7 +102,7 @@
       - result.changed == false
 
 - name: Teardown
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain list ansible.com
       - no ip domain list redhat.com

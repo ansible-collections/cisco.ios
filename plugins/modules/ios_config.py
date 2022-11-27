@@ -29,7 +29,7 @@ description:
   sections in a deterministic way.
 version_added: 1.0.0
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - Abbreviated commands are NOT idempotent, see
@@ -225,18 +225,18 @@ options:
 """
 EXAMPLES = """
 - name: configure top level configuration
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
 
 - name: configure interface settings
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
     - description test interface
     - ip address 172.31.1.1 255.255.255.0
     parents: interface Ethernet1
 
 - name: configure ip helpers on multiple interfaces
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
     - ip helper-address 172.26.1.10
     - ip helper-address 172.26.3.8
@@ -247,7 +247,7 @@ EXAMPLES = """
   - interface GigabitEthernet1
 
 - name: configure policer in Scavenger class
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
     - conform-action transmit
     - exceed-action drop
@@ -257,7 +257,7 @@ EXAMPLES = """
     - police cir 64000
 
 - name: load new acl into device
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
     - 10 permit ip host 192.0.2.1 any log
     - 20 permit ip host 192.0.2.2 any log
@@ -269,22 +269,22 @@ EXAMPLES = """
     match: exact
 
 - name: check the running-config against master config
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     diff_against: intended
     intended_config: "{{ lookup('file', 'master.cfg') }}"
 
 - name: check the startup-config against the running-config
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     diff_against: startup
     diff_ignore_lines:
     - ntp clock .*
 
 - name: save running to startup when modified
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     save_when: modified
 
 - name: for idempotency, use full-form commands
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       # - shut
     - shutdown
@@ -294,19 +294,19 @@ EXAMPLES = """
 # Set boot image based on comparison to a group_var (version) and the version
 # that is returned from the `ios_facts` module
 - name: SETTING BOOT IMAGE
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
     - no boot system
     - boot system flash bootflash:{{new_image}}
     host: '{{ inventory_hostname }}'
   when: ansible_net_version != version
 - name: render a Jinja2 template onto an IOS device
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     backup: yes
     src: ios_template.j2
 
 - name: configurable backup path
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: ios_template.j2
     backup: yes
     backup_options:
@@ -368,7 +368,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     dumps,
 )
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     get_connection,
     get_defaults_flag,

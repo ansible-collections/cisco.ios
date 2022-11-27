@@ -11,7 +11,7 @@
 - block:
     - name: Replaces device configuration of listed lldp_interfaces with provided configuration
       register: result
-      bentest.ios.ios_lldp_interfaces: &id001
+      cisco.ios.ios_lldp_interfaces: &id001
         config:
           - name: GigabitEthernet2
             transmit: true
@@ -38,7 +38,7 @@
 
     - name: Replaces device configuration of listed lldp_interfaces with provided configuration (idempotent)
       register: result
-      bentest.ios.ios_lldp_interfaces: *id001
+      cisco.ios.ios_lldp_interfaces: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

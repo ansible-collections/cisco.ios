@@ -7,7 +7,7 @@
 - block:
     - name: Merge provided configuration with device configuration
       register: result
-      bentest.ios.ios_bgp_address_family: &id001
+      cisco.ios.ios_bgp_address_family: &id001
         config:
           as_number: 65000
           address_family:
@@ -90,7 +90,7 @@
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
-      bentest.ios.ios_bgp_address_family: *id001
+      cisco.ios.ios_bgp_address_family: *id001
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

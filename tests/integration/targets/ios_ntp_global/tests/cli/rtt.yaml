@@ -7,7 +7,7 @@
 - block:
     - name: Ios_ntp_global RTT - play (base config)
       register: result
-      bentest.ios.ios_ntp_global:
+      cisco.ios.ios_ntp_global:
         config:
           min_distance: 10
           orphan: 4
@@ -15,7 +15,7 @@
         state: merged
 
     - name: Ios_ntp_global RTT - gather ntp facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -23,7 +23,7 @@
           - ntp_global
 
     - name: Ios_ntp_global RTT - apply the provided configuration (config to be reverted)
-      bentest.ios.ios_ntp_global:
+      cisco.ios.ios_ntp_global:
         config:
           max_distance: 3
           min_distance: 10
@@ -33,7 +33,7 @@
 
     - name: Ios_ntp_global RTT - revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_ntp_global:
+      cisco.ios.ios_ntp_global:
         config: "{{ ansible_facts['network_resources']['ntp_global'] }}"
         state: overridden
 

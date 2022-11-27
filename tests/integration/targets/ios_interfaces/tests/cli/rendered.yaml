@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      bentest.ios.ios_interfaces:
+      cisco.ios.ios_interfaces:
         config:
           - name: GigabitEthernet2
             description: Configured by Ansible-Network

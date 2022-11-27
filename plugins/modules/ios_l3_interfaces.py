@@ -205,7 +205,7 @@ EXAMPLES = """
 #  encapsulation dot1Q 20
 
 - name: Merge provided configuration with device configuration
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/1
       ipv4:
@@ -282,7 +282,7 @@ EXAMPLES = """
 #  ip address 192.168.0.2 255.255.255.0
 
 - name: Replaces device configuration of listed interfaces with provided configuration
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
       ipv4:
@@ -359,7 +359,7 @@ EXAMPLES = """
 #  ip address 192.168.0.2 255.255.255.0
 
 - name: Override device configuration of all interfaces with provided configuration
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
       ipv4:
@@ -431,7 +431,7 @@ EXAMPLES = """
 #  ip address 192.168.0.2 255.255.255.0
 
 - name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces itself)"
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/2
     - name: GigabitEthernet0/3.100
@@ -493,7 +493,7 @@ EXAMPLES = """
 #  ip address 192.168.0.2 255.255.255.0
 
 - name: "Delete L3 attributes of ALL interfaces together (NOTE: This won't delete the interface itself)"
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     state: deleted
 
 # "commands": [
@@ -542,7 +542,7 @@ EXAMPLES = """
 #  ipv6 address 2001:DB8:0:3::/64
 
 - name: Gather listed l3 interfaces with provided configurations
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     state: gathered
 
 # Module Execution Result:
@@ -590,7 +590,7 @@ EXAMPLES = """
 # Using state Rendered
 
 - name: Render the commands for provided configuration
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     config:
     - name: GigabitEthernet0/1
       ipv4:
@@ -631,7 +631,7 @@ EXAMPLES = """
 #  ipv6 address 2001:db8:0:3::/64
 
 - name: Parse the commands for provided configuration
-  bentest.ios.ios_l3_interfaces:
+  cisco.ios.ios_l3_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -720,10 +720,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.l3_interfaces.l3_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l3_interfaces.l3_interfaces import (
     L3_interfaces,
 )
 

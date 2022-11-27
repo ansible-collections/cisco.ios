@@ -1,5 +1,5 @@
 ---
 - name: Remove all VLAN configuration
-  bentest.ios.ios_vlans:
+  cisco.ios.ios_vlans:
     state: deleted
   when: ansible_net_version != "15.6(2)T"

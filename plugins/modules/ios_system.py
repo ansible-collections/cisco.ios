@@ -29,7 +29,7 @@ description:
   parameters from the device active configuration.
 version_added: 1.0.0
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -84,7 +84,7 @@ options:
 """
 EXAMPLES = """
 - name: configure hostname and domain name
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     hostname: ios01
     domain_name: test.example.com
     domain_search:
@@ -93,16 +93,16 @@ EXAMPLES = """
     - cisco.com
 
 - name: remove configuration
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     state: absent
 
 - name: configure DNS lookup sources
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     lookup_source: MgmtEth0/0/CPU0/0
     lookup_enabled: yes
 
 - name: configure name servers
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     name_servers:
     - 8.8.8.8
     - 8.8.4.4
@@ -123,7 +123,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     ComplexList,
 )
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

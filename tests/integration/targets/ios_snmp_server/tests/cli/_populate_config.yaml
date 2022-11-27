@@ -1,6 +1,6 @@
 ---
 - name: Pre post task populate snmp-server configuration
-  bentest.ios.ios_snmp_server:
+  cisco.ios.ios_snmp_server:
     config:
       communities:
         - acl_v4: test_Acl

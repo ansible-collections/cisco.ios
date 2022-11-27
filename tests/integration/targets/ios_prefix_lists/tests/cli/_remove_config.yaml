@@ -1,4 +1,4 @@
 ---
 - name: Remove all prefix lists configuration
-  bentest.ios.ios_prefix_lists:
+  cisco.ios.ios_prefix_lists:
     state: deleted

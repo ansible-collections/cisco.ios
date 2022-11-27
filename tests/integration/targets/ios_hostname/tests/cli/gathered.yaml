@@ -7,7 +7,7 @@
 - block:
     - name: Ios_hostname gather - play
       register: result
-      bentest.ios.ios_hostname:
+      cisco.ios.ios_hostname:
         config:
         state: gathered
 

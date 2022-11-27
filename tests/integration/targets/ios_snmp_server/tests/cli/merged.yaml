@@ -9,7 +9,7 @@
 - block:
     - name: Ios_snmp_server merged - play
       register: result
-      bentest.ios.ios_snmp_server: &id001
+      cisco.ios.ios_snmp_server: &id001
         config:
           hosts:
             - community_string: integrationComm
@@ -32,7 +32,7 @@
 
     - name: Ios_snmp_server merged - play (idempotent)
       register: result
-      bentest.ios.ios_snmp_server: *id001
+      cisco.ios.ios_snmp_server: *id001
     - name: Ios_snmp_server merged - assert above task was idempotent
       ansible.builtin.assert:
         that:

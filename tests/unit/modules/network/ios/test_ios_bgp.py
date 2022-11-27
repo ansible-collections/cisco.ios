@@ -8,10 +8,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     Provider,
 )
-from ansible_collections.bentest.ios.plugins.modules import ios_bgp
+from ansible_collections.cisco.ios.plugins.modules import ios_bgp
 
 from .ios_module import TestIosModule, load_fixture
 

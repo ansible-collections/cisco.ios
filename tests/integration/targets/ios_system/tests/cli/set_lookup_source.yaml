@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/set_lookup_source.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain lookup source-interface Loopback888
       - vrf definition ansible
@@ -10,7 +10,7 @@
 
 - name: Configure lookup_source
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     lookup_source: Loopback888
 
 - ansible.builtin.assert:
@@ -20,7 +20,7 @@
 
 - name: Verify lookup_source
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     lookup_source: Loopback888
 
 - ansible.builtin.assert:
@@ -29,7 +29,7 @@
 
 - name: Disable lookup_source
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     lookup_enabled: false
 
 - ansible.builtin.assert:
@@ -39,7 +39,7 @@
 
 - name: Disable lookup_source
   register: result
-  bentest.ios.ios_system:
+  cisco.ios.ios_system:
     lookup_enabled: true
 
 - ansible.builtin.assert:
@@ -49,7 +49,7 @@
 
 - name: Teardown
   ignore_errors: true
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip domain lookup source-interface Loopback888
       - no vrf definition ansible

@@ -9,7 +9,7 @@
 - block:
     - name: Replaces global lldp configuration with provided lldp configuration
       register: result
-      bentest.ios.ios_lldp_global: &id001
+      cisco.ios.ios_lldp_global: &id001
         config:
           holdtime: 20
           reinit: 5
@@ -32,7 +32,7 @@
 
     - name: Replaces global lldp configuration with provided lldp configuration (idempotent)
       register: result
-      bentest.ios.ios_lldp_global: *id001
+      cisco.ios.ios_lldp_global: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

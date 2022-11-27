@@ -117,7 +117,7 @@ EXAMPLES = """
 #  shutdown
 
 - name: Merge provided configuration with device configuration
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
       port_priority: 10
@@ -170,7 +170,7 @@ EXAMPLES = """
 #  lacp port-priority 30
 
 - name: Override device configuration of all lacp_interfaces with provided configuration
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
       port_priority: 20
@@ -215,7 +215,7 @@ EXAMPLES = """
 #  lacp port-priority 30
 
 - name: Replaces device configuration of listed lacp_interfaces with provided configuration
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/3
       port_priority: 40
@@ -264,7 +264,7 @@ EXAMPLES = """
 #  lacp port-priority 30
 
 - name: "Delete LACP attributes of given interfaces (Note: This won't delete the interface itself)"
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
     state: deleted
@@ -308,7 +308,7 @@ EXAMPLES = """
 #  lacp port-priority 30
 
 - name: "Delete LACP attributes for all configured interfaces (Note: This won't delete the interface itself)"
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     state: deleted
 
 # After state:
@@ -343,7 +343,7 @@ EXAMPLES = """
 #  lacp port-priority 20
 
 - name: Gather listed LACP interfaces with provided configurations
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     state: gathered
 
@@ -391,7 +391,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     config:
     - name: GigabitEthernet0/1
       port_priority: 10
@@ -428,7 +428,7 @@ EXAMPLES = """
 # lacp max-bundle 2 fast-switchover
 
 - name: Parse the commands for provided configuration
-  bentest.ios.ios_lacp_interfaces:
+  cisco.ios.ios_lacp_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -475,10 +475,10 @@ commands:
 """
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.lacp_interfaces.lacp_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lacp_interfaces.lacp_interfaces import (
     Lacp_Interfaces,
 )
 

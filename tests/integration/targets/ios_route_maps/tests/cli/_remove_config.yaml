@@ -1,4 +1,4 @@
 ---
 - name: Remove all route maps configuration
-  bentest.ios.ios_route_maps:
+  cisco.ios.ios_route_maps:
     state: deleted

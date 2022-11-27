@@ -7,7 +7,7 @@
 
 - name: Delete and clean VRF rd configuration first
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     commands:
       - no rd 45000:2
     parents: vrf definition blue
@@ -19,5 +19,5 @@
     config: "{{ lines }}"
 
 - name: Remove BGP global configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     state: purged

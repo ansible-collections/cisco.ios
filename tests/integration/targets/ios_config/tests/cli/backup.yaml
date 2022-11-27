@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/cli_backup.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - no shutdown
@@ -12,7 +12,7 @@
 
 - name: Configure device with configuration
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: basic/config.j2
     backup: true
 
@@ -31,7 +31,7 @@
 - name: Take configuration backup in custom filename and directory path
   become: true
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       filename: backup.cfg
@@ -44,7 +44,7 @@
 - name: Take configuration backup in custom filename
   become: true
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       filename: backup.cfg
@@ -56,7 +56,7 @@
 - name: Take configuration backup in custom path and default filename
   become: true
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     backup: true
     backup_options:
       dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"

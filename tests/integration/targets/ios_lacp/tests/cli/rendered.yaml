@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      bentest.ios.ios_lacp:
+      cisco.ios.ios_lacp:
         config:
           system:
             priority: 10

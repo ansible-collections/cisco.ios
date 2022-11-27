@@ -159,7 +159,7 @@ EXAMPLES = """
 
 
 - name: Merge provided configuration with device configuration
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     config:
       holdtime: 10
       enabled: true
@@ -188,7 +188,7 @@ EXAMPLES = """
 
 
 - name: Replaces LLDP device configuration with provided configuration
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     config:
       holdtime: 20
       reinit: 5
@@ -214,7 +214,7 @@ EXAMPLES = """
 
 
 - name: Delete LLDP attributes
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     state: deleted
 
 # After state:
@@ -234,7 +234,7 @@ EXAMPLES = """
 #  lldp run
 
 - name: Gather listed interfaces with provided configurations
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     config:
     state: gathered
 
@@ -259,7 +259,7 @@ EXAMPLES = """
 
 # Using Rendered
 - name: Render the commands for provided  configuration
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     config:
       holdtime: 10
       enabled: true
@@ -288,7 +288,7 @@ EXAMPLES = """
 # lldp run
 
 - name: Parse the commands for provided configuration
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -324,10 +324,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.lldp_global.lldp_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.lldp_global.lldp_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lldp_global.lldp_global import (
     Lldp_global,
 )
 

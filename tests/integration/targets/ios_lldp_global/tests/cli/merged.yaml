@@ -7,7 +7,7 @@
 - block:
     - name: Merge provided configuration global lldp
       register: result
-      bentest.ios.ios_lldp_global: &id001
+      cisco.ios.ios_lldp_global: &id001
         config:
           holdtime: 10
           enabled: true
@@ -32,7 +32,7 @@
 
     - name: Merge provided configuration global lldp (idempotent)
       register: result
-      bentest.ios.ios_lldp_global: *id001
+      cisco.ios.ios_lldp_global: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

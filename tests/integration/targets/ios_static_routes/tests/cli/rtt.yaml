@@ -7,7 +7,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_static_routes:
+      cisco.ios.ios_static_routes:
         config:
           - vrf: ansible_temp_vrf
             address_families:
@@ -33,7 +33,7 @@
         state: merged
 
     - name: Gather static routes facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -42,7 +42,7 @@
 
     - name: Apply the configuration which need to be reverted
       register: result
-      bentest.ios.ios_static_routes:
+      cisco.ios.ios_static_routes:
         config:
           - vrf: ansible_temp_vrf
             address_families:
@@ -64,7 +64,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_static_routes:
+      cisco.ios.ios_static_routes:
         config: "{{ ansible_facts['network_resources']['static_routes'] }}"
         state: overridden
 

@@ -1,7 +1,7 @@
 ---
 - name: Tear down old users if they exist (setup)
   become: true
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
       - name: ansibletest1
 
@@ -19,7 +19,7 @@
 - name: Create user (setup)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibletest1
     privilege: 15
     role: network-operator
@@ -33,7 +33,7 @@
 - name: Collection of users (setup)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
       - name: ansibletest2
 
@@ -49,7 +49,7 @@
 - name: Add user again (idempotent)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibletest1
     privilege: 15
     role: network-operator
@@ -63,7 +63,7 @@
 - name: Add collection of users again (idempotent)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
       - name: ansibletest2
 
@@ -79,7 +79,7 @@
 - name: Create user with password_type (password)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibleuser4
     password_type: password
     configured_password: testpass
@@ -93,7 +93,7 @@
 - name: Create user with password_type (secret)
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibleuser5
     password_type: secret
     configured_password: testpass
@@ -107,7 +107,7 @@
 - name: Create user with hashed_password
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibleuser6
     hashed_password:
       type: 5
@@ -122,7 +122,7 @@
 - name: Teardown
   become: true
   register: result
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
       - name: ansibletest1
 

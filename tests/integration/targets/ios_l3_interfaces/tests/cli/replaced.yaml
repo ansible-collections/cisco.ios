@@ -9,7 +9,7 @@
 - block:
     - name: L3_interface replaced - replaces device configuration of listed interfaces with provided configuration
       register: result
-      bentest.ios.ios_l3_interfaces: &id001
+      cisco.ios.ios_l3_interfaces: &id001
         config:
           - name: GigabitEthernet2
             ipv4:
@@ -42,7 +42,7 @@
 
     - name: L3_interface replaced - replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
-      bentest.ios.ios_l3_interfaces: *id001
+      cisco.ios.ios_l3_interfaces: *id001
     - name: L3_interface replaced - assert that task was idempotent
       ansible.builtin.assert:
         that:

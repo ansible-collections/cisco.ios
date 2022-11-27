@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         config:
           - name: GigabitEthernet2
             port_priority: 30

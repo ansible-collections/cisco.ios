@@ -9,7 +9,7 @@
 - block:
     - name: Ios_hostname merged - play
       register: result
-      bentest.ios.ios_hostname: &id001
+      cisco.ios.ios_hostname: &id001
         config:
           hostname: "boxTest"
         state: merged
@@ -26,7 +26,7 @@
 
     - name: Ios_hostname merged - play (idempotent)
       register: result
-      bentest.ios.ios_hostname: *id001
+      cisco.ios.ios_hostname: *id001
     - name: Ios_hostname merged - assert above task was idempotent
       ansible.builtin.assert:
         that:

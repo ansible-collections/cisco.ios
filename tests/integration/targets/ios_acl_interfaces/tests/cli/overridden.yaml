@@ -8,7 +8,7 @@
     - name: Override device configuration of all acl_interfaces with provided configuration
       become: true
       register: result
-      bentest.ios.ios_acl_interfaces: &id001
+      cisco.ios.ios_acl_interfaces: &id001
         config:
           - name: GigabitEthernet2
             access_groups:
@@ -29,7 +29,7 @@
     - name: Override device configuration of all acl_interfaces with provided configuration (idempotent)
       become: true
       register: result
-      bentest.ios.ios_acl_interfaces: *id001
+      cisco.ios.ios_acl_interfaces: *id001
     - ansible.builtin.assert:
         that:
           - result.commands|length == 0

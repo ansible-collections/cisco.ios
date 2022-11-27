@@ -5,7 +5,7 @@
 - block:
     - name: Render the commands for provided  configuration
       register: result
-      bentest.ios.ios_ospfv2:
+      cisco.ios.ios_ospfv2:
         config:
           processes:
             - process_id: 1

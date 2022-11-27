@@ -48,15 +48,15 @@ options:
     - disabled
     type: str
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 """
 EXAMPLES = """
 - name: Enable LLDP service
-  bentest.ios.ios_lldp:
+  cisco.ios.ios_lldp:
     state: present
 
 - name: Disable LLDP service
-  bentest.ios.ios_lldp:
+  cisco.ios.ios_lldp:
     state: absent
 """
 RETURN = """
@@ -69,7 +69,7 @@ commands:
 """
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     load_config,
     run_commands,
 )

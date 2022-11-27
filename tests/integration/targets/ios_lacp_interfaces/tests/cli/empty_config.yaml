@@ -6,7 +6,7 @@
     - name: Merged with empty configuration should give appropriate error message
       register: result
       ignore_errors: true
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         config:
         state: merged
 
@@ -17,7 +17,7 @@
     - name: Replaced with empty configuration should give appropriate error message
       register: result
       ignore_errors: true
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         config:
         state: replaced
 
@@ -28,7 +28,7 @@
     - name: Overridden with empty configuration should give appropriate error message
       register: result
       ignore_errors: true
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         config:
         state: overridden
 
@@ -39,7 +39,7 @@
     - name: Rendered with empty configuration should give appropriate error message
       register: result
       ignore_errors: true
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         config:
         state: rendered
 
@@ -50,7 +50,7 @@
     - name: Parsed with empty configuration should give appropriate error message
       register: result
       ignore_errors: true
-      bentest.ios.ios_lacp_interfaces:
+      cisco.ios.ios_lacp_interfaces:
         running_config:
         state: parsed
 

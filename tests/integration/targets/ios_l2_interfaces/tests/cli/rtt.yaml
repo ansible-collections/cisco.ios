@@ -9,7 +9,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_l2_interfaces:
+      cisco.ios.ios_l2_interfaces:
         config:
           - name: GigabitEthernet2
             access:
@@ -24,7 +24,7 @@
         state: merged
 
     - name: Gather layer 2 interfaces facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -33,7 +33,7 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
-      bentest.ios.ios_l2_interfaces:
+      cisco.ios.ios_l2_interfaces:
         config:
           - name: GigabitEthernet3
             trunk:
@@ -50,7 +50,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_l2_interfaces:
+      cisco.ios.ios_l2_interfaces:
         config: "{{ ansible_facts['network_resources']['l2_interfaces'] }}"
         state: overridden
 

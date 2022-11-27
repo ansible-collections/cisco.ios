@@ -7,7 +7,7 @@
 - block:
     - name: L3_interface RTT - apply the provided configuration (base config)
       register: result
-      bentest.ios.ios_l3_interfaces:
+      cisco.ios.ios_l3_interfaces:
         config:
           - name: Loopback999
             ipv4:
@@ -26,7 +26,7 @@
         state: merged
 
     - name: L3_interface RTT - gather layer 3 interfaces facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -35,7 +35,7 @@
 
     - name: L3_interface RTT - apply the provided configuration (config to be reverted)
       # register: result
-      bentest.ios.ios_l3_interfaces:
+      cisco.ios.ios_l3_interfaces:
         config:
           - name: Loopback999
             ipv4:
@@ -48,7 +48,7 @@
 
     - name: L3_interface RTT - revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_l3_interfaces:
+      cisco.ios.ios_l3_interfaces:
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
         state: overridden
 

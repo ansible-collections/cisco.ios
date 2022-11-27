@@ -1867,7 +1867,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 
 - name: Merge provided configuration with device configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
       bgp:
@@ -2020,7 +2020,7 @@ EXAMPLES = """
 
 
 - name: Replaces device configuration of listed global BGP with provided configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
       bgp:
@@ -2152,7 +2152,7 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 route-map test-route out
 
 - name: "Delete global BGP (Note: This won't delete the configured global BGP)"
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     config:
       as_number: 65000
     state: deleted
@@ -2234,7 +2234,7 @@ EXAMPLES = """
 
 
 - name: "Delete global BGP without config"
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     state: deleted
 
 # Task Output:
@@ -2313,7 +2313,7 @@ EXAMPLES = """
 
 - name: 'Delete the configured global BGP (Note: This WILL delete the the configured
     global BGP)'
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     state: purged
 
 # Task Output:
@@ -2380,7 +2380,7 @@ EXAMPLES = """
 
 
 - name: Gather listed global BGP with provided configurations
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     config:
     state: gathered
 
@@ -2448,7 +2448,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Rendered the provided configuration with the existing running configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     config: >-
         {{
             {
@@ -2916,7 +2916,7 @@ EXAMPLES = """
 #  redistribute mobile metric 21
 
 - name: Parse the commands for provided configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -3252,10 +3252,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.bgp_global.bgp_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bgp_global.bgp_global import (
     Bgp_global,
 )
 

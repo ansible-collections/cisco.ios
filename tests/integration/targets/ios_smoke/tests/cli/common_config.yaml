@@ -1,18 +1,18 @@
 ---
 # ios_linkagg -> CustomNetworkConfig
-# bentest.ios.ios_config -> dumps, NetworkConfig
+# cisco.ios.ios_config -> dumps, NetworkConfig
 
 - ansible.builtin.debug: msg="START cli/common_config.yaml on connection={{ ansible_connection }}"
 
 # Hit NetworkConfig
 - name: Set hostname
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - "hostname ios-smoke"
     match: none
 
 - name: Hit diff_ignore_lines
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - "hostname ios-smoke-diff"
     diff_ignore_lines:
@@ -20,13 +20,13 @@
     save_when: modified
 
 - name: Return hostname
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - "hostname {{ shorter_hostname }}"
     match: none
 
 - name: Hit items with parents
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - "permit ip any any log"
     parents:
@@ -35,13 +35,13 @@
   register: result
 
 - name: Teardown
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - "no ip access-list extended test"
     match: none
 
 - name: Setup test networkconfig.difference, replace=block
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -55,7 +55,7 @@
     match: none
 
 - name: Test networkconfig.difference, replace=block
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip host 192.0.2.1 any log
       - permit ip host 192.0.2.2 any log
@@ -78,7 +78,7 @@
       - "'permit ip host 192.0.2.4 any log' in result.updates"
 
 - name: Teardown- networkconfig.difference, replace=block
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none
@@ -89,19 +89,19 @@
 
 - block:
     - name: Setup - remove configuration used in test(part1)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
       ignore_errors: true
 
     - name: Setup - remove configuration used in test(part2)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
       ignore_errors: true
 
     - name: Setup - remove configuration used in test(part3)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         parents: "{{ item }}"
@@ -181,19 +181,19 @@
           - "'channel-group 20 mode active' in result.commands"
 
     - name: Teardown(part1)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 20
       ignore_errors: true
 
     - name: Teardown(part2)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no interface port-channel 5
       ignore_errors: true
 
     - name: Teardown(part3)
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no channel-group 20 mode active
         parents: "{{ item }}"

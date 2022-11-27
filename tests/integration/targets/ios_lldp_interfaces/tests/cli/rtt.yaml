@@ -9,7 +9,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_lldp_interfaces:
+      cisco.ios.ios_lldp_interfaces:
         config:
           - name: GigabitEthernet0/0
             receive: true
@@ -23,7 +23,7 @@
         state: merged
 
     - name: Gather lldp interfaces facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -32,7 +32,7 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
-      bentest.ios.ios_lldp_interfaces:
+      cisco.ios.ios_lldp_interfaces:
         config:
           - name: GigabitEthernet0/0
             receive: true
@@ -49,7 +49,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_lldp_interfaces:
+      cisco.ios.ios_lldp_interfaces:
         config: "{{ ansible_facts['network_resources']['lldp_interfaces'] }}"
         state: overridden
 

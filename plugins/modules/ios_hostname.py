@@ -86,7 +86,7 @@ EXAMPLES = """
 # ------------
 
 - name: Apply the provided configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
       hostname: Router1
     state: merged
@@ -117,7 +117,7 @@ EXAMPLES = """
 # -------------
 
 - name: Remove all existing configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     state: deleted
 
 # Commands Fired:
@@ -145,7 +145,7 @@ EXAMPLES = """
 # ----------------
 
 - name: Override commands with provided configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
       hostname: RouterTest
     state: overridden
@@ -176,7 +176,7 @@ EXAMPLES = """
 # --------------
 
 - name: Replace commands with provided configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
       hostname: RouterTest
     state: replaced
@@ -204,7 +204,7 @@ EXAMPLES = """
 # --------------
 
 - name: Gather listed hostname config
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     state: gathered
 
 # Module Execution Result:
@@ -220,7 +220,7 @@ EXAMPLES = """
 # --------------
 
 - name: Render the commands for provided configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
       hostname: RouterTest
     state: rendered
@@ -244,7 +244,7 @@ EXAMPLES = """
 # ------------
 
 - name: Parse the provided configuration with the existing running configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -301,10 +301,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.hostname.hostname import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hostname.hostname import (
     HostnameArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.hostname.hostname import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.hostname.hostname import (
     Hostname,
 )
 

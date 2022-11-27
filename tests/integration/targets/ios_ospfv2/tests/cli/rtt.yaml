@@ -8,7 +8,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_ospfv2:
+      cisco.ios.ios_ospfv2:
         config:
           processes:
             - process_id: 1
@@ -63,7 +63,7 @@
         state: merged
 
     - name: Gather ospfv2 facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -72,7 +72,7 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
-      bentest.ios.ios_ospfv2:
+      cisco.ios.ios_ospfv2:
         config:
           processes:
             - process_id: 200
@@ -117,7 +117,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_ospfv2:
+      cisco.ios.ios_ospfv2:
         config: "{{ ansible_facts['network_resources']['ospfv2'] }}"
         state: overridden
 

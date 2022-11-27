@@ -6,7 +6,7 @@
     - ansible.builtin.include_tasks: _remove_config.yaml
     - name: Merge provided prefix lists configuration with device configuration
       register: result
-      bentest.ios.ios_prefix_lists: &id001
+      cisco.ios.ios_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -77,7 +77,7 @@
 
     - name: Merge provided prefix lists configuration with device configuration (idempotent)
       register: result
-      bentest.ios.ios_prefix_lists: *id001
+      cisco.ios.ios_prefix_lists: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

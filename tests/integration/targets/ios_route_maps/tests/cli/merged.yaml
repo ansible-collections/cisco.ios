@@ -6,7 +6,7 @@
     - ansible.builtin.include_tasks: _remove_config.yaml
     - name: Merge provided route maps configuration with device configuration
       register: result
-      bentest.ios.ios_route_maps: &id001
+      cisco.ios.ios_route_maps: &id001
         config:
           - route_map: test_1
             entries:
@@ -124,7 +124,7 @@
 
     - name: Merge provided route maps configuration with device configuration (idempotent)
       register: result
-      bentest.ios.ios_route_maps: *id001
+      cisco.ios.ios_route_maps: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

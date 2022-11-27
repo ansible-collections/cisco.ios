@@ -4,7 +4,7 @@
 - name: Configure with invalid src
   register: result
   ignore_errors: true
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: basic/foobar.j2
 
 - ansible.builtin.assert:

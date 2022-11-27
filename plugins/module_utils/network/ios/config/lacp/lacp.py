@@ -22,8 +22,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Lacp(ConfigBase):

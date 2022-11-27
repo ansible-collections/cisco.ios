@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/sublevel.yaml on connection={{ ansible_connection }}"
 
 - name: Setup test
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
       - no ip access-list standard test
@@ -10,7 +10,7 @@
 
 - name: Configure sub level command
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip any any log
     parents:
@@ -24,7 +24,7 @@
 
 - name: Configure sub level command idempotent check
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - permit ip any any log
     parents:
@@ -35,7 +35,7 @@
 #       - result.changed == false
 
 - name: Teardown
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip access-list extended test
     match: none

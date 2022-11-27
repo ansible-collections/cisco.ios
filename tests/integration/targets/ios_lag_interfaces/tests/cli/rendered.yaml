@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      bentest.ios.ios_lag_interfaces:
+      cisco.ios.ios_lag_interfaces:
         config:
           - name: Port-channel11
             members:

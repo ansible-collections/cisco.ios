@@ -3,7 +3,7 @@
 
 - name: Test contains operator
   register: result
-  bentest.ios.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show version
       - show interface loopback 888

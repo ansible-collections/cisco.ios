@@ -5,7 +5,7 @@
 - block:
     - name: Ios_ntp_global render - play
       register: result
-      bentest.ios.ios_ntp_global:
+      cisco.ios.ios_ntp_global:
         config:
           broadcast_delay: 22
           clock_period: 5

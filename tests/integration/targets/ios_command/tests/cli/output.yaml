@@ -3,7 +3,7 @@
 
 - name: Get output for single command
   register: result
-  bentest.ios.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show version
 
@@ -14,7 +14,7 @@
 
 - name: Get output for multiple commands
   register: result
-  bentest.ios.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show version
       - show interfaces

@@ -32,7 +32,7 @@ description:
   or disable collection of additional facts.
 version_added: 1.0.0
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML and IOS 15.6 for L2 specific resource.
   - Facts gathering for L3 devices are supposed to produce blank output for unsupported
@@ -71,26 +71,26 @@ options:
 """
 EXAMPLES = """
 - name: Gather all legacy facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset: all
 
 - name: Gather only the config and default facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset:
     - config
 
 - name: Do not gather hardware facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset:
     - '!hardware'
 
 - name: Gather legacy and resource facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset: all
     gather_network_resources: all
 
 - name: Gather only the interfaces resource facts and no legacy facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset:
     - '!all'
     - '!min'
@@ -98,17 +98,17 @@ EXAMPLES = """
     - interfaces
 
 - name: Gather interfaces resource and minimal legacy facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset: min
     gather_network_resources: interfaces
 
 - name: Gather L2 interfaces resource and minimal legacy facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset: min
     gather_network_resources: l2_interfaces
 
 - name: Gather L3 interfaces resource and minimal legacy facts
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
     gather_subset: min
     gather_network_resources: l3_interfaces
 """
@@ -211,10 +211,10 @@ ansible_net_neighbors:
 """
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     FACT_RESOURCE_SUBSETS,
     Facts,
 )

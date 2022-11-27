@@ -7,7 +7,7 @@
 - block:
     - name: Ios_ntp_global merged - play
       register: result
-      bentest.ios.ios_ntp_global: &id001
+      cisco.ios.ios_ntp_global: &id001
         config:
           master:
             stratum: 4
@@ -28,7 +28,7 @@
 
     - name: Ios_ntp_global merged - play (idempotent)
       register: result
-      bentest.ios.ios_ntp_global: *id001
+      cisco.ios.ios_ntp_global: *id001
     - name: Ios_ntp_global merged - assert above task was idempotent
       ansible.builtin.assert:
         that:

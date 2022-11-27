@@ -215,18 +215,18 @@ options:
     - absent
     type: str
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 """
 EXAMPLES = """
 - name: create a new user
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansible
     nopassword: true
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
 - name: create a new user with multiple keys
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansible
     sshkey:
     - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
@@ -234,11 +234,11 @@ EXAMPLES = """
     state: present
 
 - name: remove all users except admin
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     purge: yes
 
 - name: remove all users except admin and these listed users
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
     - name: testuser1
     - name: testuser2
@@ -246,7 +246,7 @@ EXAMPLES = """
     purge: yes
 
 - name: set multiple users to privilege level 15
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
     - name: netop
     - name: netend
@@ -254,40 +254,40 @@ EXAMPLES = """
     state: present
 
 - name: set user view/role
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: netop
     view: network-operator
     state: present
 
 - name: Change Password for User netop
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: netop
     configured_password: '{{ new_password }}'
     update_password: always
     state: present
 
 - name: Aggregate of users
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
     - name: ansibletest2
     - name: ansibletest3
     view: network-admin
 
 - name: Add a user specifying password type
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibletest4
     configured_password: '{{ new_password }}'
     password_type: password
 
 - name: Add a user with MD5 hashed password
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     name: ansibletest5
     hashed_password:
       type: 5
       value: $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
 
 - name: Delete users with aggregate
-  bentest.ios.ios_user:
+  cisco.ios.ios_user:
     aggregate:
     - name: ansibletest1
     - name: ansibletest2
@@ -316,7 +316,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
 )
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

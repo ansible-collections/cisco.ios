@@ -8,7 +8,7 @@
 - block:
     - name: Test - [gathered] gather the provided configuration with the existing running configuration
       register: result
-      bentest.ios.ios_logging_global:
+      cisco.ios.ios_logging_global:
         config:
         state: gathered
 

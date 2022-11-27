@@ -3,7 +3,7 @@
 
 - name: Test getting default facts
   register: result
-  bentest.ios.ios_facts:
+  cisco.ios.ios_facts:
 - ansible.builtin.assert:
     that:
       - result.changed == false

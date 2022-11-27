@@ -9,7 +9,7 @@
 - block:
     - name: Delete provided OSPF interfaces
       register: result
-      bentest.ios.ios_ospf_interfaces: &id001
+      cisco.ios.ios_ospf_interfaces: &id001
         config:
           - name: GigabitEthernet2
         state: deleted
@@ -26,7 +26,7 @@
 
     - name: Delete provided OSPF interfaces (idempotent)
       register: result
-      bentest.ios.ios_ospf_interfaces: *id001
+      cisco.ios.ios_ospf_interfaces: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
@@ -36,7 +36,7 @@
 
     - name: Delete provided OSPF interfaces without any configuration
       register: result
-      bentest.ios.ios_ospf_interfaces: &id002
+      cisco.ios.ios_ospf_interfaces: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
@@ -51,7 +51,7 @@
 
     - name: Delete provided OSPF interfaces without any configuration (idempotent)
       register: result
-      bentest.ios.ios_ospf_interfaces: *id002
+      cisco.ios.ios_ospf_interfaces: *id002
     - name: Assert that the delete task was idempotent
       ansible.builtin.assert:
         that:

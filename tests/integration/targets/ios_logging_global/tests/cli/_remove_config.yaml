@@ -1,4 +1,4 @@
 ---
 - name: Config remove - [deleted] remove exiting configuration
-  bentest.ios.ios_logging_global:
+  cisco.ios.ios_logging_global:
     state: deleted

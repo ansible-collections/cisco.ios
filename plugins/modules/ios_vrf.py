@@ -29,7 +29,7 @@ description:
   purging VRF definitions from the configuration that are not explicitly defined.
 version_added: 1.0.0
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -151,19 +151,19 @@ options:
 """
 EXAMPLES = """
 - name: configure a vrf named management
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: management
     description: oob mgmt vrf
     interfaces:
     - Management1
 
 - name: remove a vrf named test
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test
     state: absent
 
 - name: configure set of VRFs and purge any others
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     vrfs:
     - red
     - blue
@@ -171,7 +171,7 @@ EXAMPLES = """
     purge: yes
 
 - name: Creates a list of import RTs for the VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_import
     rd: 1:100
     route_import:
@@ -180,7 +180,7 @@ EXAMPLES = """
 
 - name: Creates a list of import RTs in address-family configuration submode for the
     VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_import_ipv4
     rd: 1:100
     route_import_ipv4:
@@ -189,7 +189,7 @@ EXAMPLES = """
 
 - name: Creates a list of import RTs in address-family configuration submode for the
     VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_import_ipv6
     rd: 1:100
     route_import_ipv6:
@@ -197,7 +197,7 @@ EXAMPLES = """
     - 3:100
 
 - name: Creates a list of export RTs for the VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_export
     rd: 1:100
     route_export:
@@ -206,7 +206,7 @@ EXAMPLES = """
 
 - name: Creates a list of export RTs in address-family configuration submode for the
     VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_export_ipv4
     rd: 1:100
     route_export_ipv4:
@@ -215,7 +215,7 @@ EXAMPLES = """
 
 - name: Creates a list of export RTs in address-family configuration submode for the
     VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_export_ipv6
     rd: 1:100
     route_export_ipv6:
@@ -224,7 +224,7 @@ EXAMPLES = """
 
 - name: Creates a list of import and export route targets for the VRF with the same
     parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_both
     rd: 1:100
     route_both:
@@ -233,7 +233,7 @@ EXAMPLES = """
 
 - name: Creates a list of import and export route targets in address-family configuration
     submode for the VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_both_ipv4
     rd: 1:100
     route_both_ipv4:
@@ -242,7 +242,7 @@ EXAMPLES = """
 
 - name: Creates a list of import and export route targets in address-family configuration
     submode for the VRF with the same parameters
-  bentest.ios.ios_vrf:
+  cisco.ios.ios_vrf:
     name: test_both_ipv6
     rd: 1:100
     route_both_ipv6:
@@ -286,7 +286,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
 )
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

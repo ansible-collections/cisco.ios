@@ -1,6 +1,6 @@
 ---
 - name: Pre post task populate hostname configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
       hostname: "box1"
     state: merged

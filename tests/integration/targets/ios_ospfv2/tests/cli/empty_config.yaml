@@ -5,7 +5,7 @@
 - name: Merged with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
     state: merged
 
@@ -16,7 +16,7 @@
 - name: Replaced with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
     state: replaced
 
@@ -27,7 +27,7 @@
 - name: Overridden with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
     state: overridden
 
@@ -38,7 +38,7 @@
 - name: Rendered with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
     state: rendered
 
@@ -49,7 +49,7 @@
 - name: Parsed with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     running_config:
     state: parsed
 

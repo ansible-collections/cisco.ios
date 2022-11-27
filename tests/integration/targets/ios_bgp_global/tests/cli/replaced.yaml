@@ -8,7 +8,7 @@
 - block:
     - name: Replaced provided BGP global configuration
       register: result
-      bentest.ios.ios_bgp_global: &id001
+      cisco.ios.ios_bgp_global: &id001
         config:
           as_number: 65000
           bgp:
@@ -45,7 +45,7 @@
 
     - name: Replaced provided BGP global configuration (idempotent)
       register: result
-      bentest.ios.ios_bgp_global: *id001
+      cisco.ios.ios_bgp_global: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

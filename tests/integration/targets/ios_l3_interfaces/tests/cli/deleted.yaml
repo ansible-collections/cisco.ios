@@ -9,7 +9,7 @@
 - block:
     - name: L3_interface deleted - delete attributes of provided configured interfaces
       register: result
-      bentest.ios.ios_l3_interfaces: &id001
+      cisco.ios.ios_l3_interfaces: &id001
         config:
           - name: GigabitEthernet2
           - name: GigabitEthernet3
@@ -32,7 +32,7 @@
 
     - name: L3_interface deleted - delete attributes of all configured interfaces (idempotent)
       register: result
-      bentest.ios.ios_l3_interfaces: *id001
+      cisco.ios.ios_l3_interfaces: *id001
     - name: L3_interface deleted - assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

@@ -9,7 +9,7 @@
 - block:
     - name: Merge provided configuration with device configuration
       register: result
-      bentest.ios.ios_vlans: &id001
+      cisco.ios.ios_vlans: &id001
         config:
           - name: Vlan_10
             vlan_id: 10
@@ -46,7 +46,7 @@
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
-      bentest.ios.ios_vlans: *id001
+      cisco.ios.ios_vlans: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

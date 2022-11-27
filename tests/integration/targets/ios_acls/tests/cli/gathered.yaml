@@ -9,7 +9,7 @@
 - block:
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      bentest.ios.ios_acls:
+      cisco.ios.ios_acls:
         config:
         state: gathered
 

@@ -3,7 +3,7 @@
 
 # hit network.ios.ios- get_defaults_flag()
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - shutdown
@@ -12,13 +12,13 @@
     match: none
 
 - name: Configure device with defaults included
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: defaults/config.j2
     defaults: true
   register: result
 
 - name: Run IOS commands to test command_timeout
-  bentest.ios.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show running-config all
       - show interfaces

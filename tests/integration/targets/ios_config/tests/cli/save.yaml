@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/save.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     commands:
       - no description
       - no shutdown
@@ -13,7 +13,7 @@
 
 - name: Save should always run
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     save_when: always
 
 - ansible.builtin.assert:
@@ -22,7 +22,7 @@
 
 - name: Delete configuration (setup)
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     replace: line
     lines:
       - no ip http server
@@ -30,7 +30,7 @@
 
 - name: Save should run when changed
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     replace: line
     lines:
       - ip http server
@@ -42,7 +42,7 @@
 
 - name: Teardown
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no ip http server
 

@@ -1,4 +1,4 @@
 ---
 - name: Remove BGP global configuration
-  bentest.ios.ios_bgp_global:
+  cisco.ios.ios_bgp_global:
     state: purged

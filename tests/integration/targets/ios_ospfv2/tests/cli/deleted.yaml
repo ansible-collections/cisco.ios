@@ -9,7 +9,7 @@
 - block:
     - name: Delete provided OSPF v2 processes
       register: result
-      bentest.ios.ios_ospfv2: &id001
+      cisco.ios.ios_ospfv2: &id001
         config:
           processes:
             - process_id: 1
@@ -34,7 +34,7 @@
 
     - name: Delete provided OSPF v2 processes (idempotent)
       register: result
-      bentest.ios.ios_ospfv2: *id001
+      cisco.ios.ios_ospfv2: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
@@ -44,7 +44,7 @@
 
     - name: Delete provided OSPF v2 processes without any configuration
       register: result
-      bentest.ios.ios_ospfv2: &id002
+      cisco.ios.ios_ospfv2: &id002
         state: deleted
 
     - name: Assert that correct set of commands were generated
@@ -64,7 +64,7 @@
 
     - name: Delete provided OSPF v2 processes without any configuration (idempotent)
       register: result
-      bentest.ios.ios_ospfv2: *id002
+      cisco.ios.ios_ospfv2: *id002
     - name: Assert that the merge task was idempotent
       ansible.builtin.assert:
         that:

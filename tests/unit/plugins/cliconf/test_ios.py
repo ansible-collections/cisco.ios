@@ -33,8 +33,8 @@ except ImportError:
 
 from ansible.module_utils._text import to_bytes
 
-from ansible_collections.bentest.ios.plugins.cliconf import ios
-from ansible_collections.bentest.ios.tests.unit.compat import unittest
+from ansible_collections.cisco.ios.plugins.cliconf import ios
+from ansible_collections.cisco.ios.tests.unit.compat import unittest
 
 
 b_FIXTURE_DIR = b"%s/fixtures/ios" % (

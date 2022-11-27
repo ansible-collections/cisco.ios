@@ -1,6 +1,6 @@
 ---
 - name: Remove ospfv3 configuration
-  bentest.ios.ios_ospfv3:
+  cisco.ios.ios_ospfv3:
     state: deleted
 
 - name: Delete and clean ipv6 routings configuration

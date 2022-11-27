@@ -1,6 +1,6 @@
 ---
 - name: Remove OSPF interfaces configuration
-  bentest.ios.ios_ospf_interfaces:
+  cisco.ios.ios_ospf_interfaces:
     state: deleted
 
 - name: Delete and clean ipv6 configuration

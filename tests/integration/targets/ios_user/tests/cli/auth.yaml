@@ -1,7 +1,7 @@
 ---
 - block:
     - name: Create user with password
-      bentest.ios.ios_user:
+      cisco.ios.ios_user:
         name: auth_user
         privilege: 15
         role: network-operator
@@ -23,7 +23,7 @@
       ansible.builtin.meta: reset_connection
 
     - name: Test login with invalid password (should fail)
-      bentest.ios.ios_command:
+      cisco.ios.ios_command:
         commands:
           - show version
       ignore_errors: true
@@ -43,7 +43,7 @@
 
     - name: Delete user
       register: result
-      bentest.ios.ios_user:
+      cisco.ios.ios_user:
         name: auth_user
         state: absent
 
@@ -54,7 +54,7 @@
         mode: 384
 
     - name: Create user with sshkey
-      bentest.ios.ios_user:
+      cisco.ios.ios_user:
         name: ssh_user
         privilege: 15
         role: network-operator
@@ -65,7 +65,7 @@
       ansible.builtin.meta: reset_connection
 
     - name: Test sshkey login for {{ ansible_user }} user
-      bentest.ios.ios_command:
+      cisco.ios.ios_command:
         commands:
           - show version
       vars:
@@ -76,7 +76,7 @@
       ansible.builtin.meta: reset_connection
 
     - name: Test with {{ ansible_user }} user without keys
-      bentest.ios.ios_command:
+      cisco.ios.ios_command:
         commands:
           - show version
       ignore_errors: true
@@ -95,6 +95,6 @@
 
     - name: Delete user
       register: result
-      bentest.ios.ios_user:
+      cisco.ios.ios_user:
         name: ssh_user
         state: absent

@@ -7,7 +7,7 @@
 - block:
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      bentest.ios.ios_lldp_global:
+      cisco.ios.ios_lldp_global:
         config:
         state: gathered
 

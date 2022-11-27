@@ -7,7 +7,7 @@
 - block:
     - name: Merge provided configuration system lacp
       register: result
-      bentest.ios.ios_lacp: &id001
+      cisco.ios.ios_lacp: &id001
         config:
           system:
             priority: 10
@@ -30,7 +30,7 @@
 
     - name: Merge provided configuration system lacp (idempotent)
       register: result
-      bentest.ios.ios_lacp: *id001
+      cisco.ios.ios_lacp: *id001
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

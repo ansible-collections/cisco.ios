@@ -2,7 +2,7 @@
 - name: Ensure we have loopback 888 for testing
   connection: ansible.netcommon.network_cli
   become: true
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     src: config.j2
 
 - name: Set test facts shorter_hostname
@@ -13,7 +13,7 @@
   connection: ansible.netcommon.network_cli
   become: true
   register: result
-  bentest.ios.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show version
 
@@ -35,21 +35,21 @@
 
 - name: Block to fix configuration
   block:
-    - name: Set test interface to gigabitethernet2 as we are on bentest.ios-xe
+    - name: Set test interface to gigabitethernet2 as we are on cisco.ios-xe
       ansible.builtin.set_fact: test_interface=GigabitEthernet2
 
     - name: Disable autonegotiation on gigabitethernet2
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no negotiation auto
         parents: int GigabitEthernet2
       become: true
 
-    - name: Set test interface 2 to gigabitethernet3 as we are on bentest.ios-xe
+    - name: Set test interface 2 to gigabitethernet3 as we are on cisco.ios-xe
       ansible.builtin.set_fact: test_interface2=GigabitEthernet3
 
     - name: Disable autonegotiation on gigabitethernet3
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no negotiation auto
         parents: int GigabitEthernet3

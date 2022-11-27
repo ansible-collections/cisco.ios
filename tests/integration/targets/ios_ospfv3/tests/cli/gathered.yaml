@@ -9,7 +9,7 @@
 
     - name: Gather the provided configuration with the existing running configuration
       register: result
-      bentest.ios.ios_ospfv3:
+      cisco.ios.ios_ospfv3:
         config:
         state: gathered
 

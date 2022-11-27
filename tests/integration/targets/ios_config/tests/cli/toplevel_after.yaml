@@ -2,7 +2,7 @@
 - ansible.builtin.debug: msg="START cli/toplevel_after.yaml on connection={{ ansible_connection }}"
 
 - name: Setup
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - snmp-server contact ansible
       - hostname {{ shorter_hostname }}
@@ -10,7 +10,7 @@
 
 - name: Configure top level command with before
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - hostname foo
     after:
@@ -24,7 +24,7 @@
 
 - name: Configure top level command with before idempotent check
   register: result
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - hostname foo
     after:
@@ -35,7 +35,7 @@
       - result.changed == false
 
 - name: Teardown
-  bentest.ios.ios_config:
+  cisco.ios.ios_config:
     lines:
       - no snmp-server contact
       - hostname {{ shorter_hostname }}

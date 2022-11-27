@@ -28,7 +28,7 @@ description:
   IOS. It allows playbooks to add or remote banner text from the active running configuration.
 version_added: 1.0.0
 extends_documentation_fragment:
-- bentest.ios.ios
+- cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -68,7 +68,7 @@ options:
 """
 EXAMPLES = """
 - name: Configure the login banner
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: login
     text: |
       this is my login banner
@@ -77,18 +77,18 @@ EXAMPLES = """
     state: present
 
 - name: Remove the motd banner
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: motd
     state: absent
 
 - name: Configure banner from file
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: motd
     text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
     state: present
 
 - name: Configure the login banner using delimiter
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: login
     multiline_delimiter: x
     text: this is my login banner
@@ -109,7 +109,7 @@ from re import M, search
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.ios import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )

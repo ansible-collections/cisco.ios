@@ -9,7 +9,7 @@
 - block:
     - name: Ios_ntp_global deleted - play
       register: result
-      bentest.ios.ios_ntp_global: &id001
+      cisco.ios.ios_ntp_global: &id001
         config:
         state: deleted
 
@@ -25,7 +25,7 @@
 
     - name: Ios_ntp_global deleted - play (idempotent)
       register: result
-      bentest.ios.ios_ntp_global: *id001
+      cisco.ios.ios_ntp_global: *id001
     - name: Ios_ntp_global deleted - assert above task was idempotent
       ansible.builtin.assert:
         that:

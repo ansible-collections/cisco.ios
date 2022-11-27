@@ -988,7 +988,7 @@ EXAMPLES = """
 #  default-information originate
 
 - name: Delete provided OSPF V2 processes
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
       processes:
       - process_id: 1
@@ -1038,7 +1038,7 @@ EXAMPLES = """
 #  default-information originate
 
 - name: Delete all OSPF processes
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     state: deleted
 
 # Commands Fired:
@@ -1063,7 +1063,7 @@ EXAMPLES = """
 # router-ios#
 
 - name: Merge provided OSPF V2 configuration
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
       processes:
       - process_id: 1
@@ -1199,7 +1199,7 @@ EXAMPLES = """
 #  default-information originate
 
 - name: Override provided OSPF V2 configuration
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
       processes:
       - process_id: 200
@@ -1302,7 +1302,7 @@ EXAMPLES = """
 #  default-information originate
 
 - name: Replaced provided OSPF V2 configuration
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
       processes:
       - process_id: 200
@@ -1414,7 +1414,7 @@ EXAMPLES = """
 #  default-information originate
 
 - name: Gather OSPFV2 provided configurations
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
     state: gathered
 
@@ -1535,7 +1535,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     config:
       processes:
       - process_id: 1
@@ -1627,7 +1627,7 @@ EXAMPLES = """
 #  area 5 nssa default-information-originate metric 10
 
 - name: Parse the provided configuration with the existing running configuration
-  bentest.ios.ios_ospfv2:
+  cisco.ios.ios_ospfv2:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -1690,10 +1690,10 @@ commands:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.ospfv2.ospfv2 import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.ospfv2.ospfv2 import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv2.ospfv2 import (
     Ospfv2,
 )
 

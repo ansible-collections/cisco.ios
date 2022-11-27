@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The bentest.ios prefix_lists fact class
+The cisco.ios prefix_lists fact class
 It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
@@ -20,16 +20,16 @@ from copy import copy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
     Prefix_listsArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.prefix_lists import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.prefix_lists import (
     Prefix_listsTemplate,
 )
 
 
 class Prefix_listsFacts(object):
-    """The bentest.ios prefix_lists facts class"""
+    """The cisco.ios prefix_lists facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module

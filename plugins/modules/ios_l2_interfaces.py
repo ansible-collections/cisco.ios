@@ -178,7 +178,7 @@ EXAMPLES = """
 #  negotiation auto
 
 - name: Merge provided configuration with device configuration
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/1
       mode: access
@@ -232,7 +232,7 @@ EXAMPLES = """
 #  negotiation auto
 
 - name: Replaces device configuration of listed l2 interfaces with provided configuration
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/2
       trunk:
@@ -279,7 +279,7 @@ EXAMPLES = """
 #  negotiation auto
 
 - name: Override device configuration of all l2 interfaces with provided configuration
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/2
       access:
@@ -323,7 +323,7 @@ EXAMPLES = """
 #  negotiation auto
 
 - name: Delete IOS L2 interfaces as in given arguments
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/1
     state: deleted
@@ -368,7 +368,7 @@ EXAMPLES = """
 #  negotiation auto
 
 - name: Delete IOS L2 interfaces as in given arguments
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     state: deleted
 
 # After state:
@@ -399,7 +399,7 @@ EXAMPLES = """
 #  switchport mode trunk
 
 - name: Gather listed l2 interfaces with provided configurations
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     state: gathered
 
@@ -450,7 +450,7 @@ EXAMPLES = """
 # Using Rendered
 
 - name: Render the commands for provided  configuration
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/1
       access:
@@ -491,7 +491,7 @@ EXAMPLES = """
 # switchport trunk pruning vlan 10,20
 
 - name: Parse the commands for provided configuration
-  bentest.ios.ios_l2_interfaces:
+  cisco.ios.ios_l2_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -574,10 +574,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
     L2_interfaces,
 )
 

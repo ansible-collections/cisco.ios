@@ -5,7 +5,7 @@
 - block:
     - name: Render the commands for provided  configuration
       register: result
-      bentest.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_global:
         config:
           as_number: 65000
           bgp:

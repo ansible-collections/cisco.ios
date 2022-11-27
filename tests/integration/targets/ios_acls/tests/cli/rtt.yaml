@@ -9,7 +9,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_acls:
+      cisco.ios.ios_acls:
         config:
           - afi: ipv4
             acls:
@@ -107,7 +107,7 @@
         state: merged
 
     - name: Gather acls facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -116,7 +116,7 @@
 
     - name: Apply the configuration which need to be reverted
       register: result
-      bentest.ios.ios_acls:
+      cisco.ios.ios_acls:
         config:
           - afi: ipv4
             acls:
@@ -188,7 +188,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_acls:
+      cisco.ios.ios_acls:
         config: "{{ ansible_facts['network_resources']['acls'] }}"
         state: overridden
 

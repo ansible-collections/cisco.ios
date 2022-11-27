@@ -7,7 +7,7 @@
 - block:
     - name: Ios_bgp_global RTT - play (base config)
       register: result
-      bentest.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_global:
         config:
           as_number: 65000
           bgp:
@@ -35,7 +35,7 @@
         state: merged
 
     - name: Ios_bgp_global RTT - gather bgp_global facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -43,7 +43,7 @@
           - bgp_global
 
     - name: Ios_bgp_global RTT - apply the provided configuration (config to be reverted)
-      bentest.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_global:
         config:
           as_number: 65000
           networks:
@@ -52,7 +52,7 @@
 
     - name: Ios_bgp_global RTT - revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_bgp_global:
+      cisco.ios.ios_bgp_global:
         config: "{{ ansible_facts['network_resources']['bgp_global'] }}"
         state: replaced
 

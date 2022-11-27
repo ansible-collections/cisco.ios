@@ -6,7 +6,7 @@
     - name: Render the commands for provided  configuration
       become: true
       register: result
-      bentest.ios.ios_vlans:
+      cisco.ios.ios_vlans:
         config:
           - name: Vlan_10
             vlan_id: 10

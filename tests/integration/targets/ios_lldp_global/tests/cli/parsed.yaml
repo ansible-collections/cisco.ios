@@ -5,7 +5,7 @@
 - name: Parse the commands for provided configuration
   become: true
   register: result
-  bentest.ios.ios_lldp_global:
+  cisco.ios.ios_lldp_global:
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 

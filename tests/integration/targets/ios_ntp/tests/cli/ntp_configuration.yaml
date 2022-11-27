@@ -3,7 +3,7 @@
 
 - name: Remove ntp (if set)
   ignore_errors: true
-  bentest.ios.ios_ntp: &id007
+  cisco.ios.ios_ntp: &id007
     server: 10.75.32.5
     source_int: "{{ test_interface }}"
     acl: NTP_ACL
@@ -16,7 +16,7 @@
 - block:
     - name: Configure ntp
       register: result
-      bentest.ios.ios_ntp: &id001
+      cisco.ios.ios_ntp: &id001
         server: 10.75.32.5
         source_int: "{{ test_interface }}"
         state: present
@@ -27,14 +27,14 @@
 
     - name: Idempotent check
       register: result
-      bentest.ios.ios_ntp: *id001
+      cisco.ios.ios_ntp: *id001
     - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
     - name: Load ACL ntp_acl into device
       register: result
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - 10 permit ip host 192.0.2.1 any log
         parents: ip access-list extended NTP_ACL
@@ -42,7 +42,7 @@
     - ansible.builtin.assert: *id002
     - name: Configure ntp
       register: result
-      bentest.ios.ios_ntp: &id003
+      cisco.ios.ios_ntp: &id003
         acl: NTP_ACL
         logging: true
         state: present
@@ -50,11 +50,11 @@
     - ansible.builtin.assert: *id002
     - name: Idempotent check
       register: result
-      bentest.ios.ios_ntp: *id003
+      cisco.ios.ios_ntp: *id003
     - ansible.builtin.assert: *id004
     - name: Configure ntp with different values
       register: result
-      bentest.ios.ios_ntp: &id005
+      cisco.ios.ios_ntp: &id005
         key_id: 10
         auth_key: 15435A030726242723273C21181319000A
         auth: true
@@ -64,11 +64,11 @@
     - ansible.builtin.assert: *id002
     - name: Idempotent check
       register: result
-      bentest.ios.ios_ntp: *id005
+      cisco.ios.ios_ntp: *id005
     - ansible.builtin.assert: *id004
     - name: Remove part of configuration
       register: result
-      bentest.ios.ios_ntp: &id006
+      cisco.ios.ios_ntp: &id006
         acl: NTP_ACL
         logging: true
         state: absent
@@ -76,12 +76,12 @@
     - ansible.builtin.assert: *id002
     - name: Idempotent check
       register: result
-      bentest.ios.ios_ntp: *id006
+      cisco.ios.ios_ntp: *id006
     - ansible.builtin.assert: *id004
   always:
     - name: Remove ntp configuration
-      bentest.ios.ios_ntp: *id007
+      cisco.ios.ios_ntp: *id007
     - name: Remove ntp_acl from device
-      bentest.ios.ios_config:
+      cisco.ios.ios_config:
         lines:
           - no ip access-list extended NTP_ACL

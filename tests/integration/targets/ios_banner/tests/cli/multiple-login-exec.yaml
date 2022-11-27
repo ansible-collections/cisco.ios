@@ -3,14 +3,14 @@
   loop:
     - login
     - exec
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: "{{ item }}"
     text: "this is my login banner\nthat as a multiline\nstring\n"
     state: present
 
 - name: Set login
   register: result
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: login
     text: "this is my login banner\nthat as a multiline\nstring"
     state: present
@@ -25,7 +25,7 @@
 
 - name: Set exec
   register: result
-  bentest.ios.ios_banner:
+  cisco.ios.ios_banner:
     banner: exec
     text: "this is my login banner\nthat as a multiline\nstring"
     state: present

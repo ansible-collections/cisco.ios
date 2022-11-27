@@ -9,7 +9,7 @@
 - block:
     - name: Apply the provided configuration (base config)
       register: base_config
-      bentest.ios.ios_vlans:
+      cisco.ios.ios_vlans:
         config:
           - name: Vlan_10
             vlan_id: 10
@@ -30,7 +30,7 @@
         state: merged
 
     - name: Gather vlans interfaces facts
-      bentest.ios.ios_facts:
+      cisco.ios.ios_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -39,7 +39,7 @@
 
     - name: Apply the provided configuration (config to be reverted)
       register: result
-      bentest.ios.ios_vlans:
+      cisco.ios.ios_vlans:
         config:
           - name: VLAN_10
             vlan_id: 10
@@ -58,7 +58,7 @@
 
     - name: Revert back to base configuration using facts round trip
       register: revert
-      bentest.ios.ios_vlans:
+      cisco.ios.ios_vlans:
         config: "{{ ansible_facts['network_resources']['vlans'] }}"
         state: overridden
 

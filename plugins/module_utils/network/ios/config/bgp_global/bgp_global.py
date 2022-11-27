@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The bentest.ios_bgp_global config file.
+The cisco.ios_bgp_global config file.
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
@@ -26,15 +26,15 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.bentest.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
 
 
 class Bgp_global(ResourceModule):
     """
-    The bentest.ios_bgp_global config class
+    The cisco.ios_bgp_global config class
     """
 
     parsers = [

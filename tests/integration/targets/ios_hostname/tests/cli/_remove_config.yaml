@@ -1,5 +1,5 @@
 ---
 - name: Pre post task remove hostname configuration
-  bentest.ios.ios_hostname:
+  cisco.ios.ios_hostname:
     config:
     state: deleted

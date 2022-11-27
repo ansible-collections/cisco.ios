@@ -27,7 +27,7 @@
     - name: Fetch logs without command specific error regex
       register: result
       ignore_errors: true
-      bentest.ios.ios_command:
+      cisco.ios.ios_command:
         commands:
           - show logging
 
@@ -52,7 +52,7 @@
         ansible_terminal_stderr_re:
           - pattern: connection timed out
             flags: re.I
-      bentest.ios.ios_command:
+      cisco.ios.ios_command:
         commands:
           - show logging
 
