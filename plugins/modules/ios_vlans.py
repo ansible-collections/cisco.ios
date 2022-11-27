@@ -90,7 +90,7 @@ options:
             - community
           associated:
             description:
-            - List of private VLANs associated with the primary . Only works with `type: primary`.
+            - "List of private VLANs associated with the primary . Only works with `type: primary`."
             type: list
             elements: int
   running_config:
