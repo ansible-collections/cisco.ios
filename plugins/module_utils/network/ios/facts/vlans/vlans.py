@@ -101,7 +101,7 @@ class VlansFacts(object):
                     mtu_objs.append(obj)
                 elif "remote_span" in obj:
                     remote_objs = obj
-                elif "private_vlan" in obj:
+                elif "tmp_pvlans" in obj:
                     pvlan_objs.append(obj)
                 elif obj:
                     objs.append(obj)
@@ -135,21 +135,23 @@ class VlansFacts(object):
                         pvlan_final[privlan] = {"private_vlan":
                                                 {
                                                     "type": "primary",
-                                                    "association": [secvlan]}
+                                                    "associated": [secvlan]}
                                             }
                     else:
-                        pvlan_final[privlan]["private_vlan"]["assocation"].append(secvlan)
+                        pvlan_final[privlan]["private_vlan"]["associated"].append(secvlan)
                                                 
                     # Also define community/isolated private VLANs
                     pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
 
                 # Associate with the proper VLAN in final_objs
-                for vlan_id, pvdata in pvlan_final.items():
+                for vlan_id, data in pvlan_final.items():
                     for every in final_objs:
                         if vlan_id == every.get("vlan_id"):
-                            every.update(pvdata)
+                            every.update(data)
+            open("/home/ben/testout", "w").write(str(pvlan_final))
                     
-        
+
+                            
         facts = {}
         if final_objs:
             facts["vlans"] = []
@@ -228,8 +230,8 @@ class VlansFacts(object):
                         remote_span.append(int(each))
                 config["remote_span"] = remote_span
                 
-        elif vlan_info == "Private":
-            conf = list(filter(None, config.split(" ")))
+        elif vlan_info == "Private" and "Primary Secondary" not in conf:
+            conf = list(filter(None, conf.split(" ")))
 
             pri_idx = 0
             sec_idx = 1
