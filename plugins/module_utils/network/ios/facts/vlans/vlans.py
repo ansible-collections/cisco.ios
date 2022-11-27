@@ -130,25 +130,25 @@ class VlansFacts(object):
                     secvlan = pvdata.get("secondary")
                     sectype = pvdata.get("sec_type")
 
+                    # Define the secondary VLAN's type
+                    if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
+                        secvlan = int(secvlan)
+                        pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
+                    
                     # Assemble and merge data for primary private VLANs
-                    if privlan not in pvlan_final.keys():
-                        pvlan_final[privlan] = {"private_vlan":
-                                                {
-                                                    "type": "primary",
-                                                    "associated": [secvlan]}
-                                            }
-                    else:
-                        pvlan_final[privlan]["private_vlan"]["associated"].append(secvlan)
+                    if privlan and (isinstance(privlan, int) or privlan.isnumeric()):
+                        privlan = int(privlan)
+                        if privlan not in pvlan_final.keys():
+                            pvlan_final[privlan] = {"private_vlan": {"type": "primary", "associated": []}}
+                        if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
+                            pvlan_final[privlan]["private_vlan"]["associated"].append(int(secvlan))
                                                 
-                    # Also define community/isolated private VLANs
-                    pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
 
                 # Associate with the proper VLAN in final_objs
                 for vlan_id, data in pvlan_final.items():
                     for every in final_objs:
                         if vlan_id == every.get("vlan_id"):
                             every.update(data)
-            open("/home/ben/testout", "w").write(str(pvlan_final))
                     
 
                             
@@ -238,8 +238,8 @@ class VlansFacts(object):
             priv_type_idx = 2
 
             config["tmp_pvlans"] = {
-                "primary": int(conf[pri_idx]),
-                "secondary": int(conf[sec_idx]),
+                "primary": conf[pri_idx],
+                "secondary": conf[sec_idx],
                 "sec_type": conf[priv_type_idx]
             }
 

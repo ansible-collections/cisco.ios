@@ -248,11 +248,11 @@ class Vlans(ConfigBase):
 
         return commands
 
-    def remove_command_from_config_list(self, vlan, cmd, commands):
-        if vlan not in commands and cmd != "vlan":
-            commands.insert(0, vlan)
+    def remove_command_from_config_list(self, vlan_id, cmd, commands):
+        if vlan_id not in commands and cmd != "vlan":
+            commands.insert(0, vlan_id)
         elif cmd == "vlan":
-            commands.append("no %s" % vlan)
+            commands.append("no %s" % vlan_id)
             return commands
         commands.append("no %s" % cmd)
         return commands
@@ -304,6 +304,20 @@ class Vlans(ConfigBase):
                     "remote-span",
                     commands,
                 )
+            private_vlan = dict(have_diff).get("private_vlan")
+            if private_vlan and not dict(want_diff).get("private_vlan"):
+                private_vlan_type = dict(private_vlan).get("type")
+                self.remove_command_from_config_list(
+                    vlan,
+                    "private-vlan {0}".format(private_vlan_type),
+                    commands,
+                )
+                if private_vlan_type == "primary" and dict(private_vlan).get("associated"):
+                    self.remove_command_from_config_list(
+                        vlan,
+                        "private-vlan association",
+                        commands,
+                    )
 
         # Get the diff b/w want n have
         want_dict = dict_to_set(want)
@@ -320,6 +334,8 @@ class Vlans(ConfigBase):
             shutdown = dict(diff).get("shutdown")
             mtu = dict(diff).get("mtu")
             remote_span = dict(diff).get("remote_span")
+            private_vlan = dict(diff).get("private_vlan")                
+                
             if name:
                 self.add_command_to_config_list(
                     vlan,
@@ -340,6 +356,22 @@ class Vlans(ConfigBase):
                 )
             if remote_span:
                 self.add_command_to_config_list(vlan, "remote-span", commands)
+
+            if private_vlan:
+                private_vlan_type = dict(private_vlan).get("type")
+                private_vlan_associated = dict(private_vlan).get("associated")
+                if private_vlan_type:
+                    self.add_command_to_config_list(vlan,
+                                                    "private-vlan {0}".format(private_vlan_type),
+                                                    commands
+                                                    )
+                if private_vlan_associated:
+                    associated_list = ",".join(str(e) for e in private_vlan_associated) # Convert python list to string with elements separated by a comma
+                    self.add_command_to_config_list(vlan,
+                                                    "private-vlan association {0}".format(associated_list),
+                                                    commands
+                                                    )
+                
             if shutdown == "enabled":
                 self.add_command_to_config_list(vlan, "shutdown", commands)
             elif shutdown == "disabled":
