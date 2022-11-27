@@ -114,7 +114,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>{&#x27;List of private VLANs associated with the primary . Only works with `type&#x27;: &#x27;primary`.&#x27;}</div>
+                        <div>List of private VLANs associated with the primary . Only works with `type: primary`.</div>
                 </td>
             </tr>
             <tr>
