@@ -27,6 +27,12 @@
             vlan_id: 30
             state: suspend
             shutdown: enabled
+
+          - name: pvlan-primary
+            vlan_id: 100
+            private_vlan:
+              type: primary
+              
         state: merged
 
     - name: Assert that correct set of commands were generated
