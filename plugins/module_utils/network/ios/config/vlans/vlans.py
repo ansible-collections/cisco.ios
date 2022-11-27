@@ -334,8 +334,8 @@ class Vlans(ConfigBase):
             shutdown = dict(diff).get("shutdown")
             mtu = dict(diff).get("mtu")
             remote_span = dict(diff).get("remote_span")
-            private_vlan = dict(diff).get("private_vlan")                
-                
+            private_vlan = dict(diff).get("private_vlan")
+
             if name:
                 self.add_command_to_config_list(
                     vlan,
@@ -361,17 +361,21 @@ class Vlans(ConfigBase):
                 private_vlan_type = dict(private_vlan).get("type")
                 private_vlan_associated = dict(private_vlan).get("associated")
                 if private_vlan_type:
-                    self.add_command_to_config_list(vlan,
-                                                    "private-vlan {0}".format(private_vlan_type),
-                                                    commands
-                                                    )
+                    self.add_command_to_config_list(
+                        vlan,
+                        "private-vlan {0}".format(private_vlan_type),
+                        commands,
+                    )
                 if private_vlan_associated:
-                    associated_list = ",".join(str(e) for e in private_vlan_associated) # Convert python list to string with elements separated by a comma
-                    self.add_command_to_config_list(vlan,
-                                                    "private-vlan association {0}".format(associated_list),
-                                                    commands
-                                                    )
-                
+                    associated_list = ",".join(
+                        str(e) for e in private_vlan_associated
+                    )  # Convert python list to string with elements separated by a comma
+                    self.add_command_to_config_list(
+                        vlan,
+                        "private-vlan association {0}".format(associated_list),
+                        commands,
+                    )
+
             if shutdown == "enabled":
                 self.add_command_to_config_list(vlan, "shutdown", commands)
             elif shutdown == "disabled":

@@ -330,29 +330,29 @@ EXAMPLES = """
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
 # 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
-# 10   Vlan_10                          active    
-# 50   pvlan-isolated                   active    
-# 60   pvlan-community                  active    
-# 70   pvlan-primary                    active    
-# 1002 fddi-default                     act/unsup 
-# 1003 token-ring-default               act/unsup 
-# 1004 fddinet-default                  act/unsup 
-# 1005 trnet-default                    act/unsup 
+# 10   Vlan_10                          active
+# 50   pvlan-isolated                   active
+# 60   pvlan-community                  active
+# 70   pvlan-primary                    active
+# 1002 fddi-default                     act/unsup
+# 1003 token-ring-default               act/unsup
+# 1004 fddinet-default                  act/unsup
+# 1005 trnet-default                    act/unsup
 #
 # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-# 1    enet  100001     1500  -      -      -        -    -        0      0   
-# 10   enet  100010     1000  -      -      -        -    -        0      0   
-# 50   enet  100050     1500  -      -      -        -    -        0      0   
-# 60   enet  100051     1500  -      -      -        -    -        0      0   
-# 70   enet  100059     1500  -      -      -        -    -        0      0   
-# 1002 fddi  101002     1500  -      -      -        -    -        0      0   
-# 1003 tr    101003     1500  -      -      -        -    -        0      0   
-# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0   
-#          
+# 1    enet  100001     1500  -      -      -        -    -        0      0
+# 10   enet  100010     1000  -      -      -        -    -        0      0
+# 50   enet  100050     1500  -      -      -        -    -        0      0
+# 60   enet  100051     1500  -      -      -        -    -        0      0
+# 70   enet  100059     1500  -      -      -        -    -        0      0
+# 1002 fddi  101002     1500  -      -      -        -    -        0      0
+# 1003 tr    101003     1500  -      -      -        -    -        0      0
+# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+#
 # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-# 1005 trnet 101005     1500  -      -      -        ibm  -        0      0   
+# 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 #
 # Remote SPAN VLANs
 # ------------------------------------------------------------------------------
@@ -360,7 +360,7 @@ EXAMPLES = """
 #
 # Primary Secondary Type              Ports
 # ------- --------- ----------------- ------------------------------------------
-# 70      50        isolated          
+# 70      50        isolated
 # 70      60        community
 
 # Using deleted

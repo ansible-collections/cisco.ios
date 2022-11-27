@@ -134,24 +134,23 @@ class VlansFacts(object):
                     if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
                         secvlan = int(secvlan)
                         pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
-                    
+
                     # Assemble and merge data for primary private VLANs
                     if privlan and (isinstance(privlan, int) or privlan.isnumeric()):
                         privlan = int(privlan)
                         if privlan not in pvlan_final.keys():
-                            pvlan_final[privlan] = {"private_vlan": {"type": "primary", "associated": []}}
+                            pvlan_final[privlan] = {
+                                "private_vlan": {"type": "primary", "associated": []}
+                            }
                         if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
                             pvlan_final[privlan]["private_vlan"]["associated"].append(int(secvlan))
-                                                
 
                 # Associate with the proper VLAN in final_objs
                 for vlan_id, data in pvlan_final.items():
                     for every in final_objs:
                         if vlan_id == every.get("vlan_id"):
                             every.update(data)
-                    
 
-                            
         facts = {}
         if final_objs:
             facts["vlans"] = []
@@ -229,7 +228,7 @@ class VlansFacts(object):
                     else:
                         remote_span.append(int(each))
                 config["remote_span"] = remote_span
-                
+
         elif vlan_info == "Private" and "Primary Secondary" not in conf:
             conf = list(filter(None, conf.split(" ")))
 
@@ -240,7 +239,7 @@ class VlansFacts(object):
             config["tmp_pvlans"] = {
                 "primary": conf[pri_idx],
                 "secondary": conf[sec_idx],
-                "sec_type": conf[priv_type_idx]
+                "sec_type": conf[priv_type_idx],
             }
 
         return utils.remove_empties(config)

@@ -18,7 +18,7 @@ Version added: 1.0.0
 Synopsis
 --------
 - Sends arbitrary commands to an ios node and returns the results read from the device. This module includes an argument that will cause the module to wait for a specific condition before returning or timing out if the condition is not met.
-- This module does not support running commands in configuration mode. Please use `ios_config <https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module>`_ to configure IOS devices.
+- This module does not support running commands in configuration mode. Please use `ios_config <https://docs.ansible.com/ansible/latest/collections/cisco.ios/ios_config_module.html#ansible-collections-cisco.ios-ios-config-module>`_ to configure IOS devices.
 
 
 
