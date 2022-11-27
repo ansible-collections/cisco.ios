@@ -244,7 +244,7 @@ class TestIosVlansModule(TestIosModule):
             "name pvlan-isolated",            
             "private-vlan isolated"
         ]
-        self.assertEqual(result["commands"], commands)        
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_replaced_idempotent(self):
         set_module_args(
@@ -650,8 +650,6 @@ class TestIosVlansModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        print(parsed)
-        print(result['parsed'])
         self.assertEqual(result["parsed"], parsed)
 
     def test_ios_vlans_gathered(self):

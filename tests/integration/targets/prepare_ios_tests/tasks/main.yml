@@ -35,7 +35,7 @@
 
 - name: Block to fix configuration
   block:
-    - name: Set test interface to gigabitethernet2 as we are on cisco.ios-xe
+    - name: Set test interface to gigabitethernet2 as we are on cisco ios-xe
       ansible.builtin.set_fact: test_interface=GigabitEthernet2
 
     - name: Disable autonegotiation on gigabitethernet2
@@ -45,7 +45,7 @@
         parents: int GigabitEthernet2
       become: true
 
-    - name: Set test interface 2 to gigabitethernet3 as we are on cisco.ios-xe
+    - name: Set test interface 2 to gigabitethernet3 as we are on cisco ios-xe
       ansible.builtin.set_fact: test_interface2=GigabitEthernet3
 
     - name: Disable autonegotiation on gigabitethernet3
