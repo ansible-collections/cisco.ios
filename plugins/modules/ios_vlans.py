@@ -28,9 +28,7 @@ short_description: Resource module to configure VLANs.
 description: This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0
-author:
-  - Sumit Jaiswal (@justjais)
-  - Ben Rankin (@uvix
+author: Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
