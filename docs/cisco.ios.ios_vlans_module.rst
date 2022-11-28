@@ -476,11 +476,11 @@ Examples
     # ------------
     #
     # vios_l2#sh vlan
-
     # VLAN Name                             Status    Ports
     # ---- -------------------------------- --------- -------------------------------
     # 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
     # 10   Vlan_10                          active
+    # 20   Test_VLAN20                      active
     # 50   pvlan-isolated                   active
     # 60   pvlan-community                  active
     # 70   pvlan-primary                    active
@@ -493,6 +493,7 @@ Examples
     # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
     # 1    enet  100001     1500  -      -      -        -    -        0      0
     # 10   enet  100010     1000  -      -      -        -    -        0      0
+    # 20   enet  100020     700   -      -      -        -    -        0      0
     # 50   enet  100050     1500  -      -      -        -    -        0      0
     # 60   enet  100051     1500  -      -      -        -    -        0      0
     # 70   enet  100059     1500  -      -      -        -    -        0      0
@@ -974,3 +975,4 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
+- Ben Rankin (@uvix
