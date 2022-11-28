@@ -28,7 +28,9 @@ short_description: Resource module to configure VLANs.
 description: This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sumit Jaiswal (@justjais)
+  - Ben Rankin (@uvix
 notes:
   - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
@@ -326,11 +328,11 @@ EXAMPLES = """
 # ------------
 #
 # vios_l2#sh vlan
-
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
 # 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
 # 10   Vlan_10                          active
+# 20   Test_VLAN20                      active
 # 50   pvlan-isolated                   active
 # 60   pvlan-community                  active
 # 70   pvlan-primary                    active
@@ -343,6 +345,7 @@ EXAMPLES = """
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
 # 1    enet  100001     1500  -      -      -        -    -        0      0
 # 10   enet  100010     1000  -      -      -        -    -        0      0
+# 20   enet  100020     700   -      -      -        -    -        0      0
 # 50   enet  100050     1500  -      -      -        -    -        0      0
 # 60   enet  100051     1500  -      -      -        -    -        0      0
 # 70   enet  100059     1500  -      -      -        -    -        0      0
