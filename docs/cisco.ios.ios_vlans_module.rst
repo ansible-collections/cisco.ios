@@ -975,4 +975,3 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
-- Ben Rankin (@uvix
