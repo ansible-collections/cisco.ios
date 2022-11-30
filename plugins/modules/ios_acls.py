@@ -1477,6 +1477,8 @@ parsed:
     module argspec.
 """
 
+import debugpy
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
@@ -1484,7 +1486,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import Acls
 
-import debugpy
 
 debugpy.listen(3000)
 debugpy.wait_for_client()

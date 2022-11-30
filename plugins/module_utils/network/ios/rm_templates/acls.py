@@ -42,7 +42,8 @@ def _tmplt_access_list_entries(aces):
             else:
                 port_proto_type = list(config_data[attr]["port_protocol"].keys())[0]
                 command += " {0} {1}".format(
-                    port_proto_type, config_data[attr]["port_protocol"][port_proto_type]
+                    port_proto_type,
+                    config_data[attr]["port_protocol"][port_proto_type],
                 )
         return command
 
@@ -137,8 +138,8 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
                         "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
-                    }
-                }
+                    },
+                },
             },
             "shared": True,
         },
@@ -171,8 +172,8 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name_r|d() }}": {
                         "name": "{{ acl_name_r }}",
                         "aces": [{"remarks": "{{ remarks }}"}],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -190,8 +191,8 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name_linear|d() }}": {
                         "name": "{{ acl_name_linear }}",
                         "aces": [{"remarks": "{{ remarks }}"}],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -223,10 +224,10 @@ class AclsTemplate(NetworkTemplate):
                                     "host": "{{ host }}",
                                 },
                                 "log": {"set": "{{ not not log }}"},
-                            }
+                            },
                         ],
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -321,7 +322,7 @@ class AclsTemplate(NetworkTemplate):
                                     "user_cookie": "{{ log_input.split(' ')[-1].split(')')[0] if log_input is defined and 'tag' in log_input }}",
                                 },
                                 "option": {
-                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}"
+                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}",
                                 },
                                 "precedence": "{{ precedence }}",
                                 "time_range": "{{ time_range }}",
@@ -339,10 +340,10 @@ class AclsTemplate(NetworkTemplate):
                                     "lt": "{{ ttl_lt }}",
                                     "neq": "{{ ttl_neq }}",
                                 },
-                            }
+                            },
                         ],
-                    }
-                }
+                    },
+                },
             },
         },
     ]

@@ -108,7 +108,10 @@ class Acls(ResourceModule):
             acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
             begin = len(self.commands)  # to determine the index for acl command
             self._compare_aces(
-                wentry.pop("aces", {}), hentry.pop("aces", {}), afi, wname
+                wentry.pop("aces", {}),
+                hentry.pop("aces", {}),
+                afi,
+                wname,
             )  # handle aces
 
             if len(self.commands) != begin or (not have and want):
@@ -141,8 +144,9 @@ class Acls(ResourceModule):
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of ACLs {1} with state merged."
                             " Please use state replaced or overridden.".format(
-                                hentry.get("sequence", ""), name
-                            )
+                                hentry.get("sequence", ""),
+                                name,
+                            ),
                         )
                     else:  # other action states
                         if hentry.get("remarks"):  # remove remark if not in want
@@ -208,7 +212,8 @@ class Acls(ResourceModule):
                             temp_rem = []  # remarks if defined in an ace
                             for ace in acl.get("aces"):  # each ace turned to dict
                                 if ace.get("destination") and ace.get("destination", {}).get(
-                                    "port_protocol", {}
+                                    "port_protocol",
+                                    {},
                                 ):
                                     for k, v in (
                                         ace.get("destination", {}).get("port_protocol", {}).items()
@@ -227,8 +232,8 @@ class Acls(ResourceModule):
                                         ]:  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
                                                 "Unsupported attribute for standard ACL - {0}.".format(
-                                                    ks
-                                                )
+                                                    ks,
+                                                ),
                                             )
 
                                 if ace.get("remarks"):
@@ -246,7 +251,7 @@ class Acls(ResourceModule):
 
                         if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}}
+                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}},
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update({acl.get("name"): {"aces": temp_aces}})
