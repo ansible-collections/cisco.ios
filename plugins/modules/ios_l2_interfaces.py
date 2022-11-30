@@ -1,28 +1,17 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2022 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_l2_interfaces
 """
+
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 
 DOCUMENTATION = """
 module: ios_l2_interfaces
@@ -30,7 +19,9 @@ short_description: Resource Module to configure L2 interfaces.
 description: This module provides declarative management of Layer-2 interface on Cisco
   IOS devices.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-petByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSv Version 15.2 on VIRL.
   - This module works with connection C(network_cli).
@@ -124,6 +115,13 @@ options:
         choices:
         - access
         - trunk
+        - dot1q_tunnel
+        - dynamic
+        - dynamic_auto
+        - dynamic_desirable
+        - private_vlan_host
+        - private_vlan_promiscuous
+        - private_vlan_trunk
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -161,7 +159,6 @@ options:
         | include ip route|ipv6 route) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
-
 """
 
 EXAMPLES = """
@@ -525,33 +522,63 @@ EXAMPLES = """
 #             }
 #         }
 #     ]
-
 """
+
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
-  sample: The configuration returned will always be in the same format of the parameters above.
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 commands:
-  description: The set of commands pushed to the remote device
-  returned: always
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['interface GigabitEthernet0/1', 'switchport access vlan 20']
+  sample:
+    - interface GigabitEthernet0/2
+    - switchport trunk allowed vlan 15-20,40
+    - switchport trunk encapsulation dot1q
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - interface GigabitEthernet0/1
+    - switchport access vlan 30
+    - switchport trunk encapsulation dot1q
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
-    L2_InterfacesArgs,
+    L2_interfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l2_interfaces.l2_interfaces import (
-    L2_Interfaces,
+    L2_interfaces,
 )
 
 
@@ -561,22 +588,20 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
-
     module = AnsibleModule(
-        argument_spec=L2_InterfacesArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        argument_spec=L2_interfacesArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
-    result = L2_Interfaces(module).execute_module()
+
+    result = L2_interfaces(module).execute_module()
     module.exit_json(**result)
 
 

@@ -13,6 +13,8 @@ __metaclass__ = type
 
 import socket
 
+from itertools import count, groupby
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     is_masklen,
@@ -46,9 +48,7 @@ def reverify_diff_py35(want, have):
     for each_want in want:
         diff = True
         for each_have in have:
-            if each_have == sorted(each_want) or sorted(each_have) == sorted(
-                each_want,
-            ):
+            if each_have == sorted(each_want) or sorted(each_have) == sorted(each_want):
                 diff = False
         if diff:
             return True
@@ -219,16 +219,12 @@ def validate_ipv4(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(
-                    value,
-                ),
+                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(value),
             )
 
         if not is_masklen(address[1]):
             module.fail_json(
-                msg="invalid value for mask: {0}, mask should be in range 0-32".format(
-                    address[1],
-                ),
+                msg="invalid value for mask: {0}, mask should be in range 0-32".format(address[1]),
             )
 
 
@@ -237,9 +233,7 @@ def validate_ipv6(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv6 address>/<mask>, got invalid format {0}".format(
-                    value,
-                ),
+                msg="address format is <ipv6 address>/<mask>, got invalid format {0}".format(value),
             )
         else:
             if not 0 <= int(address[1]) <= 128:
@@ -382,3 +376,51 @@ def get_interface_type(interface):
         return "Serial"
     else:
         return "unknown"
+
+
+def get_ranges(data):
+    """
+    Returns a generator object that yields lists of
+    consecutive integers from a list of integers.
+    """
+    for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
+        yield list(group)
+
+
+def numerical_sort(string_int_list):
+    """Sorts list of integers that are digits in numerical order."""
+
+    as_int_list = []
+
+    for vlan in string_int_list:
+        as_int_list.append(int(vlan))
+    as_int_list.sort()
+    return as_int_list
+
+
+def vlan_list_to_range(cmd):
+    """
+    Converts a comma separated list of vlan IDs
+    into ranges.
+    """
+    ranges = []
+    for v in get_ranges(cmd):
+        ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
+    return ",".join(ranges)
+
+
+def vlan_range_to_list(vlans):
+    result = []
+    if vlans:
+        for part in vlans:
+            if part == "none":
+                break
+            if "-" in part:
+                a, b = part.split("-")
+                a, b = int(a), int(b)
+                result.extend(range(a, b + 1))
+            else:
+                a = int(part)
+                result.append(a)
+        return numerical_sort(result)
+    return result
