@@ -101,6 +101,18 @@ class Acls(ResourceModule):
         for the acls network resource.
         """
 
+        def rearrange_cmds(aces):
+            non_negates = []
+            negates = []
+            for ace in aces:
+                if ace.startswith("no"):
+                    negates.append(ace)
+                else:
+                    non_negates.append(ace)
+            if non_negates or negates:
+                negates.extend(non_negates)
+            return negates
+
         wplists = want.get("acls", {})
         hplists = have.get("acls", {})
         for wname, wentry in iteritems(wplists):
@@ -113,6 +125,8 @@ class Acls(ResourceModule):
                 afi,
                 wname,
             )  # handle aces
+
+            self.commands[begin:len(self.commands)] = rearrange_cmds(self.commands[begin:len(self.commands)])
 
             if len(self.commands) != begin or (not have and want):
                 _cmd = self.acl_name_cmd(wname, afi, acl_type)
