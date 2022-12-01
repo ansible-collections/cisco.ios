@@ -126,7 +126,9 @@ class Acls(ResourceModule):
                 wname,
             )  # handle aces
 
-            self.commands[begin:len(self.commands)] = rearrange_cmds(self.commands[begin:len(self.commands)])
+            self.commands[begin : len(self.commands)] = rearrange_cmds(
+                self.commands[begin : len(self.commands)]
+            )
 
             if len(self.commands) != begin or (not have and want):
                 _cmd = self.acl_name_cmd(wname, afi, acl_type)
