@@ -127,7 +127,7 @@ class Acls(ResourceModule):
             )  # handle aces
 
             self.commands[begin : len(self.commands)] = rearrange_cmds(
-                self.commands[begin : len(self.commands)]
+                self.commands[begin : len(self.commands)],
             )
 
             if len(self.commands) != begin or (not have and want):
