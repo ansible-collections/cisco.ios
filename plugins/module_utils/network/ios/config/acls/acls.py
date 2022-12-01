@@ -305,7 +305,6 @@ class Acls(ResourceModule):
             "110": "pop3",
             "25": "smtp",
             "111": "sunrpc",
-            "514": "syslog",
             "49": "tacacs",
             "517": "talk",
             "23": "telnet",
@@ -313,5 +312,5 @@ class Acls(ResourceModule):
             "540": "uucp",
             "43": "whois",
             "80": "www",
-        }
+        }  # NOTE - "514": "syslog" duplicate value device renders "cmd"
         return map_protocol.get(num, num)
