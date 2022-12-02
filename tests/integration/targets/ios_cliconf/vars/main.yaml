@@ -5,7 +5,7 @@ interface_name: GigabitEthernet2
 
 # commit_confirmed timers
 ansible_ios_commit_confirmed: true
-ansible_ios_commit_delay: 0 # changed during play
+ansible_ios_commit_delay: 0
 ansible_ios_commit_confirmed_timeout: 1
 
 # ansible timeouts must be 'sane' with respect to commit timeouts
