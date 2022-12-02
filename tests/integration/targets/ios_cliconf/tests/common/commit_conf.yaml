@@ -1,0 +1,131 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_cliconf integration tests on connection={{ ansible_connection }}
+
+- name: Test command_timeout greater than commit_confirmed
+  ansible.builtin.include_tasks: _test_config.yaml
+  vars:
+    ansible_command_timeout: 61
+
+- name: Assert that the result error equals stderr_ansible_command_timeout
+  ansible.builtin.assert:
+    that:
+      - result.module_stderr is defined
+      - result.module_stderr == stderr_ansible_command_timeout
+
+- name: Test commit_delay greater than commit_confirmed
+  ansible.builtin.include_tasks: _test_config.yaml
+  vars:
+    ansible_ios_commit_delay: 61
+
+- name: Assert that the result error equals std_err_commit_delay_too_high
+  ansible.builtin.assert:
+    that:
+      - result.module_stderr is defined
+      - result.module_stderr == std_err_commit_delay_too_high
+
+- name: Test commit_delay greater than command_timeout
+  ansible.builtin.include_tasks: _test_config.yaml
+  vars:
+    ansible_ios_commit_delay: 31
+
+- name: Assert that the result error equals std_err_command_timeout_too_low
+  ansible.builtin.assert:
+    that:
+      - result.module_stderr is defined
+      - result.module_stderr == std_err_command_timeout_too_low
+
+- name: Test archiving disabled
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - no archive
+  ignore_errors: true
+
+- ansible.builtin.include_tasks: _test_config.yaml
+
+- name: Assert that the result error equals std_err_archiving_disabled
+  ansible.builtin.assert:
+    that:
+      - result.module_stderr is defined
+      - result.module_stderr == std_err_archiving_disabled
+
+- ansible.builtin.include_tasks: _enable_archiving.yaml
+
+- name: Push failed configuration
+  cisco.ios.ios_config:
+    lines:
+      - banner motd &I will be rolled back&
+      - i_will_fail
+  ignore_errors: true
+
+- name: Test rollback change pending message
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - banner motd &I wont get this far&
+  ignore_errors: true
+
+- name: Assert that the result error equals std_err_rollback_pending
+  ansible.builtin.assert:
+    that:
+      - result.module_stderr is defined
+      - result.module_stderr == std_err_rollback_pending
+
+- name: Manually revert the failed configuration
+  cisco.ios.ios_command:
+    commands:
+      - configure revert now
+
+- name: Test basic commit confirmed operation
+  register: result
+  cisco.ios.ios_interfaces:
+    state: merged
+    config:
+      - name: "{{interface_name}}"
+        description: this is the start description
+
+- name: Test rollback operation. Device will become unreachable
+  register: result
+  cisco.ios.ios_interfaces:
+    state: merged
+    config:
+      - name: "{{interface_name}}"
+        description: this should be rolled back
+        enabled: false
+  ignore_errors: true
+
+- ansible.builtin.include_tasks: _assert_and_wait.yaml
+
+- name: Verify rollback operation
+  register: get_desc
+  ios_command:
+    commands:
+      - "show interfaces {{interface_name}} | include Description"
+
+- name: Assert that the description equals the start description
+  ansible.builtin.assert:
+    that:
+      - "'this is the start description' in get_desc.stdout[0]"
+
+- name: Test commit delay operation. Device should become unreachable
+  vars:
+    # make the device unreachable after 5 seconds.
+    # delay "configure confirm" by 10 seconds. If no delay the configuration
+    # will be confirmed immediately and leave the device permanently unreachable
+    ansible_ios_commit_delay: 10
+  register: result
+  ios_config:
+    lines:
+      -  event timer watchdog time 5 maxrun 100
+      -  action 1.0 cli command "enable"
+      -  action 1.2 cli command "configure terminal"
+      -  action 1.3 cli command "interface {{interface_name}}"
+      -  action 1.4 cli command "shutdown"
+    parents: event manager applet apetite-for-destruction authorization bypass
+  ignore_errors: true
+
+- ansible.builtin.include_tasks: _assert_and_wait.yaml
+
+- name: Verify and cleanup
+  ansible.builtin.include_tasks: _cleanup.yaml

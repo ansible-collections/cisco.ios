@@ -1,0 +1,6 @@
+---
+- register: result
+  cisco.ios.ios_config:
+    lines:
+      - banner motd &oh no this shouldnt happen&
+  ignore_errors: true

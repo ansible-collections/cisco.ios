@@ -1,0 +1,10 @@
+---
+- cisco.ios.ios_config:
+    lines:
+      - no description
+    parents: "interface {{ interface_name }}"
+
+- cisco.ios.ios_config:
+    lines:
+      - no banner motd
+      - no archive
