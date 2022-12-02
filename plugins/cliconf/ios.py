@@ -249,14 +249,20 @@ class Cliconf(CliconfBase):
                 >= commit_timeout * 60
             ):
                 raise ValueError(
-                    "commit_delay can't be longer or equal to "
+                    "commit_delay can't be greater or equal to "
                     "commit_confirmed_timeout. "
                     "Please adjust and try again",
                 )
 
             if command_timeout < self.get_option("commit_delay"):
                 raise ValueError(
-                    "ansible_command_timeout must be longer " "than commit_delay",
+                    "ansible_command_timeout must be greater than commit_delay "
+                    "Please adjust and try again",
+                )
+            elif command_timeout > commit_timeout * 60:
+                raise ValueError(
+                    "ansible_command_timeout can't be greater than commit_confirmed_timeout "
+                    "Please adjust and try again",
                 )
 
             if re.search(r"Archive.*not.enabled", archive_state):
@@ -340,7 +346,7 @@ class Cliconf(CliconfBase):
                 if "command timeout triggered" in error_msg and commit_confirmed:
                     exp_return = commit_confirmed_timeout * 60 - command_timeout
                     error_msg = (
-                        "Got command timeout error. Rollback timer active. "
+                        "Got command timeout error. Rollback timer is active. "
                         f"Allow approximately {exp_return} seconds from now "
                         "for the device to become reachable again"
                     )
