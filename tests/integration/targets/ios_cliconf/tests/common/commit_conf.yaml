@@ -117,11 +117,11 @@
   register: result
   ios_config:
     lines:
-      -  event timer watchdog time 5 maxrun 100
-      -  action 1.0 cli command "enable"
-      -  action 1.2 cli command "configure terminal"
-      -  action 1.3 cli command "interface {{interface_name}}"
-      -  action 1.4 cli command "shutdown"
+      - event timer watchdog time 5 maxrun 100
+      - action 1.0 cli command "enable"
+      - action 1.2 cli command "configure terminal"
+      - action 1.3 cli command "interface {{interface_name}}"
+      - action 1.4 cli command "shutdown"
     parents: event manager applet apetite-for-destruction authorization bypass
   ignore_errors: true
 
