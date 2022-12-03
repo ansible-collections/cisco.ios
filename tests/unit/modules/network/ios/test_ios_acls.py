@@ -129,7 +129,7 @@ class TestIosAclsModule(TestIosModule):
                                         destination=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="www"),
+                                            port_protocol=dict(eq="80"),
                                         ),
                                         protocol="tcp",
                                         sequence=100,
