@@ -15,15 +15,15 @@ ansible_connect_retry_timeout: 30
 
 # expected error messages
 stderr_ansible_command_timeout: "ansible_command_timeout can't be greater than
-commit_confirmed_timeout Please adjust and try again"
+  commit_confirmed_timeout Please adjust and try again"
 stderr_command_timeout: "Got command timeout error.
-Rollback timer is active. Allow approximately 30 seconds
-from now for the device to become reachable again"
+  Rollback timer is active. Allow approximately 30 seconds
+  from now for the device to become reachable again"
 std_err_commit_delay_too_high: "commit_delay can't be greater or equal
-to commit_confirmed_timeout. Please adjust and try again"
+  to commit_confirmed_timeout. Please adjust and try again"
 std_err_command_timeout_too_low: "ansible_command_timeout must be greater than commit_delay
-Please adjust and try again"
+  Please adjust and try again"
 std_err_archiving_disabled: "commit_confirmed option set,
-but archiving not enabled on device. Please set up archiving and try again"
+  but archiving not enabled on device. Please set up archiving and try again"
 std_err_rollback_pending: "Existing rollback change already pending.
-Please resolve by issuing 'configure confirm' or 'configure revert now'"
+  Please resolve by issuing 'configure confirm' or 'configure revert now'"
