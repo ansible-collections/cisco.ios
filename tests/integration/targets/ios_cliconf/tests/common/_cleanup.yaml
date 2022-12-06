@@ -1,10 +1,16 @@
 ---
-- cisco.ios.ios_config:
+- name: Wait 20 secs for device to become reachable again and begin cleanup
+  ansible.builtin.wait_for:
+    timeout: 20
+
+- name: Clean interface configuration
+  cisco.ios.ios_config:
     lines:
       - no description
     parents: "interface {{ interface_name }}"
 
-- cisco.ios.ios_config:
+- name: Clean banner and disable archive
+  cisco.ios.ios_config:
     lines:
       - no banner motd
       - no archive

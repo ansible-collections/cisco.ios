@@ -1,7 +1,7 @@
 ---
 # this is the interface of the device that when shut down
 # MUST leave the device unreachable for the tests to succeed.
-interface_name: GigabitEthernet2
+interface_name: GigabitEthernet1
 
 # commit_confirmed timers
 ansible_ios_commit_confirmed: true

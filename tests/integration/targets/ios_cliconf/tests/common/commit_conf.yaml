@@ -2,23 +2,23 @@
 - ansible.builtin.debug:
     msg: START ios_cliconf integration tests on connection={{ ansible_connection }}
 
-- name: Test command_timeout greater than commit_confirmed
+- name: Tests command_timeout greater than commit_confirmed
   ansible.builtin.include_tasks: _test_config.yaml
   vars:
     ansible_command_timeout: 61
 
-- name: Assert that the result error equals stderr_ansible_command_timeout
+- name: Asserts that the result error equals stderr_ansible_command_timeout
   ansible.builtin.assert:
     that:
       - result.module_stderr is defined
       - result.module_stderr == stderr_ansible_command_timeout
 
-- name: Test commit_delay greater than commit_confirmed
+- name: Tests commit_delay greater than commit_confirmed
   ansible.builtin.include_tasks: _test_config.yaml
   vars:
     ansible_ios_commit_delay: 61
 
-- name: Assert that the result error equals std_err_commit_delay_too_high
+- name: Asserts that the result error equals std_err_commit_delay_too_high
   ansible.builtin.assert:
     that:
       - result.module_stderr is defined
@@ -35,14 +35,15 @@
       - result.module_stderr is defined
       - result.module_stderr == std_err_command_timeout_too_low
 
-- name: Test archiving disabled
+- name: Disable archiving
   register: result
   cisco.ios.ios_config:
     lines:
       - no archive
   ignore_errors: true
 
-- ansible.builtin.include_tasks: _test_config.yaml
+- name: Test archiving disabled
+  ansible.builtin.include_tasks: _test_config.yaml
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
@@ -50,7 +51,8 @@
       - result.module_stderr is defined
       - result.module_stderr == std_err_archiving_disabled
 
-- ansible.builtin.include_tasks: _enable_archiving.yaml
+- name: Enable archiving
+  ansible.builtin.include_tasks: _enable_archiving.yaml
 
 - name: Push failed configuration
   cisco.ios.ios_config:
@@ -95,7 +97,8 @@
         enabled: false
   ignore_errors: true
 
-- ansible.builtin.include_tasks: _assert_and_wait.yaml
+- name: Asset failures and wait for rollback
+  ansible.builtin.include_tasks: _assert_and_wait.yaml
 
 - name: Verify rollback operation
   register: get_desc
@@ -125,7 +128,8 @@
     parents: event manager applet apetite-for-destruction authorization bypass
   ignore_errors: true
 
-- ansible.builtin.include_tasks: _assert_and_wait.yaml
+- name: Asset failures and wait for cleanup
+  ansible.builtin.include_tasks: _assert_and_wait.yaml
 
 - name: Verify and cleanup
   ansible.builtin.include_tasks: _cleanup.yaml
