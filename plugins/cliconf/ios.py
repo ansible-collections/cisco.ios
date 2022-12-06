@@ -571,6 +571,14 @@ class Cliconf(CliconfBase):
                     "'output' value %s is not supported for run_commands" % output,
                 )
 
+            if isinstance(cmd.get("command"), str):
+                if (re.search(r'conf.*t.*r.*t.*', cmd.get("command"))
+                        and self.get_option("commit_confirmed")):
+                    raise ValueError(
+                        "commit_confirmed option set. Please disable before "
+                        "attempting explicit commit."
+                    )
+
             try:
                 out = self.send_command(**cmd)
             except AnsibleConnectionFailure as e:
