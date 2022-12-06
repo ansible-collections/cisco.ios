@@ -572,11 +572,12 @@ class Cliconf(CliconfBase):
                 )
 
             if isinstance(cmd.get("command"), str):
-                if (re.search(r'conf.*t.*r.*t.*', cmd.get("command"))
-                        and self.get_option("commit_confirmed")):
+                if re.search(r"conf.*t.*r.*t.*", cmd.get("command")) and self.get_option(
+                    "commit_confirmed"
+                ):
                     raise ValueError(
                         "commit_confirmed option set. Please disable before "
-                        "attempting explicit commit."
+                        "attempting explicit commit.",
                     )
 
             try:
