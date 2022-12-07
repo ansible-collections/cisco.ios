@@ -1,8 +1,4 @@
 ---
-- name: Wait 20 secs for device to become reachable again and begin cleanup
-  ansible.builtin.wait_for:
-    timeout: 20
-
 - name: Clean interface configuration
   cisco.ios.ios_config:
     lines:
