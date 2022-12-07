@@ -37,7 +37,7 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>commit_confirmed</b>
+                    <b>commit_confirm_immediate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -47,17 +47,19 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">"no"</div>
                 </td>
                     <td>
-                                <div>env:ANSIBLE_IOS_COMMIT_CONFIRMED</div>
-                                <div>var: ansible_ios_commit_confirmed</div>
+                                <div>env:ANSIBLE_IOS_COMMIT_CONFIRM_IMMEDIATE</div>
+                                <div>var: ansible_ios_commit_confirm_immediate</div>
                     </td>
                 <td>
-                        <div>enable or disable commit confirmed mode</div>
+                        <div>Enable or disable commit confirm mode.</div>
+                        <div>Confirms the configuration pushed after a custom/ default timeout.(default 1 minute).</div>
+                        <div>For custom timeout configuration set commit_confirm_timeout value.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>commit_confirmed_timeout</b>
+                    <b>commit_confirm_timeout</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -67,34 +69,13 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">1</div>
                 </td>
                     <td>
-                                <div>env:ANSIBLE_IOS_COMMIT_CONFIRMED_TIMEOUT</div>
-                                <div>var: ansible_ios_commit_confirmed_timeout</div>
+                                <div>env:ANSIBLE_IOS_COMMIT_CONFIRM_TIMEOUT</div>
+                                <div>var: ansible_ios_commit_confirm_timeout</div>
                     </td>
                 <td>
                         <div>Commits the configuration on a trial basis for the time specified in minutes.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>commit_delay</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                        <b>Default:</b><br/><div style="color: blue">0</div>
-                </td>
-                    <td>
-                                <div>env:ANSIBLE_IOS_COMMIT_DELAY</div>
-                                <div>var: ansible_ios_commit_delay</div>
-                    </td>
-                <td>
-                        <div>Wait the specified amount of time in seconds before committing changes.</div>
-                        <div>Some changes, like interface shutdown, will take effect immediately. However, other changes, like changing routing protocol parameters, may take some time before leaving the device unreachable.</div>
-                        <div>The commit_delay makes the task wait the specified amount of time before committing changes thus reducing the risk of committing changes before the device becomes unreachable.</div>
-                        <div>Make sure commit_delay is lower than commit_confirmed_timeout and ansible_command_timeout.</div>
+                        <div>Using commit_confirm_timeout without specifying commit_confirm_immediate would need an explicit <code>configure confirm</code> using the ios_command module to confirm/commit the changes made.</div>
+                        <div>Refer to example for a use case demonstration.</div>
                 </td>
             </tr>
             <tr>
