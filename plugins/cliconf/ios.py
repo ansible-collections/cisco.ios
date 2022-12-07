@@ -218,7 +218,7 @@ class Cliconf(CliconfBase):
         :return: None
         """
         if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
-            commit_timeout = self.get_option("commit_confirm_timeout", 1)
+            commit_timeout = self.get_option("commit_confirm_timeout", 1)  # add default timeout
             persistent_command_timeout = self._connection.get_option("persistent_command_timeout")
             # check archive state
             archive_state = self.send_command("show archive")
@@ -507,15 +507,6 @@ class Cliconf(CliconfBase):
                 raise ValueError(
                     "'output' value %s is not supported for run_commands" % output,
                 )
-
-            if isinstance(cmd.get("command"), str):
-                if re.search(r"conf.*t.*r.*t.*", cmd.get("command")) and self.get_option(
-                    "commit_confirmed",
-                ):
-                    raise ValueError(
-                        "commit_confirmed option set. Please disable before "
-                        "attempting explicit commit.",
-                    )
 
             try:
                 out = self.send_command(**cmd)
