@@ -38,13 +38,14 @@ options:
     - Enable or disable commit confirm mode.
     - Confirms the configuration pushed after a custom/ default timeout.(default 1 minute).
     - For custom timeout configuration set commit_confirm_timeout value.
+    - On commit_confirm_immediate default value for commit_confirm_timeout is considered 1 minute
+      when variable in not explicitly declared.
     env:
     - name: ANSIBLE_IOS_COMMIT_CONFIRM_IMMEDIATE
     vars:
     - name: ansible_ios_commit_confirm_immediate
   commit_confirm_timeout:
     type: int
-    default: 1
     description:
     - Commits the configuration on a trial basis for the time
       specified in minutes.
@@ -68,6 +69,71 @@ options:
     default: []
     vars:
     - name: ansible_ios_config_commands
+"""
+
+EXAMPLES = """
+# NOTE - IOS waits for a `configure confirm` when the configure terminal
+# command executed is `configure terminal revert timer <timeout>` within the timeout
+# period for the configuration to commit successfully, else a rollback
+# happens.
+
+# Use commit confirm with timeout and confirm the commit explicitly
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_timeout: 1
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+    - name: "Confirm the Commit"
+      cisco.ios.ios_command:
+        commands:
+          - configure confirm
+
+# Commands fired
+# - configure terminal revert timer 1 (cliconf specific)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (from ios_command module)
+
+# Use commit confirm with timeout and confirm the commit via cliconf
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_immediate: True
+    ansible_ios_commit_confirm_timeout: 3
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+# Commands fired
+# - configure terminal revert timer 3 (cliconf specific)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (cliconf specific)
+
+# Use commit confirm via cliconf using default timeout
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_immediate: True
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+# Commands fired
+# - configure terminal revert timer 1 (cliconf specific with default timeout)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (cliconf specific)
+
 """
 
 import json
@@ -218,7 +284,13 @@ class Cliconf(CliconfBase):
         :return: None
         """
         if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
-            commit_timeout = self.get_option("commit_confirm_timeout", 1)  # add default timeout
+
+            commit_timeout = (
+                self.get_option("commit_confirm_timeout")
+                if self.get_option("commit_confirm_timeout")
+                else 1
+            )  # add default timeout not default: 1 to support above or operation
+
             persistent_command_timeout = self._connection.get_option("persistent_command_timeout")
             # check archive state
             archive_state = self.send_command("show archive")
