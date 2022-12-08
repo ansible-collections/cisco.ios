@@ -31,6 +31,32 @@ description:
   commands from Cisco IOS network devices.
 version_added: 1.0.0
 options:
+  commit_confirm_immediate:
+    type: boolean
+    default: false
+    description:
+    - Enable or disable commit confirm mode.
+    - Confirms the configuration pushed after a custom/ default timeout.(default 1 minute).
+    - For custom timeout configuration set commit_confirm_timeout value.
+    - On commit_confirm_immediate default value for commit_confirm_timeout is considered 1 minute
+      when variable in not explicitly declared.
+    env:
+    - name: ANSIBLE_IOS_COMMIT_CONFIRM_IMMEDIATE
+    vars:
+    - name: ansible_ios_commit_confirm_immediate
+  commit_confirm_timeout:
+    type: int
+    description:
+    - Commits the configuration on a trial basis for the time
+      specified in minutes.
+    - Using commit_confirm_timeout without specifying commit_confirm_immediate would
+      need an explicit C(configure confirm) using the ios_command module
+      to confirm/commit the changes made.
+    - Refer to example for a use case demonstration.
+    env:
+    - name: ANSIBLE_IOS_COMMIT_CONFIRM_TIMEOUT
+    vars:
+    - name: ansible_ios_commit_confirm_timeout
   config_commands:
     description:
     - Specifies a list of commands that can make configuration changes
@@ -43,6 +69,71 @@ options:
     default: []
     vars:
     - name: ansible_ios_config_commands
+"""
+
+EXAMPLES = """
+# NOTE - IOS waits for a `configure confirm` when the configure terminal
+# command executed is `configure terminal revert timer <timeout>` within the timeout
+# period for the configuration to commit successfully, else a rollback
+# happens.
+
+# Use commit confirm with timeout and confirm the commit explicitly
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_timeout: 1
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+    - name: "Confirm the Commit"
+      cisco.ios.ios_command:
+        commands:
+          - configure confirm
+
+# Commands fired
+# - configure terminal revert timer 1 (cliconf specific)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (from ios_command module)
+
+# Use commit confirm with timeout and confirm the commit via cliconf
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_immediate: True
+    ansible_ios_commit_confirm_timeout: 3
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+# Commands fired
+# - configure terminal revert timer 3 (cliconf specific)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (cliconf specific)
+
+# Use commit confirm via cliconf using default timeout
+
+- name: Example commit confirmed
+  vars:
+    ansible_ios_commit_confirm_immediate: True
+  tasks:
+    - name: "Commit confirmed with timeout"
+      cisco.ios.ios_hostname:
+        state: merged
+        config:
+          hostname: R1
+
+# Commands fired
+# - configure terminal revert timer 1 (cliconf specific with default timeout)
+# - hostname R1 (from hostname resource module)
+# - configure confirm (cliconf specific)
+
 """
 
 import json
@@ -186,6 +277,55 @@ class Cliconf(CliconfBase):
         return diff
 
     @enable_mode
+    def configure(self):
+        """
+        Enter global configuration mode based on the
+        status of commit_confirm
+        :return: None
+        """
+        if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
+
+            commit_timeout = (
+                self.get_option("commit_confirm_timeout")
+                if self.get_option("commit_confirm_timeout")
+                else 1
+            )  # add default timeout not default: 1 to support above or operation
+
+            persistent_command_timeout = self._connection.get_option("persistent_command_timeout")
+            # check archive state
+            archive_state = self.send_command("show archive")
+            rollback_state = self.send_command("show archive config rollback timer")
+
+            if persistent_command_timeout > commit_timeout * 60:
+                raise ValueError(
+                    "ansible_command_timeout can't be greater than commit_confirm_timeout "
+                    "Please adjust and try again",
+                )
+
+            if re.search(r"Archive.*not.enabled", archive_state):
+                raise ValueError(
+                    "commit_confirm_immediate option set, but archiving "
+                    "not enabled on device. "
+                    "Please set up archiving and try again",
+                )
+
+            if not re.search(
+                r"%No Rollback Confirmed Change pending",
+                rollback_state,
+            ):
+                raise ValueError(
+                    "Existing rollback change already pending. "
+                    "Please resolve by issuing 'configure confirm' "
+                    "or 'configure revert now'",
+                )
+
+            self.send_command(
+                f"configure terminal revert timer {commit_timeout}",
+            )
+        else:
+            self.send_command("configure terminal")
+
+    @enable_mode
     def edit_config(
         self,
         candidate=None,
@@ -205,8 +345,10 @@ class Cliconf(CliconfBase):
 
         results = []
         requests = []
+        # commit confirm specific attributes
+        commit_confirm = self.get_option("commit_confirm_immediate")
         if commit:
-            self.send_command("configure terminal")
+            self.configure()
             for line in to_list(candidate):
                 if not isinstance(line, Mapping):
                     line = {"command": line}
@@ -217,6 +359,9 @@ class Cliconf(CliconfBase):
                     requests.append(cmd)
 
             self.send_command("end")
+            if commit_confirm:
+                self.send_command("configure confirm")
+
         else:
             raise ValueError("check mode is not supported")
 

@@ -1,0 +1,21 @@
+---
+# this is the interface of the device that when shut down
+# MUST leave the device unreachable for the tests to succeed.
+interface_name: GigabitEthernet1
+
+# commit_confirmed timers
+ansible_ios_commit_confirm_immediate: true
+ansible_ios_commit_confirm_timeout: 1
+
+# ansible timeouts must be 'sane' with respect to commit timeouts
+ansible_command_timeout: 30
+ansible_connect_timeout: 30
+ansible_connect_retry_timeout: 30
+
+# expected error messages
+stderr_ansible_command_timeout: "ansible_command_timeout can't be greater than
+  commit_confirm_timeout Please adjust and try again"
+std_err_archiving_disabled: "commit_confirm_immediate option set,
+  but archiving not enabled on device. Please set up archiving and try again"
+std_err_rollback_pending: "Existing rollback change already pending.
+  Please resolve by issuing 'configure confirm' or 'configure revert now'"
