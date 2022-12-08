@@ -278,11 +278,6 @@ class AclsTemplate(NetworkTemplate):
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
                                     "remove": "{{ source }}",
-                                    # "address": "{% if source is defined and '.' in source and 'host' not in source %}{{\
-                                    #     source.split(' ')[0] }}{% elif source is defined and '::' in source %}{{ source }}{% endif %}",
-                                    # "wildcard_bits": "{{ source.split(' ')[1] if source is defined and '.' in source and 'host' not in source }}",
-                                    # "any": "{{ True if source is defined and source == 'any' }}",
-                                    # "host": "{{ source.split(' ')[1] if source is defined and 'host' in source }}",
                                     "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
                                     "port_protocol": {
                                         "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
@@ -295,14 +290,6 @@ class AclsTemplate(NetworkTemplate):
                                 },
                                 "destination": {
                                     "remove": "{{ destination }}",
-                                    # "address": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
-                                    #     destination.split(' ')[0] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
-                                    #         std_dest.split(' ')[0] }}{% elif destination is defined and '::' in destination %}{{ destination }}{% endif %}",
-                                    # "wildcard_bits": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
-                                    #     destination.split(' ')[1] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
-                                    #         std_dest.split(' ')[1] }}{% endif %}",
-                                    # "any": "{{ True if destination is defined and destination == 'any' else None }}",
-                                    # "host": "{{ destination.split(' ')[1] if destination is defined and 'host' in destination }}",
                                     "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
                                     "port_protocol": {
                                         "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{\
