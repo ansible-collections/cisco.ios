@@ -40,9 +40,7 @@ def _tmplt_access_list_entries(aces):
                     config_data[attr]["port_protocol"]["range"].get("end"),
                 )
             else:
-                port_proto_type = list(
-                    config_data[attr]["port_protocol"].keys(),
-                )[0]
+                port_proto_type = list(config_data[attr]["port_protocol"].keys())[0]
                 command += " {0} {1}".format(
                     port_proto_type,
                     config_data[attr]["port_protocol"][port_proto_type],
@@ -65,23 +63,15 @@ def _tmplt_access_list_entries(aces):
                 command += " {protocol_number}".format(**aces["protocol_options"])
             else:
                 command += " {0}".format(list(aces["protocol_options"])[0])
-                proto_option = aces["protocol_options"].get(
-                    list(aces["protocol_options"])[0],
-                )
+                proto_option = aces["protocol_options"].get(list(aces["protocol_options"])[0])
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
         if aces.get("source"):
             command = source_destination_common_config(aces, command, "source")
         if aces.get("destination"):
-            command = source_destination_common_config(
-                aces,
-                command,
-                "destination",
-            )
+            command = source_destination_common_config(aces, command, "destination")
         if isinstance(proto_option, dict):
-            command += " {0}".format(
-                list(proto_option.keys())[0].replace("_", "-"),
-            )
+            command += " {0}".format(list(proto_option.keys())[0].replace("_", "-"))
         if aces.get("dscp"):
             command += " dscp {dscp}".format(**aces)
         if aces.get("sequence") and aces.get("afi") == "ipv6":
@@ -246,12 +236,12 @@ class AclsTemplate(NetworkTemplate):
                 r"""\s*(?P<sequence>\d+)*
                         \s*(?P<grant>deny|permit)*
                         (\sevaluate\s(?P<evaluate>\S+))?
-                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp))?
+                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
                         (\s(?P<protocol_num>\d+))?
-                        (\s(?P<source>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
+                        (\s(?P<source>((object-group\s\S+\s|)(any|(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+|host\s\S+)))?)
                         (\s(?P<source_port_protocol>(eq|gts|gt|lt|neq)\s(\S+|\d+)))?
                         (\srange\s(?P<srange_start>\d+)\s(?P<srange_end>\d+))?
-                        (\s(?P<destination>(any|\S+\s\S+|host\s\S+|object-group\s\S+))?)
+                        (\s(?P<destination>((object-group\s\S+\s|)(any|\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}\s\S+|host\s\S+)))?)
                         (\s(?P<dest_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
                         (\srange\s(?P<drange_start>\d+)\s(?P<drange_end>\d+))?
                         (\s(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg))?
@@ -287,11 +277,7 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol_number": "{{ protocol_num }}",
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
-                                    "address": "{% if source is defined and '.' in source and 'host' not in source %}{{\
-                                        source.split(' ')[0] }}{% elif source is defined and '::' in source %}{{ source }}{% endif %}",
-                                    "wildcard_bits": "{{ source.split(' ')[1] if source is defined and '.' in source and 'host' not in source }}",
-                                    "any": "{{ True if source is defined and source == 'any' }}",
-                                    "host": "{{ source.split(' ')[1] if source is defined and 'host' in source }}",
+                                    "remove": "{{ source }}",
                                     "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
                                     "port_protocol": {
                                         "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
@@ -303,14 +289,7 @@ class AclsTemplate(NetworkTemplate):
                                     },
                                 },
                                 "destination": {
-                                    "address": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
-                                        destination.split(' ')[0] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
-                                            std_dest.split(' ')[0] }}{% elif destination is defined and '::' in destination %}{{ destination }}{% endif %}",
-                                    "wildcard_bits": "{% if destination is defined and '.' in destination and 'host' not in destination %}{{\
-                                        destination.split(' ')[1] }}{% elif std_dest is defined and '.' in std_dest and 'host' not in std_dest %}{{\
-                                            std_dest.split(' ')[1] }}{% endif %}",
-                                    "any": "{{ True if destination is defined and destination == 'any' else None }}",
-                                    "host": "{{ destination.split(' ')[1] if destination is defined and 'host' in destination }}",
+                                    "remove": "{{ destination }}",
                                     "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
                                     "port_protocol": {
                                         "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{\
