@@ -197,7 +197,10 @@ class TestIosL3InterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(name="GigabitEthernet0/3", ipv6=[dict(address="FD5D:12C9:2202:1::1/64")]),
-                    dict(name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]),
+                    dict(
+                        name="GigabitEthernet0/2",
+                        ipv4=[dict(address="192.168.0.2/24", secondary=False)],
+                    ),
                     dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                     dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.4/24")]),
                 ],
