@@ -72,7 +72,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -129,7 +129,7 @@ class TestIosAclsModule(TestIosModule):
                                         destination=dict(
                                             address="192.0.2.0",
                                             wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="www"),
+                                            port_protocol=dict(eq="80"),
                                         ),
                                         protocol="tcp",
                                         sequence=100,
@@ -179,7 +179,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -233,6 +233,7 @@ class TestIosAclsModule(TestIosModule):
                                         sequence="30",
                                         source=dict(
                                             object_group="test_network_og",
+                                            any=True,
                                         ),
                                         destination=dict(any=True),
                                         dscp="ef",
@@ -281,7 +282,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             ip access-list standard test_acl
@@ -347,7 +348,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -403,6 +404,7 @@ class TestIosAclsModule(TestIosModule):
                                         sequence="30",
                                         source=dict(
                                             object_group="test_network_og",
+                                            any=True,
                                         ),
                                         destination=dict(any=True),
                                         dscp="ef",
@@ -427,7 +429,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -484,7 +486,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             Reflexive IP access list MIRROR
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
@@ -544,6 +546,7 @@ class TestIosAclsModule(TestIosModule):
                                         sequence="30",
                                         source=dict(
                                             object_group="test_network_og",
+                                            any=True,
                                         ),
                                         destination=dict(any=True),
                                         dscp="ef",
@@ -595,7 +598,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -615,7 +618,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
@@ -840,7 +843,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             access-list 110 remark test ab.
             access-list 110 remark test again ab.
             """,
@@ -896,6 +899,7 @@ class TestIosAclsModule(TestIosModule):
                                         sequence="30",
                                         source=dict(
                                             object_group="test_network_og",
+                                            any=True,
                                         ),
                                         destination=dict(any=True),
                                         dscp="ef",
@@ -952,6 +956,7 @@ class TestIosAclsModule(TestIosModule):
             "remark ipv6 remarks one",
             "remark ipv6 remarks test 2",
         ]
+
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden_option(self):

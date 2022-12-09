@@ -194,7 +194,7 @@
 
     - ansible.builtin.assert:
         that:
-          - revert.commands|length == 11
+          - revert.commands|length == 10
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
