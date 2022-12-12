@@ -130,7 +130,7 @@ class L2_interfaces(ResourceModule):
                     )
                 elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
-                        "no switchport trunk {0} vlan {1}".format(
+                        "switchport trunk {0} vlan remove {1}".format(
                             vlan.split("_", maxsplit=1)[0],
                             vlan_list_to_range(sorted(rem_vlan)),
                         ),
