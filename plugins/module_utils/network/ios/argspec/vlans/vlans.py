@@ -51,6 +51,19 @@ class VlansArgs(object):
                     "type": "str",
                     "choices": ["enabled", "disabled"],
                 },
+                "private_vlan": {
+                    "type": "dict",
+                    "options": {
+                        "type": {
+                            "type": "str",
+                            "choices": ["primary", "community", "isolated"],
+                        },
+                        "associated": {
+                            "type": "list",
+                            "elements": "int",
+                        },
+                    },
+                },
             },
             "type": "list",
         },
