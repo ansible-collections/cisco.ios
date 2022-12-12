@@ -1,6 +1,5 @@
 bugfixes:
   - ios_l2_interfaces - fix dynamic option for mode attribute.
   - ios_l2_interfaces - fix state operation for existing vlans.
-  - ios_l2_interfaces - fix command to remove allowed_vlans and pruning_vlans from configuration.
 minor_changes:
   - ios_l2_interfaces - more options for modes attribute added.
