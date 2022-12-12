@@ -260,9 +260,9 @@ class TestIosL2InterfacesModule(TestIosModule):
             "no switchport mode",
             "switchport trunk encapsulation isl",
             "switchport trunk native vlan 20",
-            "no switchport trunk allowed vlan 10-19",
+            "switchport trunk allowed vlan remove 10-19",
             "switchport trunk allowed vlan add 21-25",
-            "no switchport trunk pruning vlan 20",
+            "switchport trunk pruning vlan remove 20",
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None

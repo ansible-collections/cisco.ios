@@ -1,0 +1,2 @@
+bugfixes:
+  - ios_l2_interfaces - fix command to remove allowed_vlans and pruning_vlans from configuration.
