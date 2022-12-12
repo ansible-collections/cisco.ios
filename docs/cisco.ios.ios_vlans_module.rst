@@ -29,12 +29,12 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="2">Parameter</th>
+            <th colspan="3">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -51,7 +51,7 @@ Parameters
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -68,7 +68,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -85,7 +85,64 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>private_vlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Options for private vlan configuration.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>associated</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of private VLANs associated with the primary . Only works with `type: primary`.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>primary</li>
+                                    <li>isolated</li>
+                                    <li>community</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Private VLAN type</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>remote_span</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -105,7 +162,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>shutdown</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -125,7 +182,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -145,7 +202,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>vlan_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -162,7 +219,7 @@ Parameters
             </tr>
 
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -179,7 +236,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -397,21 +454,36 @@ Examples
           name: Test_VLAN20
           mtu: 700
           shutdown: disabled
-        - vlan_id: 30
-          name: Test_VLAN30
-          mtu: 1000
+        - vlan_id: 50
+          name: pvlan-isolated
+          private_vlan:
+            type: isolated
+        - vlan_id: 60
+          name: pvlan-community
+          private_vlan:
+            type: community
+        - vlan_id: 70
+          name: pvlan-primary
+          private_vlan:
+            type: primary
+            associated:
+              - 50
+              - 60
+
         state: replaced
 
     # After state:
     # ------------
     #
-    # vios_l2#show vlan
+    # vios_l2#sh vlan
     # VLAN Name                             Status    Ports
     # ---- -------------------------------- --------- -------------------------------
-    # 1    default                          active    Gi0/1, Gi0/2
-    # 10   vlan_10                          active
+    # 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
+    # 10   Vlan_10                          active
     # 20   Test_VLAN20                      active
-    # 30   Test_VLAN30                      active
+    # 50   pvlan-isolated                   active
+    # 60   pvlan-community                  active
+    # 70   pvlan-primary                    active
     # 1002 fddi-default                     act/unsup
     # 1003 token-ring-default               act/unsup
     # 1004 fddinet-default                  act/unsup
@@ -420,17 +492,27 @@ Examples
     # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
     # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
     # 1    enet  100001     1500  -      -      -        -    -        0      0
-    # 10   enet  100010     1500  -      -      -        -    -        0      0
+    # 10   enet  100010     1000  -      -      -        -    -        0      0
     # 20   enet  100020     700   -      -      -        -    -        0      0
-    # 30   enet  100030     1000  -      -      -        -    -        0      0
+    # 50   enet  100050     1500  -      -      -        -    -        0      0
+    # 60   enet  100051     1500  -      -      -        -    -        0      0
+    # 70   enet  100059     1500  -      -      -        -    -        0      0
     # 1002 fddi  101002     1500  -      -      -        -    -        0      0
     # 1003 tr    101003     1500  -      -      -        -    -        0      0
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+    #
+    # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+    # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
     #
     # Remote SPAN VLANs
     # ------------------------------------------------------------------------------
-    # 10
+    #
+    #
+    # Primary Secondary Type              Ports
+    # ------- --------- ----------------- ------------------------------------------
+    # 70      50        isolated
+    # 70      60        community
 
     # Using deleted
 

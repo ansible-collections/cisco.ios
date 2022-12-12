@@ -41,6 +41,9 @@ merged:
     - name Vlan_30
     - state suspend
     - shutdown
+    - vlan 100
+    - name pvlan-primary
+    - private-vlan primary
   after:
     - mtu: 1500
       name: default
@@ -63,6 +66,13 @@ merged:
       shutdown: enabled
       state: suspend
       vlan_id: 30
+    - mtu: 1500
+      name: pvlan-primary
+      shutdown: disabled
+      state: active
+      vlan_id: 100
+      private_vlan:
+        type: primary
     - mtu: 1500
       name: fddi-default
       shutdown: enabled
