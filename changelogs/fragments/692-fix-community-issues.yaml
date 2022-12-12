@@ -5,5 +5,5 @@ bugfixes:
     (https://github.com/ansible-collections/cisco.ios/issues/680)
 
 minor_changes:
-  - ios.ios_route_maps - added asplain/decimal support
+  - ios.ios_route_maps - added 32-bit number support
     (https://github.com/ansible-collections/cisco.ios/pull/692)
