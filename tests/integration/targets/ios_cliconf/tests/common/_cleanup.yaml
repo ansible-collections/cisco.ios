@@ -1,0 +1,12 @@
+---
+- name: Clean interface configuration
+  cisco.ios.ios_config:
+    lines:
+      - no description
+    parents: "interface {{ interface_name }}"
+
+- name: Clean banner and disable archive
+  cisco.ios.ios_config:
+    lines:
+      - no banner motd
+      - no archive
