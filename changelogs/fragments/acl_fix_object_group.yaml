@@ -1,4 +1,0 @@
-bugfixes:
-  - ios_acls - fix object group for extended acls.
-  - ios_acls - fix eq to process protocol number as protocol name.
-  - ios_acls - fix acl commands order on replaced and overridden state.

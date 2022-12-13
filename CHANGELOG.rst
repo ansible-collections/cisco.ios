@@ -5,6 +5,33 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.2.0
+======
+
+Minor Changes
+-------------
+
+- cliconf - Added support for commit confirm functionality and rollback based on timeout.
+- ios_facts - default facts to show operating state data autonomous or controller mode.
+- ios_l2_interfaces - more options for modes attribute added.
+
+Bugfixes
+--------
+
+- ios_acls - fix acl commands order on replaced and overridden state.
+- ios_acls - fix eq to process protocol number as protocol name.
+- ios_acls - fix object group for extended acls.
+- ios_l2_interfaces - fix command to remove allowed_vlans and pruning_vlans from configuration.
+- ios_l2_interfaces - fix dynamic option for mode attribute.
+- ios_l2_interfaces - fix state operation for existing vlans.
+- ios_l3_interfaces - fix command generation on attribute value being false.
+- ios_vlans - Added support for private VLAN configuration
+
+Documentation Changes
+---------------------
+
+- ios_command - add examples for complex variables while using command module.
+
 v4.1.0
 ======
 
