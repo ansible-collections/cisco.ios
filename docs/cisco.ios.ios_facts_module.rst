@@ -83,7 +83,7 @@ Parameters
                 </td>
                 <td>
                         <div>When supplied, this argument restricts the facts collected to a given subset.</div>
-                        <div>Possible values for this argument include <code>all</code>, <code>min</code>, <code>hardware</code>, <code>config</code>, and <code>interfaces</code>.</div>
+                        <div>Possible values for this argument include <code>all</code>, <code>min</code>, <code>default</code>, <code>hardware</code>, <code>config</code>, and <code>interfaces</code>.</div>
                         <div>Specify a list of values to include a larger subset.</div>
                         <div>Use a value with an initial <code>!</code> to collect all facts except that subset.</div>
                 </td>
