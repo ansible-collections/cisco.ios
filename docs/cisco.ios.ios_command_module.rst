@@ -139,22 +139,137 @@ Examples
 
 .. code-block:: yaml
 
-    - name: run show version on remote devices
+    - name: Run show version on remote devices
       cisco.ios.ios_command:
-        commands: show version
+        commands: show version'
 
-    - name: run show version and check to see if output contains IOS
+    # output-
+
+    # ok: [iosxeappliance] => {
+    #     "changed": false,
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 "show version"
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": null
+    #         }
+    #     },
+    #     "stdout": [
+    #         "Cisco IOS XE Software, Version 17.03.04a\nCisco IOS Software [Amsterdam], Virtual XE Software ... register is 0x2102"
+    #     ],
+    #     "stdout_lines": [
+    #         [
+    #             "Cisco IOS XE Software, Version 17.03.04a",
+    #             "Cisco IOS Software [Amsterdam], Virtual XE Software",
+    #             "..."
+    #             "Configuration register is 0x2102"
+    #         ]
+    #     ]
+    # }
+
+    - name: Run show version and check to see if output contains IOS
       cisco.ios.ios_command:
         commands: show version
         wait_for: result[0] contains IOS
 
-    - name: run multiple commands on remote nodes
+    # output-
+
+    # ok: [iosxeappliance] => {
+    #     "changed": false,
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 "show version"
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": [
+    #                 "result[0] contains IOS"
+    #             ]
+    #         }
+    #     },
+    #     "stdout": [
+    #         "Cisco IOS XE Software, Version 17.03.04a\nCisco IOS Software [Amsterdam], Virtual XE Software ... register is 0x2102"
+    #     ],
+    #     "stdout_lines": [
+    #         [
+    #             "Cisco IOS XE Software, Version 17.03.04a",
+    #             "Cisco IOS Software [Amsterdam], Virtual XE Software",
+    #             "..."
+    #             "Configuration register is 0x2102"
+    #         ]
+    #     ]
+    # }
+
+    - name: Run multiple commands on remote nodes
       cisco.ios.ios_command:
         commands:
         - show version
         - show interfaces
 
-    - name: run multiple commands and evaluate the output
+    # output-
+
+
+    # ok: [iosxeappliance] => {
+    #     "changed": false,
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 "show version",
+    #                 "show interfaces"
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": null
+    #         }
+    #     },
+    #     "stdout": [
+    #         "Cisco IOS XE Software, Version 17.03.04a\nCisco IOS Software [Amsterdam], Virtual XE Software Configuration register is 0x2102",
+    #         "Loopback999 is up, line protocol is up ...failures, 0 output buffers swapped out"
+    #     ],
+    #     "stdout_lines": [
+    #         [
+    #             "Cisco IOS XE Software, Version 17.03.04a",
+    #             "Cisco IOS Software [Amsterdam], Virtual XE Software",
+    #             "..."
+    #             "Configuration register is 0x2102"
+    #         ],
+    #         [
+    #             "Loopback999 is up, line protocol is up ",
+    #             "  Hardware is Loopback",
+    #             "  Description: this is a test",
+    #             "  MTU 1514 bytes, BW 8000000 Kbit/sec, DLY 5000 usec, ",
+    #             "     reliability 255/255, txload 1/255, rxload 1/255",
+    #             "  Encapsulation LOOPBACK, loopback not set",
+    #             "  Keepalive set (10 sec)",
+    #             "  Last input never, output never, output hang never",
+    #             "  Last clearing of \"show interface\" counters never",
+    #             "  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0",
+    #             "  Queueing strategy: fifo",
+    #             "  Output queue: 0/0 (size/max)",
+    #             "  5 minute input rate 0 bits/sec, 0 packets/sec",
+    #             "  5 minute output rate 0 bits/sec, 0 packets/sec",
+    #             "     0 packets input, 0 bytes, 0 no buffer",
+    #             "     Received 0 broadcasts (0 IP multicasts)",
+    #             "     0 runts, 0 giants, 0 throttles ",
+    #             "     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort",
+    #             "     0 packets output, 0 bytes, 0 underruns",
+    #             "     Output 0 broadcasts (0 IP multicasts)",
+    #             "     0 output errors, 0 collisions, 0 interface resets",
+    #             "     0 unknown protocol drops",
+    #             "     0 output buffer failures, 0 output buffers swapped out"
+    #         ]
+    #     ]
+    # }
+
+
+    - name: Run multiple commands and evaluate the output
       cisco.ios.ios_command:
         commands:
         - show version
@@ -163,15 +278,117 @@ Examples
         - result[0] contains IOS
         - result[1] contains Loopback0
 
-    - name: run commands that require answering a prompt
+    # output-
+    # failed play as result[1] contains Loopback0 is false
+
+    # fatal: [iosxeappliance]: FAILED! => {
+    #     "changed": false,
+    #     "failed_conditions": [
+    #         "result[1] contains Loopback0"
+    #     ],
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 "show version",
+    #                 "show interfaces"
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": [
+    #                 "result[0] contains IOS",
+    #                 "result[1] contains Loopback0"
+    #             ]
+    #         }
+    #     },
+    #     "msg": "One or more conditional statements have not been satisfied"
+    # }
+
+    - name: Run commands that require answering a prompt
       cisco.ios.ios_command:
         commands:
-        - command: 'clear counters GigabitEthernet0/1'
+        - command: 'clear counters GigabitEthernet2'
           prompt: 'Clear "show interface" counters on this interface \[confirm\]'
           answer: 'y'
-        - command: 'clear counters GigabitEthernet0/2'
+        - command: 'clear counters GigabitEthernet3'
           prompt: '[confirm]'
           answer: "\r"
+
+    # output-
+
+    # ok: [iosxeappliance] => {
+    #     "changed": false,
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 {
+    #                     "answer": "y",
+    #                     "check_all": false,
+    #                     "command": "clear counters GigabitEthernet2",
+    #                     "newline": true,
+    #                     "output": null,
+    #                     "prompt": "Clear \"show interface\" counters on this interface \\[confirm\\]",
+    #                     "sendonly": false
+    #                 },
+    #                 {
+    #                     "answer": "\r",
+    #                     "check_all": false,
+    #                     "command": "clear counters GigabitEthernet3",
+    #                     "newline": true,
+    #                     "output": null,
+    #                     "prompt": "[confirm]",
+    #                     "sendonly": false
+    #                 }
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": null
+    #         }
+    #     },
+    #     "stdout": [
+    #         "Clear \"show interface\" counters on this interface [confirm]y",
+    #         "Clear \"show interface\" counters on this interface [confirm]"
+    #     ],
+    #     "stdout_lines": [
+    #         [
+    #             "Clear \"show interface\" counters on this interface [confirm]y"
+    #         ],
+    #         [
+    #             "Clear \"show interface\" counters on this interface [confirm]"
+    #         ]
+    #     ]
+    # }
+
+    - name: Run commands with complex values like special characters in variables
+      cisco.ios.ios_command:
+        commands: ["{{ 'test aaa group TEST ' ~ user ~ ' ' ~ password ~ ' new-code' }}"]
+      vars:
+        user: "dummy"
+        password: "!dummy"
+
+    # ok: [iosxeappliance] => {
+    #     "changed": false,
+    #     "invocation": {
+    #         "module_args": {
+    #             "commands": [
+    #                 "test aaa group group test !dummy new-code"
+    #             ],
+    #             "interval": 1,
+    #             "match": "all",
+    #             "retries": 10,
+    #             "wait_for": null
+    #         }
+    #     },
+    #     "stdout": [
+    #         "User was successfully authenticated."
+    #     ],
+    #     "stdout_lines": [
+    #         [
+    #             "User was successfully authenticated."
+    #         ]
+    #     ]
+    # }
 
 
 

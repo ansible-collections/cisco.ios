@@ -1,0 +1,2 @@
+bugfixes:
+  - ios_l3_interfaces - fix command generation on attribute value being false.

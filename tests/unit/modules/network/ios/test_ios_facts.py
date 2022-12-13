@@ -82,6 +82,7 @@ class TestIosFactsModule(TestIosModule):
         result = self.execute_module()
         self.assertEqual(result["ansible_facts"]["ansible_net_model"], "WS-C3750-24TS")
         self.assertEqual(result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU")
+        self.assertEqual(result["ansible_facts"]["ansible_net_operatingmode"], "autonomous")
         self.assertEqual(
             result["ansible_facts"]["ansible_net_stacked_models"],
             ["WS-C3750-24TS-E", "WS-C3750-24TS-E", "WS-C3750G-12S-E"],
