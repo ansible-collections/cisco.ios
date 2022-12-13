@@ -197,7 +197,10 @@ class TestIosL3InterfacesModule(TestIosModule):
             dict(
                 config=[
                     dict(name="GigabitEthernet0/3", ipv6=[dict(address="FD5D:12C9:2202:1::1/64")]),
-                    dict(name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]),
+                    dict(
+                        name="GigabitEthernet0/2",
+                        ipv4=[dict(address="192.168.0.2/24", secondary=False)],
+                    ),
                     dict(name="Serial1/0", ipv4=[dict(address="192.168.0.5/24")]),
                     dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.0.4/24")]),
                 ],
@@ -306,6 +309,10 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="Serial3/0",
                         ipv6=[dict(address="FD5D:12C9:2201:1::1/64", anycast=True)],
                     ),
+                    dict(
+                        name="Vlan51",
+                        ipv4=[dict(address="192.168.0.4/31")],
+                    ),
                     dict(name="Serial4/0", ipv6=[dict(address="FD5D:12C9:2201:2::1/64", cga=True)]),
                     dict(name="Serial5/0", ipv6=[dict(address="FD5D:12C9:2201:3::1/64", eui=True)]),
                     dict(
@@ -355,6 +362,8 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 address fd5d:12c9:2201:4::1/64 link-local",
             "interface Serial5/0",
             "ipv6 address fd5d:12c9:2201:3::1/64 eui",
+            "interface Vlan51",
+            "ip address 192.168.0.4 255.255.255.254",
         ]
 
         result = self.execute_module(changed=True)
