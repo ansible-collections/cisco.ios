@@ -1,5 +1,0 @@
-bugfixes:
-  - ios_l2_interfaces - fix dynamic option for mode attribute.
-  - ios_l2_interfaces - fix state operation for existing vlans.
-minor_changes:
-  - ios_l2_interfaces - more options for modes attribute added.

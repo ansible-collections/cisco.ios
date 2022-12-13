@@ -1,2 +1,0 @@
-minor_changes:
-  - cliconf - Added support for commit confirm functionality and rollback based on timeout.
