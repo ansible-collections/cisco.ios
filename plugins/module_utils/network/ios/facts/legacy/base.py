@@ -57,6 +57,7 @@ class Default(FactsBase):
         data = self.responses[0]
         if data:
             self.facts["iostype"] = self.parse_iostype(data)
+            self.facts["operatingmode"] = self.parse_operatingmode(data, self.facts["iostype"])
             self.facts["serialnum"] = self.parse_serialnum(data)
             self.parse_stacks(data)
         data = self.responses[1] + self.responses[2]
@@ -70,6 +71,14 @@ class Default(FactsBase):
             return "IOS-XE"
         else:
             return "IOS"
+
+    def parse_operatingmode(self, data, iostype):
+        # for older ios versions default being autonomous where operating mode classification not present
+        match = re.search(r"Router\soperating\smode: (\S+)", data)
+        if (match and "autonomous" in match.group(1).lower()) or iostype == "IOS":
+            return "autonomous"
+        else:
+            return "controller"
 
     def parse_serialnum(self, data):
         match = re.search(r"board ID (\S+)", data)

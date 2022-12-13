@@ -1,0 +1,2 @@
+bugfixes:
+  - ios_vlans - Added support for private VLAN configuration

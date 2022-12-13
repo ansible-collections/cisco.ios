@@ -185,6 +185,28 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         vlan_id=123,
                     ),
+                    dict(
+                        name="pvlan-primary",
+                        private_vlan=dict(
+                            type="primary",
+                            associated=[11, 12],
+                        ),
+                        vlan_id=10,
+                    ),
+                    dict(
+                        name="pvlan-community",
+                        private_vlan=dict(
+                            type="community",
+                        ),
+                        vlan_id=11,
+                    ),
+                    dict(
+                        name="pvlan-isolated",
+                        private_vlan=dict(
+                            type="isolated",
+                        ),
+                        vlan_id=12,
+                    ),
                 ],
                 state="replaced",
             ),
@@ -202,6 +224,25 @@ class TestIosVlansModule(TestIosModule):
             "no mtu 610",
             "name Replace_RemoteIsInMyName",
             "remote-span",
+            "vlan 10",
+            "no state active",
+            "no shutdown",
+            "no mtu 4472",
+            "name pvlan-primary",
+            "private-vlan primary",
+            "private-vlan association 11,12",
+            "vlan 11",
+            "no state active",
+            "no shutdown",
+            "no mtu 4472",
+            "name pvlan-community",
+            "private-vlan community",
+            "vlan 12",
+            "no state active",
+            "no shutdown",
+            "no mtu 4472",
+            "name pvlan-isolated",
+            "private-vlan isolated",
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -419,6 +460,12 @@ class TestIosVlansModule(TestIosModule):
                     1    default with space               active    Fa0/40, Fa0/41, Fa0/42, Fa0/43, Fa0/44, Fa0/45
                     2    dummy_NETWORK                    active
                     3    dummy_RACK_INFRA                 active    Fa0/46, Fa0/47, Fa0/48
+                    10   pvlan-primary                    active
+                    11   pvlan-isolated                   active
+                    12   pvlan-community                  active
+                    20   pvlan-2p                         active
+                    21   pvlan-2i                         active
+                    22   pvlan-2c                         active
                     1002 dummy-default                    act/unsup
                     1003 dummy-ring-default               act/unsup
                     1004 dummy-default                    act/unsup
@@ -432,6 +479,12 @@ class TestIosVlansModule(TestIosModule):
                     1    enet  100001     1500  -      -      -        -    -        0      0
                     2    enet  100002     1500  -      -      -        -    -        0      0
                     3    enet  100003     1500  -      -      -        -    -        0      0
+                    10   enet  100010     1500  -      -      -        -    -        0      0
+                    11   enet  100011     1500  -      -      -        -    -        0      0
+                    12   enet  100012     1500  -      -      -        -    -        0      0
+                    20   enet  100020     1500  -      -      -        -    -        0      0
+                    21   enet  100021     1500  -      -      -        -    -        0      0
+                    22   enet  100022     1500  -      -      -        -    -        0      0
                     1002 fddi  101002     1500  -      -      -        -    -        0      0
                     1003 tr    101003     1500  -      -      -        -    -        0      0
                     1004 fdnet 101004     1500  -      -      -        ieee -        0      0
@@ -446,6 +499,11 @@ class TestIosVlansModule(TestIosModule):
 
                     Primary Secondary Type              Ports
                     ------- --------- ----------------- ------------------------------------------
+                    10      none      primary
+                    none    11        isolated
+                    none    12        community
+                    20      21        isolated
+                    20      22        community
                     """,
                 ),
                 state="parsed",
@@ -472,6 +530,70 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
+            },
+            {
+                "name": "pvlan-primary",
+                "vlan_id": 10,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "primary",
+                },
+            },
+            {
+                "name": "pvlan-isolated",
+                "vlan_id": 11,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "isolated",
+                },
+            },
+            {
+                "name": "pvlan-community",
+                "vlan_id": 12,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "community",
+                },
+            },
+            {
+                "name": "pvlan-2p",
+                "vlan_id": 20,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "primary",
+                    "associated": [
+                        21,
+                        22,
+                    ],
+                },
+            },
+            {
+                "name": "pvlan-2i",
+                "vlan_id": 21,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "isolated",
+                },
+            },
+            {
+                "name": "pvlan-2c",
+                "vlan_id": 22,
+                "state": "active",
+                "shutdown": "disabled",
+                "mtu": 1500,
+                "private_vlan": {
+                    "type": "community",
+                },
             },
             {
                 "name": "dummy-default",

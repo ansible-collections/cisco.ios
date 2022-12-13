@@ -2,9 +2,9 @@
 
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.ios)-->
 
-The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS network appliances.
+The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS and Cisco IOS XE network appliances.
 
-This collection has been tested against Cisco IOSXE Version 17.3 on CML.
+This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility

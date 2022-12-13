@@ -122,7 +122,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "ip address dhcp"
+            "setval": "{{ 'ip address dhcp' if ipv4.dhcp.enable is defined|d(False) or (ipv4.dhcp.client_id is defined or ipv4.dhcp.hostname) else ''}}"
             "{{ (' client-id ' + ipv4.dhcp.client_id) if ipv4.dhcp.client_id is defined else ''}}"
             "{{ (' hostname ' + ipv4.dhcp.hostname) if ipv4.dhcp.hostname is defined else ''}}",
             "result": {
@@ -183,7 +183,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                     re.VERBOSE,
             ),
-            "setval": "ipv6 address autoconfig"
+            "setval": "{{ 'ipv6 address autoconfig' if ipv6.autoconfig.enable|d(False) or ipv6.autoconfig.default|d(False) else ''}}"
             "{{ ' default' if ipv6.autoconfig.default|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
@@ -206,7 +206,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                     re.VERBOSE,
             ),
-            "setval": "ipv6 address dhcp"
+            "setval": "{{ 'ipv6 address dhcp' if ipv6.dhcp.enable|d(False)|d(False) or ipv6.dhcp.rapid_commit|d(False)|d(False)else ''}}"
             "{{ ' rapid-commit' if ipv6.dhcp.rapid_commit|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
