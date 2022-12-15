@@ -549,7 +549,7 @@ def map_config_to_obj(module):
             "state": "present",
             "description": parse_description(configobj, item),
             "rd": parse_rd(configobj, item),
-            "interfaces": interfaces.get(item),
+            "interfaces": interfaces.get(item, []),
             "route_import": parse_import(configobj, item),
             "route_export": parse_export(configobj, item),
             "route_both": parse_both(configobj, item),
@@ -659,6 +659,7 @@ def check_declarative_intent_params(want, module, result):
         if result["changed"]:
             time.sleep(module.params["delay"])
         name = module.params["name"]
+
         rc, out, err = exec_command(module, "show vrf | include {0}".format(name))
         if rc == 0:
             data = out.strip().split()
@@ -668,6 +669,7 @@ def check_declarative_intent_params(want, module, result):
             interface = data[-1]
             for w in want:
                 if w["name"] == vrf:
+
                     if w.get("associated_interfaces") is None:
                         continue
                     for i in w["associated_interfaces"]:
@@ -705,6 +707,7 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
+
     result = {"changed": False}
     warnings = list()
     result["warnings"] = warnings
