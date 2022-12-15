@@ -1,4 +1,0 @@
-doc_changes:
-  - ios_command - add examples for complex variables while using command module.
-minor_changes:
-  - ios_facts - default facts to show operating state data autonomous or controller mode.
