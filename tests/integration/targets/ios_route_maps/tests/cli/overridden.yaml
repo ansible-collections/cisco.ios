@@ -16,6 +16,9 @@
                 action: deny
                 description: this is override route
                 match:
+                  community:
+                    name:
+                      - test_comm_overridden
                   ip:
                     next_hop:
                       acls:
@@ -43,6 +46,13 @@
                       as_number:
                         - 64512
                         - 64512
+                  community:
+                    additive: true
+                    internet: true
+                    gshut: true
+                    no_export: true
+                    no_advertise: true
+                    local_as: true
                   extcommunity:
                     vpn_distinguisher:
                       address: 192.0.2.1:12

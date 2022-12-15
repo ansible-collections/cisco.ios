@@ -1,0 +1,9 @@
+bugfixes:
+  - ios.ios_route_maps - fix idempotency for `set community` operations.
+    (https://github.com/ansible-collections/cisco.ios/issues/635)
+  - ios.ios_route_maos - fix replaced state support.
+    (https://github.com/ansible-collections/cisco.ios/issues/680)
+
+minor_changes:
+  - ios.ios_route_maps - added 32-bit number support
+    (https://github.com/ansible-collections/cisco.ios/pull/692)

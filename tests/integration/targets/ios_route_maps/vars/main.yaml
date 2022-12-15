@@ -30,6 +30,8 @@ merged:
     - route-map test_1 deny 10
     - description this is test route
     - set as-path prepend 64512
+    - set community 4259840100 4259840200
+    - match community test_comm
     - match security-group source tag 10 20
     - match ip next-hop prefix-list test_1_new test_2_new
     - match ip route-source 10
@@ -45,7 +47,12 @@ merged:
               prepend:
                 as_number:
                   - "64512"
+            community:
+              number: 65000:100 65000:200
           match:
+            community:
+              name:
+                - test_comm
             ip:
               next_hop:
                 prefix_lists:
@@ -171,6 +178,10 @@ overridden:
     - set extcommunity vpn-distinguisher 192.0.2.1:12 additive
     - set metric 100 +100 10 20 30
     - set as-path prepend 64512 64512
+    - no match community test_comm
+    - match community test_comm_overridden
+    - no set community 4259840100 4259840200
+    - set community gshut internet local-as no-advertise no-export additive
     - no route-map test_1 deny 20
 
   after:
@@ -178,6 +189,9 @@ overridden:
         - action: deny
           description: this is override route
           match:
+            community:
+              name:
+                - test_comm_overridden
             ip:
               flowspec:
                 acls:
@@ -210,6 +224,13 @@ overridden:
                 as_number:
                   - "64512"
                   - "64512"
+            community:
+              additive: true
+              internet: true
+              gshut: true
+              no_export: true
+              no_advertise: true
+              local_as: true
             metric:
               deviation: plus
               eigrp_delay: 100
@@ -295,6 +316,10 @@ replaced:
     - no match local-preference 100 50
     - set extcommunity vpn-distinguisher 192.0.2.1:12 additive
     - set as-path prepend 64512 64512
+    - no match community test_comm
+    - match community test_comm_replaced
+    - no set community 4259840100 4259840200
+    - set community 4259840300
     - set metric 100 +100 10 20 30
     - no route-map test_1 deny 20
 
@@ -303,6 +328,9 @@ replaced:
         - action: deny
           description: this is replaced route
           match:
+            community:
+              name:
+                - test_comm_replaced
             ip:
               flowspec:
                 acls:
@@ -335,6 +363,8 @@ replaced:
                 as_number:
                   - "64512"
                   - "64512"
+            community:
+              number: 65000:300
             metric:
               deviation: plus
               eigrp_delay: 100
