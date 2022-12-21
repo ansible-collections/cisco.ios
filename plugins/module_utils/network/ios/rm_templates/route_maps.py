@@ -381,9 +381,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("community"):
             cmd = "set community"
             if set["community"].get("number"):
-                cmd += " {number}".format(**set["community"])
-            if set["community"].get("additive"):
-                cmd += " additive"
+                cmd += " " + " ".join(i for i in set["community"]["number"])
             if set["community"].get("gshut"):
                 cmd += " gshut"
             if set["community"].get("internet"):
@@ -396,6 +394,9 @@ def _tmplt_route_map_set(config_data):
                 cmd += " no-export"
             if set["community"].get("none"):
                 cmd += " none"
+            # additive must be set last last
+            if set["community"].get("additive"):
+                cmd += " additive"
             command.append(cmd)
         if set.get("dampening"):
             command.append(
@@ -1034,17 +1035,15 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "clns": "{{ clns.split('clns next-hop ')[1] if clns is defined }}",
                                 "comm_list": "{{ comm_list.split(' ')[1] if comm_list is defined }}",
                                 "community": {
-                                    "number": "{{ community.split(' ')[1] if community is defined and 'additive' not in community.split(' ')\
-                                                 and 'gshut' not in community.split(' ') and 'internet' not in community.split(' ')\
-                                                     and 'internet' not in community.split(' ') and 'local_as' not in community.split(' ')\
-                                                         and 'no_advertise' not in community.split(' ') and 'no_export' not in community.split(' ')\
-                                                             and 'none' not in community.split(' ') }}",
+                                    "number": "{{ community.split(' ')[1:]|reject('in',\
+                                        ['additive','gshut','internet','local-AS','no-advertise','no-export','none']\
+                                    )|join(' ')}}",
                                     "additive": "{{ True if community is defined and 'additive' in community }}",
                                     "gshut": "{{ True if community is defined and 'gshut' in community }}",
                                     "internet": "{{ True if community is defined and 'internet' in community }}",
-                                    "local_as": "{{ True if community is defined and 'local_as' in community }}",
-                                    "no_advertise": "{{ True if community is defined and 'no_advertise' in community }}",
-                                    "no_export": "{{ True if community is defined and 'no_export' in community }}",
+                                    "local_as": "{{ True if community is defined and 'local-AS' in community }}",
+                                    "no_advertise": "{{ True if community is defined and 'no-advertise' in community }}",
+                                    "no_export": "{{ True if community is defined and 'no-export' in community }}",
                                     "none": "{{ True if community is defined and 'none' in community }}",
                                 },
                                 "dampening": {

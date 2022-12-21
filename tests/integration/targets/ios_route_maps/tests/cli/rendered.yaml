@@ -17,7 +17,12 @@
                     prepend:
                       as_number:
                         - 64512
+                  community:
+                    number: 65000:100 65000:200
                 match:
+                  community:
+                    name:
+                      - test_comm
                   ip:
                     next_hop:
                       prefix_lists:

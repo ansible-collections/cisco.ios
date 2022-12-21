@@ -217,13 +217,41 @@ class Route_maps(ResourceModule):
         ]
         for k, v in iteritems(want):
             have_v = have.pop(k, {})
-            if v != have_v and k not in ["ip", "ipv6", "action", "sequence"]:
+            if v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
                 if have_v:
                     self.compare(
                         parsers=parsers,
                         want={compare_type: {k: v}},
                         have={compare_type: {k: have_v}},
                     )
+                else:
+                    self.compare(
+                        parsers=parsers,
+                        want={compare_type: {k: v}},
+                        have=dict(),
+                    )
+
+            if k in ["community"]:
+                if have_v:
+                    if have_v != v:
+                        if self.state == "overridden" or self.state == "replaced":
+                            self.compare(
+                                parsers=parsers,
+                                want={},
+                                have={compare_type: {k: have_v}},
+                            )
+                        elif self.state == "merged":
+                            for _key, _val in have_v.items():
+                                if isinstance(_val, list):
+                                    v[_key].extend(_val)
+                                    v[_key] = list(set(v[_key]))
+                                    v[_key].sort()
+
+                        self.compare(
+                            parsers=parsers,
+                            want={compare_type: {k: v}},
+                            have={compare_type: {k: have_v}},
+                        )
                 else:
                     self.compare(
                         parsers=parsers,
@@ -382,6 +410,28 @@ class Route_maps(ResourceModule):
                                 if _k:
                                     if _k.get("as_number"):
                                         _k["as_number"] = " ".join(_k["as_number"])
+
+                            if set.get("community"):
+                                _k = set.get("community")
+                                if _k and _k.get("number"):
+                                    # asplain helper func
+                                    def to_asplain(new_format):
+                                        _int, _remainder = (int(i) for i in new_format.split(":"))
+                                        return str(_int * 65536 + _remainder)
+
+                                    # convert to asplain for correct sorting
+                                    if ":" in _k["number"]:
+                                        _k["number"] = list(
+                                            map(
+                                                to_asplain,
+                                                _k["number"].split(" "),
+                                            ),
+                                        )
+                                    else:
+                                        _k["number"] = _k["number"].split(" ")
+
+                                    # sort the list to ensure idempotency
+                                    _k["number"].sort()
 
                         action = every.get("action")
                         sequence = every.get("sequence")
