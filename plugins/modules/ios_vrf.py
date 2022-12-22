@@ -549,7 +549,7 @@ def map_config_to_obj(module):
             "state": "present",
             "description": parse_description(configobj, item),
             "rd": parse_rd(configobj, item),
-            "interfaces": interfaces.get(item),
+            "interfaces": interfaces.get(item, []),
             "route_import": parse_import(configobj, item),
             "route_export": parse_export(configobj, item),
             "route_both": parse_both(configobj, item),

@@ -418,3 +418,12 @@ class TestIosVrfModule(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[], sort=False)
+
+    def test_ios_vrf_interface_brownfield(self):
+        set_module_args(dict(name="test_19", interfaces=["Ethernet1"]))
+        commands = [
+            "interface Ethernet1",
+            "vrf forwarding test_19",
+            "ip address 1.2.3.4/5",
+        ]
+        self.execute_module(changed=True, commands=commands, sort=False)
