@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_bgp_global module
 
 
 class Bgp_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bgp_global module
-    """
+    """The arg spec for the ios_bgp_global module"""
 
     argument_spec = {
         "config": {
@@ -484,13 +484,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "igp_cost": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "pre_bestpath": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "transitive": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
