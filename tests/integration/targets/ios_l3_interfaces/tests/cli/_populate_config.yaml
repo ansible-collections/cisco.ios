@@ -27,7 +27,7 @@
        description test global to vrf
        ip address 192.168.255.100 255.255.255.0
        standby version 2
-       ipv6 address 2001:db8::100/64
+       ipv6 address 2001:DB8::100/64
        standby 4 ip 192.168.255.1
        vrrp 123 ip 192.168.255.2
        glbp 4 ip 192.168.255.3

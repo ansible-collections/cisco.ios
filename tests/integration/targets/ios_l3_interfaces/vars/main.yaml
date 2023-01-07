@@ -54,7 +54,7 @@ merged:
     - interface GigabitEthernet6
     - vrf forwarding ansible-test
     - ip address 192.168.255.100 255.255.255.0
-    - ipv6 address 2001:DB8::100/64
+    - ipv6 address 2001:db8::100/64
     - standby 4 ip 192.168.255.1
     - vrrp 123 ip 192.168.255.2
     - glbp 4 ip 192.168.255.3
@@ -176,7 +176,7 @@ replaced:
     - no ip address 192.168.255.100 255.255.255.0
     - ip address 192.168.255.101 255.255.255.0
     - ip address 1.2.3.4 255.255.255.0 secondary
-    - ipv6 address 2001:DB8::100/64
+    - ipv6 address 2001:db8::100/64
     - standby 4 ip 192.168.255.1
     - vrrp 123 ip 192.168.255.2
     - glbp 4 ip 192.168.255.3
