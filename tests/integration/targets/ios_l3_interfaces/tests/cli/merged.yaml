@@ -10,6 +10,7 @@
     - name: L3_interface merged - merge provided configuration with device configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
+        restore_commands: true
         config:
           - name: Loopback999
             ipv4:

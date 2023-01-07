@@ -10,6 +10,7 @@
     - name: L3_interface replaced - replaces device configuration of listed interfaces with provided configuration
       register: result
       cisco.ios.ios_l3_interfaces: &id001
+        restore_commands: true
         config:
           - name: GigabitEthernet2
             ipv4:

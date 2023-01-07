@@ -446,12 +446,6 @@ rtt:
     - no ip address 192.168.25.1 255.255.255.0
     - ipv6 address 2001:db8::100/64
     - no ipv6 address 2001:db8::101/64
-    - standby 4 ip 192.168.255.1
-    - standby 6 ipv6 autoconfig
-    - vrrp 123 ip 192.168.255.2
-    - ip igmp join-group 239.1.2.3
-    - glbp 6 ipv6 FE80::1
-    - glbp 4 ip 192.168.255.3
 
 
 rendered:
