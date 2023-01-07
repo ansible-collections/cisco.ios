@@ -4,6 +4,8 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
+- ansible.builtin.include_tasks: _populate_config.yaml
+
 - block:
     - name: L3_interface merged - merge provided configuration with device configuration
       register: result
@@ -11,7 +13,7 @@
         config:
           - name: Loopback999
             ipv4:
-              - address: 192.0.2.1/24
+              - address: 192.0.99.1/24
           - name: GigabitEthernet2
             ipv6:
               - autoconfig:
@@ -23,6 +25,22 @@
               - address: 198.51.100.2/24
             ipv6:
               - address: 2001:db8:0:3::/64
+          - name: GigabitEthernet4
+            vrf: ansible-test
+          - name: GigabitEthernet5
+            ipv4:
+              - vrf: ansible-test-ipv4
+              - address: 192.168.5.1/24
+          - name: GigabitEthernet6
+            vrf: ansible-test
+            ipv4:
+              - address: 192.168.255.100/24
+            ipv6:
+              - address: 2001:DB8::100/64
+          - name: GigabitEthernet8
+            ipv4:
+              - vrf: ansible-test-ipv4
+              - address: 192.168.8.1/24
         state: merged
 
     - name: L3_interface merged - assert that correct set of commands were generated

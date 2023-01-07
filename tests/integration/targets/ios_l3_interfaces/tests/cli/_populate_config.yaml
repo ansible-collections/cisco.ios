@@ -1,8 +1,39 @@
 ---
 - name: L3_interface - populate configuration
   vars:
-    lines:
-      "interface GigabitEthernet 2\nip address 203.0.113.27 255.255.255.0\ninterface GigabitEthernet 3\nip address 192.0.2.1 255.255.255.0 secondary\nip\
-      \ address 192.0.2.2 255.255.255.0\nipv6 address autoconfig\nipv6 address 2001:db8:0:3::/64\n"
+    vrf_config: |
+      vrf definition ansible-test
+       address-family ipv4
+       address-family ipv6
+      ip vrf ansible-test-ipv4
+
+    interfaces_config: |
+      interface GigabitEthernet 2
+       ip address 203.0.113.27 255.255.255.0
+      interface GigabitEthernet 3
+       ip address 192.0.2.1 255.255.255.0 secondary
+       ip address 192.0.2.2 255.255.255.0
+       ipv6 address autoconfig
+       ipv6 address 2001:db8:0:3::/64
+      interface GigabitEthernet 4
+       description test ipv4-vrf to vrf
+       ip vrf forwarding ansible-test-ipv4
+       ip address 192.168.4.1 255.255.255.0
+      interface GigabitEthernet 5
+       description test vrf to ipv4-vrf
+       vrf forwarding ansible-test
+       ip address 192.168.5.1 255.255.255.0
+      interface GigabitEthernet 6
+       description test global to vrf
+       ip address 192.168.255.100 255.255.255.0
+       standby version 2
+       ipv6 address 2001:db8::100/64
+       standby 4 ip 192.168.255.1
+       vrrp 123 ip 192.168.255.2
+       glbp 4 ip 192.168.255.3
+       standby 6 ipv6 autoconfig
+       glbp 6 ipv6 FE80::1
+       ip igmp join-group 239.1.2.3
+
   ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+    config: "{{ vrf_config + interfaces_config }}"

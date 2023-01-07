@@ -4,7 +4,6 @@
 
 - block:
     - name: Render the commands for provided  configuration
-      become: true
       register: result
       cisco.ios.ios_l3_interfaces:
         config:

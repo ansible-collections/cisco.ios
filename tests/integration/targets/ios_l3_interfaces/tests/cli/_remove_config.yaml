@@ -1,8 +1,19 @@
 ---
 - name: L3_interface - remove configuration
   vars:
-    lines:
-      "interface Loopback 999\nno ip address\ninterface GigabitEthernet 2\nno ip address\nno ipv6 address\ninterface GigabitEthernet 3\nno ip address\nno\
-      \ ipv6 address\n"
+    lines: |
+      no vrf definition ansible-test
+      no ip vrf ansible-test-ipv4
+      interface Loopback 999
+       no ip address
+      interface GigabitEthernet 2
+       no ip address
+       no ipv6 address
+      interface GigabitEthernet 3
+       no ip address
+       no ipv6 address
+      default interface range GigabitEthernet 4-6
+      default interface GigabitEthernet 8
+
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

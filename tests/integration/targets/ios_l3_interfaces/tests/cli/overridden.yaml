@@ -22,6 +22,11 @@
 
               - address: 198.51.100.2/24
                 secondary: true
+
+          - name: GigabitEthernet7
+            ipv4:
+              - address: 169.254.1.1/24
+
         state: overridden
 
     - name: L3_interface overridden - assert that correct set of commands were generated

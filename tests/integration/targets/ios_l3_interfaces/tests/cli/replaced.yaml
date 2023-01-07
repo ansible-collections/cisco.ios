@@ -23,6 +23,20 @@
               - address: 198.51.100.2/24
             ipv6:
               - address: 2001:db8:1:1::/64
+          - name: GigabitEthernet4
+            ipv4:
+              - address: 192.168.44.1/24
+          - name: GigabitEthernet5
+            ipv4:
+              - address: 192.168.55.1/24
+          - name: GigabitEthernet6
+            vrf: ansible-test
+            ipv4:
+              - address: 1.2.3.4/24
+                secondary: true
+              - address: 192.168.255.101/24
+            ipv6:
+              - address: 2001:DB8::100/64
         state: replaced
 
     - name: L3_interface replaced - assert that correct set of commands were generated

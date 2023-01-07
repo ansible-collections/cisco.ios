@@ -4,6 +4,8 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
+- ansible.builtin.include_tasks: _populate_config.yaml
+
 - block:
     - name: L3_interface RTT - apply the provided configuration (base config)
       register: result
@@ -23,6 +25,10 @@
               - address: 198.51.100.2/24
             ipv6:
               - address: 2001:db8:0:3::/64
+          - name: GigabitEthernet5
+            vrf: ansible-test
+            ipv4:
+              - address: 192.168.5.1/24
         state: merged
 
     - name: L3_interface RTT - gather layer 3 interfaces facts
@@ -44,6 +50,16 @@
             ipv4:
               - dhcp:
                   enable: true
+          - name: GigabitEthernet5
+            ipv4:
+              - vrf: ansible-test-ipv4
+              - address: 192.168.55.1/24
+          - name: GigabitEthernet6
+            vrf: ansible-test
+            ipv4:
+              - address: 192.168.25.1/24
+            ipv6:
+              - address: 2001:DB8::101/64
         state: replaced
 
     - name: L3_interface RTT - revert back to base configuration using facts round trip
