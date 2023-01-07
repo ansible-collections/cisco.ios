@@ -37,10 +37,12 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
             "elements": "dict",
             "options": {
                 "name": {"type": "str", "required": True},
+                "vrf": {"type": "str"},
                 "ipv4": {
                     "type": "list",
                     "elements": "dict",
                     "options": {
+                        "vrf": {"type": "str"},
                         "address": {"type": "str"},
                         "secondary": {"type": "bool"},
                         "dhcp_client": {"type": "str"},

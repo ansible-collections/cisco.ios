@@ -95,6 +95,41 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "ipv4.vrf",
+            "getval": re.compile(
+                r"""\s+ip\svrf\sforwarding
+                    \s(?P<vrf>\S+)
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "ip vrf forwarding {{ipv4.vrf.vrf}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                        "vrf": "{{ vrf }}",
+                        }
+                    ],
+                },
+            },
+        },
+        {
+            "name": "vrf",
+            "getval": re.compile(
+                r"""\s+vrf\sforwarding
+                    \s(?P<vrf>\S+)
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "vrf forwarding {{ vrf }}",
+            "result": {
+                "{{ name }}": {
+                    "vrf": "{{ vrf }}"
+                },
+            },
+        },
+
+        {
             "name": "ipv4.pool",
             "getval": re.compile(
                 r"""
