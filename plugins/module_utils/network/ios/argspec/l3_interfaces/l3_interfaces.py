@@ -94,6 +94,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
             },
         },
         "running_config": {"type": "str"},
+        "restore_commands": {"type": "bool", "default": "False"},
         "state": {
             "choices": [
                 "merged",
