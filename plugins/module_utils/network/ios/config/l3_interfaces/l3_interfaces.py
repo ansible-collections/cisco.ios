@@ -131,6 +131,11 @@ class L3_interfaces(ResourceModule):
 
             for key, entry in wacls.items():
                 self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
+                # Always reapply commands part of the intent (want) when there's
+                # a VRF change
+                if want.get('vrf') != have.get('vrf'):
+                    hacls.pop(key, {})
+
                 self.compare(
                     parsers=self.parsers,
                     want={afi: entry},
