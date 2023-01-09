@@ -121,9 +121,26 @@ class L3_interfaces(ResourceModule):
             )
 
     def _compare_lists(self, want, have):
+        _d = {}
+        for idx, var in enumerate((want,have)):
+            _d[idx] = {}
+            if var.get('vrf'):
+                _d[idx].update({'vrf': var.pop('vrf', {})})
+            if var.get('ipv4',{}).get('vrf'):
+                _d[idx].update({'ipv4': {'vrf': var.get('ipv4', {}).pop('vrf')}})
+
+        wvrf, hvrf = _d.values()
+
+        remove_afi = []
+        if wvrf != hvrf:
+            if 'ipv4' in wvrf:
+                remove_afi.append('ipv4')
+            else:
+                remove_afi += ['ipv4', 'ipv6']
+
         self.compare(parsers=['ipv4.vrf', 'vrf'],
-                     want=want,
-                     have=have,
+                     want=wvrf,
+                     have=hvrf,
                      )
 
         for afi in ("ipv4", "ipv6"):
@@ -131,17 +148,16 @@ class L3_interfaces(ResourceModule):
             hacls = have.pop(afi, {})
 
             for key, entry in wacls.items():
+                if afi in remove_afi:
+                    if hacls == wacls:
+                        hacls = {}
                 self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
-                # Always reapply commands part of the intent (want) when there's
-                # a VRF change
-                if want.get('vrf') != have.get('vrf'):
-                    hacls.pop(key, {})
-
                 self.compare(
                     parsers=self.parsers,
                     want={afi: entry},
                     have={afi: hacls.pop(key, {})},
                 )
+
             # remove remaining items in have for replaced
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
