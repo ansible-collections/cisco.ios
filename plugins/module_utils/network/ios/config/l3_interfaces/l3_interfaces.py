@@ -12,6 +12,7 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
@@ -33,6 +34,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     validate_ipv6,
     validate_n_expand_ipv4,
 )
+
 
 class L3_interfaces(ResourceModule):
     """
@@ -84,7 +86,6 @@ class L3_interfaces(ResourceModule):
                 wantd.update({each["name"]: each})
         else:
             wantd = {}
-
         if self.have:
             haved = {}
             for each in self.have:
@@ -157,7 +158,6 @@ class L3_interfaces(ResourceModule):
                     want={afi: entry},
                     have={afi: hacls.pop(key, {})},
                 )
-
             # remove remaining items in have for replaced
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
