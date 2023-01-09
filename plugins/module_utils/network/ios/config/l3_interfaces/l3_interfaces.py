@@ -69,7 +69,7 @@ class L3_interfaces(ResourceModule):
                 and self._module.params.get("restore_commands")):
                 self.interfaces_before = self.get_l3_interfaces()
                 self.run_commands()
-                self.vrf_fixup()
+                self.restore_commands()
             else:
                 self.run_commands()
         return self.result
@@ -165,9 +165,9 @@ class L3_interfaces(ResourceModule):
 
     def get_l3_interfaces(self):
         """
-        Uses the Facts module to obtain the current interfaces configuration.
-        This is further used by vrf_fixup to snapshot the configuration before
-        and after applying/removing VRFs
+        Gets the current interfaces configuration.
+        This is further used by restore_commands to snapshot the configuration before
+        and after applying or removing VRFs
 
         :rtype: list
         :return: list containing re.groupdict matching interfaces and params
@@ -178,14 +178,14 @@ class L3_interfaces(ResourceModule):
         if m:
             return [i.groupdict() for i in m]
 
-    def vrf_fixup(self):
+    def restore_commands(self):
         """
-        Applying/removing VRFs to/from interfaces, removes certain parameters
-        like ip addresses. These parameters must be reapplied. Instead of mapping out
-        every command potentially removed, this function compares before and
-        after snapshots to discover removed commands.
+        Applying or removing VRFs to/from interfaces also removes commands
+        like ip addresses. Instead of mapping out every command potentially
+        removed, this function compares before and after snapshots to discover
+        the commands removed.
 
-        The following is performed
+        The func performs the following
             1. Creates a dict of already deployed commands.
             2. Takes an after snapshot of the interfaces configuration.
             3. Generates a list of removed commands by comparing the before and after
@@ -227,7 +227,7 @@ class L3_interfaces(ResourceModule):
         def include_criteria(cmd):
             """
             Checks if the removed cmd is part of the play or removed as part of
-            applying/removing VRF. Uses the parsers to compare the removed command
+            the vrf change. Uses the parsers to compare the removed command
             with the deployed commands. A match in both assumes the command is put
             there as a result of the play and should not be reapplied
 

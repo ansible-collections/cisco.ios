@@ -151,6 +151,15 @@ options:
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
     type: str
+  restore_commands:
+    description:
+       - This option is only relevant with vrf changes.
+       - Applying or removing vrfs from interfaces also removes the ip address and 
+         ip addresses used by First Hop Redundancy Protocols (FHRP) and more.
+       - When this option is set to true, the removed configuration will be reapplied to
+         the interface after the vrf change.
+    type: str
+    default: false
   state:
     choices:
     - merged
@@ -668,6 +677,61 @@ EXAMPLES = """
 #             "name": "GigabitEthernet0/2"
 #         }
 #     ]
+
+# Applying VRF with the restore_commands option
+
+# Before state:
+# ------------
+
+# router-ios#show running-config | section ^interface.GigabitEthernet5
+# interface GigabitEthernet5
+#  ip address 192.168.255.101 255.255.255.0
+#  standby 1 ip 192.168.255.1
+#  ip igmp join-group 239.1.2.3
+#  negotiation auto
+#  ipv6 address 2001:DB8::101/64
+#  no mop enabled
+#  no mop sysid
+#  glbp 1 ip 192.168.255.2
+
+# - name: set vrf and restore removed commands
+#   ios_l3_interfaces:
+#     restore_commands: true
+#     config:
+#       - name: GigabitEthernet5
+#         vrf: ansible-test
+#         ipv4:
+#           - address: 192.168.255.100/24
+#         ipv6:
+#           - address: 2001:DB8::100/64
+
+# Commands Fired:
+# ---------------
+
+# "commands": [
+#     "interface GigabitEthernet5",
+#     "vrf forwarding ansible-test",
+#     "ip address 192.168.255.100 255.255.255.0",
+#     "ipv6 address 2001:db8::100/64",
+#      Below commands applied as a result of restore_command set to true
+#     "glbp 1 ip 192.168.255.2",
+#     "standby 1 ip 192.168.255.1",
+#     "ip igmp join-group 239.1.2.3"
+# ],
+
+# After state:
+# ------------
+
+# interface GigabitEthernet5
+#  vrf forwarding ansible-test
+#  ip address 192.168.255.100 255.255.255.0
+#  standby 1 ip 192.168.255.1
+#  ip igmp join-group 239.1.2.3
+#  negotiation auto
+#  ipv6 address 2001:DB8::100/64
+#  no mop enabled
+#  no mop sysid
+#  glbp 1 ip 192.168.255.2
 
 """
 
