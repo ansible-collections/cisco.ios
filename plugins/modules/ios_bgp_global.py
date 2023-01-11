@@ -1304,13 +1304,11 @@ options:
           route_server_client:
             description: Configure a neighbor as Route Server client
             type: dict
-            no_log: False
             suboptions:
               set:
                 description: Set Route Server client
                 type: bool
               context:
-                no_log: True
                 description:
                   - Specify Route Server context for neighbor
                   - Route Server context name
@@ -1858,6 +1856,7 @@ options:
         connection to remote host is not required.
     type: str
 """
+
 
 EXAMPLES = """
 # Using merged
@@ -3203,6 +3202,7 @@ EXAMPLES = """
 #     }
 """
 
+
 RETURN = """
 before:
   description: The configuration prior to the module execution.
@@ -3223,17 +3223,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "router bgp 65000"
+    - "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive"
+    - "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - "router bgp 65000"
+    - "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive"
+    - "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -3272,7 +3272,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
