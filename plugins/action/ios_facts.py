@@ -1,39 +1,39 @@
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible.plugins.action import ActionBase
 import json
-from ansible.module_utils._text import to_bytes, to_text
-from ansible.module_utils import basic
-from ansible.module_utils.connection import ConnectionError as AnsibleConnectionError
+
 from ansible.errors import AnsibleActionFail
+from ansible.module_utils import basic
+from ansible.module_utils._text import to_bytes, to_text
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.connection import ConnectionError as AnsibleConnectionError
+from ansible.plugins.action import ActionBase
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     convert_doc_to_ansible_module_kwargs,
 )
 
-
-from ansible_collections.cisco.ios.plugins.modules.ios_facts import DOCUMENTATION
-from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
     FACT_RESOURCE_SUBSETS,
+    Facts,
 )
+from ansible_collections.cisco.ios.plugins.modules.ios_facts import DOCUMENTATION
+
 
 # from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import ios_argument_spec
 
 
 class ActionModule(ActionBase):
-    """ action module
-    """
+    """action module"""
 
     def __init__(self, *args, **kwargs):
         super(ActionModule, self).__init__(*args, **kwargs)
         self._result = {}
 
     def _fail_json(self, msg):
-        """ Replace the AnsibleModule fail_json here
+        """Replace the AnsibleModule fail_json here
         :param msg: The message for the failure
         :type msg: str
         """
@@ -50,7 +50,7 @@ class ActionModule(ActionBase):
         self._display.vvvv(msg)
 
     def _check_argspec(self):
-        """ Load the doc and convert
+        """Load the doc and convert
         Add the root conditionals to what was returned from the conversion
         and instantiate an AnsibleModule to validate
         """
@@ -114,7 +114,7 @@ class ActionModule(ActionBase):
 
         ansible_facts.update({"ansible_network_resources": ansible_network_resources})
         ansible_facts["ansible_net_gather_network_resources"] = self._task.args.get(
-            "gather_network_resources"
+            "gather_network_resources",
         )
         ansible_facts["gather_subset"] = module.params.get("gather_subset")
         return ansible_facts
