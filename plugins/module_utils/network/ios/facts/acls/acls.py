@@ -22,13 +22,21 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
-
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
-    AclsArgs,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    convert_doc_to_ansible_module_kwargs,
 )
+
+# from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
+#     AclsArgs,
+# )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
 )
+
+
+# from ansible_collections.cisco.ios.plugins.modules.ios_acls import (
+#     DOCUMENTATION,
+# )
 
 
 class AclsFacts(object):
@@ -36,8 +44,16 @@ class AclsFacts(object):
 
     def __init__(self, module, subspec="config", options="options"):
 
+        # from ansible_collections.cisco.ios.plugins.modules.ios_acls import (
+        #     DOCUMENTATION,
+        # )
+        # self.argument_spec = convert_doc_to_ansible_module_kwargs(
+        #     DOCUMENTATION
+        # ).get("argument_spec")
+        # # self.argument_spec = AclsArgs.argument_spec
+
         self._module = module
-        self.argument_spec = AclsArgs.argument_spec
+        self.argument_spec = self._module.argument_spec
 
     def get_acl_data(self, connection):
         # Get the access-lists from the ios router

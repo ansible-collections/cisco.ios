@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2023 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -40,6 +40,11 @@ options:
             suboptions:
               destination:
                 description: Specify the packet destination.
+                mutually_exclusive:
+                - ["address", "any", "host", ]
+                - ["wildcard_bits", "any", "host",]
+                required_together:
+                - ["address", "wildcard_bits"]
                 suboptions:
                   address:
                     description: Host address to match, or any single host address.
@@ -473,6 +478,11 @@ options:
                 type: int
               source:
                 description: Specify the packet source.
+                mutually_exclusive:
+                - ["address", "any", "host", ]
+                - ["wildcard_bits", "any", "host",]
+                required_together:
+                - ["address", "wildcard_bits"]
                 suboptions:
                   address:
                     description: Source network address.
@@ -642,12 +652,18 @@ options:
       - The state I(replaced), modify/add only the ACEs of the ACLs defined only.
         It does not perform any other change on the device.
       - The state I(deleted), deletes only the specified ACLs, or all if not specified.
-
-
-
     type: str
 short_description: Resource module to configure ACLs.
 version_added: 1.0.0
+required_if:
+- ["state", "merged", ["config",]]
+- ["state", "replaced", ["config",]]
+- ["state", "overridden", ["config",]]
+- ["state", "rendered", ["config",]]
+- ["state", "parsed", ["running_config",]]
+mutually_exclusive:
+- ["config", "running_config"]
+supports_check_mode: True
 """
 
 EXAMPLES = """
@@ -1478,31 +1494,24 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
-    AclsArgs,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    convert_doc_to_ansible_module_kwargs,
 )
+
+# from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
+#     AclsArgs,
+# )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.acls.acls import Acls
 
 
 def main():
     """
     Main entry point for module execution
-
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=AclsArgs.argument_spec,
-        mutually_exclusive=[["config", "running_config"]],
-        required_if=[
-            ["state", "merged", ["config"]],
-            ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
-            ["state", "rendered", ["config"]],
-            ["state", "parsed", ["running_config"]],
-        ],
-        supports_check_mode=True,
-    )
+    kwargs = convert_doc_to_ansible_module_kwargs(DOCUMENTATION)
+
+    module = AnsibleModule(**kwargs)
 
     result = Acls(module).execute_module()
     module.exit_json(**result)
