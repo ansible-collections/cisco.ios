@@ -94,7 +94,7 @@ class TestIosAclsModule(TestIosModule):
                                         protocol="ip",
                                         sequence=10,
                                         source=dict(any=True),
-                                    )
+                                    ),
                                 ],
                                 acl_type="extended",
                             ),
