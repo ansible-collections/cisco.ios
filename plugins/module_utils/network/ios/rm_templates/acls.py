@@ -250,7 +250,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<log_input>log-input\s\(tag\s=\s\S+\)|log-input))?
                         (\s(?P<log>log\s\(tag\s=\s\S+\)|log))?
                         (\soption\s(?P<option>\S+|\d+))?
-                        (\sprecedence\s(?P<precedence>\S+|\d+))?
+                        (\sprecedence\s(?P<precedence>\S+))?
                         (\stime-range\s(?P<time_range>\S+))?
                         (\stos\s(?P<tos>\S+|\d+))?
                         (\sttl\seq\s(?P<ttl_eq>\d+))?

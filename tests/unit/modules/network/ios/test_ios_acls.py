@@ -75,6 +75,8 @@ class TestIosAclsModule(TestIosModule):
                 30 deny icmp object-group test_network_og any any echo dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            Extended IP access list test_pre
+                10 permit ip any any precedence internet
             """,
         )
         set_module_args(
@@ -83,6 +85,19 @@ class TestIosAclsModule(TestIosModule):
                     dict(
                         afi="ipv4",
                         acls=[
+                            dict(
+                                aces=[
+                                    dict(
+                                        destination=dict(any=True),
+                                        grant="permit",
+                                        precedence="immediate",
+                                        protocol="ip",
+                                        sequence=10,
+                                        source=dict(any=True),
+                                    )
+                                ],
+                                acl_type="extended",
+                            ),
                             dict(
                                 name="std_acl",
                                 acl_type="standard",
@@ -159,7 +174,6 @@ class TestIosAclsModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-
         commands = [
             "ip access-list standard std_acl",
             "deny 192.0.2.0 0.0.0.255",
@@ -169,6 +183,8 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended in_to_out",
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "deny ip any any log-input test_logInput",
+            "ip access-list extended test_pre",
+            "10 permit ip any any precedence immediate",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 

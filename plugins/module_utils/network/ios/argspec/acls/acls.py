@@ -122,7 +122,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                     },
                                     "type": "dict",
                                 },
-                                "precedence": {"type": "int"},
+                                "precedence": {"type": "str"},
                                 "protocol": {"type": "str"},
                                 "protocol_options": {
                                     "options": {
