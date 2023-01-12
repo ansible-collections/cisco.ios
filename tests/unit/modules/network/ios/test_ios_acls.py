@@ -92,11 +92,12 @@ class TestIosAclsModule(TestIosModule):
                                         grant="permit",
                                         precedence="immediate",
                                         protocol="ip",
-                                        sequence=10,
+                                        sequence=20,
                                         source=dict(any=True),
                                     ),
                                 ],
                                 acl_type="extended",
+                                name="test_pre",
                             ),
                             dict(
                                 name="std_acl",
@@ -184,7 +185,7 @@ class TestIosAclsModule(TestIosModule):
             "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_pre",
-            "10 permit ip any any precedence immediate",
+            "20 permit ip any any precedence immediate",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
