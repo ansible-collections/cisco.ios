@@ -212,7 +212,7 @@ options:
                 type: dict
               precedence:
                 description: Match packets with given precedence value.
-                type: int
+                type: str
               protocol:
                 description:
                   - Specify the protocol to match.
