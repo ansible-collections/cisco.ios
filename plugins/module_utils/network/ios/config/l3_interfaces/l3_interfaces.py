@@ -68,7 +68,7 @@ class L3_interfaces(ResourceModule):
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
             if any("vrf forwarding" in cmd for cmd in self.commands) and self._module.params.get(
-                "restore_commands"
+                "restore_commands",
             ):
                 self.interfaces_before = self.get_l3_interfaces()
                 self.run_commands()
