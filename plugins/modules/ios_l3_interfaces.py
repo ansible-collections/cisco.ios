@@ -38,6 +38,10 @@ options:
         - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
         type: str
         required: true
+      vrf:
+        description:
+        - Name of the vrf to be applied
+        type: str
       ipv4:
         description:
         - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -46,6 +50,10 @@ options:
         type: list
         elements: dict
         suboptions:
+          vrf:
+            description:
+            - Name of the vrf to be applied
+            type: str
           address:
             description:
             - Configures the IPv4 address for Interface.
@@ -158,7 +166,7 @@ options:
          ip addresses used by First Hop Redundancy Protocols (FHRP) and more.
        - When this option is set to true, the removed configuration will be reapplied to
          the interface after the vrf change.
-    type: str
+    type: bool
     default: false
   state:
     choices:

@@ -107,8 +107,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "ipv4": [
                         {
-                        "vrf": "{{ vrf }}",
-                        },
+                            "vrf": "{{ vrf }}",
+                        }
                     ],
                 },
             },
@@ -124,7 +124,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "vrf forwarding {{ vrf }}",
             "result": {
                 "{{ name }}": {
-                    "vrf": "{{ vrf }}",
+                    "vrf": "{{ vrf }}"
                 },
             },
         },
