@@ -67,8 +67,9 @@ class L3_interfaces(ResourceModule):
         """
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
-            if (any('vrf forwarding' in cmd for cmd in self.commands)
-                    and self._module.params.get("restore_commands")):
+            if any("vrf forwarding" in cmd for cmd in self.commands) and self._module.params.get(
+                "restore_commands"
+            ):
                 self.interfaces_before = self.get_l3_interfaces()
                 self.run_commands()
                 self.restore_commands()
@@ -125,24 +126,25 @@ class L3_interfaces(ResourceModule):
         _d = {}
         for idx, var in enumerate((want, have)):
             _d[idx] = {}
-            if var.get('vrf'):
-                _d[idx].update({'vrf': var.pop('vrf', {})})
-            if var.get('ipv4', {}).get('vrf'):
-                _d[idx].update({'ipv4': {'vrf': var.get('ipv4', {}).pop('vrf')}})
+            if var.get("vrf"):
+                _d[idx].update({"vrf": var.pop("vrf", {})})
+            if var.get("ipv4", {}).get("vrf"):
+                _d[idx].update({"ipv4": {"vrf": var.get("ipv4", {}).pop("vrf")}})
 
         wvrf, hvrf = _d.values()
 
         remove_afi = []
         if wvrf != hvrf:
-            if 'ipv4' in wvrf:
-                remove_afi.append('ipv4')
+            if "ipv4" in wvrf:
+                remove_afi.append("ipv4")
             else:
-                remove_afi += ['ipv4', 'ipv6']
+                remove_afi += ["ipv4", "ipv6"]
 
-        self.compare(parsers=['ipv4.vrf', 'vrf'],
-                     want=wvrf,
-                     have=hvrf,
-                     )
+        self.compare(
+            parsers=["ipv4.vrf", "vrf"],
+            want=wvrf,
+            have=hvrf,
+        )
 
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
@@ -220,8 +222,12 @@ class L3_interfaces(ResourceModule):
             """
             ret = []
             for entries in (self.interfaces_before, interfaces_after):
-                ret.append(next((entry for entry in entries
-                                 if entry.get("intf") == intf), None))
+                ret.append(
+                    next(
+                        (entry for entry in entries if entry.get("intf") == intf),
+                        None,
+                    ),
+                )
             return ret
 
         def include_criteria(cmd):
@@ -237,10 +243,12 @@ class L3_interfaces(ResourceModule):
             for pattern in L3_interfacesTemplate.PARSERS:
                 pattern = pattern.get("getval")
                 # add space for deployed commands for matching PARSERS regex
-                deployed_cmds = [f' {cmd}' for cmd in deployed.get(interface)]
-                if (re.search(pattern, cmd)
-                        and any(re.search(pattern, _cmd) for _cmd in deployed_cmds)
-                        or "no ip address" in cmd):
+                deployed_cmds = [f" {cmd}" for cmd in deployed.get(interface)]
+                if (
+                    re.search(pattern, cmd)
+                    and any(re.search(pattern, _cmd) for _cmd in deployed_cmds)
+                    or "no ip address" in cmd
+                ):
                     return False
             return True
 
@@ -248,11 +256,12 @@ class L3_interfaces(ResourceModule):
         # with commands that must be reapplied
         self.commands = []
         for interface in deployed.keys():
-            if not any('vrf forwarding' in p for p in deployed[interface]):
+            if not any("vrf forwarding" in p for p in deployed[interface]):
                 continue
             before, after = get_before_after(interface)
-            res = list(set(before.get("params").splitlines())
-                       - set(after.get("params").splitlines()))
+            res = list(
+                set(before.get("params").splitlines()) - set(after.get("params").splitlines()),
+            )
             commands = [cmd.lstrip() for cmd in res if include_criteria(cmd)]
             if commands:
                 self.commands.append(f"interface {interface}")
