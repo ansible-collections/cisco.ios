@@ -731,3 +731,19 @@ releases:
       - l2_interface_fix_replaced_state.yaml
       - l3_interface_default_fix.yaml
     release_date: "2022-12-13"
+  4.3.0:
+    changes:
+      bugfixes:
+        - ios_acls - fix parsers to accept precedence value in correct format.
+        - ios_acls - fix precedence attribute to take a string value as input.
+        - ios_route_maos - fix replaced state support. (https://github.com/ansible-collections/cisco.ios/issues/680)
+        - ios_route_maps - fix idempotency for `set community` operations. (https://github.com/ansible-collections/cisco.ios/issues/635)
+        - ios_vrf - fix issue where assigning interfaces to existing vrfs doesn't work
+          (https://github.com/ansible-collections/cisco.ios/issues/707)
+      minor_changes:
+        - ios_route_maps - added 32-bit number support (https://github.com/ansible-collections/cisco.ios/pull/692)
+    fragments:
+      - 692-fix-community-issues.yaml
+      - 708-fix-interface-vrf-assignment.yaml
+      - 717_acls_bug_fix.yaml
+    release_date: "2023-01-13"

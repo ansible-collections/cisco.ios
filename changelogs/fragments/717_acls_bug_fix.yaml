@@ -1,3 +1,0 @@
-bugfixes:
-  - ios_acls - fix precedence attribute to take a string value as input.
-  - ios_acls - fix parsers to accept precedence value in correct format.
