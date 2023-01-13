@@ -154,7 +154,7 @@ options:
   restore_commands:
     description:
        - This option is only relevant with vrf changes.
-       - Applying or removing vrfs from interfaces also removes the ip address and 
+       - Applying or removing vrfs from interfaces also removes the ip address and
          ip addresses used by First Hop Redundancy Protocols (FHRP) and more.
        - When this option is set to true, the removed configuration will be reapplied to
          the interface after the vrf change.

@@ -584,6 +584,24 @@ Parameters
             <tr>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>restore_commands</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"no"</div>
+                </td>
+                <td>
+                        <div>This option is only relevant with vrf changes.</div>
+                        <div>Applying or removing vrfs from interfaces also removes the ip address and ip addresses used by First Hop Redundancy Protocols (FHRP) and more.</div>
+                        <div>When this option is set to true, the removed configuration will be reapplied to the interface after the vrf change.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1131,6 +1149,61 @@ Examples
     #             "name": "GigabitEthernet0/2"
     #         }
     #     ]
+
+    # Applying VRF with the restore_commands option
+
+    # Before state:
+    # ------------
+
+    # router-ios#show running-config | section ^interface.GigabitEthernet5
+    # interface GigabitEthernet5
+    #  ip address 192.168.255.101 255.255.255.0
+    #  standby 1 ip 192.168.255.1
+    #  ip igmp join-group 239.1.2.3
+    #  negotiation auto
+    #  ipv6 address 2001:DB8::101/64
+    #  no mop enabled
+    #  no mop sysid
+    #  glbp 1 ip 192.168.255.2
+
+    # - name: set vrf and restore removed commands
+    #   ios_l3_interfaces:
+    #     restore_commands: true
+    #     config:
+    #       - name: GigabitEthernet5
+    #         vrf: ansible-test
+    #         ipv4:
+    #           - address: 192.168.255.100/24
+    #         ipv6:
+    #           - address: 2001:DB8::100/64
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #     "interface GigabitEthernet5",
+    #     "vrf forwarding ansible-test",
+    #     "ip address 192.168.255.100 255.255.255.0",
+    #     "ipv6 address 2001:db8::100/64",
+    #      Below commands applied as a result of restore_command set to true
+    #     "glbp 1 ip 192.168.255.2",
+    #     "standby 1 ip 192.168.255.1",
+    #     "ip igmp join-group 239.1.2.3"
+    # ],
+
+    # After state:
+    # ------------
+
+    # interface GigabitEthernet5
+    #  vrf forwarding ansible-test
+    #  ip address 192.168.255.100 255.255.255.0
+    #  standby 1 ip 192.168.255.1
+    #  ip igmp join-group 239.1.2.3
+    #  negotiation auto
+    #  ipv6 address 2001:DB8::100/64
+    #  no mop enabled
+    #  no mop sysid
+    #  glbp 1 ip 192.168.255.2
 
 
 

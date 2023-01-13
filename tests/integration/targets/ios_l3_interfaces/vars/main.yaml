@@ -447,7 +447,6 @@ rtt:
     - ipv6 address 2001:db8::100/64
     - no ipv6 address 2001:db8::101/64
 
-
 rendered:
   commands:
     - interface loopback999
