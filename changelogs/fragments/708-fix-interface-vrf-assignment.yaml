@@ -1,2 +1,0 @@
-bugfixes:
-  - ios_vrf - fix issue where assigning interfaces to existing vrfs doesn't work (https://github.com/ansible-collections/cisco.ios/issues/707)
