@@ -143,6 +143,7 @@ def dict_to_set(sample_dict):
 
 def filter_dict_having_none_value(want, have):
     # Generate dict with have dict value which is None in want dict
+    test_dict = {}
     test_dict = dict()
     name = want.get("name")
     if name:
