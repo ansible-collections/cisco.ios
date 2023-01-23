@@ -625,7 +625,7 @@ class Cliconf(CliconfBase):
                 )
 
             if re.search(
-                r"config.*\)#",
+                r"^.*\((?!maint-mode).*\)#$",
                 to_text(out, errors="surrogate_then_replace").strip(),
             ):
                 self._connection.queue_message(
