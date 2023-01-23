@@ -61,7 +61,8 @@ class TerminalModule(TerminalBase):
         re.compile(rb"Command Rejected: ?[\s]+", re.I),
     ]
 
-    terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
+    terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
+    # terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
 
     def get_privilege_level(self):
         try:
