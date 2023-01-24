@@ -8,7 +8,8 @@
   delegate_to: localhost
 
 - name: Set test_items
-  ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
+  ansible.builtin.set_fact:
+    test_items: "{{ test_cases.files | map(attribute='path') | list }}"
 
 - name: Run test case (connection=ansible.netcommon.network_cli)
   ansible.builtin.include_tasks: "{{ test_case_to_run }}"
