@@ -1,0 +1,3 @@
+---
+trivial:
+  - Move references for ResourceModule to the rm_base package as the non-rm_base path is going away. (https://github.com/ansible-collections/ansible.netcommon/pull/496)
