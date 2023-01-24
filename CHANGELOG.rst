@@ -5,6 +5,23 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.3.0
+======
+
+Minor Changes
+-------------
+
+- ios_route_maps - added 32-bit number support (https://github.com/ansible-collections/cisco.ios/pull/692)
+
+Bugfixes
+--------
+
+- ios_acls - fix parsers to accept precedence value in correct format.
+- ios_acls - fix precedence attribute to take a string value as input.
+- ios_route_maos - fix replaced state support. (https://github.com/ansible-collections/cisco.ios/issues/680)
+- ios_route_maps - fix idempotency for `set community` operations. (https://github.com/ansible-collections/cisco.ios/issues/635)
+- ios_vrf - fix issue where assigning interfaces to existing vrfs doesn't work (https://github.com/ansible-collections/cisco.ios/issues/707)
+
 v4.2.0
 ======
 
