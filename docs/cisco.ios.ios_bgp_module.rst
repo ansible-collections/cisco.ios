@@ -1008,7 +1008,7 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure global bgp as 64496
+    - name: Configure global bgp as 64496
       cisco.ios.ios_bgp:
         config:
           bgp_as: 64496
@@ -1087,7 +1087,7 @@ Examples
               route_reflector_client: true
         operation: merge
 
-    - name: remove bgp as 64496 from config
+    - name: Remove bgp as 64496 from config
       cisco.ios.ios_bgp:
         config:
           bgp_as: 64496
