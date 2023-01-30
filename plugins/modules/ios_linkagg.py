@@ -108,17 +108,17 @@ extends_documentation_fragment:
 - cisco.ios.ios
 """
 EXAMPLES = """
-- name: create link aggregation group
+- name: Create link aggregation group
   cisco.ios.ios_linkagg:
     group: 10
     state: present
 
-- name: delete link aggregation group
+- name: Delete link aggregation group
   cisco.ios.ios_linkagg:
     group: 10
     state: absent
 
-- name: set link aggregation group to members
+- name: Set link aggregation group to members
   cisco.ios.ios_linkagg:
     group: 200
     mode: active
@@ -126,7 +126,7 @@ EXAMPLES = """
     - GigabitEthernet0/0
     - GigabitEthernet0/1
 
-- name: remove link aggregation group from GigabitEthernet0/0
+- name: Remove link aggregation group from GigabitEthernet0/0
   cisco.ios.ios_linkagg:
     group: 200
     mode: active

@@ -1316,7 +1316,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 \s\sneighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
                 (\s(?P<max_no>\d+))
                 (\s(?P<threshold_val>\d+))?
-                (\srestart(?P<restart>\d+))?
+                (\srestart\s(?P<restart>\d+))?
                 (\s(?P<warning_only>warning-only))?
                 $""",
                 re.VERBOSE,

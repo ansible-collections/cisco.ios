@@ -173,6 +173,10 @@ class Bgp_address_family(ResourceModule):
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
         neig_parses = [
+            "peer_group",
+            "peer_group_name",
+            "local_as",
+            "remote_as",
             "activate",
             "additional_paths",
             "advertises.additional_paths",
@@ -202,8 +206,6 @@ class Bgp_address_family(ResourceModule):
             "ha_mode",
             "inherit",
             "internal_vpn_client",
-            "local_as",
-            "remote_as",
             "log_neighbor_changes",
             "maximum_prefix",
             "nexthop_self.set",
@@ -213,8 +215,6 @@ class Bgp_address_family(ResourceModule):
             "password_options",
             "path_attribute.discard",
             "path_attribute.treat_as_withdraw",
-            "peer_group_name",
-            "peer_group",
             "route_maps",
             "remove_private_as.set",
             "remove_private_as.all",
