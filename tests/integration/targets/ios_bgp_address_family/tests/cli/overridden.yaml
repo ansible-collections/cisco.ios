@@ -33,6 +33,7 @@
                 - address: 198.51.110.1
                   activate: true
                   log_neighbor_changes:
+                    set: true
                     disable: true
                   maximum_prefix:
                     number: 1
@@ -45,7 +46,6 @@
                   route_maps:
                     - name: test-override-route
                       out: true
-                  # route_server_client: true
                   version: 4
               network:
                 - address: 198.51.110.10
@@ -53,7 +53,6 @@
                   backdoor: true
             - afi: ipv6
               safi: multicast
-              default_information: true
               bgp:
                 aggregate_timer: 10
                 dampening:

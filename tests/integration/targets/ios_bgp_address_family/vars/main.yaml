@@ -100,26 +100,32 @@ merged:
 overridden:
   commands:
     - router bgp 65000
-    - no address-family ipv4 multicast
-    - no address-family ipv4 mdt
+    - address-family ipv4 multicast
+    - no default-metric 12
+    - no distance bgp 10 10 100
+    - no table-map test_tableMap filter
+    - no network 198.51.111.11 mask 255.255.255.255 route-map test
+    - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - address-family ipv4 mdt
+    - no bgp dmzlink-bw
+    - no bgp soft-reconfig-backup
+    - no bgp dampening 1 10 100 5
     - address-family ipv4 multicast vrf blue
     - bgp dampening 10 10 100 50
     - neighbor 198.51.110.1 remote-as 100
     - neighbor 198.51.110.1 activate
     - neighbor 198.51.110.1 log-neighbor-changes disable
     - neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
-    - neighbor 198.51.110.1 route-map test-override-route out
-    - neighbor 198.51.110.1 version 4
     - neighbor 198.51.110.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    - no neighbor 198.51.100.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 activate
-    - no neighbor 198.51.100.1 remote-as 10
+    - neighbor 198.51.110.1 version 4
+    - neighbor 198.51.110.1 route-map test-override-route out
+    - no neighbor 198.51.100.1
     - address-family ipv6 multicast
     - bgp aggregate-timer 10
-    - bgp slow-peer detection threshold 200
     - bgp dampening 10 10 10 10
+    - bgp slow-peer detection threshold 200
     - network 2001:DB8:0:3::/64 route-map test_ipv6
+
   after:
     address_family:
       - afi: "ipv4"
@@ -185,24 +191,19 @@ replaced:
     - neighbor 198.51.110.1 remote-as 10
     - neighbor 198.51.110.1 activate
     - neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
-    - neighbor 198.51.110.1 route-map test-replaced-route out
-    # - neighbor 198.51.110.1 route-server-client
     - neighbor 198.51.110.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    # - no neighbor 198.51.100.1 route-server-client
-    - no neighbor 198.51.100.1 slow-peer detection threshold 150
-    - no neighbor 198.51.100.1 activate
-    - no neighbor 198.51.100.1 remote-as 10
+    - neighbor 198.51.110.1 route-map test-replaced-route out
+    - no neighbor 198.51.100.1
     - address-family ipv4 multicast
-    - bgp aggregate-timer 10
-    - bgp slow-peer detection threshold 200
-    - bgp dampening 10 10 10 10
-    - network 192.0.2.1 mask 255.255.255.255 route-map test
-    - no network 198.51.111.11 mask 255.255.255.255 route-map test
-    - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     - no default-metric 12
     - no distance bgp 10 10 100
     - no table-map test_tableMap filter
+    - bgp aggregate-timer 10
+    - bgp dampening 10 10 10 10
+    - bgp slow-peer detection threshold 200
+    - network 192.0.2.1 mask 255.255.255.255 route-map test
+    - no network 198.51.111.11 mask 255.255.255.255 route-map test
+    - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
 
   after:
     address_family:
@@ -282,7 +283,7 @@ deleted:
 deleted_all:
   commands:
     - router bgp 65000
-    - no address-family ipv4
+    - no address-family ipv4 multicast vrf blue
 
   after:
     as_number: "65000"

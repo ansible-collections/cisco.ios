@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Reorder parsers to generate correct oder of configuration lines.
