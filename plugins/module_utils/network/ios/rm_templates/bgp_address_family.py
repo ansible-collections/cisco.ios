@@ -17,7 +17,7 @@ the given network resource.
 
 import re
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
@@ -487,6 +487,103 @@ class Bgp_address_familyTemplate(NetworkTemplate):
         },
         # bgp ends
         # neighbor starts
+        {
+            "name": "peer_group_name",
+            "getval": re.compile(
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)
+                \speer-group\s(?P<peer_group_name>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }}"
+            "{{ (' peer-group ' + peer_group_name) if peer_group_name|d(False) else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {
+                                "peer_group_name": "{{ peer_group_name }}",
+                                "neighbor_address": UNIQUE_NEIB_ADD,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "peer_group",
+            "getval": re.compile(
+                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\speer-group$""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} peer-group",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {
+                                "peer_group": True,
+                                "neighbor_address": UNIQUE_NEIB_ADD,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "remote_as",
+            "getval": re.compile(
+                r"""
+                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
+                (\s(?P<number>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} remote-as"
+            "{{ (' ' + remote_as|string) if remote_as is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}},
+                },
+            },
+        },
+        {
+            "name": "local_as",
+            "getval": re.compile(
+                r"""
+                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
+                (\s(?P<number>\S+))?
+                (\s(?P<dual_as>dual-as))?
+                (\s(?P<no_prepend>no-prepend))?
+                (\s(?P<replace_as>replace-as))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} local-as"
+            "{{ (' ' + local_as.number|string) if local_as.number is defined else '' }}"
+            "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
+            "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
+            "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {
+                                "local_as": {
+                                    "set": "{{ not not local_as }}",
+                                    "number": "{{ number }}",
+                                    "dual_as": "{{ not not dual_as }}",
+                                    "no_prepend": {
+                                        "set": "{{ not not no_prepend }}",
+                                        "replace_as": "{{ not not replace_as }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
         {
             "name": "neighbor_address",
             "getval": re.compile(
@@ -1184,60 +1281,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "local_as",
-            "getval": re.compile(
-                r"""
-                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
-                (\s(?P<number>\S+))?
-                (\s(?P<dual_as>dual-as))?
-                (\s(?P<no_prepend>no-prepend))?
-                (\s(?P<replace_as>replace-as))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} local-as"
-            "{{ (' ' + local_as.number|string) if local_as.number is defined else '' }}"
-            "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
-            "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
-            "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "local_as": {
-                                    "set": "{{ not not local_as }}",
-                                    "number": "{{ number }}",
-                                    "dual_as": "{{ not not dual_as }}",
-                                    "no_prepend": {
-                                        "set": "{{ not not no_prepend }}",
-                                        "replace_as": "{{ not not replace_as }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "remote_as",
-            "getval": re.compile(
-                r"""
-                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
-                (\s(?P<number>\S+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} remote-as"
-            "{{ (' ' + remote_as|string) if remote_as is defined else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"remote_as": "{{ number }}"}}},
-                },
-            },
-        },
-        {
             "name": "log_neighbor_changes",
             "getval": re.compile(
                 r"""
@@ -1273,7 +1316,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 \s\sneighbor\s(?P<neighbor_address>\S+)\smaximum-prefix
                 (\s(?P<max_no>\d+))
                 (\s(?P<threshold_val>\d+))?
-                (\srestart(?P<restart>\d+))?
+                (\srestart\s(?P<restart>\d+))?
                 (\s(?P<warning_only>warning-only))?
                 $""",
                 re.VERBOSE,
@@ -1520,49 +1563,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                         "out": "{{ not not out }}",
                                     },
                                 ],
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "peer_group_name",
-            "getval": re.compile(
-                r"""\s\sneighbor\s(?P<neighbor_address>\S+)
-                \speer-group\s(?P<peer_group_name>\S+)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' peer-group ' + peer_group_name) if peer_group_name|d(False) else '' }}",
-            "result": {
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "peer_group_name": "{{ peer_group_name }}",
-                                "neighbor_address": UNIQUE_NEIB_ADD,
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "peer_group",
-            "getval": re.compile(
-                r"""\s\sneighbor\s(?P<neighbor_address>\S+)\speer-group$""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} peer-group",
-            "result": {
-                "address_family": {
-                    UNIQUE_AFI: {
-                        "neighbors": {
-                            UNIQUE_NEIB_ADD: {
-                                "peer_group": True,
-                                "neighbor_address": UNIQUE_NEIB_ADD,
                             },
                         },
                     },

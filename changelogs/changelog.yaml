@@ -747,3 +747,13 @@ releases:
       - 708-fix-interface-vrf-assignment.yaml
       - 717_acls_bug_fix.yaml
     release_date: "2023-01-13"
+  4.3.1:
+    changes:
+      bugfixes:
+        - ios_bgp_address_family - Reorder parsers to generate correct oder of configuration
+          lines.
+    fragments:
+      - fix_lint.yaml
+      - reorder_parsers_bgp_add.yaml
+      - rm_base.yaml
+    release_date: "2023-01-30"
