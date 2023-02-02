@@ -4,7 +4,7 @@ merged:
 
   commands:
     - router bgp 65000
-    - address-family ipv4 multicast vrf blue
+    - address-family ipv4 multicast #  vrf blue
     - bgp aggregate-timer 10
     - bgp slow-peer detection threshold 150
     - bgp dampening 1 1 1 1
@@ -76,7 +76,7 @@ merged:
             backdoor: true
             mask: "255.255.255.255"
         safi: "multicast"
-        vrf: "blue"
+        # vrf: "blue"
       - afi: "ipv4"
         aggregate_address:
           - address: "192.0.3.1"
@@ -110,7 +110,7 @@ overridden:
     - no bgp dmzlink-bw
     - no bgp soft-reconfig-backup
     - no bgp dampening 1 10 100 5
-    - address-family ipv4 multicast vrf blue
+    - address-family ipv4 multicast # vrf blue
     - bgp dampening 10 10 100 50
     - neighbor 198.51.110.1 remote-as 100
     - neighbor 198.51.110.1 activate
@@ -166,7 +166,7 @@ overridden:
             backdoor: true
             mask: "255.255.255.255"
         safi: "multicast"
-        vrf: "blue"
+        # vrf: "blue"
       - afi: "ipv6"
         bgp:
           aggregate_timer: 10
@@ -187,7 +187,7 @@ overridden:
 replaced:
   commands:
     - router bgp 65000
-    - address-family ipv4 multicast vrf blue
+    - address-family ipv4 multicast # vrf blue
     - neighbor 198.51.110.1 remote-as 10
     - neighbor 198.51.110.1 activate
     - neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
@@ -255,7 +255,7 @@ replaced:
             backdoor: true
             mask: "255.255.255.255"
         safi: "multicast"
-        vrf: "blue"
+        # vrf: "blue"
       - afi: "ipv4"
         bgp:
           aggregate_timer: 10
@@ -283,7 +283,7 @@ deleted:
 deleted_all:
   commands:
     - router bgp 65000
-    - no address-family ipv4 multicast vrf blue
+    - no address-family ipv4 multicast # vrf blue
 
   after:
     as_number: "65000"

@@ -1010,7 +1010,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     UNIQUE_AFI: {
                         "neighbors": {
                             UNIQUE_NEIB_ADD: {
-                                "default-originate": {"route_map": "{{ route_map }}"},
+                                "default_originate": {"route_map": "{{ route_map }}"},
                             },
                         },
                     },
