@@ -30,7 +30,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosSystemModule(TestIosModule):
-
     module = ios_system
 
     def setUp(self):

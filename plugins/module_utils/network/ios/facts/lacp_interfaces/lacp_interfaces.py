@@ -35,7 +35,6 @@ class Lacp_InterfacesFacts(object):
     """The ios_lacp_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
-
         self._module = module
         self.argument_spec = Lacp_InterfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)

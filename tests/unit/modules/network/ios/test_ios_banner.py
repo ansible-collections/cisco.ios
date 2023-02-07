@@ -27,7 +27,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosBannerModule(TestIosModule):
-
     module = ios_banner
 
     def setUp(self):

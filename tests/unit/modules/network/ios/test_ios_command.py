@@ -31,7 +31,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosCommandModule(TestIosModule):
-
     module = ios_command
 
     def setUp(self):

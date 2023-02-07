@@ -35,7 +35,6 @@ class AclsFacts(object):
     """The ios_acls fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
-
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
