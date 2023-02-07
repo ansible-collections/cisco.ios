@@ -75,6 +75,7 @@
     - name: Replaced provided BGP address family configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
+
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:
