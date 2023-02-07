@@ -75,7 +75,7 @@ options:
     - Specifies the number of retries a command should by tried before it is considered
       failed. The command is run on the target device every retry and evaluated against
       the I(wait_for) conditions.
-    default: 10
+    default: 9
     type: int
   interval:
     description:
@@ -390,7 +390,7 @@ def main():
         commands=dict(type="list", elements="raw", required=True),
         wait_for=dict(type="list", elements="str", aliases=["waitfor"]),
         match=dict(default="all", choices=["all", "any"]),
-        retries=dict(default=10, type="int"),
+        retries=dict(default=9, type="int"),
         interval=dict(default=1, type="int"),
     )
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
@@ -398,6 +398,7 @@ def main():
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
     wait_for = module.params["wait_for"] or list()
+    conditionals = []
     try:
         conditionals = [Conditional(c) for c in wait_for]
     except AttributeError as exc:
@@ -405,7 +406,7 @@ def main():
     retries = module.params["retries"]
     interval = module.params["interval"]
     match = module.params["match"]
-    while retries > 0:
+    while retries >= 0:
         responses = run_commands(module, commands)
         for item in list(conditionals):
             if item(responses):
