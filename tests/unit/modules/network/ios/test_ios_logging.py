@@ -31,7 +31,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosLoggingModule(TestIosModule):
-
     module = ios_logging
 
     def setUp(self):
@@ -103,7 +102,6 @@ class TestIosLoggingModule(TestIosModule):
 
 
 class TestIosLoggingModuleIOS12(TestIosModule):
-
     module = ios_logging
 
     def setUp(self):

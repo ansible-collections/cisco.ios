@@ -259,7 +259,6 @@ def map_obj_to_commands(want, have, module):
     key_id_have = have[0].get("key_id", None)
 
     for w in want:
-
         server = w["server"]
         source_int = w["source_int"]
         acl = w["acl"]
@@ -316,7 +315,6 @@ def map_obj_to_commands(want, have, module):
 
 
 def main():
-
     argument_spec = dict(
         server=dict(),
         source_int=dict(),
