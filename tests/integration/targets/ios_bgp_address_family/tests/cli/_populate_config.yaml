@@ -7,7 +7,7 @@
       address_family:
         - afi: ipv4
           safi: multicast
-          vrf: blue
+          # vrf: blue  # commented as c8000v throws topology error
           aggregate_address:
             - address: 192.0.2.1
               netmask: 255.255.255.255
