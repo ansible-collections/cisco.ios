@@ -298,17 +298,20 @@ EXAMPLES = r"""
 """
 
 from ansible.errors import AnsibleFilterError
-
 from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_validate import (
     AnsibleArgSpecValidator,
 )
+
 from ansible_collections.cisco.ios.plugins.plugin_utils.acl_popper import acl_popper
+
 
 try:
     from jinja2.filters import pass_environment
 except ImportError:
     from jinja2.filters import environmentfilter as pass_environment
+
 import debugpy
+
 
 debugpy.listen(3000)
 debugpy.wait_for_client()
@@ -332,6 +335,5 @@ class FilterModule(object):
     """acl_popper"""
 
     def filters(self):
-
         """a mapping of filter names to functions"""
         return {"acl_popper": _acl_popper}

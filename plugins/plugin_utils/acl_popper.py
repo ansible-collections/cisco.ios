@@ -59,19 +59,17 @@ def check_match(ace, match_criteria):
 
 
 def _acl_popper(raw_acl, match_criteria):
-
     acls_v4, acls_v6 = [], []
     racls_v4, racls_v6 = [], []
 
     final_acl = {
-        "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}]
+        "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}],
     }  # holds final acl data after removal of aces
     rfinal_acl = {
-        "acls": [{"acls": racls_v4, "afi": "ipv4"}, {"acls": racls_v6, "afi": "ipv6"}]
+        "acls": [{"acls": racls_v4, "afi": "ipv4"}, {"acls": racls_v6, "afi": "ipv6"}],
     }  # holds removed acl information
 
     for acls in raw_acl:  # ["acls"]
-
         afi = acls.get("afi")  # ipv4 or v6
 
         for acl in acls.get("acls"):
@@ -89,7 +87,8 @@ def _acl_popper(raw_acl, match_criteria):
 
             for ace in aces:  # iterate on ace entries
                 if _keep and check_match(
-                    ace, match_criteria
+                    ace,
+                    match_criteria,
                 ):  # check matching criteria and remove from final dict
                     _races.append(ace)
                     continue
