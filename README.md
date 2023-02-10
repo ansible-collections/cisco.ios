@@ -30,6 +30,11 @@ Name | Description
 --- | ---
 [cisco.ios.ios](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_cliconf.rst)|Use ios cliconf to run command on Cisco IOS platform
 
+### Filter plugins
+Name | Description
+--- | ---
+[cisco.ios.acl_popper](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.acl_popper_filter.rst)|Remove ace entries from a acl source of truth.
+
 ### Modules
 Name | Description
 --- | ---
