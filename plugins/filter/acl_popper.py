@@ -301,12 +301,6 @@ try:
 except ImportError:
     from jinja2.filters import environmentfilter as pass_environment
 
-import debugpy
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
-
 
 @pass_environment
 def _acl_popper(*args, **kwargs):
