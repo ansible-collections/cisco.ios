@@ -13,7 +13,7 @@
         config:
           - name: GigabitEthernet2
             description: Configured and Replaced by Ansible-Network
-            mtu: 2000
+            speed: 1000
         state: replaced
 
     - name: Assert that correct set of commands were generated
