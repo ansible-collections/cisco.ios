@@ -16,17 +16,17 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: acl_popper
     author: Sagar Paul (@KB-perByte)
-    version_added: "2.5.0"
+    version_added: "4.4.0"
     short_description: Remove ace entries from a acl source of truth.
     description:
-        - This plugin removes specific keys from a provided data recursively.
-        - Matching parameter defaults to equals unless C(matching_parameter) is explicitly mentioned.
-        - Using the parameters below- C(data|ansible.utils.acl_popper(target([....])))
+        - This plugin removes specific keys from a provided acl data.
+        - Using the parameters below- C(acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria))
     options:
       data:
         description:
-        - This option represents a list of dictionaries or a dictionary with any level of nesting data.
-        - For example C(config_data|ansible.utils.acl_popper(target([....]))), in this case C(config_data) represents this option.
+        - This option represents a list of dictionaries of acls facts.
+        - For example C(acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria)),
+          in this case C(acls_data) represents this option.
         type: raw
         required: True
       filter_options:
@@ -36,33 +36,43 @@ DOCUMENTATION = """
           remove:
             description: Specify aggregate address
             type: str
+            choices: ['first', 'all']
+            default: all
           failed_when:
             description: Specify aggregate mask
             type: str
+            choices: ['missing', 'never']
+            default: missing
+          sticky:
+            description: Specify aggregate mask
+            type: bool
+            default: False
       match_criteria:
         description: Specify the matching configuration of target keys and data attributes.
         type: dict
+        required: True
         suboptions:
           afi:
             description: Specify afi
             type: str
+            required: True
           acl_name:
-            description: Specify acl_name
+            description: ACL name
             type: str
           source_address:
-            description: Set source_address
+            description: Source address of the ACE
             type: str
           destination_address:
-            description: Set destination_address
+            description: Destination address of the ACE
             type: str
           sequence:
-            description: sequence
+            description: Sequence number of the ACE
             type: str
           protocol:
-            description: Set protocol
+            description: Protocol name
             type: str
           grant:
-            description: grant
+            description: Grant type permit or deny
             type: str
 """
 
@@ -309,12 +319,6 @@ try:
     from jinja2.filters import pass_environment
 except ImportError:
     from jinja2.filters import environmentfilter as pass_environment
-
-import debugpy
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 @pass_environment

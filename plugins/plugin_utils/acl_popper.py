@@ -44,23 +44,42 @@ def clear_empty_data(data):
     return data
 
 
-def check_match(ace, match_criteria):
-    if ace.get("sequence") == match_criteria.get("sequence"):
-        return True
-    if ace.get("protocol") == match_criteria.get("protocol"):
-        return True
-    if ace.get("grant") == match_criteria.get("grant"):
-        return True
-    if match_criteria.get("source_address"):
-        if ace.get("source").get("address") == match_criteria.get("source_address"):
-            return True
-    if ace.get("destination", {}).get("address") == match_criteria.get("destination_address"):
-        return True
+def fail_missing(racl, fail):
+    if fail and racl == []:
+        _raise_error("no entries removed on the provided match_criteria")
 
 
-def _acl_popper(raw_acl, match_criteria):
+def check_match(ace, match_criteria, sticky):
+    check_arr = []
+    check_arr.append(True) if ace.get("sequence", "NA") == match_criteria.get(
+        "sequence",
+    ) else check_arr.append(False)
+    check_arr.append(True) if ace.get("protocol", "NA") == match_criteria.get(
+        "protocol",
+    ) else check_arr.append(False)
+    check_arr.append(True) if ace.get("grant", "NA") == match_criteria.get(
+        "grant",
+    ) else check_arr.append(False)
+    check_arr.append(True) if ace.get("source", {}).get("address", "NA") == match_criteria.get(
+        "source_address",
+    ) else check_arr.append(False)
+    check_arr.append(True) if ace.get("destination", {}).get("address", "NA") == match_criteria.get(
+        "destination_address",
+    ) else check_arr.append(False)
+
+    if sticky:  # forces all criteria to match
+        return all(check_arr)
+    else:
+        return any(check_arr)
+
+
+def _acl_popper(raw_acl, filter_options, match_criteria):
     acls_v4, acls_v6 = [], []
     racls_v4, racls_v6 = [], []
+
+    remove_first_ace_only = True if filter_options.get("remove") == "first" else False
+    fail_if_no_match = True if filter_options.get("failed_when") == "missing" else False
+    sticky = True if filter_options.get("sticky") == "True" else False
 
     final_acl = {
         "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}],
@@ -73,63 +92,49 @@ def _acl_popper(raw_acl, match_criteria):
         afi = acls.get("afi")  # ipv4 or v6
 
         for acl in acls.get("acls"):
-            _keep = True
+            _aces, _acl, _keep = [], {}, True
+            _races, _racl, _rstop = [], {}, True
 
-            name = acl.get("name")  # filter by acl_name ignores whole acl entries i.e all aces
-            if name in match_criteria.get("acl_name"):
-                _keep = False
-
-            acl_type = acl.get("acl_type")  # not being used
             aces = acl.get("aces")
-
-            _aces, _acl = [], {}
-            _races, _racl = [], {}
+            name = acl.get("name")  # filter by acl_name ignores whole acl entries i.e all aces
+            if name == match_criteria.get("acl_name", ""):
+                _keep = False
 
             for ace in aces:  # iterate on ace entries
                 if _keep and check_match(
                     ace,
                     match_criteria,
+                    sticky,
                 ):  # check matching criteria and remove from final dict
-                    _races.append(ace)
-                    continue
+                    if remove_first_ace_only and _rstop:  # removes one ace entry per acl
+                        _races.append(ace)
+                        _rstop = False
+                        continue
+                    elif not remove_first_ace_only:  # for remove all
+                        _races.append(ace)
+                        continue
 
-                if not _keep:
-                    _races.append(ace)
-                else:
-                    _aces.append(ace)
+                _races.append(ace) if not _keep else _aces.append(
+                    ace,
+                )  # activates only when ace removed on name and not sticky
 
             if _aces:  # store filtered aces
-                _acl["name"] = name
-                _acl["ace"] = _aces
-                if afi == "ipv4":
-                    acls_v4.append(_acl)
-                else:
-                    acls_v6.append(_acl)
+                _acl["name"], _acl["ace"] = name, _aces
+                acls_v4.append(_acl) if afi == "ipv4" else acls_v6.append(_acl)
 
             if _races:  # store removed aces
-                _racl["name"] = name
-                _racl["ace"] = _races
-                if afi == "ipv4":
-                    racls_v4.append(_racl)
-                else:
-                    racls_v6.append(_racl)
+                _racl["name"], _racl["ace"] = name, _races
+                racls_v4.append(_racl) if afi == "ipv4" else racls_v6.append(_racl)
+
+    fail_missing(racls_v4 + racls_v6, fail_if_no_match)
 
     return final_acl, rfinal_acl
 
 
 def acl_popper(data, filter_options, match_criteria):
-    """Remove unwanted keys recursively from a given data"
-    :param data: The data passed in (data|remove_keys(...))
-    :type data: raw
-    :param target: List of keys on with operation is to be performed
-    :type data: list
-    :type elements: string
-    :param matching_parameter: matching type of the target keys with data keys
-    :type data: str
-    """
     if not isinstance(data, (list, dict)):
-        _raise_error("Input is not valid for attribute removal")
-    cleared_data, removed_data = _acl_popper(data, match_criteria)
+        _raise_error("Input is not valid for acl_popper")
+    cleared_data, removed_data = _acl_popper(data, filter_options, match_criteria)
     data = {
         "acls": cleared_data,
         "removed_acls": removed_data,

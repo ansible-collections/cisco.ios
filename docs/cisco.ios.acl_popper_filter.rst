@@ -8,7 +8,7 @@ cisco.ios.acl_popper
 **Remove ace entries from a acl source of truth.**
 
 
-Version added: 2.5.0
+Version added: 4.4.0
 
 .. contents::
    :local:
@@ -17,9 +17,8 @@ Version added: 2.5.0
 
 Synopsis
 --------
-- This plugin removes specific keys from a provided data recursively.
-- Matching parameter defaults to equals unless ``matching_parameter`` is explicitly mentioned.
-- Using the parameters below- ``data|ansible.utils.acl_popper(target([....]``))
+- This plugin removes specific keys from a provided acl data.
+- Using the parameters below- ``acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria``)
 
 
 
@@ -51,8 +50,8 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>This option represents a list of dictionaries or a dictionary with any level of nesting data.</div>
-                        <div>For example <code>config_data|ansible.utils.acl_popper(target([....]</code>)), in this case <code>config_data</code> represents this option.</div>
+                        <div>This option represents a list of dictionaries of acls facts.</div>
+                        <div>For example <code>acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria</code>), in this case <code>acls_data</code> represents this option.</div>
                 </td>
             </tr>
             <tr>
@@ -83,6 +82,10 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>missing</b>&nbsp;&larr;</div></li>
+                                    <li>never</li>
+                        </ul>
                 </td>
                     <td>
                     </td>
@@ -101,11 +104,37 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>first</li>
+                                    <li><div style="color: blue"><b>all</b>&nbsp;&larr;</div></li>
+                        </ul>
                 </td>
                     <td>
                     </td>
                 <td>
                         <div>Specify aggregate address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>sticky</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                    <td>
+                    </td>
+                <td>
+                        <div>Specify aggregate mask</div>
                 </td>
             </tr>
 
@@ -116,6 +145,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -141,7 +171,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify acl_name</div>
+                        <div>ACL name</div>
                 </td>
             </tr>
             <tr>
@@ -152,6 +182,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -177,7 +208,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Set destination_address</div>
+                        <div>Destination address of the ACE</div>
                 </td>
             </tr>
             <tr>
@@ -195,7 +226,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>grant</div>
+                        <div>Grant type permit or deny</div>
                 </td>
             </tr>
             <tr>
@@ -213,7 +244,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Set protocol</div>
+                        <div>Protocol name</div>
                 </td>
             </tr>
             <tr>
@@ -231,7 +262,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>sequence</div>
+                        <div>Sequence number of the ACE</div>
                 </td>
             </tr>
             <tr>
@@ -249,7 +280,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Set source_address</div>
+                        <div>Source address of the ACE</div>
                 </td>
             </tr>
 
