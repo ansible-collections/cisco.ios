@@ -1,8 +1,8 @@
-.. _cisco.ios.acl_popper_filter:
+.. _cisco.ios.ace_popper_filter:
 
 
 ********************
-cisco.ios.acl_popper
+cisco.ios.ace_popper
 ********************
 
 **Remove ace entries from a acl source of truth.**
@@ -18,7 +18,7 @@ Version added: 4.4.0
 Synopsis
 --------
 - This plugin removes specific keys from a provided acl data.
-- Using the parameters below- ``acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria``)
+- Using the parameters below- ``acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria``)
 
 
 
@@ -51,7 +51,7 @@ Parameters
                     </td>
                 <td>
                         <div>This option represents a list of dictionaries of acls facts.</div>
-                        <div>For example <code>acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria</code>), in this case <code>acls_data</code> represents this option.</div>
+                        <div>For example <code>acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria</code>), in this case <code>acls_data</code> represents this option.</div>
                 </td>
             </tr>
             <tr>
@@ -380,7 +380,7 @@ Examples
       tasks:
         - name: Remove ace entries from a provided data
           ansible.builtin.debug:
-            msg: "{{ acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+            msg: "{{ acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
           register: result
 
     ##Output

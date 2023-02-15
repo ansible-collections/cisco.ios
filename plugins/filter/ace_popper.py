@@ -6,7 +6,7 @@
 #
 
 """
-The acl_popper filter plugin
+The ace_popper filter plugin
 """
 from __future__ import absolute_import, division, print_function
 
@@ -14,18 +14,18 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: acl_popper
+    name: ace_popper
     author: Sagar Paul (@KB-perByte)
     version_added: "4.4.0"
     short_description: Remove ace entries from a acl source of truth.
     description:
         - This plugin removes specific keys from a provided acl data.
-        - Using the parameters below- C(acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria))
+        - Using the parameters below- C(acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria))
     options:
       data:
         description:
         - This option represents a list of dictionaries of acls facts.
-        - For example C(acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria)),
+        - For example C(acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria)),
           in this case C(acls_data) represents this option.
         type: raw
         required: True
@@ -163,7 +163,7 @@ EXAMPLES = r"""
   tasks:
     - name: Remove ace entries from a provided data
       ansible.builtin.debug:
-        msg: "{{ acls_data | cisco.ios.acl_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+        msg: "{{ acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
       register: result
 
 ##Output
@@ -312,7 +312,7 @@ from ansible_collections.ansible.utils.plugins.module_utils.common.argspec_valid
     AnsibleArgSpecValidator,
 )
 
-from ansible_collections.cisco.ios.plugins.plugin_utils.acl_popper import acl_popper
+from ansible_collections.cisco.ios.plugins.plugin_utils.ace_popper import ace_popper
 
 
 try:
@@ -322,22 +322,22 @@ except ImportError:
 
 
 @pass_environment
-def _acl_popper(*args, **kwargs):
+def _ace_popper(*args, **kwargs):
     """remove ace entries from a acl data"""
 
     keys = ["data", "filter_options", "match_criteria"]
     data = dict(zip(keys, args[1:]))
     data.update(kwargs)
-    aav = AnsibleArgSpecValidator(data=data, schema=DOCUMENTATION, name="acl_popper")
+    aav = AnsibleArgSpecValidator(data=data, schema=DOCUMENTATION, name="ace_popper")
     valid, errors, updated_data = aav.validate()
     if not valid:
         raise AnsibleFilterError(errors)
-    return acl_popper(**updated_data)
+    return ace_popper(**updated_data)
 
 
 class FilterModule(object):
-    """acl_popper"""
+    """ace_popper"""
 
     def filters(self):
         """a mapping of filter names to functions"""
-        return {"acl_popper": _acl_popper}
+        return {"ace_popper": _ace_popper}

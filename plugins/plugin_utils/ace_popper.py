@@ -6,7 +6,7 @@
 #
 
 """
-The remove_keys plugin code
+The ace_popper plugin code
 """
 from __future__ import absolute_import, division, print_function
 
@@ -24,24 +24,8 @@ def _raise_error(msg):
     :type msg: str
     :raises: AnsibleError
     """
-    error = "Error when using plugin 'acl_popper': {msg}".format(msg=msg)
+    error = "Error when using plugin 'ace_popper': {msg}".format(msg=msg)
     raise AnsibleFilterError(error)
-
-
-def clear_empty_data(data):
-    if isinstance(data, dict):
-        # for k in list(data.keys()):
-        #     if not data.get(k, {}):
-        #         del data[k]
-        for k, v in data.items():
-            data[k] = clear_empty_data(v)
-    if isinstance(data, list):
-        temp = []
-        for i in data:
-            if i:
-                temp.append(clear_empty_data(i))
-        return temp
-    return data
 
 
 def fail_missing(racl, fail):
@@ -73,7 +57,7 @@ def check_match(ace, match_criteria, sticky):
         return any(check_arr)
 
 
-def _acl_popper(raw_acl, filter_options, match_criteria):
+def _ace_popper(raw_acl, filter_options, match_criteria):
     acls_v4, acls_v6 = [], []
     racls_v4, racls_v6 = [], []
 
@@ -131,13 +115,12 @@ def _acl_popper(raw_acl, filter_options, match_criteria):
     return final_acl, rfinal_acl
 
 
-def acl_popper(data, filter_options, match_criteria):
+def ace_popper(data, filter_options, match_criteria):
     if not isinstance(data, (list, dict)):
-        _raise_error("Input is not valid for acl_popper")
-    cleared_data, removed_data = _acl_popper(data, filter_options, match_criteria)
+        _raise_error("Input is not valid for ace_popper")
+    cleared_data, removed_data = _ace_popper(data, filter_options, match_criteria)
     data = {
         "acls": cleared_data,
-        "removed_acls": removed_data,
+        "removed_aces": removed_data,
     }
-    # data = clear_empty_data(data)
     return data
