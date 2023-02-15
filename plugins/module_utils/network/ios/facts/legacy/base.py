@@ -314,6 +314,7 @@ class Interfaces(FactsBase):
             fact["host"] = self.parse_cdp_host(entry)
             fact["platform"] = self.parse_cdp_platform(entry)
             fact["port"] = port
+            fact["ip"] = self.parse_cdp_ip(entry)
             facts[intf].append(fact)
         return facts
 
@@ -410,5 +411,10 @@ class Interfaces(FactsBase):
 
     def parse_cdp_platform(self, data):
         match = re.search(r"^Platform: (.+),", data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_cdp_ip(self, data):
+        match = re.search(r"^  IP address: (.+)$", data, re.M)
         if match:
             return match.group(1)
