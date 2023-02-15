@@ -79,190 +79,1373 @@ DOCUMENTATION = """
 EXAMPLES = r"""
 
 ##Playbook
-  vars:
-    - acls_data:
-      - acls:
-          - aces:
-              - grant: permit
-                sequence: 10
-                source:
-                  address: 192.168.12.0
-                  wildcard_bits: 0.0.0.255
-            acl_type: standard
-            name: "1"
-          - aces:
-              - destination:
-                  any: true
-                  port_protocol:
-                    eq: "22"
-                grant: permit
-                protocol: tcp
-                sequence: 10
-                source:
-                  any: true
-              - destination:
-                  host: 192.168.20.5
-                  port_protocol:
-                    eq: "22"
-                grant: permit
-                protocol: tcp
-                sequence: 21
-                source:
-                  host: 192.168.11.8
-            acl_type: extended
-            name: acl_123
-          - aces:
-              - destination:
-                  address: 192.0.3.0
-                  port_protocol:
-                    eq: www
-                  wildcard_bits: 0.0.0.255
-                grant: deny
-                option:
-                  traceroute: true
-                protocol: tcp
-                protocol_options:
-                  tcp:
-                    fin: true
-                sequence: 10
-                source:
-                  address: 192.0.2.0
-                  wildcard_bits: 0.0.0.255
-                ttl:
-                  eq: 10
-            acl_type: extended
-            name: test_acl
-        afi: ipv4
-      - acls:
-          - aces:
-              - destination:
-                  any: true
-                  port_protocol:
-                    eq: telnet
-                dscp: af11
-                grant: deny
-                protocol: tcp
-                protocol_options:
-                  tcp:
-                    ack: true
-                sequence: 10
-                source:
-                  any: true
-                  port_protocol:
-                    eq: www
-            name: R1_TRAFFIC
-        afi: ipv6
-    - filter_options:
-        remove: "first"
-        # filed_when: "missing"
-    - match_criteria:
-        afi: "ipv4"
-        acl_name: "test_acl"
-        source_address: "198.51.100.0"
+- name: Gather ACLs config from device existing ACLs config
+  cisco.ios.ios_acls:
+    state: gathered
+  register: result_gathered
 
-  tasks:
-    - name: Remove ace entries from a provided data
-      ansible.builtin.debug:
-        msg: "{{ acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
-      register: result
+- name: Setting host facts for ace_popper filter plugin
+  ansible.builtin.set_fact:
+    acls_facts: "{{ result_gathered.gathered }}"
+    filter_options:
+      sticky: true
+    match_criteria:
+      afi: "ipv4"
+      source_address: "192.0.2.0"
+      destination_address: "192.0.3.0"
+
+- name: Invoke ace_popper filter plugin
+  ansible.builtin.set_fact:
+    clean_acls: "{{ acls_facts | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+
+- name: Override ACLs config with device existing ACLs config
+  cisco.ios.ios_acls:
+    state: overridden
+    config: "{{ clean_acls['clean_acls']['acls'] | from_yaml }}"
+  check_mode: true
+
 
 ##Output
-# TASK [Remove ace entries from a provided data] ***********************
-# ok: [localhost] => {
-#     "msg": {
-#         "acls": {
+# PLAYBOOK: ace_popper_example.yml ***********************************************
+# 1 plays in ace_popper_example.yml
+
+# PLAY [Filter plugin example ace_popper] ****************************************
+# ....
+
+# TASK [Gather ACLs config with device existing ACLs config] *********************
+# task path: /home/...ace_popper_example.yml:214
+# ok: [xe_machine] => {
+#     "changed": false,
+#     "gathered": [
+#         {
 #             "acls": [
 #                 {
-#                     "acls": [],
-#                     "afi": "ipv4"
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "icmp",
+#                             "protocol_options": {
+#                                 "icmp": {
+#                                     "traceroute": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "host": "198.51.110.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "host": "198.51.100.0"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "110"
 #                 },
 #                 {
-#                     "acls": [],
-#                     "afi": "ipv6"
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "198.51.101.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "198.51.100.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "tos": {
+#                                 "service_value": 12
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.4.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "lt": 20
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "123"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 10,
+#                             "source": {
+#                                 "host": "192.168.1.200"
+#                             }
+#                         },
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.168.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "standard",
+#                     "name": "std_acl"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "option": {
+#                                 "traceroute": true
+#                             },
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "fin": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "test"
 #                 }
-#             ]
+#             ],
+#             "afi": "ipv4"
 #         },
-#         "removed_acls": {
+#         {
 #             "acls": [
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "dscp": "af11",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 }
+#                             }
+#                         }
+#                     ],
+#                     "name": "R1_TRAFFIC"
+#                 }
+#             ],
+#             "afi": "ipv6"
+#         }
+#     ],
+#     "invocation": {
+#         "module_args": {
+#             "config": null,
+#             "running_config": null,
+#             "state": "gathered"
+#         }
+#     }
+# }
+
+# TASK [Setting host facts for ace_popper filter plugin] *************************
+# task path: /home/...ace_popper_example.yml:219
+# ok: [xe_machine] => {
+#     "ansible_facts": {
+#         "acls_facts": [
+#             {
+#                 "acls": [
+#                     {
+#                         "aces": [
+#                             {
+#                                 "destination": {
+#                                     "address": "192.0.3.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "dscp": "ef",
+#                                 "grant": "deny",
+#                                 "protocol": "icmp",
+#                                 "protocol_options": {
+#                                     "icmp": {
+#                                         "traceroute": true
+#                                     }
+#                                 },
+#                                 "sequence": 10,
+#                                 "source": {
+#                                     "address": "192.0.2.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "ttl": {
+#                                     "eq": 10
+#                                 }
+#                             },
+#                             {
+#                                 "destination": {
+#                                     "host": "198.51.110.0",
+#                                     "port_protocol": {
+#                                         "eq": "telnet"
+#                                     }
+#                                 },
+#                                 "grant": "deny",
+#                                 "protocol": "tcp",
+#                                 "protocol_options": {
+#                                     "tcp": {
+#                                         "ack": true
+#                                     }
+#                                 },
+#                                 "sequence": 20,
+#                                 "source": {
+#                                     "host": "198.51.100.0"
+#                                 }
+#                             }
+#                         ],
+#                         "acl_type": "extended",
+#                         "name": "110"
+#                     },
+#                     {
+#                         "aces": [
+#                             {
+#                                 "destination": {
+#                                     "address": "198.51.101.0",
+#                                     "port_protocol": {
+#                                         "eq": "telnet"
+#                                     },
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "grant": "deny",
+#                                 "protocol": "tcp",
+#                                 "protocol_options": {
+#                                     "tcp": {
+#                                         "ack": true
+#                                     }
+#                                 },
+#                                 "sequence": 10,
+#                                 "source": {
+#                                     "address": "198.51.100.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "tos": {
+#                                     "service_value": 12
+#                                 }
+#                             },
+#                             {
+#                                 "destination": {
+#                                     "address": "192.0.4.0",
+#                                     "port_protocol": {
+#                                         "eq": "www"
+#                                     },
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "dscp": "ef",
+#                                 "grant": "deny",
+#                                 "protocol": "tcp",
+#                                 "protocol_options": {
+#                                     "tcp": {
+#                                         "ack": true
+#                                     }
+#                                 },
+#                                 "sequence": 20,
+#                                 "source": {
+#                                     "address": "192.0.3.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "ttl": {
+#                                     "lt": 20
+#                                 }
+#                             }
+#                         ],
+#                         "acl_type": "extended",
+#                         "name": "123"
+#                     },
+#                     {
+#                         "aces": [
+#                             {
+#                                 "grant": "deny",
+#                                 "sequence": 10,
+#                                 "source": {
+#                                     "host": "192.168.1.200"
+#                                 }
+#                             },
+#                             {
+#                                 "grant": "deny",
+#                                 "sequence": 20,
+#                                 "source": {
+#                                     "address": "192.168.2.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 }
+#                             }
+#                         ],
+#                         "acl_type": "standard",
+#                         "name": "std_acl"
+#                     },
+#                     {
+#                         "aces": [
+#                             {
+#                                 "destination": {
+#                                     "address": "192.0.3.0",
+#                                     "port_protocol": {
+#                                         "eq": "www"
+#                                     },
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "grant": "deny",
+#                                 "option": {
+#                                     "traceroute": true
+#                                 },
+#                                 "protocol": "tcp",
+#                                 "protocol_options": {
+#                                     "tcp": {
+#                                         "fin": true
+#                                     }
+#                                 },
+#                                 "sequence": 10,
+#                                 "source": {
+#                                     "address": "192.0.2.0",
+#                                     "wildcard_bits": "0.0.0.255"
+#                                 },
+#                                 "ttl": {
+#                                     "eq": 10
+#                                 }
+#                             }
+#                         ],
+#                         "acl_type": "extended",
+#                         "name": "test"
+#                     }
+#                 ],
+#                 "afi": "ipv4"
+#             },
+#             {
+#                 "acls": [
+#                     {
+#                         "aces": [
+#                             {
+#                                 "destination": {
+#                                     "any": true,
+#                                     "port_protocol": {
+#                                         "eq": "telnet"
+#                                     }
+#                                 },
+#                                 "dscp": "af11",
+#                                 "grant": "deny",
+#                                 "protocol": "tcp",
+#                                 "protocol_options": {
+#                                     "tcp": {
+#                                         "ack": true
+#                                     }
+#                                 },
+#                                 "sequence": 10,
+#                                 "source": {
+#                                     "any": true,
+#                                     "port_protocol": {
+#                                         "eq": "www"
+#                                     }
+#                                 }
+#                             }
+#                         ],
+#                         "name": "R1_TRAFFIC"
+#                     }
+#                 ],
+#                 "afi": "ipv6"
+#             }
+#         ],
+#         "filter_options": {
+#             "sticky": true
+#         },
+#         "match_criteria": {
+#             "afi": "ipv4",
+#             "destination_address": "192.0.3.0",
+#             "source_address": "192.0.2.0"
+#         }
+#     },
+#     "changed": false
+# }
+
+# TASK [Invoke ace_popper filter plugin] *****************************************
+# task path: /home/...ace_popper_example.yml:229
+# ok: [xe_machine] => {
+#     "ansible_facts": {
+#         "clean_acls": {
+#             "clean_acls": {
+#                 "acls": [
+#                     {
+#                         "acls": [
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "destination": {
+#                                             "host": "198.51.110.0",
+#                                             "port_protocol": {
+#                                                 "eq": "telnet"
+#                                             }
+#                                         },
+#                                         "grant": "deny",
+#                                         "protocol": "tcp",
+#                                         "protocol_options": {
+#                                             "tcp": {
+#                                                 "ack": true
+#                                             }
+#                                         },
+#                                         "sequence": 20,
+#                                         "source": {
+#                                             "host": "198.51.100.0"
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "110"
+#                             },
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "destination": {
+#                                             "address": "198.51.101.0",
+#                                             "port_protocol": {
+#                                                 "eq": "telnet"
+#                                             },
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "grant": "deny",
+#                                         "protocol": "tcp",
+#                                         "protocol_options": {
+#                                             "tcp": {
+#                                                 "ack": true
+#                                             }
+#                                         },
+#                                         "sequence": 10,
+#                                         "source": {
+#                                             "address": "198.51.100.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "tos": {
+#                                             "service_value": 12
+#                                         }
+#                                     },
+#                                     {
+#                                         "destination": {
+#                                             "address": "192.0.4.0",
+#                                             "port_protocol": {
+#                                                 "eq": "www"
+#                                             },
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "dscp": "ef",
+#                                         "grant": "deny",
+#                                         "protocol": "tcp",
+#                                         "protocol_options": {
+#                                             "tcp": {
+#                                                 "ack": true
+#                                             }
+#                                         },
+#                                         "sequence": 20,
+#                                         "source": {
+#                                             "address": "192.0.3.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "ttl": {
+#                                             "lt": 20
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "123"
+#                             },
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "grant": "deny",
+#                                         "sequence": 10,
+#                                         "source": {
+#                                             "host": "192.168.1.200"
+#                                         }
+#                                     },
+#                                     {
+#                                         "grant": "deny",
+#                                         "sequence": 20,
+#                                         "source": {
+#                                             "address": "192.168.2.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "std_acl"
+#                             }
+#                         ],
+#                         "afi": "ipv4"
+#                     },
+#                     {
+#                         "acls": [
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "destination": {
+#                                             "any": true,
+#                                             "port_protocol": {
+#                                                 "eq": "telnet"
+#                                             }
+#                                         },
+#                                         "dscp": "af11",
+#                                         "grant": "deny",
+#                                         "protocol": "tcp",
+#                                         "protocol_options": {
+#                                             "tcp": {
+#                                                 "ack": true
+#                                             }
+#                                         },
+#                                         "sequence": 10,
+#                                         "source": {
+#                                             "any": true,
+#                                             "port_protocol": {
+#                                                 "eq": "www"
+#                                             }
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "R1_TRAFFIC"
+#                             }
+#                         ],
+#                         "afi": "ipv6"
+#                     }
+#                 ]
+#             },
+#             "removed_aces": {
+#                 "acls": [
+#                     {
+#                         "acls": [
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "destination": {
+#                                             "address": "192.0.3.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "dscp": "ef",
+#                                         "grant": "deny",
+#                                         "protocol": "icmp",
+#                                         "protocol_options": {
+#                                             "icmp": {
+#                                                 "traceroute": true
+#                                             }
+#                                         },
+#                                         "sequence": 10,
+#                                         "source": {
+#                                             "address": "192.0.2.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "ttl": {
+#                                             "eq": 10
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "110"
+#                             },
+#                             {
+#                                 "aces": [
+#                                     {
+#                                         "destination": {
+#                                             "address": "192.0.3.0",
+#                                             "port_protocol": {
+#                                                 "eq": "www"
+#                                             },
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "grant": "deny",
+#                                         "option": {
+#                                             "traceroute": true
+#                                         },
+#                                         "protocol": "tcp",
+#                                         "protocol_options": {
+#                                             "tcp": {
+#                                                 "fin": true
+#                                             }
+#                                         },
+#                                         "sequence": 10,
+#                                         "source": {
+#                                             "address": "192.0.2.0",
+#                                             "wildcard_bits": "0.0.0.255"
+#                                         },
+#                                         "ttl": {
+#                                             "eq": 10
+#                                         }
+#                                     }
+#                                 ],
+#                                 "name": "test"
+#                             }
+#                         ],
+#                         "afi": "ipv4"
+#                     },
+#                     {
+#                         "acls": [],
+#                         "afi": "ipv6"
+#                     }
+#                 ]
+#             }
+#         }
+#     },
+#     "changed": false
+# }
+
+# TASK [Override ACLs config with device existing ACLs config] *******************
+# task path: /home/...ace_popper_example.yml:233
+# changed: [xe_machine] => {
+#     "after": [
+#         {
+#             "acls": [
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "icmp",
+#                             "protocol_options": {
+#                                 "icmp": {
+#                                     "traceroute": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "host": "198.51.110.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "host": "198.51.100.0"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "110"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "198.51.101.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "198.51.100.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "tos": {
+#                                 "service_value": 12
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.4.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "lt": 20
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "123"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 10,
+#                             "source": {
+#                                 "host": "192.168.1.200"
+#                             }
+#                         },
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.168.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "standard",
+#                     "name": "std_acl"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "option": {
+#                                 "traceroute": true
+#                             },
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "fin": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "test"
+#                 }
+#             ],
+#             "afi": "ipv4"
+#         },
+#         {
+#             "acls": [
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "dscp": "af11",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 }
+#                             }
+#                         }
+#                     ],
+#                     "name": "R1_TRAFFIC"
+#                 }
+#             ],
+#             "afi": "ipv6"
+#         }
+#     ],
+#     "before": [
+#         {
+#             "acls": [
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "icmp",
+#                             "protocol_options": {
+#                                 "icmp": {
+#                                     "traceroute": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "host": "198.51.110.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "host": "198.51.100.0"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "110"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "198.51.101.0",
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "198.51.100.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "tos": {
+#                                 "service_value": 12
+#                             }
+#                         },
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.4.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "dscp": "ef",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.0.3.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "lt": 20
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "123"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 10,
+#                             "source": {
+#                                 "host": "192.168.1.200"
+#                             }
+#                         },
+#                         {
+#                             "grant": "deny",
+#                             "sequence": 20,
+#                             "source": {
+#                                 "address": "192.168.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "standard",
+#                     "name": "std_acl"
+#                 },
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "address": "192.0.3.0",
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 },
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "grant": "deny",
+#                             "option": {
+#                                 "traceroute": true
+#                             },
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "fin": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "address": "192.0.2.0",
+#                                 "wildcard_bits": "0.0.0.255"
+#                             },
+#                             "ttl": {
+#                                 "eq": 10
+#                             }
+#                         }
+#                     ],
+#                     "acl_type": "extended",
+#                     "name": "test"
+#                 }
+#             ],
+#             "afi": "ipv4"
+#         },
+#         {
+#             "acls": [
+#                 {
+#                     "aces": [
+#                         {
+#                             "destination": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "telnet"
+#                                 }
+#                             },
+#                             "dscp": "af11",
+#                             "grant": "deny",
+#                             "protocol": "tcp",
+#                             "protocol_options": {
+#                                 "tcp": {
+#                                     "ack": true
+#                                 }
+#                             },
+#                             "sequence": 10,
+#                             "source": {
+#                                 "any": true,
+#                                 "port_protocol": {
+#                                     "eq": "www"
+#                                 }
+#                             }
+#                         }
+#                     ],
+#                     "name": "R1_TRAFFIC"
+#                 }
+#             ],
+#             "afi": "ipv6"
+#         }
+#     ],
+#     "changed": true,
+#     "commands": [
+#         "ip access-list extended 110",
+#         "no 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10",
+#         "no ip access-list extended test"
+#     ],
+#     "invocation": {
+#         "module_args": {
+#             "config": [
 #                 {
 #                     "acls": [
 #                         {
-#                             "ace": [
+#                             "aces": [
 #                                 {
-#                                     "grant": "permit",
-#                                     "sequence": 10,
+#                                     "destination": {
+#                                         "address": null,
+#                                         "any": null,
+#                                         "host": "198.51.110.0",
+#                                         "object_group": null,
+#                                         "port_protocol": {
+#                                             "eq": "telnet",
+#                                             "gt": null,
+#                                             "lt": null,
+#                                             "neq": null,
+#                                             "range": null
+#                                         },
+#                                         "wildcard_bits": null
+#                                     },
+#                                     "dscp": null,
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
+#                                     "grant": "deny",
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
+#                                     "protocol": "tcp",
+#                                     "protocol_options": {
+#                                         "ahp": null,
+#                                         "eigrp": null,
+#                                         "esp": null,
+#                                         "gre": null,
+#                                         "hbh": null,
+#                                         "icmp": null,
+#                                         "igmp": null,
+#                                         "ip": null,
+#                                         "ipinip": null,
+#                                         "ipv6": null,
+#                                         "nos": null,
+#                                         "ospf": null,
+#                                         "pcp": null,
+#                                         "pim": null,
+#                                         "protocol_number": null,
+#                                         "sctp": null,
+#                                         "tcp": {
+#                                             "ack": true,
+#                                             "established": null,
+#                                             "fin": null,
+#                                             "psh": null,
+#                                             "rst": null,
+#                                             "syn": null,
+#                                             "urg": null
+#                                         },
+#                                         "udp": null
+#                                     },
+#                                     "remarks": null,
+#                                     "sequence": 20,
 #                                     "source": {
-#                                         "address": "192.168.12.0",
-#                                         "wildcard_bits": "0.0.0.255"
-#                                     }
+#                                         "address": null,
+#                                         "any": null,
+#                                         "host": "198.51.100.0",
+#                                         "object_group": null,
+#                                         "port_protocol": null,
+#                                         "wildcard_bits": null
+#                                     },
+#                                     "time_range": null,
+#                                     "tos": null,
+#                                     "ttl": null
 #                                 }
 #                             ],
-#                             "name": "1"
+#                             "acl_type": null,
+#                             "name": "110"
 #                         },
 #                         {
-#                             "ace": [
+#                             "aces": [
 #                                 {
 #                                     "destination": {
-#                                         "any": true,
+#                                         "address": "198.51.101.0",
+#                                         "any": null,
+#                                         "host": null,
+#                                         "object_group": null,
 #                                         "port_protocol": {
-#                                             "eq": "22"
-#                                         }
-#                                     },
-#                                     "grant": "permit",
-#                                     "protocol": "tcp",
-#                                     "sequence": 10,
-#                                     "source": {
-#                                         "any": true
-#                                     }
-#                                 },
-#                                 {
-#                                     "destination": {
-#                                         "host": "192.168.20.5",
-#                                         "port_protocol": {
-#                                             "eq": "22"
-#                                         }
-#                                     },
-#                                     "grant": "permit",
-#                                     "protocol": "tcp",
-#                                     "sequence": 21,
-#                                     "source": {
-#                                         "host": "192.168.11.8"
-#                                     }
-#                                 }
-#                             ],
-#                             "name": "acl_123"
-#                         },
-#                         {
-#                             "ace": [
-#                                 {
-#                                     "destination": {
-#                                         "address": "192.0.3.0",
-#                                         "port_protocol": {
-#                                             "eq": "www"
+#                                             "eq": "telnet",
+#                                             "gt": null,
+#                                             "lt": null,
+#                                             "neq": null,
+#                                             "range": null
 #                                         },
 #                                         "wildcard_bits": "0.0.0.255"
 #                                     },
+#                                     "dscp": null,
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
 #                                     "grant": "deny",
-#                                     "option": {
-#                                         "traceroute": true
-#                                     },
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
 #                                     "protocol": "tcp",
 #                                     "protocol_options": {
+#                                         "ahp": null,
+#                                         "eigrp": null,
+#                                         "esp": null,
+#                                         "gre": null,
+#                                         "hbh": null,
+#                                         "icmp": null,
+#                                         "igmp": null,
+#                                         "ip": null,
+#                                         "ipinip": null,
+#                                         "ipv6": null,
+#                                         "nos": null,
+#                                         "ospf": null,
+#                                         "pcp": null,
+#                                         "pim": null,
+#                                         "protocol_number": null,
+#                                         "sctp": null,
 #                                         "tcp": {
-#                                             "fin": true
-#                                         }
+#                                             "ack": true,
+#                                             "established": null,
+#                                             "fin": null,
+#                                             "psh": null,
+#                                             "rst": null,
+#                                             "syn": null,
+#                                             "urg": null
+#                                         },
+#                                         "udp": null
 #                                     },
+#                                     "remarks": null,
 #                                     "sequence": 10,
 #                                     "source": {
-#                                         "address": "192.0.2.0",
+#                                         "address": "198.51.100.0",
+#                                         "any": null,
+#                                         "host": null,
+#                                         "object_group": null,
+#                                         "port_protocol": null,
 #                                         "wildcard_bits": "0.0.0.255"
 #                                     },
+#                                     "time_range": null,
+#                                     "tos": {
+#                                         "max_reliability": null,
+#                                         "max_throughput": null,
+#                                         "min_delay": null,
+#                                         "min_monetary_cost": null,
+#                                         "normal": null,
+#                                         "service_value": 12
+#                                     },
+#                                     "ttl": null
+#                                 },
+#                                 {
+#                                     "destination": {
+#                                         "address": "192.0.4.0",
+#                                         "any": null,
+#                                         "host": null,
+#                                         "object_group": null,
+#                                         "port_protocol": {
+#                                             "eq": "www",
+#                                             "gt": null,
+#                                             "lt": null,
+#                                             "neq": null,
+#                                             "range": null
+#                                         },
+#                                         "wildcard_bits": "0.0.0.255"
+#                                     },
+#                                     "dscp": "ef",
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
+#                                     "grant": "deny",
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
+#                                     "protocol": "tcp",
+#                                     "protocol_options": {
+#                                         "ahp": null,
+#                                         "eigrp": null,
+#                                         "esp": null,
+#                                         "gre": null,
+#                                         "hbh": null,
+#                                         "icmp": null,
+#                                         "igmp": null,
+#                                         "ip": null,
+#                                         "ipinip": null,
+#                                         "ipv6": null,
+#                                         "nos": null,
+#                                         "ospf": null,
+#                                         "pcp": null,
+#                                         "pim": null,
+#                                         "protocol_number": null,
+#                                         "sctp": null,
+#                                         "tcp": {
+#                                             "ack": true,
+#                                             "established": null,
+#                                             "fin": null,
+#                                             "psh": null,
+#                                             "rst": null,
+#                                             "syn": null,
+#                                             "urg": null
+#                                         },
+#                                         "udp": null
+#                                     },
+#                                     "remarks": null,
+#                                     "sequence": 20,
+#                                     "source": {
+#                                         "address": "192.0.3.0",
+#                                         "any": null,
+#                                         "host": null,
+#                                         "object_group": null,
+#                                         "port_protocol": null,
+#                                         "wildcard_bits": "0.0.0.255"
+#                                     },
+#                                     "time_range": null,
+#                                     "tos": null,
 #                                     "ttl": {
-#                                         "eq": 10
+#                                         "eq": null,
+#                                         "gt": null,
+#                                         "lt": 20,
+#                                         "neq": null,
+#                                         "range": null
 #                                     }
 #                                 }
 #                             ],
-#                             "name": "test_acl"
+#                             "acl_type": null,
+#                             "name": "123"
+#                         },
+#                         {
+#                             "aces": [
+#                                 {
+#                                     "destination": null,
+#                                     "dscp": null,
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
+#                                     "grant": "deny",
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
+#                                     "protocol": null,
+#                                     "protocol_options": null,
+#                                     "remarks": null,
+#                                     "sequence": 10,
+#                                     "source": {
+#                                         "address": null,
+#                                         "any": null,
+#                                         "host": "192.168.1.200",
+#                                         "object_group": null,
+#                                         "port_protocol": null,
+#                                         "wildcard_bits": null
+#                                     },
+#                                     "time_range": null,
+#                                     "tos": null,
+#                                     "ttl": null
+#                                 },
+#                                 {
+#                                     "destination": null,
+#                                     "dscp": null,
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
+#                                     "grant": "deny",
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
+#                                     "protocol": null,
+#                                     "protocol_options": null,
+#                                     "remarks": null,
+#                                     "sequence": 20,
+#                                     "source": {
+#                                         "address": "192.168.2.0",
+#                                         "any": null,
+#                                         "host": null,
+#                                         "object_group": null,
+#                                         "port_protocol": null,
+#                                         "wildcard_bits": "0.0.0.255"
+#                                     },
+#                                     "time_range": null,
+#                                     "tos": null,
+#                                     "ttl": null
+#                                 }
+#                             ],
+#                             "acl_type": null,
+#                             "name": "std_acl"
 #                         }
 #                     ],
 #                     "afi": "ipv4"
@@ -270,40 +1453,98 @@ EXAMPLES = r"""
 #                 {
 #                     "acls": [
 #                         {
-#                             "ace": [
+#                             "aces": [
 #                                 {
 #                                     "destination": {
+#                                         "address": null,
 #                                         "any": true,
+#                                         "host": null,
+#                                         "object_group": null,
 #                                         "port_protocol": {
-#                                             "eq": "telnet"
-#                                         }
+#                                             "eq": "telnet",
+#                                             "gt": null,
+#                                             "lt": null,
+#                                             "neq": null,
+#                                             "range": null
+#                                         },
+#                                         "wildcard_bits": null
 #                                     },
 #                                     "dscp": "af11",
+#                                     "enable_fragments": null,
+#                                     "evaluate": null,
+#                                     "fragments": null,
 #                                     "grant": "deny",
+#                                     "log": null,
+#                                     "log_input": null,
+#                                     "option": null,
+#                                     "precedence": null,
 #                                     "protocol": "tcp",
 #                                     "protocol_options": {
+#                                         "ahp": null,
+#                                         "eigrp": null,
+#                                         "esp": null,
+#                                         "gre": null,
+#                                         "hbh": null,
+#                                         "icmp": null,
+#                                         "igmp": null,
+#                                         "ip": null,
+#                                         "ipinip": null,
+#                                         "ipv6": null,
+#                                         "nos": null,
+#                                         "ospf": null,
+#                                         "pcp": null,
+#                                         "pim": null,
+#                                         "protocol_number": null,
+#                                         "sctp": null,
 #                                         "tcp": {
-#                                             "ack": true
-#                                         }
+#                                             "ack": true,
+#                                             "established": null,
+#                                             "fin": null,
+#                                             "psh": null,
+#                                             "rst": null,
+#                                             "syn": null,
+#                                             "urg": null
+#                                         },
+#                                         "udp": null
 #                                     },
+#                                     "remarks": null,
 #                                     "sequence": 10,
 #                                     "source": {
+#                                         "address": null,
 #                                         "any": true,
+#                                         "host": null,
+#                                         "object_group": null,
 #                                         "port_protocol": {
-#                                             "eq": "www"
-#                                         }
-#                                     }
+#                                             "eq": "www",
+#                                             "gt": null,
+#                                             "lt": null,
+#                                             "neq": null,
+#                                             "range": null
+#                                         },
+#                                         "wildcard_bits": null
+#                                     },
+#                                     "time_range": null,
+#                                     "tos": null,
+#                                     "ttl": null
 #                                 }
 #                             ],
+#                             "acl_type": null,
 #                             "name": "R1_TRAFFIC"
 #                         }
 #                     ],
 #                     "afi": "ipv6"
 #                 }
-#             ]
+#             ],
+#             "running_config": null,
+#             "state": "overridden"
 #         }
 #     }
 # }
+
+# PLAY RECAP *********************************************************************
+# xe_machine               : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+
 
 """
 

@@ -103,11 +103,11 @@ def _ace_popper(raw_acl, filter_options, match_criteria):
                 )  # activates only when ace removed on name and not sticky
 
             if _aces:  # store filtered aces
-                _acl["name"], _acl["ace"] = name, _aces
+                _acl["name"], _acl["aces"] = name, _aces
                 acls_v4.append(_acl) if afi == "ipv4" else acls_v6.append(_acl)
 
             if _races:  # store removed aces
-                _racl["name"], _racl["ace"] = name, _races
+                _racl["name"], _racl["aces"] = name, _races
                 racls_v4.append(_racl) if afi == "ipv4" else racls_v6.append(_racl)
 
     fail_missing(racls_v4 + racls_v6, fail_if_no_match)
@@ -120,7 +120,7 @@ def ace_popper(data, filter_options, match_criteria):
         _raise_error("Input is not valid for ace_popper")
     cleared_data, removed_data = _ace_popper(data, filter_options, match_criteria)
     data = {
-        "acls": cleared_data,
+        "clean_acls": cleared_data,
         "removed_aces": removed_data,
     }
     return data
