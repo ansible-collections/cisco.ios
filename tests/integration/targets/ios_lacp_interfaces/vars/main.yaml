@@ -72,7 +72,6 @@ overridden:
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
-    - name: Port-channel40
     - name: GigabitEthernet1
     - name: GigabitEthernet2
       port_priority: 30
@@ -87,9 +86,6 @@ overridden:
     - interface Port-channel10
     - no lacp fast-switchover
     - no lacp max-bundle
-    - interface Port-channel40
-    - lacp fast-switchover
-    - lacp max-bundle 2
   after:
     - name: loopback888
     - name: loopback999
@@ -165,9 +161,6 @@ rtt:
     - interface Port-channel10
     - lacp max-bundle 2
     - lacp fast-switchover
-    - interface Port-channel40
-    - no lacp max-bundle
-    - no lacp fast-switchover
     - interface GigabitEthernet2
     - lacp port-priority 30
     - interface GigabitEthernet3

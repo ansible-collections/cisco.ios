@@ -6,10 +6,10 @@ merged:
       description: Management interface do not change
     - enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - enabled: true
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -29,18 +29,17 @@ merged:
     - description: Configured and Merged by Ansible-Network
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: Configured and Merged by Ansible-Network
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-
 
 replaced:
   commands:
@@ -53,11 +52,11 @@ replaced:
     - description: Configured and Replaced by Ansible-Network
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -71,18 +70,17 @@ replaced:
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-
 
 overridden:
   before:
@@ -92,11 +90,11 @@ overridden:
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -114,18 +112,17 @@ overridden:
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: Configured and Overridden by Ansible-Network
       enabled: true
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-
 
 deleted:
   before:
@@ -135,11 +132,11 @@ deleted:
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -160,17 +157,16 @@ deleted:
       name: GigabitEthernet1
     - enabled: false
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-
 
 gathered:
   config:
@@ -180,18 +176,17 @@ gathered:
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
-      speed: '1000'
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
-      speed: '1000'
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-
 
 parsed:
   config:
