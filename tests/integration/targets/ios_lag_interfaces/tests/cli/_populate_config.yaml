@@ -5,3 +5,5 @@
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
+
+- ansible.builtin.include_tasks: _add_port_channels.yml
