@@ -31,7 +31,7 @@ def fail_missing(racl, fail):
         _raise_error("no entries removed on the provided match_criteria")
 
 
-def check_match(ace, match_criteria, sticky):
+def check_match(ace, match_criteria, match_all):
     check_arr = []
     check_arr.append(True) if ace.get("sequence", "NA") == match_criteria.get(
         "sequence",
@@ -49,7 +49,7 @@ def check_match(ace, match_criteria, sticky):
         "destination_address",
     ) else check_arr.append(False)
 
-    if sticky:  # forces all criteria to match
+    if match_all:  # forces all criteria to match
         return all(check_arr)
     else:
         return any(check_arr)
@@ -61,7 +61,7 @@ def _ace_popper(raw_acl, filter_options, match_criteria):
 
     remove_first_ace_only = True if filter_options.get("remove") == "first" else False
     fail_if_no_match = True if filter_options.get("failed_when") == "missing" else False
-    sticky = True if filter_options.get("sticky") == "True" else False
+    match_all = True if filter_options.get("match_all") == "True" else False
 
     final_acl = {
         "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}],
@@ -86,7 +86,7 @@ def _ace_popper(raw_acl, filter_options, match_criteria):
                 if _keep and check_match(
                     ace,
                     match_criteria,
-                    sticky,
+                    match_all,
                 ):  # check matching criteria and remove from final dict
                     if remove_first_ace_only and _rstop:  # removes one ace entry per acl
                         _races.append(ace)
@@ -98,7 +98,7 @@ def _ace_popper(raw_acl, filter_options, match_criteria):
 
                 _races.append(ace) if not _keep else _aces.append(
                     ace,
-                )  # activates only when ace removed on name and not sticky
+                )  # activates only when ace removed on name and not match_all
 
             if _aces:  # store filtered aces
                 _acl["name"], _acl["aces"] = name, _aces

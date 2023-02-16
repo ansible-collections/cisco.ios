@@ -20,7 +20,7 @@ DOCUMENTATION = """
     short_description: Remove ace entries from a acl source of truth.
     description:
         - This plugin removes specific keys from a provided acl data.
-        - Using the parameters below- C(acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria))
+        - Using the parameters below - C(acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria))
     options:
       data:
         description:
@@ -30,55 +30,59 @@ DOCUMENTATION = """
         type: raw
         required: True
       filter_options:
-        description: Specify the target keys to remove in list format.
+        description: Specify filtering options which drives the filter plugin.
         type: dict
         suboptions:
           remove:
-            description: Specify aggregate address
+            description:
+              - Remove first removes one ace from each ACL entry on match
+              - Remove all is more aggressive and removes more than one on match
             type: str
             choices: ['first', 'all']
             default: all
           failed_when:
-            description: Specify aggregate mask
+            description:
+              - On missing it fails when there is no match with the ACL data supplied
+              - On never it would never fail
             type: str
             choices: ['missing', 'never']
             default: missing
-          sticky:
-            description: Specify aggregate mask
+          match_all:
+            description: When true ensures ace removed only when it matches all match criteria
             type: bool
             default: False
       match_criteria:
-        description: Specify the matching configuration of target keys and data attributes.
+        description: Specify the matching configuration of the ACEs to remove.
         type: dict
         required: True
         suboptions:
           afi:
-            description: Specify afi
+            description: Specify afi to match
             type: str
             required: True
           acl_name:
-            description: ACL name
+            description: ACL name to match
             type: str
           source_address:
-            description: Source address of the ACE
+            description: Source address of the ACE to match
             type: str
           destination_address:
-            description: Destination address of the ACE
+            description: Destination address of the ACE to natch
             type: str
           sequence:
-            description: Sequence number of the ACE
+            description: Sequence number of the ACE to match
             type: str
           protocol:
-            description: Protocol name
+            description: Protocol name of the ACE to match
             type: str
           grant:
-            description: Grant type permit or deny
+            description: Grant type permit or deny to match
             type: str
 """
 
 EXAMPLES = r"""
 
-##Playbook
+##Playbook with workflow example
 - name: Gather ACLs config from device existing ACLs config
   cisco.ios.ios_acls:
     state: gathered
@@ -88,7 +92,7 @@ EXAMPLES = r"""
   ansible.builtin.set_fact:
     acls_facts: "{{ result_gathered.gathered }}"
     filter_options:
-      sticky: true
+      match_all: true
     match_criteria:
       afi: "ipv4"
       source_address: "192.0.2.0"
@@ -521,7 +525,7 @@ EXAMPLES = r"""
 #             }
 #         ],
 #         "filter_options": {
-#             "sticky": true
+#             "match_all": true
 #         },
 #         "match_criteria": {
 #             "afi": "ipv4",
