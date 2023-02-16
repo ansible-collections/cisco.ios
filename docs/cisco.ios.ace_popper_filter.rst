@@ -18,7 +18,7 @@ Version added: 4.4.0
 Synopsis
 --------
 - This plugin removes specific keys from a provided acl data.
-- Using the parameters below- ``acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria``)
+- Using the parameters below - ``acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria``)
 
 
 
@@ -68,7 +68,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify the target keys to remove in list format.</div>
+                        <div>Specify filtering options which drives the filter plugin.</div>
                 </td>
             </tr>
                                 <tr>
@@ -90,7 +90,30 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify aggregate mask</div>
+                        <div>On missing it fails when there is no match with the ACL data supplied</div>
+                        <div>On never it would never fail</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>match_all</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                    <td>
+                    </td>
+                <td>
+                        <div>When true ensures ace removed only when it matches all match criteria</div>
                 </td>
             </tr>
             <tr>
@@ -112,29 +135,8 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify aggregate address</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>sticky</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                    <td>
-                    </td>
-                <td>
-                        <div>Specify aggregate mask</div>
+                        <div>Remove first removes one ace from each ACL entry on match</div>
+                        <div>Remove all is more aggressive and removes more than one on match</div>
                 </td>
             </tr>
 
@@ -153,7 +155,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify the matching configuration of target keys and data attributes.</div>
+                        <div>Specify the matching configuration of the ACEs to remove.</div>
                 </td>
             </tr>
                                 <tr>
@@ -171,7 +173,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>ACL name</div>
+                        <div>ACL name to match</div>
                 </td>
             </tr>
             <tr>
@@ -190,7 +192,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Specify afi</div>
+                        <div>Specify afi to match</div>
                 </td>
             </tr>
             <tr>
@@ -208,7 +210,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Destination address of the ACE</div>
+                        <div>Destination address of the ACE to natch</div>
                 </td>
             </tr>
             <tr>
@@ -226,7 +228,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Grant type permit or deny</div>
+                        <div>Grant type permit or deny to match</div>
                 </td>
             </tr>
             <tr>
@@ -244,7 +246,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Protocol name</div>
+                        <div>Protocol name of the ACE to match</div>
                 </td>
             </tr>
             <tr>
@@ -262,7 +264,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Sequence number of the ACE</div>
+                        <div>Sequence number of the ACE to match</div>
                 </td>
             </tr>
             <tr>
@@ -280,7 +282,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Source address of the ACE</div>
+                        <div>Source address of the ACE to match</div>
                 </td>
             </tr>
 
@@ -295,7 +297,7 @@ Examples
 
 .. code-block:: yaml
 
-    ##Playbook
+    ##Playbook with workflow example
     - name: Gather ACLs config from device existing ACLs config
       cisco.ios.ios_acls:
         state: gathered
@@ -305,7 +307,7 @@ Examples
       ansible.builtin.set_fact:
         acls_facts: "{{ result_gathered.gathered }}"
         filter_options:
-          sticky: true
+          match_all: true
         match_criteria:
           afi: "ipv4"
           source_address: "192.0.2.0"
@@ -738,7 +740,7 @@ Examples
     #             }
     #         ],
     #         "filter_options": {
-    #             "sticky": true
+    #             "match_all": true
     #         },
     #         "match_criteria": {
     #             "afi": "ipv4",
