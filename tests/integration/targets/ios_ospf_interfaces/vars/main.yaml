@@ -314,7 +314,6 @@ parsed:
     - name: GigabitEthernet3
 
 rendered:
-
   commands:
     - interface GigabitEthernet2
     - ip ospf 10 area 30
