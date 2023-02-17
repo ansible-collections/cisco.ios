@@ -140,8 +140,18 @@ class TestIosFactsModule(TestIosModule):
             self,
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet1"],
             [
-                {"platform": "cisco CSR1000V", "host": "R2", "port": "GigabitEthernet0/1", "ip": "10.0.0.3"},
-                {"platform": "cisco CSR1000V", "host": "R3", "port": "GigabitEthernet3", "ip": "10.0.0.4"},
+                {
+                    "platform": "cisco CSR1000V",
+                    "host": "R2",
+                    "port": "GigabitEthernet0/1",
+                    "ip": "10.0.0.3",
+                },
+                {
+                    "platform": "cisco CSR1000V",
+                    "host": "R3",
+                    "port": "GigabitEthernet3",
+                    "ip": "10.0.0.4",
+                },
             ],
         )
         assertCountEqual(
