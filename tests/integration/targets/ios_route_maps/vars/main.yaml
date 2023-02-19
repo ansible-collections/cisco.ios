@@ -40,112 +40,111 @@ merged:
 
   after:
     - entries:
-      - action: deny
-        description: this is test route
-        match:
-          community:
-            name:
-            - test_comm
-          ip:
-            next_hop:
-              prefix_lists:
-              - test_1_new
-              - test_2_new
-            route_source:
+        - action: deny
+          description: this is test route
+          match:
+            community:
+              name:
+                - test_comm
+            ip:
+              next_hop:
+                prefix_lists:
+                  - test_1_new
+                  - test_2_new
+              route_source:
+                acls:
+                  - "10"
+            local_preference:
+              value:
+                - "100"
+                - "50"
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
+            community:
+              number: 4259840100 4259840200
+        - action: deny
+          continue_entry:
+            entry_sequence: 100
+          match:
+            additional_paths:
+              all: true
+              group_best: true
+            as_path:
               acls:
-              - '10'
-          local_preference:
-            value:
-            - '100'
-            - '50'
-          mpls_label: true
-          security_group:
-            source:
-            - 10
-            - 20
-        sequence: 10
-        set:
-          as_path:
-            prepend:
-              as_number:
-              - '64512'
-          community:
-            number: 4259840100 4259840200
-      - action: deny
-        continue_entry:
-          entry_sequence: 100
-        match:
-          additional_paths:
-            all: true
-            group_best: true
-          as_path:
-            acls:
-            - 100
-            - 200
-          ipv6:
-            address:
-              acl: test_acl_20
-          route_type:
-            external:
-              set: true
-            level_1: true
-            nssa_external:
-              set: true
-          tag:
-            tag_list:
-            - test_match_tag
-          track: 105
-        sequence: 20
+                - 100
+                - 200
+            ipv6:
+              address:
+                acl: test_acl_20
+            route_type:
+              external:
+                set: true
+              level_1: true
+              nssa_external:
+                set: true
+            tag:
+              tag_list:
+                - test_match_tag
+            track: 105
+          sequence: 20
       route_map: test_1
     - entries:
-      - action: deny
-        match:
-          ipv6:
-            address:
-              acl: test_ip_acl
-            next_hop:
-              prefix_list: test_new
-            route_source:
-              acl: route_src_acl
-          local_preference:
-            value:
-            - '105'
-            - '55'
-          mpls_label: true
-          security_group:
-            source:
-            - 10
-            - 20
-        sequence: 10
-        set:
-          aigp_metric:
-            value: 100
-          as_path:
-            prepend:
-              as_number:
-              - '65111'
-              - '65111'
-          automatic_tag: true
-          extcommunity:
-            cost:
-              cost_value: 100
-              id: '10'
-              pre_bestpath: true
-          ip:
-            address: 192.0.2.1
-            df: 1
-            next_hop:
-              recursive:
-                address: 198.51.110.1
-                global_route: true
-              verify_availability:
-                address: 198.51.111.1
-                sequence: 100
-                track: 10
-            precedence:
-              critical: true
+        - action: deny
+          match:
+            ipv6:
+              address:
+                acl: test_ip_acl
+              next_hop:
+                prefix_list: test_new
+              route_source:
+                acl: route_src_acl
+            local_preference:
+              value:
+                - "105"
+                - "55"
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            aigp_metric:
+              value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
+            automatic_tag: true
+            extcommunity:
+              cost:
+                cost_value: 100
+                id: "10"
+                pre_bestpath: true
+            ip:
+              address: 192.0.2.1
+              df: 1
+              next_hop:
+                recursive:
+                  address: 198.51.110.1
+                  global_route: true
+                verify_availability:
+                  address: 198.51.111.1
+                  sequence: 100
+                  track: 10
+              precedence:
+                critical: true
       route_map: test_2
-
 
 overridden:
   commands:
@@ -325,152 +324,151 @@ replaced:
     - no route-map test_1 deny 20
 
   after:
-  - entries:
-    - action: deny
-      description: this is replaced route
-      match:
-        community:
-          name:
-          - test_comm_replaced
-        ip:
-          flowspec:
-            acls:
-            - test_acl_1
-            - test_acl_2
-            dest_pfx: true
-          next_hop:
-            acls:
-            - '10'
-            - test1_acl
-        length:
-          maximum: 100
-          minimum: 10
-        metric:
-          external: true
-          value: 10
-        mpls_label: true
-        security_group:
-          source:
-          - 10
-          - 20
-      sequence: 10
-      set:
-        as_path:
-          prepend:
-            as_number:
-            - '64512'
-            - '64512'
-        community:
-          number: '4259840300'
-        extcommunity:
-          vpn_distinguisher:
-            additive: true
-            address: 192.0.2.1:12
-        metric:
-          deviation: plus
-          eigrp_delay: 100
-          metric_bandwidth: 20
-          metric_reliability: 10
-          metric_value: 100
-          mtu: 30
-    route_map: test_1
-  - entries:
-    - action: deny
-      match:
-        ipv6:
-          address:
-            acl: test_ip_acl
-          next_hop:
-            prefix_list: test_new
-          route_source:
-            acl: route_src_acl
-        local_preference:
-          value:
-          - '105'
-          - '55'
-        mpls_label: true
-        security_group:
-          source:
-          - 10
-          - 20
-      sequence: 10
-      set:
-        aigp_metric:
-          value: 100
-        as_path:
-          prepend:
-            as_number:
-            - '65111'
-            - '65111'
-        automatic_tag: true
-        extcommunity:
-          cost:
-            cost_value: 100
-            id: '10'
-            pre_bestpath: true
-        ip:
-          address: 192.0.2.1
-          df: 1
-          next_hop:
-            recursive:
-              address: 198.51.110.1
-              global_route: true
-            verify_availability:
-              address: 198.51.111.1
-              sequence: 100
-              track: 10
-          precedence:
-            critical: true
-    route_map: test_2
-  - entries:
-    - action: deny
-      match:
-        ipv6:
-          address:
-            acl: test_acl
-          next_hop:
-            prefix_list: test_new
-          route_source:
-            acl: route_src_acl
-        local_preference:
-          value:
-          - '105'
-          - '110'
-        mpls_label: true
-        security_group:
-          source:
-          - 15
-          - 20
-      sequence: 10
-      set:
-        aigp_metric:
-          value: 100
-        as_path:
-          prepend:
-            as_number:
-            - '65111'
-            - '65111'
-        automatic_tag: true
-        extcommunity:
-          cost:
-            cost_value: 100
-            id: '10'
-            pre_bestpath: true
-        ip:
-          address: 192.0.2.1
-          df: 1
-          next_hop:
-            recursive:
-              address: 198.110.51.1
-              global_route: true
-            verify_availability:
-              address: 198.110.51.2
-              sequence: 100
-              track: 10
-          precedence:
-            critical: true
-    route_map: test_replaced
-
+    - entries:
+        - action: deny
+          description: this is replaced route
+          match:
+            community:
+              name:
+                - test_comm_replaced
+            ip:
+              flowspec:
+                acls:
+                  - test_acl_1
+                  - test_acl_2
+                dest_pfx: true
+              next_hop:
+                acls:
+                  - "10"
+                  - test1_acl
+            length:
+              maximum: 100
+              minimum: 10
+            metric:
+              external: true
+              value: 10
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
+                  - "64512"
+            community:
+              number: "4259840300"
+            extcommunity:
+              vpn_distinguisher:
+                additive: true
+                address: 192.0.2.1:12
+            metric:
+              deviation: plus
+              eigrp_delay: 100
+              metric_bandwidth: 20
+              metric_reliability: 10
+              metric_value: 100
+              mtu: 30
+      route_map: test_1
+    - entries:
+        - action: deny
+          match:
+            ipv6:
+              address:
+                acl: test_ip_acl
+              next_hop:
+                prefix_list: test_new
+              route_source:
+                acl: route_src_acl
+            local_preference:
+              value:
+                - "105"
+                - "55"
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            aigp_metric:
+              value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
+            automatic_tag: true
+            extcommunity:
+              cost:
+                cost_value: 100
+                id: "10"
+                pre_bestpath: true
+            ip:
+              address: 192.0.2.1
+              df: 1
+              next_hop:
+                recursive:
+                  address: 198.51.110.1
+                  global_route: true
+                verify_availability:
+                  address: 198.51.111.1
+                  sequence: 100
+                  track: 10
+              precedence:
+                critical: true
+      route_map: test_2
+    - entries:
+        - action: deny
+          match:
+            ipv6:
+              address:
+                acl: test_acl
+              next_hop:
+                prefix_list: test_new
+              route_source:
+                acl: route_src_acl
+            local_preference:
+              value:
+                - "105"
+                - "110"
+            mpls_label: true
+            security_group:
+              source:
+                - 15
+                - 20
+          sequence: 10
+          set:
+            aigp_metric:
+              value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
+            automatic_tag: true
+            extcommunity:
+              cost:
+                cost_value: 100
+                id: "10"
+                pre_bestpath: true
+            ip:
+              address: 192.0.2.1
+              df: 1
+              next_hop:
+                recursive:
+                  address: 198.110.51.1
+                  global_route: true
+                verify_availability:
+                  address: 198.110.51.2
+                  sequence: 100
+                  track: 10
+              precedence:
+                critical: true
+      route_map: test_replaced
 
 deleted:
   commands:
@@ -484,112 +482,111 @@ deleted_all:
   after:
     as_number: "65000"
 
-
 parsed:
   config:
-  - entries:
-    - action: deny
-      description: this is test route
-      match:
-        community:
-          name:
-          - test_comm
-        ip:
-          next_hop:
-            prefix_lists:
-            - test_1_new
-            - test_2_new
-          route_source:
-            acls:
-            - '10'
-        local_preference:
-          value:
-          - '100'
-          - '50'
-        mpls_label: true
-        security_group:
-          source:
-          - 10
-          - 20
-      sequence: 10
-      set:
-        as_path:
-          prepend:
-            as_number:
-            - '64512'
-        community:
-          number: '65000:100 65000:200'
-    - action: deny
-      continue_entry:
-        entry_sequence: 100
-      match:
-        additional_paths:
-          all: true
-          group_best: true
-        as_path:
-          acls:
-          - 100
-          - 200
-        ipv6:
-          address:
-            acl: test_acl_20
-        route_type:
-          external:
-            set: true
-          level_1: true
-          nssa_external:
-            set: true
-        tag:
-          tag_list:
-          - test_match_tag
-        track: 105
-      sequence: 20
-    route_map: test_1
-  - entries:
-    - action: deny
-      match:
-        ipv6:
-          address:
-            acl: test_ip_acl
-          next_hop:
-            prefix_list: test_new
-          route_source:
-            acl: route_src_acl
-        local_preference:
-          value:
-          - '105'
-          - '55'
-        mpls_label: true
-        security_group:
-          source:
-          - 10
-          - 20
-      sequence: 10
-      set:
-        aigp_metric:
-          value: 100
-        as_path:
-          prepend:
-            as_number:
-            - '65111'
-            - '65111'
-        automatic_tag: true
-        extcommunity:
-          cost:
-            cost_value: 100
-            id: '10'
-            pre_bestpath: true
-        ip:
-          address: 192.0.2.1
-          df: 1
-          next_hop:
-            recursive:
-              address: 198.51.110.1
-              global_route: true
-            verify_availability:
-              address: 198.51.111.1
-              sequence: 100
-              track: 10
-          precedence:
-            critical: true
-    route_map: test_2
+    - entries:
+        - action: deny
+          description: this is test route
+          match:
+            community:
+              name:
+                - test_comm
+            ip:
+              next_hop:
+                prefix_lists:
+                  - test_1_new
+                  - test_2_new
+              route_source:
+                acls:
+                  - "10"
+            local_preference:
+              value:
+                - "100"
+                - "50"
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            as_path:
+              prepend:
+                as_number:
+                  - "64512"
+            community:
+              number: "65000:100 65000:200"
+        - action: deny
+          continue_entry:
+            entry_sequence: 100
+          match:
+            additional_paths:
+              all: true
+              group_best: true
+            as_path:
+              acls:
+                - 100
+                - 200
+            ipv6:
+              address:
+                acl: test_acl_20
+            route_type:
+              external:
+                set: true
+              level_1: true
+              nssa_external:
+                set: true
+            tag:
+              tag_list:
+                - test_match_tag
+            track: 105
+          sequence: 20
+      route_map: test_1
+    - entries:
+        - action: deny
+          match:
+            ipv6:
+              address:
+                acl: test_ip_acl
+              next_hop:
+                prefix_list: test_new
+              route_source:
+                acl: route_src_acl
+            local_preference:
+              value:
+                - "105"
+                - "55"
+            mpls_label: true
+            security_group:
+              source:
+                - 10
+                - 20
+          sequence: 10
+          set:
+            aigp_metric:
+              value: 100
+            as_path:
+              prepend:
+                as_number:
+                  - "65111"
+                  - "65111"
+            automatic_tag: true
+            extcommunity:
+              cost:
+                cost_value: 100
+                id: "10"
+                pre_bestpath: true
+            ip:
+              address: 192.0.2.1
+              df: 1
+              next_hop:
+                recursive:
+                  address: 198.51.110.1
+                  global_route: true
+                verify_availability:
+                  address: 198.51.111.1
+                  sequence: 100
+                  track: 10
+              precedence:
+                critical: true
+      route_map: test_2
