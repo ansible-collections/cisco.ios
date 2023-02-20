@@ -36,4 +36,7 @@
       - "'timeout value is 1 secs' in result.msg"
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
+- name: Reset ssh connection to allow user changes to affect 'current login user'
+  ansible.builtin.meta: reset_connection
+
 - ansible.builtin.debug: msg="END ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
