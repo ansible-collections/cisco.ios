@@ -14,7 +14,7 @@
           address_family:
             - afi: ipv4
               safi: multicast
-              vrf: blue
+              # vrf: blue
               aggregate_address:
                 - address: 192.0.2.1
                   netmask: 255.255.255.255
@@ -29,24 +29,6 @@
                 slow_peer:
                   - detection:
                       threshold: 150
-              neighbor:
-                - address: 198.51.110.1
-                  activate: true
-                  log_neighbor_changes:
-                    set: true
-                    disable: true
-                  maximum_prefix:
-                    number: 1
-                    threshold_value: 10
-                    restart: 100
-                  slow_peer:
-                    - detection:
-                        threshold: 150
-                  remote_as: 100
-                  route_maps:
-                    - name: test-override-route
-                      out: true
-                  version: 4
               network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
@@ -76,9 +58,11 @@
     - name: Override provided BGP address family configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
+
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

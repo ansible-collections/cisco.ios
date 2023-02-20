@@ -52,7 +52,6 @@ def get(network_os, module_name, connection_type):
 
 
 class ProviderBase(object):
-
     supported_connections = ()
 
     def __init__(self, params, connection=None, check_mode=False):
@@ -81,7 +80,6 @@ class ProviderBase(object):
 
 
 class CliProvider(ProviderBase):
-
     supported_connections = ("network_cli",)
 
     @property

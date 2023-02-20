@@ -29,7 +29,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosUserModule(TestIosModule):
-
     module = ios_user
 
     def setUp(self):

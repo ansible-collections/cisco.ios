@@ -33,7 +33,6 @@ class Static_RoutesFacts(object):
     """The ios_static_routes fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
-
         self._module = module
         self.argument_spec = Static_RoutesArgs.argument_spec
         spec = deepcopy(self.argument_spec)

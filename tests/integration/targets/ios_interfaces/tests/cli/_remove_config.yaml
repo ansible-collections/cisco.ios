@@ -6,3 +6,13 @@
       no mtu\nno speed\nno shutdown\ninterface GigabitEthernet 3\nno description\nno mtu\nno speed\nno shutdown\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
+
+- name: Delete attributes of all configured interfaces
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Port-channel10
+      - name: Port-channel11
+      - name: Port-channel22
+      - name: Port-channel40
+    state: purged

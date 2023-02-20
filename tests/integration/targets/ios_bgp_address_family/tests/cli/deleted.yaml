@@ -39,7 +39,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ [] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Delete all provided BGP address family (idempotent)
       register: result

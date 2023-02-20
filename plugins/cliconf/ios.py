@@ -284,7 +284,6 @@ class Cliconf(CliconfBase):
         :return: None
         """
         if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
-
             commit_timeout = (
                 self.get_option("commit_confirm_timeout")
                 if self.get_option("commit_confirm_timeout")

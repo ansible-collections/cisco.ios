@@ -5,18 +5,18 @@
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
 
-- name: Delete and clean VRF rd configuration first
-  register: result
-  cisco.ios.ios_config:
-    commands:
-      - no rd 45000:2
-    parents: vrf definition blue
+# - name: Delete and clean VRF rd configuration first # commented as c8000v throws topology error
+#   register: result
+#   cisco.ios.ios_config:
+#     commands:
+#       - no rd 45000:2
+#     parents: vrf definition blue
 
-- name: Delete and clean VRF configuration
-  vars:
-    lines: "no vrf definition blue\n"
-  ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+# - name: Delete and clean VRF configuration
+#   vars:
+#     lines: "no vrf definition blue\n"
+#   ansible.netcommon.cli_config:
+#     config: "{{ lines }}"
 
 - name: Remove BGP global configuration
   cisco.ios.ios_bgp_global:
