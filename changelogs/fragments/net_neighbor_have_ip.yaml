@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - ios_facts - Add ip value to ansible_net_neighbors dictionary for cdp neighbours. (https://github.com/ansible-collections/cisco.ios/pull/748)
