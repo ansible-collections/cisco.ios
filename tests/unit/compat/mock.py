@@ -25,8 +25,4 @@ __metaclass__ = type
 """
 Compat module for Python3.x's unittest.mock module
 """
-import sys
-
-# Note: Could use the pypi mock library on python3.x as well as python2.x.  It
-# is the same as the python3 stdlib mock library
 from unittest.mock import *
