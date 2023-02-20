@@ -11,7 +11,6 @@
       cisco.ios.ios_config: &rem
         lines:
           - "no description"
-          - "no mtu"
           - "no speed"
           - "shutdown"
           - "no ip address"

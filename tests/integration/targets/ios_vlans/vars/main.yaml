@@ -434,6 +434,24 @@ parsed:
       shutdown: enabled
       state: active
       vlan_id: 1005
+
+rendered:
+  commands:
+    - vlan 10
+    - name Vlan_10
+    - state active
+    - remote-span
+    - no shutdown
+    - vlan 20
+    - name Vlan_20
+    - state active
+    - mtu 610
+    - shutdown
+    - vlan 30
+    - name Vlan_30
+    - state suspend
+    - shutdown
+
 rtt:
   commands:
     - vlan 10
