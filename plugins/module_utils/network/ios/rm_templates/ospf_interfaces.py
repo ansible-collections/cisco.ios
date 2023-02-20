@@ -22,11 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_ospf_interface(config_data):
-    command = "interface {name}".format(**config_data)
-    return command
-
-
 def _tmplt_ospf_interface_process(config_data):
     if "process" in config_data:
         if config_data.get("afi") == "ipv4":
@@ -431,11 +426,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "dead_interval",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<dead_interval>dead-interval)*
-                \s*(?P<seconds>\d+)*
-                \s*(?P<minimal>minimal\shello-multiplier\s\d+)*
+                \s((?P<afi>ip|ipv6)\sospf\sdead-interval)?
+                (\s(?P<seconds>\d+))?
+                (\sminimal\shello-multiplier\s(?P<minimal>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -447,9 +440,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "dead_interval": {
                                 "time": "{{ seconds }}",
-                                "minimal": {
-                                    "hello_multiplier": "{{ minimal.split(' ')[2] }}",
-                                },
+                                "minimal": "{{ minimal }}",
                             },
                         },
                     },

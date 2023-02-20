@@ -8,6 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from textwrap import dedent
+
 from ansible_collections.cisco.ios.plugins.modules import ios_ospf_interfaces
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -350,6 +352,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 bfd=True,
                                 cost=dict(interface_cost=30),
                                 network=dict(broadcast=True),
+                                dead_interval=dict(minimal=100),
                                 priority=60,
                                 resync_timeout=90,
                                 ttl_security=dict(hops=120),
@@ -392,6 +395,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf priority 60",
             "ip ospf resync-timeout 90",
             "ip ospf ttl-security hops 120",
+            "ip ospf dead-interval minimal hello-multiplier 100",
             "ipv6 ospf bfd",
             "ipv6 ospf dead-interval 100",
             "ipv6 ospf network manet",
@@ -399,3 +403,76 @@ class TestIosOspfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_ospf_interfaces_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    interface GigabitEthernet0/0
+                     ip ospf dead-interval 10
+                    interface GigabitEthernet0/1
+                     ip ospf network broadcast
+                     ip ospf resync-timeout 10
+                     ip ospf dead-interval 5
+                     ip ospf priority 25
+                     ip ospf demand-circuit ignore
+                     ip ospf bfd
+                     ip ospf adjacency stagger disable
+                     ip ospf ttl-security hops 50
+                     ip ospf shutdown
+                     ip ospf 10 area 30
+                     ip ospf cost 5
+                     ipv6 ospf 35 area 45
+                     ipv6 ospf priority 55
+                     ipv6 ospf transmit-delay 45
+                     ipv6 ospf database-filter all out
+                     ipv6 ospf adjacency stagger disable
+                     ipv6 ospf manet peering link-metrics 10
+                    interface GigabitEthernet0/2
+                     ip ospf dead-interval minimal hello-multiplier 10
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "name": "GigabitEthernet0/0",
+                "address_family": [{"afi": "ipv4", "dead_interval": {"time": 10}}],
+            },
+            {
+                "name": "GigabitEthernet0/1",
+                "address_family": [
+                    {
+                        "afi": "ipv4",
+                        "network": {"broadcast": True},
+                        "resync_timeout": 10,
+                        "dead_interval": {"time": 5},
+                        "priority": 25,
+                        "demand_circuit": {"ignore": True},
+                        "bfd": True,
+                        "adjacency": True,
+                        "ttl_security": {"hops": 50},
+                        "shutdown": True,
+                        "process": {"id": 10, "area_id": "30"},
+                        "cost": {"interface_cost": 5},
+                    },
+                    {
+                        "afi": "ipv6",
+                        "process": {"id": 35, "area_id": "45"},
+                        "priority": 55,
+                        "transmit_delay": 45,
+                        "database_filter": True,
+                        "adjacency": True,
+                        "manet": {"link_metrics": {"cost_threshold": 10}},
+                    },
+                ],
+            },
+            {
+                "name": "GigabitEthernet0/2",
+                "address_family": [{"afi": "ipv4", "dead_interval": {"minimal": 10}}],
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
