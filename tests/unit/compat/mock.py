@@ -28,6 +28,7 @@ Compat module for Python3.x's unittest.mock module
 
 import sys
 
+
 # Allow wildcard import because we really do want to import all of
 # unittests's symbols into this compat shim
 # pylint: disable=wildcard-import,unused-wildcard-import
