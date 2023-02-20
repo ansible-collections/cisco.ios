@@ -351,29 +351,30 @@ tasks:
 
 
 ##Playbook with workflow example
-- name: Gather ACLs config from device existing ACLs config
-  cisco.ios.ios_acls:
-    state: gathered
-  register: result_gathered
+tasks:
+  - name: Gather ACLs config from device existing ACLs config
+    cisco.ios.ios_acls:
+      state: gathered
+    register: result_gathered
 
-- name: Setting host facts for ace_popper filter plugin
-  ansible.builtin.set_fact:
-    acls_facts: "{{ result_gathered.gathered }}"
-    filter_options:
-      match_all: true
-    match_criteria:
-      afi: "ipv4"
-      source_address: "192.0.2.0"
-      destination_address: "192.0.3.0"
+  - name: Setting host facts for ace_popper filter plugin
+    ansible.builtin.set_fact:
+      acls_facts: "{{ result_gathered.gathered }}"
+      filter_options:
+        match_all: true
+      match_criteria:
+        afi: "ipv4"
+        source_address: "192.0.2.0"
+        destination_address: "192.0.3.0"
 
-- name: Invoke ace_popper filter plugin
-  ansible.builtin.set_fact:
-    clean_acls: "{{ acls_facts | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+  - name: Invoke ace_popper filter plugin
+    ansible.builtin.set_fact:
+      clean_acls: "{{ acls_facts | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
 
-- name: Override ACLs config with device existing ACLs config
-  cisco.ios.ios_acls:
-    state: overridden
-    config: "{{ clean_acls['clean_acls']['acls'] | from_yaml }}"
+  - name: Override ACLs config with device existing ACLs config
+    cisco.ios.ios_acls:
+      state: overridden
+      config: "{{ clean_acls['clean_acls']['acls'] | from_yaml }}"
 
 
 ##Output
