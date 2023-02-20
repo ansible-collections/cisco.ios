@@ -7,3 +7,13 @@
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
+
+- name: Delete attributes of all configured interfaces
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Port-channel10
+      - name: Port-channel11
+      - name: Port-channel22
+      - name: Port-channel40
+    state: purged

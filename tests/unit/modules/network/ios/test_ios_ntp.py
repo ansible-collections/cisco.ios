@@ -27,7 +27,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosNtpModule(TestIosModule):
-
     module = ios_ntp
 
     def setUp(self):

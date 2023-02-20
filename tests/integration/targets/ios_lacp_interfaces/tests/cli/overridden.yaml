@@ -13,7 +13,6 @@
         config:
           - name: GigabitEthernet3
             port_priority: 40
-
           - name: Port-channel40
             fast_switchover: true
             max_bundle: 2

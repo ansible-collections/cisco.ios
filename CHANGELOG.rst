@@ -5,6 +5,14 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.3.1
+======
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - Reorder parsers to generate correct oder of configuration lines.
+
 v4.3.0
 ======
 

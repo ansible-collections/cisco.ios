@@ -6,13 +6,12 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
 
 def _tmplt_ospfv3_cmd(process):
-
     command = "router ospfv3 {process_id}".format(**process)
     if "vrf" in process:
         command += " vrf {vrf}".format(**process)

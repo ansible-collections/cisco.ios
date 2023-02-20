@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_address_family - fix facts generation of default originate option.

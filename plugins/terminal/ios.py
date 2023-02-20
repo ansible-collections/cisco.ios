@@ -34,7 +34,6 @@ display = Display()
 
 
 class TerminalModule(TerminalBase):
-
     terminal_stdout_re = [
         re.compile(
             rb"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$",
@@ -59,6 +58,8 @@ class TerminalModule(TerminalBase):
         re.compile(rb"[%\S] ?Informational: ?[\s]+", re.I),
         re.compile(rb"Command authorization failed"),
         re.compile(rb"Command Rejected: ?[\s]+", re.I),
+        re.compile(rb"% General session commands not allowed under the address family", re.I),
+        re.compile(rb"% BGP: Error initializing topology", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

@@ -31,7 +31,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 
 class FactsBase(object):
-
     COMMANDS = list()
 
     def __init__(self, module):
@@ -48,7 +47,6 @@ class FactsBase(object):
 
 
 class Default(FactsBase):
-
     COMMANDS = ["show version", "show switch virtual", "show inventory"]
 
     def populate(self):
@@ -127,7 +125,6 @@ class Default(FactsBase):
 
 
 class Hardware(FactsBase):
-
     COMMANDS = ["dir", "show memory statistics"]
 
     def populate(self):
@@ -169,7 +166,6 @@ class Hardware(FactsBase):
 
 
 class Config(FactsBase):
-
     COMMANDS = ["show running-config"]
 
     def populate(self):
@@ -187,7 +183,6 @@ class Config(FactsBase):
 
 
 class Interfaces(FactsBase):
-
     COMMANDS = [
         "show interfaces",
         "show ip interface",

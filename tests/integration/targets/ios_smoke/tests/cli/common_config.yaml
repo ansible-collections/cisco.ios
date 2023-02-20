@@ -5,6 +5,7 @@
 - ansible.builtin.debug: msg="START cli/common_config.yaml on connection={{ ansible_connection }}"
 
 # Hit NetworkConfig
+
 - name: Set hostname
   cisco.ios.ios_config:
     lines:

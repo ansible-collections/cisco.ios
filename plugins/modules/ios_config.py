@@ -224,18 +224,18 @@ options:
     type: dict
 """
 EXAMPLES = """
-- name: configure top level configuration
+- name: Configure top level configuration
   cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
 
-- name: configure interface settings
+- name: Configure interface settings
   cisco.ios.ios_config:
     lines:
     - description test interface
     - ip address 172.31.1.1 255.255.255.0
     parents: interface Ethernet1
 
-- name: configure ip helpers on multiple interfaces
+- name: Configure ip helpers on multiple interfaces
   cisco.ios.ios_config:
     lines:
     - ip helper-address 172.26.1.10
@@ -246,7 +246,7 @@ EXAMPLES = """
   - interface Ethernet2
   - interface GigabitEthernet1
 
-- name: configure policer in Scavenger class
+- name: Configure policer in Scavenger class
   cisco.ios.ios_config:
     lines:
     - conform-action transmit
@@ -256,7 +256,7 @@ EXAMPLES = """
     - class Scavenger
     - police cir 64000
 
-- name: load new acl into device
+- name: Load new acl into device
   cisco.ios.ios_config:
     lines:
     - 10 permit ip host 192.0.2.1 any log
@@ -268,22 +268,22 @@ EXAMPLES = """
     before: no ip access-list extended test
     match: exact
 
-- name: check the running-config against master config
+- name: Check the running-config against master config
   cisco.ios.ios_config:
     diff_against: intended
     intended_config: "{{ lookup('file', 'master.cfg') }}"
 
-- name: check the startup-config against the running-config
+- name: Check the startup-config against the running-config
   cisco.ios.ios_config:
     diff_against: startup
     diff_ignore_lines:
     - ntp clock .*
 
-- name: save running to startup when modified
+- name: Save running to startup when modified
   cisco.ios.ios_config:
     save_when: modified
 
-- name: for idempotency, use full-form commands
+- name: For idempotency, use full-form commands
   cisco.ios.ios_config:
     lines:
       # - shut
@@ -293,19 +293,20 @@ EXAMPLES = """
 
 # Set boot image based on comparison to a group_var (version) and the version
 # that is returned from the `ios_facts` module
-- name: SETTING BOOT IMAGE
+- name: Setting boot image
   cisco.ios.ios_config:
     lines:
     - no boot system
     - boot system flash bootflash:{{new_image}}
     host: '{{ inventory_hostname }}'
   when: ansible_net_version != version
-- name: render a Jinja2 template onto an IOS device
+
+- name: Render a Jinja2 template onto an IOS device
   cisco.ios.ios_config:
     backup: yes
     src: ios_template.j2
 
-- name: configurable backup path
+- name: Configurable backup path
   cisco.ios.ios_config:
     src: ios_template.j2
     backup: yes
@@ -549,6 +550,7 @@ def main():
         if contents is not None:
             base_config = NetworkConfig(indent=1, contents=contents, ignore_lines=diff_ignore_lines)
             if running_config.sha1 != base_config.sha1:
+                before, after = "", ""
                 if module.params["diff_against"] == "intended":
                     before = running_config
                     after = base_config
