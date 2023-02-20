@@ -4,14 +4,6 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
-v4.3.2
-======
-
-Minor Changes
--------------
-
-- ios_facts - Added ip value to ansible_net_neighbors dictionary for cdp neihgours. (https://github.com/ansible-collections/cisco.ios/pull/748)
-
 v4.3.1
 ======
 
