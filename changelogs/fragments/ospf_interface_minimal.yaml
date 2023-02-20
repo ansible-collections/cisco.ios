@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_ospf_interfaces - fix dead-interval rendering wrong facts when hello-multiplier is configured.
