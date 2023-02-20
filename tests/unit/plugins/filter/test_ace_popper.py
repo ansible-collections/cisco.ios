@@ -138,7 +138,7 @@ class TestAcePopper(unittest.TestCase):
                                     "wildcard_bits": "0.0.0.255",
                                 },
                                 "ttl": {"eq": 10},
-                            }
+                            },
                         ],
                         "acl_type": "extended",
                         "name": "test",
@@ -161,10 +161,10 @@ class TestAcePopper(unittest.TestCase):
                                 "protocol_options": {"tcp": {"ack": True}},
                                 "sequence": 10,
                                 "source": {"any": True, "port_protocol": {"eq": "www"}},
-                            }
+                            },
                         ],
                         "name": "R1_TRAFFIC",
-                    }
+                    },
                 ],
                 "afi": "ipv6",
             },
@@ -187,7 +187,7 @@ class TestAcePopper(unittest.TestCase):
                                     "protocol_options": {"tcp": {"ack": True}},
                                     "sequence": 20,
                                     "source": {"host": "198.51.100.0"},
-                                }
+                                },
                             ],
                         },
                         {
@@ -262,13 +262,13 @@ class TestAcePopper(unittest.TestCase):
                                     "protocol_options": {"tcp": {"ack": True}},
                                     "sequence": 10,
                                     "source": {"any": True, "port_protocol": {"eq": "www"}},
-                                }
+                                },
                             ],
-                        }
+                        },
                     ],
                     "afi": "ipv6",
                 },
-            ]
+            ],
         }
         removed_aces = {
             "acls": [
@@ -292,7 +292,7 @@ class TestAcePopper(unittest.TestCase):
                                         "wildcard_bits": "0.0.0.255",
                                     },
                                     "ttl": {"eq": 10},
-                                }
+                                },
                             ],
                         },
                         {
@@ -314,14 +314,14 @@ class TestAcePopper(unittest.TestCase):
                                         "wildcard_bits": "0.0.0.255",
                                     },
                                     "ttl": {"eq": 10},
-                                }
+                                },
                             ],
                         },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         result = ace_popper(*args)
         print(result)
