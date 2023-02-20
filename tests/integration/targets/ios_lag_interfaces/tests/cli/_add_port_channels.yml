@@ -1,3 +1,4 @@
+---
 - name: Add Port-channels for tests
   cisco.ios.ios_interfaces:
     config:
