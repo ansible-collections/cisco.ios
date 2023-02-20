@@ -25,8 +25,17 @@ __metaclass__ = type
 """
 Compat module for Python3.x's unittest.mock module
 """
+
 import sys
 
-# Note: Could use the pypi mock library on python3.x as well as python2.x.  It
-# is the same as the python3 stdlib mock library
-from unittest.mock import *
+# Allow wildcard import because we really do want to import all of
+# unittests's symbols into this compat shim
+# pylint: disable=wildcard-import,unused-wildcard-import
+if sys.version_info < (2, 7):
+    try:
+        # Need unittest2 on python2.6
+        from unittest2 import *
+    except ImportError:
+        print("You need unittest2 installed on python2.6.x to run tests")
+else:
+    from unittest import *
