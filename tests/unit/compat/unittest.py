@@ -26,4 +26,5 @@ Compat module for Python2.7's unittest module
 """
 
 import sys
+
 from unittest import *
