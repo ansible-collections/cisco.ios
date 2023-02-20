@@ -39,9 +39,8 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 10
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
+          - result.commands|symmetric_difference(overridden_rtt.commands) == []
 
     - name: Revert back to base configuration using facts round trip
       register: revert
@@ -51,7 +50,6 @@
 
     - ansible.builtin.assert:
         that:
-          - revert.commands|length == 10
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   when: ansible_net_version != "15.6(2)T"

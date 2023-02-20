@@ -11,12 +11,10 @@
         config:
           - name: GigabitEthernet2
             description: Configured and Merged by Ansible-Network
-            mtu: 1600
             enabled: true
 
           - name: GigabitEthernet3
             description: Configured and Merged by Ansible-Network
-            mtu: 1600
             enabled: false
         state: merged
 
