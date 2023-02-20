@@ -3,11 +3,13 @@ merged:
   before:
     - enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
+      description: Management interface do not change
     - enabled: true
       name: GigabitEthernet2
+      speed: "1000"
     - enabled: true
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -17,23 +19,21 @@ merged:
   commands:
     - interface GigabitEthernet2
     - description Configured and Merged by Ansible-Network
-    - mtu 1600
     - interface GigabitEthernet3
     - description Configured and Merged by Ansible-Network
-    - mtu 1600
     - shutdown
   after:
     - enabled: true
+      description: Management interface do not change
       name: GigabitEthernet1
-      description: mgmt interface do not change
     - description: Configured and Merged by Ansible-Network
       enabled: true
-      mtu: 1600
       name: GigabitEthernet2
+      speed: "1000"
     - description: Configured and Merged by Ansible-Network
       enabled: false
-      mtu: 1600
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -45,18 +45,18 @@ replaced:
   commands:
     - interface GigabitEthernet2
     - description Configured and Replaced by Ansible-Network
-    - mtu 2000
   after:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
     - description: Configured and Replaced by Ansible-Network
       enabled: true
-      mtu: 2000
       name: GigabitEthernet2
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -64,15 +64,17 @@ replaced:
     - enabled: true
       name: Loopback999
   before:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -83,74 +85,82 @@ replaced:
 overridden:
   before:
     - enabled: true
-      name: Loopback888
-    - enabled: true
-      name: Loopback999
-    - enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
+      description: Management interface do not change
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
+    - enabled: true
+      name: Loopback888
+    - enabled: true
+      name: Loopback999
   commands:
     - interface GigabitEthernet3
     - description Configured and Overridden by Ansible-Network
-    - mtu 2000
     - no shutdown
   after:
+    - description: Management interface do not change
+      enabled: true
+      name: GigabitEthernet1
+    - description: this is interface1
+      enabled: true
+      name: GigabitEthernet2
+      speed: "1000"
+    - description: Configured and Overridden by Ansible-Network
+      enabled: true
+      name: GigabitEthernet3
+      speed: "1000"
+    - enabled: false
+      name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-    - enabled: true
-      name: GigabitEthernet1
-      description: mgmt interface do not change
-    - description: this is interface1
-      enabled: true
-      name: GigabitEthernet2
-    - description: Configured and Overridden by Ansible-Network
-      enabled: true
-      mtu: 2000
-      name: GigabitEthernet3
-    - enabled: false
-      name: GigabitEthernet4
 
 deleted:
   before:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
+      speed: "1000"
+    - enabled: false
+      name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
       name: Loopback999
-    - enabled: false
-      name: GigabitEthernet4
   commands:
     - interface GigabitEthernet2
     - no description this is interface1
+    - no speed 1000
     - shutdown
     - interface GigabitEthernet3
     - no description this is interface for testing
+    - no speed 1000
   after:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
-      description: mgmt interface do not change
     - enabled: false
       name: GigabitEthernet2
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true
@@ -160,15 +170,17 @@ deleted:
 
 gathered:
   config:
-    - description: mgmt interface do not change
+    - description: Management interface do not change
       enabled: true
       name: GigabitEthernet1
     - description: this is interface1
       enabled: true
       name: GigabitEthernet2
+      speed: "1000"
     - description: this is interface for testing
       enabled: false
       name: GigabitEthernet3
+      speed: "1000"
     - enabled: false
       name: GigabitEthernet4
     - enabled: true

@@ -8,7 +8,7 @@ merged:
       receive: false
       transmit: false
     - name: GigabitEthernet3
-      receive: true
+      receive: false
       transmit: false
     - name: GigabitEthernet4
       receive: false
@@ -20,6 +20,8 @@ merged:
     - interface GigabitEthernet2
     - lldp receive
     - lldp transmit
+    - interface GigabitEthernet3
+    - lldp receive
   after:
     - name: GigabitEthernet1
       receive: true

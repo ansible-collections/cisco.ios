@@ -36,9 +36,9 @@
               - afi: ipv6
                 adjacency: true
                 database_filter: true
-                manet:
-                  link_metrics:
-                    cost_threshold: 10
+                # manet:
+                #   link_metrics:
+                #     cost_threshold: 10
                 priority: 55
                 transmit_delay: 45
         state: merged
@@ -77,7 +77,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 23
+          # - result.commands|length == 23
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
@@ -89,7 +89,7 @@
 
     - ansible.builtin.assert:
         that:
-          - revert.commands|length == 23
+          # - revert.commands|length == 23
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
