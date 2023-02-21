@@ -1,0 +1,3 @@
+---
+trivial:
+  - Fix test requirement to use latest version of coverage and added missing package pytest-forked.
