@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - "ios_ospfv2 - Fix documentation for ``network`` options. (this is a documentation-only change)."
