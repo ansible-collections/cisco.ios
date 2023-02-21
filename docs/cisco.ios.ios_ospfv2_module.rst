@@ -4715,9 +4715,9 @@ Examples
               - name: test_prefix_out
                 direction: out
             network:
-              address: 198.51.100.0
-              wildcard_bits: 0.0.0.255
-              area: 5
+              - address: 198.51.100.0
+                wildcard_bits: 0.0.0.255
+                area: 5
             default_information:
               originate: true
             passive_interfaces:
@@ -5187,9 +5187,9 @@ Examples
               - name: test_prefix_out
                 direction: out
             network:
-              address: 198.51.100.0
-              wildcard_bits: 0.0.0.255
-              area: 5
+              - address: 198.51.100.0
+                wildcard_bits: 0.0.0.255
+                area: 5
             default_information:
               originate: true
           - process_id: 200
