@@ -1,0 +1,3 @@
+---
+trivial:
+  - Fix requirements for test environment in ./test-requirements.txt (added missing 'pytest-forked' and updated 'coverage' version)
