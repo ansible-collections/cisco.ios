@@ -162,6 +162,6 @@ class TestIosFactsModule(TestIosModule):
                     "host": "Rtest",
                     "port": "Gi1",
                     "ip": "10.3.0.3",
-                }
+                },
             ],
         )
