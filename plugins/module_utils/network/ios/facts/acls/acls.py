@@ -99,11 +99,19 @@ class AclsFacts(object):
             temp_v6 = sorted(temp_v6, key=lambda i: str(i["name"]))
 
             def factor_source_dest(ace, typ):
-                temp = ace.get(typ, {})
-                if temp.get("address"):
-                    _temp_addr = temp.get("address", "")
-                    ace[typ]["address"] = _temp_addr.split(" ")[0]
-                    ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
+                temp_srd = ace.get(typ, {}).pop("remove")
+                temp = temp_srd.split(" ")
+                if temp[0] == "object-group":
+                    i = 2
+                else:
+                    i = 0
+                if temp[i] == "any":
+                    ace[typ]["any"] = True
+                elif temp[i] == "host":
+                    ace[typ]["host"] = temp[i + 1]
+                else:
+                    ace[typ]["address"] = temp[i]
+                    ace[typ]["wildcard_bits"] = temp[i + 1]
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
@@ -118,9 +126,9 @@ class AclsFacts(object):
                             if addr[-1] == ",":
                                 each_ace["source"]["address"] = addr[:-1]
                     else:  # for extended acl
-                        if each_ace.get("source", {}):
+                        if each_ace.get("source", {}).get("remove"):
                             factor_source_dest(each_ace, "source")
-                        if each_ace.get("destination", {}):
+                        if each_ace.get("destination", {}).get("remove"):
                             factor_source_dest(each_ace, "destination")
 
                     if each_ace.get("icmp_igmp_tcp_protocol"):
