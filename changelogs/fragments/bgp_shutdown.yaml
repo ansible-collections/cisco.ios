@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_global - fix neighbor shutdown command on set value being false .
