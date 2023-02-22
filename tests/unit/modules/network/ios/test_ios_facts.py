@@ -157,5 +157,11 @@ class TestIosFactsModule(TestIosModule):
         assertCountEqual(
             self,
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet3"],
-            [{"host": "Rtest", "port": "Gi1"}],
+            [
+                {
+                    "host": "Rtest",
+                    "port": "Gi1",
+                    "ip": 10.3.0.3,
+                }
+            ],
         )
