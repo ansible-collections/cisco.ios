@@ -5,6 +5,30 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.4.0
+======
+
+Minor Changes
+-------------
+
+- ios_facts - Add ip value to ansible_net_neighbors dictionary for cdp neighbours. (https://github.com/ansible-collections/cisco.ios/pull/748)
+- ios_facts - Add ip value to ansible_net_neighbors dictionary for lldp neighbours. (https://github.com/ansible-collections/cisco.ios/pull/760)
+- ios_interfaces - Add mode attribute in ios_interfaces, which supports layer2 and layer3 as options.
+
+Bugfixes
+--------
+
+- ios_acls - fix rendering of object-groups in source and destination at ace level.
+- ios_bgp_address_family - fix facts generation of default originate option.
+- ios_bgp_global - fix neighbor shutdown command on set value being false.
+- ios_command - Run & evaluate commands at least once even when retries is set to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
+- ios_ospf_interfaces - fix dead-interval rendering wrong facts when hello-multiplier is configured.
+
+Documentation Changes
+---------------------
+
+- ospfv2 - fix documentation for ospfv2 module (networks parameter).
+
 v4.3.1
 ======
 

@@ -83,10 +83,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "allow": {
                     "type": "dict",
                     "options": {
-                        "control": {
-                            "type": "dict",
-                            "options": {"rate_limit": {"type": "int"}},
-                        },
+                        "control": {"type": "dict", "options": {"rate_limit": {"type": "int"}}},
                         "private": {"type": "bool"},
                     },
                 },
@@ -107,10 +104,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "logging": {"type": "bool"},
                 "master": {
                     "type": "dict",
-                    "options": {
-                        "enabled": {"type": "bool"},
-                        "stratum": {"type": "int"},
-                    },
+                    "options": {"enabled": {"type": "bool"}, "stratum": {"type": "int"}},
                 },
                 "max_associations": {"type": "int"},
                 "max_distance": {"type": "int"},
@@ -161,10 +155,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "no_log": False,
-                    "options": {
-                        "range_start": {"type": "int"},
-                        "range_end": {"type": "int"},
-                    },
+                    "options": {"range_start": {"type": "int"}, "range_end": {"type": "int"}},
                 },
                 "update_calendar": {"type": "bool"},
             },

@@ -308,9 +308,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_deleted_interface(self):
-        set_module_args(
-            dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"),
-        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"))
         commands = [
             "interface GigabitEthernet0/2",
             "no ip ospf priority 40",

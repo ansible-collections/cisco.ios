@@ -309,10 +309,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                         name="Serial3/0",
                         ipv6=[dict(address="FD5D:12C9:2201:1::1/64", anycast=True)],
                     ),
-                    dict(
-                        name="Vlan51",
-                        ipv4=[dict(address="192.168.0.4/31")],
-                    ),
+                    dict(name="Vlan51", ipv4=[dict(address="192.168.0.4/31")]),
                     dict(name="Serial4/0", ipv6=[dict(address="FD5D:12C9:2201:2::1/64", cga=True)]),
                     dict(name="Serial5/0", ipv6=[dict(address="FD5D:12C9:2201:3::1/64", eui=True)]),
                     dict(

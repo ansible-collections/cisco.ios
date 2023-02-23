@@ -90,10 +90,7 @@ class Acl_interfaces(ResourceModule):
         begin = len(self.commands)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
-            self.commands.insert(
-                begin,
-                self._tmplt.render(want or have, "interface", False),
-            )
+            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 
     def _compare_lists(self, want, have):
         wdict = want.get("access_groups", {})

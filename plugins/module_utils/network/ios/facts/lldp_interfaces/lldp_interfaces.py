@@ -48,6 +48,9 @@ class Lldp_InterfacesFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_lldp_interfaces_data(self, connection):
+        return connection.get("show lldp interface")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for lldp_interfaces
         :param connection: the device connection
@@ -59,7 +62,7 @@ class Lldp_InterfacesFacts(object):
 
         objs = []
         if not data:
-            data = connection.get("show lldp interface")
+            data = self.get_lldp_interfaces_data(connection)
         # operate on a collection of resource x
         config = data.split("\n\n")
         for conf in config:
@@ -71,10 +74,7 @@ class Lldp_InterfacesFacts(object):
 
         if objs:
             facts["lldp_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec,
-                {"config": objs},
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["lldp_interfaces"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
