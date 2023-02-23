@@ -76,7 +76,7 @@ class InterfacesTemplate(NetworkTemplate):
                 },
             },
         },
-        { # only applicable for switches
+        {  # only applicable for switches
             "name": "mode",
             "getval": re.compile(
                 r"""
