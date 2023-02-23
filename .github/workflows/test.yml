@@ -43,3 +43,36 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
           ]) == {'success'}"
+  
+  #codecoverage 
+  codecov:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+ 
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+ 
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+ 
+    - name: Install Ansible
+      run: pip install ansible-core
+ 
+    - name: Run tests and generate coverage report
+      run: |
+        ansible-test units --python ${{ matrix.python-version }} --coverage
+        ansible-test coverage xml
+ 
+    - name: Upload coverage report to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./tests/output/coverage/reports
+        paths: coverage.xml
+        fail_ci_if_error: true
