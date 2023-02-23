@@ -111,6 +111,29 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>layer2</li>
+                                    <li>layer3</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage Layer2 or Layer3 state of the interface.</div>
+                        <div>For a Layer 2 appliance mode Layer2 adds switchport command ( default impacts idempotency).</div>
+                        <div>For a Layer 2 appliance mode Layer3 adds no switchport command.</div>
+                        <div>For a Layer 3 appliance mode Layer3/2 has no impact rather produces command fails.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
