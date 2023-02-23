@@ -127,7 +127,7 @@ Parameters
                         <div>Manage Layer2 or Layer3 state of the interface.</div>
                         <div>For a Layer 2 appliance mode Layer2 adds switchport command ( default impacts idempotency).</div>
                         <div>For a Layer 2 appliance mode Layer3 adds no switchport command.</div>
-                        <div>For a Layer 3 appliance mode Layer3/2 has no impact rather produces command fails.</div>
+                        <div>For a Layer 3 appliance mode Layer3/2 has no impact rather command fails on apply.</div>
                 </td>
             </tr>
             <tr>
