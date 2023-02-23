@@ -97,6 +97,8 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
+            interface GigabitEthernet6
+             description Ansible UT interface 6
             """,
         )
         set_module_args(
@@ -112,6 +114,10 @@ class TestIosInterfacesModule(TestIosModule):
                         "enabled": False,
                         "name": "GigabitEthernet0/1",
                     },
+                    {
+                        "mode": "layer3",
+                        "name": "GigabitEthernet6",
+                    },
                 ],
                 "state": "merged",
             },
@@ -122,6 +128,8 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet1",
             "description This interface should be disabled",
+            "interface GigabitEthernet6",
+            "no switchport",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -208,6 +216,9 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
+            interface GigabitEthernet6
+             description Ansible UT interface 6
+             no switchport
             """,
         )
         set_module_args(
@@ -215,6 +226,11 @@ class TestIosInterfacesModule(TestIosModule):
                 "config": [
                     {"description": "Ansible UT interface 1", "name": "GigabitEthernet1"},
                     {"name": "GigabitEthernet0/1", "speed": 1200, "mtu": 1800},
+                    {
+                        "name": "GigabitEthernet6",
+                        "description": "Ansible UT interface 6",
+                        "mode": "layer2",
+                    },
                 ],
                 "state": "replaced",
             },
@@ -224,6 +240,8 @@ class TestIosInterfacesModule(TestIosModule):
             "no description Ansible UT interface 2",
             "speed 1200",
             "mtu 1800",
+            "interface GigabitEthernet6",
+            "switchport",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -310,6 +328,9 @@ class TestIosInterfacesModule(TestIosModule):
              duplex full
              negotiation auto
              ipv6 dhcp server
+            interface GigabitEthernet6
+             description Ansible UT interface 6
+             no switchport
             """,
         )
         set_module_args(
@@ -343,6 +364,10 @@ class TestIosInterfacesModule(TestIosModule):
             "no description Ansible UT interface 5",
             "no duplex full",
             "shutdown",
+            "interface GigabitEthernet6",
+            "no description Ansible UT interface 6",
+            "shutdown",
+            "switchport",
             "interface GigabitEthernet1",
             "description Ansible UT interface try 1",
             "speed 1000",
@@ -536,6 +561,12 @@ class TestIosInterfacesModule(TestIosModule):
                      duplex full
                      negotiation auto
                      ipv6 dhcp server
+                    interface GigabitEthernet6
+                     description Ansible UT interface 6
+                     switchport
+                    interface GigabitEthernet7
+                     description Ansible UT interface 7
+                     no switchport
                     """,
                 ),
                 state="parsed",
@@ -562,6 +593,18 @@ class TestIosInterfacesModule(TestIosModule):
                 "name": "GigabitEthernet5",
                 "description": "Ansible UT interface 5",
                 "duplex": "full",
+                "enabled": True,
+            },
+            {
+                "name": "GigabitEthernet6",
+                "mode": "layer2",
+                "description": "Ansible UT interface 6",
+                "enabled": True,
+            },
+            {
+                "name": "GigabitEthernet7",
+                "mode": "layer3",
+                "description": "Ansible UT interface 7",
                 "enabled": True,
             },
         ]

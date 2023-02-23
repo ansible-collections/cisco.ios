@@ -76,6 +76,21 @@ class InterfacesTemplate(NetworkTemplate):
                 },
             },
         },
+        { # only applicable for switches
+            "name": "mode",
+            "getval": re.compile(
+                r"""
+                (?P<negate>\sno)?
+                (?P<switchport>\sswitchport)
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport",
+            "result": {
+                '{{ name }}': {
+                    'mode': "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
+                },
+            },
+        },
         {
             "name": "speed",
             "getval": re.compile(
