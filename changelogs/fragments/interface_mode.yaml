@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - ios_interfaces - Add mode attribute in ios_interfaces, which
+    supports layer2 and layer3 as options.
