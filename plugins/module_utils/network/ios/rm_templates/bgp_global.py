@@ -1493,7 +1493,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} ha-mode"
-            "{{ (' graceful-restart') if ha_mode.set is defined else '' }}"
+            "{{ (' graceful-restart') if ha_mode.set|d(False) is defined else '' }}"
             "{{ (' disable') if ha_mode.disable is defined else '' }}",
             "result": {
                 "neighbors": {
@@ -1671,7 +1671,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' shutdown') if shutdown.set is defined else '' }}"
+            "{{ (' shutdown') if shutdown.set|d(False) is defined else '' }}"
             "{{ (' graceful '+ shutdown.graceful|string) if shutdown.graceful is defined else '' }}"
             "{{ (' community '+ shutdown.community|string) if shutdown.community is defined else '' }}"
             "{{ (' local-preference') if shutdown.local_preference|d(False) else '' }}",
