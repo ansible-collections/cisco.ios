@@ -296,6 +296,7 @@ class Interfaces(FactsBase):
             fact = dict()
             fact["host"] = self.parse_lldp_host(entry)
             fact["port"] = self.parse_lldp_port(entry)
+            fact["ip"] = self.parse_lldp_ip(entry)
             facts[intf].append(fact)
         return facts
 
@@ -396,6 +397,11 @@ class Interfaces(FactsBase):
 
     def parse_lldp_port(self, data):
         match = re.search(r"Port id: (.+)$", data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_lldp_ip(self, data):
+        match = re.search(r"^    IP: (.+)$", data, re.M)
         if match:
             return match.group(1)
 
