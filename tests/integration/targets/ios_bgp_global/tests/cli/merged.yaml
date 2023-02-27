@@ -31,6 +31,8 @@
             - address: 198.0.2.1
               description: merge neighbor
               remote_as: 100
+              shutdown:
+                set: false
               aigp:
                 send:
                   cost_community:
