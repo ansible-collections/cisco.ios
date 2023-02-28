@@ -422,8 +422,8 @@ class TestIosAclsModule(TestIosModule):
                                     {"name": "test_acl", "acl_type": "standard"},
                                 ],
                             },
-                        ]
-                    }
+                        ],
+                    },
                 ],
                 state="replaced",
             ),
