@@ -133,13 +133,11 @@ class TestIosFactsModule(TestIosModule):
         result = self.execute_module()
         self.assertEqual(
             result["ansible_facts"]["ansible_net_memfree_mb"],
-            # 456.9012031555176,
-            479095636/(1024*1024),
+            479095636 / (1024 * 1024),  # 456.9012031555176,
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_memtotal_mb"],
-            # 698.7988090515137,
-            732743660/(1024*1024),
+            732743660 / (1024 * 1024),  # 698.7988090515137,
         )
 
     def test_ios_facts_neighbors(self):
