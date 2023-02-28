@@ -229,9 +229,9 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                         "dscp": "af11",
                                         "protocol_options": {"tcp": {"ack": True}},
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -378,7 +378,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                         ],
-                    }
+                    },
                 ],
                 state="replaced",
             ),
@@ -486,9 +486,9 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                         "dscp": "af11",
                                         "protocol_options": {"tcp": {"ack": True}},
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -694,9 +694,9 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {"icmp": {"echo_reply": True}},
                             },
                         ],
-                    }
+                    },
                 ],
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -770,7 +770,7 @@ class TestIosAclsModule(TestIosModule):
                             },
                             {"name": "test_acl", "acl_type": "standard"},
                         ],
-                    }
+                    },
                 ],
                 state="overridden",
             ),
