@@ -114,10 +114,7 @@ class TestIosInterfacesModule(TestIosModule):
                         "enabled": False,
                         "name": "GigabitEthernet0/1",
                     },
-                    {
-                        "mode": "layer3",
-                        "name": "GigabitEthernet6",
-                    },
+                    {"mode": "layer3", "name": "GigabitEthernet6"},
                 ],
                 "state": "merged",
             },

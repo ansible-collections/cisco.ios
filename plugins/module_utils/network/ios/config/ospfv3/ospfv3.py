@@ -239,22 +239,14 @@ class Ospfv3(ResourceModule):
                     for each_have_af in have["address_family"]:
                         if each_have_af.get("vrf") == each_want_af.get("vrf") and each_have_af.get(
                             "afi",
-                        ) == each_want_af.get(
-                            "afi",
-                        ):
+                        ) == each_want_af.get("afi"):
                             self.compare(
                                 parsers=["address_family"],
                                 want={"address_family": each_want_af},
                                 have={"address_family": each_have_af},
                             )
-                            self.compare(
-                                parsers=af_parsers,
-                                want=each_want_af,
-                                have=each_have_af,
-                            )
-                        elif each_have_af.get("afi") == each_want_af.get(
-                            "afi",
-                        ):
+                            self.compare(parsers=af_parsers, want=each_want_af, have=each_have_af)
+                        elif each_have_af.get("afi") == each_want_af.get("afi"):
                             self.compare(
                                 parsers=["address_family"],
                                 want={"address_family": each_want_af},
@@ -269,14 +261,10 @@ class Ospfv3(ResourceModule):
                             af_want_areas = {}
                             af_have_areas = {}
                             for each_area in each_want_af["areas"]:
-                                af_want_areas.update(
-                                    {each_area["area_id"]: each_area},
-                                )
+                                af_want_areas.update({each_area["area_id"]: each_area})
                             if each_have_af.get("areas"):
                                 for each_area in each_have_af["areas"]:
-                                    af_have_areas.update(
-                                        {each_area["area_id"]: each_area},
-                                    )
+                                    af_have_areas.update({each_area["area_id"]: each_area})
 
                             if "exit-address-family" in self.commands:
                                 del self.commands[self.commands.index("exit-address-family")]
@@ -288,10 +276,7 @@ class Ospfv3(ResourceModule):
                                     {"areas": af_have_areas},
                                 )
                             else:
-                                self._areas_compare(
-                                    {"areas": af_want_areas},
-                                    dict(),
-                                )
+                                self._areas_compare({"areas": af_want_areas}, dict())
                             if delete_exit_family:
                                 self.commands.append("exit-address-family")
                 else:
@@ -302,11 +287,7 @@ class Ospfv3(ResourceModule):
                         want={"address_family": each_want_af},
                         have=dict(),
                     )
-                    self.compare(
-                        parsers=af_parsers,
-                        want=each_want_af,
-                        have=dict(),
-                    )
+                    self.compare(parsers=af_parsers, want=each_want_af, have=dict())
                     if each_want_af.get("areas"):
                         af_areas = {}
                         for each_area in each_want_af["areas"]:

@@ -75,10 +75,7 @@ class Snmp_serverFacts(object):
             data = self.get_snmp_data(connection)
 
         # parse native config using the Snmp_server template
-        snmp_server_parser = Snmp_serverTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
         objs = snmp_server_parser.parse()
 
         if objs:
@@ -88,11 +85,7 @@ class Snmp_serverFacts(object):
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
         params = utils.remove_empties(
-            snmp_server_parser.validate_config(
-                self.argument_spec,
-                {"config": objs},
-                redact=True,
-            ),
+            snmp_server_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["snmp_server"] = params.get("config", {})

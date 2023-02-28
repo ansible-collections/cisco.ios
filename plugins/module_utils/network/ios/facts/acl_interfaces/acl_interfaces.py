@@ -49,10 +49,7 @@ class Acl_interfacesFacts(object):
             data = self.get_acl_interfaces_data(connection)
 
         config_parser = Acl_interfacesTemplate(lines=data.splitlines())
-        entry = sorted(
-            list(config_parser.parse().values()),
-            key=lambda k, sk="name": k[sk],
-        )
+        entry = sorted(list(config_parser.parse().values()), key=lambda k, sk="name": k[sk])
         if entry:
             for item in entry:
                 item["access_groups"] = sorted(
@@ -66,10 +63,7 @@ class Acl_interfacesFacts(object):
             utils.remove_empties(cfg)
             if cfg.get("access_groups"):
                 facts["acl_interfaces"].append(cfg)
-        utils.validate_config(
-            self.argument_spec,
-            {"config": facts.get("acl_interfaces")},
-        )
+        utils.validate_config(self.argument_spec, {"config": facts.get("acl_interfaces")})
 
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts

@@ -47,11 +47,7 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "afi": {
-                            "type": "str",
-                            "choices": ["ipv4", "ipv6"],
-                            "required": True,
-                        },
+                        "afi": {"type": "str", "choices": ["ipv4", "ipv6"], "required": True},
                         "process": {
                             "type": "dict",
                             "options": {
@@ -103,10 +99,7 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                         "database_filter": {"type": "bool"},
                         "dead_interval": {
                             "type": "dict",
-                            "options": {
-                                "time": {"type": "int"},
-                                "minimal": {"type": "int"},
-                            },
+                            "options": {"time": {"type": "int"}, "minimal": {"type": "int"}},
                         },
                         "demand_circuit": {
                             "type": "dict",
@@ -141,10 +134,7 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                         "mtu_ignore": {"type": "bool"},
                         "multi_area": {
                             "type": "dict",
-                            "options": {
-                                "id": {"type": "int"},
-                                "cost": {"type": "int"},
-                            },
+                            "options": {"id": {"type": "int"}, "cost": {"type": "int"}},
                         },
                         "neighbor": {
                             "type": "dict",
@@ -174,10 +164,7 @@ class Ospf_InterfacesArgs(object):  # pylint: disable=R0903
                         "transmit_delay": {"type": "int"},
                         "ttl_security": {
                             "type": "dict",
-                            "options": {
-                                "set": {"type": "bool"},
-                                "hops": {"type": "int"},
-                            },
+                            "options": {"set": {"type": "bool"}, "hops": {"type": "int"}},
                         },
                     },
                 },

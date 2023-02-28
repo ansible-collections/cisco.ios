@@ -24,11 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(InterfacesTemplate, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(InterfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

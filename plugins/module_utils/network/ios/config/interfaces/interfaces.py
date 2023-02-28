@@ -121,10 +121,7 @@ class Interfaces(ResourceModule):
                     # handles deleted as want be blank and only
                     self.addcmd(have, "mode", False)
         if len(self.commands) != begin:
-            self.commands.insert(
-                begin,
-                self._tmplt.render(want or have, "interface", False),
-            )
+            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 
     def purge(self, have):
         """Handle operation for purged state"""

@@ -95,9 +95,7 @@ class Prefix_lists(ResourceModule):
                 for key, val in iteritems(have["prefix_lists"]):
                     if k == "ipv4":
                         k = "ip"
-                    self.commands.append(
-                        "no {0} prefix-list {1}".format(k, key),
-                    )
+                    self.commands.append("no {0} prefix-list {1}".format(k, key))
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
@@ -107,9 +105,7 @@ class Prefix_lists(ResourceModule):
                     if k == "ipv4":
                         k = "ip"
                     if want_afi and key not in want_afi.get("prefix_lists"):
-                        self.commands.append(
-                            "no {0} prefix-list {1}".format(k, key),
-                        )
+                        self.commands.append("no {0} prefix-list {1}".format(k, key))
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
@@ -131,10 +127,7 @@ class Prefix_lists(ResourceModule):
                     have_prefix = have["prefix_lists"].pop(k, {})
                     for key, val in iteritems(v.get("entries")):
                         if have_prefix.get("entries"):
-                            have_prefix_param = have_prefix["entries"].pop(
-                                key,
-                                {},
-                            )
+                            have_prefix_param = have_prefix["entries"].pop(key, {})
                         else:
                             have_prefix_param = None
                         if have_prefix.get("description"):
@@ -143,18 +136,12 @@ class Prefix_lists(ResourceModule):
                                 want={
                                     "afi": want["afi"],
                                     "name": k,
-                                    "prefix_list": {
-                                        "description": v["description"],
-                                    },
+                                    "prefix_list": {"description": v["description"]},
                                 },
                                 have={
                                     "afi": want["afi"],
                                     "name": k,
-                                    "prefix_list": {
-                                        "description": have_prefix.pop(
-                                            "description",
-                                        ),
-                                    },
+                                    "prefix_list": {"description": have_prefix.pop("description")},
                                 },
                             )
                         if have_prefix_param and val != have_prefix_param:
@@ -163,17 +150,11 @@ class Prefix_lists(ResourceModule):
                                 # entries level as this supports deprecated level of Description
                                 self.compare(
                                     parsers=self.parsers,
-                                    want={
-                                        "afi": want["afi"],
-                                        "name": k,
-                                        "prefix_list": {key: val},
-                                    },
+                                    want={"afi": want["afi"], "name": k, "prefix_list": {key: val}},
                                     have={
                                         "afi": have["afi"],
                                         "name": k,
-                                        "prefix_list": {
-                                            key: have_prefix_param,
-                                        },
+                                        "prefix_list": {key: have_prefix_param},
                                     },
                                 )
                             else:
@@ -198,11 +179,7 @@ class Prefix_lists(ResourceModule):
                                 )
                                 self.compare(
                                     parsers=self.parsers,
-                                    want={
-                                        "afi": want["afi"],
-                                        "name": k,
-                                        "prefix_list": val,
-                                    },
+                                    want={"afi": want["afi"], "name": k, "prefix_list": val},
                                     have={
                                         "afi": have["afi"],
                                         "name": k,
@@ -212,11 +189,7 @@ class Prefix_lists(ResourceModule):
                         elif val and val != have_prefix_param:
                             self.compare(
                                 parsers=self.parsers,
-                                want={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": val,
-                                },
+                                want={"afi": want["afi"], "name": k, "prefix_list": val},
                                 have=dict(),
                             )
                     if have_prefix and (self.state == "replaced" or self.state == "overridden"):
@@ -229,20 +202,14 @@ class Prefix_lists(ResourceModule):
                                 have={
                                     "afi": want["afi"],
                                     "name": k,
-                                    "prefix_list": {
-                                        "description": have_prefix["description"],
-                                    },
+                                    "prefix_list": {"description": have_prefix["description"]},
                                 },
                             )
                         for key, val in iteritems(have_prefix.get("entries")):
                             self.compare(
                                 parsers=self.parsers,
                                 want=dict(),
-                                have={
-                                    "afi": have["afi"],
-                                    "name": k,
-                                    "prefix_list": val,
-                                },
+                                have={"afi": have["afi"], "name": k, "prefix_list": val},
                             )
                 elif v:
                     if v.get("description"):
@@ -251,20 +218,14 @@ class Prefix_lists(ResourceModule):
                             want={
                                 "afi": want["afi"],
                                 "name": k,
-                                "prefix_list": {
-                                    "description": v["description"],
-                                },
+                                "prefix_list": {"description": v["description"]},
                             },
                             have=dict(),
                         )
                     for key, val in iteritems(v.get("entries")):
                         self.compare(
                             parsers=self.parsers,
-                            want={
-                                "afi": want["afi"],
-                                "name": k,
-                                "prefix_list": val,
-                            },
+                            want={"afi": want["afi"], "name": k, "prefix_list": val},
                             have=dict(),
                         )
 
@@ -277,9 +238,7 @@ class Prefix_lists(ResourceModule):
                         temp_entries = dict()
                         if each.get("entries"):
                             for every in each["entries"]:
-                                temp_entries.update(
-                                    {str(every["sequence"]): every},
-                                )
+                                temp_entries.update({str(every["sequence"]): every})
                         temp_prefix_list.update(
                             {
                                 each["name"]: {

@@ -808,16 +808,11 @@ def main():
         supports_check_mode=True,
     )
 
-    if _is_l2_device(module) or module.params.get("state") in [
-        "rendered",
-        "parsed",
-    ]:
+    if _is_l2_device(module) or module.params.get("state") in ["rendered", "parsed"]:
         result = Vlans(module).execute_module()
         module.exit_json(**result)
     else:
-        module.fail_json(
-            """Resource VLAN is not valid for the target device.""",
-        )
+        module.fail_json("""Resource VLAN is not valid for the target device.""")
 
 
 if __name__ == "__main__":

@@ -74,16 +74,10 @@ class L3_InterfacesFacts(object):
         facts = {}
         if objs:
             facts["l3_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec,
-                {"config": objs},
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["l3_interfaces"].append(utils.remove_empties(cfg))
-            facts["l3_interfaces"] = sorted(
-                facts["l3_interfaces"],
-                key=lambda k, sk="name": k[sk],
-            )
+            facts["l3_interfaces"] = sorted(facts["l3_interfaces"], key=lambda k, sk="name": k[sk])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
