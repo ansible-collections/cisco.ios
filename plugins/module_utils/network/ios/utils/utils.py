@@ -15,8 +15,8 @@ import socket
 
 from itertools import count, groupby
 
-from ansible.module_utils.six import iteritems
 from ansible.module_utils.common.network import is_masklen, to_netmask
+from ansible.module_utils.six import iteritems
 
 
 def remove_command_from_config_list(interface, cmd, commands):
