@@ -1,8 +1,8 @@
-.. _cisco.ios.ace_popper_filter:
+.. _cisco.ios.pop_ace_filter:
 
 
 ********************
-cisco.ios.ace_popper
+cisco.ios.pop_ace
 ********************
 
 **Remove ace entries from a acl source of truth.**
@@ -18,7 +18,7 @@ Version added: 4.4.0
 Synopsis
 --------
 - This plugin removes specific keys from a provided acl data.
-- Using the parameters below - ``acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria``)
+- Using the parameters below - ``acls_data | cisco.ios.pop_ace(filter_options=filter_options, match_criteria=match_criteria``)
 
 
 
@@ -51,7 +51,7 @@ Parameters
                     </td>
                 <td>
                         <div>This option represents a list of dictionaries of acls facts.</div>
-                        <div>For example <code>acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria</code>), in this case <code>acls_data</code> represents this option.</div>
+                        <div>For example <code>acls_data | cisco.ios.pop_ace(filter_options=filter_options, match_criteria=match_criteria</code>), in this case <code>acls_data</code> represents this option.</div>
                 </td>
             </tr>
             <tr>
@@ -430,10 +430,10 @@ Examples
     tasks:
       - name: Remove ace entries from a provided data
         ansible.builtin.debug:
-          msg: "{{ acls_data | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+          msg: "{{ acls_data | cisco.ios.pop_ace(filter_options=filter_options, match_criteria=match_criteria) }}"
 
     ##Output
-    # PLAY [Filter plugin example ace_popper] ******************************************************************************************************************
+    # PLAY [Filter plugin example pop_ace] ******************************************************************************************************************
 
     # TASK [Remove ace entries from a provided data] ***********************************************************************************************************
     # ok: [xe_machine] =>
@@ -573,7 +573,7 @@ Examples
           state: gathered
         register: result_gathered
 
-      - name: Setting host facts for ace_popper filter plugin
+      - name: Setting host facts for pop_ace filter plugin
         ansible.builtin.set_fact:
           acls_facts: "{{ result_gathered.gathered }}"
           filter_options:
@@ -583,9 +583,9 @@ Examples
             source_address: "192.0.2.0"
             destination_address: "192.0.3.0"
 
-      - name: Invoke ace_popper filter plugin
+      - name: Invoke pop_ace filter plugin
         ansible.builtin.set_fact:
-          clean_acls: "{{ acls_facts | cisco.ios.ace_popper(filter_options=filter_options, match_criteria=match_criteria) }}"
+          clean_acls: "{{ acls_facts | cisco.ios.pop_ace(filter_options=filter_options, match_criteria=match_criteria) }}"
 
       - name: Override ACLs config with device existing ACLs config
         cisco.ios.ios_acls:
@@ -595,9 +595,9 @@ Examples
 
     ##Output
 
-    # PLAYBOOK: acl_popper_example.yml ***********************************************
+    # PLAYBOOK: pop_ace_example.yml ***********************************************
 
-    # PLAY [Filter plugin example ace_popper] ****************************************
+    # PLAY [Filter plugin example pop_ace] ****************************************
 
     # TASK [Gather ACLs config with device existing ACLs config] *********************
     # ok: [xe_machine] => changed=false
@@ -728,7 +728,7 @@ Examples
     #       running_config: null
     #       state: gathered
 
-    # TASK [Setting host facts for ace_popper filter plugin] *************************
+    # TASK [Setting host facts for pop_ace filter plugin] *************************
     # ok: [xe_machine] => changed=false
     #   ansible_facts:
     #     acls_facts:
@@ -859,7 +859,7 @@ Examples
     #       destination_address: 192.0.3.0
     #       source_address: 192.0.2.0
 
-    # TASK [Invoke ace_popper filter plugin] *****************************************
+    # TASK [Invoke pop_ace filter plugin] *****************************************
     # ok: [xe_machine] => changed=false
     #   ansible_facts:
     #     clean_acls:

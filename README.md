@@ -33,7 +33,7 @@ Name | Description
 ### Filter plugins
 Name | Description
 --- | ---
-[cisco.ios.ace_popper](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ace_popper_filter.rst)|Remove ace entries from a acl source of truth.
+[cisco.ios.pop_ace](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.pop_ace_filter.rst)|Remove ace entries from a acl source of truth.
 
 ### Modules
 Name | Description

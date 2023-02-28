@@ -6,7 +6,7 @@
 #
 
 """
-The ace_popper plugin code
+The pop_ace plugin code
 """
 from __future__ import absolute_import, division, print_function
 
@@ -22,7 +22,7 @@ def _raise_error(msg):
     :type msg: str
     :raises: AnsibleError
     """
-    error = "Error when using plugin 'ace_popper': {msg}".format(msg=msg)
+    error = "Error when using plugin 'pop_ace': {msg}".format(msg=msg)
     raise AnsibleFilterError(error)
 
 
@@ -55,7 +55,7 @@ def check_match(ace, match_criteria, match_all):
         return any(check_arr)
 
 
-def _ace_popper(raw_acl, filter_options, match_criteria):
+def _pop_ace(raw_acl, filter_options, match_criteria):
     acls_v4, acls_v6 = [], []
     racls_v4, racls_v6 = [], []
 
@@ -113,10 +113,10 @@ def _ace_popper(raw_acl, filter_options, match_criteria):
     return final_acl, rfinal_acl
 
 
-def ace_popper(data, filter_options, match_criteria):
+def pop_ace(data, filter_options, match_criteria):
     if not isinstance(data, (list, dict)):
-        _raise_error("Input is not valid for ace_popper")
-    cleared_data, removed_data = _ace_popper(data, filter_options, match_criteria)
+        _raise_error("Input is not valid for pop_ace")
+    cleared_data, removed_data = _pop_ace(data, filter_options, match_criteria)
     data = {
         "clean_acls": cleared_data,
         "removed_aces": removed_data,

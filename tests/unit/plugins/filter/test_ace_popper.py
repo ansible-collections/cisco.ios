@@ -12,14 +12,14 @@ import unittest
 
 from ansible.errors import AnsibleFilterError
 
-from ansible_collections.cisco.ios.plugins.plugin_utils.ace_popper import ace_popper
+from ansible_collections.cisco.ios.plugins.plugin_utils.pop_ace import pop_ace
 
 
 class TestAcePopper(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_ace_popper_plugin(self):
+    def test_pop_ace_plugin(self):
         filter_options = {"match_all": True}
         match_criteria = {
             "afi": "ipv4",
@@ -323,7 +323,7 @@ class TestAcePopper(unittest.TestCase):
                 {"acls": [], "afi": "ipv6"},
             ],
         }
-        result = ace_popper(*args)
+        result = pop_ace(*args)
         print(result)
         self.assertEqual(result.get("removed_aces"), removed_aces)
         self.assertEqual(result.get("clean_acls"), clean_acls)
