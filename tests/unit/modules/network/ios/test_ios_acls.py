@@ -369,7 +369,7 @@ class TestIosAclsModule(TestIosModule):
                                         "source": {"any": True},
                                         "destination": {"any": True},
                                         "precedence": "internet",
-                                    }
+                                    },
                                 ],
                             },
                         ],
@@ -391,9 +391,9 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                         "dscp": "af11",
                                         "protocol_options": {"tcp": {"ack": True}},
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -542,9 +542,9 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                         "dscp": "af11",
                                         "protocol_options": {"tcp": {"ack": True}},
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
