@@ -45,12 +45,12 @@ def check_match(ace, match_criteria, match_all, name):
     check_arr.append(True) if ace.get("grant", "NA") == match_criteria.get(
         "grant",
     ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("source", {}).get("address", "NA") or ace.get("source", {}).get("host", "NA") == match_criteria.get(
-        "source_address",
-    ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("destination", {}).get("address", "NA") or ace.get("destination", {}).get("host", "NA")== match_criteria.get(
-        "destination_address",
-    ) else check_arr.append(False)
+    check_arr.append(True) if ace.get("source", {}).get("address", "NA") or ace.get(
+        "source", {}
+    ).get("host", "NA") == match_criteria.get("source_address",) else check_arr.append(False)
+    check_arr.append(True) if ace.get("destination", {}).get("address", "NA") or ace.get(
+        "destination", {}
+    ).get("host", "NA") == match_criteria.get("destination_address",) else check_arr.append(False)
 
     if match_all:  # forces all criteria to match
         return all(check_arr)
