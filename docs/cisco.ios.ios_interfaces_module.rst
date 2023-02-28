@@ -111,6 +111,29 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>layer2</li>
+                                    <li>layer3</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage Layer2 or Layer3 state of the interface.</div>
+                        <div>For a Layer 2 appliance mode Layer2 adds switchport command ( default impacts idempotency).</div>
+                        <div>For a Layer 2 appliance mode Layer3 adds no switchport command.</div>
+                        <div>For a Layer 3 appliance mode Layer3/2 has no impact rather command fails on apply.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -293,6 +316,58 @@ Examples
     #  shutdown
     #  duplex full
     #  speed 100
+
+    # Using merged with mode attribute
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section ^interface
+    # interface GigabitEthernet0/1
+    #  description Configured by Ansible
+    # interface GigabitEthernet0/2
+    #  description This is test
+    # interface GigabitEthernet0/3
+    #  description This is test
+    #  no switchport
+
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_interfaces:
+        config:
+        - name: GigabitEthernet0/2
+          description: Configured and Merged by Ansible Network
+          enabled: true
+          mode: layer2
+        - name: GigabitEthernet0/3
+          description: Configured and Merged by Ansible Network
+          mode: layer3
+        state: merged
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet0/2",
+    #       "description Configured and Merged by Ansible Network",
+    #       "switchport",
+    #       "no shutdown",
+    #       "interface GigabitEthernet0/3",
+    #       "description Configured and Merged by Ansible Network",
+    #       "shutdown",
+    #     ],
+
+    # After state:
+    # ------------
+    #
+    # vios#show running-config | section ^interface
+    # interface GigabitEthernet0/1
+    #  description Configured by Ansible
+    # interface GigabitEthernet0/2
+    #  description Configured and Merged by Ansible Network
+    # interface GigabitEthernet0/3
+    #  description Configured and Merged by Ansible Network
+    #  no switchport
+    #  shutdown
 
     # Using replaced
 

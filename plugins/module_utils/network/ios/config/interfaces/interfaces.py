@@ -111,6 +111,15 @@ class Interfaces(ResourceModule):
                     # handles deleted as want be blank and only
                     # negates if no shutdown
                     self.addcmd(have, "enabled", False)
+        if want.get("mode") != have.get("mode"):
+            if want.get("mode") == "layer3":
+                self.addcmd(want, "mode", True)
+            else:
+                if want:
+                    self.addcmd(want, "mode", False)
+                elif have.get("mode"):  # can oly have layer2 as switchport no show cli
+                    # handles deleted as want be blank and only
+                    self.addcmd(have, "mode", False)
         if len(self.commands) != begin:
             self.commands.insert(
                 begin,
