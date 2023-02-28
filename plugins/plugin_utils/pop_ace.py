@@ -82,8 +82,8 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
             _aces, _acl, _keep = [], {}, True
             _races, _racl, _rstop = [], {}, True
 
-            aces = acl.get("aces")
-            name = acl.get("name")  # filter by acl_name ignores whole acl entries i.e all aces
+            aces = acl.get("aces", {})
+            name = acl.get("name", "")  # filter by acl_name ignores whole acl entries i.e all aces
             # if name == match_criteria.get("acl_name", ""): # removed temp tbd
             #     _keep = False
 
