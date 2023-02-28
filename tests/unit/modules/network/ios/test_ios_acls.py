@@ -369,64 +369,61 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(acl_type="standard", name="test_acl"),
-                            dict(
-                                name="110",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        log=dict(user_cookie="testLog"),
-                                        protocol="tcp",
-                                        sequence=10,
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            any=True,
-                                            port_protocol=dict(eq="22"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence=20,
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence="30",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                            any=True,
-                                        ),
-                                        destination=dict(any=True),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
+                    {
+                        "acls": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [
+                                    {
+                                        "name": "110",
+                                        "acl_type": "extended",
+                                        "aces": [
+                                            {
+                                                "sequence": 10,
+                                                "grant": "permit",
+                                                "protocol": "tcp",
+                                                "source": {
+                                                    "address": "198.51.100.0",
+                                                    "wildcard_bits": "0.0.0.255",
+                                                },
+                                                "destination": {
+                                                    "any": True,
+                                                    "port_protocol": {"eq": "22"},
+                                                },
+                                                "log": {"user_cookie": "testLog"},
+                                            },
+                                            {
+                                                "sequence": 20,
+                                                "grant": "deny",
+                                                "protocol": "icmp",
+                                                "source": {
+                                                    "address": "192.0.2.0",
+                                                    "wildcard_bits": "0.0.0.255",
+                                                },
+                                                "destination": {
+                                                    "address": "192.0.3.0",
+                                                    "wildcard_bits": "0.0.0.255",
+                                                },
+                                                "dscp": "ef",
+                                                "ttl": {"eq": 10},
+                                                "protocol_options": {"icmp": {"echo": True}},
+                                            },
+                                            {
+                                                "sequence": 30,
+                                                "grant": "permit",
+                                                "protocol": "tcp",
+                                                "source": {"object_group": "test_network_og"},
+                                                "destination": {"any": True},
+                                                "dscp": "ef",
+                                                "ttl": {"eq": 10},
+                                            },
+                                        ],
+                                    },
+                                    {"name": "test_acl", "acl_type": "standard"},
                                 ],
-                            ),
-                        ],
-                    ),
+                            },
+                        ]
+                    }
                 ],
                 state="replaced",
             ),
