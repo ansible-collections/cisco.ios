@@ -427,11 +427,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.mo
 
 def main():
     """main entry point for module execution"""
-    network_spec = {
-        "prefix": dict(required=True),
-        "masklen": dict(type="int"),
-        "route_map": dict(),
-    }
+    network_spec = {"prefix": dict(required=True), "masklen": dict(type="int"), "route_map": dict()}
     redistribute_spec = {
         "protocol": dict(choices=REDISTRIBUTE_PROTOCOLS, required=True),
         "id": dict(),
@@ -477,40 +473,22 @@ def main():
         "auto_summary": dict(type="bool"),
         "synchronization": dict(type="bool"),
         "networks": dict(type="list", elements="dict", options=network_spec),
-        "redistribute": dict(
-            type="list",
-            elements="dict",
-            options=redistribute_spec,
-        ),
-        "neighbors": dict(
-            type="list",
-            elements="dict",
-            options=af_neighbor_spec,
-        ),
+        "redistribute": dict(type="list", elements="dict", options=redistribute_spec),
+        "neighbors": dict(type="list", elements="dict", options=af_neighbor_spec),
     }
     config_spec = {
         "bgp_as": dict(type="int", required=True),
         "router_id": dict(),
         "log_neighbor_changes": dict(type="bool"),
         "neighbors": dict(type="list", elements="dict", options=neighbor_spec),
-        "address_family": dict(
-            type="list",
-            elements="dict",
-            options=address_family_spec,
-        ),
+        "address_family": dict(type="list", elements="dict", options=address_family_spec),
         "networks": dict(type="list", elements="dict", options=network_spec),
     }
     argument_spec = {
         "config": dict(type="dict", options=config_spec),
-        "operation": dict(
-            default="merge",
-            choices=["merge", "replace", "override", "delete"],
-        ),
+        "operation": dict(default="merge", choices=["merge", "replace", "override", "delete"]),
     }
-    module = NetworkModule(
-        argument_spec=argument_spec,
-        supports_check_mode=True,
-    )
+    module = NetworkModule(argument_spec=argument_spec, supports_check_mode=True)
     try:
         result = module.edit_config(config_filter="| section ^router bgp")
     except Exception as exc:

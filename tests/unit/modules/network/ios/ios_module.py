@@ -54,14 +54,7 @@ def load_fixture(name):
 
 
 class TestIosModule(ModuleTestCase):
-    def execute_module(
-        self,
-        failed=False,
-        changed=False,
-        commands=None,
-        sort=True,
-        defaults=False,
-    ):
+    def execute_module(self, failed=False, changed=False, commands=None, sort=True, defaults=False):
         self.load_fixtures(commands)
 
         if failed:
@@ -73,17 +66,9 @@ class TestIosModule(ModuleTestCase):
 
         if commands is not None:
             if sort:
-                self.assertEqual(
-                    sorted(commands),
-                    sorted(result["commands"]),
-                    result["commands"],
-                )
+                self.assertEqual(sorted(commands), sorted(result["commands"]), result["commands"])
             else:
-                self.assertEqual(
-                    commands,
-                    result["commands"],
-                    result["commands"],
-                )
+                self.assertEqual(commands, result["commands"], result["commands"])
 
         return result
 

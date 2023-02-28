@@ -49,10 +49,7 @@ class Lldp_InterfacesArgs(object):
                     "options": {"inventory_management": {"type": "bool"}},
                     "type": "dict",
                 },
-                "tlv_select": {
-                    "options": {"power_management": {"type": "bool"}},
-                    "type": "dict",
-                },
+                "tlv_select": {"options": {"power_management": {"type": "bool"}}, "type": "dict"},
             },
             "type": "list",
         },

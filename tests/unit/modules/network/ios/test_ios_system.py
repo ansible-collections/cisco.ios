@@ -70,12 +70,7 @@ class TestIosSystemModule(TestIosModule):
 
     def test_ios_system_domain_name_complex(self):
         set_module_args(
-            dict(
-                domain_name=[
-                    {"name": "test.com", "vrf": "test"},
-                    {"name": "eng.example.net"},
-                ],
-            ),
+            dict(domain_name=[{"name": "test.com", "vrf": "test"}, {"name": "eng.example.net"}]),
         )
         commands = [
             "ip domain name vrf test test.com",
@@ -95,9 +90,7 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_system_domain_search_complex(self):
-        set_module_args(
-            dict(domain_search=[{"name": "ansible.com", "vrf": "test"}]),
-        )
+        set_module_args(dict(domain_search=[{"name": "ansible.com", "vrf": "test"}]))
         commands = [
             "no ip domain list vrf management example.net",
             "no ip domain list example.net",
@@ -114,10 +107,7 @@ class TestIosSystemModule(TestIosModule):
     def test_ios_system_name_servers(self):
         name_servers = ["8.8.8.8", "8.8.4.4"]
         set_module_args(dict(name_servers=name_servers))
-        commands = [
-            "no ip name-server vrf management 8.8.8.8",
-            "ip name-server 8.8.4.4",
-        ]
+        commands = ["no ip name-server vrf management 8.8.8.8", "ip name-server 8.8.4.4"]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def rest_ios_system_name_servers_complex(self):

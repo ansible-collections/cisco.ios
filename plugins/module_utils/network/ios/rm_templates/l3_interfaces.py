@@ -49,11 +49,7 @@ def ip_tmplt(config_data):
 
 class L3_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(L3_interfacesTemplate, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(L3_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

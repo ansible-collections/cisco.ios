@@ -105,10 +105,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
+                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                     ),
                                 ],
                             ),
@@ -127,9 +124,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        log_input=dict(
-                                            user_cookie="test_logInput",
-                                        ),
+                                        log_input=dict(user_cookie="test_logInput"),
                                         protocol="ip",
                                         source=dict(any=True),
                                         destination=dict(any=True),
@@ -153,16 +148,10 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack="true")),
                                         sequence="200",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                        ),
-                                        destination=dict(
-                                            object_group="test_network_og",
-                                        ),
+                                        source=dict(object_group="test_network_og"),
+                                        destination=dict(object_group="test_network_og"),
                                         dscp="ef",
                                         ttl=dict(eq=10),
                                     ),
@@ -270,9 +259,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack="true")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -348,10 +335,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
+                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                     ),
                                 ],
                             ),
@@ -370,9 +354,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        log_input=dict(
-                                            user_cookie="test_logInput",
-                                        ),
+                                        log_input=dict(user_cookie="test_logInput"),
                                         protocol="ip",
                                         source=dict(any=True),
                                         destination=dict(any=True),
@@ -396,16 +378,10 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack="true")),
                                         sequence="200",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                        ),
-                                        destination=dict(
-                                            object_group="test_network_og",
-                                        ),
+                                        source=dict(object_group="test_network_og"),
+                                        destination=dict(object_group="test_network_og"),
                                         dscp="ef",
                                         ttl=dict(eq=10),
                                     ),
@@ -455,9 +431,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(syn="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(syn="true")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -559,10 +533,7 @@ class TestIosAclsModule(TestIosModule):
         )
         set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
         result = self.execute_module(changed=True)
-        commands = [
-            "no ip access-list extended 110",
-            "no ip access-list standard test_acl",
-        ]
+        commands = ["no ip access-list extended 110", "no ip access-list standard test_acl"]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_deleted_acl_based(self):
@@ -588,14 +559,9 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
+                                        protocol_options=dict(icmp=dict(echo="true")),
                                         sequence="10",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
+                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
                                             address="192.0.3.0",
                                             wildcard_bits="0.0.0.255",
@@ -615,14 +581,9 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack="true")),
                                         sequence="10",
-                                        source=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="www"),
-                                        ),
+                                        source=dict(any="true", port_protocol=dict(eq="www")),
                                         destination=dict(
                                             any="true",
                                             port_protocol=dict(eq="telnet"),
@@ -638,10 +599,7 @@ class TestIosAclsModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        commands = [
-            "no ip access-list extended 110",
-            "no ipv6 access-list R1_TRAFFIC",
-        ]
+        commands = ["no ip access-list extended 110", "no ipv6 access-list R1_TRAFFIC"]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_rendered(self):
@@ -658,17 +616,9 @@ class TestIosAclsModule(TestIosModule):
                                     dict(
                                         grant="deny",
                                         sequence="10",
-                                        remarks=[
-                                            "check for remark",
-                                            "remark for acl 110",
-                                        ],
-                                        protocol_options=dict(
-                                            tcp=dict(syn="true"),
-                                        ),
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
+                                        remarks=["check for remark", "remark for acl 110"],
+                                        protocol_options=dict(tcp=dict(syn="true")),
+                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
                                             address="192.0.3.0",
                                             wildcard_bits="0.0.0.255",
@@ -763,11 +713,7 @@ class TestIosAclsModule(TestIosModule):
                         "name": "R1_TRAFFIC",
                         "acl_type": "standard",
                         "aces": [
-                            {
-                                "sequence": 10,
-                                "grant": "permit",
-                                "source": {"host": "10.11.12.13"},
-                            },
+                            {"sequence": 10, "grant": "permit", "source": {"host": "10.11.12.13"}},
                             {
                                 "sequence": 40,
                                 "grant": "permit",
@@ -846,9 +792,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack="true")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -862,9 +806,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="permit",
-                                        protocol_options=dict(
-                                            protocol_number=433,
-                                        ),
+                                        protocol_options=dict(protocol_number=433),
                                         source=dict(
                                             address="198.51.101.0",
                                             wildcard_bits="0.0.0.255",

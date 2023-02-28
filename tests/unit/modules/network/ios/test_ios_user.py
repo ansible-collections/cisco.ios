@@ -112,34 +112,18 @@ class TestIosUserModule(TestIosModule):
         self.assertEqual(result["commands"], ["username ansible view test"])
 
     def test_ios_user_update_password_changed(self):
-        set_module_args(
-            dict(
-                name="test",
-                configured_password="test",
-                update_password="on_create",
-            ),
-        )
+        set_module_args(dict(name="test", configured_password="test", update_password="on_create"))
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username test secret test"])
 
     def test_ios_user_update_password_on_create_ok(self):
         set_module_args(
-            dict(
-                name="ansible",
-                configured_password="test",
-                update_password="on_create",
-            ),
+            dict(name="ansible", configured_password="test", update_password="on_create"),
         )
         self.execute_module()
 
     def test_ios_user_update_password_always(self):
-        set_module_args(
-            dict(
-                name="ansible",
-                configured_password="test",
-                update_password="always",
-            ),
-        )
+        set_module_args(dict(name="ansible", configured_password="test", update_password="always"))
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username ansible secret test"])
 

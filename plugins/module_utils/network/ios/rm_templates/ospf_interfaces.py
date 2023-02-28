@@ -200,11 +200,7 @@ def _tmplt_ip_ospf_ttl_security(config_data):
 
 class Ospf_InterfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Ospf_InterfacesTemplate, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(Ospf_InterfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     PARSERS = [
         {
@@ -216,9 +212,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "interface {{ name }}",
-            "result": {
-                "{{ name }}": {"name": "{{ name }}", "address_family": {}},
-            },
+            "result": {"{{ name }}": {"name": "{{ name }}", "address_family": {}}},
             "shared": True,
         },
         {
@@ -344,9 +338,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "cost": {
-                                "interface_cost": "{{ cost.split(' ')[1] }}",
-                            },
+                            "cost": {"interface_cost": "{{ cost.split(' ')[1] }}"},
                         },
                     },
                 },
@@ -438,10 +430,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "dead_interval": {
-                                "time": "{{ seconds }}",
-                                "minimal": "{{ minimal }}",
-                            },
+                            "dead_interval": {"time": "{{ seconds }}", "minimal": "{{ minimal }}"},
                         },
                     },
                 },

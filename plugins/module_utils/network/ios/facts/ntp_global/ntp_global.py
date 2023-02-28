@@ -71,10 +71,7 @@ class Ntp_globalFacts(object):
             data = self.get_ntp_data(connection)
 
         # parse native config using the Ntp_global template
-        ntp_global_parser = Ntp_globalTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        ntp_global_parser = Ntp_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = ntp_global_parser.parse()
 
         if objs:
@@ -83,11 +80,7 @@ class Ntp_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("ntp_global", None)
 
         params = utils.remove_empties(
-            ntp_global_parser.validate_config(
-                self.argument_spec,
-                {"config": objs},
-                redact=True,
-            ),
+            ntp_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["ntp_global"] = params.get("config", {})

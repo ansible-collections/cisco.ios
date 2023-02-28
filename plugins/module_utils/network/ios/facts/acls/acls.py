@@ -44,9 +44,7 @@ class AclsFacts(object):
         # alternate command 'sh run partition access-list' but has a lot of ordering issues
         # and incomplete ACLs are not viewed correctly
         _acl_data = connection.get("show access-list")
-        _remarks_data = connection.get(
-            "show running-config | include ip(v6)* access-list|remark",
-        )
+        _remarks_data = connection.get("show running-config | include ip(v6)* access-list|remark")
         if _remarks_data:
             _acl_data += "\n" + _remarks_data
         return _acl_data
@@ -85,10 +83,7 @@ class AclsFacts(object):
 
         if current.get("acls"):
             for k, v in iteritems(current.get("acls")):
-                if v.get("afi") == "ipv4" and v.get("acl_type") in [
-                    "standard",
-                    "extended",
-                ]:
+                if v.get("afi") == "ipv4" and v.get("acl_type") in ["standard", "extended"]:
                     del v["afi"]
                     temp_v4.append(v)
                 elif v.get("afi") == "ipv6":
@@ -108,10 +103,9 @@ class AclsFacts(object):
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
-                        if len(each_ace.get("source", {})) == 1 and each_ace.get(
-                            "source",
-                            {},
-                        ).get("address"):
+                        if len(each_ace.get("source", {})) == 1 and each_ace.get("source", {}).get(
+                            "address",
+                        ):
                             each_ace["source"]["host"] = each_ace["source"].pop("address")
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
@@ -126,10 +120,7 @@ class AclsFacts(object):
                     if each_ace.get("icmp_igmp_tcp_protocol"):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
-                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-",
-                                    "_",
-                                ): True,
+                                each_ace.pop("icmp_igmp_tcp_protocol").replace("-", "_"): True,
                             },
                         }
                     if each_ace.get("protocol_number"):
@@ -169,10 +160,7 @@ class AclsFacts(object):
         facts = {}
         if objs:
             facts["acls"] = []
-            params = utils.validate_config(
-                self.argument_spec,
-                {"config": objs},
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["acls"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)

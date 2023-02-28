@@ -44,13 +44,7 @@ class Lag_interfacesArgs(object):  # pylint: disable=R0903
                         "member": {"type": "str"},
                         "mode": {
                             "type": "str",
-                            "choices": [
-                                "auto",
-                                "desirable",
-                                "on",
-                                "active",
-                                "passive",
-                            ],
+                            "choices": ["auto", "desirable", "on", "active", "passive"],
                         },
                         "link": {"type": "int"},
                     },

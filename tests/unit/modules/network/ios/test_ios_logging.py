@@ -50,9 +50,7 @@ class TestIosLoggingModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
-        self.get_capabilities.return_value = {
-            "device_info": {"network_os_version": "15.6(2)T"},
-        }
+        self.get_capabilities.return_value = {"device_info": {"network_os_version": "15.6(2)T"}}
 
     def tearDown(self):
         super(TestIosLoggingModule, self).tearDown()
@@ -121,9 +119,7 @@ class TestIosLoggingModuleIOS12(TestIosModule):
             "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
-        self.get_capabilities.return_value = {
-            "device_info": {"network_os_version": "12.1(2)T"},
-        }
+        self.get_capabilities.return_value = {"device_info": {"network_os_version": "12.1(2)T"}}
 
     def tearDown(self):
         super(TestIosLoggingModuleIOS12, self).tearDown()
@@ -133,9 +129,7 @@ class TestIosLoggingModuleIOS12(TestIosModule):
         self.mock_get_capabilities.stop()
 
     def load_fixtures(self, commands=None):
-        self.get_config.return_value = load_fixture(
-            "ios_logging_config_ios12.cfg",
-        )
+        self.get_config.return_value = load_fixture("ios_logging_config_ios12.cfg")
         self.load_config.return_value = None
 
     def test_ios_logging_add_host(self):

@@ -61,14 +61,7 @@ class Lldp_globalArgs(object):
         },
         "running_config": {"type": "str"},
         "state": {
-            "choices": [
-                "merged",
-                "replaced",
-                "deleted",
-                "rendered",
-                "parsed",
-                "gathered",
-            ],
+            "choices": ["merged", "replaced", "deleted", "rendered", "parsed", "gathered"],
             "default": "merged",
             "type": "str",
         },

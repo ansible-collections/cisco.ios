@@ -71,10 +71,7 @@ class Ping:
         self.result["commands"] = self.build_ping(self.module.params)
 
     def run_command(self):
-        ping_results = run_commands(
-            self.module,
-            commands=self.result["commands"],
-        )
+        ping_results = run_commands(self.module, commands=self.result["commands"])
         return ping_results
 
     def process_result(self, ping_results):

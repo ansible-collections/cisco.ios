@@ -54,10 +54,7 @@ class Lag_interfacesFacts(object):
             data = self.get_lag_interfaces_data(connection)
 
         # parse native config using the Lag_interfaces template
-        lag_interfaces_parser = Lag_interfacesTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        lag_interfaces_parser = Lag_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = self.process_facts(list(lag_interfaces_parser.parse().values()))
         ansible_facts["ansible_network_resources"].pop("lag_interfaces", None)
 
