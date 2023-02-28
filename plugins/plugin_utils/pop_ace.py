@@ -31,8 +31,11 @@ def fail_missing(racl, fail):
         _raise_error("no entries removed on the provided match_criteria")
 
 
-def check_match(ace, match_criteria, match_all):
+def check_match(ace, match_criteria, match_all, name):
     check_arr = []
+    check_arr.append(True) if name == match_criteria.get(
+        "acl_name",
+    ) else check_arr.append(False)
     check_arr.append(True) if ace.get("sequence", "NA") == match_criteria.get(
         "sequence",
     ) else check_arr.append(False)
@@ -79,14 +82,15 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
 
             aces = acl.get("aces")
             name = acl.get("name")  # filter by acl_name ignores whole acl entries i.e all aces
-            if name == match_criteria.get("acl_name", ""):
-                _keep = False
+            # if name == match_criteria.get("acl_name", ""): # removed temp tbd
+            #     _keep = False
 
             for ace in aces:  # iterate on ace entries
                 if _keep and check_match(
                     ace,
                     match_criteria,
                     match_all,
+                    name,
                 ):  # check matching criteria and remove from final dict
                     if remove_first_ace_only and _rstop:  # removes one ace entry per acl
                         _races.append(ace)
