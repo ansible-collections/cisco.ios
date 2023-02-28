@@ -315,76 +315,122 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 permit tcp object-group test_network_og any dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             IPv6 access list R1_TRAFFIC
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            Extended IP access list test_pre
+                10 permit ip any any precedence internet
             """,
         )
         set_module_args(
             dict(
                 config=[
-                    {
-                        "afi": "ipv4",
-                        "acls": [
-                            {
-                                "afi": "ipv4",
-                                "acls": [
-                                    {
-                                        "name": "110",
-                                        "acl_type": "extended",
-                                        "aces": [
-                                            {
-                                                "sequence": 10,
-                                                "grant": "permit",
-                                                "protocol": "tcp",
-                                                "source": {
-                                                    "address": "198.51.100.0",
-                                                    "wildcard_bits": "0.0.0.255",
-                                                },
-                                                "destination": {
-                                                    "any": True,
-                                                    "port_protocol": {"eq": "22"},
-                                                },
-                                                "log": {"user_cookie": "testLog"},
-                                            },
-                                            {
-                                                "sequence": 20,
-                                                "grant": "deny",
-                                                "protocol": "icmp",
-                                                "source": {
-                                                    "address": "192.0.2.0",
-                                                    "wildcard_bits": "0.0.0.255",
-                                                },
-                                                "destination": {
-                                                    "address": "192.0.3.0",
-                                                    "wildcard_bits": "0.0.0.255",
-                                                },
-                                                "dscp": "ef",
-                                                "ttl": {"eq": 10},
-                                                "protocol_options": {"icmp": {"echo": True}},
-                                            },
-                                            {
-                                                "sequence": 30,
-                                                "grant": "permit",
-                                                "protocol": "tcp",
-                                                "source": {"object_group": "test_network_og"},
-                                                "destination": {"any": True},
-                                                "dscp": "ef",
-                                                "ttl": {"eq": 10},
-                                            },
-                                        ],
-                                    },
-                                    {"name": "test_acl", "acl_type": "standard"},
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                aces=[
+                                    dict(
+                                        destination=dict(any=True),
+                                        grant="permit",
+                                        precedence="immediate",
+                                        protocol="ip",
+                                        sequence=20,
+                                        source=dict(any=True),
+                                    ),
                                 ],
-                            },
+                                acl_type="extended",
+                                name="test_pre",
+                            ),
+                            dict(
+                                name="std_acl",
+                                acl_type="standard",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        source=dict(
+                                            address="192.0.2.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="in_to_out",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        protocol="tcp",
+                                        source=dict(host="10.1.1.2"),
+                                        destination=dict(
+                                            host="172.16.1.1",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        log_input=dict(
+                                            user_cookie="test_logInput",
+                                        ),
+                                        protocol="ip",
+                                        source=dict(any=True),
+                                        destination=dict(any=True),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="test_acl_merge",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(
+                                            address="192.0.2.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="80"),
+                                        ),
+                                        protocol="tcp",
+                                        sequence=100,
+                                        source=dict(host="192.0.2.1"),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(
+                                            tcp=dict(ack="true"),
+                                        ),
+                                        sequence="200",
+                                        source=dict(
+                                            object_group="test_network_og",
+                                        ),
+                                        destination=dict(
+                                            object_group="test_network_og",
+                                        ),
+                                        dscp="ef",
+                                        ttl=dict(eq=10),
+                                    ),
+                                ],
+                            ),
                         ],
-                    },
+                    ),
                 ],
                 state="replaced",
             ),
         )
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), [])
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list standard std_acl",
+            "deny 192.0.2.0 0.0.0.255",
+            "ip access-list extended test_acl_merge",
+            "100 permit tcp host 192.0.2.1 192.0.2.0 0.0.0.255 eq www",
+            "200 deny tcp object-group test_network_og object-group test_network_og ack dscp ef ttl eq 10",
+            "ip access-list extended in_to_out",
+            "permit tcp host 10.1.1.2 host 172.16.1.1 eq telnet",
+            "deny ip any any log-input test_logInput",
+            "ip access-list extended test_pre",
+            "20 permit ip any any precedence immediate",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
