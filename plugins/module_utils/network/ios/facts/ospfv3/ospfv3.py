@@ -69,10 +69,7 @@ class Ospfv3Facts(object):
                         temp_pid = shared.get("pid") or shared.get("id")
                     vals = utils.dict_merge(capdict, shared)
                     try:
-                        res = net_template_obj._deepformat(
-                            deepcopy(parser["result"]),
-                            vals,
-                        )
+                        res = net_template_obj._deepformat(deepcopy(parser["result"]), vals)
                     except Exception:
                         continue
                     result = utils.dict_merge(result, res)
@@ -138,18 +135,12 @@ class Ospfv3Facts(object):
         for key, sortv in [("processes", "process_id")]:
             if key in current and current[key]:
                 current[key] = current[key].values()
-                current[key] = sorted(
-                    current[key],
-                    key=lambda k, sk=sortv: k[sk],
-                )
+                current[key] = sorted(current[key], key=lambda k, sk=sortv: k[sk])
 
         for process in current.get("processes", []):
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
-                process["areas"] = sorted(
-                    process["areas"],
-                    key=lambda k, sk="area_id": k[sk],
-                )
+                process["areas"] = sorted(process["areas"], key=lambda k, sk="area_id": k[sk])
                 for area in process["areas"]:
                     if "filters" in area:
                         area["filters"].sort()
@@ -157,10 +148,7 @@ class Ospfv3Facts(object):
                 for each in process["address_family"]:
                     if "areas" in each:
                         each["areas"] = list(each["areas"].values())
-                        each["areas"] = sorted(
-                            each["areas"],
-                            key=lambda k, sk="area_id": k[sk],
-                        )
+                        each["areas"] = sorted(each["areas"], key=lambda k, sk="area_id": k[sk])
                         for area in each["areas"]:
                             if "filters" in area:
                                 area["filters"].sort()

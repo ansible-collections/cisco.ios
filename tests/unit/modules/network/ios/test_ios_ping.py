@@ -61,13 +61,7 @@ class TestIosPingModule(TestIosModule):
             Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
             """,
         )
-        set_module_args(
-            dict(
-                count=2,
-                dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff",
-                afi="ipv6",
-            ),
-        )
+        set_module_args(dict(count=2, dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff", afi="ipv6"))
         result = self.execute_module()
         mock_res = {
             "commands": "ping ipv6 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff repeat 2",

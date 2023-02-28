@@ -47,11 +47,7 @@ class Static_RoutesArgs(object):
                     "elements": "dict",
                     "type": "list",
                     "options": {
-                        "afi": {
-                            "required": True,
-                            "choices": ["ipv4", "ipv6"],
-                            "type": "str",
-                        },
+                        "afi": {"required": True, "choices": ["ipv4", "ipv6"], "type": "str"},
                         "routes": {
                             "elements": "dict",
                             "type": "list",
@@ -62,9 +58,7 @@ class Static_RoutesArgs(object):
                                     "elements": "dict",
                                     "type": "list",
                                     "options": {
-                                        "forward_router_address": {
-                                            "type": "str",
-                                        },
+                                        "forward_router_address": {"type": "str"},
                                         "interface": {"type": "str"},
                                         "dhcp": {"type": "bool"},
                                         "distance_metric": {"type": "int"},

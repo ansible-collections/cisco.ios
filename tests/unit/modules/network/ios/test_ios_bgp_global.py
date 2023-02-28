@@ -92,16 +92,8 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "netmask": "255.255.0.0",
                             "summary_only": True,
                         },
-                        {
-                            "address": "192.0.2.4",
-                            "as_set": True,
-                            "netmask": "255.255.255.0",
-                        },
-                        {
-                            "address": "192.0.2.5",
-                            "as_set": True,
-                            "netmask": "255.255.255.0",
-                        },
+                        {"address": "192.0.2.4", "as_set": True, "netmask": "255.255.255.0"},
+                        {"address": "192.0.2.5", "as_set": True, "netmask": "255.255.255.0"},
                     ],
                     "as_number": "65000",
                     "auto_summary": True,
@@ -116,9 +108,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "med": {"confed": True, "missing_as_worst": True},
                         },
                         "confederation": {"identifier": "22"},
-                        "consistency_checker": {
-                            "error_message": {"interval": 10, "set": True},
-                        },
+                        "consistency_checker": {"error_message": {"interval": 10, "set": True}},
                         "dampening": {
                             "max_suppress": 44,
                             "penalty_half_time": 22,
@@ -126,42 +116,25 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "suppress_route_val": 33,
                         },
                         "deterministic_med": True,
-                        "graceful_restart": {
-                            "restart_time": 2,
-                            "stalepath_time": 22,
-                        },
+                        "graceful_restart": {"restart_time": 2, "stalepath_time": 22},
                         "graceful_shutdown": {
                             "community": "22",
                             "local_preference": 23,
                             "neighbors": {"time": 31},
                         },
                         "inject_maps": [
-                            {
-                                "copy_attributes": True,
-                                "exist_map_name": "mp2",
-                                "name": "map1",
-                            },
-                            {
-                                "copy_attributes": True,
-                                "exist_map_name": "mp3",
-                                "name": "map2",
-                            },
+                            {"copy_attributes": True, "exist_map_name": "mp2", "name": "map1"},
+                            {"copy_attributes": True, "exist_map_name": "mp3", "name": "map2"},
                         ],
                         "listen": {
                             "limit": 200,
-                            "range": {
-                                "host_with_subnet": "192.0.2.9/24",
-                                "peer_group": "mygrp",
-                            },
+                            "range": {"host_with_subnet": "192.0.2.9/24", "peer_group": "mygrp"},
                         },
                         "log_neighbor_changes": True,
                         "maxas_limit": 2,
                         "maxcommunity_limit": 3,
                         "maxextcommunity_limit": 3,
-                        "nexthop": {
-                            "route_map": "map1",
-                            "trigger": {"delay": 2},
-                        },
+                        "nexthop": {"route_map": "map1", "trigger": {"delay": 2}},
                         "nopeerup_delay_options": {
                             "cold_boot": 2,
                             "nsf_switchover": 10,
@@ -170,18 +143,12 @@ class TestIosBgpGlobalModule(TestIosModule):
                         },
                         "recursion": True,
                         "redistribute_internal": True,
-                        "refresh": {
-                            "max_eor_time": 700,
-                            "stalepath_time": 800,
-                        },
+                        "refresh": {"max_eor_time": 700, "stalepath_time": 800},
                         "router_id": {"vrf": True},
                         "scan_time": 22,
                         "slow_peer": {
                             "detection": {"threshold": 345},
-                            "split_update_group": {
-                                "dynamic": True,
-                                "permanent": True,
-                            },
+                            "split_update_group": {"dynamic": True, "permanent": True},
                         },
                         "sso": True,
                         "suppress_inactive": True,
@@ -190,16 +157,8 @@ class TestIosBgpGlobalModule(TestIosModule):
                     },
                     "bmp": {"buffer_size": 22},
                     "distance": {
-                        "bgp": {
-                            "routes_external": 2,
-                            "routes_internal": 3,
-                            "routes_local": 4,
-                        },
-                        "mbgp": {
-                            "routes_external": 2,
-                            "routes_internal": 3,
-                            "routes_local": 5,
-                        },
+                        "bgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 4},
+                        "mbgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 5},
                     },
                     "distributes": [
                         {"out": True, "prefix": "workcheck"},
@@ -214,10 +173,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "send": {
                                     "cost_community": {
                                         "id": 100,
-                                        "poi": {
-                                            "igp_cost": True,
-                                            "transitive": True,
-                                        },
+                                        "poi": {"igp_cost": True, "transitive": True},
                                     },
                                 },
                             },
@@ -227,13 +183,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                     "redistribute": [
                         {"application": {"metric": 22, "name": "ap1"}},
-                        {
-                            "application": {
-                                "metric": 33,
-                                "name": "ap112",
-                                "route_map": "mp1",
-                            },
-                        },
+                        {"application": {"metric": 33, "name": "ap112", "route_map": "mp1"}},
                         {"connected": {"metric": 22}},
                         {"static": {"metric": 33, "route_map": "mp1"}},
                         {"mobile": {"metric": 211}},
@@ -415,40 +365,21 @@ class TestIosBgpGlobalModule(TestIosModule):
                 config=dict(
                     as_number="65000",
                     aggregate_address=dict(
-                        dict(
-                            address="192.168.0.11",
-                            attribute_map="map1",
-                            netmask="255.255.0.0",
-                        ),
+                        dict(address="192.168.0.11", attribute_map="map1", netmask="255.255.0.0"),
                     ),
                     aggregate_addresses=[
-                        dict(
-                            address="192.168.0.1",
-                            attribute_map="map",
-                            netmask="255.255.0.0",
-                        ),
-                        dict(
-                            address="192.168.0.2",
-                            attribute_map="map2",
-                            netmask="255.255.0.0",
-                        ),
+                        dict(address="192.168.0.1", attribute_map="map", netmask="255.255.0.0"),
+                        dict(address="192.168.0.2", attribute_map="map2", netmask="255.255.0.0"),
                     ],
                     bgp=dict(
                         advertise_best_external=True,
                         bestpath_options=dict(compare_routerid=True),
                         log_neighbor_changes=True,
-                        nopeerup_delay_options=dict(
-                            cold_boot=20,
-                            post_boot=10,
-                        ),
+                        nopeerup_delay_options=dict(cold_boot=20, post_boot=10),
                     ),
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
-                        dict(
-                            address="192.0.2.1",
-                            remote_as=200,
-                            description="replace neighbor",
-                        ),
+                        dict(address="192.0.2.1", remote_as=200, description="replace neighbor"),
                     ],
                 ),
                 state="replaced",
@@ -583,12 +514,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         "bestpath": [
                             {"aigp": True},
                             {"compare_routerid": True},
-                            {
-                                "med": {
-                                    "confed": True,
-                                    "missing_as_worst": True,
-                                },
-                            },
+                            {"med": {"confed": True, "missing_as_worst": True}},
                         ],
                         "inject_map": {
                             "copy_attributes": True,
@@ -597,10 +523,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         },
                         "listen": {
                             "limit": 200,
-                            "range": {
-                                "ipv4_with_subnet": "192.0.2.9/24",
-                                "peer_group": "mygrp",
-                            },
+                            "range": {"ipv4_with_subnet": "192.0.2.9/24", "peer_group": "mygrp"},
                         },
                         "log_neighbor_changes": True,
                         "nopeerup_delay": [
@@ -614,22 +537,10 @@ class TestIosBgpGlobalModule(TestIosModule):
                     },
                     "bmp": {"buffer_size": 22, "server": 2},
                     "distance": {
-                        "bgp": {
-                            "routes_external": 2,
-                            "routes_internal": 3,
-                            "routes_local": 4,
-                        },
-                        "mbgp": {
-                            "routes_external": 2,
-                            "routes_internal": 3,
-                            "routes_local": 5,
-                        },
+                        "bgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 4},
+                        "mbgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 5},
                     },
-                    "distribute_list": {
-                        "out": True,
-                        "acl": "5000",
-                        "interface": "Loopback0",
-                    },
+                    "distribute_list": {"out": True, "acl": "5000", "interface": "Loopback0"},
                     "maximum_paths": {"ibgp": 2, "paths": 2},
                     "maximum_secondary_paths": {"ibgp": 22, "paths": 22},
                     "neighbors": [
@@ -652,10 +563,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         {
                             "neighbor_address": "192.1.1.2",
                             "local_as": {
-                                "no_prepend": {
-                                    "replace_as": True,
-                                    "set": True,
-                                },
+                                "no_prepend": {"replace_as": True, "set": True},
                                 "number": 56,
                                 "set": True,
                             },
@@ -667,26 +575,16 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "send_community": {"extended": True},
                             "password": "new password",
                         },
-                        {
-                            "activate": True,
-                            "neighbor_address": "172.21.1.2",
-                            "remote_as": 45000,
-                        },
+                        {"activate": True, "neighbor_address": "172.21.1.2", "remote_as": 45000},
                         {"neighbor_address": "192.0.2.3", "remote_as": 300},
                         {
                             "neighbor_address": "192.0.2.4",
                             "remote_as": 6553601,
-                            "shutdown": {
-                                "set": True,
-                                "graceful": 10,
-                                "community": 20,
-                            },
+                            "shutdown": {"set": True, "graceful": 10, "community": 20},
                         },
                         {
                             "activate": True,
-                            "advertise": {
-                                "additional_paths": {"group_best": True},
-                            },
+                            "advertise": {"additional_paths": {"group_best": True}},
                             "ipv6_adddress": "2001:DB8::1037",
                         },
                         {
@@ -719,19 +617,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "redistribute": [
                         {"static": {"metric": 33, "route_map": "mp1"}},
                         {"application": {"metric": 22, "name": "ap1"}},
-                        {
-                            "application": {
-                                "metric": 33,
-                                "name": "ap112",
-                                "route_map": "mp1",
-                            },
-                        },
+                        {"application": {"metric": 33, "name": "ap112", "route_map": "mp1"}},
                         {"connected": {"metric": 22}},
                         {"mobile": {"metric": 211}},
                     ],
-                    "route_server_context": {
-                        "description": "good smn server BMP",
-                    },
+                    "route_server_context": {"description": "good smn server BMP"},
                 },
                 "state": "rendered",
             },

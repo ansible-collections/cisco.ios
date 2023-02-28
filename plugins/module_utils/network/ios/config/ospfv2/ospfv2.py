@@ -207,10 +207,7 @@ class Ospfv2(ResourceModule):
                 for each in v["name"]:
                     h_interface_name = h_pi[k].get("name", [])
                     if each not in h_interface_name:
-                        temp = {
-                            "interface": {each: each},
-                            "set_interface": v["set_interface"],
-                        }
+                        temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
                             parsers=parsers,
                             want={"passive_interfaces": temp},
@@ -221,10 +218,7 @@ class Ospfv2(ResourceModule):
             elif not h_pi:
                 if k == "interface":
                     for each in v["name"]:
-                        temp = {
-                            "interface": {each: each},
-                            "set_interface": v["set_interface"],
-                        }
+                        temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
                             parsers=parsers,
                             want={"passive_interfaces": temp},
@@ -285,9 +279,6 @@ class Ospfv2(ResourceModule):
                         proc["distribute_list"]["acls"] = temp
                 if proc.get("passive_interfaces") and proc["passive_interfaces"].get("interface"):
                     temp = {}
-                    for entry in proc["passive_interfaces"]["interface"].get(
-                        "name",
-                        [],
-                    ):
+                    for entry in proc["passive_interfaces"]["interface"].get("name", []):
                         temp.update({entry: entry})
                     proc["passive_interfaces"]["interface"]["name"] = temp

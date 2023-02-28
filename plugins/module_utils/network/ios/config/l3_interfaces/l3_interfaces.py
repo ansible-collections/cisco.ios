@@ -107,10 +107,7 @@ class L3_interfaces(ResourceModule):
         begin = len(self.commands)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
-            self.commands.insert(
-                begin,
-                self._tmplt.render(want or have, "name", False),
-            )
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
         for afi in ("ipv4", "ipv6"):
@@ -161,12 +158,8 @@ class L3_interfaces(ResourceModule):
                                 {
                                     "dhcp": {
                                         "dhcp": {
-                                            "client_id": each.get(
-                                                "dhcp_client",
-                                            ),
-                                            "hostname": each.get(
-                                                "dhcp_hostname",
-                                            ),
+                                            "client_id": each.get("dhcp_client"),
+                                            "hostname": each.get("dhcp_hostname"),
                                         },
                                     },
                                 },

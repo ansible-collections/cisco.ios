@@ -39,15 +39,11 @@ def _tmplt_route_map_match(config_data):
                 cmd += " best {best}".format(**config_data["match"]["additional_paths"])
             if config_data["match"]["additional_paths"].get("best_range"):
                 cmd += " best-range"
-                if config_data["match"]["additional_paths"]["best_range"].get(
-                    "lower_limit",
-                ):
+                if config_data["match"]["additional_paths"]["best_range"].get("lower_limit"):
                     cmd += " lower-limit {lower_limit}".format(
                         **config_data["match"]["additional_paths"]["best_range"]
                     )
-                if config_data["match"]["additional_paths"]["best_range"].get(
-                    "upper_limit",
-                ):
+                if config_data["match"]["additional_paths"]["best_range"].get("upper_limit"):
                     cmd += " upper-limit {upper_limit}".format(
                         **config_data["match"]["additional_paths"]["best_range"]
                     )
@@ -95,9 +91,7 @@ def _tmplt_route_map_match(config_data):
             cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("length"):
-            command.append(
-                "match length {minimum} {maximum}".format(**match["length"]),
-            )
+            command.append("match length {minimum} {maximum}".format(**match["length"]))
         if match.get("local_preference"):
             cmd = "match local-preference "
             if match["local_preference"].get("value"):
@@ -237,10 +231,7 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["address"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["address"].get("acls"):
-                cmd = construct_cmd_from_list(
-                    cmd,
-                    config_data["match"]["ip"]["address"]["acls"],
-                )
+                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["address"]["acls"])
         if config_data["match"]["ip"].get("flowspec"):
             cmd += " flowspec"
             if config_data["match"]["ip"]["flowspec"].get("dest_pfx"):
@@ -254,10 +245,7 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["flowspec"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["flowspec"].get("acls"):
-                cmd = construct_cmd_from_list(
-                    cmd,
-                    config_data["match"]["ip"]["flowspec"]["acls"],
-                )
+                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["flowspec"]["acls"])
         if config_data["match"]["ip"].get("next_hop"):
             cmd += " next-hop"
             if config_data["match"]["ip"]["next_hop"].get("prefix_lists"):
@@ -267,32 +255,23 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["next_hop"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["next_hop"].get("acls"):
-                cmd = construct_cmd_from_list(
-                    cmd,
-                    config_data["match"]["ip"]["next_hop"]["acls"],
-                )
+                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["next_hop"]["acls"])
         if config_data["match"]["ip"].get("redistribution_source"):
             cmd += " redistribution-source"
-            if config_data["match"]["ip"]["redistribution_source"].get(
-                "prefix_lists",
-            ):
+            if config_data["match"]["ip"]["redistribution_source"].get("prefix_lists"):
                 cmd += " prefix-list"
                 cmd = construct_cmd_from_list(
                     cmd,
                     config_data["match"]["ip"]["redistribution_source"]["prefix_lists"],
                 )
-            elif config_data["match"]["ip"]["redistribution_source"].get(
-                "acls",
-            ):
+            elif config_data["match"]["ip"]["redistribution_source"].get("acls"):
                 cmd = construct_cmd_from_list(
                     cmd,
                     config_data["match"]["ip"]["redistribution_source"]["acls"],
                 )
         if config_data["match"]["ip"].get("route_source"):
             cmd += " route-source"
-            if config_data["match"]["ip"]["route_source"].get(
-                "redistribution_source",
-            ):
+            if config_data["match"]["ip"]["route_source"].get("redistribution_source"):
                 cmd += " redistribution-source"
             if config_data["match"]["ip"]["route_source"].get("prefix_lists"):
                 cmd += " prefix-list"
@@ -405,13 +384,9 @@ def _tmplt_route_map_set(config_data):
                 ),
             )
         if set.get("default"):
-            command.append(
-                "set default interface {default}".format(**set["default"]),
-            )
+            command.append("set default interface {default}".format(**set["default"]))
         if set.get("extcomm_list"):
-            command.append(
-                "set extcomm-list {extcomm_list} delete".format(**set),
-            )
+            command.append("set extcomm-list {extcomm_list} delete".format(**set))
         if set.get("extcommunity"):
             if set["extcommunity"].get("cost"):
                 cmd = "set extcommunity cost"
@@ -436,9 +411,7 @@ def _tmplt_route_map_set(config_data):
                     cmd += " additive"
                 command.append(cmd)
             if set["extcommunity"].get("soo"):
-                command.append(
-                    "set extcommunity soo {soo}".format(**set["extcommunity"]),
-                )
+                command.append("set extcommunity soo {soo}".format(**set["extcommunity"]))
             if set["extcommunity"].get("vpn_distinguisher"):
                 cmd = "set extcommunity vpn-distinguisher"
                 if set["extcommunity"]["vpn_distinguisher"].get("range"):
@@ -472,9 +445,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("lisp"):
             command.append("set lisp locator-set {lisp}".format(**set))
         if set.get("local_preference"):
-            command.append(
-                "set local-preference {local_preference}".format(**set),
-            )
+            command.append("set local-preference {local_preference}".format(**set))
         if set.get("metric"):
             cmd = "set metric"
             if set["metric"].get("metric_value"):
@@ -492,9 +463,7 @@ def _tmplt_route_map_set(config_data):
                                 **set["metric"]
                             )
                         )
-            if set["metric"].get("deviation") and not set["metric"].get(
-                "eigrp_delay",
-            ):
+            if set["metric"].get("deviation") and not set["metric"].get("eigrp_delay"):
                 if set["metric"]["deviation"] == "plus":
                     cmd = "set metric +{metric_value}".format(**set["metric"])
                 elif set["metric"]["deviation"] == "minus":
@@ -536,9 +505,7 @@ def _tmplt_route_map_set_ip(config_data):
         set_ip = config_data["set"]["ip"]
         cmd = "set ip"
         if set_ip.get("address"):
-            command.append(
-                "{0} address prefix-list {address}".format(cmd, **set_ip),
-            )
+            command.append("{0} address prefix-list {address}".format(cmd, **set_ip))
         if set_ip.get("df"):
             command.append("{0} df {df}".format(cmd, **set_ip))
         if set_ip.get("global_route"):
@@ -553,9 +520,7 @@ def _tmplt_route_map_set_ip(config_data):
         if set_ip.get("next_hop"):
             cmd += " next-hop"
             if set_ip["next_hop"].get("address"):
-                command.append(
-                    "{0} {address}".format(cmd, **set_ip["next_hop"]),
-                )
+                command.append("{0} {address}".format(cmd, **set_ip["next_hop"]))
             if set_ip["next_hop"].get("dynamic"):
                 command.append("{0} dynamic dhcp".format(cmd))
             if set_ip["next_hop"].get("encapsulate"):
@@ -683,10 +648,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 "{{ route_map }}": {
                     "route_map": "{{ route_map }}",
                     "{{ action|d() + '_' + sequence|d() }}": {
-                        "entries": {
-                            "action": "{{ action }}",
-                            "sequence": "{{ sequence }}",
-                        },
+                        "entries": {"action": "{{ action }}", "sequence": "{{ sequence }}"},
                     },
                 },
             },

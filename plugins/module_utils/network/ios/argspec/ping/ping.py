@@ -40,10 +40,6 @@ class PingArgs(object):  # pylint: disable=R0903
         "ingress": {"type": "str"},
         "egress": {"type": "str"},
         "timeout": {"type": "int"},
-        "state": {
-            "choices": ["absent", "present"],
-            "default": "present",
-            "type": "str",
-        },
+        "state": {"choices": ["absent", "present"], "default": "present", "type": "str"},
         "vrf": {"type": "str"},
     }  # pylint: disable=C0301

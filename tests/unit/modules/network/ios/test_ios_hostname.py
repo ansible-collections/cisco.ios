@@ -82,9 +82,7 @@ class TestIosHostnameModule(TestIosModule):
             hostname testname
             """,
         )
-        set_module_args(
-            dict(config=dict(hostname="testnameNew"), state="merged"),
-        )
+        set_module_args(dict(config=dict(hostname="testnameNew"), state="merged"))
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -117,9 +115,7 @@ class TestIosHostnameModule(TestIosModule):
             hostname testname
             """,
         )
-        set_module_args(
-            dict(config=dict(hostname="testnameNew"), state="replaced"),
-        )
+        set_module_args(dict(config=dict(hostname="testnameNew"), state="replaced"))
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

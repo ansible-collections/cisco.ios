@@ -27,8 +27,6 @@ def patch_ansible_module(request, mocker):
             request.param["ANSIBLE_MODULE_ARGS"]["_ansible_keep_remote_files"] = False
         args = json.dumps(request.param)
     else:
-        raise Exception(
-            "Malformed data to the patch_ansible_module pytest fixture",
-        )
+        raise Exception("Malformed data to the patch_ansible_module pytest fixture")
 
     mocker.patch("ansible.module_utils.basic._ANSIBLE_ARGS", to_bytes(args))

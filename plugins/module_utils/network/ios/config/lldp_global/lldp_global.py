@@ -63,9 +63,7 @@ class Lldp_global(ConfigBase):
             self.gather_network_resources,
             data=data,
         )
-        lldp_global_facts = facts["ansible_network_resources"].get(
-            "lldp_global",
-        )
+        lldp_global_facts = facts["ansible_network_resources"].get("lldp_global")
         if not lldp_global_facts:
             return {}
 
@@ -144,9 +142,7 @@ class Lldp_global(ConfigBase):
         commands = []
         if self.state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    self.state,
-                ),
+                msg="value of config parameter must not be empty for state {0}".format(self.state),
             )
 
         if self.state == "overridden":

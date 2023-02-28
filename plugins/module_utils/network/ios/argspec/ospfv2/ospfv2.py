@@ -38,9 +38,7 @@ class Ospfv2Args(object):
         "config": {
             "options": {
                 "processes": {
-                    "mutually_exclusive": [
-                        ("passive_interface", "passive_interfaces"),
-                    ],
+                    "mutually_exclusive": [("passive_interface", "passive_interfaces")],
                     "elements": "dict",
                     "options": {
                         "address_family": {
@@ -96,10 +94,7 @@ class Ospfv2Args(object):
                                         "default_information_originate": {
                                             "options": {
                                                 "metric": {"type": "int"},
-                                                "metric_type": {
-                                                    "choices": [1, 2],
-                                                    "type": "int",
-                                                },
+                                                "metric_type": {"choices": [1, 2], "type": "int"},
                                                 "nssa_only": {"type": "bool"},
                                             },
                                             "type": "dict",
@@ -109,10 +104,7 @@ class Ospfv2Args(object):
                                         "no_summary": {"type": "bool"},
                                         "set": {"type": "bool"},
                                         "translate": {
-                                            "choices": [
-                                                "always",
-                                                "suppress-fa",
-                                            ],
+                                            "choices": ["always", "suppress-fa"],
                                             "type": "str",
                                         },
                                     },
@@ -226,10 +218,7 @@ class Ospfv2Args(object):
                                             "type": "str",
                                         },
                                         "interface": {"type": "str"},
-                                        "name": {
-                                            "required": True,
-                                            "type": "str",
-                                        },
+                                        "name": {"required": True, "type": "str"},
                                         "protocol": {"type": "str"},
                                     },
                                     "type": "list",
@@ -243,21 +232,13 @@ class Ospfv2Args(object):
                                         },
                                         "gateway_name": {"type": "str"},
                                         "interface": {"type": "str"},
-                                        "name": {
-                                            "required": True,
-                                            "type": "str",
-                                        },
+                                        "name": {"required": True, "type": "str"},
                                         "protocol": {"type": "str"},
                                     },
                                     "type": "dict",
                                 },
                                 "route_map": {
-                                    "options": {
-                                        "name": {
-                                            "required": True,
-                                            "type": "str",
-                                        },
-                                    },
+                                    "options": {"name": {"required": True, "type": "str"}},
                                     "type": "dict",
                                 },
                             },
@@ -319,10 +300,7 @@ class Ospfv2Args(object):
                             "type": "dict",
                         },
                         "log_adjacency_changes": {
-                            "options": {
-                                "detail": {"type": "bool"},
-                                "set": {"type": "bool"},
-                            },
+                            "options": {"detail": {"type": "bool"}, "set": {"type": "bool"}},
                             "type": "dict",
                         },
                         "max_lsa": {
@@ -347,10 +325,7 @@ class Ospfv2Args(object):
                                     },
                                     "type": "dict",
                                 },
-                                "router_lsa": {
-                                    "required": True,
-                                    "type": "bool",
-                                },
+                                "router_lsa": {"required": True, "type": "bool"},
                                 "summary_lsa": {"type": "int"},
                             },
                             "type": "dict",
@@ -378,9 +353,7 @@ class Ospfv2Args(object):
                                         "interface": {
                                             "options": {
                                                 "area": {"type": "int"},
-                                                "interface_type": {
-                                                    "type": "str",
-                                                },
+                                                "interface_type": {"type": "str"},
                                             },
                                             "type": "dict",
                                         },
@@ -432,9 +405,7 @@ class Ospfv2Args(object):
                                     "options": {
                                         "disable": {"type": "bool"},
                                         "helper": {"type": "bool"},
-                                        "strict_lsa_checking": {
-                                            "type": "bool",
-                                        },
+                                        "strict_lsa_checking": {"type": "bool"},
                                     },
                                     "type": "dict",
                                 },
@@ -448,10 +419,7 @@ class Ospfv2Args(object):
                                 "interface": {
                                     "options": {
                                         "set_interface": {"type": "bool"},
-                                        "name": {
-                                            "type": "list",
-                                            "elements": "str",
-                                        },
+                                        "name": {"type": "list", "elements": "str"},
                                     },
                                     "type": "dict",
                                 },
@@ -515,13 +483,9 @@ class Ospfv2Args(object):
                                         },
                                         "spf": {
                                             "options": {
-                                                "between_delay": {
-                                                    "type": "int",
-                                                },
+                                                "between_delay": {"type": "int"},
                                                 "max_delay": {"type": "int"},
-                                                "receive_delay": {
-                                                    "type": "int",
-                                                },
+                                                "receive_delay": {"type": "int"},
                                             },
                                             "type": "dict",
                                         },
@@ -533,10 +497,7 @@ class Ospfv2Args(object):
                         },
                         "traffic_share": {"type": "bool"},
                         "ttl_security": {
-                            "options": {
-                                "hops": {"type": "int"},
-                                "set": {"type": "bool"},
-                            },
+                            "options": {"hops": {"type": "int"}, "set": {"type": "bool"}},
                             "type": "dict",
                         },
                         "vrf": {"type": "str"},
