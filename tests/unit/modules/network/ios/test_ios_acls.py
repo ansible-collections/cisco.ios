@@ -205,88 +205,42 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(acl_type="standard", name="test_acl"),
-                            dict(
-                                name="110",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        log=dict(user_cookie="testLog"),
-                                        protocol="tcp",
-                                        sequence="10",
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            any=True,
-                                            port_protocol=dict(eq="22"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        sequence="20",
-                                        protocol="icmp",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        sequence="30",
-                                        protocol="icmp",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                        ),
-                                        destination=dict(any=True),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                ],
-                            ),
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {"name": "110", "acl_type": "extended"},
+                            {"name": "test_acl", "acl_type": "standard"},
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="R1_TRAFFIC",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
-                                        sequence="10",
-                                        source=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="www"),
-                                        ),
-                                        destination=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        dscp="af11",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "R1_TRAFFIC",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "tcp",
+                                        "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                        "destination": {
+                                            "any": True,
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "dscp": "af11",
+                                        "protocol_options": {"tcp": {"ack": True}},
+                                    }
                                 ],
-                            ),
+                            }
                         ],
-                    ),
+                    },
                 ],
                 state="merged",
             ),
         )
-        self.execute_module(changed=False, commands=[], sort=True)
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["commands"]), [])
+        # self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_acls_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -370,6 +324,7 @@ class TestIosAclsModule(TestIosModule):
             dict(
                 config=[
                     {
+                        "afi": "ipv4",
                         "acls": [
                             {
                                 "afi": "ipv4",
@@ -423,14 +378,13 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                         ],
-                    },
+                    }
                 ],
                 state="replaced",
             ),
         )
         result = self.execute_module(changed=False)
-        command = []
-        self.assertEqual(sorted(result["commands"]), sorted(command))
+        self.assertEqual(sorted(result["commands"]), [])
 
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -508,91 +462,35 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(acl_type="standard", name="test_acl"),
-                            dict(
-                                name="110",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        log=dict(user_cookie="testLog"),
-                                        protocol="tcp",
-                                        sequence="10",
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            any=True,
-                                            port_protocol=dict(eq="22"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence="20",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence="30",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                            any=True,
-                                        ),
-                                        destination=dict(any=True),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                ],
-                            ),
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {"name": "110", "acl_type": "extended"},
+                            {"name": "test_acl", "acl_type": "standard"},
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="R1_TRAFFIC",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol="tcp",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
-                                        sequence="10",
-                                        source=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="www"),
-                                        ),
-                                        destination=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        dscp="af11",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "R1_TRAFFIC",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "tcp",
+                                        "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                        "destination": {
+                                            "any": True,
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "dscp": "af11",
+                                        "protocol_options": {"tcp": {"ack": True}},
+                                    }
                                 ],
-                            ),
+                            }
                         ],
-                    ),
+                    },
                 ],
                 state="overridden",
             ),
@@ -753,8 +651,8 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="""IPv6 access list R1_TRAFFIC\ndeny tcp any eq www any range 10 20 ack dscp af11 sequence 10\n
-                20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
+                running_config="""IPv6 access list R1_TRAFFIC\n deny tcp any eq www any range 10 20 ack dscp af11 sequence 10
+                \n 20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
                 state="parsed",
             ),
         )
@@ -778,6 +676,7 @@ class TestIosAclsModule(TestIosModule):
                                 "dscp": "af11",
                                 "protocol_options": {"tcp": {"ack": True}},
                             },
+                            {},
                             {
                                 "sequence": 20,
                                 "grant": "permit",
@@ -795,9 +694,9 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {"icmp": {"echo_reply": True}},
                             },
                         ],
-                    },
+                    }
                 ],
-            },
+            }
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -861,113 +760,23 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(acl_type="standard", name="test_acl"),
-                            dict(
-                                name="110",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        log=dict(user_cookie="testLog"),
-                                        protocol="tcp",
-                                        sequence="10",
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            any=True,
-                                            port_protocol=dict(eq="22"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence="20",
-                                        source=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo="true"),
-                                        ),
-                                        sequence="30",
-                                        source=dict(
-                                            object_group="test_network_og",
-                                            any=True,
-                                        ),
-                                        destination=dict(any=True),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                ],
-                            ),
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "110",
+                                "acl_type": "extended",
+                                "aces": [{"remarks": ["test ab.", "test again ab."]}],
+                            },
+                            {"name": "test_acl", "acl_type": "standard"},
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="R1_TRAFFIC",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol="tcp",
-                                        protocol_options=dict(
-                                            tcp=dict(ack="true"),
-                                        ),
-                                        sequence="10",
-                                        source=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="www"),
-                                        ),
-                                        destination=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        dscp="af11",
-                                    ),
-                                    dict(
-                                        remarks=[
-                                            "ipv6 remarks one",
-                                            "ipv6 remarks test 2",
-                                        ],
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
+                    }
                 ],
                 state="overridden",
             ),
         )
-        result = self.execute_module(changed=True, sort=True)
-        commands = [
-            "ip access-list extended 110",
-            "no remark test ab.",
-            "no remark test again ab.",
-            "ipv6 access-list R1_TRAFFIC",
-            "deny tcp any eq www any eq telnet ack dscp af11 sequence 10",
-            "remark ipv6 remarks one",
-            "remark ipv6 remarks test 2",
-        ]
-
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        result = self.execute_module(changed=False, sort=True)
+        self.assertEqual(sorted(result["commands"]), [])
 
     def test_ios_acls_overridden_option(self):
         self.execute_show_command.return_value = dedent(

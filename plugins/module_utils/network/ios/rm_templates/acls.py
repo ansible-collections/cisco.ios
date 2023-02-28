@@ -233,8 +233,8 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces",
             "getval": re.compile(
-                r"""\s*(?P<sequence>\d+)*
-                        \s*(?P<grant>deny|permit)*
+                r"""\s((?P<sequence>\d+))?
+                        (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+))?
                         (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
