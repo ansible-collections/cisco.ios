@@ -24,35 +24,35 @@ class TestIosLldpInterfacesModule(TestIosModule):
         super(TestIosLldpInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
-            "get_resource_connection"
+            "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config"
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_interfaces.lldp_interfaces."
-            "Lldp_InterfacesFacts.get_lldp_interfaces_data"
+            "Lldp_InterfacesFacts.get_lldp_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -91,7 +91,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
                 Rx: enabled
                 Tx state: IDLE
                 Rx state: WAIT FOR FRAME
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -101,7 +101,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet0/3", "transmit": True},
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = ["interface GigabitEthernet0/2", "lldp receive"]
         result = self.execute_module(changed=True)
@@ -134,7 +134,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
                Rx: enabled
                Tx state: IDLE
                Rx state: WAIT FOR FRAME
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -143,10 +143,15 @@ class TestIosLldpInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet0/3", "receive": False},
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
-'interface GigabitEthernet0/2', 'lldp receive', 'lldp transmit', 'interface GigabitEthernet0/3', 'no lldp transmit', 'no lldp receive'
+            "interface GigabitEthernet0/2",
+            "lldp receive",
+            "lldp transmit",
+            "interface GigabitEthernet0/3",
+            "no lldp transmit",
+            "no lldp receive",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -177,7 +182,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
                Rx: enabled
                Tx state: IDLE
                Rx state: WAIT FOR FRAME
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -185,11 +190,22 @@ class TestIosLldpInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet0/2", "receive": True, "transmit": True},
                 ],
                 state="overridden",
-            )
+            ),
         )
 
         commands = [
-'interface GigabitEthernet0/0', 'no lldp receive', 'no lldp transmit', 'interface GigabitEthernet0/1', 'no lldp receive', 'no lldp transmit', 'interface GigabitEthernet0/2', 'lldp receive', 'lldp transmit', 'interface GigabitEthernet0/3', 'no lldp receive', 'no lldp transmit'
+            "interface GigabitEthernet0/0",
+            "no lldp receive",
+            "no lldp transmit",
+            "interface GigabitEthernet0/1",
+            "no lldp receive",
+            "no lldp transmit",
+            "interface GigabitEthernet0/2",
+            "lldp receive",
+            "lldp transmit",
+            "interface GigabitEthernet0/3",
+            "no lldp receive",
+            "no lldp transmit",
         ]
         result = self.execute_module(changed=True)
         print(result["commands"])
@@ -221,16 +237,18 @@ class TestIosLldpInterfacesModule(TestIosModule):
                 Rx: enabled
                 Tx state: IDLE
                 Rx state: WAIT FOR FRAME
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[dict(name="GigabitEthernet0/2"), dict(name="GigabitEthernet0/1")],
                 state="deleted",
-            )
+            ),
         )
         commands = [
-        'interface GigabitEthernet0/1', 'no lldp receive', 'no lldp transmit'
+            "interface GigabitEthernet0/1",
+            "no lldp receive",
+            "no lldp transmit",
         ]
         res = self.execute_module(changed=True)
         self.assertEqual(res["commands"], commands)
@@ -257,21 +275,23 @@ class TestIosLldpInterfacesModule(TestIosModule):
                         Rx: enabled
                         Tx state: IDLE
                         Rx state: INIT
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
-            {'name': 'GigabitEthernet0/0', 'transmit': True, 'receive': False}, {'name': 'GigabitEthernet0/1', 'transmit': True, 'receive': True}, {'name': 'GigabitEthernet0/2', 'transmit': False, 'receive': True}
+            {"name": "GigabitEthernet0/0", "transmit": True, "receive": False},
+            {"name": "GigabitEthernet0/1", "transmit": True, "receive": True},
+            {"name": "GigabitEthernet0/2", "transmit": False, "receive": True},
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_lldp_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -281,7 +301,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet0/2", "transmit": False, "receive": True},
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet0/0",
