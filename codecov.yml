@@ -7,5 +7,4 @@ coverage:
     patch: false
     project:
       default:
-        target: 75%
-        threshold: 0.5%
+        threshold: 0.3%
