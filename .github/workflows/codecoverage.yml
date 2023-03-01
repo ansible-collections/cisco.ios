@@ -18,7 +18,7 @@ jobs:
         ansible-version:
           - Latest
         python-version:
-          - "3.11"
+          - "3.10"
     runs-on: ${{ matrix.os }}
 
     name: "Code Coverage ${{ matrix.python-version }} / ${{ matrix.os }} / ${{ matrix.ansible-version }}"
