@@ -64,7 +64,6 @@ jobs:
 
       - name: Run Coverage tests
         run: |
-          ansible-test coverage erase
           ansible-test units --python ${{ matrix.python-version }} --coverage --requirements
           ansible-test coverage xml
         working-directory: ${{ steps.identify.outputs.collection_path }}
