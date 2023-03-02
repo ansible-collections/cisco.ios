@@ -15,7 +15,7 @@ from ansible.errors import AnsibleFilterError
 from ansible_collections.cisco.ios.plugins.plugin_utils.pop_ace import pop_ace
 
 
-class TestAcePopper(unittest.TestCase):
+class TestPopAce(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -23,8 +23,8 @@ class TestAcePopper(unittest.TestCase):
         filter_options = {"match_all": True}
         match_criteria = {
             "afi": "ipv4",
-            "source_address": "192.0.2.0",
-            "destination_address": "192.0.3.0",
+            "source": "192.0.2.0",
+            "destination": "192.0.3.0",
         }
         data = [
             {

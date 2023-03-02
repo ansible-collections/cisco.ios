@@ -35,7 +35,7 @@ def check_match(ace, match_criteria, match_all, name, afi):
     check_arr = []
     for k, v in match_criteria.items():
         if v:
-            if k not in ["source_address", "destination_address", "acl_name", "afi"]:
+            if k not in ["source", "destination", "acl_name", "afi"]:
                 check_arr.append(True) if ace.get(k, "NA") == match_criteria.get(
                     k,
                 ) else check_arr.append(False)
@@ -86,13 +86,11 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
         afi = acls.get("afi")  # ipv4 or v6
 
         for acl in acls.get("acls"):
-            _aces, _acl, _keep = [], {}, True
+            _aces, _acl = [], {}
             _races, _racl, _rstop = [], {}, True
 
             aces = acl.get("aces", {})
             name = acl.get("name", "")  # filter by acl_name ignores whole acl entries i.e all aces
-            # if name == match_criteria.get("acl_name", ""): # removed temp tbd
-            #     _keep = False
 
             for ace in aces:  # iterate on ace entries
                 jude = check_match(
@@ -102,7 +100,7 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
                     name=name,
                     afi=afi,
                 )
-                if _keep and jude:  # check matching criteria and remove from final dict
+                if jude:  # check matching criteria and remove from final dict
                     if remove_first_ace_only and _rstop:  # removes one ace entry per acl
                         _races.append(ace)
                         _rstop = False
@@ -111,9 +109,9 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
                         _races.append(ace)
                         continue
 
-                _races.append(ace) if not _keep else _aces.append(
+                _aces.append(
                     ace,
-                )  # activates only when ace removed on name and not match_all
+                )
 
             if _aces:  # store filtered aces
                 _acl["name"], _acl["aces"] = name, _aces

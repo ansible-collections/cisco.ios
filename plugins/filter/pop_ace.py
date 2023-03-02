@@ -63,11 +63,11 @@ DOCUMENTATION = """
           acl_name:
             description: ACL name to match
             type: str
-          source_address:
-            description: Source address of the ACE to match
+          source:
+            description: Source address/ host/ any of the ACE to match
             type: str
-          destination_address:
-            description: Destination address of the ACE to natch
+          destination:
+            description: Destination address/ host/ any of the ACE to natch
             type: str
           sequence:
             description: Sequence number of the ACE to match
@@ -87,8 +87,8 @@ vars:
     match_all: true
   match_criteria:
     afi: "ipv4"
-    source_address: "192.0.2.0"
-    destination_address: "192.0.3.0"
+    source: "192.0.2.0"
+    destination: "192.0.3.0"
   acls_data:
     - acls:
         - aces:
@@ -364,8 +364,8 @@ tasks:
         match_all: true
       match_criteria:
         afi: "ipv4"
-        source_address: "192.0.2.0"
-        destination_address: "192.0.3.0"
+        source: "192.0.2.0"
+        destination: "192.0.3.0"
 
   - name: Invoke pop_ace filter plugin
     ansible.builtin.set_fact:
@@ -640,8 +640,8 @@ tasks:
 #       match_all: true
 #     match_criteria:
 #       afi: ipv4
-#       destination_address: 192.0.3.0
-#       source_address: 192.0.2.0
+#       destination: 192.0.3.0
+#       source: 192.0.2.0
 
 # TASK [Invoke pop_ace filter plugin] *****************************************
 # ok: [xe_machine] => changed=false
