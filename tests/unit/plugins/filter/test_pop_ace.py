@@ -324,7 +324,6 @@ class TestPopAce(unittest.TestCase):
             ],
         }
         result = pop_ace(*args)
-        print(result)
         self.assertEqual(result.get("removed_aces"), removed_aces)
         self.assertEqual(result.get("clean_acls"), clean_acls)
 
