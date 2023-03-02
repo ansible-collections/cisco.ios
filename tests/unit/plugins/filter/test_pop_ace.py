@@ -434,7 +434,7 @@ class TestPopAce(unittest.TestCase):
                                 "protocol": "icmp",
                                 "sequence": 10,
                                 "source": {"address": "10.1.1.0", "wildcard_bits": "0.0.0.255"},
-                            }
+                            },
                         ],
                         "acl_type": "extended",
                         "name": "outboundfilters",
@@ -479,7 +479,7 @@ class TestPopAce(unittest.TestCase):
                     },
                 ],
                 "afi": "ipv4",
-            }
+            },
         ]
         args = [data, filter_options, match_criteria]
         clean_acls = {
@@ -585,7 +585,7 @@ class TestPopAce(unittest.TestCase):
                                     "protocol": "icmp",
                                     "sequence": 10,
                                     "source": {"address": "10.1.1.0", "wildcard_bits": "0.0.0.255"},
-                                }
+                                },
                             ],
                         },
                         {
@@ -625,7 +625,7 @@ class TestPopAce(unittest.TestCase):
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         removed_aces = {
             "acls": [
@@ -640,7 +640,7 @@ class TestPopAce(unittest.TestCase):
                                     "protocol": "udp",
                                     "sequence": 20,
                                     "source": {"host": "172.16.1.21"},
-                                }
+                                },
                             ],
                         },
                         {
@@ -652,14 +652,14 @@ class TestPopAce(unittest.TestCase):
                                     "protocol": "icmp",
                                     "sequence": 30,
                                     "source": {"any": True},
-                                }
+                                },
                             ],
                         },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         result = pop_ace(*args)
         self.assertEqual(result.get("removed_aces"), removed_aces)

@@ -199,7 +199,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>destination_address</b>
+                    <b>destination</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -210,7 +210,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Destination address of the ACE to natch</div>
+                        <div>Destination address/ host/ any of the ACE to natch</div>
                 </td>
             </tr>
             <tr>
@@ -271,7 +271,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>source_address</b>
+                    <b>source</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -282,7 +282,7 @@ Parameters
                     <td>
                     </td>
                 <td>
-                        <div>Source address of the ACE to match</div>
+                        <div>Source address/ host/ any of the ACE to match</div>
                 </td>
             </tr>
 
@@ -303,8 +303,8 @@ Examples
         match_all: true
       match_criteria:
         afi: "ipv4"
-        source_address: "192.0.2.0"
-        destination_address: "192.0.3.0"
+        source: "192.0.2.0"
+        destination: "192.0.3.0"
       acls_data:
         - acls:
             - aces:
@@ -580,8 +580,8 @@ Examples
             match_all: true
           match_criteria:
             afi: "ipv4"
-            source_address: "192.0.2.0"
-            destination_address: "192.0.3.0"
+            source: "192.0.2.0"
+            destination: "192.0.3.0"
 
       - name: Invoke pop_ace filter plugin
         ansible.builtin.set_fact:
@@ -856,8 +856,8 @@ Examples
     #       match_all: true
     #     match_criteria:
     #       afi: ipv4
-    #       destination_address: 192.0.3.0
-    #       source_address: 192.0.2.0
+    #       destination: 192.0.3.0
+    #       source: 192.0.2.0
 
     # TASK [Invoke pop_ace filter plugin] *****************************************
     # ok: [xe_machine] => changed=false

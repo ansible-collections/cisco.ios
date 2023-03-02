@@ -51,10 +51,10 @@ def check_match(ace, match_criteria, match_all, name, afi):
                 _sub = "source" if "source" in k else "destination"
                 _valid = []
                 _valid.append(True) if ace.get(_sub, {}).get("address", "NA") == match_criteria.get(
-                    k
+                    k,
                 ) else _valid.append(False)
                 _valid.append(True) if ace.get(_sub, {}).get("host", "NA") == match_criteria.get(
-                    k
+                    k,
                 ) else _valid.append(False)
                 _valid.append(True) if ace.get(_sub, {}).get("any", "NA") == (
                     match_criteria.get(k) == "any"
