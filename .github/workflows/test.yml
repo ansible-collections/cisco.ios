@@ -43,8 +43,8 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
           ]) == {'success'}"
-  
-  #codecoverage 
+
+  #codecoverage
   codecov:
     uses: ./.github/workflows/codecoverage.yml
     with:

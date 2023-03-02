@@ -67,7 +67,7 @@ jobs:
           ansible-test units --python ${{ matrix.python-version }} --coverage --requirements
           ansible-test coverage xml
         working-directory: ${{ steps.identify.outputs.collection_path }}
-      
+
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3
         with:
