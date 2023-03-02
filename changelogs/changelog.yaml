@@ -757,3 +757,38 @@ releases:
       - reorder_parsers_bgp_add.yaml
       - rm_base.yaml
     release_date: "2023-01-30"
+  4.4.0:
+    changes:
+      bugfixes:
+        - ios_acls - fix rendering of object-groups in source and destination at ace
+          level.
+        - ios_bgp_address_family - fix facts generation of default originate option.
+        - ios_bgp_global - fix neighbor shutdown command on set value being false.
+        - ios_command - Run & evaluate commands at least once even when retries is set
+          to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
+        - ios_ospf_interfaces - fix dead-interval rendering wrong facts when hello-multiplier
+          is configured.
+      doc_changes:
+        - ospfv2 - fix documentation for ospfv2 module (networks parameter).
+      minor_changes:
+        - ios_facts - Add ip value to ansible_net_neighbors dictionary for cdp neighbours.
+          (https://github.com/ansible-collections/cisco.ios/pull/748)
+        - ios_facts - Add ip value to ansible_net_neighbors dictionary for lldp neighbours.
+          (https://github.com/ansible-collections/cisco.ios/pull/760)
+        - ios_interfaces - Add mode attribute in ios_interfaces, which supports layer2
+          and layer3 as options.
+    fragments:
+      - acls_object_group_fix.yaml
+      - bgp_add_family_fix.yaml
+      - bgp_shutdown.yaml
+      - fix_file_formatting_precommit.yaml
+      - fix_sanity_test.yaml
+      - fix_sanity_test_uts.yaml
+      - fix_tests_downstream.yaml
+      - fix_uts.yaml
+      - interface_mode.yaml
+      - net_neighbor_have_ip.yaml
+      - ospf_interface_minimal.yaml
+      - ospfv2_module_docfix.yml
+      - retry_ios_command.yaml
+    release_date: "2023-02-28"
