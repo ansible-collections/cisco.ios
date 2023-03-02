@@ -31,28 +31,35 @@ def fail_missing(racl, fail):
         _raise_error("no entries removed on the provided match_criteria")
 
 
-def check_match(ace, match_criteria, match_all, name):
+def check_match(ace, match_criteria, match_all, name, afi):
     check_arr = []
-    check_arr.append(True) if name == match_criteria.get(
-        "acl_name",
-    ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("sequence", "NA") == match_criteria.get(
-        "sequence",
-    ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("protocol", "NA") == match_criteria.get(
-        "protocol",
-    ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("grant", "NA") == match_criteria.get(
-        "grant",
-    ) else check_arr.append(False)
-    check_arr.append(True) if ace.get("source", {}).get("address", "NA") or ace.get(
-        "source",
-        {},
-    ).get("host", "NA") == match_criteria.get("source_address") else check_arr.append(False)
-    check_arr.append(True) if ace.get("destination", {}).get("address", "NA") or ace.get(
-        "destination",
-        {},
-    ).get("host", "NA") == match_criteria.get("destination_address") else check_arr.append(False)
+    for k, v in match_criteria.items():
+        if v:
+            if k not in ["source_address", "destination_address", "acl_name", "afi"]:
+                check_arr.append(True) if ace.get(k, "NA") == match_criteria.get(
+                    k,
+                ) else check_arr.append(False)
+            elif k == "acl_name":
+                check_arr.append(True) if name == match_criteria.get(
+                    k,
+                ) else check_arr.append(False)
+            elif k == "afi":
+                check_arr.append(True) if afi == match_criteria.get(
+                    k,
+                ) else check_arr.append(False)
+            else:  # for source and destination address
+                _sub = "source" if "source" in k else "destination"
+                _valid = []
+                _valid.append(True) if ace.get(_sub, {}).get("address", "NA") == match_criteria.get(
+                    k
+                ) else _valid.append(False)
+                _valid.append(True) if ace.get(_sub, {}).get("host", "NA") == match_criteria.get(
+                    k
+                ) else _valid.append(False)
+                _valid.append(True) if ace.get(_sub, {}).get("any", "NA") == (
+                    match_criteria.get(k) == "any"
+                ) else _valid.append(False)
+                check_arr.append(any(_valid))
 
     if match_all:  # forces all criteria to match
         return all(check_arr)
@@ -66,7 +73,7 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
 
     remove_first_ace_only = True if filter_options.get("remove") == "first" else False
     fail_if_no_match = True if filter_options.get("failed_when") == "missing" else False
-    match_all = True if filter_options.get("match_all") == "True" else False
+    match_all = True if filter_options.get("match_all") == True else False
 
     final_acl = {
         "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}],
@@ -88,12 +95,14 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
             #     _keep = False
 
             for ace in aces:  # iterate on ace entries
-                if _keep and check_match(
-                    ace,
-                    match_criteria,
-                    match_all,
-                    name,
-                ):  # check matching criteria and remove from final dict
+                jude = check_match(
+                    ace=ace,
+                    match_criteria=match_criteria,
+                    match_all=match_all,
+                    name=name,
+                    afi=afi,
+                )
+                if _keep and jude:  # check matching criteria and remove from final dict
                     if remove_first_ace_only and _rstop:  # removes one ace entry per acl
                         _races.append(ace)
                         _rstop = False
