@@ -999,12 +999,12 @@ class TestPopAce(unittest.TestCase):
                                     "time_range": "EVERYOTHERDAY",
                                 },
                             ],
-                        }
+                        },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         removed_aces = {
             "acls": [
@@ -1018,14 +1018,14 @@ class TestPopAce(unittest.TestCase):
                                     "protocol": "tcp",
                                     "sequence": 15,
                                     "source": {"any": True, "host": "172.16.2.9"},
-                                }
+                                },
                             ],
-                        }
+                        },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         result = pop_ace(*args)
         self.assertEqual(result.get("removed_aces"), removed_aces)
@@ -1191,12 +1191,12 @@ class TestPopAce(unittest.TestCase):
                                     "time_range": "EVERYOTHERDAY",
                                 },
                             ],
-                        }
+                        },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         removed_aces = {
             "acls": [
@@ -1210,14 +1210,14 @@ class TestPopAce(unittest.TestCase):
                                     "protocol": "tcp",
                                     "sequence": 15,
                                     "source": {"any": True, "host": "172.16.2.9"},
-                                }
+                                },
                             ],
-                        }
+                        },
                     ],
                     "afi": "ipv4",
                 },
                 {"acls": [], "afi": "ipv6"},
-            ]
+            ],
         }
         result = pop_ace(*args)
         self.assertEqual(result.get("removed_aces"), removed_aces)
