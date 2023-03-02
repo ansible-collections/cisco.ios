@@ -73,7 +73,7 @@ def _pop_ace(raw_acl, filter_options, match_criteria):
 
     remove_first_ace_only = True if filter_options.get("remove") == "first" else False
     fail_if_no_match = True if filter_options.get("failed_when") == "missing" else False
-    match_all = True if filter_options.get("match_all") == True else False
+    match_all = True if filter_options.get("match_all") is True else False
 
     final_acl = {
         "acls": [{"acls": acls_v4, "afi": "ipv4"}, {"acls": acls_v6, "afi": "ipv6"}],
