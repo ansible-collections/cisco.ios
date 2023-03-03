@@ -301,7 +301,7 @@ class TestIosOspfV2Module(TestIosModule):
                                             "cost": 20,
                                             "netmask": "0.0.0.255",
                                             "not_advertise": True,
-                                        }
+                                        },
                                     ],
                                     "sham_link": {
                                         "cost": 10,
@@ -445,7 +445,7 @@ class TestIosOspfV2Module(TestIosModule):
                                     "address": "198.51.100.0",
                                     "area": "5",
                                     "wildcard_bits": "0.0.0.255",
-                                }
+                                },
                             ],
                             "nsf": {
                                 "cisco": {
@@ -512,7 +512,7 @@ class TestIosOspfV2Module(TestIosModule):
                             "ttl_security": {"hops": 12, "set": True},
                             "vrf": "vrf1",
                         },
-                    ]
+                    ],
                 },
                 state="overridden",
             ),
@@ -652,7 +652,7 @@ class TestIosOspfV2Module(TestIosModule):
                                             "cost": 20,
                                             "netmask": "0.0.0.255",
                                             "not_advertise": True,
-                                        }
+                                        },
                                     ],
                                     "sham_link": {
                                         "cost": 10,
@@ -796,7 +796,7 @@ class TestIosOspfV2Module(TestIosModule):
                                     "address": "198.51.100.0",
                                     "area": "5",
                                     "wildcard_bits": "0.0.0.255",
-                                }
+                                },
                             ],
                             "nsf": {
                                 "cisco": {
@@ -863,7 +863,7 @@ class TestIosOspfV2Module(TestIosModule):
                             "ttl_security": {"hops": 12, "set": True},
                             "vrf": "vrf1",
                         },
-                    ]
+                    ],
                 },
                 state="rendered",
             ),

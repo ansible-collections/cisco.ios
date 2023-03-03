@@ -386,7 +386,7 @@ class TestIosOspfV3Module(TestIosModule):
                                                     "set": True,
                                                     "no_summary": True,
                                                 },
-                                            }
+                                            },
                                         ],
                                         "authentication": {
                                             "deployment": True,
@@ -569,7 +569,7 @@ class TestIosOspfV3Module(TestIosModule):
                                         },
                                         "unicast": True,
                                         "vrf": "ospf_vrf",
-                                    }
+                                    },
                                 ],
                                 "adjacency": {
                                     "min_adjacency": 10,
@@ -604,7 +604,7 @@ class TestIosOspfV3Module(TestIosModule):
                                             "set": True,
                                             "no_summary": True,
                                         },
-                                    }
+                                    },
                                 ],
                                 "authentication": True,
                                 "auto_cost": {
@@ -719,8 +719,8 @@ class TestIosOspfV3Module(TestIosModule):
                                     },
                                 },
                             },
-                        ]
-                    }
+                        ],
+                    },
                 ),
                 state="rendered",
             ),
