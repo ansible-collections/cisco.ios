@@ -134,7 +134,7 @@ options:
                         description: The direction to apply on the filter networks sent to and from this area.
                         type: str
                         choices: ['in', 'out']
-                        required: True
+                        required: true
                   normal:
                     description: Specify a normal area type
                     type: bool
