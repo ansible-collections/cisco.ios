@@ -43,4 +43,3 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
           ]) == {'success'}"
-
