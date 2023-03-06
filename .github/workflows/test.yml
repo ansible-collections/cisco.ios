@@ -43,11 +43,3 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
           ]) == {'success'}"
-
-  #codecoverage
-  codecov:
-    uses: ./.github/workflows/codecoverage.yml
-    with:
-      collection_pre_install: >-
-        git+https://github.com/ansible-collections/ansible.utils.git
-        git+https://github.com/ansible-collections/ansible.netcommon.git

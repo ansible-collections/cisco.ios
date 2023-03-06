@@ -307,7 +307,7 @@ options:
           size: &rate_limit_size
             description: (1-10000) message per second
             type: int
-            required: True
+            required: true
           all:
             description: (1-10000) message per second
             type: bool
@@ -403,17 +403,17 @@ EXAMPLES = """
       buffered:
         severity: notifications
         size: 5099
-        xml: True
+        xml: true
       console:
         severity: critical
-        xml: True
+        xml: true
       facility: local5
       hosts:
         - hostname: 172.16.1.12
         - hostname: 172.16.1.11
-          xml: True
+          xml: true
         - hostname: 172.16.1.10
-          filtered: True
+          filtered: true
           stream: 10
         - hostname: 172.16.1.13
           transport:
@@ -425,10 +425,10 @@ EXAMPLES = """
       snmp_trap:
         - errors
       trap: errors
-      userinfo: True
+      userinfo: true
       policy_firewall:
         rate_limit: 10
-      logging_on: True
+      logging_on: true
       exception: 4099
       dmvpn:
         rate_limit: 10
@@ -576,7 +576,7 @@ EXAMPLES = """
     config:
       hosts:
         - hostname: 172.16.1.27
-          filtered: True
+          filtered: true
     state: overridden
 
 # Commands Fired:
@@ -809,17 +809,17 @@ EXAMPLES = """
       buffered:
         severity: notifications
         size: 5099
-        xml: True
+        xml: true
       console:
         severity: critical
-        xml: True
+        xml: true
       facility: local5
       hosts:
         - hostname: 172.16.1.12
         - hostname: 172.16.1.11
-          xml: True
+          xml: true
         - hostname: 172.16.1.10
-          filtered: True
+          filtered: true
           stream: 10
         - hostname: 172.16.1.13
           transport:
@@ -830,10 +830,10 @@ EXAMPLES = """
       message_counter: log
       snmp_trap: errors
       trap: errors
-      userinfo: True
+      userinfo: true
       policy_firewall:
           rate_limit: 10
-      logging_on: True
+      logging_on: true
       exception: 10
       dmvpn:
         rate_limit: 10
