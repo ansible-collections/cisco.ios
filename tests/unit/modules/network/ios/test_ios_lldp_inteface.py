@@ -108,7 +108,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
         # print(result["commands"])
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_lag_interfaces_replaced(self):
+    def test_ios_lldp_interfaces_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
             GigabitEthernet0/0:

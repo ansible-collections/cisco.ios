@@ -1,3 +1,0 @@
----
-trivial:
-  - added codecov to CI to automatically check code coverage

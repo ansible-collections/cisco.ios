@@ -610,17 +610,6 @@ class TestIosInterfacesModule(TestIosModule):
     def test_ios_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet1
-             description Ansible UT interface 1
-            interface GigabitEthernet0/1
-             description Ansible UT interface 2
-             ip address dhcp
-            interface GigabitEthernet3
-             no ip address
-            interface GigabitEthernet4
-             negotiation auto
-            interface GigabitEthernet5
-             ipv6 dhcp server
             """,
         )
         set_module_args(
@@ -639,7 +628,7 @@ class TestIosInterfacesModule(TestIosModule):
                         "enabled": True,
                     },
                     {
-                        "name": "GigabitEthernet3",
+                        "name": "gigabitEthernet3",
                         "description": "Ansible UT interface 3",
                         "enabled": True,
                         "duplex": "auto",
@@ -654,6 +643,58 @@ class TestIosInterfacesModule(TestIosModule):
                         "description": "Ansible UT interface 5",
                         "duplex": "full",
                         "enabled": True,
+                    },
+                    {
+                        "name": "twentyFiveGigE1",
+                        "description": "Ansible UT TwentyFiveGigE",
+                    },
+                    {
+                        "name": "twoGigabitEthernet2",
+                        "description": "Ansible UT TwoGigabitEthernet",
+                    },
+                    {
+                        "name": "tenGigabitEthernet1",
+                        "description": "Ansible UT TenGigabitEthernet",
+                    },
+                    {
+                        "name": "fastEthernet1",
+                        "description": "Ansible UT FastEthernet",
+                    },
+                    {
+                        "name": "fortyGigabitEthernet1",
+                        "description": "Ansible UT FortyGigabitEthernet",
+                    },
+                    {
+                        "name": "fiveGigabitEthernet",
+                        "description": "Ansible UT FiveGigabitEthernet",
+                    },
+                    {
+                        "name": "ethernet1",
+                        "description": "Ansible UT Ethernet",
+                    },
+                    {
+                        "name": "vlan10",
+                        "description": "Ansible UT Vlan",
+                    },
+                    {
+                        "name": "loopback999",
+                        "description": "Ansible UT loopback",
+                    },
+                    {
+                        "name": "port-channel01",
+                        "description": "Ansible UT port-channel",
+                    },
+                    {
+                        "name": "nve1",
+                        "description": "Ansible UT nve",
+                    },
+                    {
+                        "name": "hundredGigE1",
+                        "description": "Ansible UT HundredGigE",
+                    },
+                    {
+                        "name": "serial0/1",
+                        "description": "Ansible UT Serial",
                     },
                 ],
                 state="rendered",
@@ -679,6 +720,45 @@ class TestIosInterfacesModule(TestIosModule):
             "interface GigabitEthernet5",
             "description Ansible UT interface 5",
             "duplex full",
+            "no shutdown",
+            "interface TwentyFiveGigE1",
+            "description Ansible UT TwentyFiveGigE",
+            "no shutdown",
+            "interface TwoGigabitEthernet2",
+            "description Ansible UT TwoGigabitEthernet",
+            "no shutdown",
+            "interface TenGigabitEthernet1",
+            "description Ansible UT TenGigabitEthernet",
+            "no shutdown",
+            "interface FastEthernet1",
+            "description Ansible UT FastEthernet",
+            "no shutdown",
+            "interface FortyGigabitEthernet1",
+            "description Ansible UT FortyGigabitEthernet",
+            "no shutdown",
+            "interface FiveGigabitEthernet",
+            "description Ansible UT FiveGigabitEthernet",
+            "no shutdown",
+            "interface Ethernet1",
+            "description Ansible UT Ethernet",
+            "no shutdown",
+            "interface Vlan10",
+            "description Ansible UT Vlan",
+            "no shutdown",
+            "interface loopback999",
+            "description Ansible UT loopback",
+            "no shutdown",
+            "interface Port-channel01",
+            "description Ansible UT port-channel",
+            "no shutdown",
+            "interface nve1",
+            "description Ansible UT nve",
+            "no shutdown",
+            "interface HundredGigE1",
+            "description Ansible UT HundredGigE",
+            "no shutdown",
+            "interface Serial0/1",
+            "description Ansible UT Serial",
             "no shutdown",
         ]
         result = self.execute_module(changed=False)
