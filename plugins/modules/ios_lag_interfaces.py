@@ -612,7 +612,7 @@ parsed:
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
-    Lag_interfacesArgs,
+    Lag_InterfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lag_interfaces.lag_interfaces import (
     Lag_interfaces,
@@ -626,7 +626,7 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=Lag_interfacesArgs.argument_spec,
+        argument_spec=Lag_InterfacesArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],

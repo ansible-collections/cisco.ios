@@ -53,8 +53,6 @@ class LacpFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        if connection:
-            pass
 
         if not data:
             data = self.get_lacp_data(connection)
