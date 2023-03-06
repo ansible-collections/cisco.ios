@@ -10,18 +10,18 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.ios.plugins.modules import ios_lldp_global
+from ansible_collections.cisco.ios.plugins.modules import ios_lacp
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
 
-class TestIosLldpGlobalModule(TestIosModule):
-    module = ios_lldp_global
+class TestIosLacpModule(TestIosModule):
+    module = ios_lacp
 
     def setUp(self):
-        super(TestIosLldpGlobalModule, self).setUp()
+        super(TestIosLacpModule, self).setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -51,13 +51,13 @@ class TestIosLldpGlobalModule(TestIosModule):
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_global.lldp_global."
-            "Lldp_globalFacts.get_lldp_global_data",
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp."
+            "LacpFacts.get_lacp_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLldpGlobalModule, self).tearDown()
+        super(TestIosLacpModule, self).tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -65,109 +65,94 @@ class TestIosLldpGlobalModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def test_ios_lldp_global_merged(self):
+    def test_ios_lacp_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            lldp timer 10
-            lldp holdtime 10
-            lldp reinit 3
-            lldp run
+            123, 5e00.0000.8000
             """,
         )
         set_module_args(
             dict(
-                config={"timer": 20, "holdtime": 10, "reinit": 3, "enabled": True},
+                config={"system": {"priority": 32768}},
                 state="merged",
             ),
         )
-        commands = ["lldp timer 20"]
+        commands = ["lacp system-priority 32768"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_lldp_global_merged_idempotent(self):
+    def test_ios_lacp_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            lldp timer 10
-            lldp holdtime 10
-            lldp reinit 3
-            lldp run
+            123, 5e00.0000.8000
             """,
         )
         set_module_args(
             dict(
-                config={"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
+                config={"system": {"priority": 123}},
                 state="merged",
             ),
         )
         self.execute_module(changed=False)
 
-    def test_ios_lldp_global_replaced(self):
+    def test_ios_lacp_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
-            lldp timer 10
-            lldp holdtime 10
-            lldp reinit 3
-            lldp run
+            123, 5e00.0000.8000
             """,
         )
         set_module_args(
             dict(
-                config={"timer": 15, "reinit": 9},
+                config={"system": {"priority": 12300}},
                 state="replaced",
             ),
         )
-        commands = ["no lldp holdtime", "no lldp run", "lldp timer 15", "lldp reinit 9"]
+        commands = ["lacp system-priority 12300"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_lldp_global_deleted(self):
+    def test_ios_lacp_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\
-            lldp timer 10
-            lldp holdtime 10
-            lldp reinit 3
-            lldp run
+            123, 5e00.0000.8000
             """,
         )
         set_module_args(
             dict(
-                config={"timer": 15, "reinit": 9},
+                config={"system": {"priority": 1}},
                 state="deleted",
             ),
         )
-        commands = ["no lldp holdtime", "no lldp run", "no lldp timer", "no lldp reinit"]
+        commands = ["no lacp system-priority"]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_lldp_global_parsed(self):
+    def test_ios_lacp_parsed(self):
         set_module_args(
             dict(
                 running_config=dedent(
                     """\
-                    lldp timer 10
-                    lldp holdtime 10
-                    lldp reinit 3
-                    lldp run
+                    123, 5e00.0000.8000
                     """,
                 ),
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
-        parsed_list = {"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True}
+        parsed_list = {"system": {"priority": 123}}
         self.assertEqual(parsed_list, result["parsed"])
 
-    def test_ios_lldp_global_rendered(self):
+    def test_ios_lacp_rendered(self):
         self.execute_show_command.return_value = dedent(
             """\
             """,
         )
         set_module_args(
             dict(
-                config={"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
+                config={"system": {"priority": 123}},
                 state="rendered",
             ),
         )
-        commands = ["lldp holdtime 10", "lldp run", "lldp timer 10", "lldp reinit 3"]
+        commands = ["lacp system-priority 123"]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
