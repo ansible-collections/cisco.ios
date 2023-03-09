@@ -725,9 +725,9 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {"icmp": {"echo_reply": True}},
                             },
                         ],
-                    }
+                    },
                 ],
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -1231,7 +1231,7 @@ class TestIosAclsModule(TestIosModule):
                                     "address": "172.16.1.0",
                                     "wildcard_bits": "0.0.0.255",
                                 },
-                            }
+                            },
                         ],
                     },
                     {
@@ -1273,7 +1273,7 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -1401,7 +1401,7 @@ class TestIosAclsModule(TestIosModule):
                                             "address": "172.16.1.0",
                                             "wildcard_bits": "0.0.0.255",
                                         },
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -1446,7 +1446,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                         ],
-                    }
+                    },
                 ],
                 state="rendered",
             ),
