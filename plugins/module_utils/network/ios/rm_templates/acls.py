@@ -238,10 +238,10 @@ class AclsTemplate(NetworkTemplate):
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+))?
                         (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
-                        (\s(?P<source_any>any))?
-                        (\sobject-group\s(?P<source_obj_grp>\S+))?
-                        (\shost\s(?P<source_host>\S+))?
-                        (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+))?
+                        ((\s(?P<source_any>any))|
+                        (\sobject-group\s(?P<source_obj_grp>\S+))|
+                        (\shost\s(?P<source_host>\S+))|
+                        (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
                         (\s(?P<source_port_protocol>(eq|gts|gt|lt|neq)\s(\S+|\d+)))?
                         (\srange\s(?P<srange_start>\d+)\s(?P<srange_end>\d+))?
                         (\s(?P<dest_any>any))?
