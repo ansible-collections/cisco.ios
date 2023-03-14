@@ -241,7 +241,7 @@ class Cliconf(CliconfBase):
                 % (diff_replace, ", ".join(option_values["diff_replace"])),
             )
 
-        cand_pattern = r'(?P<parent>^\w.*\n?)(?P<child>(?:\s+.*\n?)*)'
+        cand_pattern = r"(?P<parent>^\w.*\n?)(?P<child>(?:\s+.*\n?)*)"
         candidates = re.findall(cand_pattern, candidate, re.M)
 
         diff["config_diff"] = ""
@@ -268,28 +268,25 @@ class Cliconf(CliconfBase):
                     have_lines = []
                 want_lines = _candidate_obj.get_block(path)
 
-                negates = ''
+                negates = ""
                 negated_parents = []
                 for line in have_lines:
                     if not line in want_lines:
-                        negates += ''.join(f'{i}\n' for i in line.parents
-                                           if not i in negates)
+                        negates += "".join(f"{i}\n" for i in line.parents if not i in negates)
 
                         if line.has_children:
                             negated_parents.append(line.text)
 
-                        if not any(i in negated_parents
-                                   for i in line.parents):
-                            negates += f'no {line}\n'
+                        if not any(i in negated_parents for i in line.parents):
+                            negates += f"no {line}\n"
 
                 diff["config_diff"] += negates
 
-                wants = ''
+                wants = ""
                 for line in want_lines:
                     if not line in have_lines:
-                        wants += ''.join(f'{i}\n' for i in line.parents
-                                         if not i in wants)
-                        wants += f'{line}\n'
+                        wants += "".join(f"{i}\n" for i in line.parents if not i in wants)
+                        wants += f"{line}\n"
 
                 diff["config_diff"] += wants
 
@@ -304,7 +301,9 @@ class Cliconf(CliconfBase):
             if running and diff_match != "none":
                 # running configuration
                 have_src, have_banners = self._extract_banners(running)
-                running_obj = NetworkConfig(indent=1, contents=have_src, ignore_lines=diff_ignore_lines)
+                running_obj = NetworkConfig(
+                    indent=1, contents=have_src, ignore_lines=diff_ignore_lines
+                )
                 configdiffobjs = candidate_obj.difference(
                     running_obj,
                     path=path,
