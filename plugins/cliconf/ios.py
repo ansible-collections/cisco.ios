@@ -242,6 +242,8 @@ class Cliconf(CliconfBase):
             )
 
         cand_pattern = r"(?P<parent>^\w.*\n?)(?P<child>(?:\s+.*\n?)*)"
+        # remove blank lines
+        candidate = re.sub('\n\n', '\n', candidate)
         candidates = re.findall(cand_pattern, candidate, re.M)
 
         diff["config_diff"] = ""
@@ -271,8 +273,9 @@ class Cliconf(CliconfBase):
                 negates = ""
                 negated_parents = []
                 for line in have_lines:
-                    if not line in want_lines:
-                        negates += "".join(f"{i}\n" for i in line.parents if not i in negates)
+                    if line not in want_lines:
+                        negates += ''.join(f'{i}\n' for i in line.parents
+                                           if i not in negates and i not in negated_parents)
 
                         if line.has_children:
                             negated_parents.append(line.text)
@@ -284,9 +287,10 @@ class Cliconf(CliconfBase):
 
                 wants = ""
                 for line in want_lines:
-                    if not line in have_lines:
-                        wants += "".join(f"{i}\n" for i in line.parents if not i in wants)
-                        wants += f"{line}\n"
+                    if line not in have_lines:
+                        wants += ''.join(f'{i}\n' for i in line.parents
+                                         if i not in wants)
+                        wants += f'{line}\n'
 
                 diff["config_diff"] += wants
 
