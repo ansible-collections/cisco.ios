@@ -243,7 +243,7 @@ class Cliconf(CliconfBase):
 
         cand_pattern = r"(?P<parent>^\w.*\n?)(?P<child>(?:\s+.*\n?)*)"
         # remove blank lines
-        candidate = re.sub('\n\n', '\n', candidate)
+        candidate = re.sub("\n\n", "\n", candidate)
         candidates = re.findall(cand_pattern, candidate, re.M)
 
         diff["config_diff"] = ""
@@ -274,8 +274,11 @@ class Cliconf(CliconfBase):
                 negated_parents = []
                 for line in have_lines:
                     if line not in want_lines:
-                        negates += ''.join(f'{i}\n' for i in line.parents
-                                           if i not in negates and i not in negated_parents)
+                        negates += "".join(
+                            f"{i}\n"
+                            for i in line.parents
+                            if i not in negates and i not in negated_parents
+                        )
 
                         if line.has_children:
                             negated_parents.append(line.text)
@@ -288,9 +291,8 @@ class Cliconf(CliconfBase):
                 wants = ""
                 for line in want_lines:
                     if line not in have_lines:
-                        wants += ''.join(f'{i}\n' for i in line.parents
-                                         if i not in wants)
-                        wants += f'{line}\n'
+                        wants += "".join(f"{i}\n" for i in line.parents if i not in wants)
+                        wants += f"{line}\n"
 
                 diff["config_diff"] += wants
 
@@ -306,7 +308,9 @@ class Cliconf(CliconfBase):
                 # running configuration
                 have_src, have_banners = self._extract_banners(running)
                 running_obj = NetworkConfig(
-                    indent=1, contents=have_src, ignore_lines=diff_ignore_lines
+                    indent=1,
+                    contents=have_src,
+                    ignore_lines=diff_ignore_lines,
                 )
                 configdiffobjs = candidate_obj.difference(
                     running_obj,
