@@ -797,9 +797,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
 
         result = self.execute_module(changed=False, commands=[])
-        import pprint
-
-        pprint.pprint("FAAAAEN")
 
     def test_ios_bgp_address_family_deleted(self):
         self.execute_show_command.return_value = dedent(
