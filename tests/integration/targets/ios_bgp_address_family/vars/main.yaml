@@ -14,9 +14,47 @@ merged:
     - bgp dmzlink-bw
     - bgp soft-reconfig-backup
     - bgp dampening 1 10 100 5
+    - address-family ipv6
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
+    - address-family ipv4
+    - redistribute connected metric 10
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - redistribute ospf 124
+    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
 
   after:
     address_family:
+      - afi: ipv4
+        redistribute:
+          - connected:
+              metric: 10
+              set: true
+          - ospf:
+              process_id: 123
+              match:
+                internal: true
+                external:
+                  type_1: true
+                  type_2: true
+                nssa_external:
+                  type_1: true
+                  type_2: true
+              metric: 10
+              route_map: bar
+          - ospf:
+              process_id: 124
+          - ospfv3:
+              process_id: 123
+              match:
+                internal: true
+                external:
+                  type_1: true
+                  type_2: true
+                nssa_external:
+                  type_1: true
+                  type_2: true
+              metric: 10
+              route_map: bar
       - afi: ipv4
         aggregate_addresses:
           - address: 192.0.3.1
@@ -45,6 +83,21 @@ merged:
           dmzlink_bw: true
           soft_reconfig_backup: true
         safi: mdt
+      - afi: ipv6
+        redistribute:
+          - ospf:
+              process_id: 124
+              match:
+                internal: true
+                external:
+                  type_1: true
+                  type_2: true
+                nssa_external:
+                  type_1: true
+                  type_2: true
+              metric: 10
+              route_map: bar
+              include_connected: true
     as_number: "65000"
 
 overridden:
@@ -54,6 +107,15 @@ overridden:
     - no bgp dmzlink-bw
     - no bgp soft-reconfig-backup
     - no bgp dampening 1 10 100 5
+    - address-family ipv6
+    - no redistribute ospf 124
+    - address-family ipv4
+    - no redistribute connected
+    - no redistribute ospf 123
+    - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
+    - no redistribute ospf 124
+    - no redistribute ospfv3 123
+    - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
     - address-family ipv4 multicast
     - no default-metric 12
     - no distance bgp 10 10 100
@@ -73,8 +135,29 @@ overridden:
 
   after:
     address_family:
+      - afi: ipv4
+        redistribute:
+          - ospf:
+              process_id: 123
+              match:
+                external:
+                  type_1: true
+                nssa_external:
+                  type_2: true
+              metric: 15
+              route_map: foo
+          - ospfv3:
+              process_id: 123
+              match:
+                internal: true
+                external:
+                  type_2: true
+                nssa_external:
+                  type_1: true
+              metric: 15
+              route_map: foo
       - afi: "ipv4"
-        aggregate_address:
+        aggregate_addresses:
           - address: "192.0.2.1"
             as_confed_set: true
             netmask: "255.255.255.255"
@@ -85,33 +168,18 @@ overridden:
             penalty_half_time: 10
             reuse_route_val: 10
             suppress_route_val: 100
-          slow_peer:
-            - detection:
-                threshold: 150
-        neighbor:
-          - activate: true
-            address: "198.51.110.1"
-            log_neighbor_changes:
-              disable: true
-            maximum_prefix:
-              number: 1
-              restart: 100
-              threshold_value: 10
-            remote_as: 100
-            route_maps:
-              - name: "test-override-route"
-                out: true
-            # route_server_client: true
-            slow_peer:
-              - detection:
-                  threshold: 150
-            version: 4
-        network:
+          slow_peer_options:
+            detection:
+              threshold: 150
+        networks:
           - address: "198.51.110.10"
             backdoor: true
             mask: "255.255.255.255"
         safi: "multicast"
         # vrf: "blue"
+      - afi: "ipv4"
+        safi: "mdt"
+      - afi: "ipv6"
       - afi: "ipv6"
         bgp:
           aggregate_timer: 10
@@ -120,18 +188,25 @@ overridden:
             penalty_half_time: 10
             reuse_route_val: 10
             suppress_route_val: 10
-          slow_peer:
-            - detection:
-                threshold: 200
-        network:
+          slow_peer_options:
+            detection:
+              threshold: 200
+        networks:
           - address: 2001:DB8:0:3::/64
-            route-map: test_ipv6
+            route_map: test_ipv6
         safi: "multicast"
     as_number: "65000"
 
 replaced:
   commands:
     - router bgp 65000
+    - address-family ipv4
+    - no redistribute connected
+    - no redistribute ospf 123
+    - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
+    - no redistribute ospf 124
+    - no redistribute ospfv3 123
+    - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
     - address-family ipv4 multicast
     - no default-metric 12
     - no distance bgp 10 10 100
@@ -145,6 +220,27 @@ replaced:
 
   after:
     address_family:
+      - afi: ipv4
+        redistribute:
+          - ospf:
+              process_id: 123
+              match:
+                external:
+                  type_1: true
+                nssa_external:
+                  type_2: true
+              metric: 15
+              route_map: foo
+          - ospfv3:
+              process_id: 123
+              match:
+                internal: true
+                external:
+                  type_2: true
+                nssa_external:
+                  type_1: true
+              metric: 15
+              route_map: foo
       - afi: ipv4
         bgp:
           aggregate_timer: 10
@@ -171,6 +267,21 @@ replaced:
           dmzlink_bw: true
           soft_reconfig_backup: true
         safi: mdt
+      - afi: ipv6
+        redistribute:
+          - ospf:
+              process_id: 124
+              match:
+                internal: true
+                external:
+                  type_1: true
+                  type_2: true
+                nssa_external:
+                  type_1: true
+                  type_2: true
+              metric: 10
+              route_map: bar
+              include_connected: true
     as_number: "65000"
 
 deleted:
@@ -178,6 +289,8 @@ deleted:
     - router bgp 65000
     - no address-family ipv4 multicast
     - no address-family ipv4 mdt
+    - no address-family ipv4
+    - no address-family ipv6
 
 deleted_all:
   after:

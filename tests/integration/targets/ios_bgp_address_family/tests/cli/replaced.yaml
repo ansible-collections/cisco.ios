@@ -12,6 +12,27 @@
           as_number: 65000
           address_family:
             - afi: ipv4
+              redistribute:
+                - ospf:
+                    process_id: 123
+                    match:
+                      external:
+                        type_1: true
+                      nssa_external:
+                        type_2: true
+                    metric: 15
+                    route_map: foo
+                - ospfv3:
+                    process_id: 123
+                    match:
+                      internal: true
+                      external:
+                        type_2: true
+                      nssa_external:
+                        type_1: true
+                    metric: 15
+                    route_map: foo
+            - afi: ipv4
               safi: multicast
               # vrf: blue
               aggregate_address:
@@ -67,10 +88,23 @@
                   route_map: test
         state: replaced
 
+    - name: debug merged commands
+      debug:
+        msg: "{{ replaced['after'] }}"
+
+    - name: debug result commands
+      debug:
+        msg: "{{ result['after'] }}"
+
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] == result['after']
 
     - name: Replaced provided BGP address family configuration (idempotent)
       register: result

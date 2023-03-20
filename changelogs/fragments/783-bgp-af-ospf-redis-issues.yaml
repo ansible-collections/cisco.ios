@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Fix issues when redistributing OSPFv2 and OSPFv3 into BGP

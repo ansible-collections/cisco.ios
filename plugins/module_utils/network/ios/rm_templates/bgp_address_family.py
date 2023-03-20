@@ -2464,28 +2464,40 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.ospf",
             "getval": re.compile(
                 r"""
-                \s\sredistribute\sospf\s(?P<process_id>\S+)
-                (\s(?P<type_1>1))?
-                (\s(?P<type_2>2))?
-                (\s(?P<external>external))?
-                (\s(?P<internal>internal))?
-                (\s(?P<nssa_external>nssa-external))?
+                \s+redistribute\sospf\s(?P<process_id>\S+)
+                (\svrf(?P<vrf>\s\S+))?
                 (\smetric\s(?P<metric>\d+))?
+                (\smatch)?
+                (\s(?P<internal>internal))?
+                (\s(?P<ext_type_1>external\s1))?
+                (\s(?P<ext_type_2>external\s2))?
+                (\s(?P<nssa_type_1>nssa-external\s1))?
+                (\s(?P<nssa_type_2>nssa-external\s2))?
                 (\sroute-map\s(?P<route_map>\S+))?
-                (\svrf\s(?P<vrf>\S+))?
+                (\s(?P<include_connected>include-connected))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute ospf {{ redistribute.ospf.process_id }}"
-            "{{ (' 1') if redistribute.ospf.match.type_1|d(False) else '' }}"
-            "{{ (' 2') if redistribute.ospf.match.type_2|d(False) else '' }}"
-            "{{ (' external') if redistribute.ospf.match.external|d(False) else '' }}"
-            "{{ (' internal') if redistribute.ospf.match.internal|d(False) else '' }}"
-            "{{ (' nssa-external') if redistribute.ospf.match.nssa_external|d(False) else '' }}"
-            "{{ (' metric ' + redistribute.ospf.metric|string) if redistribute.ospf.metric is defined else '' }}"
-            "{{ (' route-map ' + redistribute.ospf.route_map) if redistribute.ospf.route_map is defined else '' }}"
-            "{{ (' vrf ' + redistribute.ospf.vrf) if ospf.vrf is defined else '' }}",
-            "remval": "redistribute ospf {{ redistribute.ospf.process_id }}",
+            "setval": "redistribute ospf {{ process_id }}"
+            "{{ (' metric ' + metric|string) if metric is defined }}"
+            "{{ (' vrf ' + vrf) if vrf is defined }}"
+            "{{ (' match') if match is defined and (match.internal is defined or "
+            "match.external is defined or match.nssa_external is defined) and "
+            "(match.external.type_1 or match.external.type_2 or"
+            " match.nssa_external.type_1 or match.nssa_external.type_2) }}"
+            "{{ (' internal') if match is defined and match.internal is defined "
+            "and match.internal}}"
+            "{{ (' external 1') if match is defined and match.external is defined and "
+            "match.external.type_1 is defined and match.external.type_1}}"
+            "{{ (' external 2') if match is defined and match.external is defined and "
+            "match.external.type_2 is defined and match.external.type_2}}"
+            "{{ (' nssa-external 1') if match is defined and match.nssa_external is defined and "
+            "match.nssa_external.type_1 is defined and match.nssa_external.type_1 }}"
+            "{{ (' nssa-external 2') if match is defined and match.nssa_external is defined and "
+            "match.nssa_external.type_2 is defined and match.nssa_external.type_2}}"
+            "{{ (' route-map ' + route_map) if route_map is defined }}"
+            "{{ (' include-connected') if include_connected is defined and include_connected }}",
+            "remval": "redistribute ospf {{ process_id }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2493,16 +2505,21 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             {
                                 "ospf": {
                                     "process_id": "{{ process_id }}",
-                                    "match": {
-                                        "type_1": "{{ not not type_1 }}",
-                                        "type_2": "{{ not not type_2 }}",
-                                        "external": "{{ not not external }}",
-                                        "internal": "{{ not not internal }}",
-                                        "nssa_external": "{{ not not nssa_external }}",
-                                    },
-                                    "metric": "{{ metric }}",
-                                    "route_map": "{{ route_map }}",
                                     "vrf": "{{ vrf }}",
+                                    "metric": "{{ metric }}",
+                                    "match": {
+                                        "internal": "{{ not not internal }}",
+                                        "external": {
+                                            "type_1": "{{ not not ext_type_1 }}",
+                                            "type_2": "{{ not not ext_type_2 }}",
+                                        },
+                                        "nssa_external": {
+                                            "type_1": "{{ not not nssa_type_1 }}",
+                                            "type_2": "{{ not not nssa_type_2 }}",
+                                        },
+                                    },
+                                    "route_map": "{{ route_map }}",
+                                    "include_connected": "{{ not not include_connected }}",
                                 },
                             },
                         ],
@@ -2514,26 +2531,34 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "redistribute.ospfv3",
             "getval": re.compile(
                 r"""
-                \s\sredistribute\sospfv3\s(?P<process_id>\S+)
-                (\s(?P<type_1>1))?
-                (\s(?P<type_2>2))?
-                (\s(?P<external>external))?
-                (\s(?P<internal>internal))?
-                (\s(?P<nssa_external>nssa-external))?
+                \s+redistribute\sospfv3\s(?P<process_id>\S+)
                 (\smetric\s(?P<metric>\d+))?
+                (\smatch)?
+                (\s(?P<internal>internal))?
+                (\s(?P<ext_type_1>external\s1))?
+                (\s(?P<ext_type_2>external\s2))?
+                (\s(?P<nssa_type_1>nssa-external\s1))?
+                (\s(?P<nssa_type_2>nssa-external\s2))?
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "redistribute ospfv3 {{ redistribute.ospfv3.process_id }}"
-            "{{ (' 1') if redistribute.ospfv3.match.type_1|d(False) else '' }}"
-            "{{ (' 2') if redistribute.ospfv3.match.type_2|d(False) else '' }}"
-            "{{ (' external') if redistribute.ospfv3.match.external|d(False)  else '' }}"
-            "{{ (' internal') if redistribute.ospfv3.match.internal|d(False)  else '' }}"
-            "{{ (' nssa-external') if redistribute.ospfv3.match.nssa_external|d(False) else '' }}"
-            "{{ (' metric ' + redistribute.ospfv3.metric|string) if redistribute.ospfv3.metric is defined else '' }}"
-            "{{ (' route-map ' + redistribute.ospfv3.route_map) if redistribute.ospfv3.route_map is defined else '' }}",
-            "remval": "redistribute ospfv3 {{ redistribute.ospfv3.process_id }}",
+            "setval": "redistribute ospfv3 {{ process_id }}"
+            "{{ (' metric ' + metric|string) if metric is defined }}"
+            "{{ (' match') if match is defined and (match.internal is defined or "
+            "match.external is defined) }}"
+            "{{ (' internal') if match is defined and match.internal is defined "
+            "and match.internal}}"
+            "{{ (' external 1') if match is defined and match.external is defined and "
+            "match.external.type_1 is defined and match.external.type_1}}"
+            "{{ (' external 2') if match is defined and match.external is defined and "
+            "match.external.type_2 is defined and match.external.type_2}}"
+            "{{ (' nssa-external 1') if match is defined and match.nssa_external is defined and "
+            "match.nssa_external.type_1 is defined and match.nssa_external.type_1 }}"
+            "{{ (' nssa-external 2') if match is defined and match.nssa_external is defined and "
+            "match.nssa_external.type_2 is defined and match.nssa_external.type_2}}"
+            "{{ (' route-map ' + route_map) if route_map is defined }}",
+            "remval": "redistribute ospfv3 {{ process_id }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -2541,14 +2566,18 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             {
                                 "ospfv3": {
                                     "process_id": "{{ process_id }}",
-                                    "match": {
-                                        "type_1": "{{ not not type_2 }}",
-                                        "type_2": "{{ not not type_2 }}",
-                                        "external": "{{ not not external }}",
-                                        "internal": "{{ not not internal }}",
-                                        "nssa_external": "{{ not not nssa_external }}",
-                                    },
                                     "metric": "{{ metric }}",
+                                    "match": {
+                                        "internal": "{{ not not internal }}",
+                                        "external": {
+                                            "type_1": "{{ not not ext_type_1 }}",
+                                            "type_2": "{{ not not ext_type_2 }}",
+                                        },
+                                        "nssa_external": {
+                                            "type_1": "{{ not not nssa_type_1 }}",
+                                            "type_2": "{{ not not nssa_type_2 }}",
+                                        },
+                                    },
                                     "route_map": "{{ route_map }}",
                                 },
                             },

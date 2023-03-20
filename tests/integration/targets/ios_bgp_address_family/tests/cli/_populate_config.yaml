@@ -1,5 +1,6 @@
 ---
 - ansible.builtin.include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _ospf_proc_setup.yaml
 - name: Populate BGP address family configuration
   cisco.ios.ios_bgp_address_family:
     config:
@@ -70,4 +71,50 @@
           table_map:
             name: test_tableMap
             filter: true
+        - afi: ipv6
+          redistribute:
+            - ospf:
+                process_id: 124
+                match:
+                  internal: true
+                  external:
+                    type_1: true
+                    type_2: true
+                  nssa_external:
+                    type_1: true
+                    type_2: true
+                metric: 10
+                route_map: bar
+                include_connected: true
+        - afi: ipv4
+          redistribute:
+            - connected:
+                metric: 10
+            - ospf:
+                process_id: 124
+            - ospf:
+                process_id: 123
+                match:
+                  internal: true
+                  external:
+                    type_1: true
+                    type_2: true
+                  nssa_external:
+                    type_1: true
+                    type_2: true
+                metric: 10
+                route_map: bar
+            - ospfv3:
+                process_id: 123
+                match:
+                  internal: true
+                  external:
+                    type_1: true
+                    type_2: true
+                  nssa_external:
+                    type_1: true
+                    type_2: true
+                metric: 10
+                route_map: bar
+
     state: merged

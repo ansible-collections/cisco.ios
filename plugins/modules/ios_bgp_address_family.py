@@ -1154,25 +1154,35 @@ options:
                   process_id:
                     description: Process ID
                     type: int
+                  include_connected:
+                    description: Include connected. Only applicable under IPv6 AFI
+                    type: bool
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
                         description: Redistribute OSPF external routes
-                        type: bool
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description Redistribute OSPF External type 1 routes
+                            type: bool
+                          type_2:
+                            description Redistribute OSPF External type 1 routes
+                            type: bool
                       internal:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
                         description: Redistribute OSPF NSSA external routes
-                        type: bool
-                      type_1:
-                        description: Redistribute NSSA external type 1 routes
-                        type: bool
-                      type_2:
-                        description: Redistribute NSSA external type 2 routes
-                        type: bool
+                        type: dict
+                          type_1:
+                            description: Redistribute NSSA external type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute NSSA external type 2 routes
+                            type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1190,24 +1200,31 @@ options:
                     description: Process ID
                     type: int
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
                         description: Redistribute OSPF external routes
-                        type: bool
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description Redistribute OSPF External type 1 routes
+                            type: bool
+                          type_2:
+                            description Redistribute OSPF External type 1 routes
+                            type: bool
                       internal:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
                         description: Redistribute OSPF NSSA external routes
-                        type: bool
-                      type_1:
-                        description: Redistribute NSSA external type 1 routes
-                        type: bool
-                      type_2:
-                        description: Redistribute NSSA external type 2 routes
-                        type: bool
+                        type: dict
+                          type_1:
+                            description: Redistribute NSSA external type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute NSSA external type 2 routes
+                            type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
