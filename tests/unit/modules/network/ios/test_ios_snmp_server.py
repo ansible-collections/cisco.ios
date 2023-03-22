@@ -364,7 +364,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
-                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {"acl_v6": "ipv6acl", "group": "familypaul", "username": "paul", "version": "v3"},
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
             },
@@ -889,7 +889,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
             "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
             "no snmp-server user new@user! new.family$ v1 access 24",
-            "no snmp-server user paul familypaul v3 access ipv6",
+            "no snmp-server user paul familypaul v3 access ipv6 ipv6acl",
             "no snmp-server user replaceUser replaceUser v3",
         ]
         playbook["state"] = "deleted"
@@ -1299,7 +1299,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
             ],
             "users": [
-                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6"}
+                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6acl"}
             ],
             "traps": {
                 "ospf": {
