@@ -15,7 +15,6 @@ on: # yamllint disable-line rule:truthy
 jobs:
   codecoverage:
     uses: ansible-network/github_actions/.github/workflows/coverage_network_devices.yml@main
-    if: github.event_name == 'push'
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
