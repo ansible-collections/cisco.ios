@@ -1015,10 +1015,10 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.transceiver_all",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\stransceiver-all
+                ^snmp-server\senable\straps\stransceiver\sall
                 """, re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps transceiver-all",
+            "setval": "snmp-server enable traps transceiver all",
             "result": {
                 "traps": {
                     "transceiver_all": True,
