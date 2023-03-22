@@ -250,78 +250,116 @@ Examples
 
     # Before state:
     # -------------
-    #
-    # vios#show running-config | section ^interface
-    # interface GigabitEthernet0/1
-    #  description Configured by Ansible
+    # Router#sh running-config | section interface
+    # interface Loopback888
     #  no ip address
-    #  duplex auto
-    #  speed auto
-    # interface GigabitEthernet0/2
-    #  description This is test
+    # interface Loopback999
     #  no ip address
-    #  duplex auto
+    # interface GigabitEthernet1
+    #  ip address dhcp
+    #  negotiation auto
+    # interface GigabitEthernet2
+    #  description Configured and Merged by Ansible Network
+    #  ip address dhcp
     #  speed 1000
-    # interface GigabitEthernet0/3
+    #  no negotiation auto
+    # interface GigabitEthernet3
     #  no ip address
-    #  duplex auto
-    #  speed auto
+    #  speed 1000
+    #  no negotiation auto
+    # interface GigabitEthernet4
+    #  no ip address
+    #  shutdown
+    #  negotiation auto
 
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet0/2
+        - name: GigabitEthernet2
           description: Configured and Merged by Ansible Network
           enabled: true
-        - name: GigabitEthernet0/3
+        - name: GigabitEthernet3
           description: Configured and Merged by Ansible Network
-          mtu: 2800
+          mtu: 3800
           enabled: false
           speed: 100
           duplex: full
         state: merged
 
-    # Commands Fired:
-    # ---------------
-
-    # "commands": [
-    #       "interface GigabitEthernet0/2",
-    #       "description Configured and Merged by Ansible Network",
-    #       "no shutdown",
-    #       "interface GigabitEthernet0/3",
-    #       "description Configured and Merged by Ansible Network",
-    #       "mtu 2800",
-    #       "duplex full",
-    #       "shutdown",
-    #     ],
+    # Task Output
+    # -----------
+    # before:
+    # - enabled: true
+    #   name: GigabitEthernet1
+    # - description: Configured and Merged by Ansible Network
+    #   enabled: true
+    #   name: GigabitEthernet2
+    #   speed: '1000'
+    # - description: Configured and Merged by Ansible Network
+    #   enabled: true
+    #   mtu: 2800
+    #   name: GigabitEthernet3
+    #   speed: '1000'
+    # - enabled: false
+    #   name: GigabitEthernet4
+    # - enabled: true
+    #   name: Loopback888
+    # - enabled: true
+    #   name: Loopback999
+    # commands:
+    # - interface GigabitEthernet3
+    # - mtu 3800
+    # - shutdown
+    # after:
+    # - enabled: true
+    #   name: GigabitEthernet1
+    # - description: Configured and Merged by Ansible Network
+    #   enabled: true
+    #   name: GigabitEthernet2
+    #   speed: '1000'
+    # - description: Configured and Merged by Ansible Network
+    #   enabled: false
+    #   mtu: 3800
+    #   name: GigabitEthernet3
+    #   speed: '1000'
+    # - enabled: false
+    #   name: GigabitEthernet4
+    # - enabled: true
+    #   name: Loopback888
+    # - enabled: true
+    #   name: Loopback999
 
     # After state:
     # ------------
-    #
-    # vios#show running-config | section ^interface
-    # interface GigabitEthernet0/1
-    #  description Configured by Ansible
+    # Router#show running-config | section ^interface
+    # interface Loopback888
     #  no ip address
-    #  duplex auto
-    #  speed auto
-    # interface GigabitEthernet0/2
+    # interface Loopback999
+    #  no ip address
+    # interface GigabitEthernet1
+    #  ip address dhcp
+    #  negotiation auto
+    # interface GigabitEthernet2
     #  description Configured and Merged by Ansible Network
-    #  no ip address
-    #  duplex auto
+    #  ip address dhcp
     #  speed 1000
-    # interface GigabitEthernet0/3
+    #  no negotiation auto
+    # interface GigabitEthernet3
     #  description Configured and Merged by Ansible Network
-    #  mtu 2800
+    #  mtu 3800
     #  no ip address
     #  shutdown
-    #  duplex full
-    #  speed 100
+    #  speed 1000
+    #  no negotiation auto
+    # interface GigabitEthernet4
+    #  no ip address
+    #  shutdown
+    #  negotiation auto
 
-    # Using merged with mode attribute
+    # Using merged - with mode attribute
 
     # Before state:
     # -------------
-    #
     # vios#show running-config | section ^interface
     # interface GigabitEthernet0/1
     #  description Configured by Ansible
