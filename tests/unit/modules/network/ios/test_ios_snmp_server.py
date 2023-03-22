@@ -364,7 +364,12 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
-                    {"acl_v6": "ipv6acl", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {
+                        "acl_v6": "ipv6acl",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
             },
@@ -1299,7 +1304,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
             ],
             "users": [
-                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6acl"}
+                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6acl"},
             ],
             "traps": {
                 "ospf": {
@@ -1337,7 +1342,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "mep_unknown": True,
                             "service_up": True,
                         },
-                    }
+                    },
                 },
             },
             "hosts": [
@@ -1387,7 +1392,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "read": "readme",
                     "write": "writeit",
                     "acl_v4": "acessing",
-                }
+                },
             ],
         }
         result = self.execute_module(changed=False)
@@ -1449,7 +1454,7 @@ class TestIosSnmpServerModule(TestIosModule):
                             "read": "readme",
                             "write": "writeit",
                             "acl_v4": "acessing",
-                        }
+                        },
                     ],
                     "users": [
                         {
