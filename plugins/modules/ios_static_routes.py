@@ -1,27 +1,17 @@
 #!/usr/bin/python
-#
-# This file is part of Ansible
-#
-# Ansible is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Ansible is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
-#
+# -*- coding: utf-8 -*-
+# Copyright 2023 Red Hat
+# GNU General Public License v3.0+
+# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The module file for ios_static_routes
 """
+
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_static_routes
 short_description: Resource module to configure static routes.
@@ -155,6 +145,7 @@ options:
     - parsed
     default: merged
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -618,6 +609,7 @@ EXAMPLES = """
 #         "ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105"
 #     ]
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.
@@ -658,13 +650,13 @@ parsed:
     The configuration returned will always be in the same format
     of the parameters above.
 """
-from ansible.module_utils.basic import AnsibleModule
 
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
-    Static_RoutesArgs,
+    Static_routesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.static_routes.static_routes import (
-    Static_Routes,
+    Static_routes,
 )
 
 
@@ -674,21 +666,20 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
     module = AnsibleModule(
-        argument_spec=Static_RoutesArgs.argument_spec,
-        required_if=required_if,
+        argument_spec=Static_routesArgs.argument_spec,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
-        mutually_exclusive=mutually_exclusive,
     )
-    result = Static_Routes(module).execute_module()
+
+    result = Static_routes(module).execute_module()
     module.exit_json(**result)
 
 
