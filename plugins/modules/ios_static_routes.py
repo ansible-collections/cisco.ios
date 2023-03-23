@@ -91,6 +91,9 @@ options:
                   multicast:
                     description: multicast route
                     type: bool
+                  unicast:
+                    description: unicast route (ipv6 specific)
+                    type: bool
                   permanent:
                     description: permanent route
                     type: bool
