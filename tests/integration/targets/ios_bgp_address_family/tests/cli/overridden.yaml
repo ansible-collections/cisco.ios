@@ -17,9 +17,9 @@
                 - ospf:
                     process_id: 123
                     match:
-                      external:
+                      externals:
                         type_1: true
-                      nssa_external:
+                      nssa_externals:
                         type_2: true
                     metric: 15
                     route_map: foo
@@ -27,9 +27,9 @@
                     process_id: 123
                     match:
                       internal: true
-                      external:
+                      externals:
                         type_2: true
-                      nssa_external:
+                      nssa_externals:
                         type_1: true
                     metric: 15
                     route_map: foo

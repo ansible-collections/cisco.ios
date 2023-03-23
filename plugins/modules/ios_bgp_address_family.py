@@ -1162,6 +1162,12 @@ options:
                     type: dict
                     suboptions:
                       external:
+                        description:
+                        - Redistribute OSPF external routes
+                        - This option is DEPRECATED and replaced with externals option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      externals:
                         description: Redistribute OSPF external routes
                         type: dict
                         suboptions:
@@ -1175,6 +1181,23 @@ options:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
+                        description:
+                        - This option is DEPRECATED and replaced with nssa_externals option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      type_1:
+                        description:
+                        - Redistribute NSSA external type 1 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      type_2:
+                        description:
+                        - Redistribute NSSA external type 2 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      nssa_externals:
                         description: Redistribute OSPF NSSA external routes
                         type: dict
                           type_1:
@@ -1204,6 +1227,12 @@ options:
                     type: dict
                     suboptions:
                       external:
+                        description:
+                        - Redistribute OSPF external routes
+                        - This option is DEPRECATED and replaced with externals,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      externals:
                         description: Redistribute OSPF external routes
                         type: dict
                         suboptions:
@@ -1217,6 +1246,23 @@ options:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
+                        description:
+                        - This option is DEPRECATED and replaced with nssa_externals,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      type_1:
+                        description:
+                        - Redistribute NSSA external type 1 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      type_2:
+                        description:
+                        - Redistribute NSSA external type 2 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                          this attribute will be removed after 2025-01-01.
+                        type: bool
+                      nssa_externals:
                         description: Redistribute OSPF NSSA external routes
                         type: dict
                           type_1:

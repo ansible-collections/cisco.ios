@@ -77,10 +77,10 @@
                 process_id: 124
                 match:
                   internal: true
-                  external:
+                  externals:
                     type_1: true
                     type_2: true
-                  nssa_external:
+                  nssa_externals:
                     type_1: true
                     type_2: true
                 metric: 10
@@ -96,10 +96,10 @@
                 process_id: 123
                 match:
                   internal: true
-                  external:
+                  externals:
                     type_1: true
                     type_2: true
-                  nssa_external:
+                  nssa_externals:
                     type_1: true
                     type_2: true
                 metric: 10
@@ -108,10 +108,10 @@
                 process_id: 123
                 match:
                   internal: true
-                  external:
+                  externals:
                     type_1: true
                     type_2: true
-                  nssa_external:
+                  nssa_externals:
                     type_1: true
                     type_2: true
                 metric: 10

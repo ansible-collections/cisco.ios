@@ -1,3 +1,28 @@
 ---
 bugfixes:
-  - ios_bgp_address_family - Fix issues when redistributing OSPFv2 and OSPFv3 into BGP
+  - ios_bgp_address_family - fix issue where no commands are generated when
+    redistributing OSPFv2 and OSPFv3
+  - ios_bgp_address_family - fix option and syntax for OSPF E1 and E2 routes
+  - ios_bgp_address_family - fix option and syntax for OSPF N1 and N2 routes
+  - ios_bgp_address_family - fix order of generated OSPF redistribution command options
+    to achieve idempotency
+  - ios_bgp_address_family - fix missing negations in overridden and replaced states
+    when redistributing OSPF
+deprecated_features:
+  - ios_bgp_address_family - deprecate redistribute.ospf.match.external with
+    redistribute.ospf.match.externals which enables attributes for OSPF type
+    E1 and E2 routes
+  - ios_bgp_address_family - deprecate redistribute.ospf.match.nssa_external with
+    redistribute.ospf.match.nssa_externals which enables attributes for OSPF type
+    N1 and N2 routes
+  - ios_bgp_address_family - deprecate redistribute.ospf.match.type_1 with
+    redistribute.ospf.match.nssa_externals.type_1
+  - ios_bgp_address_family - deprecate redistribute.ospf.match.type_2 with
+    redistribute.ospf.match.nssa_externals.type_2
+minor_changes:
+  - ios_bgp_address_family - add option redistribute.ospf.include_connected when
+    redistributing OSPF in IPv6 AFI
+  - ios_bgp_address_family - add option redistribute.ospf.match.externals.type_1 to allow
+  - specification of OSPF E1 routes
+  - ios_bgp_address_family - add option redistribute.ospf.match.externals.type_2 to allow
+  - specification of OSPF E2 routes

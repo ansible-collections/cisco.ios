@@ -2481,20 +2481,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "redistribute ospf {{ process_id }}"
             "{{ (' metric ' + metric|string) if metric is defined }}"
             "{{ (' vrf ' + vrf) if vrf is defined }}"
-            "{{ (' match') if match is defined and (match.internal is defined or "
-            "match.external is defined or match.nssa_external is defined) and "
-            "(match.external.type_1 or match.external.type_2 or"
-            " match.nssa_external.type_1 or match.nssa_external.type_2) }}"
-            "{{ (' internal') if match is defined and match.internal is defined "
-            "and match.internal}}"
-            "{{ (' external 1') if match is defined and match.external is defined and "
-            "match.external.type_1 is defined and match.external.type_1}}"
-            "{{ (' external 2') if match is defined and match.external is defined and "
-            "match.external.type_2 is defined and match.external.type_2}}"
-            "{{ (' nssa-external 1') if match is defined and match.nssa_external is defined and "
-            "match.nssa_external.type_1 is defined and match.nssa_external.type_1 }}"
-            "{{ (' nssa-external 2') if match is defined and match.nssa_external is defined and "
-            "match.nssa_external.type_2 is defined and match.nssa_external.type_2}}"
+            "{{ (' match') if match is defined }}"
+            "{{ (' internal') if match is defined and match.internal is defined and match.internal }}"
+            "{{ (' external 1') if match is defined and match.externals is defined and "
+                      "match.externals.type_1 is defined and match.externals.type_1 }}"
+            "{{ (' external 2') if match is defined and match.externals is defined and "
+                      "match.externals.type_2 is defined and match.externals.type_2 }}"
+            "{{ (' nssa-external 1') if match is defined and match.nssa_externals is defined and "
+                      "match.nssa_externals.type_1 is defined and match.nssa_externals.type_1 }}"
+            "{{ (' nssa-external 2') if match is defined and match.nssa_externals is defined and "
+            "match.nssa_externals.type_2 is defined and match.nssa_externals.type_2}}"
             "{{ (' route-map ' + route_map) if route_map is defined }}"
             "{{ (' include-connected') if include_connected is defined and include_connected }}",
             "remval": "redistribute ospf {{ process_id }}",
@@ -2509,11 +2505,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "metric": "{{ metric }}",
                                     "match": {
                                         "internal": "{{ not not internal }}",
-                                        "external": {
+                                        "externals": {
                                             "type_1": "{{ not not ext_type_1 }}",
                                             "type_2": "{{ not not ext_type_2 }}",
                                         },
-                                        "nssa_external": {
+                                        "nssa_externals": {
                                             "type_1": "{{ not not nssa_type_1 }}",
                                             "type_2": "{{ not not nssa_type_2 }}",
                                         },
@@ -2545,18 +2541,16 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             ),
             "setval": "redistribute ospfv3 {{ process_id }}"
             "{{ (' metric ' + metric|string) if metric is defined }}"
-            "{{ (' match') if match is defined and (match.internal is defined or "
-            "match.external is defined) }}"
-            "{{ (' internal') if match is defined and match.internal is defined "
-            "and match.internal}}"
-            "{{ (' external 1') if match is defined and match.external is defined and "
-            "match.external.type_1 is defined and match.external.type_1}}"
-            "{{ (' external 2') if match is defined and match.external is defined and "
-            "match.external.type_2 is defined and match.external.type_2}}"
-            "{{ (' nssa-external 1') if match is defined and match.nssa_external is defined and "
-            "match.nssa_external.type_1 is defined and match.nssa_external.type_1 }}"
-            "{{ (' nssa-external 2') if match is defined and match.nssa_external is defined and "
-            "match.nssa_external.type_2 is defined and match.nssa_external.type_2}}"
+            "{{ (' match') if match is defined }}"
+            "{{ (' internal') if match is defined and match.internal is defined and match.internal }}"
+            "{{ (' external 1') if match is defined and match.externals is defined and "
+                      "match.externals.type_1 is defined and match.externals.type_1 }}"
+            "{{ (' external 2') if match is defined and match.externals is defined and "
+                      "match.externals.type_2 is defined and match.externals.type_2 }}"
+            "{{ (' nssa-external 1') if match is defined and match.nssa_externals is defined and "
+                      "match.nssa_externals.type_1 is defined and match.nssa_externals.type_1 }}"
+            "{{ (' nssa-external 2') if match is defined and match.nssa_externals is defined and "
+            "match.nssa_externals.type_2 is defined and match.nssa_externals.type_2}}"
             "{{ (' route-map ' + route_map) if route_map is defined }}",
             "remval": "redistribute ospfv3 {{ process_id }}",
             "result": {
@@ -2569,11 +2563,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                     "metric": "{{ metric }}",
                                     "match": {
                                         "internal": "{{ not not internal }}",
-                                        "external": {
+                                        "externals": {
                                             "type_1": "{{ not not ext_type_1 }}",
                                             "type_2": "{{ not not ext_type_2 }}",
                                         },
-                                        "nssa_external": {
+                                        "nssa_externals": {
                                             "type_1": "{{ not not nssa_type_1 }}",
                                             "type_2": "{{ not not nssa_type_2 }}",
                                         },

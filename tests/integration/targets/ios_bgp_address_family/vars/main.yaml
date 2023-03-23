@@ -33,10 +33,10 @@ merged:
               process_id: 123
               match:
                 internal: true
-                external:
+                externals:
                   type_1: true
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10
@@ -47,10 +47,10 @@ merged:
               process_id: 123
               match:
                 internal: true
-                external:
+                externals:
                   type_1: true
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10
@@ -89,10 +89,10 @@ merged:
               process_id: 124
               match:
                 internal: true
-                external:
+                externals:
                   type_1: true
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10
@@ -140,9 +140,9 @@ overridden:
           - ospf:
               process_id: 123
               match:
-                external:
+                externals:
                   type_1: true
-                nssa_external:
+                nssa_externals:
                   type_2: true
               metric: 15
               route_map: foo
@@ -150,9 +150,9 @@ overridden:
               process_id: 123
               match:
                 internal: true
-                external:
+                externals:
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
               metric: 15
               route_map: foo
@@ -225,9 +225,9 @@ replaced:
           - ospf:
               process_id: 123
               match:
-                external:
+                externals:
                   type_1: true
-                nssa_external:
+                nssa_externals:
                   type_2: true
               metric: 15
               route_map: foo
@@ -235,9 +235,9 @@ replaced:
               process_id: 123
               match:
                 internal: true
-                external:
+                externals:
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
               metric: 15
               route_map: foo
@@ -273,10 +273,10 @@ replaced:
               process_id: 124
               match:
                 internal: true
-                external:
+                externals:
                   type_1: true
                   type_2: true
-                nssa_external:
+                nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10

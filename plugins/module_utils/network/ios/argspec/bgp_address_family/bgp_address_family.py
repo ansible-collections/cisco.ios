@@ -672,21 +672,25 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "match": {
                                             "type": "dict",
                                             "options": {
+                                                "external": {"type": "bool"},
                                                 "internal": {"type": "bool"},
-                                                "external": {
+                                                "externals": {
                                                     "type": "dict",
                                                     "options": {
                                                         "type_1": {"type": "bool"},
                                                         "type_2": {"type": "bool"},
                                                     },
                                                 },
-                                                "nssa_external": {
+                                                "nssa_external": {"type": "bool"},
+                                                "nssa_externals": {
                                                     "type": "dict",
                                                     "options": {
                                                         "type_1": {"type": "bool"},
                                                         "type_2": {"type": "bool"},
                                                     },
                                                 },
+                                                "type_1": {"type": "bool"},
+                                                "type_2": {"type": "bool"},
                                             },
                                         },
                                         "metric": {"type": "int"},
@@ -701,21 +705,25 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "match": {
                                             "type": "dict",
                                             "options": {
+                                                "external": {"type": "bool"},
                                                 "internal": {"type": "bool"},
-                                                "external": {
+                                                "externals": {
                                                     "type": "dict",
                                                     "options": {
                                                         "type_1": {"type": "bool"},
                                                         "type_2": {"type": "bool"},
                                                     },
                                                 },
-                                                "nssa_external": {
+                                                "nssa_external": {"type": "bool"},
+                                                "nssa_externals": {
                                                     "type": "dict",
                                                     "options": {
                                                         "type_1": {"type": "bool"},
                                                         "type_2": {"type": "bool"},
                                                     },
                                                 },
+                                                "type_1": {"type": "bool"},
+                                                "type_2": {"type": "bool"},
                                             },
                                         },
                                         "metric": {"type": "int"},

@@ -380,6 +380,29 @@ class Bgp_address_family(ResourceModule):
                             for ospf_version in ["ospf", "ospfv3"]:
                                 if i.get(ospf_version):
                                     _i = i[ospf_version]
+
+                                    # Start handle deprecates
+                                    if _i.get("match"):
+                                        for depr in ["external", "nssa_external", "type_1", "type_2"]:
+                                            if depr in _i["match"].keys():
+                                                val = _i["match"].pop(depr, False)
+                                                if depr.startswith("type"):
+                                                    # map deprecated nssa_external type to new option
+                                                    if "nssa_externals" in _i["match"].keys():
+                                                        _i["match"]["nssa_externals"][depr] = val
+                                                    else:
+                                                        _i["match"]["nssa_externals"] = {
+                                                            depr: val,
+                                                        }
+                                                elif depr in ["external", "nssa_external"]:
+                                                    # deprecated external and nssa_external are boolean
+                                                    # so both types mapped to true
+                                                    _i["match"][depr+"s"] = {
+                                                        "type_1": True,
+                                                        "type_2": True,
+                                                    }
+                                    # End handle deprecates
+
                                     if ospf_version not in _redist:
                                         _redist[ospf_version] = {}
 

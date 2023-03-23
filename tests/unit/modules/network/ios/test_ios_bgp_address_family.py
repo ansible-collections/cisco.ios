@@ -688,12 +688,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         metric=100,
                                         match=dict(
                                             internal=True,
-                                            external=dict(
+                                            externals=dict(
                                                 type_1=True,
                                                 type_2=True,
-                                            ),
-                                        ),
-                                    ),
+                                            )
+                                        )
+                                    )
                                 ),
                             ],
                             neighbor=[
@@ -797,6 +797,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
 
         result = self.execute_module(changed=False, commands=[])
+        import pprint
+        pprint.pprint('FAAAAEN')
 
     def test_ios_bgp_address_family_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -1104,19 +1106,17 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "bgp": {"redistribute_internal": True},
                     "redistribute": [
                         {"connected": {"set": True}},
-                        {
-                            "ospf": {
-                                "process_id": 200,
-                                "metric": 100,
-                                "match": {
-                                    "internal": True,
-                                    "external": {
-                                        "type_1": True,
-                                        "type_2": True,
-                                    },
-                                },
-                            },
-                        },
+                        {"ospf": {
+                            "process_id": 200,
+                            "metric": 100,
+                            "match": {
+                                "internal": True,
+                                "externals": {
+                                    "type_1": True,
+                                    "type_2": True,
+                                }
+                            }
+                        }}
                     ],
                     "neighbors": [
                         {
