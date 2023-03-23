@@ -383,7 +383,12 @@ class Bgp_address_family(ResourceModule):
 
                                     # Start handle deprecates
                                     if _i.get("match"):
-                                        for depr in ["external", "nssa_external", "type_1", "type_2"]:
+                                        for depr in [
+                                            "external",
+                                            "nssa_external",
+                                            "type_1",
+                                            "type_2",
+                                        ]:
                                             if depr in _i["match"].keys():
                                                 val = _i["match"].pop(depr, False)
                                                 if depr.startswith("type"):
@@ -397,7 +402,7 @@ class Bgp_address_family(ResourceModule):
                                                 elif depr in ["external", "nssa_external"]:
                                                     # deprecated external and nssa_external are boolean
                                                     # so both types mapped to true
-                                                    _i["match"][depr+"s"] = {
+                                                    _i["match"][depr + "s"] = {
                                                         "type_1": True,
                                                         "type_2": True,
                                                     }
