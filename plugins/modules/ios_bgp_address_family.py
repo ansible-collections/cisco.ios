@@ -1158,7 +1158,7 @@ options:
                     description: Include connected. Only applicable under IPv6 AFI
                     type: bool
                   match:
-                    description: Redistribute matched routes
+                    description: On Demand stub Routes
                     type: dict
                     suboptions:
                       external:
@@ -1182,6 +1182,7 @@ options:
                         type: bool
                       nssa_external:
                         description:
+                        - Redistribute OSPF NSSA external routes
                         - This option is DEPRECATED and replaced with nssa_externals option,
                           this attribute will be removed after 2025-01-01.
                         type: bool
@@ -1223,7 +1224,7 @@ options:
                     description: Process ID
                     type: int
                   match:
-                    description: Redistribute matched routes
+                    description: On Demand stub Routes
                     type: dict
                     suboptions:
                       external:
@@ -1247,6 +1248,7 @@ options:
                         type: bool
                       nssa_external:
                         description:
+                        - Redistribute OSPF internal routes
                         - This option is DEPRECATED and replaced with nssa_externals,
                           this attribute will be removed after 2025-01-01.
                         type: bool
