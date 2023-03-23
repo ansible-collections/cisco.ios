@@ -1158,7 +1158,7 @@ options:
                     description: Include connected. Only applicable under IPv6 AFI
                     type: bool
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
@@ -1172,10 +1172,10 @@ options:
                         type: dict
                         suboptions:
                           type_1:
-                            description Redistribute OSPF External type 1 routes
+                            description: Redistribute OSPF External type 1 routes
                             type: bool
                           type_2:
-                            description Redistribute OSPF External type 1 routes
+                            description: Redistribute OSPF External type 1 routes
                             type: bool
                       internal:
                         description: Redistribute OSPF internal routes
@@ -1201,6 +1201,7 @@ options:
                       nssa_externals:
                         description: Redistribute OSPF NSSA external routes
                         type: dict
+                        suboptions:
                           type_1:
                             description: Redistribute NSSA external type 1 routes
                             type: bool
@@ -1224,7 +1225,7 @@ options:
                     description: Process ID
                     type: int
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
@@ -1238,10 +1239,10 @@ options:
                         type: dict
                         suboptions:
                           type_1:
-                            description Redistribute OSPF External type 1 routes
+                            description: Redistribute OSPF External type 1 routes
                             type: bool
                           type_2:
-                            description Redistribute OSPF External type 1 routes
+                            description: Redistribute OSPF External type 1 routes
                             type: bool
                       internal:
                         description: Redistribute OSPF internal routes
@@ -1267,6 +1268,7 @@ options:
                       nssa_externals:
                         description: Redistribute OSPF NSSA external routes
                         type: dict
+                        suboptions:
                           type_1:
                             description: Redistribute NSSA external type 1 routes
                             type: bool
