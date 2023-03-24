@@ -52,7 +52,7 @@ class TestIosStaticRoutesModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
-            "Static_RoutesFacts.get_static_routes_data",
+            "Static_routesFacts.get_static_routes_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 

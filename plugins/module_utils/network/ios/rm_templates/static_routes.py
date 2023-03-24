@@ -36,7 +36,7 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<dest>\S+))
                 (\s(?P<netmask>\S+))
                 (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\d+))?
-                (\s(?P<forward_router_address>\S+))
+                (\s(?P<forward_router_address>(?!multicast|dhcp|global|tag|track|permanent|name)\S+))?
                 (\s(?P<distance_metric>\d+))?
                 (\stag\s(?P<tag>\d+))?
                 (\s(?P<permanent>permanent))?
@@ -46,10 +46,42 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<dhcp>dhcp))?
                 (\s(?P<global>global))?
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "ip route"
+            "{{ (' topology ' + topology) if topology is defined else '' }}"
+            "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
+            "{{ (' ' + dest) if dest is defined else '' }}"
+            "{{ (' ' + netmask) if netmask is defined else '' }}"
+            "{{ (' ' + interface) if interface is defined else '' }}"
+            "{{ (' ' + forward_router_address) if forward_router_address is defined else '' }}"
+            "{{ (' ' + distance_metric|string) if distance_metric is defined else '' }}"
+            "{{ (' tag ' + tag|string) if tag is defined else '' }}"
+            "{{ (' permanent' ) if permanent|d(False) else '' }}"
+            "{{ (' name ' + name) if name is defined else '' }}"
+            "{{ (' track ' + track|string) if track is defined else '' }}"
+            "{{ (' multicast' ) if multicast|d(False) else '' }}"
+            "{{ (' dhcp' ) if dhcp|d(False) else '' }}"
+            "{{ (' global' ) if global|d(False) else '' }}",
             "result": {
+                "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
+                    {
+                        "_vrf" : "{{ vrf }}",
+                        "_topology" : "{{ topology }}",
+                        "_afi": "ipv4",
+                        "_dest": "{{ dest }}",
+                        "_netmask": "{{ netmask }}",
+                        "interface": "{{ interface }}",
+                        "forward_router_address": "{{ forward_router_address }}",
+                        "distance_metric": "{{ distance_metric }}",
+                        "tag": "{{ tag }}",
+                        "permanent": "{{ not not permanent }}",
+                        "name": "{{ next_hop_name }}",
+                        "track": "{{ track }}",
+                        "multicast": "{{ not not multicast }}",
+                        "dhcp": "{{ not not dhcp }}",
+                        "global": "{{ not not global }}",
+                    },
+                ],
             },
-            "shared": True
         },
         {
             "name": "ipv6",
@@ -60,7 +92,7 @@ class Static_routesTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<dest>\S+))
                 (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\d+))?
-                (\s(?P<forward_router_address>\S+))
+                (\s(?P<forward_router_address>(?!multicast|unicast|tag|track|permanent|name)\S+))?
                 (\s(?P<distance_metric>\d+))?
                 (\s(?P<multicast>multicast))?
                 (\s(?P<unicast>unicast))?
@@ -69,8 +101,37 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<permanent>permanent))?
                 (\sname\s(?P<next_hop_name>\S+))?
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "ipv6 route"
+            "{{ (' topology ' + topology) if topology is defined else '' }}"
+            "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
+            "{{ (' ' + dest) if dest is defined else '' }}"
+            "{{ (' ' + interface) if interface is defined else '' }}"
+            "{{ (' ' + forward_router_address) if forward_router_address is defined else '' }}"
+            "{{ (' ' + distance_metric|string) if distance_metric is defined else '' }}"
+            "{{ (' multicast' ) if multicast|d(False) else '' }}"
+            "{{ (' unicast' ) if unicast|d(False) else '' }}"
+            "{{ (' tag ' + tag|string) if tag is defined else '' }}"
+            "{{ (' track ' + track|string) if track is defined else '' }}"
+            "{{ (' permanent' ) if permanent|d(False) else '' }}"
+            "{{ (' name ' + name) if name is defined else '' }}",
             "result": {
+                "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv6": [
+                    {
+                        "_vrf" : "{{ vrf }}",
+                        "_topology" : "{{ topology }}",
+                        "_afi": "ipv6",
+                        "_dest": "{{ dest }}",
+                        "interface": "{{ interface }}",
+                        "forward_router_address": "{{ forward_router_address }}",
+                        "distance_metric": "{{ distance_metric }}",
+                        "tag": "{{ tag }}",
+                        "permanent": "{{ not not permanent }}",
+                        "name": "{{ next_hop_name }}",
+                        "track": "{{ track }}",
+                        "multicast": "{{ not not multicast }}",
+                        "unicast": "{{ not not unicast }}",
+                    },
+                ],
             },
         },
     ]
@@ -91,3 +152,104 @@ class Static_routesTemplate(NetworkTemplate):
 # ipv6 route 2001:DB8:0:3::/64 Null0
 # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1
 # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
+
+# aa = {
+#     "198.51.100.0___ipv4": [
+#         {
+#             "_afi": "ipv4",
+#             "_dest": "198.51.100.0",
+#             "netmask": "255.255.255.0",
+#             "interface": "GigabitEthernet2",
+#             "forward_router_address": "198.51.101.12",
+#             "distance_metric": 34,
+#             "tag": 22,
+#             "next_hop_name": "nm12",
+#             "track": 11,
+#         },
+#         {
+#             "_afi": "ipv4",
+#             "_dest": "198.51.100.0",
+#             "netmask": "255.255.255.0",
+#             "forward_router_address": "198.51.101.1",
+#             "distance_metric": 175,
+#             "tag": 70,
+#             "next_hop_name": "replaced_route",
+#             "track": 150,
+#         },
+#         {
+#             "_afi": "ipv4",
+#             "_dest": "198.51.100.0",
+#             "netmask": "255.255.255.0",
+#             "forward_router_address": "198.51.101.20",
+#             "distance_metric": 175,
+#             "tag": 70,
+#             "next_hop_name": "replaced_route",
+#             "track": 150,
+#         },
+#         {
+#             "_afi": "ipv4",
+#             "_dest": "198.51.100.0",
+#             "netmask": "255.255.255.0",
+#             "forward_router_address": "198.51.101.3",
+#             "next_hop_name": "merged_route_3",
+#         },
+#         {
+#             "_afi": "ipv4",
+#             "_dest": "198.51.100.0",
+#             "netmask": "255.255.255.0",
+#             "interface": "GigabitEthernet2",
+#             "forward_router_address": "198.51.101.11",
+#             "distance_metric": 22,
+#             "tag": 22,
+#             "permanent": True,
+#             "next_hop_name": "nm1",
+#             "multicast": True,
+#         },
+#     ],
+#     "2001:DB8:0:3::/64___ipv6": [
+#         {
+#             "_afi": "ipv6",
+#             "_dest": "2001:DB8:0:3::/64",
+#             "interface": "GigabitEthernet4",
+#             "forward_router_address": "multicast",
+#             "permanent": True,
+#             "next_hop_name": "onlyname",
+#         },
+#         {
+#             "_afi": "ipv6",
+#             "_dest": "2001:DB8:0:3::/64",
+#             "interface": "GigabitEthernet3",
+#             "forward_router_address": "unicast",
+#             "tag": 11,
+#             "permanent": True,
+#             "next_hop_name": "qq",
+#         },
+#         {
+#             "_afi": "ipv6",
+#             "_dest": "2001:DB8:0:3::/64",
+#             "interface": "GigabitEthernet2",
+#             "forward_router_address": "tag",
+#             "distance_metric": 2,
+#             "permanent": True,
+#             "next_hop_name": "nm1",
+#         },
+#         {"_afi": "ipv6", "_dest": "2001:DB8:0:3::/64", "forward_router_address": "Null0"},
+#         {
+#             "_afi": "ipv6",
+#             "_dest": "2001:DB8:0:3::/64",
+#             "forward_router_address": "2001:DB8:0:3::3",
+#             "distance_metric": 22,
+#             "permanent": True,
+#             "next_hop_name": "pp1",
+#             "multicast": True,
+#         },
+#         {
+#             "_afi": "ipv6",
+#             "_dest": "2001:DB8:0:3::/64",
+#             "forward_router_address": "2001:DB8:0:3::2",
+#             "tag": 22,
+#             "next_hop_name": "name1",
+#             "track": 22,
+#         },
+#     ],
+# }

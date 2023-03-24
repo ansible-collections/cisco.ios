@@ -18,10 +18,10 @@ __metaclass__ = type
 #
 # To update the argspec make the desired changes
 # in the documentation in the module file and re-run
-# ansible.content_builder commenting out 
+# ansible.content_builder commenting out
 # the path to external 'docstring' in build.yaml.
 #
-############################################## 
+##############################################
 
 """
 The arg spec for the ios_static_routes module
@@ -29,8 +29,7 @@ The arg spec for the ios_static_routes module
 
 
 class Static_routesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_static_routes module
-    """
+    """The arg spec for the ios_static_routes module"""
 
     argument_spec = {
         "config": {
@@ -64,6 +63,7 @@ class Static_routesArgs(object):  # pylint: disable=R0903
                                         "global": {"type": "bool"},
                                         "name": {"type": "str"},
                                         "multicast": {"type": "bool"},
+                                        "unicast": {"type": "bool"},
                                         "permanent": {"type": "bool"},
                                         "tag": {"type": "int"},
                                         "track": {"type": "int"},
