@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,14 +15,13 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
+    Static_routesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.static_routes import (
     Static_routesTemplate,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
-    Static_routesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     netmask_to_cidr,
@@ -46,7 +46,6 @@ class Static_routesFacts(object):
 
         strout = {}
         for k, obj in objs.items():
-
             _routes = {"next_hops": []}
             _nx_hop = []
             is_vrf = False
@@ -144,7 +143,7 @@ class Static_routesFacts(object):
         ansible_facts["ansible_network_resources"].pop("static_routes", None)
 
         params = utils.remove_empties(
-            static_routes_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            static_routes_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["static_routes"] = params["config"]

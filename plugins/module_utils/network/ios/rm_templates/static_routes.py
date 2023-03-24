@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -45,7 +47,8 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<multicast>multicast))?
                 (\s(?P<dhcp>dhcp))?
                 (\s(?P<global>global))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip route"
             "{{ (' topology ' + topology) if topology is defined else '' }}"
             "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
@@ -100,7 +103,8 @@ class Static_routesTemplate(NetworkTemplate):
                 (\strack\s(?P<track>\d+))?
                 (\s(?P<permanent>permanent))?
                 (\sname\s(?P<next_hop_name>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ipv6 route"
             "{{ (' topology ' + topology) if topology is defined else '' }}"
             "{{ (' vrf ' + vrf) if vrf is defined else '' }}"

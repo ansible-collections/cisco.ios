@@ -10,6 +10,7 @@ The module file for ios_static_routes
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -654,7 +655,10 @@ parsed:
     of the parameters above.
 """
 
+import debugpy
+
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_routesArgs,
 )
@@ -662,7 +666,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.stati
     Static_routes,
 )
 
-import debugpy
 
 debugpy.listen(3000)
 debugpy.wait_for_client()
