@@ -31,7 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 class Static_routesFacts(object):
     """The ios static_routes facts class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Static_routesArgs.argument_spec
 
@@ -41,7 +41,6 @@ class Static_routesFacts(object):
     def process_static_routes(self, objs):
         def update_netmask_to_cidr(address, netmask):
             dest = address + "/" + netmask_to_cidr(netmask)
-            # dest = address + "/" + netmask
             return dest
 
         strout = {}

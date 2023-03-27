@@ -50,20 +50,19 @@ class Static_routesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ip route"
-            "{{ (' topology ' + topology) if topology is defined else '' }}"
-            "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
-            "{{ (' ' + dest) if dest is defined else '' }}"
-            "{{ (' ' + netmask) if netmask is defined else '' }}"
-            "{{ (' ' + interface) if interface is defined else '' }}"
-            "{{ (' ' + forward_router_address) if forward_router_address is defined else '' }}"
-            "{{ (' ' + distance_metric|string) if distance_metric is defined else '' }}"
-            "{{ (' tag ' + tag|string) if tag is defined else '' }}"
-            "{{ (' permanent' ) if permanent|d(False) else '' }}"
-            "{{ (' name ' + name) if name is defined else '' }}"
-            "{{ (' track ' + track|string) if track is defined else '' }}"
-            "{{ (' multicast' ) if multicast|d(False) else '' }}"
-            "{{ (' dhcp' ) if dhcp|d(False) else '' }}"
-            "{{ (' global' ) if global|d(False) else '' }}",
+            "{{ (' topology ' + ipv4.topology) if ipv4.topology is defined else '' }}"
+            "{{ (' vrf ' + ipv4.vrf) if ipv4.vrf is defined else '' }}"
+            "{{ (' ' + ipv4.dest) if ipv4.dest is defined else '' }}"
+            "{{ (' ' + ipv4.interface) if ipv4.interface is defined else '' }}"
+            "{{ (' ' + ipv4.forward_router_address) if ipv4.forward_router_address is defined else '' }}"
+            "{{ (' ' + ipv4.distance_metric|string) if ipv4.distance_metric is defined else '' }}"
+            "{{ (' tag ' + ipv4.tag|string) if ipv4.tag is defined else '' }}"
+            "{{ (' permanent' ) if ipv4.permanent|d(False) else '' }}"
+            "{{ (' name ' + ipv4.name) if ipv4.name is defined else '' }}"
+            "{{ (' track ' + ipv4.track|string) if ipv4.track is defined else '' }}"
+            "{{ (' multicast' ) if ipv4.multicast|d(False) else '' }}"
+            "{{ (' dhcp' ) if ipv4.dhcp|d(False) else '' }}"
+            "{{ (' global' ) if ipv4.global|d(False) else '' }}",
             "result": {
                 "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
                     {
@@ -106,18 +105,18 @@ class Static_routesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ipv6 route"
-            "{{ (' topology ' + topology) if topology is defined else '' }}"
-            "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
-            "{{ (' ' + dest) if dest is defined else '' }}"
-            "{{ (' ' + interface) if interface is defined else '' }}"
-            "{{ (' ' + forward_router_address) if forward_router_address is defined else '' }}"
-            "{{ (' ' + distance_metric|string) if distance_metric is defined else '' }}"
-            "{{ (' multicast' ) if multicast|d(False) else '' }}"
-            "{{ (' unicast' ) if unicast|d(False) else '' }}"
-            "{{ (' tag ' + tag|string) if tag is defined else '' }}"
-            "{{ (' track ' + track|string) if track is defined else '' }}"
-            "{{ (' permanent' ) if permanent|d(False) else '' }}"
-            "{{ (' name ' + name) if name is defined else '' }}",
+            "{{ (' topology ' + ipv6.topology) if ipv6.topology is defined else '' }}"
+            "{{ (' vrf ' + ipv6.vrf) if ipv6.vrf is defined else '' }}"
+            "{{ (' ' + ipv6.dest) if ipv6.dest is defined else '' }}"
+            "{{ (' ' + ipv6.interface) if ipv6.interface is defined else '' }}"
+            "{{ (' ' + ipv6.forward_router_address) if ipv6.forward_router_address is defined else '' }}"
+            "{{ (' ' + ipv6.distance_metric|string) if ipv6.distance_metric is defined else '' }}"
+            "{{ (' multicast' ) if ipv6.multicast|d(False) else '' }}"
+            "{{ (' unicast' ) if ipv6.unicast|d(False) else '' }}"
+            "{{ (' tag ' + ipv6.tag|string) if ipv6.tag is defined else '' }}"
+            "{{ (' track ' + ipv6.track|string) if ipv6.track is defined else '' }}"
+            "{{ (' permanent' ) if ipv6.permanent|d(False) else '' }}"
+            "{{ (' name ' + ipv6.name) if ipv6.name is defined else '' }}",
             "result": {
                 "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv6": [
                     {
@@ -140,3 +139,5 @@ class Static_routesTemplate(NetworkTemplate):
         },
     ]
     # fmt: on
+
+    # "{{ (' ' + netmask) if netmask is defined else '' }}"
