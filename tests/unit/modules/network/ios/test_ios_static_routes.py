@@ -52,7 +52,7 @@ class TestIosStaticRoutesModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
-            "Static_routesFacts.get_static_routes_data"
+            "Static_routesFacts.get_static_routes_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -216,7 +216,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -259,10 +259,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -288,12 +288,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -324,9 +324,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -406,7 +406,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.1/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -449,10 +449,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:4::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -478,12 +478,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -514,9 +514,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -623,7 +623,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -666,10 +666,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -695,12 +695,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -731,9 +731,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -813,7 +813,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.1/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -856,10 +856,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:4::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -885,12 +885,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -921,9 +921,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1030,7 +1030,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -1073,10 +1073,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -1102,12 +1102,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -1138,9 +1138,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1220,7 +1220,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -1263,10 +1263,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -1292,12 +1292,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -1328,9 +1328,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1478,10 +1478,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                 ],
                 state="deleted",
@@ -1546,7 +1546,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -1557,10 +1557,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             {"interface": "Null0"},
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -1575,12 +1575,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1699,7 +1699,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "198.51.100.0/24",
-                                    }
+                                    },
                                 ],
                             },
                             {
@@ -1742,10 +1742,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                     {
                         "vrf": "testVrf2",
@@ -1771,12 +1771,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                                 "tag": 30,
                                                 "name": "test_vrf2",
                                                 "track": 120,
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.0/24",
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -1807,9 +1807,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/24",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1910,7 +1910,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     },
                                 ],
                                 "dest": "198.51.100.0/24",
-                            }
+                            },
                         ],
                     },
                     {
@@ -1953,10 +1953,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     },
                                 ],
                                 "dest": "2001:DB8:0:3::/64",
-                            }
+                            },
                         ],
                     },
-                ]
+                ],
             },
             {
                 "vrf": "testVrf2",
@@ -1982,12 +1982,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                         "tag": 30,
                                         "name": "test_vrf2",
                                         "track": 120,
-                                    }
+                                    },
                                 ],
                                 "dest": "192.0.2.0/24",
                             },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -2018,9 +2018,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     },
                                 ],
                                 "dest": "192.0.2.0/24",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]
