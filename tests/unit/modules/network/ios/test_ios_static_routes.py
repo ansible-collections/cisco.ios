@@ -1639,10 +1639,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "dest": "2001:DB8:0:3::/64",
-                                    }
+                                    },
                                 ],
                             },
-                        ]
+                        ],
                     },
                 ],
                 state="deleted",
@@ -1707,7 +1707,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     },
                                 ],
                             },
-                        ]
+                        ],
                     },
                 ],
                 state="deleted",
@@ -1761,7 +1761,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                     dict(
                         vrf="testVrfv6",
                         address_families=[
-                            dict(afi="ipv6", routes=[dict(dest="2001:DB8:0:4::/64")])
+                            dict(afi="ipv6", routes=[dict(dest="2001:DB8:0:4::/64")]),
                         ],
                     ),
                 ],
