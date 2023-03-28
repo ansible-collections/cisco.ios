@@ -66,31 +66,37 @@ class Static_routes(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = self.list_to_dict(self.want)
-        haved = self.list_to_dict(self.have)
+        wantd, delete_spcl = self.list_to_dict(self.want, "want")
+        haved, _ = self.list_to_dict(self.have, "have")
 
-        # if state is merged, merge want onto have and then compare
-        if self.state == "merged":
-            wantd = dict_merge(haved, wantd)
+        if delete_spcl and haved:
+            for pk, to_rem in delete_spcl.items():
+                if pk in ["ipv4", "ipv6"]:
+                    _afis = haved.get("_afis_")
+                    for k, v in _afis.get(pk, {}).items():
+                        for each_dest in to_rem:
+                            if k.split("_")[0] == each_dest:
+                                self.addcmd({pk: v}, pk, True)
+                else:
+                    _vrfs = haved.get(pk)
+                    for ak, v in _vrfs.items():
+                        for k, srts in v.items():
+                            for each_dest in to_rem.get(ak):
+                                if k.split("_")[0] == each_dest:
+                                    self.addcmd({ak: srts}, ak, True)
 
-        # # if state is deleted, empty out wantd and set haved to wantd
-        # if self.state == "deleted":
-        #     haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
-        #     wantd = {}
+        else:
+            # if state is merged, merge want onto have and then compare
+            if self.state == "merged":
+                wantd = dict_merge(haved, wantd)
 
-        # # remove superfluous config for overridden and deleted
-        # if self.state in ["overridden", "deleted"]:
-        #     for k, have in iteritems(haved):
-        #         if k not in wantd:
-        #             self._compare(want={}, have=have)
+            for k, want in iteritems(wantd):
+                self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
 
-        for k, want in iteritems(wantd):
-            self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
-
-        # if self.state in ["overridden", "deleted"]:
-        if (self.state == "deleted" and not wantd) or self.state == "overridden":
-            for k, have in iteritems(haved):
-                self._compare_top_level_keys(want={}, have=have)
+            # if self.state in ["overridden", "deleted"]:
+            if (self.state == "deleted" and not wantd) or self.state == "overridden":
+                for k, have in iteritems(haved):
+                    self._compare_top_level_keys(want={}, have=have)
 
     def _compare_top_level_keys(self, want, have):
         # if state is deleted, empty out wantd and set haved to wantd
@@ -106,16 +112,6 @@ class Static_routes(ResourceModule):
             if _have:
                 have = _have
                 want = {}
-
-        # remove superfluous config for overridden and deleted
-        # if self.state in ["overridden", "deleted"]:
-        #     # _have = {}
-        #     for addfi in ["ipv4", "ipv6"]:
-        #         for k, ha in iteritems(have.get(addfi, {})):
-        #             # _temp_sr = {}
-        #             if k not in want.get(addfi, {}):
-        #                 # _temp_sr[k] = ha
-        #                 self.compare(parsers=addfi, want={}, have={addfi: ha})
 
         for _afi, routes in want.items():
             self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
@@ -133,8 +129,9 @@ class Static_routes(ResourceModule):
         for name, h_srs in s_have.items():
             self.compare(parsers=afi, want={}, have={afi: h_srs})
 
-    def list_to_dict(self, param):
+    def list_to_dict(self, param, operation):
         _static_rts = {}
+        _delete_spc = {}
         if param:
             for srs in param:
                 _vrf = srs.get("vrf")
@@ -148,10 +145,26 @@ class Static_routes(ResourceModule):
                         _sdest = rts.get("dest", "")
                         _topo = rts.get("topology", "")
 
+                        if (
+                            self.state == "deleted"
+                            and operation == "want"
+                            and not rts.get("next_hops")
+                        ):  #  specific to special deletes
+                            if _vrf:
+                                if not _delete_spc.get(_vrf):
+                                    _delete_spc[_vrf] = {}
+                                if not _delete_spc[_vrf].get(_afi):
+                                    _delete_spc[_vrf][_afi] = []
+                                _delete_spc[_vrf][_afi].append(_dest)
+                            else:
+                                if not _delete_spc.get(_afi):
+                                    _delete_spc[_afi] = []
+                                _delete_spc[_afi].append(_dest)
+
                         for nxh in rts.get("next_hops", []):
                             _forw_rtr_add = nxh.get("forward_router_address", "").upper()
                             _intf = nxh.get("interface", "")
-                            _key = _sdest + _topo + _forw_rtr_add + _intf
+                            _key = _sdest + "_" + _topo + _forw_rtr_add + _intf
 
                             if _afi == "ipv4":
                                 _dest = validate_n_expand_ipv4(self._module, {"address": _dest})
@@ -172,5 +185,5 @@ class Static_routes(ResourceModule):
 
                             _routes[_key] = dummy_sr
                     _srts[_afi] = _routes
-                _static_rts[_vrf if _vrf else "afis"] = _srts
-        return _static_rts
+                _static_rts[_vrf if _vrf else "_afis_"] = _srts
+        return _static_rts, _delete_spc

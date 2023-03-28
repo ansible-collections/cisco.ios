@@ -1599,47 +1599,170 @@ class TestIosStaticRoutesModule(TestIosModule):
     def test_ios_delete_static_route_dest_based(self):
         self.execute_show_command.return_value = dedent(
             """\
-            ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100
-            ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50
-            ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner
-            ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
-            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
-            ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route vrf testVrf2 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet4 multicast permanent name onlyname
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet3 unicast tag 11 permanent name qq
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet2 tag 2 permanent name nm1
+            ipv6 route 2001:DB8:0:3::/64 Null0
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
             """,
         )
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="198.51.100.0/24")])],
-                    ),
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "198.51.100.0/24",
+                                    },
+                                    {
+                                        "dest": "198.51.100.2/24",
+                                    },
+                                ],
+                            },
+                            {
+                                "afi": "ipv6",
+                                "routes": [
+                                    {
+                                        "dest": "2001:DB8:0:3::/64",
+                                    }
+                                ],
+                            },
+                        ]
+                    },
                 ],
                 state="deleted",
             ),
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60",
+            "no ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3",
+            "no ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast",
+            "no ipv6 route 2001:DB8:0:3::/64 GigabitEthernet4 multicast permanent name onlyname",
+            "no ipv6 route 2001:DB8:0:3::/64 GigabitEthernet3 unicast tag 11 permanent name qq",
+            "no ipv6 route 2001:DB8:0:3::/64 GigabitEthernet2 tag 2 permanent name nm1",
+            "no ipv6 route 2001:DB8:0:3::/64 Null0",
+            "no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1",
+            "no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1",
+        ]
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_delete_static_route_dest_based_second_check(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route vrf testVrf2 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.1 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.1 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet4 multicast permanent name onlyname
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet3 unicast tag 11 permanent name qq
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet2 tag 2 permanent name nm1
+            ipv6 route 2001:DB8:0:3::/64 Null0
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "198.51.100.0/24",
+                                    },
+                                    {
+                                        "dest": "198.51.100.1/24",
+                                    },
+                                    {
+                                        "dest": "198.51.100.2/24",
+                                    },
+                                ],
+                            },
+                        ]
+                    },
+                ],
+                state="deleted",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "no ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3",
+            "no ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast",
+            "no ip route 198.51.100.1 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150",
+            "no ip route 198.51.100.1 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150",
         ]
         self.assertEqual(result["commands"], commands)
 
     def test_ios_delete_static_route_vrf_based(self):
         self.execute_show_command.return_value = dedent(
             """\
-            ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100
-            ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50
-            ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner
-            ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
-            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
-            ipv6 route vrf ansible_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10
+            ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route vrf testVrf2 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120
+            ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.1 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150
+            ip route 198.51.100.1 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
+            ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150
+            ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
+            ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet4 multicast permanent name onlyname
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet3 unicast tag 11 permanent name qq
+            ipv6 route 2001:DB8:0:3::/64 GigabitEthernet2 tag 2 permanent name nm1
+            ipv6 route 2001:DB8:0:3::/64 Null0
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
+            ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::3 22 multicast permanent name pp1
+            ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
             """,
         )
         set_module_args(
             dict(
                 config=[
                     dict(
-                        vrf="ansible_vrf",
+                        vrf="testVrf2",
                         address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])],
+                    ),
+                    dict(
+                        vrf="testVrfv6",
+                        address_families=[
+                            dict(afi="ipv6", routes=[dict(dest="2001:DB8:0:4::/64")])
+                        ],
                     ),
                 ],
                 state="deleted",
@@ -1647,7 +1770,9 @@ class TestIosStaticRoutesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50",
+            "no ip route vrf testVrf2 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120",
+            "no ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::3 22 multicast permanent name pp1",
+            "no ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::2 tag 22 track 22 name name1",
         ]
         self.assertEqual(result["commands"], commands)
 
