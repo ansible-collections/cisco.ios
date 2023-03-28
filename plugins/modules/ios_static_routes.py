@@ -655,7 +655,7 @@ parsed:
     of the parameters above.
 """
 
-import debugpy
+# import debugpy
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -667,8 +667,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.stati
 )
 
 
-debugpy.listen(3000)
-debugpy.wait_for_client()
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 
 def main():

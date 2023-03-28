@@ -58,8 +58,8 @@ class Static_routes(ResourceModule):
         """
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
-            if False:
-                self.run_commands()
+            # if False:
+            self.run_commands()
         return self.result
 
     def generate_commands(self):
@@ -73,23 +73,56 @@ class Static_routes(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
-            wantd = {}
+        # # if state is deleted, empty out wantd and set haved to wantd
+        # if self.state == "deleted":
+        #     haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+        #     wantd = {}
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
+        # # remove superfluous config for overridden and deleted
+        # if self.state in ["overridden", "deleted"]:
+        #     for k, have in iteritems(haved):
+        #         if k not in wantd:
+        #             self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
             self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
 
+        # if self.state in ["overridden", "deleted"]:
+        if (self.state == "deleted" and not wantd) or self.state == "overridden":
+            for k, have in iteritems(haved):
+                self._compare_top_level_keys(want={}, have=have)
+
     def _compare_top_level_keys(self, want, have):
+        # if state is deleted, empty out wantd and set haved to wantd
+        if self.state == "deleted":
+            _have = {}
+            for addf in ["ipv4", "ipv6"]:
+                _temp_sr = {}
+                for k, ha in iteritems(have.get(addf, {})):
+                    if k in want.get(addf, {}):  # or not want.get(addf)
+                        _temp_sr[k] = ha
+                    if _temp_sr:
+                        _have[addf] = _temp_sr
+            if _have:
+                have = _have
+                want = {}
+
+        # remove superfluous config for overridden and deleted
+        # if self.state in ["overridden", "deleted"]:
+        #     # _have = {}
+        #     for addfi in ["ipv4", "ipv6"]:
+        #         for k, ha in iteritems(have.get(addfi, {})):
+        #             # _temp_sr = {}
+        #             if k not in want.get(addfi, {}):
+        #                 # _temp_sr[k] = ha
+        #                 self.compare(parsers=addfi, want={}, have={addfi: ha})
+
         for _afi, routes in want.items():
             self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
+
+        if self.state in ["overridden", "deleted"]:
+            for _afi, routes in have.items():
+                self._compare(s_want={}, s_have=routes, afi=_afi)
 
     def _compare(self, s_want, s_have, afi):
         for name, w_srs in s_want.items():
@@ -112,16 +145,21 @@ class Static_routes(ResourceModule):
                     _routes = {}
                     for rts in adfs.get("routes", []):
                         _dest = rts.get("dest", "")
+                        _sdest = rts.get("dest", "")
                         _topo = rts.get("topology", "")
+
                         for nxh in rts.get("next_hops", []):
                             _forw_rtr_add = nxh.get("forward_router_address", "").upper()
                             _intf = nxh.get("interface", "")
+                            _key = _sdest + _topo + _forw_rtr_add + _intf
+
                             if _afi == "ipv4":
                                 _dest = validate_n_expand_ipv4(self._module, {"address": _dest})
                             dummy_sr = {
                                 "afi": _afi,
                                 "dest": _dest,
                             }
+
                             if _vrf:
                                 dummy_sr["vrf"] = _vrf
                             if _topo:
@@ -131,7 +169,7 @@ class Static_routes(ResourceModule):
                             if _forw_rtr_add:
                                 dummy_sr["forward_router_address"] = _forw_rtr_add
                             dummy_sr.update(nxh)
-                            _key = _dest + _topo + _forw_rtr_add + _intf
+
                             _routes[_key] = dummy_sr
                     _srts[_afi] = _routes
                 _static_rts[_vrf if _vrf else "afis"] = _srts

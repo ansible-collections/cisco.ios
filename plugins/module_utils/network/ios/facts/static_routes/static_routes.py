@@ -145,7 +145,7 @@ class Static_routesFacts(object):
             static_routes_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["static_routes"] = params["config"]
+        facts["static_routes"] = params.get("config")
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
