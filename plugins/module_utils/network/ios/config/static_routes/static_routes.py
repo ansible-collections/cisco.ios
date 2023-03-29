@@ -143,12 +143,12 @@ class Static_routes(ResourceModule):
                         _dest = rts.get("dest", "")
                         _sdest = rts.get("dest", "")
                         _topo = rts.get("topology", "")
-
+                        #  below if specific to special deletes
                         if (
                             self.state == "deleted"
                             and operation == "want"
                             and not rts.get("next_hops")
-                        ):  #  specific to special deletes
+                        ):
                             if _vrf:
                                 if not _delete_spc.get(_vrf):
                                     _delete_spc[_vrf] = {}

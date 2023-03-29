@@ -66,8 +66,8 @@ class Static_routesTemplate(NetworkTemplate):
             "result": {
                 "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
                     {
-                        "_vrf" : "{{ vrf }}",
-                        "_topology" : "{{ topology }}",
+                        "_vrf": "{{ vrf }}",
+                        "_topology": "{{ topology }}",
                         "_afi": "ipv4",
                         "_dest": "{{ dest }}",
                         "_netmask": "{{ netmask }}",
@@ -120,8 +120,8 @@ class Static_routesTemplate(NetworkTemplate):
             "result": {
                 "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv6": [
                     {
-                        "_vrf" : "{{ vrf }}",
-                        "_topology" : "{{ topology }}",
+                        "_vrf": "{{ vrf }}",
+                        "_topology": "{{ topology }}",
                         "_afi": "ipv6",
                         "_dest": "{{ dest }}",
                         "interface": "{{ interface }}",
