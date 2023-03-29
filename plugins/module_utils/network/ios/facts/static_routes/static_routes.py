@@ -89,14 +89,15 @@ class Static_routesFacts(object):
         afi_v4 = strout.pop("ipv4", None)
         afi_v6 = strout.pop("ipv6", None)
 
-        _triv_static_route = {"address_families": []}
+        if afi_v4 or afi_v6:
+            _triv_static_route = {"address_families": []}
 
-        if afi_v4:
-            _triv_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
-        if afi_v6:
-            _triv_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
+            if afi_v4:
+                _triv_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
+            if afi_v6:
+                _triv_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
 
-        _static_route_facts.append(_triv_static_route)
+            _static_route_facts.append(_triv_static_route)
 
         for k, v in strout.items():
             afi_v4 = v.pop("ipv4", None)
@@ -113,7 +114,6 @@ class Static_routesFacts(object):
                 _vrf_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
 
             _static_route_facts.append(_vrf_static_route)
-
         return _static_route_facts
 
     def populate_facts(self, connection, ansible_facts, data=None):

@@ -65,21 +65,6 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    # def load_fixtures(self, commands=None, transport="cli"):
-    #     # def load_from_file(*args, **kwargs):
-    #     #     return load_fixture("ios_static_routes_config.cfg")
-
-    #     # self.execute_show_command.side_effect = load_from_file
-    #     self.execute_show_command.return_value = dedent(
-    #         """\
-    #         ip route vrf ansible_vrf 0.0.0.0 0.0.0.0 198.51.101.1 name test_vrf_1 track 150 tag 100
-    #         ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf_2 track 175 tag 50
-    #         ip route vrf ansible_vrf 192.51.110.0 255.255.255.255 GigabitEthernet0/2 192.51.111.1 10 name partner
-    #         ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 60
-    #         ipv6 route 2001:DB8:0:3::/64 GigabitEthernet0/2 2001:DB8:0:3::2 tag 105 name test_v6
-    #         """
-    #     )
-
     def test_ios_static_routes_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -142,8 +127,8 @@ class TestIosStaticRoutesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast",
             "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
+            "ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast",
         ]
         self.assertEqual(result["commands"], commands)
 

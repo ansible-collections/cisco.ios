@@ -58,7 +58,6 @@ class Static_routes(ResourceModule):
         """
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
-            # if False:
             self.run_commands()
         return self.result
 
@@ -136,7 +135,6 @@ class Static_routes(ResourceModule):
         if param:
             for srs in param:
                 _vrf = srs.get("vrf")
-                # _add_fam = srs.get("address_families")
                 _srts = {}
                 for adfs in srs.get("address_families", []):
                     _afi = adfs.get("afi")
