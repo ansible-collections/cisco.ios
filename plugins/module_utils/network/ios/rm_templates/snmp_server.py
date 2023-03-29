@@ -281,9 +281,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<version>v1|v3|v2c))?
                 (\s(?P<version_option>auth|noauth|priv))?
                 (\scontext\s(?P<context>\S+))?
-                (\snotify\s(?P<notify>\S+))?
                 (\sread\s(?P<read>\S+))?
                 (\swrite\s(?P<write>\S+))?
+                (\snotify\s(?P<notify>\S+))?
                 (\saccess\s(?P<acl_v4>\S+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 """, re.VERBOSE,
@@ -293,9 +293,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' ' + version) if version is defined else '' }}"
                       "{{ (' ' + version_option) if version_option is defined else '' }}"
                       "{{ (' context ' + context) if context is defined else '' }}"
-                      "{{ (' notify ' + notify) if notify is defined else '' }}"
                       "{{ (' read ' + read) if read is defined else '' }}"
                       "{{ (' write ' + write) if write is defined else '' }}"
+                      "{{ (' notify ' + notify) if notify is defined else '' }}"
                       "{{ (' access ' + acl_v4) if acl_v4 is defined else '' }}"
                       "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}",
             "result": {
@@ -397,8 +397,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\s(?P<version>v1|v3|v2c))?
                 (\s(?P<version_option>auth|encrypted))?
-                (\saccess\s(?P<acl_v4>\S+|\d+))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
+                (\saccess\s(?P<acl_v4>\S+|\d+))?
                 (\svrf\s(?P<vrf>\S+))?
                 """, re.VERBOSE,
             ),
@@ -1015,10 +1015,10 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.transceiver_all",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\stransceiver-all
+                ^snmp-server\senable\straps\stransceiver\sall
                 """, re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps transceiver-all",
+            "setval": "snmp-server enable traps transceiver all",
             "result": {
                 "traps": {
                     "transceiver_all": True,
