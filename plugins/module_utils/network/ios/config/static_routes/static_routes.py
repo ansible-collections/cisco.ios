@@ -69,7 +69,7 @@ class Static_routes(ResourceModule):
         wantd, delete_spcl = self.list_to_dict(self.want, "want")
         haved, _ = self.list_to_dict(self.have, "have")
 
-        if delete_spcl and haved:
+        if delete_spcl and haved and self.state == "deleted":
             for pk, to_rem in delete_spcl.items():
                 if pk in ["ipv4", "ipv6"]:
                     _afis = haved.get("_afis_")
@@ -100,7 +100,7 @@ class Static_routes(ResourceModule):
 
     def _compare_top_level_keys(self, want, have):
         # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
+        if self.state == "deleted" and have:
             _have = {}
             for addf in ["ipv4", "ipv6"]:
                 _temp_sr = {}
@@ -113,8 +113,9 @@ class Static_routes(ResourceModule):
                 have = _have
                 want = {}
 
-        for _afi, routes in want.items():
-            self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
+        if self.state != "deleted":
+            for _afi, routes in want.items():
+                self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
 
         if self.state in ["overridden", "deleted"]:
             for _afi, routes in have.items():
