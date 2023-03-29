@@ -139,5 +139,3 @@ class Static_routesTemplate(NetworkTemplate):
         },
     ]
     # fmt: on
-
-    # "{{ (' ' + netmask) if netmask is defined else '' }}"
