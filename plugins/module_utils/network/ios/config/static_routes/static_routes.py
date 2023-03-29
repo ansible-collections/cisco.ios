@@ -66,7 +66,7 @@ class Static_routes(ResourceModule):
         want, have and desired state.
         """
         wantd, delete_spcl = self.list_to_dict(self.want, "want")
-        haved, _ = self.list_to_dict(self.have, "have")
+        haved, n_req = self.list_to_dict(self.have, "have")
 
         if delete_spcl and haved and self.state == "deleted":
             for pk, to_rem in delete_spcl.items():
