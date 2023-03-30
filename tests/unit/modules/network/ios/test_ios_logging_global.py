@@ -238,6 +238,87 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
+    def test_ios_logging_global_deleted_check(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            logging on
+            logging count
+            logging buginf
+            logging buffered xml 5099 notifications
+            logging console xml critical
+            logging delimiter tcp
+            logging dmvpn rate-limit 10
+            logging esm config
+            logging exception 4099
+            logging facility local5
+            logging history alerts
+            logging monitor warnings
+            logging origin-id hostname
+            logging persistent batch 4444
+            logging policy-firewall rate-limit 10
+            logging queue-limit esm 150
+            logging rate-limit all 2 except warnings
+            logging server-arp
+            logging reload alerts
+            logging userinfo
+            logging trap errors
+            """,
+        )
+        playbook = dict(
+            config=dict(
+                logging_on="enable",
+                count=True,
+                buffered=dict(size=5099, severity="notifications", xml=True),
+                buginf=True,
+                console=dict(severity="critical", xml=True),
+                delimiter=dict(tcp=True),
+                dmvpn=dict(rate_limit=10),
+                esm=dict(config=True),
+                exception=4099,
+                facility="local5",
+                history=dict(severity="alerts"),
+                monitor=dict(severity="warnings"),
+                origin_id=dict(tag="hostname"),
+                persistent=dict(batch=4444),
+                policy_firewall=dict(rate_limit=10),
+                queue_limit=dict(esm=150),
+                rate_limit=dict(all=True, size=2, except_severity="warnings"),
+                reload=dict(severity="alerts"),
+                server_arp=True,
+                trap="errors",
+                userinfo=True,
+            ),
+        )
+        deleted = [
+            "no logging on",
+            "no logging count",
+            "no logging buginf",
+            "no logging buffered xml 5099 notifications",
+            "no logging console xml critical",
+            "no logging delimiter tcp",
+            "no logging dmvpn rate-limit 10",
+            "no logging esm config",
+            "no logging exception 4099",
+            "no logging facility local5",
+            "no logging history alerts",
+            "no logging monitor warnings",
+            "no logging origin-id hostname",
+            "no logging persistent batch 4444",
+            "no logging policy-firewall rate-limit 10",
+            "no logging queue-limit esm 150",
+            "no logging rate-limit all 2 except warnings",
+            "no logging server-arp",
+            "no logging reload alerts",
+            "no logging userinfo",
+            "no logging trap errors",
+        ]
+        playbook["state"] = "deleted"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+
+        self.maxDiff = None
+        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+
     def test_ios_logging_global_deleted_list(self):
         self.execute_show_command.return_value = dedent(
             """\
