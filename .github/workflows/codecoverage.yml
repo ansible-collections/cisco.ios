@@ -1,4 +1,5 @@
-name: run-cov
+---
+name: Code Coverage
 
 on:
   push:
@@ -6,9 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  #codecoverage
-  codecov:
-    uses: ./.github/workflows/covflow.yml
+  codecoverage:
+    uses: ansible-network/github_actions/.github/workflows/coverage_network_devices.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git

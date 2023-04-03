@@ -1,0 +1,3 @@
+---
+trivial:
+  - Added codecoverage referencing workflow from ansible-network/github_actions and changed workflow filename for consistency.

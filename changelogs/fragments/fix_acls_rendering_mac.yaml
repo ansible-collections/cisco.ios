@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_acls - prevent rendering of mac access-lists in facts.
