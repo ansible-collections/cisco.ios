@@ -1,45 +1,32 @@
 ---
-name: Test collection with codecoverage
+name: Test collection
 
 concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
-on: # yamllint disable-line rule:truthy
-  push:
-    branches: [main]
+on:  # yamllint disable-line rule:truthy
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 jobs:
-  codecoverage:
-    uses: ansible-network/github_actions/.github/workflows/coverage_network_devices.yml@main
-    with:
-      collection_pre_install: >-
-        git+https://github.com/ansible-collections/ansible.utils.git
-        git+https://github.com/ansible-collections/ansible.netcommon.git
   ansible-lint:
     uses: ansible-network/github_actions/.github/workflows/ansible-lint.yml@main
-    if: github.event_name == 'pull_request'
   changelog:
     uses: ansible-network/github_actions/.github/workflows/changelog.yml@main
-    if: github.event_name == 'pull_request'
   sanity:
     uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
-    if: github.event_name == 'pull_request'
   unit-galaxy:
     uses: ansible-network/github_actions/.github/workflows/unit_galaxy.yml@main
-    if: github.event_name == 'pull_request'
   unit-source:
     uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
-    if: github.event_name == 'pull_request'
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
   all_green:
-    if: ${{ always() }} && github.event_name == 'pull_request'
+    if: ${{ always() }}
     needs:
       - ansible-lint
       - changelog
