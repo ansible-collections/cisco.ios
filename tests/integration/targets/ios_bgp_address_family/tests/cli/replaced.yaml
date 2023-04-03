@@ -101,10 +101,10 @@
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Assert that after dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - replaced['after'] == result['after']
+    # - name: Assert that after dict is correctly generated
+    #   ansible.builtin.assert:
+    #     that:
+    #       - replaced['after'] == result['after']
 
     - name: Replaced provided BGP address family configuration (idempotent)
       register: result

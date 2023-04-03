@@ -30,30 +30,30 @@ merged:
               metric: 10
               set: true
           - ospf:
-              process_id: 123
-              match:
-                internal: true
-                externals:
-                  type_1: true
-                  type_2: true
-                nssa_externals:
-                  type_1: true
-                  type_2: true
-              metric: 10
-              route_map: bar
-          - ospf:
               process_id: 124
-          - ospfv3:
-              process_id: 123
+          - ospf:
               match:
-                internal: true
                 externals:
                   type_1: true
                   type_2: true
+                internal: true
                 nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10
+              process_id: 123
+              route_map: bar
+          - ospfv3:
+              match:
+                externals:
+                  type_1: true
+                  type_2: true
+                internal: true
+                nssa_externals:
+                  type_1: true
+                  type_2: true
+              metric: 10
+              process_id: 123
               route_map: bar
       - afi: ipv4
         aggregate_addresses:
@@ -86,19 +86,19 @@ merged:
       - afi: ipv6
         redistribute:
           - ospf:
-              process_id: 124
+              include_connected: true
               match:
-                internal: true
                 externals:
                   type_1: true
                   type_2: true
+                internal: true
                 nssa_externals:
                   type_1: true
                   type_2: true
               metric: 10
+              process_id: 124
               route_map: bar
-              include_connected: true
-    as_number: "65000"
+    as_number: '65000'
 
 overridden:
   commands:

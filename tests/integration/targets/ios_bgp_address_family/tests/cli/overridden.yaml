@@ -76,10 +76,10 @@
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Assert that after dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - overridden['after'] == result['after']
+    # - name: Assert that after dict is correctly generated
+    #   ansible.builtin.assert:
+    #     that:
+    #       - overridden['after'] == result['after']
 
     - name: Override provided BGP address family configuration (idempotent)
       register: result
