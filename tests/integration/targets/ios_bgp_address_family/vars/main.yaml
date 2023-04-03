@@ -98,7 +98,7 @@ merged:
               metric: 10
               process_id: 124
               route_map: bar
-    as_number: '65000'
+    as_number: "65000"
 
 overridden:
   commands:
