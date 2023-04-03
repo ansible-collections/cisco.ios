@@ -1122,6 +1122,10 @@ class TestIosAclsModule(TestIosModule):
                         20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
                         30 permit icmp any any
                         40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
+                    Extended MAC access list system-cpp-bpdu-range
+                        permit any 0180.c200.0000 0000.0000.0003
+                    Extended MAC access list system-cpp-cdp
+                        permit any host 0100.0ccc.cccc
                     """,
                 ),
                 state="parsed",
