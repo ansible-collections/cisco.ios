@@ -792,3 +792,27 @@ releases:
       - ospfv2_module_docfix.yml
       - retry_ios_command.yaml
     release_date: "2023-02-28"
+  4.4.1:
+    changes:
+      bugfixes:
+        - Fix parser to read groups in snmp-server.
+        - Fix parser to read transceiver in snmp-server.
+        - ios_acls - fix processing of source information on extended acls entries.
+        - ios_acls - prevent rendering of mac access-lists in facts.
+        - ios_static_routes - fix configure generation order for ipv4 and ipv6 routes.
+        - ios_static_routes - fix module to be idempotent with replaced and overridden
+          state.
+      doc_changes:
+        - ios_banner - Enhance example with comment.
+    fragments:
+      - add_comment_doc.yml
+      - add_uts_missing_old_module.yaml
+      - ci_codecov.yaml
+      - codecov_fix.yml
+      - codecov_from_repo.yml
+      - codecov_workfow_fix.yml
+      - fix_acls_rendering_mac.yaml
+      - fix_host_acls_rendering.yaml
+      - fix_static_routes.yaml
+      - snmp_fix_cmd_rendering.yaml
+    release_date: "2023-04-04"
