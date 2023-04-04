@@ -1913,8 +1913,9 @@ EXAMPLES = """
         min_holdtime: 150
     state: merged
 
-# Task Output
-# -------------------------
+# Task Output:
+# ------------
+
 # before: {}
 #
 # commands:
@@ -1980,7 +1981,7 @@ EXAMPLES = """
 #     min_holdtime: 150
 #
 # After state:
-# -------------
+# ------------
 #
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
@@ -2044,7 +2045,7 @@ EXAMPLES = """
     state: replaced
 
 # Task Output:
-# ---------------
+# ------------
 #
 # before:
 #   as_number: '65000'
@@ -2158,7 +2159,7 @@ EXAMPLES = """
     state: deleted
 
 # Task Output:
-# ---------------
+# ------------
 
 # before:
 #   as_number: '65000'
@@ -2238,7 +2239,7 @@ EXAMPLES = """
     state: deleted
 
 # Task Output:
-# ---------------
+# ------------
 
 # before:
 #   as_number: '65000'
@@ -2317,7 +2318,7 @@ EXAMPLES = """
     state: purged
 
 # Task Output:
-# ---------------
+# ------------
 
 # before:
 #   as_number: '65000'
@@ -2388,9 +2389,9 @@ EXAMPLES = """
     config:
     state: gathered
 
-# Module Execution Result:
-# ------------------------
-#
+# Task Output:
+# ------------
+
 # gathered:
 #   as_number: '65000'
 #   bgp:
@@ -2434,80 +2435,282 @@ EXAMPLES = """
 #     holdtime: 200
 #     keepalive: 100
 #     min_holdtime: 150
-# invocation:
-#   module_args:
-#     config: null
-#     running_config: null
-#     state: gathered
+
 
 # Using Rendered
 
 - name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_bgp_global:
     config:
-      as_number: 65000
+      aggregate_addresses:
+      - address: 192.0.2.1
+        attribute_map: testMap1
+        netmask: 255.255.255.0
+        summary_only: true
+      - address: 192.0.2.2
+        as_set: true
+        netmask: 255.255.255.0
+      - address: 192.0.2.3
+        as_set: true
+        netmask: 255.255.255.0
+      as_number: '65000'
+      auto_summary: true
       bgp:
-        advertise_best_external: true
-        bestpath:
-          - compare_routerid: true
+        additional_paths:
+          install: true
+          receive: true
+        aggregate_timer: 0
+        always_compare_med: true
+        asnotation: true
+        bestpath_options:
+          aigp: true
+          compare_routerid: true
+          med:
+            confed: true
+            missing_as_worst: true
+        confederation:
+          identifier: '22'
+        consistency_checker:
+          error_message:
+            interval: 10
+            set: true
         dampening:
-          penalty_half_time: 1
-          reuse_route_val: 1
-          suppress_route_val: 1
-          max_suppress: 1
+          route_map: routeMap1Test
+        deterministic_med: true
+        graceful_restart:
+          restart_time: 2
+          stalepath_time: 22
         graceful_shutdown:
-          neighbors:
-            time: 50
-          community: 100
-          local_preference: 100
+          community: '77'
+          local_preference: 230
+          vrfs:
+            time: 31
+        inject_maps:
+        - copy_attributes: true
+          exist_map_name: Testmap3
+          name: map2
+        - copy_attributes: true
+          exist_map_name: Testmap2
+          name: map1
+        listen:
+          limit: 200
+          range:
+            host_with_subnet: 192.0.2.1/24
+            peer_group: PaulNetworkGroup
         log_neighbor_changes: true
-        nopeerup_delay:
-          - post_boot: 10
+        maxas_limit: 2
+        maxcommunity_limit: 3
+        maxextcommunity_limit: 3
+        nexthop:
+          route_map: RouteMap1
+          trigger:
+            delay: 2
+        nopeerup_delay_options:
+          cold_boot: 2
+          nsf_switchover: 10
+          post_boot: 22
+          user_initiated: 22
+        recursion: true
+        redistribute_internal: true
+        refresh:
+          max_eor_time: 700
+          stalepath_time: 800
+        router_id:
+          vrf: true
+        scan_time: 22
+        slow_peer:
+          detection:
+            threshold: 345
+          split_update_group:
+            dynamic: true
+            permanent: true
+        sso: true
+        suppress_inactive: true
+        update_delay: 2
+        update_group: true
+      bmp:
+        buffer_size: 22
+        server: 2
+      distance:
+        bgp:
+          routes_external: 2
+          routes_internal: 3
+          routes_local: 4
+        mbgp:
+          routes_external: 2
+          routes_internal: 3
+          routes_local: 5
+      distributes:
+      - in: true
+        prefix: prefixTest
+      - gateway: gatewayTest
+        out: true
+      - acl: '300'
+        interface: Loopback0
+        out: true
+      maximum_paths:
+        ibgp: 2
+        paths: 2
+      maximum_secondary_paths:
+        ibgp: 22
+        paths: 22
+      neighbors:
+      - neighbor_address: 192.0.2.10
+        remote_as: '64500'
+        update_source: Loopback1
+      - activate: true
+        neighbor_address: 192.0.2.11
+        remote_as: '45000'
+        send_community:
+          extended: true
+      - activate: true
+        neighbor_address: 192.0.2.12
+        remote_as: '45000'
+      - neighbor_address: 192.0.2.13
+        remote_as: '6553601'
+      - advertise:
+          diverse_path:
+            backup: true
+        neighbor_address: 192.0.2.8
+        route_reflector_client: true
+      - neighbor_address: 192.0.2.9
+        remote_as: '64500'
+        route_maps:
+        - in: true
+          name: rmp1
+        - in: true
+          name: rmp2
+        update_source: Loopback0
+      - activate: true
+        advertise:
+          additional_paths:
+            group_best: true
+        neighbor_address: 2001:DB8::1037
+      - neighbor_address: testNebTag
+        peer_group: '5'
+        soft_reconfiguration: true
+        version: 4
       networks:
-        - address: 192.0.2.3
-        - address: 192.0.2.2
-      neighbor:
-        - address: 192.0.2.1
-          description: merge neighbor
-          remote_as: 100
-          aigp:
-            send:
-              cost_community:
-                id: 100
-                poi:
-                  igp_cost: true
-                  transitive: true
-          route_map:
-            name: test-route
-            out: true
+      - address: 192.0.2.15
+        backdoor: true
+        netmask: 55.255.255.0
+        route_map: mp1
+      - address: 192.0.2.16
+        backdoor: true
+        netmask: 255.255.255.0
+        route_map: mp2
+      - address: 192.0.2.17
+        backdoor: true
+        netmask: 255.255.255.0
+        route_map: mp2
       redistribute:
-        - connected:
-            metric: 10
-      timers:
-        keepalive: 100
-        holdtime: 200
-        min_holdtime: 150
+      - static:
+          metric: 33
+          route_map: rmp1
+          set: true
+      - application:
+          metric: 22
+          name: app1
+      - application:
+          metric: 33
+          name: app2
+          route_map: mp1
+      - connected:
+          metric: 22
+          set: true
+      - mobile:
+          metric: 211
+          set: true
     state: rendered
 
-# Module Execution Result:
-# ------------------------
-#
+
+# Task Output:
+# ------------
+
 # rendered:
-#   - router bgp 65000
-#   - timers bgp 100 200 150
-#   - bgp advertise-best-external
-#   - bgp bestpath compare-routerid
-#   - bgp dampening 1 1 1 1
-#   - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-#   - bgp log-neighbor-changes
-#   - bgp nopeerup-delay post-boot 10
-#   - network 192.0.2.3
-#   - network 192.0.2.2
-#   - neighbor 192.0.2.1 remote-as 100
-#   - neighbor 192.0.2.1 description merge neighbor
-#   - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
-#   - neighbor 192.0.2.1 route-map test-route out
-#   - redistribute connected metric 10
+# - router bgp 65000
+# - auto-summary
+# - bmp buffer-size 22
+# - bmp server 2
+# - distance bgp 2 3 4
+# - distance mbgp 2 3 5
+# - maximum-paths 2
+# - maximum-paths ibgp 2
+# - maximum-secondary-paths 22
+# - maximum-secondary-paths ibgp 22
+# - bgp additional-paths install receive
+# - bgp aggregate-timer 0
+# - bgp always-compare-med
+# - bgp asnotation dot
+# - bgp bestpath aigp ignore
+# - bgp bestpath compare-routerid
+# - bgp bestpath med confed missing-as-worst
+# - bgp confederation identifier 22
+# - bgp consistency-checker error-message interval 10
+# - bgp dampening route-map routeMap1Test
+# - bgp deterministic-med
+# - bgp graceful-restart restart-time 2
+# - bgp graceful-restart stalepath-time 22
+# - bgp graceful-shutdown all vrfs 31 local-preference 230 community 77
+# - bgp listen limit 200
+# - bgp listen range 192.0.2.1/24 peer-group PaulNetworkGroup
+# - bgp log-neighbor-changes
+# - bgp maxas-limit 2
+# - bgp maxcommunity-limit 3
+# - bgp maxextcommunity-limit 3
+# - bgp nexthop route-map RouteMap1
+# - bgp nexthop trigger delay 2
+# - bgp nopeerup-delay cold-boot 2
+# - bgp nopeerup-delay post-boot 22
+# - bgp nopeerup-delay nsf-switchover 10
+# - bgp nopeerup-delay user-initiated 22
+# - bgp recursion host
+# - bgp redistribute-internal
+# - bgp refresh max-eor-time 700
+# - bgp refresh stalepath-time 800
+# - bgp router-id vrf auto-assign
+# - bgp scan-time 22
+# - bgp slow-peer detection threshold 345
+# - bgp slow-peer split-update-group dynamic permanent
+# - bgp sso route-refresh-enable
+# - bgp suppress-inactive
+# - bgp update-delay 2
+# - bgp update-group split as-override
+# - bgp inject-map map2 exist-map Testmap3 copy-attributes
+# - bgp inject-map map1 exist-map Testmap2 copy-attributes
+# - distribute-list prefix prefixTest in
+# - distribute-list gateway gatewayTest out
+# - distribute-list 300 out Loopback0
+# - aggregate-address 192.0.2.1 255.255.255.0 summary-only attribute-map testMap1
+# - aggregate-address 192.0.2.2 255.255.255.0 as-set
+# - aggregate-address 192.0.2.3 255.255.255.0 as-set
+# - network 192.0.2.15 mask 55.255.255.0 route-map mp1 backdoor
+# - network 192.0.2.16 mask 255.255.255.0 route-map mp2 backdoor
+# - network 192.0.2.17 mask 255.255.255.0 route-map mp2 backdoor
+# - neighbor 192.0.2.10 remote-as 64500
+# - neighbor 192.0.2.10 update-source Loopback1
+# - neighbor 192.0.2.11 remote-as 45000
+# - neighbor 192.0.2.11 activate
+# - neighbor 192.0.2.11 send-community extended
+# - neighbor 192.0.2.12 remote-as 45000
+# - neighbor 192.0.2.12 activate
+# - neighbor 192.0.2.13 remote-as 6553601
+# - neighbor 192.0.2.8 advertise diverse-path backup
+# - neighbor 192.0.2.8 route-reflector-client
+# - neighbor 192.0.2.9 remote-as 64500
+# - neighbor 192.0.2.9 update-source Loopback0
+# - neighbor 192.0.2.9 route-map rmp1 in
+# - neighbor 192.0.2.9 route-map rmp2 in
+# - neighbor 2001:DB8::1037 activate
+# - neighbor 2001:DB8::1037 advertise additional-paths group-best
+# - neighbor testNebTag peer-group 5
+# - neighbor testNebTag soft-reconfiguration inbound
+# - neighbor testNebTag version 4
+# - redistribute static metric 33 route-map rmp1
+# - redistribute application app1 metric 22
+# - redistribute application app2 metric 33 route-map mp1
+# - redistribute connected metric 22
+# - redistribute mobile metric 211
 
 # Using Parsed
 
@@ -2605,9 +2808,9 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Module Execution Result:
-# ------------------------
-#
+# Task Output:
+# ------------
+
 # parsed:
 #     aggregate_addresses:
 #     - address: 192.0.2.1
