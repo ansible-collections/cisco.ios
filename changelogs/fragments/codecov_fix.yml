@@ -1,3 +1,4 @@
 ---
 trivial:
   - Fix codecov flow so it runs on merge
+  - Add 2.16 ignore in sanity
