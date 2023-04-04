@@ -1,4 +1,0 @@
----
-bugfixes:
-  - Fix parser to read groups in snmp-server.
-  - Fix parser to read transceiver in snmp-server.

@@ -1,4 +1,0 @@
----
-bugfixes:
-  - ios_static_routes - fix configure generation order for ipv4 and ipv6 routes.
-  - ios_static_routes - fix module to be idempotent with replaced and overridden state.
