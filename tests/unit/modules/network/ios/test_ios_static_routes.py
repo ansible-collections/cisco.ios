@@ -231,3 +231,16 @@ class TestIosStaticRoutesModule(TestIosModule):
         result = self.execute_module(changed=False)
         commands = test_vars.get("commands")
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    # def test_ios_static_routes_gathered(self):
+    #     test_vars = self.test_core.get("gathered")
+    #     self.execute_show_command.return_value = test_vars.get("before")
+    #     set_module_args(
+    #         dict(
+    #             config=test_vars.get("config"),
+    #             state=test_vars.get("operation_state"),
+    #         ),
+    #     )
+    #     result = self.execute_module(changed=False)
+    #     commands = test_vars.get("structured_data").get("gathered")
+    #     self.assertEqual(result["gathered"], commands)
