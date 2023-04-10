@@ -429,7 +429,6 @@ EXAMPLES = """
 
 # Before state:
 # -------------
-#
 # vios#show running-config | include ip route|ipv6 route
 # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
 # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
@@ -848,6 +847,57 @@ EXAMPLES = """
 # - ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
 # - ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
 # - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
+
+# Using parsed
+
+# File: parsed.cfg
+# ----------------
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+
+- name: Parse the provided configuration with the existing running configuration
+  cisco.ios.ios_static_routes:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task Output
+# -----------
+# parsed:
+# - address_families:
+#   - afi: ipv4
+#     routes:
+#     - dest: 198.51.100.0/24
+#       next_hops:
+#       - forward_router_address: 198.51.101.3
+#         name: route_3
+#       - distance_metric: 30
+#         forward_router_address: 198.51.101.2
+#         name: route_2
+#       - distance_metric: 110
+#         forward_router_address: 198.51.101.1
+#         multicast: true
+#         name: route_1
+#         tag: 40
+#   - afi: ipv6
+#     routes:
+#     - dest: 2001:DB8:0:3::/64
+#       next_hops:
+#       - forward_router_address: 2001:DB8:0:3::2
+#         name: test_v6
+#         tag: 105
+# - address_families:
+#   - afi: ipv4
+#     routes:
+#     - dest: 192.0.2.0/24
+#       next_hops:
+#       - forward_router_address: 192.0.2.1
+#         name: test_vrf
+#         tag: 50
+#         track: 150
+#   vrf: blue
 """
 
 RETURN = """

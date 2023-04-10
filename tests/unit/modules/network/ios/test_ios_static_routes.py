@@ -108,7 +108,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         for _state in state_split:
             if len(_state) >= 6:
                 _psudo_before, operation_state = "", ""
-                _before, _playbook, _commands, _config = None, None, None, None
+                _before, _playbook, _commands, _config, _changed = None, None, None, None, True
                 # just state
                 top_split = _state.split("- name")
                 find_before = top_split[0].split("-------------")
@@ -137,8 +137,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                 if operation_state not in ["parsed", "gathered"]:
                     if operation_state == "rendered":
                         extract_commands_to_assert = (find_playbook[1].split("# rendered:"))[1]
+                        _changed = False
                     else:
                         extract_commands_to_assert = (find_playbook[1].split("# commands:"))[1]
+                        _changed = True
 
                     extract_commands_to_assert = (extract_commands_to_assert.split("# after:"))[0]
                     is_commands, _commands = identify_yaml(
@@ -155,6 +157,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                             "commands": _commands,
                         }
                 else:
+                    _changed = False
                     if operation_state == "gathered":
                         extract_commands_to_assert = (find_playbook[1].split("# gathered:"))[1]
                         _config = _playbook[0][module_fqcn]["config"]
@@ -171,6 +174,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                         "before": _before,
                         "playbook": _playbook,
                         "config": _config,
+                        "changed": _changed,
                         "structured_data": _commands,
                     }
 
@@ -214,3 +218,16 @@ class TestIosStaticRoutesModule(TestIosModule):
         result = self.execute_module(changed=True)
         commands = test_vars.get("commands")
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_static_routes_rendered(self):
+        test_vars = self.test_core.get("rendered")
+        self.execute_show_command.return_value = test_vars.get("before")
+        set_module_args(
+            dict(
+                config=test_vars.get("config"),
+                state=test_vars.get("operation_state"),
+            ),
+        )
+        result = self.execute_module(changed=False)
+        commands = test_vars.get("commands")
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
