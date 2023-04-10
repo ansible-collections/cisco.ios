@@ -10,12 +10,14 @@ __metaclass__ = type
 
 from textwrap import dedent
 
+import yaml
+
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
+from ansible_collections.cisco.ios.plugins.modules.ios_static_routes import EXAMPLES as examples
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
-from ansible_collections.cisco.ios.plugins.modules.ios_static_routes import EXAMPLES as examples
+
 from .ios_module import TestIosModule
-import yaml
 
 
 class TestIosStaticRoutesModule(TestIosModule):
@@ -128,7 +130,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                 find_playbook = top_split[1].split("# Task Output")
                 probable_playbook = "- name" + find_playbook[0]
                 is_playbook, _playbook = identify_yaml(
-                    probable_playbook
+                    probable_playbook,
                 )  # playbook is scrapped out
 
                 if operation_state not in ["parsed", "gathered"]:
@@ -139,7 +141,7 @@ class TestIosStaticRoutesModule(TestIosModule):
 
                     extract_commands_to_assert = (extract_commands_to_assert.split("# after:"))[0]
                     is_commands, _commands = identify_yaml(
-                        extract_commands_to_assert.replace("#", "")
+                        extract_commands_to_assert.replace("#", ""),
                     )  # commands to assert is scrapped
 
                     if is_playbook and is_commands:
@@ -156,7 +158,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                         extract_commands_to_assert = (find_playbook[1].split("# parsed:"))[1]
                     extract_commands_to_assert = "gathered:" + extract_commands_to_assert
                     is_commands, _commands = identify_yaml(
-                        extract_commands_to_assert.replace("#", "")
+                        extract_commands_to_assert.replace("#", ""),
                     )
                     _top_arg[operation_state] = {
                         "operation_state": operation_state,
