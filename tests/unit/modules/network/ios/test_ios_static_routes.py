@@ -73,10 +73,25 @@ class TestIosStaticRoutesModule(TestIosModule):
 
     def test(self):
         """
-        Main entry point for module execution
+        Scraps documentation to generate components for Unit tests
 
-        :returns: the result form module invocation
+        :returns: the result components needed for tests
         """
+
+        # TODO think of a generic place for me
+        # TODO refactor me to be more readable
+        all_states = [
+            "merged",
+            "replaced",
+            "overridden",
+            "purged",
+            "gathered",
+            "rendered",
+            "parsed",
+            "deleted",
+            "present",
+            "absent",
+        ]
 
         def identify_yaml(string_data):
             try:
@@ -87,32 +102,17 @@ class TestIosStaticRoutesModule(TestIosModule):
             except yaml.YAMLError:
                 return False, None
 
-        print("off to module exec")
         _top_arg = {}
         state_split = self.mock_EXAMPLE_check.split("# Using")
         for _state in state_split:
-            if len(_state) >= 10:
-                _psudo_before, _task_args, operation_state = "", {}, ""
+            if len(_state) >= 6:
+                _psudo_before, operation_state = "", ""
                 _before, _playbook, _commands = None, None, None
                 # just state
-                print("*************************************")
-                print(_state)
-                print("*************************************")
                 top_split = _state.split("- name")
                 find_before = top_split[0].split("-------------")
 
-                for _st in [
-                    "merged",
-                    "replaced",
-                    "overridden",
-                    "purged",
-                    "gathered",
-                    "rendered",
-                    "parsed",
-                    "deleted",
-                    "present",
-                    "absent",
-                ]:
+                for _st in all_states:
                     if _st in find_before[0].lower():
                         operation_state = _st  # operation state is stored
 
@@ -167,12 +167,6 @@ class TestIosStaticRoutesModule(TestIosModule):
                         "structured_data": _commands,
                     }
 
-                print("_--------------------------------------_")
-                print(_top_arg)
-                # _top_arg.append(_task_args)
-                print("_--------------------------------------_")
-
-        print("Debug here")
         return _top_arg
 
     def test_ios_static_routes_merged(self):
