@@ -13,7 +13,6 @@ from textwrap import dedent
 import yaml
 
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
-
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
