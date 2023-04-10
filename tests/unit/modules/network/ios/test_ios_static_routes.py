@@ -14,7 +14,6 @@ import yaml
 
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
 
-# from ansible_collections.cisco.ios.plugins.modules.ios_static_routes import EXAMPLES as examples
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -183,7 +182,33 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.execute_show_command.return_value = test_vars.get("before")
         set_module_args(
             dict(
-                config=test_vars.get("playbook")[0]["cisco.ios.ios_static_routes"]["config"],
+                config=test_vars.get("config"),
+                state=test_vars.get("operation_state"),
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = test_vars.get("commands")
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_static_routes_overridden(self):
+        test_vars = self.test_core.get("overridden")
+        self.execute_show_command.return_value = test_vars.get("before")
+        set_module_args(
+            dict(
+                config=test_vars.get("config"),
+                state=test_vars.get("operation_state"),
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = test_vars.get("commands")
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_static_routes_replaced(self):
+        test_vars = self.test_core.get("replaced")
+        self.execute_show_command.return_value = test_vars.get("before")
+        set_module_args(
+            dict(
+                config=test_vars.get("config"),
                 state=test_vars.get("operation_state"),
             ),
         )
