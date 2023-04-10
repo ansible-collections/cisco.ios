@@ -13,7 +13,8 @@ from textwrap import dedent
 import yaml
 
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
-from ansible_collections.cisco.ios.plugins.modules.ios_static_routes import EXAMPLES as examples
+
+# from ansible_collections.cisco.ios.plugins.modules.ios_static_routes import EXAMPLES as examples
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -59,7 +60,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-        self.mock_EXAMPLE_check = examples
+        self.mock_EXAMPLE_check = ios_static_routes.EXAMPLES
         self.test_core = self.test()
 
     def tearDown(self):
@@ -80,6 +81,7 @@ class TestIosStaticRoutesModule(TestIosModule):
 
         # TODO think of a generic place for me
         # TODO refactor me to be more readable
+        # TODO add fast failures
         all_states = [
             "merged",
             "replaced",
@@ -92,6 +94,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "present",
             "absent",
         ]
+        module_fqcn = "cisco.ios.ios_static_routes"
 
         def identify_yaml(string_data):
             try:
@@ -107,7 +110,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         for _state in state_split:
             if len(_state) >= 6:
                 _psudo_before, operation_state = "", ""
-                _before, _playbook, _commands = None, None, None
+                _before, _playbook, _commands, _config = None, None, None, None
                 # just state
                 top_split = _state.split("- name")
                 find_before = top_split[0].split("-------------")
@@ -145,25 +148,31 @@ class TestIosStaticRoutesModule(TestIosModule):
                     )  # commands to assert is scrapped
 
                     if is_playbook and is_commands:
+                        _config = _playbook[0][module_fqcn]["config"]
                         _top_arg[operation_state] = {
                             "operation_state": operation_state,
                             "before": _before,
                             "playbook": _playbook,
+                            "config": _config,
                             "commands": _commands,
                         }
                 else:
                     if operation_state == "gathered":
                         extract_commands_to_assert = (find_playbook[1].split("# gathered:"))[1]
+                        _config = _playbook[0][module_fqcn]["config"]
                     if operation_state == "parsed":
                         extract_commands_to_assert = (find_playbook[1].split("# parsed:"))[1]
+                        _config = _playbook[0][module_fqcn]["running_config"]
                     extract_commands_to_assert = "gathered:" + extract_commands_to_assert
                     is_commands, _commands = identify_yaml(
                         extract_commands_to_assert.replace("#", ""),
                     )
+
                     _top_arg[operation_state] = {
                         "operation_state": operation_state,
                         "before": _before,
                         "playbook": _playbook,
+                        "config": _config,
                         "structured_data": _commands,
                     }
 
