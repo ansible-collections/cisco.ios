@@ -49,7 +49,7 @@ def ip_tmplt(config_data):
 
 def ipv4_dhcp(config_data):
     _data = config_data.get("ipv4", {}).get("dhcp")
-    if _data.get("enable") == False:
+    if not _data.get("enable", True):
         return None
     cmd = "ip address dhcp"
     if _data.get("client_id"):
