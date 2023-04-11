@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 DOCUMENTATION = """
 module: ios_pmtu
@@ -61,11 +62,11 @@ pmtu:
 """
 
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    run_commands,
-)
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
 
 
 def do_ping(module, ping_params):
@@ -110,14 +111,13 @@ def build_ping(ping_params):
 
 def parse_ping(ping_stats):
     rate_re = re.compile(
-        "^\\w+\\s+\\w+\\s+\\w+\\s+(?P<pct>\\d+)\\s+\\w+\\s+\\((?P<rx>\\d+)/(?P<tx>\\d+)\\)"
+        "^\\w+\\s+\\w+\\s+\\w+\\s+(?P<pct>\\d+)\\s+\\w+\\s+\\((?P<rx>\\d+)/(?P<tx>\\d+)\\)",
     )
     rate = rate_re.match(ping_stats)
     return rate.group("pct")
 
 
 def main():
-
     # Constants for MTU size
     ETH_MIN_MTU_SIZE = 64
     # Fragmentation and Reassembly.
@@ -131,7 +131,10 @@ def main():
         dest=dict(type="str", required=True),
         max_size=dict(type="int", required=False, default=1600),
         max_range=dict(
-            type="int", required=False, choices=MAX_RANGE_CHOICES, default=512
+            type="int",
+            required=False,
+            choices=MAX_RANGE_CHOICES,
+            default=512,
         ),
         source=dict(type="str", required=False, default=None),
         vrf=dict(type="str", required=False, default=None),
@@ -142,10 +145,7 @@ def main():
     results = {}
 
     # max_size must be between ETH_MIN_MTU_SIZE and ETH_MAX_MTU_SIZE
-    if (
-        ping_params["max_size"] < ETH_MIN_MTU_SIZE
-        or ping_params["max_size"] > ETH_MAX_MTU_SIZE
-    ):
+    if ping_params["max_size"] < ETH_MIN_MTU_SIZE or ping_params["max_size"] > ETH_MAX_MTU_SIZE:
         module.fail_json(
             msg=f"The value of the max_size option({ping_params['max_size']}) "
             f"must be between {ETH_MIN_MTU_SIZE} and {ETH_MAX_MTU_SIZE}.",
@@ -161,9 +161,7 @@ def main():
 
     loss = do_ping(module, ping_params)
     if loss == 100:
-        module.fail_json(
-            msg=f"Basic connectivity to {ping_params['dest']} failed.", **results
-        )
+        module.fail_json(msg=f"Basic connectivity to {ping_params['dest']} failed.", **results)
 
     # Initialize test_size and step
     test_size = ping_params["max_size"]
