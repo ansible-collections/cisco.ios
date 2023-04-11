@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_global - fix configuration of timers under neighbors.
