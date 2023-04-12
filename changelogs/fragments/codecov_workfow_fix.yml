@@ -1,3 +1,0 @@
----
-trivial:
-  - Fixed codecov workflow behavior when a PR is merged.

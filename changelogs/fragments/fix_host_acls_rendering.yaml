@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_acls - fix processing of source information on extended acls entries.

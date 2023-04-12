@@ -159,6 +159,30 @@ class AclsTemplate(NetworkTemplate):
             "shared": True,
         },
         {
+            "name": "_mac_acls_name",  #
+            "getval": re.compile(
+                r"""^(?P<acl_type>Standard|Extended|Reflexive)*
+                    \s*(?P<afi>MAC)*
+                    \s*access
+                    \s*list*
+                    \s*(?P<acl_name>.+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "compval": "name",
+            "setval": "",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
+                        "afi": "{{ afi }}",
+                    },
+                },
+            },
+            "shared": True,
+        },
+        {
             "name": "remarks",
             "getval": re.compile(
                 r"""\s+remark
