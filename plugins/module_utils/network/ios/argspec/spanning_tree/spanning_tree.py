@@ -37,13 +37,6 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
             "options": {
                 "spanning_tree": {
                     "type": "dict",
-                    "mutually_exclusive": [
-                        [
-                            "portfast_network_default",
-                            "portfast_edge_default",
-                            "portfast_normal_default",
-                        ]
-                    ],
                     "options": {
                         "backbonefast": {"type": "bool"},
                         "bridge_assurance": {"type": "bool"},
@@ -51,19 +44,27 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                         "extend_system_id": {"type": "bool"},
                         "logging": {"type": "bool"},
                         "loopguard_default": {"type": "bool"},
-                        "mode": {"type": "str", "choices": ["mst", "pvst", "rapid-pvst"]},
-                        "pathcost_method": {"type": "str", "choices": ["long", "short"]},
-                        "portfast_network_default": {"type": "bool"},
-                        "portfast_edge_default": {"type": "bool"},
-                        "portfast_normal_default": {"type": "bool"},
+                        "mode": {
+                            "type": "str",
+                            "choices": ["mst", "pvst", "rapid-pvst"],
+                        },
+                        "pathcost_method": {
+                            "type": "str",
+                            "choices": ["long", "short"],
+                        },
+                        "transmit_hold_count": {"type": "int"},
                         "portfast": {
                             "type": "dict",
+                            "mutually_exclusive": [
+                                ["network_default", "edge_default"]
+                            ],
                             "options": {
+                                "network_default": {"type": "bool"},
+                                "edge_default": {"type": "bool"},
                                 "bpdufilter_default": {"type": "bool"},
                                 "bpduguard_default": {"type": "bool"},
                             },
                         },
-                        "transmit_hold_count": {"type": "int"},
                         "uplinkfast": {
                             "type": "dict",
                             "options": {
@@ -71,14 +72,36 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                                 "max_update_rate": {"type": "int"},
                             },
                         },
-                        "vlan": {
+                        "forward_time": {
                             "type": "dict",
+                            "required_together": ["vlan_list", "value"],
                             "options": {
-                                "vlan_list": {"type": "str"},
-                                "forward_time": {"type": "int"},
-                                "hello_time": {"type": "int"},
-                                "max_age": {"type": "int"},
-                                "priority": {
+                                "vlan_list": {"type": "list", "elements": "int"},
+                                "value": {"type": "int"},
+                            },
+                        },
+                        "hello_time": {
+                            "type": "dict",
+                            "required_together": ["vlan_list", "value"],
+                            "options": {
+                                "vlan_list": {"type": "list", "elements": "int"},
+                                "value": {"type": "int"},
+                            },
+                        },
+                        "max_age": {
+                            "type": "dict",
+                            "required_together": ["vlan_list", "value"],
+                            "options": {
+                                "vlan_list": {"type": "list", "elements": "int"},
+                                "value": {"type": "int"},
+                            },
+                        },
+                        "priority": {
+                            "type": "dict",
+                            "required_together": ["vlan_list", "value"],
+                            "options": {
+                                "vlan_list": {"type": "list", "elements": "int"},
+                                "value": {
                                     "type": "int",
                                     "choices": [
                                         0,
@@ -102,7 +125,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                             },
                         },
                     },
-                },
+                }
             },
         },
         "running_config": {"type": "str"},

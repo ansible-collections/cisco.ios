@@ -35,6 +35,20 @@ class Spanning_treeFacts(object):
         self._module = module
         self.argument_spec = Spanning_treeArgs.argument_spec
 
+        spec = deepcopy(self.argument_spec)
+        if subspec:
+            if options:
+                facts_argument_spec = spec[subspec][options]
+            else:
+                facts_argument_spec = spec[subspec]
+        else:
+            facts_argument_spec = spec
+
+        self.generated_spec = utils.generate_dict(facts_argument_spec)
+
+    def get_spanning_tree_data(self, connection):
+        return connection.get("show running-config | section ^spanning-tree")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Spanning_tree network resource
 
@@ -47,14 +61,13 @@ class Spanning_treeFacts(object):
         """
         facts = {}
         objs = []
-
         if not data:
-            data = connection.get()
+            data = self.get_spanning_tree_data(connection)
 
         # parse native config using the Spanning_tree template
         spanning_tree_parser = Spanning_treeTemplate(lines=data.splitlines(), module=self._module)
-        objs = list(spanning_tree_parser.parse().values())
-
+        objs = spanning_tree_parser.parse()
+        
         ansible_facts['ansible_network_resources'].pop('spanning_tree', None)
 
         params = utils.remove_empties(

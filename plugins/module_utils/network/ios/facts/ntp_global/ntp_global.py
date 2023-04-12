@@ -73,7 +73,6 @@ class Ntp_globalFacts(object):
         # parse native config using the Ntp_global template
         ntp_global_parser = Ntp_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = ntp_global_parser.parse()
-
         if objs:
             objs = self.sort_dicts(objs)
 

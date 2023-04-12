@@ -90,6 +90,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree import (
+    Spanning_treeFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
@@ -118,6 +121,7 @@ FACT_RESOURCE_SUBSETS = dict(
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    spanning_tree=Spanning_treeFacts,
 )
 
 

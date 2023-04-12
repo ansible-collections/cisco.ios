@@ -26,122 +26,147 @@ options:
   config:
     description: The provided configurations.
     type: dict
-    mutually_exclusive:
-      - [ "portfast_network_default", "portfast_edge_default", "portfast_normal_default" ]
     suboptions:
-      backbonefast:
-        description:
-          - Use the spanning-tree backbonefast global configuration command on the switch
-          - stack or on a standalone switch to enable the BackboneFast feature.
-        type: bool
-      bridge_assurance:
-        description:
-          - Enables Bridge Assurance on all network ports on the switch.
-          - Bridge Assurance is enabled by default.
-        type: bool
-      etherchannel_guard_misconfig:
-        description:
-          - Enable EtherChannel guard to detect an EtherChannel misconfiguration if your
-          - switch is running PVST+, Rapid PVST+, or MSTP. Enabled by default.
-        type: bool
-      extend_system_id:
-        description:
-          - Use the spanning-tree extend system-id global configuration command on the switch
-          - stack or on a standalone switch to enable the extended system ID feature.
-        type: bool
-      logging:
-        description:
-          - Enable logging of spanning tree changes.
-        type: bool
-      loopguard_default:
-        description:
-          - To enable loop guard as a default on all ports of a given bridge
-        type: bool
-      mode:
-        description:
-          - To switch between Per-VLAN Spanning Tree+ (PVST+), Rapid-PVST+, and Multiple
-          - Spanning Tree (MST) modes.
-        type: str
-        choices: ["mst", "pvst", "rapid_pvst"]
-      pathcost_method:
-        description:
-          - To set the default path-cost calculation method.
-          - The long path-cost calculation method utilizes all 32 bits for path-cost
-          - calculation and yields values in the range of 1 through 200,000,000.
-          - The short path-cost calculation method (16 bits) yields values in the range
-          - of 1 through 65535.
-        type: str
-        choices: ["long", "short"]
-      portfast_network_default:
-        description:
-          - Enables PortFast network mode by default on all switch access ports.
-        type: bool
-      portfast_edge_default:
-        description:
-          - Enables PortFast edge mode by default on all switch access ports.
-        type: bool
-      portfast_normal_default:
-        description:
-          - Enables PortFast normal mode by default on all switch access ports.
-        type: bool
-      portfast:
-        description: Portfast configurations.
+      spanning_tree:
+        description: Spanning Tree configurations.
         type: dict
         suboptions:
-          bpdufilter_default:
+          backbonefast:
             description:
-              - Enables PortFast edge BPDU filter by default on all PortFast edge ports.
+              - Use the spanning-tree backbonefast global configuration command on the switch
+              - stack or on a standalone switch to enable the BackboneFast feature.
             type: bool
-          bpduguard_default:
+          bridge_assurance:
             description:
-              - Enables PortFast edge BPDU guard by default on all PortFast edge ports.
+              - Enables Bridge Assurance on all network ports on the switch.
+              - Bridge Assurance is enabled by default.
             type: bool
-      transmit_hold_count:
-        description:
-          - Number of bridge protocol data units (BPDUs) that can be sent before pausing
-          - for 1 second. The range is from 1 to 20.
-        type: int
-      uplinkfast:
-        description: UplinkFast feature
-        type: dict
-        suboptions:
-          enabled:
+          etherchannel_guard_misconfig:
             description:
-              - Use to to enable UplinkFast
+              - Enable EtherChannel guard to detect an EtherChannel misconfiguration if your
+              - switch is running PVST+, Rapid PVST+, or MSTP. Enabled by default.
             type: bool
-          max_update_rate:
+          extend_system_id:
             description:
-              - Set the rate at which update packets are sent. The range is from 0 to 32000
-            type: int
-      vlan:
-        description:
-          - Set Spanning Tree Protocol (STP) configuration
-          - on a per-virtual LAN (VLAN) basis
-        type: dict
-        suboptions:
-          vlan_list:
+              - Use the spanning-tree extend system-id global configuration command on the switch
+              - stack or on a standalone switch to enable the extended system ID feature.
+            type: bool
+          logging:
             description:
-              - VLAN identification number. The range is from 1 to 4094.
+              - Enable logging of spanning tree changes.
+            type: bool
+          loopguard_default:
+            description:
+              - To enable loop guard as a default on all ports of a given bridge
+            type: bool
+          mode:
+            description:
+              - To switch between Per-VLAN Spanning Tree+ (PVST+), Rapid-PVST+, and Multiple
+              - Spanning Tree (MST) modes.
             type: str
-          forward_time:
+            choices: ["mst", "pvst", "rapid-pvst"]
+          pathcost_method:
             description:
-              - Sets the STP forward delay time. The range is from 4 to 30 seconds.
+              - To set the default path-cost calculation method.
+              - The long path-cost calculation method utilizes all 32 bits for path-cost
+              - calculation and yields values in the range of 1 through 200,000,000.
+              - The short path-cost calculation method (16 bits) yields values in the range
+              - of 1 through 65535.
+            type: str
+            choices: ["long", "short"]
+          transmit_hold_count:
+            description:
+              - Number of bridge protocol data units (BPDUs) that can be sent before pausing
+              - for 1 second. The range is from 1 to 20.
             type: int
-          hello_time: 
+          portfast:
+            description: Portfast configurations.
+            type: dict
+            mutually_exclusive:
+              - [ "network_default", "edge_default" ]
+            suboptions:
+              network_default:
+                description:
+                  - Enables PortFast network mode by default on all switch access ports.
+                type: bool
+              edge_default:
+                description:
+                  - Enables PortFast edge mode by default on all switch access ports.
+                type: bool
+              bpdufilter_default:
+                description:
+                  - Enables PortFast edge BPDU filter by default on all PortFast edge ports.
+                type: bool
+              bpduguard_default:
+                description:
+                  - Enables PortFast edge BPDU guard by default on all PortFast edge ports.
+                type: bool
+          uplinkfast:
+            description: UplinkFast feature
+            type: dict
+            suboptions:
+              enabled:
+                description:
+                  - Use to to enable UplinkFast
+                type: bool
+              max_update_rate:
+                description:
+                  - Set the rate at which update packets are sent. The range is from 0 to 32000
+                type: int
+          forward_time:
+            description: Sets the STP forward delay time..
+            type: dict
+            required_together: ["vlan_list", "value"]
+            suboptions:
+              vlan_list:
+                description: List of VLAN identification numbers. The range is from 1 to 4094.
+                type: list
+                elements: int
+              value:
+                description: The range is from 4 to 30 seconds
+                type: int
+          hello_time:
             description:
               - Specifies the duration, in seconds, between the generation of configuration messages
-              - by the root switch. The range is from 1 to 10 seconds.
-            type: int
+              - by the root switch..
+            type: dict
+            required_together: ["vlan_list", "value"]
+            suboptions:
+              vlan_list:
+                description: List of VLAN identification numbers. The range is from 1 to 4094.
+                type: list
+                elements: int
+              value:
+                description: The range is from 1 to 10 seconds
+                type: int
           max_age:
             description:
               - Sets the maximum number of seconds the information in a bridge packet data unit (BPDU)
-              - is valid. the range is from 6 to 40 seconds.
-            type: int
+              - is valid.
+            type: dict
+            required_together: ["vlan_list", "value"]
+            suboptions:
+              vlan_list:
+                description: List of VLAN identification numbers. The range is from 1 to 4094.
+                type: list
+                elements: int
+              value:
+                description: The range is from 6 to 40 seconds
+                type: int
           priority:
             description:
-              - Sets the STP bridge priority. the range is from 0 to 65535.
-            type: int
-            choices: [0, 4096, 8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440]
+              - Sets the STP bridge priority..
+            type: dict
+            required_together: ["vlan_list", "value"]
+            suboptions:
+              vlan_list:
+                description: List of VLAN identification numbers. The range is from 1 to 4094.
+                type: list
+                elements: int
+              value:
+                description: Bridge priority in increments of 4096
+                type: int
+                choices: [0, 4096, 8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440]
   running_config:
     description:
       - This option is used only with state I(parsed).

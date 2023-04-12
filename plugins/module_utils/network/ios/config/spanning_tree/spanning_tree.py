@@ -48,6 +48,9 @@ class Spanning_tree(ResourceModule):
             tmplt=Spanning_treeTemplate(),
         )
         self.parsers = [
+            "spanning_tree",
+            "spanning_tree.portfast",
+            "spanning_tree.uplinkfast",
         ]
 
     def execute_module(self):
