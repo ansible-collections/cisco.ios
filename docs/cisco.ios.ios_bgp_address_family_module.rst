@@ -7810,36 +7810,104 @@ Examples
                 filter: true
         state: merged
 
-    # Commands fired:
-    # ---------------
-    # "commands": [
-    #     "router bgp 65000",
-    #     "address-family ipv4 multicast vrf blue",
-    #     "bgp aggregate-timer 10",
-    #     "bgp slow-peer detection threshold 150",
-    #     "bgp dampening 1 1 1 1",
-    #     "neighbor 198.51.100.1 remote-as 10",
-    #     "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #     "neighbor 198.51.100.1 route-map test-route out",
-    #     "neighbor 198.51.100.1 route-server-client",
-    #     "neighbor 198.51.100.1 slow-peer detection threshold 150",
-    #     "network 198.51.110.10 mask 255.255.255.255 backdoor",
-    #     "snmp context snnmp_con_1 community community ro 10",
-    #     "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
-    #     "exit-address-family",
-    #     "address-family ipv4 mdt",
-    #     "bgp dmzlink-bw",
-    #     "bgp dampening 1 10 100 5",
-    #     "bgp soft-reconfig-backup",
-    #     "exit-address-family",
-    #     "address-family ipv4 multicast",
-    #     "network 1.1.1.1 mask 255.255.255.255 route-map test",
-    #     "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
-    #     "default-metric 12",
-    #     "distance bgp 10 10 100",
-    #     "table-map test_tableMap filter"
-    #     "exit-address-family",
-    # ]
+    # Task Output:
+    # ------------
+    #
+    # before: {}
+    #
+    # commands:
+    #   - router bgp 65000
+    #   - address-family ipv4 multicast vrf blue
+    #   - bgp aggregate-timer 10
+    #   - bgp dampening 1 1 1 1
+    #   - bgp slow-peer detection threshold 150
+    #   - snmp context snmp_con community community ro 10
+    #   - neighbor 198.51.100.1 remote-as 10
+    #   - neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   - neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   - network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   - address-family ipv4 multicast
+    #   - default-metric 12
+    #   - distance bgp 10 10 100
+    #   - table-map test_tableMap filter
+    #   - network 198.51.111.11 mask 255.255.255.255 route-map test
+    #   - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   - address-family ipv4 mdt
+    #   - bgp dmzlink-bw
+    #   - bgp soft-reconfig-backup
+    #   - bgp dampening 1 10 100 5
+    #
+    # after:
+    #   address_family:
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.2.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 1
+    #         penalty_half_time: 1
+    #         reuse_route_val: 1
+    #         suppress_route_val: 1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     neighbors:
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 100
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.100.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     networks:
+    #     - address: 198.51.110.10
+    #       backdoor: true
+    #       mask: 255.255.255.255
+    #     snmp:
+    #       context:
+    #         community:
+    #           acl: '10'
+    #           ro: true
+    #           snmp_community: community
+    #         name: snmp_con
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.3.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     default_metric: 12
+    #     distance:
+    #       external: 10
+    #       internal: 10
+    #       local: 100
+    #     networks:
+    #     - address: 198.51.111.11
+    #       mask: 255.255.255.255
+    #       route_map: test
+    #     safi: multicast
+    #     table_map:
+    #       filter: true
+    #       name: test_tableMap
+    #   - afi: ipv4
+    #     bgp:
+    #       dampening:
+    #         max_suppress: 5
+    #         penalty_half_time: 1
+    #         reuse_route_val: 10
+    #         suppress_route_val: 100
+    #       dmzlink_bw: true
+    #       soft_reconfig_backup: true
+    #     safi: mdt
+    #   as_number: '65000'
 
     # After state:
     # ------------
@@ -7847,11 +7915,25 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  snmp context snmp_con community community RO 10
+    #  neighbor 198.51.100.1 remote-as 10
+    #  !
+    #  address-family ipv4
+    #   snmp context snmp_con community community RO 10
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #  exit-address-family
     #  !
     #  address-family ipv4 multicast
     #   table-map test_tableMap filter
-    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   network 198.51.111.11 mask 255.255.255.255 route-map test
     #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     #   default-metric 12
     #   distance bgp 10 10 100
@@ -7861,20 +7943,6 @@ Examples
     #   bgp dampening 1 10 100 5
     #   bgp dmzlink-bw
     #   bgp soft-reconfig-backup
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
-    #   network 198.51.110.10 mask 255.255.255.255 backdoor
-    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
-    #   neighbor 198.51.100.1 activate
-    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
-    #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
     #  exit-address-family
 
     # Using replaced
@@ -7885,11 +7953,25 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  snmp context snmp_con community community RO 10
+    #  neighbor 198.51.100.1 remote-as 10
+    #  !
+    #  address-family ipv4
+    #   snmp context snmp_con community community RO 10
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #  exit-address-family
     #  !
     #  address-family ipv4 multicast
     #   table-map test_tableMap filter
-    #   network 1.1.1.1 mask 255.255.255.255 route-map test
+    #   network 198.51.111.11 mask 255.255.255.255 route-map test
     #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     #   default-metric 12
     #   distance bgp 10 10 100
@@ -7899,20 +7981,6 @@ Examples
     #   bgp dampening 1 10 100 5
     #   bgp dmzlink-bw
     #   bgp soft-reconfig-backup
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
-    #   network 198.51.110.10 mask 255.255.255.255 backdoor
-    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
-    #   neighbor 198.51.100.1 activate
-    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
-    #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
     #  exit-address-family
 
     - name: Replaces device configuration of listed AF BGP with provided configuration
@@ -7951,10 +8019,6 @@ Examples
                     - detection:
                         threshold: 150
                   remote_as: 10
-                  route_maps:
-                    - name: test-replaced-route
-                      out: true
-                  route_server_client: true
               network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
@@ -7977,36 +8041,182 @@ Examples
                   route_map: test
         state: replaced
 
-    # Commands fired:
-    # ---------------
-    # "commands": [
-    #         "router bgp 65000",
-    #         "address-family ipv4 multicast vrf blue",
-    #         "neighbor 198.51.110.1 remote-as 10",
-    #         "neighbor 198.51.110.1 activate",
-    #         "neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive",
-    #         "neighbor 198.51.110.1 route-map test-replaced-route out",
-    #         "neighbor 198.51.110.1 route-server-client",
-    #         "neighbor 198.51.110.1 slow-peer detection threshold 150",
-    #         "no neighbor 198.51.100.1 remote-as 10",
-    #         "no neighbor 198.51.100.1 activate",
-    #         "no neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #         "no neighbor 198.51.100.1 route-map test-route out",
-    #         "no neighbor 198.51.100.1 route-server-client",
-    #         "no neighbor 198.51.100.1 slow-peer detection threshold 150",
-    #         "exit-address-family",
-    #         "address-family ipv4 multicast",
-    #         "bgp aggregate-timer 10",
-    #         "bgp slow-peer detection threshold 200",
-    #         "bgp dampening 10 10 10 10",
-    #         "network 192.0.2.1 mask 255.255.255.255 route-map test",
-    #         "no network 1.1.1.1 mask 255.255.255.255 route-map test",
-    #         "no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
-    #         "no default-metric 12",
-    #         "no distance bgp 10 10 100",
-    #         "no table-map test_tableMap filter"
-    #         "exit-address-family",
-    #     ]
+    # Task Output:
+    # ------------
+    # before:
+    #     address_family:
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.2.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       bgp:
+    #         aggregate_timer: 10
+    #         dampening:
+    #           max_suppress: 1
+    #           penalty_half_time: 1
+    #           reuse_route_val: 1
+    #           suppress_route_val: 1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       neighbors:
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 100
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         neighbor_address: 198.51.100.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       networks:
+    #       - address: 198.51.110.10
+    #         backdoor: true
+    #         mask: 255.255.255.255
+    #       snmp:
+    #         context:
+    #           community:
+    #             acl: '10'
+    #             ro: true
+    #             snmp_community: community
+    #           name: snmp_con
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.3.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       default_metric: 12
+    #       distance:
+    #         external: 10
+    #         internal: 10
+    #         local: 100
+    #       networks:
+    #       - address: 198.51.111.11
+    #         mask: 255.255.255.255
+    #         route_map: test
+    #       safi: multicast
+    #       table_map:
+    #         filter: true
+    #         name: test_tableMap
+    #     - afi: ipv4
+    #       bgp:
+    #         dampening:
+    #           max_suppress: 5
+    #           penalty_half_time: 1
+    #           reuse_route_val: 10
+    #           suppress_route_val: 100
+    #         dmzlink_bw: true
+    #         soft_reconfig_backup: true
+    #       safi: mdt
+    #     as_number: '65000'
+
+    # commands:
+    # - router bgp 65000
+    # - address-family ipv4 multicast vrf blue
+    # - bgp aggregate-timer 10
+    # - bgp dampening 1 1 1 1
+    # - bgp slow-peer detection threshold 150
+    # - neighbor 198.51.110.1 remote-as 10
+    # - neighbor 198.51.110.1 activate
+    # - neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    # - neighbor 198.51.110.1 slow-peer detection threshold 150
+    # - network 198.51.110.10 mask 255.255.255.255 backdoor
+    # - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    # - address-family ipv4 multicast
+    # - no default-metric 12
+    # - no distance bgp 10 10 100
+    # - no table-map test_tableMap filter
+    # - bgp aggregate-timer 10
+    # - bgp dampening 10 10 10 10
+    # - bgp slow-peer detection threshold 200
+    # - network 192.0.2.1 mask 255.255.255.255 route-map test
+    # - no network 198.51.111.11 mask 255.255.255.255 route-map test
+    # - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #
+    # after:
+    #   address_family:
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.2.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 1
+    #         penalty_half_time: 1
+    #         reuse_route_val: 1
+    #         suppress_route_val: 1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     neighbors:
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 100
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.100.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 200
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.110.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     networks:
+    #     - address: 198.51.110.10
+    #       backdoor: true
+    #       mask: 255.255.255.255
+    #     snmp:
+    #       context:
+    #         community:
+    #           acl: '10'
+    #           ro: true
+    #           snmp_community: community
+    #         name: snmp_con
+    #   - afi: ipv4
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 10
+    #         penalty_half_time: 10
+    #         reuse_route_val: 10
+    #         suppress_route_val: 10
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 200
+    #     networks:
+    #     - address: 192.0.2.1
+    #       mask: 255.255.255.255
+    #       route_map: test
+    #     safi: multicast
+    #   - afi: ipv4
+    #     bgp:
+    #       dampening:
+    #         max_suppress: 5
+    #         penalty_half_time: 1
+    #         reuse_route_val: 10
+    #         suppress_route_val: 100
+    #       dmzlink_bw: true
+    #       soft_reconfig_backup: true
+    #     safi: mdt
+    #   as_number: '65000'
 
     # After state:
     # -------------
@@ -8014,7 +8224,25 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  snmp context snmp_con community community RO 10
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 10
+    #  !
+    #  address-family ipv4
+    #   snmp context snmp_con community community RO 10
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #  exit-address-family
     #  !
     #  address-family ipv4 multicast
     #   bgp aggregate-timer 10
@@ -8028,20 +8256,7 @@ Examples
     #   bgp dmzlink-bw
     #   bgp soft-reconfig-backup
     #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
-    #   network 198.51.110.10 mask 255.255.255.255 backdoor
-    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.110.1 remote-as 10
-    #   neighbor 198.51.110.1 activate
-    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
-    #   neighbor 198.51.110.1 route-server-client
-    #   neighbor 198.51.110.1 slow-peer detection threshold 150
-    #   neighbor 198.51.110.1 route-map test-replaced-route out
-    #  exit-address-family
+
 
     # Using overridden
 
@@ -8051,34 +8266,37 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  snmp context snmp_con community community RO 10
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 10
+    #  !
+    #  address-family ipv4
+    #   snmp context snmp_con community community RO 10
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #  exit-address-family
     #  !
     #  address-family ipv4 multicast
-    #   table-map test_tableMap filter
-    #   network 1.1.1.1 mask 255.255.255.255 route-map test
-    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-    #   default-metric 12
-    #   distance bgp 10 10 100
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
+    #   network 192.0.2.1 mask 255.255.255.255 route-map test
     #  exit-address-family
     #  !
     #  address-family ipv4 mdt
     #   bgp dampening 1 10 100 5
     #   bgp dmzlink-bw
     #   bgp soft-reconfig-backup
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
-    #   network 198.51.110.10 mask 255.255.255.255 backdoor
-    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
-    #   neighbor 198.51.100.1 activate
-    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
-    #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
     #  exit-address-family
 
     - name: Override device configuration of all AF BGP with provided configuration
@@ -8116,10 +8334,6 @@ Examples
                     - detection:
                         threshold: 150
                   remote_as: 100
-                  route_maps:
-                    - name: test-override-route
-                      out: true
-                  route_server_client: true
                   version: 4
               network:
                 - address: 198.51.110.10
@@ -8143,34 +8357,155 @@ Examples
                   route_map: test_ipv6
         state: overridden
 
-    # Commands fired:
-    # ---------------
-    # "commands": [
-    #       "router bgp 65000",
-    #       "no address-family ipv4 multicast",
-    #       "no address-family ipv4 mdt",
-    #       "address-family ipv4 multicast vrf blue",
-    #       "bgp aggregate-timer 10",
-    #       "bgp slow-peer detection threshold 150",
-    #       "bgp dampening 10 10 100 50",
-    #       "neighbor 198.51.110.1 remote-as 100",
-    #       "neighbor 198.51.110.1 activate",
-    #       "neighbor 198.51.110.1 log-neighbor-changes disable",
-    #       "neighbor 198.51.110.1 maximum-prefix 1 10 restart 100",
-    #       "neighbor 198.51.110.1 route-map test-override-route out",
-    #       "neighbor 198.51.110.1 route-server-client",
-    #       "neighbor 198.51.110.1 version 4",
-    #       "neighbor 198.51.110.1 slow-peer detection threshold 150",
-    #       "network 198.51.110.10 mask 255.255.255.255 backdoor",
-    #       "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
-    #       "exit-address-family",
-    #       "address-family ipv6 multicast",
-    #       "bgp aggregate-timer 10",
-    #       "bgp slow-peer detection threshold 200",
-    #       "bgp dampening 10 10 10 10",
-    #       "network 2001:DB8:0:3::/64 route-map test_ipv6"
-    #       "exit-address-family",
-    #   ]
+    # Task Output:
+    # ------------
+    #
+    # before:
+    #     address_family:
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.2.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       bgp:
+    #         aggregate_timer: 10
+    #         dampening:
+    #           max_suppress: 10
+    #           penalty_half_time: 10
+    #           reuse_route_val: 10
+    #           suppress_route_val: 10
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 200
+    #       default_information: true
+    #       neighbors:
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 100
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         neighbor_address: 198.51.100.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 200
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         maximum_prefix:
+    #           number: 1
+    #           restart: 100
+    #           threshold_value: 10
+    #         neighbor_address: 198.51.110.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       networks:
+    #       - address: 198.51.110.10
+    #         backdoor: true
+    #         mask: 255.255.255.255
+    #     - afi: ipv4
+    #       safi: multicast
+    #     - afi: ipv4
+    #       safi: mdt
+    #     - afi: ipv6
+    #       safi: multicast
+    #     as_number: '65000'
+    #
+    # commands:
+    # - router bgp 65000
+    # - address-family ipv4
+    # - no default-information originate
+    # - no bgp aggregate-timer 10
+    # - no bgp dampening 10 10 10 10
+    # - no bgp slow-peer detection threshold 200
+    # - no neighbor 198.51.100.1
+    # - no neighbor 198.51.110.1
+    # - no network 198.51.110.10 mask 255.255.255.255 backdoor
+    # - no aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    # - address-family ipv4 multicast vrf blue
+    # - bgp aggregate-timer 10
+    # - bgp dampening 10 10 100 50
+    # - bgp slow-peer detection threshold 150
+    # - neighbor 198.51.110.1 remote-as 100
+    # - neighbor 198.51.110.1 activate
+    # - neighbor 198.51.110.1 disable
+    # - neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    # - neighbor 198.51.110.1 slow-peer detection threshold 150
+    # - neighbor 198.51.110.1 version 4
+    # - network 198.51.110.10 mask 255.255.255.255 backdoor
+    # - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    # - address-family ipv6 multicast
+    # - default-information originate
+    # - bgp aggregate-timer 10
+    # - bgp dampening 10 10 10 10
+    # - bgp slow-peer detection threshold 200
+    #
+    # after:
+    #   address_family:
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.2.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 10
+    #         penalty_half_time: 10
+    #         reuse_route_val: 10
+    #         suppress_route_val: 10
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 200
+    #     default_information: true
+    #     neighbors:
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 100
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.100.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 200
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       maximum_prefix:
+    #         number: 1
+    #         restart: 100
+    #         threshold_value: 10
+    #       neighbor_address: 198.51.110.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     networks:
+    #     - address: 198.51.110.10
+    #       backdoor: true
+    #       mask: 255.255.255.255
+    #   - afi: ipv4
+    #     safi: multicast
+    #   - afi: ipv4
+    #     safi: mdt
+    #   - afi: ipv6
+    #     safi: multicast
+    #   as_number: '65000'
 
     # After state:
     # -------------
@@ -8178,35 +8513,35 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
-    #  bgp nopeerup-delay post-boot 10
-    #  bgp bestpath med confed
-    #  snmp context snnmp_con_1 community community RO 10
-    #  neighbor 192.0.2.1 remote-as 100
-    #  neighbor 192.0.2.1 description replace neighbor
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 100
+    #  neighbor 198.51.110.1 disable-connected-check
+    #  neighbor 198.51.110.1 version 4
     #  !
-    #  address-family ipv6 multicast
+    #  address-family ipv4
     #   bgp aggregate-timer 10
     #   bgp slow-peer detection threshold 200
     #   bgp dampening 10 10 10 10
-    #   network 2001:DB8:0:3::/64 route-map test_ipv6
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 10 10 100 50
     #   network 198.51.110.10 mask 255.255.255.255 backdoor
     #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.110.1 remote-as 100
-    #   neighbor 198.51.110.1 log-neighbor-changes disable
-    #   neighbor 198.51.110.1 version 4
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
     #   neighbor 198.51.110.1 activate
-    #   neighbor 198.51.110.1 route-server-client
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
     #   neighbor 198.51.110.1 slow-peer detection threshold 150
-    #   neighbor 198.51.110.1 route-map test-override-route out
     #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    #   default-information originate
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 multicast
+    #  exit-address-family
+    #  !
+    #  address-family ipv4 mdt
+    #  exit-address-family
+    #  !
+    #  address-family ipv6 multicast
     #  exit-address-family
 
     # Using Deleted
@@ -8217,34 +8552,35 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 100
+    #  neighbor 198.51.110.1 disable-connected-check
+    #  neighbor 198.51.110.1 version 4
+    #  !
+    #  address-family ipv4
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    #   default-information originate
+    #  exit-address-family
     #  !
     #  address-family ipv4 multicast
-    #   table-map test_tableMap filter
-    #   network 1.1.1.1 mask 255.255.255.255 route-map test
-    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-    #   default-metric 12
-    #   distance bgp 10 10 100
     #  exit-address-family
     #  !
     #  address-family ipv4 mdt
-    #   bgp dampening 1 10 100 5
-    #   bgp dmzlink-bw
-    #   bgp soft-reconfig-backup
     #  exit-address-family
     #  !
-    #  address-family ipv4 multicast vrf blue
-    #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
-    #   network 198.51.110.10 mask 255.255.255.255 backdoor
-    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
-    #   neighbor 198.51.100.1 activate
-    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
-    #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
+    #  address-family ipv6 multicast
     #  exit-address-family
 
     - name: "Delete AF BGP (Note: This won't delete the all configured AF BGP)"
@@ -8258,34 +8594,158 @@ Examples
               safi: mdt
         state: deleted
 
-    # Commands fired:
-    # ---------------
-    # "commands": [
-    #       "router bgp 65000",
-    #       "no address-family ipv4 multicast",
-    #       "no address-family ipv4 mdt"
-    #   ]
-
+    # Task Output:
+    # ------------
+    #
+    # before:
+    #     address_family:
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.2.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       bgp:
+    #         aggregate_timer: 10
+    #         dampening:
+    #           max_suppress: 10
+    #           penalty_half_time: 10
+    #           reuse_route_val: 10
+    #           suppress_route_val: 10
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 200
+    #       default_information: true
+    #       neighbors:
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 100
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         neighbor_address: 198.51.100.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 200
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         maximum_prefix:
+    #           number: 1
+    #           restart: 100
+    #           threshold_value: 10
+    #         neighbor_address: 198.51.110.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       networks:
+    #       - address: 198.51.110.10
+    #         backdoor: true
+    #         mask: 255.255.255.255
+    #     - afi: ipv4
+    #       safi: multicast
+    #     - afi: ipv4
+    #       safi: mdt
+    #     - afi: ipv6
+    #       safi: multicast
+    #     as_number: '65000'
+    #
+    # commands:
+    # - router bgp 65000
+    # - no address-family ipv4 multicast
+    # - no address-family ipv4 mdt
+    #
+    # after:
+    #   address_family:
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.2.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 10
+    #         penalty_half_time: 10
+    #         reuse_route_val: 10
+    #         suppress_route_val: 10
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 200
+    #     default_information: true
+    #     neighbors:
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 100
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.100.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 200
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       maximum_prefix:
+    #         number: 1
+    #         restart: 100
+    #         threshold_value: 10
+    #       neighbor_address: 198.51.110.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     networks:
+    #     - address: 198.51.110.10
+    #       backdoor: true
+    #       mask: 255.255.255.255
+    #   - afi: ipv6
+    #     safi: multicast
+    #   as_number: '65000'
+    #
     # After state:
     # -------------
     #
     # vios#sh running-config | section ^router bg
+    # hostname#show running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 100
+    #  neighbor 198.51.110.1 disable-connected-check
+    #  neighbor 198.51.110.1 version 4
     #  !
-    #  address-family ipv4 multicast vrf blue
+    #  address-family ipv4
     #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
     #   network 198.51.110.10 mask 255.255.255.255 backdoor
     #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
     #   neighbor 198.51.100.1 activate
     #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
     #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    #   default-information originate
+    #  exit-address-family
+    #  !        
+    #  address-family ipv6 multicast
     #  exit-address-family
 
     # Using Deleted without any config passed
@@ -8294,37 +8754,33 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#sh running-config | section ^router bgp
+    # vios#sh running-config | section ^router bg
+    # hostname#show running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 100
+    #  neighbor 198.51.110.1 disable-connected-check
+    #  neighbor 198.51.110.1 version 4
     #  !
-    #  address-family ipv4 multicast
-    #   table-map test_tableMap filter
-    #   network 1.1.1.1 mask 255.255.255.255 route-map test
-    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-    #   default-metric 12
-    #   distance bgp 10 10 100
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 mdt
-    #   bgp dampening 1 10 100 5
-    #   bgp dmzlink-bw
-    #   bgp soft-reconfig-backup
-    #  exit-address-family
-    #  !
-    #  address-family ipv4 multicast vrf blue
+    #  address-family ipv4
     #   bgp aggregate-timer 10
-    #   bgp slow-peer detection threshold 150
-    #   bgp dampening 1 1 1 1
+    #   bgp slow-peer detection threshold 200
+    #   bgp dampening 10 10 10 10
     #   network 198.51.110.10 mask 255.255.255.255 backdoor
     #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
-    #   neighbor 198.51.100.1 remote-as 10
     #   neighbor 198.51.100.1 activate
     #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
-    #   neighbor 198.51.100.1 route-server-client
     #   neighbor 198.51.100.1 slow-peer detection threshold 150
-    #   neighbor 198.51.100.1 route-map test-route out
+    #   neighbor 198.51.110.1 activate
+    #   neighbor 198.51.110.1 aigp send cost-community 200 poi igp-cost transitive
+    #   neighbor 198.51.110.1 slow-peer detection threshold 150
+    #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
+    #   default-information originate
+    #  exit-address-family
+    #  !        
+    #  address-family ipv6 multicast
     #  exit-address-family
 
     - name: 'Delete ALL of configured AF BGP (Note: This WILL delete the all configured
@@ -8332,14 +8788,75 @@ Examples
       cisco.ios.ios_bgp_address_family:
         state: deleted
 
-    # Commands fired:
-    # ---------------
-    # "commands": [
-    #       "router bgp 65000",
-    #       "no address-family ipv4 multicast vrf blue",
-    #       "no address-family ipv4 multicast",
-    #       "no address-family ipv4 mdt"
-    #   ]
+    # Task Output:
+    # ------------
+    #
+    # before:
+    #   address_family:
+    #   - afi: ipv4
+    #     aggregate_addresses:
+    #     - address: 192.0.2.1
+    #       as_confed_set: true
+    #       netmask: 255.255.255.255
+    #     bgp:
+    #       aggregate_timer: 10
+    #       dampening:
+    #         max_suppress: 10
+    #         penalty_half_time: 10
+    #         reuse_route_val: 10
+    #         suppress_route_val: 10
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 200
+    #     default_information: true
+    #     neighbors:
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 100
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       neighbor_address: 198.51.100.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     - activate: true
+    #       aigp:
+    #         send:
+    #           cost_community:
+    #             id: 200
+    #             poi:
+    #               igp_cost: true
+    #               transitive: true
+    #       maximum_prefix:
+    #         number: 1
+    #         restart: 100
+    #         threshold_value: 10
+    #       neighbor_address: 198.51.110.1
+    #       slow_peer_options:
+    #         detection:
+    #           threshold: 150
+    #     networks:
+    #     - address: 198.51.110.10
+    #       backdoor: true
+    #       mask: 255.255.255.255
+    #   - afi: ipv6
+    #     safi: multicast
+    #   as_number: '65000'
+    #
+    # commands:
+    # - router bgp 65000
+    # - no address-family ipv4
+    # - no address-family ipv6 multicast
+    #
+    # after:
+    #   address_family:
+    #   - afi: ipv4
+    #     bgp:
+    #       aggregate_timer: 10
+    #   as_number: '65000'
 
     # After state:
     # -------------
@@ -8347,140 +8864,134 @@ Examples
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
     #  bgp log-neighbor-changes
-    #  bgp nopeerup-delay cold-boot 20
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  neighbor 198.51.100.1 remote-as 10
+    #  neighbor 198.51.110.1 remote-as 100
+    #  neighbor 198.51.110.1 disable-connected-check
+    #  neighbor 198.51.110.1 version 4
+    #  !
+    #  address-family ipv4
+    #   bgp aggregate-timer 10
+    #   no neighbor 198.51.100.1 activate
+    #   no neighbor 198.51.110.1 activate
+    #  exit-address-family
 
     # Using Gathered
+    #
     # Before state:
     # -------------
     #
     # vios#sh running-config | section ^router bgp
+    # router bgp 65000
+    #  bgp log-neighbor-changes
+    #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+    #  snmp context snmp_con community community RO 10
+    #  neighbor 198.51.100.1 remote-as 10
+    #  !
+    #  address-family ipv4
+    #   snmp context snmp_con community community RO 10
+    #   bgp aggregate-timer 10
+    #   bgp slow-peer detection threshold 150
+    #   bgp dampening 1 1 1 1
+    #   network 198.51.110.10 mask 255.255.255.255 backdoor
+    #   aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    #   neighbor 198.51.100.1 activate
+    #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    #   neighbor 198.51.100.1 slow-peer detection threshold 150
+    #  exit-address-family
+    #  !        
+    #  address-family ipv4 multicast
+    #   table-map test_tableMap filter
+    #   network 198.51.111.11 mask 255.255.255.255 route-map test
+    #   aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    #   default-metric 12
+    #   distance bgp 10 10 100
+    #  exit-address-family
+    #  !        
+    #  address-family ipv4 mdt
+    #   bgp dampening 1 10 100 5
+    #   bgp dmzlink-bw
+    #   bgp soft-reconfig-backup
+    #  exit-address-family
 
     - name: Gather listed AF BGP with provided configurations
       cisco.ios.ios_bgp_address_family:
         config:
         state: gathered
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    # "gathered": {
-    #       "address_family": [
-    #           {
-    #               "afi": "ipv4",
-    #               "aggregate_address": [{
-    #                   "address": "192.0.2.1",
-    #                   "as_confed_set": true,
-    #                   "netmask": "255.255.255.255"
-    #               }],
-    #               "bgp": {
-    #                   "aggregate_timer": 10,
-    #                   "dampening": {
-    #                       "max_suppress": 1,
-    #                       "penalty_half_time": 1,
-    #                       "reuse_route_val": 1,
-    #                       "suppress_route_val": 1
-    #                   },
-    #                   "slow_peer": [
-    #                       {
-    #                           "detection": {
-    #                               "threshold": 150
-    #                           }
-    #                       }
-    #                   ]
-    #               },
-    #               "neighbor": [
-    #                   {
-    #                       "activate": true,
-    #                       "address": "198.51.100.1",
-    #                       "aigp": {
-    #                           "send": {
-    #                               "cost_community": {
-    #                                   "id": 100,
-    #                                   "poi": {
-    #                                       "igp_cost": true,
-    #                                       "transitive": true
-    #                                   }
-    #                               }
-    #                           }
-    #                       },
-    #                       "remote_as": 10,
-    #                       "route_maps": [{
-    #                           "name": "test-route",
-    #                           "out": true
-    #                       }],
-    #                       "route_server_client": true,
-    #                       "slow_peer": [
-    #                           {
-    #                               "detection": {
-    #                                   "threshold": 150
-    #                               }
-    #                           }
-    #                       ]
-    #                   }
-    #               ],
-    #               "network": [
-    #                   {
-    #                       "address": "198.51.110.10",
-    #                       "backdoor": true,
-    #                       "mask": "255.255.255.255"
-    #                   }
-    #               ],
-    #               "safi": "multicast",
-    #               "snmp": {
-    #                   "context": {
-    #                       "community": {
-    #                           "acl": "10",
-    #                           "ro": true,
-    #                           "snmp_community": "community"
-    #                       },
-    #                       "name": "snnmp_con_1"
-    #                   }
-    #               },
-    #               "vrf": "blue"
-    #           },
-    #           {
-    #               "afi": "ipv4",
-    #               "aggregate_address": [{
-    #                   "address": "192.0.3.1",
-    #                   "as_confed_set": true,
-    #                   "netmask": "255.255.255.255"
-    #               }],
-    #               "default_metric": 12,
-    #               "distance": {
-    #                   "external": 10,
-    #                   "internal": 10,
-    #                   "local": 100
-    #               },
-    #               "network": [
-    #                   {
-    #                       "address": "1.1.1.1",
-    #                       "mask": "255.255.255.255",
-    #                       "route_map": "test"
-    #                   }
-    #               ],
-    #               "safi": "multicast",
-    #               "table_map": {
-    #                   "filter": true,
-    #                   "name": "test_tableMap"
-    #               }
-    #           },
-    #           {
-    #               "afi": "ipv4",
-    #               "bgp": {
-    #                   "dampening": {
-    #                       "max_suppress": 5,
-    #                       "penalty_half_time": 1,
-    #                       "reuse_route_val": 10,
-    #                       "suppress_route_val": 100
-    #                   },
-    #                   "dmzlink_bw": true,
-    #                   "soft_reconfig_backup": true
-    #               },
-    #               "safi": "mdt"
-    #           }
-    #       ],
-    #       "as_number": "65000"
-    #   }
+    # gathered:
+    #     address_family:
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.2.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       bgp:
+    #         aggregate_timer: 10
+    #         dampening:
+    #           max_suppress: 1
+    #           penalty_half_time: 1
+    #           reuse_route_val: 1
+    #           suppress_route_val: 1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       neighbors:
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 100
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         neighbor_address: 198.51.100.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       networks:
+    #       - address: 198.51.110.10
+    #         backdoor: true
+    #         mask: 255.255.255.255
+    #       snmp:
+    #         context:
+    #           community:
+    #             acl: '10'
+    #             ro: true
+    #             snmp_community: community
+    #           name: snmp_con
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.3.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       default_metric: 12
+    #       distance:
+    #         external: 10
+    #         internal: 10
+    #         local: 100
+    #       networks:
+    #       - address: 198.51.111.11
+    #         mask: 255.255.255.255
+    #         route_map: test
+    #       safi: multicast
+    #       table_map:
+    #         filter: true
+    #         name: test_tableMap
+    #     - afi: ipv4
+    #       bgp:
+    #         dampening:
+    #           max_suppress: 5
+    #           penalty_half_time: 1
+    #           reuse_route_val: 10
+    #           suppress_route_val: 100
+    #         dmzlink_bw: true
+    #         soft_reconfig_backup: true
+    #       safi: mdt
+    #     as_number: '65000'
 
     # Using Rendered
 
@@ -8546,30 +9057,25 @@ Examples
                 soft_reconfig_backup: true
         state: rendered
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    # "rendered": [
-    #     "router bgp 65000",
-    #     "address-family ipv4 multicast vrf blue",
-    #     "bgp aggregate-timer 10",
-    #     "bgp slow-peer detection threshold 150",
-    #     "bgp dampening 1 1 1 1",
-    #     "neighbor 198.51.100.1 remote-as 10",
-    #     "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
-    #     "neighbor 198.51.100.1 route-map test-route out",
-    #     "neighbor 198.51.100.1 route-server-client",
-    #     "neighbor 198.51.100.1 slow-peer detection threshold 150",
-    #     "network 198.51.110.10 mask 255.255.255.255 backdoor",
-    #     "snmp context snnmp_con_1 community community ro 10",
-    #     "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
-    #     "exit-address-family",
-    #     "address-family ipv4 mdt",
-    #     "bgp dmzlink-bw",
-    #     "bgp dampening 1 10 100 5",
-    #     "bgp soft-reconfig-backup"
-    #     "exit-address-family",
-    # ]
+    # rendered:
+    # - router bgp 65000
+    # - address-family ipv4 multicast vrf blue
+    # - bgp aggregate-timer 10
+    # - bgp dampening 1 1 1 1
+    # - bgp slow-peer detection threshold 150
+    # - snmp context snmp_con community community ro 10
+    # - neighbor 198.51.100.1 remote-as 10
+    # - neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
+    # - neighbor 198.51.100.1 slow-peer detection threshold 150
+    # - network 198.51.110.10 mask 255.255.255.255 backdoor
+    # - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+    # - address-family ipv4 mdt
+    # - bgp dmzlink-bw
+    # - bgp soft-reconfig-backup
+    # - bgp dampening 1 10 100 5
 
     # Using Parsed
 
@@ -8599,54 +9105,79 @@ Examples
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    # "parsed": {
-    #       "address_family": [
-    #           {
-    #               "afi": "ipv4",
-    #               "aggregate_address": [{
-    #                   "address": "192.0.3.1",
-    #                   "as_confed_set": true,
-    #                   "netmask": "255.255.255.255"
-    #               }],
-    #               "default_metric": 12,
-    #               "distance": {
-    #                   "external": 10,
-    #                   "internal": 10,
-    #                   "local": 100
-    #               },
-    #               "network": [
-    #                   {
-    #                       "address": "1.1.1.1",
-    #                       "mask": "255.255.255.255",
-    #                       "route_map": "test"
-    #                   }
-    #               ],
-    #               "safi": "multicast",
-    #               "table_map": {
-    #                   "filter": true,
-    #                   "name": "test_tableMap"
-    #               }
-    #           },
-    #           {
-    #               "afi": "ipv4",
-    #               "bgp": {
-    #                   "dampening": {
-    #                       "max_suppress": 5,
-    #                       "penalty_half_time": 1,
-    #                       "reuse_route_val": 10,
-    #                       "suppress_route_val": 100
-    #                   },
-    #                   "dmzlink_bw": true,
-    #                   "soft_reconfig_backup": true
-    #               },
-    #               "safi": "mdt"
-    #           }
-    #       ],
-    #       "as_number": "65000"
-    #   }
+    # parsed:
+    #     address_family:
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.2.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       bgp:
+    #         aggregate_timer: 10
+    #         dampening:
+    #           max_suppress: 1
+    #           penalty_half_time: 1
+    #           reuse_route_val: 1
+    #           suppress_route_val: 1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       neighbors:
+    #       - activate: true
+    #         aigp:
+    #           send:
+    #             cost_community:
+    #               id: 100
+    #               poi:
+    #                 igp_cost: true
+    #                 transitive: true
+    #         neighbor_address: 198.51.100.1
+    #         slow_peer_options:
+    #           detection:
+    #             threshold: 150
+    #       networks:
+    #       - address: 198.51.110.10
+    #         backdoor: true
+    #         mask: 255.255.255.255
+    #       snmp:
+    #         context:
+    #           community:
+    #             acl: '10'
+    #             ro: true
+    #             snmp_community: community
+    #           name: snmp_con
+    #     - afi: ipv4
+    #       aggregate_addresses:
+    #       - address: 192.0.3.1
+    #         as_confed_set: true
+    #         netmask: 255.255.255.255
+    #       default_metric: 12
+    #       distance:
+    #         external: 10
+    #         internal: 10
+    #         local: 100
+    #       networks:
+    #       - address: 198.51.111.11
+    #         mask: 255.255.255.255
+    #         route_map: test
+    #       safi: multicast
+    #       table_map:
+    #         filter: true
+    #         name: test_tableMap
+    #     - afi: ipv4
+    #       bgp:
+    #         dampening:
+    #           max_suppress: 5
+    #           penalty_half_time: 1
+    #           reuse_route_val: 10
+    #           suppress_route_val: 100
+    #         dmzlink_bw: true
+    #         soft_reconfig_backup: true
+    #       safi: mdt
+    #     as_number: '65000'
 
 
 
