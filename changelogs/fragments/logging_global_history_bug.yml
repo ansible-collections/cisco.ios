@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed logging global history wrong command generation bug.
