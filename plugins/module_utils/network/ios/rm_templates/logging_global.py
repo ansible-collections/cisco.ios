@@ -542,7 +542,7 @@ class Logging_globalTemplate(NetworkTemplate):
                     "severity": "{{ severity }}",
                 },
             },
-        },
+                },
         {
             "name": "message_counter",
             "getval": re.compile(

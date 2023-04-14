@@ -669,7 +669,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         playbook = {
             "config": {
                 "buffered": {"size": 64000},
-                "history": {"severity": "notifications" , "size": 400},
+                "history": {"severity": "notifications", "size": 400},
                 "hosts": [
                     {"hostname": "172.16.0.1", "vrf": "Mgmt-intf"},
                     {"hostname": "172.16.0.3", "vrf": "Mgmt-intf"},
