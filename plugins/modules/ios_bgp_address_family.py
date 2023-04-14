@@ -2428,7 +2428,7 @@ EXAMPLES = """
 #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
 #   default-information originate
 #  exit-address-family
-#  !        
+#  !
 #  address-family ipv6 multicast
 #  exit-address-family
 
@@ -2463,7 +2463,7 @@ EXAMPLES = """
 #   neighbor 198.51.110.1 maximum-prefix 1 10 restart 100
 #   default-information originate
 #  exit-address-family
-#  !        
+#  !
 #  address-family ipv6 multicast
 #  exit-address-family
 
@@ -2583,7 +2583,7 @@ EXAMPLES = """
 #   neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
 #   neighbor 198.51.100.1 slow-peer detection threshold 150
 #  exit-address-family
-#  !        
+#  !
 #  address-family ipv4 multicast
 #   table-map test_tableMap filter
 #   network 198.51.111.11 mask 255.255.255.255 route-map test
@@ -2591,7 +2591,7 @@ EXAMPLES = """
 #   default-metric 12
 #   distance bgp 10 10 100
 #  exit-address-family
-#  !        
+#  !
 #  address-family ipv4 mdt
 #   bgp dampening 1 10 100 5
 #   bgp dmzlink-bw
