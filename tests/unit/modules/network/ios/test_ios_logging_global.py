@@ -83,6 +83,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1
             logging exception 4099
             logging history alerts
+            logging history size 400
             logging facility local5
             logging snmp-trap errors
             logging monitor warnings
@@ -126,7 +127,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
                     dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
                 ],
-                history=dict(severity="alerts"),
+                history=dict(severity="alerts", size=400),
                 hosts=[
                     dict(hostname="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
@@ -171,6 +172,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging exception 4099
             logging facility local5
             logging history alerts
+            logging history size 400
             logging monitor warnings
             logging origin-id hostname
             logging persistent batch 4444
@@ -195,7 +197,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 esm=dict(config=True),
                 exception=4099,
                 facility="local5",
-                history=dict(severity="alerts"),
+                history=dict(severity="alerts", size=400),
                 monitor=dict(severity="warnings"),
                 origin_id=dict(tag="hostname"),
                 persistent=dict(batch=4444),
@@ -220,6 +222,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging exception 4099",
             "no logging facility local5",
             "no logging history alerts",
+            "no logging history size 400",
             "no logging monitor warnings",
             "no logging origin-id hostname",
             "no logging persistent batch 4444",
@@ -310,6 +313,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging exception 4099
             logging facility local5
             logging history alerts
+            logging history size 400
             logging monitor warnings
             logging origin-id hostname
             logging persistent batch 4444
@@ -353,6 +357,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging exception 4099",
             "no logging facility local5",
             "no logging history alerts",
+            "no logging history size 400",
             "no logging monitor warnings",
             "no logging origin-id hostname",
             "no logging persistent batch 4444",
@@ -654,6 +659,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             no logging console
             no logging monitor
             logging history notifications
+            logging history size 400
             logging origin-id hostname
             logging source-interface GigabitEthernet0 vrf Mgmt-intf
             logging host 172.16.0.1 transport udp port 10000
@@ -663,7 +669,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         playbook = {
             "config": {
                 "buffered": {"size": 64000},
-                "history": {"severity": "notifications"},
+                "history": {"severity": "notifications" , "size": 400},
                 "hosts": [
                     {"hostname": "172.16.0.1", "vrf": "Mgmt-intf"},
                     {"hostname": "172.16.0.3", "vrf": "Mgmt-intf"},
