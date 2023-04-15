@@ -73,34 +73,38 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "forward_time": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "required_together": ["vlan_list", "value"],
                             "options": {
-                                "vlan_list": {"type": "list", "elements": "int"},
+                                "vlan_list": {"type": "str"},
                                 "value": {"type": "int"},
                             },
                         },
                         "hello_time": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "required_together": ["vlan_list", "value"],
                             "options": {
-                                "vlan_list": {"type": "list", "elements": "int"},
+                                "vlan_list": {"type": "str"},
                                 "value": {"type": "int"},
                             },
                         },
                         "max_age": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "required_together": ["vlan_list", "value"],
                             "options": {
-                                "vlan_list": {"type": "list", "elements": "int"},
+                                "vlan_list": {"type": "str"},
                                 "value": {"type": "int"},
                             },
                         },
                         "priority": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "required_together": ["vlan_list", "value"],
                             "options": {
-                                "vlan_list": {"type": "list", "elements": "int"},
+                                "vlan_list": {"type": "str"},
                                 "value": {
                                     "type": "int",
                                     "choices": [
@@ -121,6 +125,64 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                                         57344,
                                         61440,
                                     ],
+                                },
+                            },
+                        },
+                        "mst": {
+                            "type": "dict",
+                            "options": {
+                                "simulate_pvst_global": {"type": "bool"},
+                                "hello_time": {"type": "int"},
+                                "forward_time": {"type": "int"},
+                                "max_age": {"type": "int"},
+                                "max_hops": {"type": "int"},
+                                "priority": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "required_together": ["instance", "value"],
+                                    "options": {
+                                        "instance": {"type": "str"},
+                                        "value": {
+                                            "type": "int",
+                                            "choices": [
+                                                0,
+                                                4096,
+                                                8192,
+                                                12288,
+                                                16384,
+                                                20480,
+                                                24576,
+                                                28672,
+                                                32768,
+                                                36864,
+                                                40960,
+                                                45056,
+                                                49152,
+                                                53248,
+                                                57344,
+                                                61440,
+                                            ],
+                                        },
+                                    },
+                                },
+                                "configuration": {
+                                    "type": "dict",
+                                    "options": {
+                                        "name": {"type": "str"},
+                                        "revision": {"type": "int"},
+                                        "instances": {
+                                            "type": "list",
+                                            "elements": "dict",
+                                            "required_together": [
+                                                "instance",
+                                                "vlan_list",
+                                            ],
+                                            "options": {
+                                                "instance": {"type": "int"},
+                                                "vlan_list": {"type": "str"},
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },

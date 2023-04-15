@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -47,10 +48,40 @@ class Spanning_tree(ResourceModule):
             resource="spanning_tree",
             tmplt=Spanning_treeTemplate(),
         )
-        self.parsers = [
-            "spanning_tree",
-            "spanning_tree.portfast",
-            "spanning_tree.uplinkfast",
+        self.linear_parsers = [
+            "spanning_tree.backbonefast",
+            "spanning_tree.bridge_assurance",
+            "spanning_tree.etherchannel_guard_misconfig",
+            "spanning_tree.extend_system_id",
+            "spanning_tree.logging",
+            "spanning_tree.loopguard_default",
+            "spanning_tree.mode",
+            "spanning_tree.pathcost_method",
+            "spanning_tree.transmit_hold_count",
+            "spanning_tree.portfast.network_default",
+            "spanning_tree.portfast.edge_default",
+            "spanning_tree.portfast.bpdufilter_default",
+            "spanning_tree.portfast.bpduguard_default",
+            "spanning_tree.uplinkfast.enabled",
+            "spanning_tree.uplinkfast.max_update_rate",
+            "spanning_tree.mst.simulate_pvst_global",
+            "spanning_tree.mst.hello_time",
+            "spanning_tree.mst.forward_time",
+            "spanning_tree.mst.max_age",
+            "spanning_tree.mst.max_hops",
+        ]
+        self.complex_parsers = [
+            "spanning_tree.forward_time",
+            "spanning_tree.hello_time",
+            "spanning_tree.max_age",
+            "spanning_tree.priority",
+            "spanning_tree.mst.priority",
+        ]
+        self.mst_config_parsers = [
+            "spanning_tree.mst.configuration",
+            "spanning_tree.mst.configuration.name",
+            "spanning_tree.mst.configuration.revision",
+            "spanning_tree.mst.configuration.instances",
         ]
 
     def execute_module(self):
@@ -68,8 +99,13 @@ class Spanning_tree(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+#        self._module.fail_json(
+#            msg="VRF {0} has address-family configurations. "
+#            "Please use the nxos_bgp_af module to remove those first.".format(name),
+#        )
+#        raise Exception(self.have)
+        wantd = self.want
+        haved = self.have
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -88,13 +124,23 @@ class Spanning_tree(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+#        for k, want in iteritems(wantd):
+#            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare_linear(want=wantd, have=haved)
+        self._compare_complex(want=wantd, have=haved)
 
-    def _compare(self, want, have):
-        """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Spanning_tree network resource.
-        """
-        self.compare(parsers=self.parsers, want=want, have=have)
+    def _compare_linear(self, want, have):
+        self.compare(parsers=self.linear_parsers, want=want, have=have)
+
+    def _compare_complex(self, want, have):
+        for x in self.complex_parsers:
+            wx = get_from_dict(want, x) or []
+            hx = get_from_dict(have, x) or []
+            if x == "spanning_tree.mst.priority":
+                wparams = {}
+                for each in wx:
+                    if each['value'] not in wparams:
+                        wparams.update({each['value']: set([None]) })
+                    wparams[each['value']].update(set(each['instance']))
+                if len(wparams) != 0:
+                    raise Exception(wparams)

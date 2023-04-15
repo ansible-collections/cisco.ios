@@ -47,7 +47,7 @@ class Spanning_treeFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_spanning_tree_data(self, connection):
-        return connection.get("show running-config | section ^spanning-tree")
+        return connection.get("show running-config all | section ^spanning-tree|^no spanning-tree")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Spanning_tree network resource

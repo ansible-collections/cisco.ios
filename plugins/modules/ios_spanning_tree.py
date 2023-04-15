@@ -53,7 +53,7 @@ options:
             type: bool
           logging:
             description:
-              - Enable logging of spanning tree changes.
+              - Enable logging of spanning-tree changes.
             type: bool
           loopguard_default:
             description:
@@ -114,28 +114,28 @@ options:
                   - Set the rate at which update packets are sent. The range is from 0 to 32000
                 type: int
           forward_time:
-            description: Sets the STP forward delay time..
-            type: dict
+            description: Sets the STP forward delay time.
+            type: list
+            elements: dict
             required_together: ["vlan_list", "value"]
             suboptions:
               vlan_list:
                 description: List of VLAN identification numbers. The range is from 1 to 4094.
-                type: list
-                elements: int
+                type: str
               value:
                 description: The range is from 4 to 30 seconds
                 type: int
           hello_time:
             description:
               - Specifies the duration, in seconds, between the generation of configuration messages
-              - by the root switch..
-            type: dict
+              - by the root switch.
+            type: list
+            elements: dict
             required_together: ["vlan_list", "value"]
             suboptions:
               vlan_list:
                 description: List of VLAN identification numbers. The range is from 1 to 4094.
-                type: list
-                elements: int
+                type: str
               value:
                 description: The range is from 1 to 10 seconds
                 type: int
@@ -143,30 +143,95 @@ options:
             description:
               - Sets the maximum number of seconds the information in a bridge packet data unit (BPDU)
               - is valid.
-            type: dict
+            type: list
+            elements: dict
             required_together: ["vlan_list", "value"]
             suboptions:
               vlan_list:
                 description: List of VLAN identification numbers. The range is from 1 to 4094.
-                type: list
-                elements: int
+                type: str
               value:
                 description: The range is from 6 to 40 seconds
                 type: int
           priority:
             description:
-              - Sets the STP bridge priority..
-            type: dict
+              - Sets the STP bridge priority.
+            type: list
+            elements: dict
             required_together: ["vlan_list", "value"]
             suboptions:
               vlan_list:
                 description: List of VLAN identification numbers. The range is from 1 to 4094.
-                type: list
-                elements: int
+                type: str
               value:
                 description: Bridge priority in increments of 4096
                 type: int
                 choices: [0, 4096, 8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440]
+          mst:
+            description:
+              - Option for multiple spanning-tree global configurations.
+            type: dict
+            suboptions:
+              simulate_pvst_global:
+                description:
+                  - Set to enable Per-VLAN Spanning Tree (PVST) simulation globally.
+                  - PVST simulation is enabled by default so that all interfaces on the device interoperate between
+                  - Multiple Spanning Tree (MST) and Rapid Per-VLAN Spanning Tree Plus (PVST+). To prevent an accidental
+                  - connection to a device that does not run MST as the default Spanning Tree Protocol (STP) mode,
+                  - you can disable PVST simulation.
+                type: bool
+              hello_time:
+                description:
+                  - Specifies the duration, in seconds, between the generation of configuration messages
+                  - by the root switch. The range is from 1 to 10 seconds.
+                type: int
+              forward_time:
+                description: Sets the STP forward delay time. The range is from 4 to 30 seconds.
+                type: int
+              max_age:
+                description:
+                  - Sets the maximum number of seconds the information in a bridge packet data unit (BPDU)
+                  - is valid. The range is from 6 to 40 seconds.
+                type: int
+              max_hops:
+                description:
+                  - Number of possible hops in the region before a BPDU is discarded; valid values are from 1 to 255 hops.
+                type: int
+              priority:
+                description:
+                  - Sets the MST instance priority.
+                type: list
+                elements: dict
+                required_together: ["instance", "value"]
+                suboptions:
+                  instance:
+                    description: List of MST instances.
+                    type: str
+                  value:
+                    description: STP priority value.
+                    type: int
+                    choices: [0, 4096, 8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440]
+              configuration:
+                description: Options for multiple spanning-tree region configuration.
+                type: dict
+                suboptions:
+                  name:
+                    description: Sets the name of an MST region.
+                    type: str
+                  revision:
+                    description: Sets the revision number for the MST configuration.
+                    type: int
+                  instances:
+                    type: list
+                    elements: dict
+                    required_together: ["instance", "vlan_list"]
+                    suboptions:
+                      instance:
+                        description: MST instance number.
+                        type: int
+                      vlan_list:
+                        description: List of VLANs assosiated to MST instance.
+                        type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
