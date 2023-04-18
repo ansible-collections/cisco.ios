@@ -167,7 +167,14 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "maximum_paths": {"ibgp": 22},
                     "maximum_secondary_paths": {"ibgp": 22, "paths": 12},
                     "neighbors": [
-                        {"neighbor_address": "192.0.2.3", "remote_as": "300"},
+                        {
+                            "neighbor_address": "192.0.2.3",
+                            "remote_as": "300",
+                            "timers": {
+                                "holdtime": 20,
+                                "interval": 10,
+                            },
+                        },
                         {
                             "aigp": {
                                 "send": {
@@ -248,11 +255,12 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 192.0.2.4 remote-as 100.1",
             "neighbor 192.0.2.4 aigp send cost-community 100 poi igp-cost transitive",
             "neighbor 192.0.2.3 remote-as 300",
+            "neighbor 192.0.2.3 timers 10 20",
             "redistribute connected metric 22",
-            "redistribute application ap112 metric 33 route-map mp1",
-            "redistribute application ap1 metric 22",
             "redistribute mobile metric 211",
+            "redistribute application ap1 metric 22",
             "redistribute static metric 33 route-map mp1",
+            "redistribute application ap112 metric 33 route-map mp1",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
