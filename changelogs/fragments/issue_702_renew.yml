@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_l3_interfaces - prevent configuration line generation when enable is false.

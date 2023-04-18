@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_logging_global - logging history configuration command fixed for supported appliance versions.

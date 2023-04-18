@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_bgp_global - fix configuration of timers under neighbor. (https://github.com/ansible-collections/cisco.ios/issues/794)
