@@ -130,10 +130,6 @@ def tmplt_buffered(config_data):
     return tmplt_common(config_data.get("buffered"), "logging buffered")
 
 
-def tmplt_history(config_data):
-    return tmplt_common(config_data.get("history"), "logging history")
-
-
 def tmplt_console(config_data):
     return tmplt_common(config_data.get("console"), "logging console")
 
@@ -518,19 +514,32 @@ class Logging_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "history",
+            "name": "history.size",
+            "getval": re.compile(
+                r"""
+                ^logging\shistory\ssize
+                (\s(?P<size>\d+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging history size {{ history.size }}",
+            "result": {
+                "history": {
+                    "size": "{{ size }}",
+                },
+            },
+        },
+        {
+            "name": "history.severity",
             "getval": re.compile(
                 r"""
                 ^logging\shistory
-                (\s(?P<size>\d+))?
-                (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))?
+                (\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings))
                 $""", re.VERBOSE,
             ),
-            "setval": tmplt_history,
+            "setval": "logging history {{ history.severity }}",
             "result": {
                 "history": {
                     "severity": "{{ severity }}",
-                    "size": "{{ size }}",
                 },
             },
         },
