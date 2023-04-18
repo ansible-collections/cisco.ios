@@ -166,9 +166,37 @@ class Bgp_address_family(ResourceModule):
             want.get("aggregate_addresses", {}),
             have.get("aggregate_addresses", {}),
         )
+        # for distribution of ospfv2 and ospfv3 routes
+        for ospf_version in ["ospf", "ospfv3"]:
+            self._compare_redist_ospf(
+                ospf_version,
+                want.get("redistribute", {}).get(ospf_version, {}),
+                have.get("redistribute", {}).get(ospf_version, {}),
+            )
         # add af command
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "afi", False))
+
+    def _compare_redist_ospf(self, _parser, w_attr, h_attr):
+        """
+        Adds and/or removes commands related to
+        ospf and ospv3 redistribution
+        :param _parser: ospf or ospfv3
+        :param w_attr: content of want['redistribute']['ospf']
+        :param h_attr:content of have['redistribute']['ospf']
+        :return: None
+        """
+        for wkey, wentry in w_attr.items():
+            if wentry != h_attr.pop(wkey, {}):
+                # always negate the command in the
+                # appropriate states before applying
+                if self.state in ["overridden", "replaced"]:
+                    self.addcmd(wentry, f"redistribute.{_parser}", True)
+                self.addcmd(wentry, f"redistribute.{_parser}", False)
+
+        # remove remaining items in have for replaced state
+        for hkey, hentry in h_attr.items():
+            self.addcmd(hentry, "redistribute.ospf", True)
 
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
@@ -272,7 +300,6 @@ class Bgp_address_family(ResourceModule):
         for wkey, wentry in w_attr.items():
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, "aggregate_addresses", False)
-
         # remove remaining items in have for replaced state
         for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "aggregate_addresses", True)
@@ -288,6 +315,8 @@ class Bgp_address_family(ResourceModule):
             "prefix_lists": "name",
             "networks": "address",
             "network": "address",
+            "ospf": "process_id",
+            "ospfv3": "process_id",
         }
 
         af_data = {}
@@ -345,10 +374,55 @@ class Bgp_address_family(ResourceModule):
                 elif k == "redistribute":
                     _redist = {}
                     for i in tval:
-                        _redist.update(i)
+                        # establish elif sections for future protocols
+                        # if necessary
+                        if any(x in ["ospf", "ospfv3"] for x in i):
+                            for ospf_version in ["ospf", "ospfv3"]:
+                                if i.get(ospf_version):
+                                    _i = i[ospf_version]
+
+                                    # Start handle deprecates
+                                    if _i.get("match"):
+                                        for depr in [
+                                            "external",
+                                            "nssa_external",
+                                            "type_1",
+                                            "type_2",
+                                        ]:
+                                            if depr in _i["match"].keys():
+                                                val = _i["match"].pop(depr, False)
+                                                if depr.startswith("type"):
+                                                    # map deprecated nssa_external type to new option
+                                                    if "nssa_externals" in _i["match"].keys():
+                                                        _i["match"]["nssa_externals"][depr] = val
+                                                    else:
+                                                        _i["match"]["nssa_externals"] = {
+                                                            depr: val,
+                                                        }
+                                                elif depr in ["external", "nssa_external"]:
+                                                    # deprecated external and nssa_external are boolean
+                                                    # so both types mapped to true
+                                                    _i["match"][depr + "s"] = {
+                                                        "type_1": True,
+                                                        "type_2": True,
+                                                    }
+                                    # End handle deprecates
+
+                                    if ospf_version not in _redist:
+                                        _redist[ospf_version] = {}
+
+                                    _redist[ospf_version].update(
+                                        {
+                                            str(_i[p_key[ospf_version]]): dict(_i.items()),
+                                        },
+                                    )
+                                    break
+                        else:
+                            _redist.update(i)
                     _af["redistribute"] = _redist
                 else:
                     _af[k] = tval
             # make distinct address family entires
             af_data[af.get("afi", "") + "_" + af.get("safi", "") + "_" + af.get("vrf", "")] = _af
+
         return af_data

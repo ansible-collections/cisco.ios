@@ -3,6 +3,7 @@
     msg: START Merged ios_bgp_address_family state for integration tests on connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _initial_vrf_setup.yaml
+- ansible.builtin.include_tasks: _ospf_proc_setup.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -10,6 +11,36 @@
       cisco.ios.ios_bgp_address_family: &id001
         config:
           address_family:
+            - afi: ipv4
+              redistribute:
+                - connected:
+                    metric: 10
+                - ospf:
+                    process_id: 124
+                - ospf:
+                    process_id: 123
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
+                - ospfv3:
+                    process_id: 123
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
             - afi: ipv4
               aggregate_addresses:
                 - address: 192.0.3.1
@@ -38,6 +69,21 @@
                 dmzlink_bw: true
                 soft_reconfig_backup: true
               safi: mdt
+            - afi: ipv6
+              redistribute:
+                - ospf:
+                    process_id: 124
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
+                    include_connected: true
           as_number: "65000"
         state: merged
 
@@ -50,6 +96,11 @@
       ansible.builtin.assert:
         that:
           - merged['before'] == {}
+
+    # - name: Assert that after dict is correctly generated
+    #   ansible.builtin.assert:
+    #     that:
+    #       - merged['after'] == result['after']
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result

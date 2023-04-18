@@ -6312,6 +6312,29 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>include_connected</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Include connected. Only applicable under IPv6 AFI</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>match</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -6321,7 +6344,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>On Demand stub Routes</div>
+                        <div>Redistribute matched routes</div>
                 </td>
             </tr>
                                 <tr>
@@ -6346,8 +6369,80 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute OSPF external routes</div>
+                        <div>This option is DEPRECATED and replaced with externals option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>externals</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Redistribute OSPF external routes</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_1</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute OSPF External type 1 routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_2</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute OSPF External type 1 routes</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6394,8 +6489,80 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute OSPF NSSA external routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nssa_externals</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Redistribute OSPF NSSA external routes</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_1</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute NSSA external type 1 routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_2</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute NSSA external type 2 routes</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6418,6 +6585,7 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute NSSA external type 1 routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals.type_1 option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
             <tr>
@@ -6442,6 +6610,7 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute NSSA external type 2 routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals.type_2 option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
 
@@ -6556,7 +6725,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>On Demand stub Routes</div>
+                        <div>Redistribute matched routes</div>
                 </td>
             </tr>
                                 <tr>
@@ -6581,8 +6750,80 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute OSPF external routes</div>
+                        <div>This option is DEPRECATED and replaced with externals, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>externals</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Redistribute OSPF external routes</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_1</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute OSPF External type 1 routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_2</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute OSPF External type 1 routes</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6628,9 +6869,81 @@ Parameters
                         </ul>
                 </td>
                 <td>
+                        <div>Redistribute OSPF internal routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals, this attribute will be removed after 2025-01-01.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nssa_externals</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
                         <div>Redistribute OSPF NSSA external routes</div>
                 </td>
             </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_1</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute NSSA external type 1 routes</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_2</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Redistribute NSSA external type 2 routes</div>
+                </td>
+            </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -6653,6 +6966,7 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute NSSA external type 1 routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals.type_1 option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
             <tr>
@@ -6677,6 +6991,7 @@ Parameters
                 </td>
                 <td>
                         <div>Redistribute NSSA external type 2 routes</div>
+                        <div>This option is DEPRECATED and replaced with nssa_externals.type_2 option, this attribute will be removed after 2025-01-01.</div>
                 </td>
             </tr>
 
