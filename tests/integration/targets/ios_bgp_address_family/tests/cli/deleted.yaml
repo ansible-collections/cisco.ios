@@ -16,6 +16,9 @@
               safi: multicast
             - afi: ipv4
               safi: mdt
+            - afi: ipv4
+            - afi: ipv6
+
         state: deleted
 
     - name: Assert that correct set of commands were generated
