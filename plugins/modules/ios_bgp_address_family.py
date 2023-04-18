@@ -1154,25 +1154,60 @@ options:
                   process_id:
                     description: Process ID
                     type: int
+                  include_connected:
+                    description: Include connected. Only applicable under IPv6 AFI
+                    type: bool
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
-                        description: Redistribute OSPF external routes
+                        description:
+                        - Redistribute OSPF external routes
+                        - This option is DEPRECATED and replaced with externals option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
+                      externals:
+                        description: Redistribute OSPF external routes
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description: Redistribute OSPF External type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute OSPF External type 1 routes
+                            type: bool
                       internal:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
-                        description: Redistribute OSPF NSSA external routes
+                        description:
+                        - Redistribute OSPF NSSA external routes
+                        - This option is DEPRECATED and replaced with nssa_externals option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
                       type_1:
-                        description: Redistribute NSSA external type 1 routes
+                        description:
+                        - Redistribute NSSA external type 1 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
                       type_2:
-                        description: Redistribute NSSA external type 2 routes
+                        description:
+                        - Redistribute NSSA external type 2 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
+                      nssa_externals:
+                        description: Redistribute OSPF NSSA external routes
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description: Redistribute NSSA external type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute NSSA external type 2 routes
+                            type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
@@ -1190,24 +1225,56 @@ options:
                     description: Process ID
                     type: int
                   match:
-                    description: On Demand stub Routes
+                    description: Redistribute matched routes
                     type: dict
                     suboptions:
                       external:
-                        description: Redistribute OSPF external routes
+                        description:
+                        - Redistribute OSPF external routes
+                        - This option is DEPRECATED and replaced with externals,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
+                      externals:
+                        description: Redistribute OSPF external routes
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description: Redistribute OSPF External type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute OSPF External type 1 routes
+                            type: bool
                       internal:
                         description: Redistribute OSPF internal routes
                         type: bool
                       nssa_external:
-                        description: Redistribute OSPF NSSA external routes
+                        description:
+                        - Redistribute OSPF internal routes
+                        - This option is DEPRECATED and replaced with nssa_externals,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
                       type_1:
-                        description: Redistribute NSSA external type 1 routes
+                        description:
+                        - Redistribute NSSA external type 1 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
                       type_2:
-                        description: Redistribute NSSA external type 2 routes
+                        description:
+                        - Redistribute NSSA external type 2 routes
+                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                          this attribute will be removed after 2025-01-01.
                         type: bool
+                      nssa_externals:
+                        description: Redistribute OSPF NSSA external routes
+                        type: dict
+                        suboptions:
+                          type_1:
+                            description: Redistribute NSSA external type 1 routes
+                            type: bool
+                          type_2:
+                            description: Redistribute NSSA external type 2 routes
+                            type: bool
                   metric:
                     description: Metric for redistributed routes
                     type: int
