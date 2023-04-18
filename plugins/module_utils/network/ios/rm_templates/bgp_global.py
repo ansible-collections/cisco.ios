@@ -1701,7 +1701,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"neighbors": {"{{ neighbor_address }}": {"soft_reconfiguration": True}}},
         },
         {
-            "name": "timers",
+            "name": "ntimers",
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\stimers
@@ -1712,9 +1712,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} timers"
-            "{{ (' ' + timers.interval|string) if timers.interval is defined else '' }}"
-            "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
-            "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
+            "{{ (' ' + ntimers.interval|string) if ntimers.interval is defined else '' }}"
+            "{{ (' ' + ntimers.holdtime|string) if ntimers.holdtime is defined else '' }}"
+            "{{ (' ' + ntimers.min_holdtime|string) if ntimers.min_holdtime is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
