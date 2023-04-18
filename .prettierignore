@@ -19,5 +19,5 @@ collections/
 # Tracked but manually formatted
 
 # WIP
-tests/integration/targets/nxos_config/templates/config.js
+tests/integration/targets/ios_config/templates/config.js
 README.md
