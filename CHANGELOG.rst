@@ -5,6 +5,24 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.4.1
+======
+
+Bugfixes
+--------
+
+- Fix parser to read groups in snmp-server.
+- Fix parser to read transceiver in snmp-server.
+- ios_acls - fix processing of source information on extended acls entries.
+- ios_acls - prevent rendering of mac access-lists in facts.
+- ios_static_routes - fix configure generation order for ipv4 and ipv6 routes.
+- ios_static_routes - fix module to be idempotent with replaced and overridden state.
+
+Documentation Changes
+---------------------
+
+- ios_banner - Enhance example with comment.
+
 v4.4.0
 ======
 
