@@ -1915,9 +1915,8 @@ EXAMPLES = """
 
 # Task Output:
 # ------------
-
-# before: {}
 #
+# before: {}
 # commands:
 # - router bgp 65000
 # - timers bgp 100 200 150
@@ -1934,7 +1933,6 @@ EXAMPLES = """
 # - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 # - neighbor 192.0.2.1 route-map test-route out
 # - redistribute connected metric 10
-#
 # after:
 #   as_number: '65000'
 #   bgp:
@@ -1979,7 +1977,7 @@ EXAMPLES = """
 #     holdtime: 200
 #     keepalive: 100
 #     min_holdtime: 150
-#
+
 # After state:
 # ------------
 #
@@ -2018,7 +2016,6 @@ EXAMPLES = """
 #  neighbor 198.0.2.1 description merge neighbor
 #  neighbor 198.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 198.0.2.1 route-map test-route out
-
 
 - name: Replaces device configuration of listed global BGP with provided configuration
   cisco.ios.ios_bgp_global:
@@ -2083,7 +2080,6 @@ EXAMPLES = """
 #   networks:
 #   - address: 192.0.2.2
 #   - address: 192.0.2.3
-#
 # commands:
 # - router bgp 65000
 # - no bgp bestpath compare-routerid
@@ -2098,7 +2094,6 @@ EXAMPLES = """
 # - neighbor 192.0.2.5 description replace neighbor
 # - neighbor 192.0.2.5 slow-peer detection disable
 # - no neighbor 198.0.2.1
-#
 # after:
 #   as_number: '65000'
 #   bgp:
@@ -2119,10 +2114,10 @@ EXAMPLES = """
 #         disable: true
 #   networks:
 #   - address: 192.0.2.4
-#
+
 # After state:
 # -------------
-
+#
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
 #  bgp log-neighbor-changes
@@ -2160,7 +2155,7 @@ EXAMPLES = """
 
 # Task Output:
 # ------------
-
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2194,10 +2189,6 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
-# after:
-#   as_number: '65000'
-
 # commands:
 # - router bgp 65000
 # - no bgp advertise-best-external
@@ -2207,6 +2198,8 @@ EXAMPLES = """
 # - no bgp log-neighbor-changes
 # - no bgp nopeerup-delay post-boot 10
 # - no neighbor 192.0.2.1
+# after:
+#   as_number: '65000'
 
 # After state:
 # -------------
@@ -2214,9 +2207,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
 
-
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured global BGP)"
 
 # Before state:
 # -------------
@@ -2233,14 +2224,13 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
-- name: "Delete global BGP without config"
+- name: Delete global BGP without config
   cisco.ios.ios_bgp_global:
     state: deleted
 
 # Task Output:
 # ------------
-
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2274,10 +2264,6 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
-# after:
-#   as_number: '65000'
-
 # commands:
 # - router bgp 65000
 # - no bgp advertise-best-external
@@ -2286,6 +2272,8 @@ EXAMPLES = """
 # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
 # - no bgp nopeerup-delay post-boot 10
 # - no neighbor 198.51.100.1
+# after:
+#   as_number: '65000'
 
 # After state:
 # -------------
@@ -2293,8 +2281,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
 
-# Using Purged
-#"(NOTE: This WILL delete the configured global BGP)"
+# Using purged - would delete all configuration
 
 # Before state:
 # -------------
@@ -2311,7 +2298,6 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
 - name: 'Delete the configured global BGP (Note: This WILL delete the the configured
     global BGP)'
   cisco.ios.ios_bgp_global:
@@ -2319,7 +2305,7 @@ EXAMPLES = """
 
 # Task Output:
 # ------------
-
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2353,16 +2339,16 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
 # commands:
 #  - no router bgp 65000
+# after: {}
 
 # After state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
 
-# Using Gathered
+# Using gathered
 
 # Before state:
 # -------------
@@ -2383,15 +2369,14 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
-- name: Gather listed global BGP with provided configurations
+- name: Gather facts for bgp_global
   cisco.ios.ios_bgp_global:
     config:
     state: gathered
 
 # Task Output:
 # ------------
-
+#
 # gathered:
 #   as_number: '65000'
 #   bgp:
@@ -2435,7 +2420,6 @@ EXAMPLES = """
 #     holdtime: 200
 #     keepalive: 100
 #     min_holdtime: 150
-
 
 # Using Rendered
 
@@ -2623,10 +2607,9 @@ EXAMPLES = """
           set: true
     state: rendered
 
-
 # Task Output:
 # ------------
-
+#
 # rendered:
 # - router bgp 65000
 # - auto-summary
@@ -2712,7 +2695,7 @@ EXAMPLES = """
 # - redistribute connected metric 22
 # - redistribute mobile metric 211
 
-# Using Parsed
+# Using parsed
 
 # File: parsed.cfg
 # ----------------
@@ -2810,7 +2793,7 @@ EXAMPLES = """
 
 # Task Output:
 # ------------
-
+#
 # parsed:
 #     aggregate_addresses:
 #     - address: 192.0.2.1
