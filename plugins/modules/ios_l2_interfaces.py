@@ -26,6 +26,8 @@ notes:
   - Tested against Cisco IOSv Version 15.2 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+    output in yaml format.
 options:
   config:
     description: A dictionary of Layer-2 interface options

@@ -366,6 +366,7 @@ Notes
 .. note::
    - Tested against Cisco IOSv Version 15.2 on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
+   - The module examples uses callback plugin (stdout_callback = yaml) to generate task output in yaml format.
 
 
 

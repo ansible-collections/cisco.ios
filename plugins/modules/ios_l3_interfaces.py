@@ -27,6 +27,8 @@ notes:
   - Using deleted state without config will delete all l3 attributes from all the interfaces.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+    output in yaml format.
 options:
   config:
     description: A dictionary of Layer-3 interface options
