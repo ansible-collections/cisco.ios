@@ -881,7 +881,7 @@ Examples
     #  speed auto
     # interface GigabitEthernet0/2
     #  description Configured by Ansible Network
-    #  ip address 192.168.1.0 255.255.255.0
+    #  ip address 192.168.1.1 255.255.255.0
     # interface GigabitEthernet0/3
     #  description Configured by Ansible Network
     #  ip address 192.168.0.1 255.255.255.0
@@ -902,7 +902,7 @@ Examples
 
     # "commands": [
     #       "interface GigabitEthernet0/2",
-    #       "no ip address 192.168.1.0 255.255.255.0",
+    #       "no ip address 192.168.1.1 255.255.255.0",
     #       "GigabitEthernet0/3.100",
     #       "no ip address 192.168.0.2 255.255.255.0",
     #     ],
@@ -943,7 +943,7 @@ Examples
     #  speed auto
     # interface GigabitEthernet0/2
     #  description Configured by Ansible Network
-    #  ip address 192.168.1.0 255.255.255.0
+    #  ip address 192.168.1.1 255.255.255.0
     # interface GigabitEthernet0/3
     #  description Configured by Ansible Network
     #  ip address 192.168.0.1 255.255.255.0
@@ -963,7 +963,7 @@ Examples
     #       "interface GigabitEthernet0/1",
     #       "no ip address 192.0.2.10 255.255.255.0",
     #       "interface GigabitEthernet0/2",
-    #       "no ip address 192.168.1.0 255.255.255.0",
+    #       "no ip address 192.168.1.1 255.255.255.0",
     #       "interface GigabitEthernet0/3",
     #       "no ip address 192.168.0.1 255.255.255.0",
     #       "no ipv6 address FD5D:12C9:2201:1::1/64",
