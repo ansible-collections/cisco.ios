@@ -4,6 +4,5 @@ mock ; python_version < '3.5'
 pexpect
 pytest-xdist
 yamllint
-coverage
 pytest-forked
 git+https://github.com/ansible-community/pytest-ansible-units.git
