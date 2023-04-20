@@ -23,7 +23,7 @@ author:
   - Sagar Paul (@KB-petByte)
   - Sumit Jaiswal (@justjais)
 notes:
-  - Tested against Cisco IOSv Version 15.2 on VIRL.
+  - Tested against Cisco IOSv Version 15.2 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -34,7 +34,8 @@ options:
     suboptions:
       name:
         description:
-        - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
+        - Full name of the interface excluding any logical unit
+          number, i.e GigabitEthernet0/1.
         type: str
         required: true
       access:
@@ -149,15 +150,15 @@ options:
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is
         not required.
-      - The state I(gathered) will fetch the running configuration from device and transform
-        it into structured data in the format as per the resource module argspec and
-        the value is returned in the I(gathered) key within the result.
+      - The state I(gathered) will fetch the running configuration from device and
+        transform it into structured data in the format as per the resource module
+        argspec and the value is returned in the I(gathered) key within the result.
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
-        value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
-        connection to remote host is not required.
+        value is returned in the I(parsed) key within the result. The value of
+        C(running_config) option should be the same format as the output of
+        command I(show running-config | include ip route|ipv6 route) executed on device.
+        For state I(parsed) active connection to remote host is not required.
     type: str
 """
 
@@ -195,6 +196,44 @@ EXAMPLES = """
         encapsulation: dot1q
     state: merged
 
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+# commands:
+# - interface GigabitEthernet0/1
+# - switchport access vlan 10
+# - switchport voice vlan 40
+# - switchport mode access
+# - interface GigabitEthernet0/2
+# - switchport mode trunk
+# - switchport trunk encapsulation dot1q
+# - switchport trunk native vlan 20
+# - switchport trunk allowed vlan 10-20,40
+# - switchport trunk pruning vlan 10,20
+# after:
+# - access:
+#     vlan: 10
+#   mode: access
+#   name: GigabitEthernet0/1
+#   voice:
+#     vlan: 40
+# - mode: trunk
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 10-20
+#     - '40'
+#     encapsulation: dot1q
+#     native_vlan: 20
+#     pruning_vlans:
+#     - '10'
+#     - '20'
+
 # After state:
 # ------------
 #
@@ -231,7 +270,7 @@ EXAMPLES = """
 #  media-type rj45
 #  negotiation auto
 
-- name: Replaces device configuration of listed l2 interfaces with provided configuration
+- name: Replaces device configuration with provided configuration
   cisco.ios.ios_l2_interfaces:
     config:
     - name: GigabitEthernet0/2
@@ -241,6 +280,35 @@ EXAMPLES = """
         pruning_vlans: 10
         encapsulation: isl
     state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+# commands:
+# - interface GigabitEthernet0/2
+# - no switchport access vlan
+# - switchport trunk encapsulation isl
+# - switchport trunk native vlan 20
+# - switchport trunk allowed vlan 20-25,40
+# - switchport trunk pruning vlan 10
+# after:
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/1
+# - name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-25
+#     - '40'
+#     encapsulation: isl
+#     native_vlan: 20
+#     pruning_vlans:
+#     - '10'
 
 # After state:
 # -------------
@@ -288,6 +356,36 @@ EXAMPLES = """
         vlan: 40
     state: overridden
 
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet0/1
+#   trunk:
+#     encapsulation: dot1q
+#     native_vlan: 20
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     encapsulation: dot1q
+#     native_vlan: 20
+# commands:
+# - interface GigabitEthernet0/1
+# - no switchport trunk encapsulation
+# - no switchport trunk native vlan
+# - interface GigabitEthernet0/2
+# - switchport voice vlan 40
+# - no switchport trunk encapsulation
+# - no switchport trunk native vlan
+# after:
+# - name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   voice:
+#     vlan: 40
+
 # After state:
 # -------------
 #
@@ -302,7 +400,7 @@ EXAMPLES = """
 #  media-type rj45
 #  negotiation auto
 
-# Using Deleted
+# Using deleted
 
 # Before state:
 # -------------
@@ -328,6 +426,43 @@ EXAMPLES = """
     - name: GigabitEthernet0/1
     state: deleted
 
+# Task Output
+# -----------
+#
+# before:
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-40
+#     - '60'
+#     - '80'
+#     encapsulation: dot1q
+#     native_vlan: 10
+#     pruning_vlans:
+#     - '10'
+# commands:
+# - interface GigabitEthernet0/1
+# - no switchport access vlan
+# after:
+# - name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-40
+#     - '60'
+#     - '80'
+#     encapsulation: dot1q
+#     native_vlan: 10
+#     pruning_vlans:
+#     - '10'
+
 # After state:
 # -------------
 #
@@ -346,8 +481,7 @@ EXAMPLES = """
 #  negotiation auto
 
 
-# Using Deleted without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
+# Using deleted without config - delete all configuration
 
 # Before state:
 # -------------
@@ -371,6 +505,38 @@ EXAMPLES = """
   cisco.ios.ios_l2_interfaces:
     state: deleted
 
+# Task Output
+# -----------
+#
+# before:
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-40
+#     - '60'
+#     - '80'
+#     encapsulation: dot1q
+#     native_vlan: 10
+#     pruning_vlans:
+#     - '10'
+# commands:
+# - interface GigabitEthernet0/1
+# - no switchport access vlan
+# - interface GigabitEthernet0/2
+# - no switchport access vlan
+# - no switchport trunk encapsulation
+# - no switchport trunk native vlan
+# - no switchport trunk allowed vlan
+# - no switchport trunk pruning vlan
+# after:
+# - name: GigabitEthernet0/1
+# - name: GigabitEthernet0/2
+
 # After state:
 # -------------
 #
@@ -383,71 +549,52 @@ EXAMPLES = """
 #  media-type rj45
 #  negotiation auto
 
-# Using Gathered
+# Using gathered
 
 # Before state:
 # -------------
 #
 # vios#sh running-config | section ^interface
 # interface GigabitEthernet0/1
-#  switchport access vlan 10
+#  description Configured by Ansible
+#  switchport access vlan 20
+#  negotiation auto
 # interface GigabitEthernet0/2
-#  switchport trunk allowed vlan 10-20,40
+#  description This is test
+#  switchport access vlan 20
+#  switchport trunk allowed vlan 20-40,60,80
 #  switchport trunk encapsulation dot1q
 #  switchport trunk native vlan 10
-#  switchport trunk pruning vlan 10,20
-#  switchport mode trunk
+#  switchport trunk pruning vlan 10
+#  media-type rj45
+#  negotiation auto
 
-- name: Gather listed l2 interfaces with provided configurations
+- name: Gather facts for l2 interfaces
   cisco.ios.ios_l2_interfaces:
     config:
     state: gathered
 
-# Module Execution Result:
-# ------------------------
+# Task Output
+# -----------
 #
-# "gathered": [
-#         {
-#             "name": "GigabitEthernet0/0"
-#         },
-#         {
-#             "access": {
-#                 "vlan": 10
-#             },
-#             "name": "GigabitEthernet0/1"
-#         },
-#         {
-#             "mode": "trunk",
-#             "name": "GigabitEthernet0/2",
-#             "trunk": {
-#                 "allowed_vlans": [
-#                     "10-20",
-#                     "40"
-#                 ],
-#                 "encapsulation": "dot1q",
-#                 "native_vlan": 10,
-#                 "pruning_vlans": [
-#                     "10",
-#                     "20"
-#                 ]
-#             }
-#         }
-#     ]
+# gathered:
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-40
+#     - '60'
+#     - '80'
+#     encapsulation: dot1q
+#     native_vlan: 10
+#     pruning_vlans:
+#     - '10'
 
-# After state:
-# ------------
-#
-# vios#sh running-config | section ^interface
-# interface GigabitEthernet0/1
-#  switchport access vlan 10
-# interface GigabitEthernet0/2
-#  switchport trunk allowed vlan 10-20,40
-#  switchport trunk encapsulation dot1q
-#  switchport trunk native vlan 10
-#  switchport trunk pruning vlan 10,20
-#  switchport mode trunk
-
-# Using Rendered
+# Using rendered
 
 - name: Render the commands for provided  configuration
   cisco.ios.ios_l2_interfaces:
@@ -463,18 +610,17 @@ EXAMPLES = """
         encapsulation: dot1q
     state: rendered
 
-# Module Execution Result:
-# ------------------------
+# Task Output
+# -----------
 #
-# "rendered": [
-#         "interface GigabitEthernet0/1",
-#         "switchport access vlan 30",
-#         "interface GigabitEthernet0/2",
-#         "switchport trunk encapsulation dot1q",
-#         "switchport trunk native vlan 20",
-#         "switchport trunk allowed vlan 10-20,40",
-#         "switchport trunk pruning vlan 10,20"
-#     ]
+# rendered:
+# - interface GigabitEthernet0/1
+# - switchport access vlan 30
+# - interface GigabitEthernet0/2
+# - switchport trunk encapsulation dot1q
+# - switchport trunk native vlan 20
+# - switchport trunk allowed vlan 10-20,40
+# - switchport trunk pruning vlan 10,20
 
 # Using Parsed
 
@@ -482,46 +628,43 @@ EXAMPLES = """
 # ----------------
 #
 # interface GigabitEthernet0/1
-# switchport mode access
-# switchport access vlan 30
+#  description Configured by Ansible
+#  switchport access vlan 20
+#  negotiation auto
 # interface GigabitEthernet0/2
-# switchport trunk allowed vlan 15-20,40
-# switchport trunk encapsulation dot1q
-# switchport trunk native vlan 20
-# switchport trunk pruning vlan 10,20
+#  description This is test
+#  switchport access vlan 20
+#  switchport trunk allowed vlan 20-40,60,80
+#  switchport trunk encapsulation dot1q
+#  switchport trunk native vlan 10
+#  switchport trunk pruning vlan 10
+#  media-type rj45
+#  negotiation auto
 
 - name: Parse the commands for provided configuration
   cisco.ios.ios_l2_interfaces:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Module Execution Result:
-# ------------------------
+# Task Output
+# -----------
 #
-# "parsed": [
-#         {
-#             "access": {
-#                 "vlan": 30
-#             },
-#             "mode": "access",
-#             "name": "GigabitEthernet0/1"
-#         },
-#         {
-#             "name": "GigabitEthernet0/2",
-#             "trunk": {
-#                 "allowed_vlans": [
-#                     "15-20",
-#                     "40"
-#                 ],
-#                 "encapsulation": "dot1q",
-#                 "native_vlan": 20,
-#                 "pruning_vlans": [
-#                     "10",
-#                     "20"
-#                 ]
-#             }
-#         }
-#     ]
+# parsed:
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/1
+# - access:
+#     vlan: 20
+#   name: GigabitEthernet0/2
+#   trunk:
+#     allowed_vlans:
+#     - 20-40
+#     - '60'
+#     - '80'
+#     encapsulation: dot1q
+#     native_vlan: 10
+#     pruning_vlans:
+#     - '10'
 """
 
 RETURN = """
