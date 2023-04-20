@@ -1078,66 +1078,97 @@ Examples
     #  shutdown
     #  negotiation auto
 
-    # Using deleted without any config passed, only interface's configuration will be negated
+    # Using deleted without config passed, only interface's configuration will be negated
 
     # Before state:
     # -------------
 
     # router-ios#show running-config | section ^interface
-    # interface GigabitEthernet0/1
-    #  ip address 192.0.2.10 255.255.255.0
+    # interface Loopback999
+    #  no ip address
     #  shutdown
-    #  duplex auto
-    #  speed auto
-    # interface GigabitEthernet0/2
-    #  description Configured by Ansible Network
-    #  ip address 192.168.1.1 255.255.255.0
-    # interface GigabitEthernet0/3
-    #  description Configured by Ansible Network
-    #  ip address 192.168.0.1 255.255.255.0
-    #  shutdown
-    #  duplex full
-    #  speed 10
-    #  ipv6 address FD5D:12C9:2201:1::1/64
-    # interface GigabitEthernet0/3.100
-    #  encapsulation dot1Q 20
+    # interface GigabitEthernet1
+    #  description Management interface do not change
+    #  ip address dhcp
+    #  negotiation auto
+    # interface GigabitEthernet2
     #  ip address 192.168.0.2 255.255.255.0
+    #  shutdown
+    #  speed 1000
+    #  no negotiation auto
+    # interface GigabitEthernet3
+    #  description Configured and Overridden by Ansible Network
+    #  no ip address
+    #  shutdown
+    #  speed 1000
+    #  no negotiation auto
+    #  ipv6 address FD5D:12C9:2201:1::1/64
+    # interface GigabitEthernet3.100
+    # interface GigabitEthernet4
+    #  no ip address
+    #  shutdown
+    #  negotiation auto
 
     - name: "Delete L3 config of all interfaces"
       cisco.ios.ios_l3_interfaces:
         state: deleted
 
-    # "commands": [
-    #       "interface GigabitEthernet0/1",
-    #       "no ip address 192.0.2.10 255.255.255.0",
-    #       "interface GigabitEthernet0/2",
-    #       "no ip address 192.168.1.1 255.255.255.0",
-    #       "interface GigabitEthernet0/3",
-    #       "no ip address 192.168.0.1 255.255.255.0",
-    #       "no ipv6 address FD5D:12C9:2201:1::1/64",
-    #       "GigabitEthernet0/3.100",
-    #       "no ip address 192.168.0.2 255.255.255.0",
-    #     ],
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - ipv4:
+    #   - dhcp:
+    #       enable: true
+    #   name: GigabitEthernet1
+    # - ipv4:
+    #   - address: 192.168.0.2/24
+    #   name: GigabitEthernet2
+    # - ipv6:
+    #   - address: FD5D:12C9:2201:1::1/64
+    #   name: GigabitEthernet3
+    # - name: GigabitEthernet3.100
+    # - name: GigabitEthernet4
+    # - name: Loopback999
+    # commands:
+    # - interface GigabitEthernet1
+    # - no ip address dhcp
+    # - interface GigabitEthernet2
+    # - no ip address 192.168.0.2 255.255.255.0
+    # - interface GigabitEthernet3
+    # - no ipv6 address fd5d:12c9:2201:1::1/64
+    # after:
+    # - name: GigabitEthernet1
+    # - name: GigabitEthernet2
+    # - name: GigabitEthernet3
+    # - name: GigabitEthernet3.100
+    # - name: GigabitEthernet4
+    # - name: Loopback999
 
     # After state:
     # -------------
-
-    # router-ios#show running-config | section ^interface
-    # interface GigabitEthernet0/1
+    #
+    # interface Loopback999
     #  no ip address
     #  shutdown
-    #  duplex auto
-    #  speed auto
-    # interface GigabitEthernet0/2
-    #  description Configured by Ansible Network
-    #  no ip address
-    # interface GigabitEthernet0/3
-    #  description Configured by Ansible Network
+    # interface GigabitEthernet1
+    #  description Management interface do not change
+    #  negotiation auto
+    # interface GigabitEthernet2
     #  shutdown
-    #  duplex full
-    #  speed 10
-    # interface GigabitEthernet0/3.100
-    #  encapsulation dot1Q 20
+    #  speed 1000
+    #  no negotiation auto
+    # interface GigabitEthernet3
+    #  description Configured and Overridden by Ansible Network
+    #  no ip address
+    #  shutdown
+    #  speed 1000
+    #  no negotiation auto
+    # interface GigabitEthernet3.100
+    # interface GigabitEthernet4
+    #  no ip address
+    #  shutdown
+    #  negotiation auto
 
     # Using gathered
 
