@@ -25,6 +25,8 @@ notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+    output in yaml format.
 options:
   config:
     description: A list of configurations for bgp address family.
@@ -1565,7 +1567,6 @@ EXAMPLES = """
 # ------------
 #
 # before: {}
-#
 # commands:
 #   - router bgp 65000
 #   - address-family ipv4 multicast vrf blue
@@ -1588,7 +1589,6 @@ EXAMPLES = """
 #   - bgp dmzlink-bw
 #   - bgp soft-reconfig-backup
 #   - bgp dampening 1 10 100 5
-#
 # after:
 #   address_family:
 #   - afi: ipv4
@@ -1864,7 +1864,6 @@ EXAMPLES = """
 #         soft_reconfig_backup: true
 #       safi: mdt
 #     as_number: '65000'
-
 # commands:
 # - router bgp 65000
 # - address-family ipv4 multicast vrf blue
@@ -1887,7 +1886,6 @@ EXAMPLES = """
 # - network 192.0.2.1 mask 255.255.255.255 route-map test
 # - no network 198.51.111.11 mask 255.255.255.255 route-map test
 # - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-#
 # after:
 #   address_family:
 #   - afi: ipv4
@@ -2007,7 +2005,6 @@ EXAMPLES = """
 #   bgp dmzlink-bw
 #   bgp soft-reconfig-backup
 #  exit-address-family
-
 
 # Using overridden
 
@@ -2169,7 +2166,6 @@ EXAMPLES = """
 #     - afi: ipv6
 #       safi: multicast
 #     as_number: '65000'
-#
 # commands:
 # - router bgp 65000
 # - address-family ipv4
@@ -2198,7 +2194,6 @@ EXAMPLES = """
 # - bgp aggregate-timer 10
 # - bgp dampening 10 10 10 10
 # - bgp slow-peer detection threshold 200
-#
 # after:
 #   address_family:
 #   - afi: ipv4
@@ -2295,7 +2290,7 @@ EXAMPLES = """
 #  address-family ipv6 multicast
 #  exit-address-family
 
-# Using Deleted
+# Using deleted
 
 # Before state:
 # -------------
@@ -2406,12 +2401,10 @@ EXAMPLES = """
 #     - afi: ipv6
 #       safi: multicast
 #     as_number: '65000'
-#
 # commands:
 # - router bgp 65000
 # - no address-family ipv4 multicast
 # - no address-family ipv4 mdt
-#
 # after:
 #   address_family:
 #   - afi: ipv4
@@ -2466,7 +2459,7 @@ EXAMPLES = """
 #   - afi: ipv6
 #     safi: multicast
 #   as_number: '65000'
-#
+
 # After state:
 # -------------
 #
@@ -2499,8 +2492,7 @@ EXAMPLES = """
 #  address-family ipv6 multicast
 #  exit-address-family
 
-# Using Deleted without any config passed
-#"(NOTE: This will delete all of configured AF BGP)"
+# Using Deleted without any config passed (delete all)
 
 # Before state:
 # -------------
@@ -2534,8 +2526,7 @@ EXAMPLES = """
 #  address-family ipv6 multicast
 #  exit-address-family
 
-- name: 'Delete ALL of configured AF BGP (Note: This WILL delete the all configured
-    AF BGP)'
+- name: 'Delete ALL of configured AF BGP'
   cisco.ios.ios_bgp_address_family:
     state: deleted
 
@@ -2596,12 +2587,10 @@ EXAMPLES = """
 #   - afi: ipv6
 #     safi: multicast
 #   as_number: '65000'
-#
 # commands:
 # - router bgp 65000
 # - no address-family ipv4
 # - no address-family ipv6 multicast
-#
 # after:
 #   address_family:
 #   - afi: ipv4
@@ -2627,8 +2616,8 @@ EXAMPLES = """
 #   no neighbor 198.51.110.1 activate
 #  exit-address-family
 
-# Using Gathered
-#
+# Using gathered
+
 # Before state:
 # -------------
 #
@@ -2744,7 +2733,7 @@ EXAMPLES = """
 #       safi: mdt
 #     as_number: '65000'
 
-# Using Rendered
+# Using rendered
 
 - name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_bgp_address_family:
@@ -2828,7 +2817,7 @@ EXAMPLES = """
 # - bgp soft-reconfig-backup
 # - bgp dampening 1 10 100 5
 
-# Using Parsed
+# Using parsed
 
 # File: parsed.cfg
 # ----------------

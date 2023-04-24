@@ -428,7 +428,7 @@ EXAMPLES = """
       userinfo: true
       policy_firewall:
         rate_limit: 10
-      logging_on: true
+      logging_on: enable
       exception: 4099
       dmvpn:
         rate_limit: 10
@@ -833,7 +833,7 @@ EXAMPLES = """
       userinfo: true
       policy_firewall:
           rate_limit: 10
-      logging_on: true
+      logging_on: enable
       exception: 10
       dmvpn:
         rate_limit: 10
