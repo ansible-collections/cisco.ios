@@ -35,8 +35,6 @@ class Snmp_serverFacts(object):
     def get_snmp_data(self, connection):
         _get_snmp_data = connection.get("show running-config | section ^snmp-server")
         return _get_snmp_data
-        # _get_snmpv3_user = connection.get("show snmp user")
-        # return _get_snmp_data, _get_snmpv3_user
     
     def get_snmpv3_user_data(self, connection):
         _get_snmpv3_user = connection.get("show snmp user")
