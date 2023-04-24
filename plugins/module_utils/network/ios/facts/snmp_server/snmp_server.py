@@ -34,8 +34,13 @@ class Snmp_serverFacts(object):
 
     def get_snmp_data(self, connection):
         _get_snmp_data = connection.get("show running-config | section ^snmp-server")
+        return _get_snmp_data
+        # _get_snmpv3_user = connection.get("show snmp user")
+        # return _get_snmp_data, _get_snmpv3_user
+    
+    def get_snmpv3_user_data(self, connection):
         _get_snmpv3_user = connection.get("show snmp user")
-        return _get_snmp_data, _get_snmpv3_user
+        return _get_snmpv3_user
 
     def sort_list_dicts(self, objs):
         p_key = {
@@ -93,7 +98,8 @@ class Snmp_serverFacts(object):
         params = {}
 
         if not data:
-            data, snmpv3_user = self.get_snmp_data(connection)
+            data = self.get_snmp_data(connection)
+            snmpv3_user = self.get_snmpv3_user_data(connection)
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
