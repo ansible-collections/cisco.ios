@@ -19,80 +19,42 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
-def num_list_to_str(num_list):
-    seq = []
-    final = []
-    last = 0
-    for index, val in enumerate(num_list):
-        if last + 1 == val or index == 0:
-            seq.append(val)
-            last = val
-        else:
-            if len(seq) > 1:
-               final.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
-            else:
-               final.append(str(seq[0]))
-            seq = []
-            seq.append(val)
-            last = val
-        if index == len(num_list) - 1:
-            if len(seq) > 1:
-                final.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
-            else:
-                final.append(str(seq[0]))
-    final_str = ','.join(map(str, final))
-    return final_str
-
-def _tmplt_set_forward_time(data):
+def _tmplt_spanning_tree_mst_priority(data):
     cmd = []
-    glob_data = data["spanning_tree"]["forward_time"]
-    for each in glob_data: 
-        cmd_tmp = "spanning-tree vlan " +  num_list_to_str(sorted(glob_data["vlan_list"]))
-        cmd_tmp += " forward-time { value }".format(**glob_data)
-        cmd.append(cmd_tmp)
+    for each in data["spanning_tree"]["mst"]["priority"]:
+        cmd.append("spanning-tree mst {instance} priority {value}".format(**each))
     return cmd
 
-def _tmplt_set_hello_time(data):
+def _tmplt_spanning_tree_mst_config_instances(data):
     cmd = []
-    glob_data = data["spanning_tree"]["hello_time"]
-    for each in glob_data: 
-        cmd_tmp = "spanning-tree vlan " +  num_list_to_str(sorted(glob_data["vlan_list"]))
-        cmd_tmp += " hello-time { value }".format(**glob_data)
-        cmd.append(cmd_tmp)
+    for each in data["spanning_tree"]["mst"]["configuration"]["instances"]:
+        cmd.append("instance {instance} vlan {vlan_list}".format(**each))
     return cmd
 
-def _tmplt_set_max_age(data):
+def _tmplt_spanning_tree_priority(data):
     cmd = []
-    glob_data = data["spanning_tree"]["max_age"]
-    for each in glob_data: 
-        cmd_tmp = "spanning-tree vlan " +  num_list_to_str(sorted(glob_data["vlan_list"]))
-        cmd_tmp += " max-age { value }".format(**glob_data)
-        cmd.append(cmd_tmp)
+    for each in data["spanning_tree"]["priority"]:
+        cmd.append("spanning-tree vlan {vlan_list} priority {value}".format(**each))
     return cmd
 
-def _tmplt_set_priority(data):
+def _tmplt_spanning_tree_max_age(data):
     cmd = []
-    glob_data = data["spanning_tree"]["priority"]
-    for each in glob_data: 
-        cmd_tmp = "spanning-tree vlan " +  vlan_list_to_str(sorted(glob_data["vlan_list"]))
-        cmd_tmp += " priority { value }".format(**glob_data)
-        cmd.append(cmd_tmp)
+    for each in data["spanning_tree"]["max_age"]:
+        cmd.append("spanning-tree vlan {vlan_list} max-age {value}".format(**each))
     return cmd
 
-def _tmplt_set_mst_priority(data):
+def _tmplt_spanning_tree_hello_time(data):
     cmd = []
-    glob_data = data["spanning_tree"]["mst"]["priority"]
-    for each in glob_data:
-        cmd.append("spanning-tree mst " + num_list_to_str(sorted(each["instance"])) + " priority " + str(each["value"]))
+    for each in data["spanning_tree"]["hello_time"]:
+        cmd.append("spanning-tree vlan {vlan_list} hello-time {value}".format(**each))
     return cmd
-    
-def _tmplt_set_mst_config_instances(data):
+
+def _tmplt_spanning_tree_forward_time(data):
     cmd = []
-    glob_data = data["spanning_tree"]["mst"]["configuration"]["instances"]
-    for each in glob_data:
-        cmd.append("instance " + each["instance"] + " vlan " + num_list_to_str(sorted(each["vlan_list"])))
+    for each in data["spanning_tree"]["forward_time"]:
+        cmd.append("spanning-tree vlan {vlan_list} forward-time {value}".format(**each))
     return cmd
-    
+
 class Spanning_treeTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Spanning_treeTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -131,13 +93,13 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.etherchannel_guard_misconfig",
             "getval": re.compile(
                 r"""
-                (spanning-tree\setherchannel\sguard\s(?P<etherchannel_guard_misconfig>misconfig))?
+                ((?P<negated>no\s)?spanning-tree\setherchannel\sguard\s(?P<etherchannel_guard_misconfig>misconfig))?
                 \s*
                 $""", re.VERBOSE),
             "setval": "spanning-tree etherchannel guard misconfig",
             "result": {
                 "spanning_tree": {
-                    "etherchannel_guard_misconfig": "{{ not not etherchannel_guard_misconfig }}",
+                    "etherchannel_guard_misconfig": "{{ False if negated is defined else (not not etherchannel_guard_misconfig) }}",
                 },
             },
         },
@@ -190,7 +152,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\smode\s(?P<mode>mst|pvst|rapid-pvst))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mode {{ mode }}",
+            "setval": "spanning-tree mode {{ spanning_tree.mode }}",
             "result": {
                 "spanning_tree": {
                     "mode": "{{ mode }}",
@@ -204,7 +166,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\spathcost\smethod\s(?P<pathcost_method>long|short))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree pathcost method {{ pathcost_method }}",
+            "setval": "spanning-tree pathcost method {{ spanning_tree.pathcost_method }}",
             "result": {
                 "spanning_tree": {
                     "pathcost_method": "{{ pathcost_method }}",
@@ -218,7 +180,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\stransmit\shold-count\s(?P<transmit_hold_count>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree transmit hold-count {{ transmit_hold_count }}",
+            "setval": "spanning-tree transmit hold-count {{ spanning_tree.transmit_hold_count }}",
             "result": {
                 "spanning_tree": {
                     "transmit_hold_count": "{{ transmit_hold_count }}"
@@ -312,7 +274,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\suplinkfast\smax-update-rate\s(?P<max_update_rate>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree uplinkfast max-update-rate {{ max_update_rate }}",
+            "setval": "spanning-tree uplinkfast max-update-rate {{ spanning_tree.uplinkfast.max_update_rate }}",
             "result": {
                 "spanning_tree": {
                     "uplinkfast": {
@@ -325,25 +287,15 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.forward_time",
             "getval": re.compile(
                 r"""
-                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\sforward-time\s(?P<forward_time>\d+)
+                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\sforward-time\s(?P<value>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_forward_time,
+            "setval": _tmplt_spanning_tree_forward_time,
             "result": {
                 "spanning_tree": {
                     "forward_time": [ {
-                        "vlan_list": "{% set comma_list = vlan_list.split(',') %}"
-                                     "{% for comma in comma_list %}"
-                                     "{% if '-' in comma %}"
-                                     "{% set first,last = comma.split('-') %}"
-                                     "{% else %}"
-                                     "{% set first,last = comma,comma %}"
-                                     "{% endif %}"
-                                     "{% for each in range(first|int, last|int + 1) %}"
-                                     "{{ each }},"
-                                     "{% endfor %}"
-                                     "{% endfor %}",
-                        "value": "{{ forward_time }}",
+                        "vlan_list": "'{{ vlan_list }}'",
+                        "value": "{{ value }}",
                     } ],
                 },
             },
@@ -352,25 +304,15 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.hello_time",
             "getval": re.compile(
                 r"""
-                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\shello-time\s(?P<hello_time>\d+)
+                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\shello-time\s(?P<value>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_hello_time,
+            "setval": _tmplt_spanning_tree_hello_time,
             "result": {
                 "spanning_tree": {
                     "hello_time": [ {
-                        "vlan_list": "{% set comma_list = vlan_list.split(',') %}"
-                                     "{% for comma in comma_list %}"
-                                     "{% if '-' in comma %}"
-                                     "{% set first,last = comma.split('-') %}"
-                                     "{% else %}"
-                                     "{% set first,last = comma,comma %}"
-                                     "{% endif %}"
-                                     "{% for each in range(first|int, last|int + 1) %}"
-                                     "{{ each }},"
-                                     "{% endfor %}"
-                                     "{% endfor %}",
-                        "value": "{{ hello_time }}",
+                        "vlan_list": "'{{ vlan_list }}'",
+                        "value": "{{ value }}",
                     } ],
                 },
             },
@@ -379,25 +321,15 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.max_age",
             "getval": re.compile(
                 r"""
-                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\smax-age\s(?P<max_age>\d+)
+                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\smax-age\s(?P<value>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_max_age,
+            "setval": _tmplt_spanning_tree_max_age,
             "result": {
                 "spanning_tree": {
                     "max_age": [ {
-                        "vlan_list": "{% set comma_list = vlan_list.split(',') %}"
-                                     "{% for comma in comma_list %}"
-                                     "{% if '-' in comma %}"
-                                     "{% set first,last = comma.split('-') %}"
-                                     "{% else %}"
-                                     "{% set first,last = comma,comma %}"
-                                     "{% endif %}"
-                                     "{% for each in range(first|int, last|int + 1) %}"
-                                     "{{ each }},"
-                                     "{% endfor %}"
-                                     "{% endfor %}",
-                        "value": "{{ max_age }}",
+                        "vlan_list": "'{{ vlan_list }}'",
+                        "value": "{{ value }}",
                     } ],
                 },
             },
@@ -406,25 +338,15 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.priority",
             "getval": re.compile(
                 r"""
-                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\spriority\s(?P<priority>\d+)
+                spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\spriority\s(?P<value>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_priority,
+            "setval": _tmplt_spanning_tree_priority,
             "result": {
                 "spanning_tree": {
                     "priority": [ {
-                        "vlan_list": "{% set comma_list = vlan_list.split(',') %}"
-                                     "{% for comma in comma_list %}"
-                                     "{% if '-' in comma %}"
-                                     "{% set first,last = comma.split('-') %}"
-                                     "{% else %}"
-                                     "{% set first,last = comma,comma %}"
-                                     "{% endif %}"
-                                     "{% for each in range(first|int, last|int + 1) %}"
-                                     "{{ each }},"
-                                     "{% endfor %}"
-                                     "{% endfor %}",
-                        "value": "{{ priority }}",
+                        "vlan_list": "'{{ vlan_list }}'",
+                        "value": "{{ value }}",
                     } ],
                 },
             },
@@ -452,7 +374,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\smst\shello-time\s(?P<hello_time>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mst hello-time {{ hello_time }}",
+            "setval": "spanning-tree mst hello-time {{ spanning_tree.mst.hello_time }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -468,7 +390,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\smst\sforward-time\s(?P<forward_time>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mst forward-time {{ forward_time }}",
+            "setval": "spanning-tree mst forward-time {{ spanning_tree.mst.forward_time }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -484,7 +406,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\smst\smax-age\s(?P<max_age>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mst max-age {{ max_age }}",
+            "setval": "spanning-tree mst max-age {{ spanning_tree.mst.max_age }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -500,7 +422,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 (spanning-tree\smst\smax-hops\s(?P<max_hops>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mst max-hops {{ max_hops }}",
+            "setval": "spanning-tree mst max-hops {{ spanning_tree.mst.max_hops }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -513,26 +435,16 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.mst.priority",
             "getval": re.compile(
                 r"""
-                (spanning-tree\smst\s(?P<instance>[0-9,\,\-]+)\spriority\s(?P<priority>\d+))?
+                (spanning-tree\smst\s(?P<instance>[0-9,\,\-]+)\spriority\s(?P<value>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_mst_priority,
+            "setval": _tmplt_spanning_tree_mst_priority,
             "result": {
                 "spanning_tree": {
                     "mst": {
                         "priority": [ {
-                            "instance": "{% set comma_list = instance.split(',') %}"
-                                        "{% for comma in comma_list %}"
-                                        "{% if '-' in comma %}"
-                                        "{% set first,last = comma.split('-') %}"
-                                        "{% else %}"
-                                        "{% set first,last = comma,comma %}"
-                                        "{% endif %}"
-                                        "{% for each in range(first|int, last|int + 1) %}"
-                                        "{{ each }}, "
-                                        "{% endfor %}"
-                                        "{% endfor %}",
-                            "value": "{{ priority }}"
+                            "instance": "'{{ instance }}'",
+                            "value": "{{ value }}"
                         } ],
                     },
                 },
@@ -542,13 +454,13 @@ class Spanning_treeTemplate(NetworkTemplate):
             "name": "spanning_tree.mst.configuration",
             "getval": re.compile(
                 r"""
-                (spanning-tree\smst\s(?P<mst_conf>configuration))?
+                (spanning-tree\smst\s(?P<enabled>configuration)$)?
                 $""", re.VERBOSE),
-            "setval": "spanning-tree mst configuration",
+            "setval": "{{ 'spanning-tree mst configuration' if spanning_tree.mst.configuration is defined else '' }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
-                        "{{ mst_conf }}": {},
+                        "{{ enabled }}": {},
                     },
                 },
             },
@@ -559,7 +471,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (\sname\s(?P<name>\S+))?
                 $""", re.VERBOSE),
-            "setval": "name {{ name }}",
+            "setval": "name {{ spanning_tree.mst.configuration.name }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -576,7 +488,7 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (\srevision\s(?P<revision>\d+))?
                 $""", re.VERBOSE),
-            "setval": "revision {{ revision }}",
+            "setval": "revision {{ spanning_tree.mst.configuration.revision }}",
             "result": {
                 "spanning_tree": {
                     "mst": {
@@ -593,24 +505,14 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (\sinstance\s(?P<instance>\d+)\svlan\s(?P<vlan_list>[0-9,\,\-]+))?
                 $""", re.VERBOSE),
-            "setval": _tmplt_set_mst_config_instances,
+            "setval": _tmplt_spanning_tree_mst_config_instances,
             "result": {
                 "spanning_tree": {
                     "mst": {
                         "configuration": {
                             "instances": [ {
                                 "instance": "{{ instance }}",
-                                "vlan_list": "{% set comma_list = vlan_list.split(',') %}"
-                                            "{% for comma in comma_list %}"
-                                            "{% if '-' in comma %}"
-                                            "{% set first,last = comma.split('-') %}"
-                                            "{% else %}"
-                                            "{% set first,last = comma,comma %}"
-                                            "{% endif %}"
-                                            "{% for each in range(first|int, last|int + 1) %}"
-                                            "{{ each }},"
-                                            "{% endfor %}"
-                                            "{% endfor %}",
+                                "vlan_list": "'{{ vlan_list }}'",
                             } ],
                         },
                     },

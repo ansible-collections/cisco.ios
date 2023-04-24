@@ -252,7 +252,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        | section ^spanning-tree|^no spanning-tree) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
     choices:
