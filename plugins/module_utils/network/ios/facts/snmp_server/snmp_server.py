@@ -58,7 +58,7 @@ class Snmp_serverFacts(object):
                 if element.get("traps", {}):
                     element["traps"] = list(element.get("traps").split())
             return hosts
-    
+
     def get_snmpv3_user_facts(self, snmpv3_user):
         user_sets = snmpv3_user.split("User ")
         user_list = []
@@ -67,17 +67,16 @@ class Snmp_serverFacts(object):
             lines = user_set.splitlines()
             for line in lines:
                 if line.startswith("name"):
-                    one_set["username"] = line.split(': ')[1]
+                    one_set["username"] = line.split(": ")[1]
                 if line.startswith("Group-name:"):
-                    one_set["group"] = line.split(': ')[1]
+                    one_set["group"] = line.split(": ")[1]
                 if "IPv6 access-list:" in line:
-                    one_set["acl_v6"] = line.split(': ')[-1]
+                    one_set["acl_v6"] = line.split(": ")[-1]
                 if "active access-list:" in line:
-                    one_set["acl_v4"] = line.split(': ')[-1]
+                    one_set["acl_v4"] = line.split(": ")[-1]
             if len(one_set) != 0:
                 user_list.append(one_set)
         return user_list
-
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Snmp_server network resource
@@ -100,7 +99,7 @@ class Snmp_serverFacts(object):
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
         snmp_user_data = self.get_snmpv3_user_facts(snmpv3_user)
         objs = snmp_server_parser.parse()
-        
+
         if len(snmp_user_data) != 0:
             if objs.get("users") is None:
                 objs["users"] = snmp_user_data
