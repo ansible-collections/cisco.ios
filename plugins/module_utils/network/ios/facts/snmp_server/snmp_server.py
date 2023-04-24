@@ -81,7 +81,7 @@ class Snmp_serverFacts(object):
                 user_list.append(one_set)
         return user_list
 
-    def populate_facts(self, connection, ansible_facts, data=None):
+    def populate_facts(self, connection, ansible_facts, data=None, snmpv3_user=None):
         """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
@@ -97,6 +97,7 @@ class Snmp_serverFacts(object):
 
         if not data:
             data = self.get_snmp_data(connection)
+        if not snmpv3_user:
             snmpv3_user = self.get_snmpv3_user_data(connection)
 
         # parse native config using the Snmp_server template
