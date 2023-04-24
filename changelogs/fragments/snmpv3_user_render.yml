@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - SNMPv3 user rendering now works correctly.
