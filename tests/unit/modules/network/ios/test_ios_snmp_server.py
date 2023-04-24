@@ -53,7 +53,7 @@ class TestIosSnmpServerModule(TestIosModule):
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
             "Snmp_serverFacts.get_snmp_data",
-            "Snmp_serverFacts.get_snmpv3_user_data"
+            "Snmp_serverFacts.get_snmpv3_user_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
