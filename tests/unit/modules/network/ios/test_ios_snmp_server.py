@@ -53,9 +53,15 @@ class TestIosSnmpServerModule(TestIosModule):
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
             "Snmp_serverFacts.get_snmp_data",
-            "Snmp_serverFacts.get_snmpv3_user_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
+
+        self.mock_execute_show_command_user = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
+            "Snmp_serverFacts.get_snmpv3_user_data",
+        )
+
+        self.execute_show_command_user = self.mock_execute_show_command_user.start()
 
     def tearDown(self):
         super(TestIosSnmpServerModule, self).tearDown()
@@ -65,6 +71,7 @@ class TestIosSnmpServerModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
+        self.mock_execute_show_command_user.stop()
 
     def test_ios_snmp_server_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -1259,8 +1266,6 @@ class TestIosSnmpServerModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
-    ####################
-
     def test_ios_snmp_server_parsed(self):
         set_module_args(
             dict(
@@ -1408,6 +1413,51 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
             """,
         )
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: TESTU22
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active IPv6 access-list: testv6acl
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+
+            User name: TESTU23
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: aclWord
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+
+            User name: TESTU24
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: TESTG
+                    
+            User name: TESTU25
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: TESTG
+                    
+            User name: testus2
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+                    
+            User name: TESTU
+            Engine ID: 800000090300525400012D4A
+            storage-type: nonvolatile        active
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+            """
+        )
         set_module_args(dict(state="gathered"))
         gathered = {
             "hosts": [
@@ -1426,6 +1476,39 @@ class TestIosSnmpServerModule(TestIosModule):
                     "version_option": "noauth",
                 },
                 {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
+            ],
+            "users": [
+                {
+                    "group": "TESTG",
+                    "username": "TESTU"
+                },
+                {
+                    "acl_v6": "testv6acl",
+                    "group": "TESTG",
+                    "username": "TESTU22"
+                },
+                {
+                    "group": "TESTG",
+                    "username": "TESTU23"
+                },
+                {
+                    "group": "TESTG",
+                    "username": "TESTU24"
+                },
+                {
+                    "group": "TESTG",
+                    "username": "TESTU25"
+                },
+                {
+                    "group": "TESTG",
+                    "username": "testus2"
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "usrgrp",
+                    "username": "us1",
+                    "version": "v1"
+                }
             ],
         }
         result = self.execute_module(changed=False)
