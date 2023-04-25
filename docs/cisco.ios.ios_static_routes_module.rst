@@ -472,6 +472,7 @@ Notes
 .. note::
    - Tested against Cisco IOSXE Version 17.3 on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
+   - The module examples uses callback plugin (stdout_callback = yaml) to generate task output in yaml format.
 
 
 
@@ -484,6 +485,7 @@ Examples
 
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
 
     - name: Merge provided configuration with device configuration
@@ -525,6 +527,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - {}
     # commands:
@@ -569,6 +572,7 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name merged_blue track 150
     # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
@@ -580,6 +584,7 @@ Examples
 
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name merged_blue track 150
     # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
@@ -604,6 +609,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -672,6 +678,7 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name merged_blue track 150
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast
@@ -681,6 +688,7 @@ Examples
 
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name merged_blue track 150
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast
@@ -703,6 +711,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -749,10 +758,11 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name override_vrf track 150
 
-    # Using Deleted
+    # Using deleted
 
     # Before state:
     # -------------
@@ -802,6 +812,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -845,10 +856,14 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
+
+    # Using deleted - delete based on specific routes
 
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
@@ -867,6 +882,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -926,12 +942,16 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
     # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
+    # Using deleted - delete based on vrfs
+
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
@@ -947,6 +967,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -1008,14 +1029,18 @@ Examples
 
     # After state:
     # ------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
     # ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
     # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
+    # Using deleted - delete all
+
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
@@ -1029,6 +1054,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - address_families:
     #   - afi: ipv4
@@ -1072,13 +1098,14 @@ Examples
 
     # After state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
-
 
     # Using gathered
 
     # Before state:
     # -------------
+    #
     # vios#show running-config | include ip route|ipv6 route
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
@@ -1093,6 +1120,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # gathered:
     # - address_families:
     #   - afi: ipv4
@@ -1168,6 +1196,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # rendered:
     # - ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
     # - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
@@ -1179,19 +1208,21 @@ Examples
 
     # File: parsed.cfg
     # ----------------
+    #
     # ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
     # ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
     # ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
     # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
     # ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
 
-    - name: Parse the provided configuration with the existing running configuration
+    - name: Parse the provided configuration
       cisco.ios.ios_static_routes:
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
     # Task Output
     # -----------
+    #
     # parsed:
     # - address_families:
     #   - afi: ipv4

@@ -13,4 +13,4 @@ issues: https://github.com/ansible-collections/cisco.ios/issues
 tags: [cisco, ios, iosxe, networking]
 # NOTE(pabelanger): We create an empty version key to keep ansible-galaxy
 # happy. We dynamically inject version info based on git information.
-version: "4.4.1"
+version: "4.5.0"
