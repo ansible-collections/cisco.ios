@@ -348,7 +348,89 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
-    def test_ios_spanning_tree_merged_idempotent(self):
+    def test_ios_spanning_tree_merged_idempotent1(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mode rapid-pvst
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mst": {
+                            "forward_time": 25,
+                            "hello_time": 4,
+                            "max_age": 33,
+                        },
+                    },
+                },
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+
+    def test_ios_spanning_tree_merged_idempotent2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mode rapid-pvst
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mode": "mst",
+                        "mst": {
+                            "forward_time": 25,
+                            "hello_time": 4,
+                            "max_age": 33,
+                        },
+                    },
+                },
+                state="merged",
+            ),
+        )
+        commands = [
+            "spanning-tree mode mst",
+            "spanning-tree mst hello-time 4",
+            "spanning-tree mst forward-time 25",
+            "spanning-tree mst max-age 33",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_ios_spanning_tree_merged_idempotent3(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mode mst
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mode": "rapid-pvst",
+                        "mst": {
+                            "forward_time": 25,
+                            "hello_time": 4,
+                            "max_age": 33,
+                        },
+                    },
+                },
+                state="merged",
+            ),
+        )
+        commands = [
+            "spanning-tree mode rapid-pvst",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+
+    def test_ios_spanning_tree_merged_idempotent4(self):
         self.execute_show_command.return_value = dedent(
             """\
             spanning-tree mode mst
@@ -538,8 +620,89 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_ios_spanning_tree_deleted_idempotent1(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mst configuration
+             name NAME
+             revision 34
+             instance 1 vlan 40-50
+             instance 2 vlan 10-20
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mst": {
+                            "configuration": {
+                                "name": "NAME",
+                                "revision": 34,
+                                "instances": [
+                                    {
+                                        "instance": 1,
+                                        "vlan_list": "30-45",
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+                state="deleted",
+            ),
+        )
+        commands = [
+            "spanning-tree mst configuration",
+            "no name NAME",
+            "no revision 34",
+            "no instance 1 vlan 40-45",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_ios_spanning_tree_deleted_idempotent(self):
+    def test_ios_spanning_tree_deleted_idempotent2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mst configuration
+             name NAME
+             revision 34
+             instance 1 vlan 40-50
+             instance 2 vlan 10-20
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mst": {
+                            "configuration": {
+                                "name": "NAME",
+                                "revision": 34,
+                                "instances": [
+                                    {
+                                        "instance": 1,
+                                        "vlan_list": "40-50",
+                                    },
+                                    {
+                                        "instance": 2,
+                                        "vlan_list": "10-20",
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+                state="deleted",
+            ),
+        )
+        commands = [
+            "no spanning-tree mst configuration",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+
+    def test_ios_spanning_tree_deleted_idempotent3(self):
         self.execute_show_command.return_value = dedent(
             """\
             spanning-tree mode mst
@@ -624,8 +787,6 @@ class TestIosSpanningTreeModule(TestIosModule):
                                         "vlan_list": "40-50",
                                     },
                                 ],
-                                "name": "NAME",
-                                "revision": 34,
                             },
                         },
                     },
@@ -657,8 +818,6 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no spanning-tree mst max-age 33",
             "no spanning-tree mst max-hops 33",
             "spanning-tree mst configuration",
-            "no name NAME",
-            "no revision 34",
             "no instance 1 vlan 40-50",
         ]
         result = self.execute_module(changed=True)

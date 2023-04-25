@@ -33,7 +33,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.spanning_tree import (
     Spanning_treeTemplate,
 )
+from ansible.utils.display import Display
 
+display = Display()
 
 class Spanning_tree(ResourceModule):
     """
@@ -119,73 +121,6 @@ class Spanning_tree(ResourceModule):
         self._compare_mst_config(wantd, haved)
 
 
-    def _dict_copy_merged(self, want, have, x=""):
-        hrec = {}
-        have_dict = have if x == "" else get_from_dict(have, x)
-        want_dict = want if x == "" else get_from_dict(want, x)
-        for k, wx in iteritems(want_dict):
-            if k not in have_dict: hrec.update({k:wx})
-
-        for k, hx in iteritems(have_dict):
-            dstr = k if x == "" else x + "." + k
-            wx = get_from_dict(want, dstr)
-            if wx is None:
-                hrec.update({k:hx})
-                continue
-            if isinstance(wx, dict):
-                hrec.update({ k: self._dict_copy_merged(want, have, dstr) })
-            else:
-                if dstr in self.mst_parsers:
-                    wmode = get_from_dict(want, "spanning_tree.mode")
-                    hmode = get_from_dict(have, "spanning_tree.mode")
-                    if not ((wmode is None and hmode == "mst") or wmode == "mst"):
-                        continue
-                if not isinstance(wx, list):
-                    hrec.update({k: wx if wx is not None else hx })
-                else:
-                    cmp_list = []
-                    if dstr in self.complex_parsers:
-                        cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
-                    elif dstr == "spanning_tree.mst.priority":
-                        cmp_list = self._compare_lists("instance", "value", wx, hx)
-                    elif dstr  == "spanning_tree.mst.configuration.instances":
-                        cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
-                    if cmp_list: hrec.update({ k: cmp_list })
-        return hrec
-
-    def _dict_copy_deleted(self, want, have, x=""):
-        hrec = {}
-        have_dict = have if x == "" else get_from_dict(have, x)
-        for k, hx in iteritems(have_dict):
-            if not want:
-                hrec.update({k:hx})
-                continue
-            dstr = k if x == "" else x + "." + k
-            wx = get_from_dict(want, dstr)
-            if wx is None: continue
-            if dstr == "spanning_tree.mst.configuration" and (wx == hx or not wx):
-                hrec.update({k: {}})
-                continue
-            if isinstance(wx, dict):
-                hrec.update({ k: self._dict_copy_deleted(want, have, dstr) })
-            else:
-                if dstr in self.mst_parsers:
-                    wmode = get_from_dict(want, "spanning_tree.mode")
-                    if wmode == "mst": continue
-                if not isinstance(wx, list):
-                    if wx == hx: hrec.update({k: hx})
-                else:
-                    cmp_list = []
-                    if dstr in self.complex_parsers:
-                        cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
-                    elif dstr == "spanning_tree.mst.priority":
-                        cmp_list = self._compare_lists("instance", "value", wx, hx)
-                    elif dstr  == "spanning_tree.mst.configuration.instances":
-                        cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
-                    if cmp_list: hrec.update({ k: cmp_list })
-        return hrec
-
-
     def _compare_linear(self, want, have):
         self.compare(parsers=self.linear_parsers, want=want, have=have)
 
@@ -213,7 +148,6 @@ class Spanning_tree(ResourceModule):
             if x == "spanning_tree.mst.configuration":
                 wx = get_from_dict(want, x)
                 hx = get_from_dict(have, x)
-                #raise Exception(hx)
                 if self.state == "deleted":
                     if hx is not None and not hx:
                         self.compare(parsers=[x], want={}, have=have)
@@ -230,7 +164,7 @@ class Spanning_tree(ResourceModule):
                         self.compare(parsers=[x], want=want, have={})
                     else:
                         return
-                if self.state == "merged":
+                elif self.state == "merged":
                     if wx:
                         self.compare(parsers=[x], want=want, have={})
                     else:
@@ -297,10 +231,83 @@ class Spanning_tree(ResourceModule):
             for k, v in iteritems(hparams):
                 hx += [{ dkey: v, dvalue: k }]
 
-        if self.state in ["replaced", "overridden", "deleted"] and hx:
+        if self.state in ["replaced", "deleted"] and hx:
             self.addcmd(have, x, negate=True)
         if wx:
             self.addcmd(want, x)
+
+
+    def _dict_copy_merged(self, want, have, x=""):
+        hrec = {}
+        have_dict = have if x == "" else get_from_dict(have, x)
+        want_dict = want if x == "" else get_from_dict(want, x)
+        for k, wx in iteritems(want_dict):
+            if k not in have_dict: hrec.update({k:wx})
+
+        for k, hx in iteritems(have_dict):
+            dstr = k if x == "" else x + "." + k
+            wx = get_from_dict(want, dstr)
+            if wx is None:
+                hrec.update({k:hx})
+                continue
+            if isinstance(wx, dict):
+                hrec.update({ k: self._dict_copy_merged(want, have, dstr) })
+            else:
+                if dstr in self.mst_parsers:
+                    wmode = get_from_dict(want, "spanning_tree.mode")
+                    hmode = get_from_dict(have, "spanning_tree.mode")
+                    if not ((wmode is None and hmode == "mst") or wmode == "mst"):
+                        display.display(
+                            "WARNING: mst options like simulate_pvst_global, hello_time, forward_time, "
+                            "max_age, max_hops and priority will not be used until [spanning-tree "
+                            "mode mst] is enabled or already configured in device!"
+                        )
+                        continue
+                if not isinstance(wx, list):
+                    hrec.update({k: wx if wx is not None else hx })
+                else:
+                    cmp_list = []
+                    if dstr in self.complex_parsers:
+                        cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
+                    elif dstr == "spanning_tree.mst.priority":
+                        cmp_list = self._compare_lists("instance", "value", wx, hx)
+                    elif dstr  == "spanning_tree.mst.configuration.instances":
+                        cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
+                    if cmp_list: hrec.update({ k: cmp_list })
+        return hrec
+
+
+    def _dict_copy_deleted(self, want, have, x=""):
+        hrec = {}
+        have_dict = have if x == "" else get_from_dict(have, x)
+        for k, hx in iteritems(have_dict):
+            if not want:
+                hrec.update({k:hx})
+                continue
+            dstr = k if x == "" else x + "." + k
+            wx = get_from_dict(want, dstr)
+            if wx is None: continue
+            if dstr == "spanning_tree.mst.configuration" and wx == hx:
+                hrec.update({k: {}})
+                continue
+            if isinstance(wx, dict):
+                hrec.update({ k: self._dict_copy_deleted(want, have, dstr) })
+            else:
+                if dstr in self.mst_parsers:
+                    wmode = get_from_dict(want, "spanning_tree.mode")
+                    if wmode == "mst": continue
+                if not isinstance(wx, list):
+                    if wx == hx: hrec.update({k: hx})
+                else:
+                    cmp_list = []
+                    if dstr in self.complex_parsers:
+                        cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
+                    elif dstr == "spanning_tree.mst.priority":
+                        cmp_list = self._compare_lists("instance", "value", wx, hx)
+                    elif dstr  == "spanning_tree.mst.configuration.instances":
+                        cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
+                    if cmp_list: hrec.update({ k: cmp_list })
+        return hrec
 
 
     def _compare_lists(self, dkey, dvalue, want, have):
@@ -351,7 +358,7 @@ class Spanning_tree(ResourceModule):
 
     def _num_list_to_str(self, num_list):
         seq = []
-        final = []
+        out_list = []
         last = 0
         for index, val in enumerate(num_list):
             if last + 1 == val or index == 0:
@@ -359,16 +366,15 @@ class Spanning_tree(ResourceModule):
                 last = val
             else:
                 if len(seq) > 1:
-                   final.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
+                   out_list.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
                 else:
-                   final.append(str(seq[0]))
+                   out_list.append(str(seq[0]))
                 seq = []
                 seq.append(val)
                 last = val
             if index == len(num_list) - 1:
                 if len(seq) > 1:
-                    final.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
+                    out_list.append(str(seq[0]) + '-' + str(seq[len(seq)-1]))
                 else:
-                    final.append(str(seq[0]))
-        final_str = ','.join(map(str, final))
-        return final_str
+                    out_list.append(str(seq[0]))
+        return ','.join(map(str, out_list))
