@@ -1435,28 +1435,28 @@ class TestIosSnmpServerModule(TestIosModule):
             Authentication Protocol: MD5
             Privacy Protocol: None
             Group-name: TESTG
-                    
+
             User name: TESTU25
             Engine ID: 000000090200000000000A0B
             storage-type: nonvolatile        active access-list: 22
             Authentication Protocol: MD5
             Privacy Protocol: None
             Group-name: TESTG
-                    
+
             User name: testus2
             Engine ID: 000000090200000000000A0B
             storage-type: nonvolatile        active
             Authentication Protocol: MD5
             Privacy Protocol: AES128
             Group-name: TESTG
-                    
+
             User name: TESTU
             Engine ID: 800000090300525400012D4A
             storage-type: nonvolatile        active
             Authentication Protocol: MD5
             Privacy Protocol: AES128
             Group-name: TESTG
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
         gathered = {
@@ -1480,35 +1480,35 @@ class TestIosSnmpServerModule(TestIosModule):
             "users": [
                 {
                     "group": "TESTG",
-                    "username": "TESTU"
+                    "username": "TESTU",
                 },
                 {
                     "acl_v6": "testv6acl",
                     "group": "TESTG",
-                    "username": "TESTU22"
+                    "username": "TESTU22",
                 },
                 {
                     "group": "TESTG",
-                    "username": "TESTU23"
+                    "username": "TESTU23",
                 },
                 {
                     "group": "TESTG",
-                    "username": "TESTU24"
+                    "username": "TESTU24",
                 },
                 {
                     "group": "TESTG",
-                    "username": "TESTU25"
+                    "username": "TESTU25",
                 },
                 {
                     "group": "TESTG",
-                    "username": "testus2"
+                    "username": "testus2",
                 },
                 {
                     "acl_v4": "22",
                     "group": "usrgrp",
                     "username": "us1",
-                    "version": "v1"
-                }
+                    "version": "v1",
+                },
             ],
         }
         result = self.execute_module(changed=False)
