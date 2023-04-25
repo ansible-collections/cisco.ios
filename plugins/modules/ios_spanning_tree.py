@@ -1,13 +1,23 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
-# Copyright 2023 Red Hat
-# GNU General Public License v3.0+
-# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
+#
+# This file is part of Ansible
+#
+# Ansible is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Ansible is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
+#
 """
 The module file for ios_spanning_tree
 """
-
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -24,7 +34,7 @@ notes:
   - Tested against Cisco IOS Version 15.2 on CML.
 options:
   config:
-    description: The provided configurations.
+    description: The provided configuration.
     type: dict
     suboptions:
       spanning_tree:
@@ -266,13 +276,116 @@ options:
 """
 
 EXAMPLES = """
-# Using merged
+# Using gathered
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^spanning-tree|^no spanning-tree
+# spanning-tree mode mst
+# no spanning-tree bridge assurance
+# spanning-tree transmit hold-count 5
+# spanning-tree loopguard default
+# spanning-tree logging
+# spanning-tree portfast edge default
+# spanning-tree portfast edge bpduguard default
+# spanning-tree portfast edge bpdufilter default
+# spanning-tree etherchannel guard misconfig
+# spanning-tree extend system-id
+# spanning-tree uplinkfast max-update-rate 32
+# spanning-tree uplinkfast
+# spanning-tree backbonefast
+# spanning-tree pathcost method long
+# no spanning-tree mst simulate pvst global
+# spanning-tree mst configuration
+#  name NAME
+#  revision 34
+#  instance 1 vlan 40-50
+#  instance 2 vlan 10-20
+# spanning-tree mst hello-time 4
+# spanning-tree mst forward-time 25
+# spanning-tree mst max-age 33
+# spanning-tree mst max-hops 33
+# spanning-tree mst 0 priority 12288
+# spanning-tree mst 1 priority 4096
+# spanning-tree mst 5,7-9 priority 57344
+# spanning-tree vlan 1,3-5,7,9-11 priority 24576
+# spanning-tree vlan 1,3,9 hello-time 4
+# spanning-tree vlan 4,6-8 hello-time 5
+# spanning-tree vlan 5 hello-time 6
+# spanning-tree vlan 1,7-20 forward-time 20
+# spanning-tree vlan 1-2,4-5 max-age 38
+
+- name: Gather facts for spanning_tree
+  cisco.ios.ios_spanning_tree:
+    config:
+    state: gathered
+
+# Task Output:
+# ------------
+#
+# gathered:
+#    spanning_tree:
+#        mode: mst
+#        backbonefast: true
+#        bridge_assurance: false
+#        etherchannel_guard_misconfig: true
+#        extend_system_id: true
+#        pathcost_method: long
+#        transmit_hold_count: 5
+#        logging: true
+#        loopguard_default: true
+#        portfast:
+#            bpdufilter_default: True
+#            bpduguard_default: True
+#            edge_default: True
+#        priority:
+#            - value: 24576
+#              vlan_list: 1,3-5,7,9-11
+#        uplinkfast:
+#            enabled: true
+#            max_update_rate: 32
+#        forward_time:
+#            - value: 20
+#              vlan_list: 1,7-20
+#        hello_time:
+#            - value: 4
+#              vlan_list: 1,3,9
+#            - value: 5
+#              vlan_list: 4,6-8
+#            - value: 6
+#              vlan_list: 5
+#        max_age:
+#            - value: 38
+#              vlan_list: 1-2,4-5
+#        mst:
+#            forward_time: 25
+#            hello_time: 4
+#            max_age: 33
+#            max_hops: 33
+#            simulate_pvst_global: false
+#            priority:
+#                - instance: 0
+#                  value: 12288
+#                - instance: 1
+#                  value: 4096
+#                - instance: 5,7-9
+#                  value: 57344
+#            configuration:
+#                name: "NAME"
+#                revision: 34
+#                instances:
+#                    - instance: 1
+#                      vlan_list: 40-50
+#                    - instance: 2
+#                      vlan_list: 10-20
+
 """
 
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced) or C(deleted)
   type: dict
   sample: >
     This output will always be in the same format as the
@@ -286,20 +399,26 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced) or C(deleted)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - spanning-tree pathcost method long
+    - no spanning-tree mst simulate pvst global
+    - spanning-tree mst configuration
+    - name NAME
+    - revision 34
+    - instance 1 vlan 40-50
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - spanning-tree pathcost method long
+    - no spanning-tree mst simulate pvst global
+    - spanning-tree mst configuration
+    - name NAME
+    - revision 34
+    - instance 1 vlan 40-50
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -337,7 +456,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

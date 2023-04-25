@@ -348,6 +348,90 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
+
+    def test_ios_spanning_tree_rendered(self):
+        set_module_args(
+            dict(
+                config = {
+                    "spanning_tree": {
+                        "mode": "mst",
+                        "backbonefast": True,
+                        "bridge_assurance": False,
+                        "etherchannel_guard_misconfig": False,
+                        "mst": {
+                            "configuration": {
+                                "instances": [
+                                    {
+                                        "instance": 1,
+                                        "vlan_list": "40-50",
+                                    },
+                                    {
+                                        "instance": 2,
+                                        "vlan_list": "20-30",
+                                    }
+                                ],
+                                "name": "NAME",
+                                "revision": 34,
+                            },
+                            "forward_time": 25,
+                            "hello_time": 4,
+                            "max_age": 33,
+                            "max_hops": 33,
+                            "priority": [
+                                {
+                                    "instance": "0",
+                                    "value": 12288,
+                                },
+                                {
+                                    "instance": "1",
+                                    "value": 4096,
+                                },
+                                {
+                                    "instance": "5-7,9",
+                                    "value": 57344,
+                                }
+                            ],
+                            "simulate_pvst_global": False,
+                        },
+                        "portfast": {
+                            "bpdufilter_default": True,
+                            "edge_default": True,
+                        },
+                        "hello_time": [
+                            {
+                                "value": 6,
+                                "vlan_list": "1-3,5-6",
+                            },
+                        ],
+
+                    },
+                },
+                state="rendered",
+            ),
+        )
+        commands = [
+            "spanning-tree mode mst",
+            "spanning-tree backbonefast",
+            "spanning-tree portfast edge default",
+            "spanning-tree portfast edge bpdufilter default",
+            "spanning-tree mst 0 priority 12288",
+            "spanning-tree mst 1 priority 4096",
+            "spanning-tree mst 5-7,9 priority 57344",
+            "spanning-tree mst forward-time 25",
+            "spanning-tree mst hello-time 4",
+            "spanning-tree mst max-age 33",
+            "spanning-tree mst max-hops 33",
+            "spanning-tree vlan 1-3,5-6 hello-time 6",
+            "spanning-tree mst configuration",
+            "name NAME",
+            "revision 34",
+            "instance 1 vlan 40-50",
+            "instance 2 vlan 20-30",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["rendered"]), set(commands))
+        
+
     def test_ios_spanning_tree_merged_idempotent1(self):
         self.execute_show_command.return_value = dedent(
             """\

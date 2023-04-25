@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright 2023 Red Hat
-# GNU General Public License v3.0+
+# Copyright 2023 Timur Nizharadze (@tnizharadze)
+# GNU General Public License v3.0+ 
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
