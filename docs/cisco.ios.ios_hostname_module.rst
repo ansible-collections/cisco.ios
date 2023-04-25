@@ -49,7 +49,8 @@ Parameters
                 </td>
             </tr>
                                 <tr>
-                <td colspan="2">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>hostname</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
