@@ -133,7 +133,8 @@ class TestIosFactsModule(TestIosModule):
             6453180.0,
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_cpu_utilization"], cpu_utilization_data
+            result["ansible_facts"]["ansible_net_cpu_utilization"],
+            cpu_utilization_data,
         )
 
     def test_ios_facts_neighbors(self):
