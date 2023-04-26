@@ -848,7 +848,7 @@ EXAMPLES = """
     config:
         mst:
             configuration:
-                name: "NAME",
+                name: "NAME"
                 revision: 34
                 instances:
                     - instance: 1

@@ -71,7 +71,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                 "forward_time": {
                     "type": "list",
                     "elements": "dict",
-                    "required_together": ["vlan_list", "value"],
+                    "required_together": [["vlan_list", "value"]],
                     "options": {
                         "vlan_list": {"type": "str"},
                         "value": {"type": "int"},
@@ -80,7 +80,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                 "hello_time": {
                     "type": "list",
                     "elements": "dict",
-                    "required_together": ["vlan_list", "value"],
+                    "required_together": [["vlan_list", "value"]],
                     "options": {
                         "vlan_list": {"type": "str"},
                         "value": {"type": "int"},
@@ -89,7 +89,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                 "max_age": {
                     "type": "list",
                     "elements": "dict",
-                    "required_together": ["vlan_list", "value"],
+                    "required_together": [["vlan_list", "value"]],
                     "options": {
                         "vlan_list": {"type": "str"},
                         "value": {"type": "int"},
@@ -98,7 +98,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                 "priority": {
                     "type": "list",
                     "elements": "dict",
-                    "required_together": ["vlan_list", "value"],
+                    "required_together": [["vlan_list", "value"]],
                     "options": {
                         "vlan_list": {"type": "str"},
                         "value": {
@@ -135,7 +135,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                         "priority": {
                             "type": "list",
                             "elements": "dict",
-                            "required_together": ["instance", "value"],
+                            "required_together": [["instance", "value"]],
                             "options": {
                                 "instance": {"type": "str"},
                                 "value": {
@@ -169,10 +169,10 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                                 "instances": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "required_together": [
+                                    "required_together": [[
                                         "instance",
                                         "vlan_list",
-                                    ],
+                                    ]],
                                     "options": {
                                         "instance": {"type": "int"},
                                         "vlan_list": {"type": "str"},
