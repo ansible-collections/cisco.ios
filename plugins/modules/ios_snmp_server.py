@@ -753,6 +753,7 @@ options:
       users:
         description: Define a user who can access the SNMP engine
         elements: dict
+        Note: The SNMPv3 users output is renderend using a different method hence would affect the idempotency of the output.
         suboptions:
           acl_v6:
             description: Access list ipv6 associated
