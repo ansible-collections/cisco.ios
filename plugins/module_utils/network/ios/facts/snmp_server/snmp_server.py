@@ -73,7 +73,7 @@ class Snmp_serverFacts(object):
 
     def get_snmpv3_user_facts(self, snmpv3_user):
         """Parse the snmpv3_user data and return a list of users
-        
+
         :param snmpv3_user: the snmpv3_user data which is a string
 
         :rtype: list

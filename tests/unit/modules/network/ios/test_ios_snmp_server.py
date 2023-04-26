@@ -1498,38 +1498,38 @@ class TestIosSnmpServerModule(TestIosModule):
             "users": [
                 {
                     "group": "TESTG",
-                    "username": "TESTU"
+                    "username": "TESTU",
                 },
                 {
                     "acl_v6": "testv6acl",
                     "group": "TESTG",
-                    "username": "TESTU22"
+                    "username": "TESTU22",
                 },
                 {
                     "acl_v4": "aclWord",
                     "group": "TESTG",
-                    "username": "TESTU23"
+                    "username": "TESTU23",
                 },
                 {
                     "acl_v4": "22",
                     "group": "TESTG",
-                    "username": "TESTU24"
+                    "username": "TESTU24",
                 },
                 {
                     "acl_v4": "22",
                     "group": "TESTG",
-                    "username": "TESTU25"
+                    "username": "TESTU25",
                 },
                 {
                     "group": "TESTG",
-                    "username": "testus2"
+                    "username": "testus2",
                 },
                 {
                     "acl_v4": "22",
                     "group": "usrgrp",
                     "username": "us1",
-                    "version": "v1"
-                }
+                    "version": "v1",
+                },
             ],
         }
         result = self.execute_module(changed=False)
