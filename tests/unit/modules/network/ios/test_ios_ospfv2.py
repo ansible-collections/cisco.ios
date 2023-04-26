@@ -132,8 +132,8 @@ class TestIosOspfV2Module(TestIosModule):
                             "vrf": "vrf",
                             "areas": [{"area_id": 0}],
                             "capability": {"vrf_lite": True},
-                        }
-                    ]
+                        },
+                    ],
                 },
                 state="merged",
             ),
