@@ -90,7 +90,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             spanning-tree portfast edge default
             spanning-tree portfast edge bpduguard default
             spanning-tree portfast edge bpdufilter default
-            spanning-tree etherchannel guard misconfig
+            no spanning-tree etherchannel guard misconfig
             spanning-tree extend system-id
             spanning-tree uplinkfast max-update-rate 32
             spanning-tree uplinkfast
@@ -118,92 +118,89 @@ class TestIosSpanningTreeModule(TestIosModule):
             """,
         )
         gathered = {
-            "spanning_tree": {
-                "backbonefast": True,
-                "bridge_assurance": False,
-                "etherchannel_guard_misconfig": True,
-                "extend_system_id": True,
-                "forward_time": [
-                    {
-                        "value": 20,
-                        "vlan_list": "1,7-20",
-                    },
-                ],
-                "hello_time": [
-                    {
-                        "value": 4,
-                        "vlan_list": "1,3,9",
-                    },
-                    {
-                        "value": 5,
-                        "vlan_list": "4,6-8",
-                    },
-                    {
-                        "value": 6,
-                        "vlan_list": "5",
-                    },
-                ],
-                "logging": True,
-                "loopguard_default": True,
-                "max_age": [
-                    {
-                        "value": 38,
-                        "vlan_list": "1-2,4-5",
-                    },
-                ],
-                "mode": "mst",
-                "mst": {
-                    "configuration": {
-                        "instances": [
-                            {
-                                "instance": 1,
-                                "vlan_list": "40-50",
-                            },
-                            {
-                                "instance": 2,
-                                "vlan_list": "10-20",
-                            },
-                        ],
-                        "name": "NAME",
-                        "revision": 34,
-                    },
-                    "forward_time": 25,
-                    "hello_time": 4,
-                    "max_age": 33,
-                    "max_hops": 33,
-                    "priority": [
+            "backbonefast": True,
+            "bridge_assurance": False,
+            "etherchannel_guard_misconfig": False,
+            "forward_time": [
+                {
+                    "value": 20,
+                    "vlan_list": "1,7-20",
+                },
+            ],
+            "hello_time": [
+                {
+                    "value": 4,
+                    "vlan_list": "1,3,9",
+                },
+                {
+                    "value": 5,
+                    "vlan_list": "4,6-8",
+                },
+                {
+                    "value": 6,
+                    "vlan_list": "5",
+                },
+            ],
+            "logging": True,
+            "loopguard_default": True,
+            "max_age": [
+                {
+                    "value": 38,
+                    "vlan_list": "1-2,4-5",
+                },
+            ],
+            "mode": "mst",
+            "mst": {
+                "configuration": {
+                    "instances": [
                         {
-                            "instance": "0",
-                            "value": 12288,
+                            "instance": 1,
+                            "vlan_list": "40-50",
                         },
                         {
-                            "instance": "1",
-                            "value": 4096,
-                        },
-                        {
-                            "instance": "5,7-9",
-                            "value": 57344,
+                            "instance": 2,
+                            "vlan_list": "10-20",
                         },
                     ],
-                    "simulate_pvst_global": False,
+                    "name": "NAME",
+                    "revision": 34,
                 },
-                "pathcost_method": "long",
-                "portfast": {
-                    "bpdufilter_default": True,
-                    "bpduguard_default": True,
-                    "edge_default": True,
-                },
+                "forward_time": 25,
+                "hello_time": 4,
+                "max_age": 33,
+                "max_hops": 33,
                 "priority": [
                     {
-                        "value": 24576,
-                        "vlan_list": "1,3-5,7,9-11",
+                        "instance": "0",
+                        "value": 12288,
+                    },
+                    {
+                        "instance": "1",
+                        "value": 4096,
+                    },
+                    {
+                        "instance": "5,7-9",
+                        "value": 57344,
                     },
                 ],
-                "transmit_hold_count": 5,
-                "uplinkfast": {
-                    "enabled": True,
-                    "max_update_rate": 32,
+                "simulate_pvst_global": False,
+            },
+            "pathcost_method": "long",
+            "portfast": {
+                "bpdufilter_default": True,
+                "bpduguard_default": True,
+                "edge_default": True,
+            },
+            "priority": [
+                {
+                    "value": 24576,
+                    "vlan_list": "1,3-5,7,9-11",
                 },
+            ],
+            "transmit_hold_count": 5,
+            "uplinkfast": {
+                "enabled": True,
+                "max_update_rate": 32,
             },
         }
         set_module_args(dict(state="gathered"))
@@ -224,7 +221,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                     spanning-tree portfast edge default
                     spanning-tree portfast edge bpduguard default
                     spanning-tree portfast edge bpdufilter default
-                    spanning-tree etherchannel guard misconfig
+                    no spanning-tree etherchannel guard misconfig
                     spanning-tree extend system-id
                     spanning-tree uplinkfast max-update-rate 32
                     spanning-tree uplinkfast
@@ -256,92 +253,89 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
 
         parsed = {
-            "spanning_tree": {
-                "backbonefast": True,
-                "bridge_assurance": False,
-                "etherchannel_guard_misconfig": True,
-                "extend_system_id": True,
-                "forward_time": [
-                    {
-                        "value": 20,
-                        "vlan_list": "1,7-20",
-                    }
-                ],
-                "hello_time": [
-                    {
-                        "value": 4,
-                        "vlan_list": "1,3,9",
-                    },
-                    {
-                        "value": 5,
-                        "vlan_list": "4,6-8",
-                    },
-                    {
-                        "value": 6,
-                        "vlan_list": "5",
-                    }
-                ],
-                "logging": True,
-                "loopguard_default": True,
-                "max_age": [
-                    {
-                        "value": 38,
-                        "vlan_list": "1-2,4-5",
-                    }
-                ],
-                "mode": "mst",
-                "mst": {
-                    "configuration": {
-                        "instances": [
-                            {
-                                "instance": 1,
-                                "vlan_list": "40-50",
-                            },
-                            {
-                                "instance": 2,
-                                "vlan_list": "10-20",
-                            }
-                        ],
-                        "name": "NAME",
-                        "revision": 34,
-                    },
-                    "forward_time": 25,
-                    "hello_time": 4,
-                    "max_age": 33,
-                    "max_hops": 33,
-                    "priority": [
+            "backbonefast": True,
+            "bridge_assurance": False,
+            "etherchannel_guard_misconfig": False,
+            "forward_time": [
+                {
+                    "value": 20,
+                    "vlan_list": "1,7-20",
+                }
+            ],
+            "hello_time": [
+                {
+                    "value": 4,
+                    "vlan_list": "1,3,9",
+                },
+                {
+                    "value": 5,
+                    "vlan_list": "4,6-8",
+                },
+                {
+                    "value": 6,
+                    "vlan_list": "5",
+                }
+            ],
+            "logging": True,
+            "loopguard_default": True,
+            "max_age": [
+                {
+                    "value": 38,
+                    "vlan_list": "1-2,4-5",
+                }
+            ],
+            "mode": "mst",
+            "mst": {
+                "configuration": {
+                    "instances": [
                         {
-                            "instance": "0",
-                            "value": 12288,
+                            "instance": 1,
+                            "vlan_list": "40-50",
                         },
                         {
-                            "instance": "1",
-                            "value": 4096,
-                        },
-                        {
-                            "instance": "5,7-9",
-                            "value": 57344,
+                            "instance": 2,
+                            "vlan_list": "10-20",
                         }
                     ],
-                    "simulate_pvst_global": False,
+                    "name": "NAME",
+                    "revision": 34,
                 },
-                "pathcost_method": "long",
-                "portfast": {
-                    "bpdufilter_default": True,
-                    "bpduguard_default": True,
-                    "edge_default": True,
-                },
+                "forward_time": 25,
+                "hello_time": 4,
+                "max_age": 33,
+                "max_hops": 33,
                 "priority": [
                     {
-                        "value": 24576,
-                        "vlan_list": "1,3-5,7,9-11",
+                        "instance": "0",
+                        "value": 12288,
+                    },
+                    {
+                        "instance": "1",
+                        "value": 4096,
+                    },
+                    {
+                        "instance": "5,7-9",
+                        "value": 57344,
                     }
                 ],
-                "transmit_hold_count": 5,
-                "uplinkfast": {
-                    "enabled": True,
-                    "max_update_rate": 32,
+                "simulate_pvst_global": False,
+            },
+            "pathcost_method": "long",
+            "portfast": {
+                "bpdufilter_default": True,
+                "bpduguard_default": True,
+                "edge_default": True,
+            },
+            "priority": [
+                {
+                    "value": 24576,
+                    "vlan_list": "1,3-5,7,9-11",
                 }
+            ],
+            "transmit_hold_count": 5,
+            "uplinkfast": {
+                "enabled": True,
+                "max_update_rate": 32,
             }
         }
 
@@ -353,58 +347,55 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mode": "mst",
-                        "backbonefast": True,
-                        "bridge_assurance": False,
-                        "etherchannel_guard_misconfig": False,
-                        "mst": {
-                            "configuration": {
-                                "instances": [
-                                    {
-                                        "instance": 1,
-                                        "vlan_list": "40-50",
-                                    },
-                                    {
-                                        "instance": 2,
-                                        "vlan_list": "20-30",
-                                    }
-                                ],
-                                "name": "NAME",
-                                "revision": 34,
-                            },
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                            "max_hops": 33,
-                            "priority": [
+                    "mode": "mst",
+                    "backbonefast": True,
+                    "bridge_assurance": False,
+                    "etherchannel_guard_misconfig": False,
+                    "mst": {
+                        "configuration": {
+                            "instances": [
                                 {
-                                    "instance": "0",
-                                    "value": 12288,
+                                    "instance": 1,
+                                    "vlan_list": "40-50",
                                 },
                                 {
-                                    "instance": "1",
-                                    "value": 4096,
-                                },
-                                {
-                                    "instance": "5-7,9",
-                                    "value": 57344,
+                                    "instance": 2,
+                                    "vlan_list": "20-30",
                                 }
                             ],
-                            "simulate_pvst_global": False,
+                            "name": "NAME",
+                            "revision": 34,
                         },
-                        "portfast": {
-                            "bpdufilter_default": True,
-                            "edge_default": True,
-                        },
-                        "hello_time": [
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
+                        "max_hops": 33,
+                        "priority": [
                             {
-                                "value": 6,
-                                "vlan_list": "1-3,5-6",
+                                "instance": "0",
+                                "value": 12288,
                             },
+                            {
+                                "instance": "1",
+                                "value": 4096,
+                            },
+                            {
+                                "instance": "5-7,9",
+                                "value": 57344,
+                            }
                         ],
-
+                        "simulate_pvst_global": False,
                     },
+                    "portfast": {
+                        "bpdufilter_default": True,
+                        "edge_default": True,
+                    },
+                    "hello_time": [
+                        {
+                            "value": 6,
+                            "vlan_list": "1-3,5-6",
+                        },
+                    ],
                 },
                 state="rendered",
             ),
@@ -441,12 +432,10 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mst": {
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                        },
+                    "mst": {
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
                     },
                 },
                 state="merged",
@@ -463,13 +452,11 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mode": "mst",
-                        "mst": {
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                        },
+                    "mode": "mst",
+                    "mst": {
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
                     },
                 },
                 state="merged",
@@ -494,13 +481,11 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mode": "rapid-pvst",
-                        "mst": {
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                        },
+                    "mode": "rapid-pvst",
+                    "mst": {
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
                     },
                 },
                 state="merged",
@@ -549,56 +534,53 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "backbonefast": True,
-                        "bridge_assurance": True,
-                        "mst": {
-                            "configuration": {
-                                "instances": [
-                                    {
-                                        "instance": 1,
-                                        "vlan_list": "40-50",
-                                    },
-                                    {
-                                        "instance": 2,
-                                        "vlan_list": "20-30",
-                                    }
-                                ],
-                                "name": "NAME",
-                                "revision": 34,
-                            },
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                            "max_hops": 33,
-                            "priority": [
+                    "backbonefast": True,
+                    "bridge_assurance": True,
+                    "mst": {
+                        "configuration": {
+                            "instances": [
                                 {
-                                    "instance": "0",
-                                    "value": 12288,
+                                    "instance": 1,
+                                    "vlan_list": "40-50",
                                 },
                                 {
-                                    "instance": "1",
-                                    "value": 4096,
-                                },
-                                {
-                                    "instance": "5-7,9",
-                                    "value": 57344,
+                                    "instance": 2,
+                                    "vlan_list": "20-30",
                                 }
                             ],
-                            "simulate_pvst_global": False,
+                            "name": "NAME",
+                            "revision": 34,
                         },
-                        "portfast": {
-                            "bpdufilter_default": True,
-                            "edge_default": True,
-                        },
-                        "hello_time": [
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
+                        "max_hops": 33,
+                        "priority": [
                             {
-                                "value": 6,
-                                "vlan_list": "1-3,5-6",
+                                "instance": "0",
+                                "value": 12288,
                             },
+                            {
+                                "instance": "1",
+                                "value": 4096,
+                            },
+                            {
+                                "instance": "5-7,9",
+                                "value": 57344,
+                            }
                         ],
-
+                        "simulate_pvst_global": False,
                     },
+                    "portfast": {
+                        "bpdufilter_default": True,
+                        "edge_default": True,
+                    },
+                    "hello_time": [
+                        {
+                            "value": 6,
+                            "vlan_list": "1-3,5-6",
+                        },
+                    ],
                 },
                 state="merged",
             ),
@@ -656,24 +638,21 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mode": "rapid-pvst",
-                        "logging": True,
-                        "extend_system_id": True,
+                    "mode": "rapid-pvst",
+                    "logging": True,
+                    "priority": [
+                        {
+                            "value": 24576,
+                            "vlan_list": "1,3-5",
+                        }
+                    ],
+                    "mst": {
                         "priority": [
                             {
-                                "value": 24576,
-                                "vlan_list": "1,3-5",
-                            }
+                                "instance": "7-9",
+                                "value": 57344,
+                            },
                         ],
-                        "mst": {
-                            "priority": [
-                                {
-                                    "instance": "7-9",
-                                    "value": 57344,
-                                },
-                            ],
-                        },
                     },
                 },
                 state="replaced",
@@ -689,6 +668,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no spanning-tree portfast edge bpduguard default",
             "no spanning-tree portfast edge bpdufilter default",
             "spanning-tree etherchannel guard misconfig",
+            "spanning-tree mst simulate pvst global",
             "no spanning-tree uplinkfast",
             "no spanning-tree backbonefast",
             "no spanning-tree vlan 7,9-11 priority 24576",
@@ -717,18 +697,16 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mst": {
-                            "configuration": {
-                                "name": "NAME",
-                                "revision": 34,
-                                "instances": [
-                                    {
-                                        "instance": 1,
-                                        "vlan_list": "30-45",
-                                    },
-                                ],
-                            },
+                    "mst": {
+                        "configuration": {
+                            "name": "NAME",
+                            "revision": 34,
+                            "instances": [
+                                {
+                                    "instance": 1,
+                                    "vlan_list": "30-45",
+                                },
+                            ],
                         },
                     },
                 },
@@ -757,22 +735,20 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "mst": {
-                            "configuration": {
-                                "name": "NAME",
-                                "revision": 34,
-                                "instances": [
-                                    {
-                                        "instance": 1,
-                                        "vlan_list": "40-50",
-                                    },
-                                    {
-                                        "instance": 2,
-                                        "vlan_list": "10-20",
-                                    },
-                                ],
-                            },
+                    "mst": {
+                        "configuration": {
+                            "name": "NAME",
+                            "revision": 34,
+                            "instances": [
+                                {
+                                    "instance": 1,
+                                    "vlan_list": "40-50",
+                                },
+                                {
+                                    "instance": 2,
+                                    "vlan_list": "10-20",
+                                },
+                            ],
                         },
                     },
                 },
@@ -785,8 +761,36 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-
     def test_ios_spanning_tree_deleted_idempotent3(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            no spanning-tree bridge assurance
+            no spanning-tree etherchannel guard misconfig
+            no spanning-tree mst simulate pvst global
+            """,
+        )
+        set_module_args(
+            dict(
+                config = {
+                    "bridge_assurance": False,
+                    "etherchannel_guard_misconfig": False,
+                    "mst": {
+                        "simulate_pvst_global": False,
+                    },
+                },
+                state="deleted",
+            ),
+        )
+        commands = [
+            "spanning-tree bridge assurance",
+            "spanning-tree etherchannel guard misconfig",
+            "spanning-tree mst simulate pvst global",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+
+    def test_ios_spanning_tree_deleted_idempotent4(self):
         self.execute_show_command.return_value = dedent(
             """\
             spanning-tree mode mst
@@ -827,51 +831,48 @@ class TestIosSpanningTreeModule(TestIosModule):
         set_module_args(
             dict(
                 config = {
-                    "spanning_tree": {
-                        "bridge_assurance": False,
-                        "transmit_hold_count": 5,
-                        "uplinkfast": {
-                            "enabled": True,
-                            "max_update_rate": 32,
-                        },
-                        "logging": False,
-                        "portfast": {
-                            "bpdufilter_default": True,
-                            "bpduguard_default": True,
-                            "edge_default": True,
-                        },
-                        "backbonefast": True,
-                        "etherchannel_guard_misconfig": True,
-                        "extend_system_id": True,
-                        "pathcost_method": "long",
-                        "forward_time": [
-                            { "value": 20, "vlan_list": "9-15,18-30" },
-                        ],
-                        "priority": [
-                            { "value": 24576, "vlan_list": "7,8" },
-                        ],
-                        "hello_time": [
-                            { "value": 4, "vlan_list": "1,3,9" },
-                            { "value": 5, "vlan_list": "4,6-8" },
-                            { "value": 6, "vlan_list": "5" },
-                        ],
-                        "max_age": [
-                            { "value": 38, "vlan_list": "1-2,4-5" },
-                        ],
-                        "mst": {
-                            "forward_time": 25,
-                            "hello_time": 4,
-                            "max_age": 33,
-                            "max_hops": 33,
-                            "simulate_pvst_global": False,
-                            "configuration": {
-                                "instances": [
-                                    {
-                                        "instance": 1,
-                                        "vlan_list": "40-50",
-                                    },
-                                ],
-                            },
+                    "bridge_assurance": False,
+                    "transmit_hold_count": 5,
+                    "uplinkfast": {
+                        "enabled": True,
+                        "max_update_rate": 32,
+                    },
+                    "logging": False,
+                    "portfast": {
+                        "bpdufilter_default": True,
+                        "bpduguard_default": True,
+                        "edge_default": True,
+                    },
+                    "backbonefast": True,
+                    "etherchannel_guard_misconfig": True,
+                    "pathcost_method": "long",
+                    "forward_time": [
+                        { "value": 20, "vlan_list": "9-15,18-30" },
+                    ],
+                    "priority": [
+                        { "value": 24576, "vlan_list": "7,8" },
+                    ],
+                    "hello_time": [
+                        { "value": 4, "vlan_list": "1,3,9" },
+                        { "value": 5, "vlan_list": "4,6-8" },
+                        { "value": 6, "vlan_list": "5" },
+                    ],
+                    "max_age": [
+                        { "value": 38, "vlan_list": "1-2,4-5" },
+                    ],
+                    "mst": {
+                        "forward_time": 25,
+                        "hello_time": 4,
+                        "max_age": 33,
+                        "max_hops": 33,
+                        "simulate_pvst_global": False,
+                        "configuration": {
+                            "instances": [
+                                {
+                                    "instance": 1,
+                                    "vlan_list": "40-50",
+                                },
+                            ],
                         },
                     },
                 },
@@ -886,7 +887,6 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no spanning-tree portfast edge bpdufilter default",
             "no spanning-tree portfast edge default",
             "no spanning-tree portfast edge bpduguard default",
-            "no spanning-tree extend system-id",
             "no spanning-tree backbonefast",
             "no spanning-tree etherchannel guard misconfig",
             "no spanning-tree pathcost method long",

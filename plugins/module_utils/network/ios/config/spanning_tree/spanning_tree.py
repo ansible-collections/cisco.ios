@@ -49,41 +49,40 @@ class Spanning_tree(ResourceModule):
             tmplt=Spanning_treeTemplate(),
         )
         self.linear_parsers = [
-            "spanning_tree.backbonefast",
-            "spanning_tree.bridge_assurance",
-            "spanning_tree.etherchannel_guard_misconfig",
-            "spanning_tree.extend_system_id",
-            "spanning_tree.logging",
-            "spanning_tree.loopguard_default",
-            "spanning_tree.mode",
-            "spanning_tree.pathcost_method",
-            "spanning_tree.transmit_hold_count",
-            "spanning_tree.portfast.network_default",
-            "spanning_tree.portfast.edge_default",
-            "spanning_tree.portfast.bpdufilter_default",
-            "spanning_tree.portfast.bpduguard_default",
-            "spanning_tree.uplinkfast.enabled",
-            "spanning_tree.uplinkfast.max_update_rate",
+            "backbonefast",
+            "bridge_assurance",
+            "etherchannel_guard_misconfig",
+            "logging",
+            "loopguard_default",
+            "mode",
+            "pathcost_method",
+            "transmit_hold_count",
+            "portfast.network_default",
+            "portfast.edge_default",
+            "portfast.bpdufilter_default",
+            "portfast.bpduguard_default",
+            "uplinkfast.enabled",
+            "uplinkfast.max_update_rate",
+            "mst.simulate_pvst_global",
         ]
         self.complex_parsers = [
-            "spanning_tree.forward_time",
-            "spanning_tree.hello_time",
-            "spanning_tree.max_age",
-            "spanning_tree.priority",
+            "forward_time",
+            "hello_time",
+            "max_age",
+            "priority",
         ]
         self.mst_parsers = [
-            "spanning_tree.mst.simulate_pvst_global",
-            "spanning_tree.mst.hello_time",
-            "spanning_tree.mst.forward_time",
-            "spanning_tree.mst.max_age",
-            "spanning_tree.mst.max_hops",
-            "spanning_tree.mst.priority",
+            "mst.hello_time",
+            "mst.forward_time",
+            "mst.max_age",
+            "mst.max_hops",
+            "mst.priority",
         ]
         self.mst_config_parsers = [
-            "spanning_tree.mst.configuration",
-            "spanning_tree.mst.configuration.name",
-            "spanning_tree.mst.configuration.revision",
-            "spanning_tree.mst.configuration.instances",
+            "mst.configuration",
+            "mst.configuration.name",
+            "mst.configuration.revision",
+            "mst.configuration.instances",
         ]
 
     def execute_module(self):
@@ -120,7 +119,13 @@ class Spanning_tree(ResourceModule):
 
 
     def _compare_linear(self, want, have):
-        self.compare(parsers=self.linear_parsers, want=want, have=have)
+        for x in self.linear_parsers:
+            if x == "mode":
+                wmode = get_from_dict(want, "mode")
+                hmode = get_from_dict(have, "mode")
+                if wmode == None and hmode == "pvst":
+                    continue
+            self.compare([x], want=want, have=have)
 
 
     def _compare_complex(self, want, have):
@@ -129,12 +134,12 @@ class Spanning_tree(ResourceModule):
 
 
     def _compare_mst(self, want, have):
-        wmode = get_from_dict(want, "spanning_tree.mode")
-        hmode = get_from_dict(have, "spanning_tree.mode")
+        wmode = get_from_dict(want, "mode")
+        hmode = get_from_dict(have, "mode")
         if not ((wmode is None and (hmode == "mst" or hmode is None)) or wmode == "mst"):
             return
         for x in self.mst_parsers:
-            if x == "spanning_tree.mst.priority":
+            if x == "mst.priority":
                 self._compare_complex_dict(want, have, "instance", "value", x)
             else:
                 self.compare([x], want=want, have=have)
@@ -143,7 +148,7 @@ class Spanning_tree(ResourceModule):
     def _compare_mst_config(self, want, have):
         cmd_len = len(self.commands)
         for x in self.mst_config_parsers:
-            if x == "spanning_tree.mst.configuration":
+            if x == "mst.configuration":
                 wx = get_from_dict(want, x)
                 hx = get_from_dict(have, x)
                 if self.state == "deleted":
@@ -166,10 +171,10 @@ class Spanning_tree(ResourceModule):
                     self.compare(parsers=[x], want=want, have={})
                 else:
                     return
-            if x in ["spanning_tree.mst.configuration.name",
-                     "spanning_tree.mst.configuration.revision"]:
+            if x in ["mst.configuration.name",
+                     "mst.configuration.revision"]:
                 self.compare(parsers=[x], want=want, have=have)
-            if x == "spanning_tree.mst.configuration.instances":
+            if x == "mst.configuration.instances":
                 self._compare_complex_dict(want, have, "vlan_list", "instance", x)
         if (cmd_len + 1) == len(self.commands):
             self.commands.pop() 
@@ -251,8 +256,8 @@ class Spanning_tree(ResourceModule):
                 hrec.update({ k: self._dict_copy_merged(want, have, dstr) })
             else:
                 if dstr in self.mst_parsers:
-                    wmode = get_from_dict(want, "spanning_tree.mode")
-                    hmode = get_from_dict(have, "spanning_tree.mode")
+                    wmode = get_from_dict(want, "mode")
+                    hmode = get_from_dict(have, "mode")
                     if not ((wmode is None and hmode == "mst") or wmode == "mst"):
                         display.display(
                             "WARNING: mst options like simulate_pvst_global, hello_time, forward_time, "
@@ -266,9 +271,9 @@ class Spanning_tree(ResourceModule):
                     cmp_list = []
                     if dstr in self.complex_parsers:
                         cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
-                    elif dstr == "spanning_tree.mst.priority":
+                    elif dstr == "mst.priority":
                         cmp_list = self._compare_lists("instance", "value", wx, hx)
-                    elif dstr  == "spanning_tree.mst.configuration.instances":
+                    elif dstr  == "mst.configuration.instances":
                         cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
                     if cmp_list: hrec.update({ k: cmp_list })
         return hrec
@@ -284,14 +289,14 @@ class Spanning_tree(ResourceModule):
             dstr = k if x == "" else x + "." + k
             wx = get_from_dict(want, dstr)
             if wx is None: continue
-            if dstr == "spanning_tree.mst.configuration" and wx == hx:
+            if dstr == "mst.configuration" and wx == hx:
                 hrec.update({k: {}})
                 continue
             if isinstance(wx, dict):
                 hrec.update({ k: self._dict_copy_deleted(want, have, dstr) })
             else:
                 if dstr in self.mst_parsers:
-                    wmode = get_from_dict(want, "spanning_tree.mode")
+                    wmode = get_from_dict(want, "mode")
                     if wmode == "mst": continue
                 if not isinstance(wx, list):
                     if wx == hx: hrec.update({k: hx})
@@ -299,9 +304,9 @@ class Spanning_tree(ResourceModule):
                     cmp_list = []
                     if dstr in self.complex_parsers:
                         cmp_list = self._compare_lists("vlan_list", "value", wx, hx)
-                    elif dstr == "spanning_tree.mst.priority":
+                    elif dstr == "mst.priority":
                         cmp_list = self._compare_lists("instance", "value", wx, hx)
-                    elif dstr  == "spanning_tree.mst.configuration.instances":
+                    elif dstr  == "mst.configuration.instances":
                         cmp_list = self._compare_lists("vlan_list", "instance", wx, hx)
                     if cmp_list: hrec.update({ k: cmp_list })
         return hrec
