@@ -181,7 +181,6 @@ class Spanning_tree(ResourceModule):
         elif (cmd_len + 1) < len(self.commands):
             self.commands.append("exit")
 
-
     def _compare_complex_dict(self, want, have, dkey, dvalue, x):
         wx = get_from_dict(want, x) or []
         hx = get_from_dict(have, x) or []
