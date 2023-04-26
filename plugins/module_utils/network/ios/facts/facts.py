@@ -84,14 +84,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree import (
+    Spanning_treeFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree import (
-    Spanning_treeFacts,
 )
 
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright 2023 Timur Nizharadze (@tnizharadze)
-# GNU General Public License v3.0+ 
+# GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+
 
 __metaclass__ = type
 
@@ -28,8 +29,7 @@ The arg spec for the ios_spanning_tree module
 
 
 class Spanning_treeArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_spanning_tree module
-    """
+    """The arg spec for the ios_spanning_tree module"""
 
     argument_spec = {
         "config": {
@@ -52,7 +52,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                 "portfast": {
                     "type": "dict",
                     "mutually_exclusive": [
-                        ["network_default", "edge_default"]
+                        ["network_default", "edge_default"],
                     ],
                     "options": {
                         "network_default": {"type": "bool"},

@@ -68,7 +68,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
         self.maxDiff = None
 
-
     def tearDown(self):
         super(TestIosSpanningTreeModule, self).tearDown()
         self.mock_get_resource_connection_config.stop()
@@ -77,7 +76,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
-
 
     def test_ios_spanning_tree_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -207,7 +205,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
 
-
     def test_ios_spanning_tree_parsed(self):
         set_module_args(
             dict(
@@ -260,7 +257,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                 {
                     "value": 20,
                     "vlan_list": "1,7-20",
-                }
+                },
             ],
             "hello_time": [
                 {
@@ -274,7 +271,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                 {
                     "value": 6,
                     "vlan_list": "5",
-                }
+                },
             ],
             "logging": True,
             "loopguard_default": True,
@@ -282,7 +279,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                 {
                     "value": 38,
                     "vlan_list": "1-2,4-5",
-                }
+                },
             ],
             "mode": "mst",
             "mst": {
@@ -295,7 +292,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                         {
                             "instance": 2,
                             "vlan_list": "10-20",
-                        }
+                        },
                     ],
                     "name": "NAME",
                     "revision": 34,
@@ -316,7 +313,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                     {
                         "instance": "5,7-9",
                         "value": 57344,
-                    }
+                    },
                 ],
                 "simulate_pvst_global": False,
             },
@@ -330,23 +327,22 @@ class TestIosSpanningTreeModule(TestIosModule):
                 {
                     "value": 24576,
                     "vlan_list": "1,3-5,7,9-11",
-                }
+                },
             ],
             "transmit_hold_count": 5,
             "uplinkfast": {
                 "enabled": True,
                 "max_update_rate": 32,
-            }
+            },
         }
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
-
     def test_ios_spanning_tree_rendered(self):
         set_module_args(
             dict(
-                config = {
+                config={
                     "mode": "mst",
                     "backbonefast": True,
                     "bridge_assurance": False,
@@ -361,7 +357,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                                 {
                                     "instance": 2,
                                     "vlan_list": "20-30",
-                                }
+                                },
                             ],
                             "name": "NAME",
                             "revision": 34,
@@ -382,7 +378,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                             {
                                 "instance": "5-7,9",
                                 "value": 57344,
-                            }
+                            },
                         ],
                         "simulate_pvst_global": False,
                     },
@@ -421,7 +417,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["rendered"]), set(commands))
-        
 
     def test_ios_spanning_tree_merged_idempotent1(self):
         self.execute_show_command.return_value = dedent(
@@ -431,7 +426,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mst": {
                         "forward_time": 25,
                         "hello_time": 4,
@@ -451,7 +446,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mode": "mst",
                     "mst": {
                         "forward_time": 25,
@@ -480,7 +475,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mode": "rapid-pvst",
                     "mst": {
                         "forward_time": 25,
@@ -497,7 +492,6 @@ class TestIosSpanningTreeModule(TestIosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_spanning_tree_merged_idempotent4(self):
         self.execute_show_command.return_value = dedent(
@@ -533,7 +527,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "backbonefast": True,
                     "bridge_assurance": True,
                     "mst": {
@@ -546,7 +540,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                                 {
                                     "instance": 2,
                                     "vlan_list": "20-30",
-                                }
+                                },
                             ],
                             "name": "NAME",
                             "revision": 34,
@@ -567,7 +561,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                             {
                                 "instance": "5-7,9",
                                 "value": 57344,
-                            }
+                            },
                         ],
                         "simulate_pvst_global": False,
                     },
@@ -596,7 +590,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_spanning_tree_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -637,14 +630,14 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mode": "rapid-pvst",
                     "logging": True,
                     "priority": [
                         {
                             "value": 24576,
                             "vlan_list": "1,3-5",
-                        }
+                        },
                     ],
                     "mst": {
                         "priority": [
@@ -696,7 +689,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mst": {
                         "configuration": {
                             "name": "NAME",
@@ -734,7 +727,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "mst": {
                         "configuration": {
                             "name": "NAME",
@@ -771,7 +764,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "bridge_assurance": False,
                     "etherchannel_guard_misconfig": False,
                     "mst": {
@@ -788,7 +781,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_spanning_tree_deleted_idempotent4(self):
         self.execute_show_command.return_value = dedent(
@@ -830,7 +822,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config = {
+                config={
                     "bridge_assurance": False,
                     "transmit_hold_count": 5,
                     "uplinkfast": {
@@ -847,18 +839,18 @@ class TestIosSpanningTreeModule(TestIosModule):
                     "etherchannel_guard_misconfig": True,
                     "pathcost_method": "long",
                     "forward_time": [
-                        { "value": 20, "vlan_list": "9-15,18-30" },
+                        {"value": 20, "vlan_list": "9-15,18-30"},
                     ],
                     "priority": [
-                        { "value": 24576, "vlan_list": "7,8" },
+                        {"value": 24576, "vlan_list": "7,8"},
                     ],
                     "hello_time": [
-                        { "value": 4, "vlan_list": "1,3,9" },
-                        { "value": 5, "vlan_list": "4,6-8" },
-                        { "value": 6, "vlan_list": "5" },
+                        {"value": 4, "vlan_list": "1,3,9"},
+                        {"value": 5, "vlan_list": "4,6-8"},
+                        {"value": 6, "vlan_list": "5"},
                     ],
                     "max_age": [
-                        { "value": 38, "vlan_list": "1-2,4-5" },
+                        {"value": 38, "vlan_list": "1-2,4-5"},
                     ],
                     "mst": {
                         "forward_time": 25,
