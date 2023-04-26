@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 def _tmplt_spanning_tree_mst_priority(data):
     cmd = []
@@ -25,11 +28,13 @@ def _tmplt_spanning_tree_mst_priority(data):
         cmd.append("spanning-tree mst {instance} priority {value}".format(**each))
     return cmd
 
+
 def _tmplt_spanning_tree_mst_config_instances(data):
     cmd = []
     for each in data["mst"]["configuration"]["instances"]:
         cmd.append("instance {instance} vlan {vlan_list}".format(**each))
     return cmd
+
 
 def _tmplt_spanning_tree_priority(data):
     cmd = []
@@ -37,11 +42,13 @@ def _tmplt_spanning_tree_priority(data):
         cmd.append("spanning-tree vlan {vlan_list} priority {value}".format(**each))
     return cmd
 
+
 def _tmplt_spanning_tree_max_age(data):
     cmd = []
     for each in data["max_age"]:
         cmd.append("spanning-tree vlan {vlan_list} max-age {value}".format(**each))
     return cmd
+
 
 def _tmplt_spanning_tree_hello_time(data):
     cmd = []
@@ -49,11 +56,13 @@ def _tmplt_spanning_tree_hello_time(data):
         cmd.append("spanning-tree vlan {vlan_list} hello-time {value}".format(**each))
     return cmd
 
+
 def _tmplt_spanning_tree_forward_time(data):
     cmd = []
     for each in data["forward_time"]:
         cmd.append("spanning-tree vlan {vlan_list} forward-time {value}".format(**each))
     return cmd
+
 
 class Spanning_treeTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -67,7 +76,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\s(?P<backbonefast>backbonefast))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree backbonefast",
             "result": {
                 "backbonefast": "{{ not not backbonefast }}",
@@ -79,7 +89,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 ((?P<negated>no\s)?spanning-tree\sbridge\s(?P<bridge_assurance>assurance))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree bridge assurance",
             "result": {
                 "bridge_assurance": "{{ False if negated is defined else (not not bridge_assurance) }}",
@@ -91,7 +102,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 ((?P<negated>no\s)?spanning-tree\setherchannel\sguard\s(?P<etherchannel_guard_misconfig>misconfig))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree etherchannel guard misconfig",
             "result": {
                 "etherchannel_guard_misconfig": "{{ False if negated is defined else (not not etherchannel_guard_misconfig) }}",
@@ -103,7 +115,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\s(?P<logging>logging))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree logging",
             "result": {
                 "logging": "{{ not not logging }}",
@@ -115,7 +128,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\sloopguard\s(?P<loopguard_default>default))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree loopguard default",
             "result": {
                 "loopguard_default": "{{ not not loopguard_default }}",
@@ -127,7 +141,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smode\s(?P<mode>mst|pvst|rapid-pvst))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mode {{ mode }}",
             "result": {
                 "mode": "{{ mode }}",
@@ -139,7 +154,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\spathcost\smethod\s(?P<pathcost_method>long|short))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree pathcost method {{ pathcost_method }}",
             "result": {
                 "pathcost_method": "{{ pathcost_method }}",
@@ -151,10 +167,11 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\stransmit\shold-count\s(?P<transmit_hold_count>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree transmit hold-count {{ transmit_hold_count }}",
             "result": {
-                "transmit_hold_count": "{{ transmit_hold_count }}"
+                "transmit_hold_count": "{{ transmit_hold_count }}",
             },
         },
         {
@@ -163,7 +180,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\sportfast\snetwork\s(?P<network_default>default))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree portfast network default",
             "result": {
                 "portfast": {
@@ -177,7 +195,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\sportfast\sedge\s(?P<edge_default>default))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree portfast edge default",
             "result": {
                 "portfast": {
@@ -191,7 +210,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\sportfast\sedge\sbpdufilter\s(?P<bpdufilter_default>default))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree portfast edge bpdufilter default",
             "result": {
                 "portfast": {
@@ -205,7 +225,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\sportfast\sedge\sbpduguard\s(?P<bpduguard_default>default))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree portfast edge bpduguard default",
             "result": {
                 "portfast": {
@@ -219,7 +240,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\s(?P<enabled>uplinkfast)$)?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree uplinkfast",
             "result": {
                 "uplinkfast": {
@@ -233,7 +255,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\suplinkfast\smax-update-rate\s(?P<max_update_rate>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree uplinkfast max-update-rate {{ uplinkfast.max_update_rate }}",
             "result": {
                 "uplinkfast": {
@@ -247,7 +270,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\sforward-time\s(?P<value>\d+)
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_forward_time,
             "result": {
                 "forward_time": [{
@@ -262,7 +286,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\shello-time\s(?P<value>\d+)
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_hello_time,
             "result": {
                 "hello_time": [{
@@ -277,7 +302,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\smax-age\s(?P<value>\d+)
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_max_age,
             "result": {
                 "max_age": [{
@@ -292,7 +318,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 spanning-tree\svlan\s(?P<vlan_list>[0-9,\,\-]+)\spriority\s(?P<value>\d+)
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_priority,
             "result": {
                 "priority": [{
@@ -307,7 +334,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 ((?P<negated>no\s)?spanning-tree\smst\ssimulate\spvst\s(?P<simulate_pvst_global>global))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mst simulate pvst global",
             "result": {
                 "mst": {
@@ -321,7 +349,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smst\shello-time\s(?P<hello_time>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mst hello-time {{ mst.hello_time }}",
             "result": {
                 "mst": {
@@ -335,7 +364,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smst\sforward-time\s(?P<forward_time>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mst forward-time {{ mst.forward_time }}",
             "result": {
                 "mst": {
@@ -349,7 +379,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smst\smax-age\s(?P<max_age>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mst max-age {{ mst.max_age }}",
             "result": {
                 "mst": {
@@ -363,7 +394,8 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smst\smax-hops\s(?P<max_hops>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "spanning-tree mst max-hops {{ mst.max_hops }}",
             "result": {
                 "mst": {
@@ -377,13 +409,14 @@ class Spanning_treeTemplate(NetworkTemplate):
                 r"""
                 (spanning-tree\smst\s(?P<instance>[0-9,\,\-]+)\spriority\s(?P<value>\d+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_mst_priority,
             "result": {
                 "mst": {
                     "priority": [{
                         "instance": "'{{ instance }}'",
-                        "value": "{{ value }}"
+                        "value": "{{ value }}",
                     }],
                 },
             },
@@ -393,7 +426,8 @@ class Spanning_treeTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 (spanning-tree\smst\s(?P<enabled>configuration)$)?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'spanning-tree mst configuration' if mst.configuration is defined else '' }}",
             "result": {
                 "mst": {
@@ -406,7 +440,8 @@ class Spanning_treeTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 (\sname\s(?P<name>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "name {{ mst.configuration.name }}",
             "result": {
                 "mst": {
@@ -421,7 +456,8 @@ class Spanning_treeTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 (\srevision\s(?P<revision>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "revision {{ mst.configuration.revision }}",
             "result": {
                 "mst": {
@@ -436,7 +472,8 @@ class Spanning_treeTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 (\sinstance\s(?P<instance>\d+)\svlan\s(?P<vlan_list>[0-9,\,\-]+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_spanning_tree_mst_config_instances,
             "result": {
                 "mst": {
