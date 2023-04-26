@@ -125,7 +125,7 @@ class Default(FactsBase):
 
 
 class Hardware(FactsBase):
-    COMMANDS = ["dir", "show memory statistics"]
+    COMMANDS = ["dir", "show memory statistics", "show process cpu | ex 0.00"]
 
     def populate(self):
         warnings = list()
@@ -134,6 +134,7 @@ class Hardware(FactsBase):
         if data:
             self.facts["filesystems"] = self.parse_filesystems(data)
             self.facts["filesystems_info"] = self.parse_filesystems_info(data)
+            self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
 
         data = self.responses[1]
         if data:
@@ -162,6 +163,45 @@ class Hardware(FactsBase):
             if match:
                 facts[fs]["spacetotal_kb"] = int(match.group(1)) / 1024
                 facts[fs]["spacefree_kb"] = int(match.group(2)) / 1024
+        return facts
+
+    def parse_cpu_utilization(self, data):
+        facts = dict()
+        match_nomral_nm, match_nomral = "", ""
+        match_core = ""
+        for line in data.split("\n"):
+            _temp = ""
+            match_nomral_nm = re.match(
+                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                line,
+            )
+            match_core = re.match(
+                r"^Core\s(?P<core>\d+)?:\sCPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?",
+                line,
+            )
+            match_nomral = re.match(
+                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                line,
+            )
+            # match_core_nm = re.match(
+            #     r"^Core\s(?P<core>\d+)?:\sCPU\sutilization\sfor\sfive\sseconds:\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+            #     line,
+            # )
+
+            if match_nomral_nm or match_nomral:
+                _temp = match_nomral_nm if match_nomral_nm else match_nomral
+                facts["core"] = {}
+                if match_nomral_nm:
+                    facts["core"]["mic_seconds"] = int(_temp.group("f_se_nom"))
+                facts["core"]["five_seconds"] = int(_temp.group("f_s_denom"))
+                facts["core"]["one_minute"] = int(_temp.group("a_min"))
+                facts["core"]["five_minutes"] = int(_temp.group("f_min"))
+            if match_core:
+                _core = "core_" + str(match_core.group("core"))
+                facts[_core] = {}
+                facts[_core]["five_seconds"] = int(match_core.group("f_s_denom"))
+                facts[_core]["one_minute"] = int(match_core.group("a_min"))
+                facts[_core]["five_minutes"] = int(match_core.group("f_min"))
         return facts
 
 
