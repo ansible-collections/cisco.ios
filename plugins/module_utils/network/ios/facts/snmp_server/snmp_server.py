@@ -37,6 +37,15 @@ class Snmp_serverFacts(object):
         return _get_snmp_data
 
     def get_snmpv3_user_data(self, connection):
+        """get snmpv3 user data from the device
+
+        :param connection: the device connection
+
+        :rtype: string
+        :returns: snmpv3 user data
+
+        Note: The seperate method is needed because the snmpv3 user data is not returned within the snmp-server config
+        """
         _get_snmpv3_user = connection.get("show snmp user")
         return _get_snmpv3_user
 
@@ -63,6 +72,13 @@ class Snmp_serverFacts(object):
             return hosts
 
     def get_snmpv3_user_facts(self, snmpv3_user):
+        """Parse the snmpv3_user data and return a list of users
+        
+        :param snmpv3_user: the snmpv3_user data which is a string
+
+        :rtype: list
+        :returns: list of users
+        """
         user_sets = snmpv3_user.split("User ")
         user_list = []
         for user_set in user_sets:
@@ -75,7 +91,7 @@ class Snmp_serverFacts(object):
                     one_set["group"] = line.split(": ")[1]
                 if "IPv6 access-list:" in line:
                     one_set["acl_v6"] = line.split(": ")[-1]
-                if "active access-list:" in line:
+                if "active\taccess-list:" in line:
                     one_set["acl_v4"] = line.split(": ")[-1]
             if len(one_set) != 0:
                 user_list.append(one_set)
@@ -102,9 +118,11 @@ class Snmp_serverFacts(object):
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
+        # parse snmpv3_user data using the get_snmpv3_user_facts method
         snmp_user_data = self.get_snmpv3_user_facts(snmpv3_user)
         objs = snmp_server_parser.parse()
 
+        # add snmpv3_user data to the objs dictionary
         if len(snmp_user_data) != 0:
             if objs.get("users") is None:
                 objs["users"] = snmp_user_data

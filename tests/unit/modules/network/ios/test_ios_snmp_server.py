@@ -418,6 +418,24 @@ class TestIosSnmpServerModule(TestIosModule):
             """,
         )
 
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: paul
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: ipv6
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: familypaul
+
+            User name: replaceUser
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: replaceUser
+            """,
+        )
+
         playbook = {
             "config": {
                 "accounting": {"command": "default"},
@@ -1480,35 +1498,38 @@ class TestIosSnmpServerModule(TestIosModule):
             "users": [
                 {
                     "group": "TESTG",
-                    "username": "TESTU",
+                    "username": "TESTU"
                 },
                 {
                     "acl_v6": "testv6acl",
                     "group": "TESTG",
-                    "username": "TESTU22",
+                    "username": "TESTU22"
+                },
+                {
+                    "acl_v4": "aclWord",
+                    "group": "TESTG",
+                    "username": "TESTU23"
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "TESTG",
+                    "username": "TESTU24"
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "TESTG",
+                    "username": "TESTU25"
                 },
                 {
                     "group": "TESTG",
-                    "username": "TESTU23",
-                },
-                {
-                    "group": "TESTG",
-                    "username": "TESTU24",
-                },
-                {
-                    "group": "TESTG",
-                    "username": "TESTU25",
-                },
-                {
-                    "group": "TESTG",
-                    "username": "testus2",
+                    "username": "testus2"
                 },
                 {
                     "acl_v4": "22",
                     "group": "usrgrp",
                     "username": "us1",
-                    "version": "v1",
-                },
+                    "version": "v1"
+                }
             ],
         }
         result = self.execute_module(changed=False)
