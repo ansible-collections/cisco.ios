@@ -418,6 +418,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             "revision 34",
             "instance 1 vlan 40-50",
             "instance 2 vlan 20-30",
+            "exit",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["rendered"]), set(commands))
@@ -593,6 +594,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             "spanning-tree vlan 1-3,5-6 hello-time 6",
             "spanning-tree mst configuration",
             "instance 2 vlan 21-30",
+            "exit",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -718,6 +720,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no name NAME",
             "no revision 34",
             "no instance 1 vlan 40-45",
+            "exit",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -903,6 +906,7 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no spanning-tree mst max-hops 33",
             "spanning-tree mst configuration",
             "no instance 1 vlan 40-50",
+            "exit",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

@@ -123,7 +123,7 @@ class Spanning_tree(ResourceModule):
             if x == "mode":
                 wmode = get_from_dict(want, "mode")
                 hmode = get_from_dict(have, "mode")
-                if wmode == None and hmode == "pvst":
+                if wmode is None and hmode == "pvst":
                     continue
             self.compare([x], want=want, have=have)
 
@@ -177,7 +177,9 @@ class Spanning_tree(ResourceModule):
             if x == "mst.configuration.instances":
                 self._compare_complex_dict(want, have, "vlan_list", "instance", x)
         if (cmd_len + 1) == len(self.commands):
-            self.commands.pop() 
+            self.commands.pop()
+        elif (cmd_len + 1) < len(self.commands):
+            self.commands.append("exit")
 
 
     def _compare_complex_dict(self, want, have, dkey, dvalue, x):

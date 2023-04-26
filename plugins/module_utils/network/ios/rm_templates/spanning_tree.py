@@ -250,10 +250,10 @@ class Spanning_treeTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": _tmplt_spanning_tree_forward_time,
             "result": {
-                "forward_time": [ {
+                "forward_time": [{
                     "vlan_list": "'{{ vlan_list }}'",
                     "value": "{{ value }}",
-                } ],
+                }],
             },
         },
         {
@@ -265,10 +265,10 @@ class Spanning_treeTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": _tmplt_spanning_tree_hello_time,
             "result": {
-                "hello_time": [ {
+                "hello_time": [{
                     "vlan_list": "'{{ vlan_list }}'",
                     "value": "{{ value }}",
-                } ],
+                }],
             },
         },
         {
@@ -280,10 +280,10 @@ class Spanning_treeTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": _tmplt_spanning_tree_max_age,
             "result": {
-                "max_age": [ {
+                "max_age": [{
                     "vlan_list": "'{{ vlan_list }}'",
                     "value": "{{ value }}",
-                } ],
+                }],
             },
         },
         {
@@ -295,10 +295,10 @@ class Spanning_treeTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": _tmplt_spanning_tree_priority,
             "result": {
-                "priority": [ {
+                "priority": [{
                     "vlan_list": "'{{ vlan_list }}'",
                     "value": "{{ value }}",
-                } ],
+                }],
             },
         },
         {
@@ -381,10 +381,10 @@ class Spanning_treeTemplate(NetworkTemplate):
             "setval": _tmplt_spanning_tree_mst_priority,
             "result": {
                 "mst": {
-                    "priority": [ {
+                    "priority": [{
                         "instance": "'{{ instance }}'",
                         "value": "{{ value }}"
-                    } ],
+                    }],
                 },
             },
         },
@@ -441,10 +441,10 @@ class Spanning_treeTemplate(NetworkTemplate):
             "result": {
                 "mst": {
                     "configuration": {
-                        "instances": [ {
+                        "instances": [{
                             "instance": "{{ instance }}",
                             "vlan_list": "'{{ vlan_list }}'",
-                        } ],
+                        }],
                     },
                 },
             },

@@ -83,8 +83,7 @@ options:
       portfast:
         description: Portfast configurations.
         type: dict
-        mutually_exclusive:
-          - [ "network_default", "edge_default" ]
+        mutually_exclusive: [[ "network_default", "edge_default" ]]
         suboptions:
           network_default:
             description:
@@ -118,7 +117,7 @@ options:
         description: Sets the STP forward delay time.
         type: list
         elements: dict
-        required_together: ["vlan_list", "value"]
+        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -132,7 +131,7 @@ options:
           - by the root switch.
         type: list
         elements: dict
-        required_together: ["vlan_list", "value"]
+        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -146,7 +145,7 @@ options:
           - is valid.
         type: list
         elements: dict
-        required_together: ["vlan_list", "value"]
+        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -159,7 +158,7 @@ options:
           - Sets the STP bridge priority.
         type: list
         elements: dict
-        required_together: ["vlan_list", "value"]
+        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -203,7 +202,7 @@ options:
               - Sets the MST instance priority.
             type: list
             elements: dict
-            required_together: ["instance", "value"]
+            required_together: [["instance", "value"]]
             suboptions:
               instance:
                 description: List of MST instances.
@@ -223,9 +222,10 @@ options:
                 description: Sets the revision number for the MST configuration.
                 type: int
               instances:
+                description: List of configured instances.
                 type: list
                 elements: dict
-                required_together: ["instance", "vlan_list"]
+                required_together: [["instance", "vlan_list"]]
                 suboptions:
                   instance:
                     description: MST instance number.
@@ -561,6 +561,7 @@ EXAMPLES = """
 # - revision 34
 # - instance 2 vlan 10-20
 # - instance 1 vlan 40-50
+# - exit
 
 # Using Merged
 # Example #1
@@ -674,6 +675,7 @@ EXAMPLES = """
 #   - spanning-tree mst 6 priority 57344
 #   - spanning-tree mst configuration
 #   - instance 2 vlan 21-30
+#   - exit
 
 # After state:
 # -------------
@@ -799,7 +801,7 @@ EXAMPLES = """
     config:
         mst:
             configuration:
-                name: "NAME",
+                name: "NAME"
                 revision: 34
                 instances:
                     - instance: 1
@@ -813,6 +815,7 @@ EXAMPLES = """
 #  - no name NAME
 #  - no revision 34
 #  - no instance 1 vlan 40-50
+#  - exit
 
 # After state:
 # -------------
@@ -929,6 +932,7 @@ commands:
     - name NAME
     - revision 34
     - instance 1 vlan 40-50
+    - exit
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
@@ -940,6 +944,7 @@ rendered:
     - name NAME
     - revision 34
     - instance 1 vlan 40-50
+    - exit
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
