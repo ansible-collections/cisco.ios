@@ -169,10 +169,12 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                                 "instances": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "required_together": [[
-                                        "instance",
-                                        "vlan_list",
-                                    ]],
+                                    "required_together": [
+                                        [
+                                            "instance",
+                                            "vlan_list",
+                                        ]
+                                    ],
                                     "options": {
                                         "instance": {"type": "int"},
                                         "vlan_list": {"type": "str"},
