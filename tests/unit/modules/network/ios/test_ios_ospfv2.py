@@ -121,6 +121,27 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_ospfv2_merged_specific_param(self):
+        set_module_args(
+            dict(
+                config={
+                    "processes": [
+                        {
+                            "process_id": 1,
+                            "router_id": "0.0.0.1",
+                            "vrf": "vrf",
+                            "areas": [{"area_id": 0}],
+                            "capability": {"vrf_lite": True},
+                        },
+                    ],
+                },
+                state="merged",
+            ),
+        )
+        commands = ["router ospf 1 vrf vrf", "capability vrf-lite", "router-id 0.0.0.1"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
     def test_ios_ospfv2_merged_idempotent(self):
         set_module_args(
             dict(
