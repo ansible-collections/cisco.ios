@@ -172,21 +172,33 @@ class Hardware(FactsBase):
         for line in data.split("\n"):
             _temp = ""
             match_nomral_nm = re.match(
-                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                r"""
+                ^CPU\sutilization\sfor\sfive\sseconds:
+                \s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?
+                ;\sone\sminute:\s(?P<a_min>\d+)?%
+                ;\sfive\sminutes:\s(?P<f_min>\d+)?%
+                """,
                 line,
             )
-            match_core = re.match(
-                r"^Core\s(?P<core>\d+)?:\sCPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?",
+            match_core = re.compile(
+                r"""
+                ^Core\s(?P<core>\d+)?
+                :\sCPU\sutilization\sfor
+                \sfive\sseconds:\s(?P<f_s_denom>\d+)?%
+                ;\sone\sminute:\s(?P<a_min>\d+)?%
+                ;\sfive\sminutes:\s(?P<f_min>\d+)?
+                """,
                 line,
             )
             match_nomral = re.match(
-                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                r"""
+                ^CPU\sutilization\sfor\sfive
+                \sseconds:\s(?P<f_s_denom>\d+)?%;
+                \sone\sminute:\s(?P<a_min>\d+)?%;
+                \sfive\sminutes:\s(?P<f_min>\d+)?%
+                """,
                 line,
             )
-            # match_core_nm = re.match(
-            #     r"^Core\s(?P<core>\d+)?:\sCPU\sutilization\sfor\sfive\sseconds:\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
-            #     line,
-            # )
 
             if match_nomral_nm or match_nomral:
                 _temp = match_nomral_nm if match_nomral_nm else match_nomral
