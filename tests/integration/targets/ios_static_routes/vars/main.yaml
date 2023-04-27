@@ -1,62 +1,45 @@
 ---
 deleted:
   commands:
-    - no ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf
-      track 150 tag 50
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1
-      tag 40
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+    - no ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
+    - no ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
     - no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-    - no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
-    - no ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name test_v6_vrf tag 115
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+    - no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 merged:
   commands:
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name merged_vrf track 150 tag 50
-    - ip route vrf ansible_temp_vrf 192.51.110.0 255.255.255.255 GigabitEthernet3 192.51.111.1 10 name partner_vrf
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name merged_route_1 tag 40
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name merged_route_2
     - ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3
-    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name merged_v6 tag 105
-    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name merged_v6_vrf tag 115
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name merged_route_2
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name merged_route_1 multicast
+    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name merged_v6
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name merged_vrf track 150
+    - ip route vrf ansible_temp_vrf 192.51.110.0 255.255.255.255 GigabitEthernet3 192.51.111.1 10 name partner_vrf
+    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name merged_v6_vrf
 replaced:
   commands:
-    - no ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf
-      track 150 tag 50
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1
-      tag 40
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 75 name replaced_vrf track 155
+    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name replaced_v6_vrf
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast
     - no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name replaced_vrf
-      track 155 tag 75
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 multicast name replaced_route
-      tag 70
-    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name replaced_v6 tag 110
-    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name replaced_v6_vrf tag 115
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 110 name replaced_v6
 overridden:
   commands:
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1
-      tag 40
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-    - no ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf
-      track 150 tag 50
-    - no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
-    - no ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name test_v6_vrf tag 115
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name override_vrf track 150
+    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 135 name override_v6_vrf
     - ip route 198.51.100.0 255.255.255.0 198.51.101.3 name override_route
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name override_vrf
-      track 150 tag 50
-    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name override_v6 tag 175
-    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name override_v6_vrf tag 135
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 175 name override_v6
 rendered:
   commands:
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf
-      track 150 tag 50
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1
-      tag 40
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
+    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 115 name test_v6_vrf
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
     - ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
     - ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
-    - ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 name test_v6_vrf tag 115
+    - ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 gathered:
   config:
     - address_families:
@@ -100,10 +83,7 @@ gathered:
                   name: route_3
 rtt:
   override_commands:
-    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name rtt_route_1
-      tag 40
-    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.12 name new_rtt_vrf
-      track 150 tag 10
+    - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.12 tag 10 name new_rtt_vrf track 150
+    - no ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name rtt_route_1 multicast
   override_revert_commands:
-    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name rtt_route_1
-      tag 40
+    - ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name rtt_route_1 multicast

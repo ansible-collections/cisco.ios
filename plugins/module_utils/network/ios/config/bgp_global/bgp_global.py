@@ -271,7 +271,7 @@ class Bgp_global(ResourceModule):
             "path_attribute.treat_as_withdraw",
             "shutdown",
             "soft_reconfiguration",
-            "timers",
+            "ntimers",
             "transport.connection_mode",
             "transport.multi_session",
             "transport.path_mtu_discovery",
@@ -379,6 +379,9 @@ class Bgp_global(ResourceModule):
                 if k == "neighbors":
                     for neb in tmp_data.get("neighbors"):
                         neb = self._bgp_global_list_to_dict(neb)
+                        _ntimer = neb.pop("timers", {})
+                        if _ntimer:
+                            neb["ntimers"] = _ntimer
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("distributes") and k == "distributes":
                 tmp_data[k] = {str("".join([i.get(j, "") for j in _v])): i for i in tmp_data[k]}

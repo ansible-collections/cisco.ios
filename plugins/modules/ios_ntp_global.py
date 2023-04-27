@@ -836,7 +836,7 @@ EXAMPLES = """
         - range_end: 3
           range_start: 10
         - range_start: 21
-      update_calendar: True
+      update_calendar: true
     state: rendered
 
 # Module Execution Result:

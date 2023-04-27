@@ -364,7 +364,12 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
-                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {
+                        "acl_v6": "ipv6acl",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
             },
@@ -889,7 +894,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
             "no snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
             "no snmp-server user new@user! new.family$ v1 access 24",
-            "no snmp-server user paul familypaul v3 access ipv6",
+            "no snmp-server user paul familypaul v3 access ipv6 ipv6acl",
             "no snmp-server user replaceUser replaceUser v3",
         ]
         playbook["state"] = "deleted"
@@ -1286,6 +1291,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
                     snmp-server host 172.16.2.1 version 3 noauth replaceUser  slb pki
                     snmp-server host 172.16.2.1 version 2c trapsac  tty bgp
+                    snmp-server group mygrp v3 priv read readme write writeit notify notifyme access acessing
                     snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
                     """,
                 ),
@@ -1298,7 +1304,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
             ],
             "users": [
-                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v4": "ipv6"},
+                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6acl"},
             ],
             "traps": {
                 "ospf": {
@@ -1377,6 +1383,17 @@ class TestIosSnmpServerModule(TestIosModule):
                 {"host": "172.16.2.99", "community_string": "check", "traps": ["slb", "pki"]},
                 {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
             ],
+            "groups": [
+                {
+                    "group": "mygrp",
+                    "version": "v3",
+                    "version_option": "priv",
+                    "notify": "notifyme",
+                    "read": "readme",
+                    "write": "writeit",
+                    "acl_v4": "acessing",
+                },
+            ],
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
@@ -1427,6 +1444,17 @@ class TestIosSnmpServerModule(TestIosModule):
                         {"family_name": "internet", "included": True, "name": "ro"},
                         {"family_name": "iso", "included": True, "name": "rw"},
                         {"family_name": "internet", "included": True, "name": "rw"},
+                    ],
+                    "groups": [
+                        {
+                            "group": "mygrp",
+                            "version": "v3",
+                            "version_option": "priv",
+                            "notify": "notifyme",
+                            "read": "readme",
+                            "write": "writeit",
+                            "acl_v4": "acessing",
+                        },
                     ],
                     "users": [
                         {
@@ -1532,6 +1560,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server host 172.16.2.99 informs version 2c check msdp",
             "snmp-server host 172.16.2.99 check slb",
             "snmp-server host 172.16.2.99 checktrap isis",
+            "snmp-server group mygrp v3 priv read readme write writeit notify notifyme access acessing",
             "snmp-server engineID local AB0C5342FA0A",
             "snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB",
             "snmp-server user paul familypaul v3 access ipv6",

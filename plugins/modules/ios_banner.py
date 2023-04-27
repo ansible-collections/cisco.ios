@@ -84,7 +84,7 @@ EXAMPLES = """
 - name: Configure banner from file
   cisco.ios.ios_banner:
     banner: motd
-    text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+    text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}" # Use unix formatted text files (LF not CRLF) to avoid idempotency issues.
     state: present
 
 - name: Configure the login banner using delimiter

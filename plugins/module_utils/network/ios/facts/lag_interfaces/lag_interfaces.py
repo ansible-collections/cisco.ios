@@ -20,7 +20,7 @@ from itertools import groupby
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
-    Lag_interfacesArgs,
+    Lag_InterfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
     Lag_interfacesTemplate,
@@ -32,7 +32,7 @@ class Lag_interfacesFacts(object):
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Lag_interfacesArgs.argument_spec
+        self.argument_spec = Lag_InterfacesArgs.argument_spec
 
     def get_lag_interfaces_data(self, connection):
         return connection.get("show running-config | section ^interface")

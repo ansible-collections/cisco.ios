@@ -5,6 +5,62 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.5.0
+======
+
+Minor Changes
+-------------
+
+- ios_bgp_address_family - add option redistribute.ospf.include_connected when redistributing OSPF in IPv6 AFI
+- ios_bgp_address_family - add option redistribute.ospf.match.externals.type_1 to allow
+- ios_bgp_address_family - add option redistribute.ospf.match.externals.type_2 to allow
+- specification of OSPF E1 routes
+- specification of OSPF E2 routes
+
+Deprecated Features
+-------------------
+
+- ios_bgp_address_family - deprecate redistribute.ospf.match.external with redistribute.ospf.match.externals which enables attributes for OSPF type E1 and E2 routes
+- ios_bgp_address_family - deprecate redistribute.ospf.match.nssa_external with redistribute.ospf.match.nssa_externals which enables attributes for OSPF type N1 and N2 routes
+- ios_bgp_address_family - deprecate redistribute.ospf.match.type_1 with redistribute.ospf.match.nssa_externals.type_1
+- ios_bgp_address_family - deprecate redistribute.ospf.match.type_2 with redistribute.ospf.match.nssa_externals.type_2
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - fix issue where no commands are generated when redistributing OSPFv2 and OSPFv3
+- ios_bgp_address_family - fix missing negations in overridden and replaced states when redistributing OSPF
+- ios_bgp_address_family - fix option and syntax for OSPF E1 and E2 routes
+- ios_bgp_address_family - fix option and syntax for OSPF N1 and N2 routes
+- ios_bgp_address_family - fix order of generated OSPF redistribution command options to achieve idempotency
+- ios_bgp_global - fix configuration of timers under neighbor. (https://github.com/ansible-collections/cisco.ios/issues/794)
+- ios_l3_interfaces - prevent configuration line generation when enable is false.
+- ios_logging_global - logging history configuration command fixed for supported appliance versions.
+
+Documentation Changes
+---------------------
+
+- Update examples for bgp_address family.
+- bgp_global - Updated documentation with examples and task output.
+
+v4.4.1
+======
+
+Bugfixes
+--------
+
+- Fix parser to read groups in snmp-server.
+- Fix parser to read transceiver in snmp-server.
+- ios_acls - fix processing of source information on extended acls entries.
+- ios_acls - prevent rendering of mac access-lists in facts.
+- ios_static_routes - fix configure generation order for ipv4 and ipv6 routes.
+- ios_static_routes - fix module to be idempotent with replaced and overridden state.
+
+Documentation Changes
+---------------------
+
+- ios_banner - Enhance example with comment.
+
 v4.4.0
 ======
 

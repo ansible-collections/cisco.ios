@@ -224,7 +224,6 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                 \s*(?P<id>\d+)*
                 \s*(?P<area>area\s\d+)*
                 \s*(?P<secondaries>secondaries)*
-
                 \s*(?P<instance>instance*\s*\d+)*
                 $""",
                 re.VERBOSE,

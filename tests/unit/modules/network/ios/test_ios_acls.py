@@ -684,7 +684,7 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 running_config="""IPv6 access list R1_TRAFFIC\n deny tcp any eq www any range 10 20 ack dscp af11 sequence 10
-                \n 20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
+                20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
                 state="parsed",
             ),
         )
@@ -708,7 +708,6 @@ class TestIosAclsModule(TestIosModule):
                                 "dscp": "af11",
                                 "protocol_options": {"tcp": {"ack": True}},
                             },
-                            {},
                             {
                                 "sequence": 20,
                                 "grant": "permit",
@@ -1097,3 +1096,386 @@ class TestIosAclsModule(TestIosModule):
                 "failed": True,
             },
         )
+
+    def test_ios_acls_parsed_multioption(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    Standard IP access list 2
+                        30 permit 172.16.1.11
+                        20 permit 172.16.1.10
+                        10 permit 172.16.1.2
+                    Extended IP access list 101
+                        15 permit tcp any host 172.16.2.9
+                        18 permit tcp any host 172.16.2.11
+                        20 permit udp host 172.16.1.21 any
+                        30 permit udp host 172.16.1.22 any
+                        40 deny icmp any 10.1.1.0 0.0.0.255 echo
+                        50 permit ip any 10.1.1.0 0.0.0.255
+                        60 permit tcp any host 10.1.1.1 eq telnet
+                        70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY (active)
+                    Extended IP access list outboundfilters
+                        10 permit icmp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255
+                    Extended IP access list test
+                        10 permit ip host 10.2.2.2 host 10.3.3.3
+                        20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
+                        30 permit icmp any any
+                        40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
+                    Extended MAC access list system-cpp-bpdu-range
+                        permit any 0180.c200.0000 0000.0000.0003
+                    Extended MAC access list system-cpp-cdp
+                        permit any host 0100.0ccc.cccc
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "101",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 15,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {"any": True},
+                                "destination": {"host": "172.16.2.9"},
+                            },
+                            {
+                                "sequence": 18,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {"any": True},
+                                "destination": {"host": "172.16.2.11"},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "udp",
+                                "source": {"host": "172.16.1.21"},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "udp",
+                                "source": {"host": "172.16.1.22"},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 40,
+                                "grant": "deny",
+                                "protocol": "icmp",
+                                "source": {"any": True},
+                                "destination": {
+                                    "address": "10.1.1.0",
+                                    "wildcard_bits": "0.0.0.255",
+                                },
+                                "protocol_options": {"icmp": {"echo": True}},
+                            },
+                            {
+                                "sequence": 50,
+                                "grant": "permit",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {
+                                    "address": "10.1.1.0",
+                                    "wildcard_bits": "0.0.0.255",
+                                },
+                            },
+                            {
+                                "sequence": 60,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {"any": True},
+                                "destination": {
+                                    "host": "10.1.1.1",
+                                    "port_protocol": {"eq": "telnet"},
+                                },
+                            },
+                            {
+                                "sequence": 70,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {"address": "10.1.1.0", "wildcard_bits": "0.0.0.255"},
+                                "destination": {
+                                    "address": "172.16.1.0",
+                                    "port_protocol": {"eq": "telnet"},
+                                    "wildcard_bits": "0.0.0.255",
+                                },
+                                "time_range": "EVERYOTHERDAY",
+                            },
+                        ],
+                    },
+                    {
+                        "name": "2",
+                        "acl_type": "standard",
+                        "aces": [
+                            {"sequence": 30, "grant": "permit", "source": {"host": "172.16.1.11"}},
+                            {"sequence": 20, "grant": "permit", "source": {"host": "172.16.1.10"}},
+                            {"sequence": 10, "grant": "permit", "source": {"host": "172.16.1.2"}},
+                        ],
+                    },
+                    {
+                        "name": "outboundfilters",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "source": {"address": "10.1.1.0", "wildcard_bits": "0.0.0.255"},
+                                "destination": {
+                                    "address": "172.16.1.0",
+                                    "wildcard_bits": "0.0.0.255",
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        "name": "test",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "ip",
+                                "source": {"host": "10.2.2.2"},
+                                "destination": {"host": "10.3.3.3"},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {"host": "10.1.1.1"},
+                                "destination": {"host": "10.5.5.5", "port_protocol": {"eq": "www"}},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 40,
+                                "grant": "permit",
+                                "protocol": "udp",
+                                "source": {"host": "10.6.6.6"},
+                                "destination": {
+                                    "address": "10.10.10.0",
+                                    "port_protocol": {"eq": "domain"},
+                                    "wildcard_bits": "0.0.0.255",
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_acls_rendered_muiltioption(self):
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "101",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "sequence": 15,
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"any": True},
+                                        "destination": {"host": "172.16.2.9"},
+                                    },
+                                    {
+                                        "sequence": 18,
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"any": True},
+                                        "destination": {"host": "172.16.2.11"},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "source": {"host": "172.16.1.21"},
+                                        "destination": {"any": True},
+                                    },
+                                    {
+                                        "sequence": 30,
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "source": {"host": "172.16.1.22"},
+                                        "destination": {"any": True},
+                                    },
+                                    {
+                                        "sequence": 40,
+                                        "grant": "deny",
+                                        "protocol": "icmp",
+                                        "source": {"any": True},
+                                        "destination": {
+                                            "address": "10.1.1.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "protocol_options": {"icmp": {"echo": True}},
+                                    },
+                                    {
+                                        "sequence": 50,
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {
+                                            "address": "10.1.1.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                    {
+                                        "sequence": 60,
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"any": True},
+                                        "destination": {
+                                            "host": "10.1.1.1",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                    },
+                                    {
+                                        "sequence": 70,
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {
+                                            "address": "10.1.1.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "172.16.1.0",
+                                            "port_protocol": {"eq": "telnet"},
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "time_range": "EVERYOTHERDAY",
+                                    },
+                                ],
+                            },
+                            {
+                                "name": "2",
+                                "acl_type": "standard",
+                                "aces": [
+                                    {
+                                        "sequence": 30,
+                                        "grant": "permit",
+                                        "source": {"host": "172.16.1.11"},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "grant": "permit",
+                                        "source": {"host": "172.16.1.10"},
+                                    },
+                                    {
+                                        "sequence": 10,
+                                        "grant": "permit",
+                                        "source": {"host": "172.16.1.2"},
+                                    },
+                                ],
+                            },
+                            {
+                                "name": "outboundfilters",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "permit",
+                                        "protocol": "icmp",
+                                        "source": {
+                                            "address": "10.1.1.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "172.16.1.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                ],
+                            },
+                            {
+                                "name": "test",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "source": {"host": "10.2.2.2"},
+                                        "destination": {"host": "10.3.3.3"},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"host": "10.1.1.1"},
+                                        "destination": {
+                                            "host": "10.5.5.5",
+                                            "port_protocol": {"eq": "www"},
+                                        },
+                                    },
+                                    {
+                                        "sequence": 30,
+                                        "grant": "permit",
+                                        "protocol": "icmp",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                    },
+                                    {
+                                        "sequence": 40,
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "source": {"host": "10.6.6.6"},
+                                        "destination": {
+                                            "address": "10.10.10.0",
+                                            "port_protocol": {"eq": "domain"},
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "ip access-list extended 101",
+            "15 permit tcp any host 172.16.2.9",
+            "18 permit tcp any host 172.16.2.11",
+            "20 permit udp host 172.16.1.21 any",
+            "30 permit udp host 172.16.1.22 any",
+            "40 deny icmp any 10.1.1.0 0.0.0.255 echo",
+            "50 permit ip any 10.1.1.0 0.0.0.255",
+            "60 permit tcp any host 10.1.1.1 eq telnet",
+            "70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY",
+            "ip access-list standard 2",
+            "30 permit host 172.16.1.11",
+            "20 permit host 172.16.1.10",
+            "10 permit host 172.16.1.2",
+            "ip access-list extended outboundfilters",
+            "10 permit icmp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255",
+            "ip access-list extended test",
+            "10 permit ip host 10.2.2.2 host 10.3.3.3",
+            "20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www",
+            "30 permit icmp any any",
+            "40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
