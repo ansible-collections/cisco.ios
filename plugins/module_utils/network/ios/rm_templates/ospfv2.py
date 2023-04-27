@@ -153,7 +153,7 @@ def _tmplt_ospf_capability(config_data):
         elif "transit" in config_data["capability"]:
             command = "capability transit"
         elif "vrf_lite" in config_data["capability"]:
-            command = "capability vrf_lite"
+            command = "capability vrf-lite"
         return command
 
 
