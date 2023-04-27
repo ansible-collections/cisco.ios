@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ospfv2 - Fixed rendering of capability command with vrf_lite.
+  - ospfv3 - Fixed rendering of capability command with vrf_lite.

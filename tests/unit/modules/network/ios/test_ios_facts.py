@@ -137,6 +137,18 @@ class TestIosFactsModule(TestIosModule):
             cpu_utilization_data,
         )
 
+    def test_ios_facts_memory_info(self):
+        set_module_args(dict(gather_subset="hardware"))
+        result = self.execute_module()
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_memfree_mb"],
+            479095636 / (1024 * 1024),  # 456.9012031555176,
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_memtotal_mb"],
+            732743660 / (1024 * 1024),  # 698.7988090515137,
+        )
+
     def test_ios_facts_neighbors(self):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
