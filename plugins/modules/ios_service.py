@@ -10,6 +10,7 @@ The module file for ios_service
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -472,7 +473,7 @@ EXAMPLES = """
 
 #·After·state:
 #·------------
-# 
+#
 # router-ios#show running-config all | section ^service
 # service slave-log
 # service private-config-encryption
@@ -652,6 +653,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.service.service import (
     ServiceArgs,
 )

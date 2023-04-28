@@ -302,7 +302,7 @@ class ServiceTemplate(NetworkTemplate):
             ),
             "setval": "service private-config-encryption",
             "result": {
-                "private_config_encryption": True
+                "private_config_encryption": True,
             },
         },
         {
