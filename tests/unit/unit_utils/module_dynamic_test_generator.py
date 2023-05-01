@@ -4,9 +4,11 @@ import yaml
 
 
 class TestGeneratorFromModuleExamples:
-    def __init__(self, module_fqcn, examples):
-        self.module_fqcn = module_fqcn
-        self.examples = examples
+    def __init__(self, module):
+        self.documentation = module.DOCUMENTATION
+        self.examples = module.EXAMPLES
+        self.module_fqcn = self.identify_yaml(self.documentation).get("module")
+        self.module_fqcn = "cisco.ios." + self.module_fqcn
 
     def identify_yaml(self, string_data):
         try:
@@ -78,10 +80,12 @@ class TestGeneratorFromModuleExamples:
         if state in ["rendered", "gathered", "parsed"]:
             split_str = "# " + state + ":"
             extract_commands = (raw_output[1].split(split_str))[1]
-            if state == "gathered":
-                extract_commands = "gathered:" + extract_commands
+            # if state == "gathered":
+            #     extract_commands = "gathered:" + extract_commands
         else:
             extract_commands = (raw_output[1].split("# commands:"))[1]
+            extract_commands = extract_commands.split("after:")[0]
+            # extract_commands = "commands:" + extract_commands
 
         assert_asset = self.identify_yaml(
             extract_commands.replace("#", ""),
