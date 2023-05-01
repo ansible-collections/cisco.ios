@@ -1,5 +1,6 @@
-import yaml
 from textwrap import dedent
+
+import yaml
 
 
 class TestGeneratorFromModuleExamples:
