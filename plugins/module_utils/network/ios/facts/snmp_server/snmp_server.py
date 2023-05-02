@@ -93,7 +93,7 @@ class Snmp_serverFacts(object):
                     one_set["acl_v6"] = line.split(": ")[-1]
                 if "active\taccess-list:" in line:
                     one_set["acl_v4"] = line.split(": ")[-1]
-            if len(one_set) != 0:
+            if len(one_set):
                 user_list.append(one_set)
         return user_list
 
@@ -123,7 +123,7 @@ class Snmp_serverFacts(object):
         objs = snmp_server_parser.parse()
 
         # add snmpv3_user data to the objs dictionary
-        if len(snmp_user_data) != 0:
+        if len(snmp_user_data):
             if objs.get("users") is None:
                 objs["users"] = snmp_user_data
             else:
