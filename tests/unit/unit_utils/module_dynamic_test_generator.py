@@ -7,22 +7,19 @@ class TestGeneratorFromModuleExamples:
         self.examples = module.EXAMPLES
         self.module_fqcn = self.identify_yaml(self.documentation).get("module")
         self.module_fqcn = "cisco.ios." + self.module_fqcn
-        # self.action_state_artifact = {}
-        # self.non_action_state_artifact = {}
 
         self.raw_asset = self.extract_test_asset_from_example()
 
     @property
     def action_state_artifact(self):
-        # self.action_state_artifact = self.raw_asset.get("action_state")
         return self.raw_asset.get("action_state")
 
     @property
     def non_action_state_artifact(self):
-        # self.non_action_state_artifact = self.raw_asset.get("non_action_state")
         return self.raw_asset.get("non_action_state")
 
     def identify_yaml(self, string_data):
+        # process valid yaml data
         try:
             yaml_data = yaml.safe_load(string_data)
             if yaml_data is None:
@@ -68,10 +65,9 @@ class TestGeneratorFromModuleExamples:
             for line in section_before:
                 # think about this line, deeply
                 # and "show running-config" not in line
-                if line != "" and "show running-config" not in line:
+                if line != "":
                     line = line[1::]
                     device_config += line + "\n"
-            # device_config = dedent(device_config)  # before config is stored
         return device_config[:-1]
 
     def find_playbook(self, section_playbook):
@@ -85,20 +81,20 @@ class TestGeneratorFromModuleExamples:
             return ""
 
     def find_config_in_playbook(self, playbook_yaml, module_fqcn, state):
+        # returns config section from playbook
         section = "running_config" if state == "parsed" else "config"
         config = playbook_yaml[0][module_fqcn].get(section)
         return config
 
     def find_assert_asset(self, raw_output, state):
+        # function to generate assert data from examples
         if state in ["rendered", "gathered", "parsed"]:
             split_str = "# " + state + ":"
             extract_commands = (raw_output[1].split(split_str))[1]
-            # if state == "gathered":
-            #     extract_commands = "gathered:" + extract_commands
+
         else:
             extract_commands = (raw_output[1].split("# commands:"))[1]
             extract_commands = extract_commands.split("after:")[0]
-            # extract_commands = "commands:" + extract_commands
 
         assert_asset = self.identify_yaml(
             extract_commands.replace("#", ""),
@@ -109,6 +105,7 @@ class TestGeneratorFromModuleExamples:
             return ""
 
     def section_delimiter(self, section):
+        # section split information
         section_map = {
             "states": "# Using",
             "name": "- name",
@@ -119,6 +116,7 @@ class TestGeneratorFromModuleExamples:
         return section_map[section]
 
     def assert_handler(self, testobj, assert_to, assert_with, state, sort=False):
+        # handle test assertions
         try:
             if sort:
                 testobj.assertEqual(sorted(assert_to), sorted(assert_with))
