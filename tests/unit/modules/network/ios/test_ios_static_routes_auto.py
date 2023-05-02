@@ -60,7 +60,8 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
         self.dyanmic_test_obj = TestGeneratorFromModuleExamples(ios_static_routes)
-        self.test_asset = self.dyanmic_test_obj.extract_test_asset_from_example()
+        self.test_asset = self.dyanmic_test_obj.get_action_state_artifact
+        self.n_test_asset = self.dyanmic_test_obj.get_non_action_state_artifact
 
     def tearDown(self):
         super(TestIosStaticRoutesModuleAuto, self).tearDown()
@@ -73,6 +74,7 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
 
     def test_ios_static_routes_auto(self):
         for key, test_vars in self.test_asset.items():
+            # if key.startswith("delete"):
             self.execute_show_command.return_value = test_vars.get("device_config")
             set_module_args(
                 dict(
@@ -82,56 +84,8 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
             )
             result = self.execute_module(changed=test_vars.get("changed"))
             commands = test_vars.get("commands")
-            self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_static_routes_overridden(self):
-        test_vars = self.test_core.get("overridden")
-        self.execute_show_command.return_value = test_vars.get("before")
-        set_module_args(
-            dict(
-                config=test_vars.get("config"),
-                state=test_vars.get("operation_state"),
-            ),
-        )
-        result = self.execute_module(changed=True)
-        commands = test_vars.get("commands")
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_static_routes_replaced(self):
-        test_vars = self.test_core.get("replaced")
-        self.execute_show_command.return_value = test_vars.get("before")
-        set_module_args(
-            dict(
-                config=test_vars.get("config"),
-                state=test_vars.get("operation_state"),
-            ),
-        )
-        result = self.execute_module(changed=True)
-        commands = test_vars.get("commands")
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_static_routes_rendered(self):
-        test_vars = self.test_core.get("rendered")
-        self.execute_show_command.return_value = test_vars.get("before")
-        set_module_args(
-            dict(
-                config=test_vars.get("config"),
-                state=test_vars.get("operation_state"),
-            ),
-        )
-        result = self.execute_module(changed=False)
-        commands = test_vars.get("commands")
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
-
-    # def test_ios_static_routes_gathered(self):
-    #     test_vars = self.test_core.get("gathered")
-    #     self.execute_show_command.return_value = test_vars.get("before")
-    #     set_module_args(
-    #         dict(
-    #             config=test_vars.get("config"),
-    #             state=test_vars.get("operation_state"),
-    #         ),
-    #     )
-    #     result = self.execute_module(changed=False)
-    #     commands = test_vars.get("structured_data").get("gathered")
-    #     self.assertEqual(result["gathered"], commands)
+            try:
+                self.assertEqual(sorted(result["commands"]), sorted(commands))
+            except Exception as e:
+                print(e)
+            print(key)

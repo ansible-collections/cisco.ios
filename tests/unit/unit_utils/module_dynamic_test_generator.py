@@ -1,5 +1,3 @@
-from textwrap import dedent
-
 import yaml
 
 
@@ -9,6 +7,20 @@ class TestGeneratorFromModuleExamples:
         self.examples = module.EXAMPLES
         self.module_fqcn = self.identify_yaml(self.documentation).get("module")
         self.module_fqcn = "cisco.ios." + self.module_fqcn
+        self.action_state_artifact = {}
+        self.non_action_state_artifact = {}
+
+        self.raw_asset = self.extract_test_asset_from_example()
+
+    @property
+    def get_action_state_artifact(self):
+        self.action_state_artifact = self.raw_asset.get("action_state")
+        return self.action_state_artifact
+
+    @property
+    def get_non_action_state_artifact(self):
+        self.non_action_state_artifact = self.raw_asset.get("non_action_state")
+        return self.non_action_state_artifact
 
     def identify_yaml(self, string_data):
         try:
@@ -50,16 +62,17 @@ class TestGeneratorFromModuleExamples:
         if state != "rendered":
             section_before = section_before[1].replace("#", "")
             section_before = section_before.split(
-                "\n ",
+                "\n",
             )
 
             for line in section_before:
                 # think about this line, deeply
                 # and "show running-config" not in line
-                if line != "":
+                if line != "" and "show running-config" not in line:
+                    line = line[1::]
                     device_config += line + "\n"
-            device_config = dedent(device_config)  # before config is stored
-        return device_config
+            # device_config = dedent(device_config)  # before config is stored
+        return device_config[:-1]
 
     def find_playbook(self, section_playbook):
         probable_playbook = "- name" + section_playbook[0]
@@ -110,7 +123,7 @@ class TestGeneratorFromModuleExamples:
         Extracts test data from documentation and returns it as a dictionary.
         """
 
-        test_assets = {}
+        test_assets, pkey = {"action_state": {}, "non_action_state": {}}, ""
         examples_split = self.examples.split(self.section_delimiter("states"))
 
         for idx, example in enumerate(examples_split):
@@ -128,7 +141,13 @@ class TestGeneratorFromModuleExamples:
             config = self.find_config_in_playbook(playbook_yaml, self.module_fqcn, state)
             assert_asset = self.find_assert_asset(playbook_and_output, state)
 
-            test_assets[state + str(idx)] = {
+            toggle_artifact = "action_state" if changed_parm else "non_action_state"
+
+            pkey = state
+            if test_assets[toggle_artifact].get(state):
+                pkey = state + "_" + str(idx)
+
+            test_assets[toggle_artifact][pkey] = {
                 "state": state,
                 "device_config": device_config,
                 "playbook": playbook_yaml,
