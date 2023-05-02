@@ -2088,6 +2088,7 @@ EXAMPLES = """
 # - bgp bestpath med confed
 # - no bgp dampening 1 1 1 1
 # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+# - bgp log-neighbor-changes
 # - bgp nopeerup-delay cold-boot 20
 # - network 192.0.2.4
 # - no network 192.0.2.2
@@ -2197,7 +2198,6 @@ EXAMPLES = """
 # - no bgp bestpath compare-routerid
 # - no bgp dampening 1 1 1 1
 # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-# - no bgp log-neighbor-changes
 # - no bgp nopeerup-delay post-boot 10
 # - no neighbor 192.0.2.1
 # after:
@@ -2273,7 +2273,7 @@ EXAMPLES = """
 # - no bgp dampening 1 1 1 1
 # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
 # - no bgp nopeerup-delay post-boot 10
-# - no neighbor 198.51.100.1
+# - no neighbor 192.0.2.1
 # after:
 #   as_number: '65000'
 

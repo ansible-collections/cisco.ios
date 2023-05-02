@@ -3,9 +3,8 @@ import yaml
 
 class TestGeneratorFromModuleExamples:
     def __init__(self, module):
-        self.documentation = module.DOCUMENTATION
         self.examples = module.EXAMPLES
-        self.module_fqcn = self.identify_yaml(self.documentation).get("module")
+        self.module_fqcn = self.identify_yaml(module.DOCUMENTATION).get("module")
         self.module_fqcn = "cisco.ios." + self.module_fqcn
 
         self.raw_asset = self.extract_test_asset_from_example()
@@ -137,7 +136,7 @@ class TestGeneratorFromModuleExamples:
             if len(example) < 6:
                 continue
 
-            split_on_yaml_name = example.split(self.section_delimiter("name"))
+            split_on_yaml_name = example.split(self.section_delimiter("name"), 1)
             section_config = split_on_yaml_name[0].split(self.section_delimiter("dotline"))
             playbook_and_output = split_on_yaml_name[1].split(self.section_delimiter("taskop"))
 
