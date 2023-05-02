@@ -82,7 +82,11 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
             result = self.execute_module(changed=test_vars.get("changed"))
 
             self.dynamic_test_obj.assert_handler(
-                self, result["commands"], test_vars.get("commands"), test_vars.get("state"), True
+                self,
+                result["commands"],
+                test_vars.get("commands"),
+                test_vars.get("state"),
+                True,
             )
 
     def test_ios_static_routes_non_action_state(self):
