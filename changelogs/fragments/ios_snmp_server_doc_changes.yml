@@ -1,4 +1,4 @@
 ---
-minor_changes:
+doc_changes:
   - ios_snmp_server - Add the option to configure the match option for context
   - ios_snmp_server - Fixed issue with the ifindex persistent that is not correctly detected from current config
