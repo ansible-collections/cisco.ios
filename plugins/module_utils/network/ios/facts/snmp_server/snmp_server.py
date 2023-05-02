@@ -123,7 +123,7 @@ class Snmp_serverFacts(object):
         objs = snmp_server_parser.parse()
 
         # add snmpv3_user data to the objs dictionary
-        if len(snmp_user_data):
+        if snmp_user_data:
             if objs.get("users") is None:
                 objs["users"] = snmp_user_data
             else:
