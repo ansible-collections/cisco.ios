@@ -11,11 +11,11 @@ class TestGeneratorFromModuleExamples:
 
     @property
     def action_state_artifact(self):
-        return self.raw_asset.get("action_state")
+        return self.raw_asset.get("action_state", {})
 
     @property
     def non_action_state_artifact(self):
-        return self.raw_asset.get("non_action_state")
+        return self.raw_asset.get("non_action_state", {})
 
     def identify_yaml(self, string_data):
         # process valid yaml data
