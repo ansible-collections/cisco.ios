@@ -80,11 +80,10 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
                 ),
             )
             result = self.execute_module(changed=test_vars.get("changed"))
-            try:
-                self.assertEqual(sorted(result["commands"]), sorted(test_vars.get("commands")))
-            except Exception as e:
-                print(e)
-            print(key)
+
+            self.dynamic_test_obj.assert_handler(
+                self, result["commands"], test_vars.get("commands"), test_vars.get("state"), True
+            )
 
     def test_ios_static_routes_non_action_state(self):
         for key, test_vars in self.dynamic_test_obj.non_action_state_artifact.items():
@@ -101,8 +100,10 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
                 }
             set_module_args(module_args_attr)
             result = self.execute_module(changed=test_vars.get("changed"))
-            try:
-                self.assertEqual(result[test_vars.get("state")], test_vars.get("commands"))
-            except Exception as e:
-                print(e)
-            print(key)
+
+            self.dynamic_test_obj.assert_handler(
+                self,
+                result[test_vars.get("state")],
+                test_vars.get("commands"),
+                test_vars.get("state"),
+            )

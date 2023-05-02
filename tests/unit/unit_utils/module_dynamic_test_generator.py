@@ -118,6 +118,15 @@ class TestGeneratorFromModuleExamples:
 
         return section_map[section]
 
+    def assert_handler(self, testobj, assert_to, assert_with, state, sort=False):
+        try:
+            if sort:
+                testobj.assertEqual(sorted(assert_to), sorted(assert_with))
+            else:
+                testobj.assertEqual(assert_to, assert_with)
+        except Exception as e:
+            raise AssertionError(f"for test section {state}, with error {e}".format(state, e))
+
     def extract_test_asset_from_example(self):
         """
         Extracts test data from documentation and returns it as a dictionary.
