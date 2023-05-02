@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - snmp_server - updated module to get snmpv3 user data from different command.
+  - snmp_server - update module to get snmp_server user configuration.
