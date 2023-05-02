@@ -59,9 +59,9 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-        self.dyanmic_test_obj = TestGeneratorFromModuleExamples(ios_static_routes)
-        self.test_asset = self.dyanmic_test_obj.get_action_state_artifact
-        self.n_test_asset = self.dyanmic_test_obj.get_non_action_state_artifact
+        self.dynamic_test_obj = TestGeneratorFromModuleExamples(ios_static_routes)
+        # self.test_asset = self.dynamic_test_obj.action_state_artifact
+        # self.n_test_asset = self.dynamic_test_obj.non_action_state_artifact
 
     def tearDown(self):
         super(TestIosStaticRoutesModuleAuto, self).tearDown()
@@ -72,9 +72,8 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def test_ios_static_routes_auto(self):
-        for key, test_vars in self.test_asset.items():
-            # if key.startswith("delete"):
+    def test_ios_static_routes_action_state(self):
+        for key, test_vars in self.dynamic_test_obj.action_state_artifact.items():
             self.execute_show_command.return_value = test_vars.get("device_config")
             set_module_args(
                 dict(
@@ -83,9 +82,29 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
                 ),
             )
             result = self.execute_module(changed=test_vars.get("changed"))
-            commands = test_vars.get("commands")
             try:
-                self.assertEqual(sorted(result["commands"]), sorted(commands))
+                self.assertEqual(sorted(result["commands"]), sorted(test_vars.get("commands")))
+            except Exception as e:
+                print(e)
+            print(key)
+
+    def test_ios_static_routes_non_action_state(self):
+        for key, test_vars in self.dynamic_test_obj.non_action_state_artifact.items():
+            if test_vars.get("state") != "parsed":
+                self.execute_show_command.return_value = test_vars.get("device_config")
+                module_args_attr = {
+                    "config": test_vars.get("config"),
+                    "state": test_vars.get("state"),
+                }
+            else:
+                module_args_attr = {
+                    "running_config": test_vars.get("device_config"),
+                    "state": test_vars.get("state"),
+                }
+            set_module_args(module_args_attr)
+            result = self.execute_module(changed=test_vars.get("changed"))
+            try:
+                self.assertEqual(result[test_vars.get("state")], test_vars.get("commands"))
             except Exception as e:
                 print(e)
             print(key)

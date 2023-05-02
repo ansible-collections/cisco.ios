@@ -7,20 +7,20 @@ class TestGeneratorFromModuleExamples:
         self.examples = module.EXAMPLES
         self.module_fqcn = self.identify_yaml(self.documentation).get("module")
         self.module_fqcn = "cisco.ios." + self.module_fqcn
-        self.action_state_artifact = {}
-        self.non_action_state_artifact = {}
+        # self.action_state_artifact = {}
+        # self.non_action_state_artifact = {}
 
         self.raw_asset = self.extract_test_asset_from_example()
 
     @property
-    def get_action_state_artifact(self):
-        self.action_state_artifact = self.raw_asset.get("action_state")
-        return self.action_state_artifact
+    def action_state_artifact(self):
+        # self.action_state_artifact = self.raw_asset.get("action_state")
+        return self.raw_asset.get("action_state")
 
     @property
-    def get_non_action_state_artifact(self):
-        self.non_action_state_artifact = self.raw_asset.get("non_action_state")
-        return self.non_action_state_artifact
+    def non_action_state_artifact(self):
+        # self.non_action_state_artifact = self.raw_asset.get("non_action_state")
+        return self.raw_asset.get("non_action_state")
 
     def identify_yaml(self, string_data):
         try:
