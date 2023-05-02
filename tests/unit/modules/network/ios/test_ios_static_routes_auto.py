@@ -58,8 +58,6 @@ class TestIosStaticRoutesModuleAuto(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
         self.dynamic_test_obj = TestGeneratorFromModuleExamples(ios_static_routes)
-        # self.test_asset = self.dynamic_test_obj.action_state_artifact
-        # self.n_test_asset = self.dynamic_test_obj.non_action_state_artifact
 
     def tearDown(self):
         super(TestIosStaticRoutesModuleAuto, self).tearDown()
