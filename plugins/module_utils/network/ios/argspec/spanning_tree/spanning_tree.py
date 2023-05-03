@@ -173,7 +173,7 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                                         [
                                             "instance",
                                             "vlan_list",
-                                        ]
+                                        ],
                                     ],
                                     "options": {
                                         "instance": {"type": "int"},
