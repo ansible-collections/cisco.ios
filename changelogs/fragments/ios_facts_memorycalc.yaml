@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_facts - fix calculation of memory from bytes to megabytes; grab correct output element for free memory (https://github.com/ansible-collections/cisco.ios/issues/763)

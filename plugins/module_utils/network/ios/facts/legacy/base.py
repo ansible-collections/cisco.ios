@@ -143,8 +143,8 @@ class Hardware(FactsBase):
                 processor_line = [line for line in data.splitlines() if "Processor" in line].pop()
                 match = re.findall(r"\s(\d+)\s", processor_line)
                 if match:
-                    self.facts["memtotal_mb"] = int(match[0]) / 1024
-                    self.facts["memfree_mb"] = int(match[3]) / 1024
+                    self.facts["memtotal_mb"] = int(match[0]) / 1048576
+                    self.facts["memfree_mb"] = int(match[2]) / 1048576
 
     def parse_filesystems(self, data):
         return re.findall(r"^Directory of (\S+)/", data, re.M)
