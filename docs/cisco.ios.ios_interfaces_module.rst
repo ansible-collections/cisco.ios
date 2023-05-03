@@ -300,8 +300,8 @@ Examples
     #   name: GigabitEthernet2
     #   speed: '1000'
     # - description: Configured and Merged by Ansible Network
-    #   enabled: true
-    #   mtu: 2800
+    #   enabled: false
+    #   mtu: 3800
     #   name: GigabitEthernet3
     #   speed: '1000'
     # - enabled: false
@@ -312,7 +312,10 @@ Examples
     #   name: Loopback999
     # commands:
     # - interface GigabitEthernet3
+    # - description Configured and Merged by Ansible Network
+    # - speed 100
     # - mtu 3800
+    # - duplex full
     # - shutdown
     # after:
     # - enabled: true
@@ -322,8 +325,8 @@ Examples
     #   name: GigabitEthernet2
     #   speed: '1000'
     # - description: Configured and Merged by Ansible Network
-    #   enabled: false
-    #   mtu: 3800
+    #   enabled: true
+    #   mtu: 2800
     #   name: GigabitEthernet3
     #   speed: '1000'
     # - enabled: false
@@ -389,6 +392,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - enabled: true
     #   name: GigabitEthernet1
@@ -400,10 +404,8 @@ Examples
     # - interface GigabitEthernet2
     # - description Configured and Merged by Ansible Network
     # - switchport
-    # - no shutdown
     # - interface GigabitEthernet3
     # - description Configured and Merged by Ansible Network
-    # - shutdown
     # after:
     # - enabled: true
     #   name: GigabitEthernet1
@@ -411,7 +413,6 @@ Examples
     #   enabled: true
     #   name: GigabitEthernet2
     # - description: Configured and Merged by Ansible Network
-    #   enabled: false
     #   name: GigabitEthernet3
     #   mode: layer3
 
@@ -426,7 +427,6 @@ Examples
     # interface GigabitEthernet3
     #  description Configured and Merged by Ansible Network
     #  no switchport
-    #  shutdown
 
     # Using replaced
 
@@ -460,7 +460,7 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet0/3
+        - name: GigabitEthernet3
           description: Configured and Replaced by Ansible Network
           enabled: false
           speed: 1000
