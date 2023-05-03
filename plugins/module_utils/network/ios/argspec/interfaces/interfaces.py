@@ -43,6 +43,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "mtu": {"type": "int"},
                 "mode": {"choices": ["layer2", "layer3"], "type": "str"},
                 "duplex": {"type": "str", "choices": ["full", "half", "auto"]},
+                "template": {"type": "str"},
             },
         },
         "running_config": {"type": "str"},
