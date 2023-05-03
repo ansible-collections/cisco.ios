@@ -129,5 +129,19 @@ class InterfacesTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+            "name": "template",
+            "getval": re.compile(
+                r"""
+                \s+source\stemplate\s(?P<template>.+$)
+                """, re.VERBOSE,
+            ),
+            "setval": "source template {{ template }}",
+            "result": {
+                '{{ name }}': {
+                    'template': '{{ template }}',
+                },
+            },
+        },
     ]
     # fmt: on
