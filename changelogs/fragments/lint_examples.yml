@@ -1,0 +1,3 @@
+---
+trivial:
+  - Lint examples as per ansible-lint.
