@@ -85,6 +85,7 @@ options:
     default: 1
     type: int
 """
+
 EXAMPLES = r"""
 - name: Run show version on remote devices
   cisco.ios.ios_command:
@@ -156,11 +157,10 @@ EXAMPLES = r"""
 - name: Run multiple commands on remote nodes
   cisco.ios.ios_command:
     commands:
-    - show version
-    - show interfaces
+      - show version
+      - show interfaces
 
 # output-
-
 
 # ok: [iosxeappliance] => {
 #     "changed": false,
@@ -215,15 +215,14 @@ EXAMPLES = r"""
 #     ]
 # }
 
-
 - name: Run multiple commands and evaluate the output
   cisco.ios.ios_command:
     commands:
-    - show version
-    - show interfaces
+      - show version
+      - show interfaces
     wait_for:
-    - result[0] contains IOS
-    - result[1] contains Loopback0
+      - result[0] contains IOS
+      - result[1] contains Loopback0
 
 # output-
 # failed play as result[1] contains Loopback0 is false
@@ -254,12 +253,12 @@ EXAMPLES = r"""
 - name: Run commands that require answering a prompt
   cisco.ios.ios_command:
     commands:
-    - command: 'clear counters GigabitEthernet2'
-      prompt: 'Clear "show interface" counters on this interface \[confirm\]'
-      answer: 'y'
-    - command: 'clear counters GigabitEthernet3'
-      prompt: '[confirm]'
-      answer: "\r"
+      - command: "clear counters GigabitEthernet2"
+        prompt: 'Clear "show interface" counters on this interface \[confirm\]'
+        answer: "y"
+      - command: "clear counters GigabitEthernet3"
+        prompt: "[confirm]"
+        answer: "\r"
 
 # output-
 
@@ -309,7 +308,8 @@ EXAMPLES = r"""
 
 - name: Run commands with complex values like special characters in variables
   cisco.ios.ios_command:
-    commands: ["{{ 'test aaa group TEST ' ~ user ~ ' ' ~ password ~ ' new-code' }}"]
+    commands:
+      ["{{ 'test aaa group TEST ' ~ user ~ ' ' ~ password ~ ' new-code' }}"]
   vars:
     user: "dummy"
     password: "!dummy"

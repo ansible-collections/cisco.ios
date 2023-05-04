@@ -107,6 +107,7 @@ options:
 extends_documentation_fragment:
 - cisco.ios.ios
 """
+
 EXAMPLES = """
 - name: Create link aggregation group
   cisco.ios.ios_linkagg:
@@ -123,22 +124,24 @@ EXAMPLES = """
     group: 200
     mode: active
     members:
-    - GigabitEthernet0/0
-    - GigabitEthernet0/1
+      - GigabitEthernet0/0
+      - GigabitEthernet0/1
 
 - name: Remove link aggregation group from GigabitEthernet0/0
   cisco.ios.ios_linkagg:
     group: 200
     mode: active
     members:
-    - GigabitEthernet0/1
+      - GigabitEthernet0/1
 
 - name: Create aggregate of linkagg definitions
   cisco.ios.ios_linkagg:
     aggregate:
-    - {group: 3, mode: on, members: [GigabitEthernet0/1]}
-    - {group: 100, mode: passive, members: [GigabitEthernet0/2]}
+      - { group: 3, mode: on, members: [GigabitEthernet0/1] }
+      - { group: 100, mode: passive, members: [GigabitEthernet0/2] }
+
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

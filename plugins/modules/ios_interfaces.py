@@ -166,7 +166,6 @@ EXAMPLES = """
         duplex: full
     state: merged
 
-
 # Task Output
 # -----------
 #
@@ -338,10 +337,10 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet3
-      description: Configured and Replaced by Ansible Network
-      enabled: false
-      speed: 1000
+      - name: GigabitEthernet3
+        description: Configured and Replaced by Ansible Network
+        enabled: false
+        speed: 1000
     state: replaced
 
 # Task Output
@@ -452,15 +451,15 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - description: Management interface do not change
-      enabled: true
-      name: GigabitEthernet1
-    - name: GigabitEthernet2
-      description: Configured and Overridden by Ansible Network
-      speed: 10000
-    - name: GigabitEthernet3
-      description: Configured and Overridden by Ansible Network
-      enabled: false
+      - description: Management interface do not change
+        enabled: true
+        name: GigabitEthernet1
+      - name: GigabitEthernet2
+        description: Configured and Overridden by Ansible Network
+        speed: 10000
+      - name: GigabitEthernet3
+        description: Configured and Overridden by Ansible Network
+        enabled: false
     state: overridden
 
 # Task Output
@@ -590,7 +589,7 @@ EXAMPLES = """
 - name: "Delete interface attributes (Note: This won't delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet2
+      - name: GigabitEthernet2
     state: deleted
 
 # Task Output
@@ -712,8 +711,8 @@ EXAMPLES = """
 - name: "Purge given interfaces (Note: This will delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
-    - name: Loopback888
-    - name: Vlan50
+      - name: Loopback888
+      - name: Vlan50
     state: purged
 
 # Task Output
@@ -784,7 +783,6 @@ EXAMPLES = """
 #  shutdown
 #  negotiation auto
 
-
 # Using gathered
 
 # Before state:
@@ -843,17 +841,17 @@ EXAMPLES = """
 - name: Render the commands for provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet1
-      description: Configured by Ansible-Network
-      mtu: 110
-      enabled: true
-      duplex: half
-    - name: GigabitEthernet2
-      description: Configured by Ansible-Network
-      mtu: 2800
-      enabled: false
-      speed: 100
-      duplex: full
+      - name: GigabitEthernet1
+        description: Configured by Ansible-Network
+        mtu: 110
+        enabled: true
+        duplex: half
+      - name: GigabitEthernet2
+        description: Configured by Ansible-Network
+        mtu: 2800
+        enabled: false
+        speed: 100
+        duplex: full
     state: rendered
 
 # Task Output

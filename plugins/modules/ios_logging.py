@@ -137,6 +137,7 @@ options:
 extends_documentation_fragment:
 - cisco.ios.ios
 """
+
 EXAMPLES = """
 - name: Configure host logging
   cisco.ios.ios_logging:
@@ -169,16 +170,17 @@ EXAMPLES = """
 - name: Configure logging using aggregate
   cisco.ios.ios_logging:
     aggregate:
-    - {dest: console, level: notifications}
-    - {dest: buffered, size: 9000}
+      - { dest: console, level: notifications }
+      - { dest: buffered, size: 9000 }
 
 - name: Remove logging using aggregate
   cisco.ios.ios_logging:
     aggregate:
-    - {dest: console, level: notifications}
-    - {dest: buffered, size: 9000}
+      - { dest: console, level: notifications }
+      - { dest: buffered, size: 9000 }
     state: absent
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

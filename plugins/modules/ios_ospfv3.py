@@ -1309,7 +1309,6 @@ options:
 
 """
 EXAMPLES = """
-
 # Using deleted
 
 # Before state:
@@ -1336,7 +1335,7 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
+        - process_id: 1
     state: deleted
 
 # Commands Fired:
@@ -1408,48 +1407,48 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        address_family:
-          - afi: ipv4
-            unicast: true
-            vrf: blue
-            adjacency:
-              min_adjacency: 50
-              max_adjacency: 50
-            areas:
-              - area_id: 25
-                nssa:
-                  default_information_originate:
-                    metric: 25
-                    nssa_only: true
-        areas:
-          - area_id: "10"
-            nssa:
-              default_information_originate:
-                metric: 10
-        timers:
-          throttle:
-            lsa:
-              first_delay: 12
-              min_delay: 14
-              max_delay: 16
-      - process_id: 200
-        address_family:
-          - afi: ipv4
-            unicast: true
-            adjacency:
-              min_adjacency: 200
-              max_adjacency: 200
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          address_family:
+            - afi: ipv4
+              unicast: true
+              vrf: blue
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 25
+                  nssa:
+                    default_information_originate:
+                      metric: 25
+                      nssa_only: true
+          areas:
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
+          timers:
+            throttle:
+              lsa:
+                first_delay: 12
+                min_delay: 14
+                max_delay: 16
+        - process_id: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 200
+                max_adjacency: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
     state: merged
 
 # Commands Fired:
@@ -1775,48 +1774,48 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        address_family:
-          - afi: ipv4
-            unicast: true
-            vrf: blue
-            adjacency:
-              min_adjacency: 50
-              max_adjacency: 50
-            areas:
-              - area_id: 25
-                nssa:
-                  default_information_originate:
-                    metric: 25
-                    nssa_only: true
-        areas:
-          - area_id: "10"
-            nssa:
-              default_information_originate:
-                metric: 10
-        timers:
-          throttle:
-            lsa:
-              first_delay: 12
-              min_delay: 14
-              max_delay: 16
-      - process_id: 200
-        address_family:
-          - afi: ipv4
-            unicast: true
-            adjacency:
-              min_adjacency: 200
-              max_adjacency: 200
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          address_family:
+            - afi: ipv4
+              unicast: true
+              vrf: blue
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 25
+                  nssa:
+                    default_information_originate:
+                      metric: 25
+                      nssa_only: true
+          areas:
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
+          timers:
+            throttle:
+              lsa:
+                first_delay: 12
+                min_delay: 14
+                max_delay: 16
+        - process_id: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 200
+                max_adjacency: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
     state: rendered
 
 # Module Execution Result:

@@ -165,38 +165,38 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_static_routes:
     config:
-    - vrf: blue
-      address_families:
-      - afi: ipv4
-        routes:
-        - dest: 192.0.2.0/24
-          next_hops:
-          - forward_router_address: 192.0.2.1
-            name: merged_blue
-            tag: 50
-            track: 150
-    - address_families:
-      - afi: ipv4
-        routes:
-        - dest: 198.51.100.0/24
-          next_hops:
-          - forward_router_address: 198.51.101.1
-            name: merged_route_1
-            distance_metric: 110
-            tag: 40
-            multicast: true
-          - forward_router_address: 198.51.101.2
-            name: merged_route_2
-            distance_metric: 30
-          - forward_router_address: 198.51.101.3
-            name: merged_route_3
-      - afi: ipv6
-        routes:
-        - dest: 2001:DB8:0:3::/64
-          next_hops:
-          - forward_router_address: 2001:DB8:0:3::2
-            name: merged_v6
-            tag: 105
+      - vrf: blue
+        address_families:
+          - afi: ipv4
+            routes:
+              - dest: 192.0.2.0/24
+                next_hops:
+                  - forward_router_address: 192.0.2.1
+                    name: merged_blue
+                    tag: 50
+                    track: 150
+      - address_families:
+          - afi: ipv4
+            routes:
+              - dest: 198.51.100.0/24
+                next_hops:
+                  - forward_router_address: 198.51.101.1
+                    name: merged_route_1
+                    distance_metric: 110
+                    tag: 40
+                    multicast: true
+                  - forward_router_address: 198.51.101.2
+                    name: merged_route_2
+                    distance_metric: 30
+                  - forward_router_address: 198.51.101.3
+                    name: merged_route_3
+          - afi: ipv6
+            routes:
+              - dest: 2001:DB8:0:3::/64
+                next_hops:
+                  - forward_router_address: 2001:DB8:0:3::2
+                    name: merged_v6
+                    tag: 105
     state: merged
 
 # Task Output
@@ -269,16 +269,16 @@ EXAMPLES = """
 - name: Replace provided configuration with device configuration
   cisco.ios.ios_static_routes:
     config:
-    - address_families:
-      - afi: ipv4
-        routes:
-        - dest: 198.51.100.0/24
-          next_hops:
-          - forward_router_address: 198.51.101.1
-            name: replaced_route
-            distance_metric: 175
-            tag: 70
-            multicast: true
+      - address_families:
+          - afi: ipv4
+            routes:
+              - dest: 198.51.100.0/24
+                next_hops:
+                  - forward_router_address: 198.51.101.1
+                    name: replaced_route
+                    distance_metric: 175
+                    tag: 70
+                    multicast: true
     state: replaced
 
 # Task Output
@@ -371,16 +371,16 @@ EXAMPLES = """
 - name: Override provided configuration with device configuration
   cisco.ios.ios_static_routes:
     config:
-    - vrf: blue
-      address_families:
-      - afi: ipv4
-        routes:
-        - dest: 192.0.2.0/24
-          next_hops:
-          - forward_router_address: 192.0.2.1
-            name: override_vrf
-            tag: 50
-            track: 150
+      - vrf: blue
+        address_families:
+          - afi: ipv4
+            routes:
+              - dest: 192.0.2.0/24
+                next_hops:
+                  - forward_router_address: 192.0.2.1
+                    name: override_vrf
+                    tag: 50
+                    track: 150
     state: overridden
 
 # Task Output
@@ -450,38 +450,38 @@ EXAMPLES = """
 - name: Delete the exact static routes, with all the static routes explicitly mentioned in want
   cisco.ios.ios_static_routes:
     config:
-    - vrf: blue
-      address_families:
-      - afi: ipv4
-        routes:
-        - dest: 192.0.2.0/24
-          next_hops:
-          - forward_router_address: 192.0.2.1
-            name: test_vrf
-            tag: 50
-            track: 150
-    - address_families:
-      - afi: ipv4
-        routes:
-        - dest: 198.51.100.0/24
-          next_hops:
-          - forward_router_address: 198.51.101.1
-            name: route_1
-            distance_metric: 110
-            tag: 40
-            multicast: true
-          - forward_router_address: 198.51.101.2
-            name: route_2
-            distance_metric: 30
-          - forward_router_address: 198.51.101.3
-            name: route_3
-      - afi: ipv6
-        routes:
-        - dest: 2001:DB8:0:3::/64
-          next_hops:
-          - forward_router_address: 2001:DB8:0:3::2
-            name: test_v6
-            tag: 105
+      - vrf: blue
+        address_families:
+          - afi: ipv4
+            routes:
+              - dest: 192.0.2.0/24
+                next_hops:
+                  - forward_router_address: 192.0.2.1
+                    name: test_vrf
+                    tag: 50
+                    track: 150
+      - address_families:
+          - afi: ipv4
+            routes:
+              - dest: 198.51.100.0/24
+                next_hops:
+                  - forward_router_address: 198.51.101.1
+                    name: route_1
+                    distance_metric: 110
+                    tag: 40
+                    multicast: true
+                  - forward_router_address: 198.51.101.2
+                    name: route_2
+                    distance_metric: 30
+                  - forward_router_address: 198.51.101.3
+                    name: route_3
+          - afi: ipv6
+            routes:
+              - dest: 2001:DB8:0:3::/64
+                next_hops:
+                  - forward_router_address: 2001:DB8:0:3::2
+                    name: test_v6
+                    tag: 105
     state: deleted
 
 # Task Output
@@ -548,10 +548,10 @@ EXAMPLES = """
 - name: Delete destination specific static routes
   cisco.ios.ios_static_routes:
     config:
-    - address_families:
-      - afi: ipv4
-        routes:
-        - dest: 198.51.100.0/24
+      - address_families:
+          - afi: ipv4
+            routes:
+              - dest: 198.51.100.0/24
     state: deleted
 
 # Task Output
@@ -636,7 +636,7 @@ EXAMPLES = """
 - name: Delete vrf specific static routes
   cisco.ios.ios_static_routes:
     config:
-    - vrf: blue
+      - vrf: blue
     state: deleted
 
 # Task Output
@@ -834,38 +834,38 @@ EXAMPLES = """
 - name: Render the commands for provided configuration
   cisco.ios.ios_static_routes:
     config:
-    - vrf: blue
-      address_families:
-      - afi: ipv4
-        routes:
-        - dest: 192.0.2.0/24
-          next_hops:
-          - forward_router_address: 192.0.2.1
-            name: test_vrf
-            tag: 50
-            track: 150
-    - address_families:
-      - afi: ipv4
-        routes:
-        - dest: 198.51.100.0/24
-          next_hops:
-          - forward_router_address: 198.51.101.1
-            name: route_1
-            distance_metric: 110
-            tag: 40
-            multicast: true
-          - forward_router_address: 198.51.101.2
-            name: route_2
-            distance_metric: 30
-          - forward_router_address: 198.51.101.3
-            name: route_3
-      - afi: ipv6
-        routes:
-        - dest: 2001:DB8:0:3::/64
-          next_hops:
-          - forward_router_address: 2001:DB8:0:3::2
-            name: test_v6
-            tag: 105
+      - vrf: blue
+        address_families:
+          - afi: ipv4
+            routes:
+              - dest: 192.0.2.0/24
+                next_hops:
+                  - forward_router_address: 192.0.2.1
+                    name: test_vrf
+                    tag: 50
+                    track: 150
+      - address_families:
+          - afi: ipv4
+            routes:
+              - dest: 198.51.100.0/24
+                next_hops:
+                  - forward_router_address: 198.51.101.1
+                    name: route_1
+                    distance_metric: 110
+                    tag: 40
+                    multicast: true
+                  - forward_router_address: 198.51.101.2
+                    name: route_2
+                    distance_metric: 30
+                  - forward_router_address: 198.51.101.3
+                    name: route_3
+          - afi: ipv6
+            routes:
+              - dest: 2001:DB8:0:3::/64
+                next_hops:
+                  - forward_router_address: 2001:DB8:0:3::2
+                    name: test_v6
+                    tag: 105
     state: rendered
 
 # Task Output
@@ -930,6 +930,7 @@ EXAMPLES = """
 #         tag: 50
 #         track: 150
 #   vrf: blue
+
 """
 
 RETURN = """

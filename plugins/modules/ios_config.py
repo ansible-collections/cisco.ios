@@ -123,7 +123,7 @@ options:
       playbook root directory or role root directory, if playbook is part of an ansible
       role. If the directory does not exist, it is created.
     type: bool
-    default: no
+    default: false
   running_config:
     description:
     - The module, by default, will connect to the remote device and retrieve the current
@@ -143,7 +143,7 @@ options:
       the remote device running config.  When enabled, the module will get the current
       config by issuing the command C(show running-config all).
     type: bool
-    default: no
+    default: false
   save_when:
     description:
     - When changes are made to the device running-configuration, the changes are not
@@ -223,6 +223,7 @@ options:
         type: path
     type: dict
 """
+
 EXAMPLES = """
 - name: Configure top level configuration
   cisco.ios.ios_config:
@@ -231,39 +232,39 @@ EXAMPLES = """
 - name: Configure interface settings
   cisco.ios.ios_config:
     lines:
-    - description test interface
-    - ip address 172.31.1.1 255.255.255.0
+      - description test interface
+      - ip address 172.31.1.1 255.255.255.0
     parents: interface Ethernet1
 
 - name: Configure ip helpers on multiple interfaces
   cisco.ios.ios_config:
     lines:
-    - ip helper-address 172.26.1.10
-    - ip helper-address 172.26.3.8
-    parents: '{{ item }}'
+      - ip helper-address 172.26.1.10
+      - ip helper-address 172.26.3.8
+    parents: "{{ item }}"
   with_items:
-  - interface Ethernet1
-  - interface Ethernet2
-  - interface GigabitEthernet1
+    - interface Ethernet1
+    - interface Ethernet2
+    - interface GigabitEthernet1
 
 - name: Configure policer in Scavenger class
   cisco.ios.ios_config:
     lines:
-    - conform-action transmit
-    - exceed-action drop
+      - conform-action transmit
+      - exceed-action drop
     parents:
-    - policy-map Foo
-    - class Scavenger
-    - police cir 64000
+      - policy-map Foo
+      - class Scavenger
+      - police cir 64000
 
 - name: Load new acl into device
   cisco.ios.ios_config:
     lines:
-    - 10 permit ip host 192.0.2.1 any log
-    - 20 permit ip host 192.0.2.2 any log
-    - 30 permit ip host 192.0.2.3 any log
-    - 40 permit ip host 192.0.2.4 any log
-    - 50 permit ip host 192.0.2.5 any log
+      - 10 permit ip host 192.0.2.1 any log
+      - 20 permit ip host 192.0.2.2 any log
+      - 30 permit ip host 192.0.2.3 any log
+      - 40 permit ip host 192.0.2.4 any log
+      - 50 permit ip host 192.0.2.5 any log
     parents: ip access-list extended test
     before: no ip access-list extended test
     match: exact
@@ -277,7 +278,7 @@ EXAMPLES = """
   cisco.ios.ios_config:
     diff_against: startup
     diff_ignore_lines:
-    - ntp clock .*
+      - ntp clock .*
 
 - name: Save running to startup when modified
   cisco.ios.ios_config:
@@ -287,7 +288,7 @@ EXAMPLES = """
   cisco.ios.ios_config:
     lines:
       # - shut
-    - shutdown
+      - shutdown
     # parents: int gig1/0/11
     parents: interface GigabitEthernet1/0/11
 
@@ -296,20 +297,20 @@ EXAMPLES = """
 - name: Setting boot image
   cisco.ios.ios_config:
     lines:
-    - no boot system
-    - boot system flash bootflash:{{new_image}}
-    host: '{{ inventory_hostname }}'
+      - no boot system
+      - boot system flash bootflash:{{new_image}}
+    host: "{{ inventory_hostname }}"
   when: ansible_net_version != version
 
 - name: Render a Jinja2 template onto an IOS device
   cisco.ios.ios_config:
-    backup: yes
+    backup: true
     src: ios_template.j2
 
 - name: Configurable backup path
   cisco.ios.ios_config:
     src: ios_template.j2
-    backup: yes
+    backup: true
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
@@ -322,6 +323,7 @@ EXAMPLES = """
 #  permit ip host 192.0.2.4 any log
 
 """
+
 RETURN = """
 updates:
   description: The set of commands that will be pushed to the remote device

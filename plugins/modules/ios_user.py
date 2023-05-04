@@ -217,43 +217,44 @@ options:
 extends_documentation_fragment:
 - cisco.ios.ios
 """
+
 EXAMPLES = """
-- name: create a new user
+- name: Create a new user
   cisco.ios.ios_user:
     name: ansible
     nopassword: true
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
-- name: create a new user with multiple keys
+- name: Create a new user with multiple keys
   cisco.ios.ios_user:
     name: ansible
     sshkey:
-    - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    - "{{ lookup('file', '~/path/to/public_key') }}"
+      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      - "{{ lookup('file', '~/path/to/public_key') }}"
     state: present
 
-- name: remove all users except admin
+- name: Remove all users except admin
   cisco.ios.ios_user:
-    purge: yes
+    purge: true
 
-- name: remove all users except admin and these listed users
+- name: Remove all users except admin and these listed users
   cisco.ios.ios_user:
     aggregate:
-    - name: testuser1
-    - name: testuser2
-    - name: testuser3
-    purge: yes
+      - name: testuser1
+      - name: testuser2
+      - name: testuser3
+    purge: true
 
-- name: set multiple users to privilege level 15
+- name: Set multiple users to privilege level 15
   cisco.ios.ios_user:
     aggregate:
-    - name: netop
-    - name: netend
+      - name: netop
+      - name: netend
     privilege: 15
     state: present
 
-- name: set user view/role
+- name: Set user view/role
   cisco.ios.ios_user:
     name: netop
     view: network-operator
@@ -262,21 +263,21 @@ EXAMPLES = """
 - name: Change Password for User netop
   cisco.ios.ios_user:
     name: netop
-    configured_password: '{{ new_password }}'
+    configured_password: "{{ new_password }}"
     update_password: always
     state: present
 
 - name: Aggregate of users
   cisco.ios.ios_user:
     aggregate:
-    - name: ansibletest2
-    - name: ansibletest3
+      - name: ansibletest2
+      - name: ansibletest3
     view: network-admin
 
 - name: Add a user specifying password type
   cisco.ios.ios_user:
     name: ansibletest4
-    configured_password: '{{ new_password }}'
+    configured_password: "{{ new_password }}"
     password_type: password
 
 - name: Add a user with MD5 hashed password
@@ -289,11 +290,12 @@ EXAMPLES = """
 - name: Delete users with aggregate
   cisco.ios.ios_user:
     aggregate:
-    - name: ansibletest1
-    - name: ansibletest2
-    - name: ansibletest3
+      - name: ansibletest1
+      - name: ansibletest2
+      - name: ansibletest3
     state: absent
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

@@ -156,13 +156,13 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_lldp_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      receive: true
-      transmit: true
-    - name: GigabitEthernet0/2
-      receive: true
-    - name: GigabitEthernet0/3
-      transmit: true
+      - name: GigabitEthernet0/1
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/2
+        receive: true
+      - name: GigabitEthernet0/3
+        transmit: true
     state: merged
 
 # After state:
@@ -227,9 +227,9 @@ EXAMPLES = """
 - name: Override device configuration of all lldp_interfaces with provided configuration
   cisco.ios.ios_lldp_interfaces:
     config:
-    - name: GigabitEthernet0/2
-      receive: true
-      transmit: true
+      - name: GigabitEthernet0/2
+        receive: true
+        transmit: true
     state: overridden
 
 # After state:
@@ -294,11 +294,11 @@ EXAMPLES = """
 - name: Replaces device configuration of listed lldp_interfaces with provided configuration
   cisco.ios.ios_lldp_interfaces:
     config:
-    - name: GigabitEthernet0/2
-      receive: true
-      transmit: true
-    - name: GigabitEthernet0/3
-      receive: true
+      - name: GigabitEthernet0/2
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/3
+        receive: true
     state: replaced
 
 # After state:
@@ -363,7 +363,7 @@ EXAMPLES = """
 - name: "Delete LLDP attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lldp_interfaces:
     config:
-    - name: GigabitEthernet0/1
+      - name: GigabitEthernet0/1
     state: deleted
 
 # After state:
@@ -535,14 +535,14 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_lldp_interfaces:
     config:
-    - name: GigabitEthernet0/0
-      receive: true
-      transmit: true
-    - name: GigabitEthernet0/1
-      receive: true
-      transmit: true
-    - name: GigabitEthernet0/2
-      receive: true
+      - name: GigabitEthernet0/0
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/1
+        receive: true
+        transmit: true
+      - name: GigabitEthernet0/2
+        receive: true
     state: rendered
 
 # Module Execution Result:
@@ -607,8 +607,8 @@ EXAMPLES = """
 #             "transmit": false
 #         }
 #     ]
-
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.

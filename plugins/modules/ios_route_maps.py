@@ -1067,7 +1067,6 @@ options:
 """
 
 EXAMPLES = """
-
 # Using deleted
 
 # Before state:
@@ -2298,7 +2297,6 @@ EXAMPLES = """
 #             "route_map": "test_2"
 #         }
 #     ]
-
 """
 
 RETURN = """

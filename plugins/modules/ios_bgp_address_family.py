@@ -2526,7 +2526,7 @@ EXAMPLES = """
 #  address-family ipv6 multicast
 #  exit-address-family
 
-- name: 'Delete ALL of configured AF BGP'
+- name: "Delete ALL of configured AF BGP"
   cisco.ios.ios_bgp_address_family:
     state: deleted
 

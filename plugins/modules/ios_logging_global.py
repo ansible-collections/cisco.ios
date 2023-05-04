@@ -381,6 +381,7 @@ options:
     - Please refer to examples for more details.
     type: str
 """
+
 EXAMPLES = """
 # Using state: merged
 
@@ -457,7 +458,6 @@ EXAMPLES = """
 #       "logging snmp-trap errors",
 #       "logging host 172.16.1.11 xml"
 #     ],
-
 
 # After state:
 # ------------
@@ -832,7 +832,7 @@ EXAMPLES = """
       trap: errors
       userinfo: true
       policy_firewall:
-          rate_limit: 10
+        rate_limit: 10
       logging_on: enable
       exception: 10
       dmvpn:
@@ -1006,6 +1006,7 @@ EXAMPLES = """
 #     "userinfo": true
 # }
 """
+
 RETURN = """
 before:
   description: The configuration prior to the model invocation.

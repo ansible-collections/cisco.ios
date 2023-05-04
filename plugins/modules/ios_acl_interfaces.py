@@ -126,26 +126,26 @@ EXAMPLES = """
 - name: Merge module attributes of given access-groups
   cisco.ios.ios_acl_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-        acls:
-        - name: 110
-          direction: in
-        - name: 123
-          direction: out
-      - afi: ipv6
-        acls:
-        - name: test_v6
-          direction: out
-        - name: temp_v6
-          direction: in
-    - name: GigabitEthernet0/2
-      access_groups:
-      - afi: ipv4
-        acls:
-        - name: 100
-          direction: in
+      - name: GigabitEthernet0/1
+        access_groups:
+          - afi: ipv4
+            acls:
+              - name: 110
+                direction: in
+              - name: 123
+                direction: out
+          - afi: ipv6
+            acls:
+              - name: test_v6
+                direction: out
+              - name: temp_v6
+                direction: in
+      - name: GigabitEthernet0/2
+        access_groups:
+          - afi: ipv4
+            acls:
+              - name: 100
+                direction: in
     state: merged
 
 # Commands Fired:
@@ -158,7 +158,6 @@ EXAMPLES = """
 #  ipv6 traffic-filter temp_v6 in
 # interface GigabitEthernet0/2
 #  ip access-group 100 in
-
 
 # After state:
 # -------------
@@ -195,14 +194,14 @@ EXAMPLES = """
 - name: Replace module attributes of given access-groups
   cisco.ios.ios_acl_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-        acls:
-        - name: 100
-          direction: out
-        - name: 110
-          direction: in
+      - name: GigabitEthernet0/1
+        access_groups:
+          - afi: ipv4
+            acls:
+              - name: 100
+                direction: out
+              - name: 110
+                direction: in
     state: replaced
 
 # Commands Fired:
@@ -247,14 +246,14 @@ EXAMPLES = """
 - name: Overridden module attributes of given access-groups
   cisco.ios.ios_acl_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-        acls:
-        - name: 100
-          direction: out
-        - name: 110
-          direction: in
+      - name: GigabitEthernet0/1
+        access_groups:
+          - afi: ipv4
+            acls:
+              - name: 100
+                direction: out
+              - name: 110
+                direction: in
     state: overridden
 
 # Commands Fired:
@@ -300,7 +299,7 @@ EXAMPLES = """
 - name: Delete module attributes of given Interface
   cisco.ios.ios_acl_interfaces:
     config:
-    - name: GigabitEthernet0/1
+      - name: GigabitEthernet0/1
     state: deleted
 
 # Commands Fired:
@@ -470,20 +469,20 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_acl_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      access_groups:
-      - afi: ipv4
-        acls:
-        - name: 110
-          direction: in
-        - name: 123
-          direction: out
-      - afi: ipv6
-        acls:
-        - name: test_v6
-          direction: out
-        - name: temp_v6
-          direction: in
+      - name: GigabitEthernet0/1
+        access_groups:
+          - afi: ipv4
+            acls:
+              - name: 110
+                direction: in
+              - name: 123
+                direction: out
+          - afi: ipv6
+            acls:
+              - name: test_v6
+                direction: out
+              - name: temp_v6
+                direction: in
     state: rendered
 
 # Module Execution Result:

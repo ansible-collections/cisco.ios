@@ -131,6 +131,7 @@ options:
     - parsed
     default: merged
 """
+
 EXAMPLES = """
 # Using merged
 
@@ -157,20 +158,20 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_vlans:
     config:
-    - name: Vlan_10
-      vlan_id: 10
-      state: active
-      shutdown: disabled
-      remote_span: true
-    - name: Vlan_20
-      vlan_id: 20
-      mtu: 610
-      state: active
-      shutdown: enabled
-    - name: Vlan_30
-      vlan_id: 30
-      state: suspend
-      shutdown: enabled
+      - name: Vlan_10
+        vlan_id: 10
+        state: active
+        shutdown: disabled
+        remote_span: true
+      - name: Vlan_20
+        vlan_id: 20
+        mtu: 610
+        state: active
+        shutdown: enabled
+      - name: Vlan_30
+        vlan_id: 30
+        state: suspend
+        shutdown: enabled
     state: merged
 
 # After state:
@@ -238,9 +239,9 @@ EXAMPLES = """
 - name: Override device configuration of all VLANs with provided configuration
   cisco.ios.ios_vlans:
     config:
-    - name: Vlan_10
-      vlan_id: 10
-      mtu: 1000
+      - name: Vlan_10
+        vlan_id: 10
+        mtu: 1000
     state: overridden
 
 # After state:
@@ -300,25 +301,25 @@ EXAMPLES = """
 - name: Replaces device configuration of listed VLANs with provided configuration
   cisco.ios.ios_vlans:
     config:
-    - vlan_id: 20
-      name: Test_VLAN20
-      mtu: 700
-      shutdown: disabled
-    - vlan_id: 50
-      name: pvlan-isolated
-      private_vlan:
-        type: isolated
-    - vlan_id: 60
-      name: pvlan-community
-      private_vlan:
-        type: community
-    - vlan_id: 70
-      name: pvlan-primary
-      private_vlan:
-        type: primary
-        associated:
-          - 50
-          - 60
+      - vlan_id: 20
+        name: Test_VLAN20
+        mtu: 700
+        shutdown: disabled
+      - vlan_id: 50
+        name: pvlan-isolated
+        private_vlan:
+          type: isolated
+      - vlan_id: 60
+        name: pvlan-community
+        private_vlan:
+          type: community
+      - vlan_id: 70
+        name: pvlan-primary
+        private_vlan:
+          type: primary
+          associated:
+            - 50
+            - 60
 
     state: replaced
 
@@ -399,8 +400,8 @@ EXAMPLES = """
 - name: Delete attributes of given VLANs
   cisco.ios.ios_vlans:
     config:
-    - vlan_id: 10
-    - vlan_id: 20
+      - vlan_id: 10
+      - vlan_id: 20
     state: deleted
 
 # After state:
@@ -616,20 +617,20 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_vlans:
     config:
-    - name: Vlan_10
-      vlan_id: 10
-      state: active
-      shutdown: disabled
-      remote_span: true
-    - name: Vlan_20
-      vlan_id: 20
-      mtu: 610
-      state: active
-      shutdown: enabled
-    - name: Vlan_30
-      vlan_id: 30
-      state: suspend
-      shutdown: enabled
+      - name: Vlan_10
+        vlan_id: 10
+        state: active
+        shutdown: disabled
+        remote_span: true
+      - name: Vlan_20
+        vlan_id: 20
+        mtu: 610
+        state: active
+        shutdown: enabled
+      - name: Vlan_30
+        vlan_id: 30
+        state: suspend
+        shutdown: enabled
     state: rendered
 
 # Module Execution Result:
@@ -745,8 +746,8 @@ EXAMPLES = """
 #             "vlan_id": 1005
 #         }
 #     ]
-
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.

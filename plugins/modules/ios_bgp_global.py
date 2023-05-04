@@ -1859,7 +1859,6 @@ options:
     type: str
 """
 
-
 EXAMPLES = """
 # Using merged
 
@@ -2036,7 +2035,7 @@ EXAMPLES = """
         - address: 192.0.2.4
       neighbor:
         - address: 192.0.2.5
-          description:  replace neighbor
+          description: replace neighbor
           remote_as: 100
           slow_peer:
             detection:
@@ -2300,8 +2299,9 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-- name: 'Delete the configured global BGP (Note: This WILL delete the the configured
-    global BGP)'
+- name:
+    "Delete the configured global BGP (Note: This WILL delete the the configured
+    global BGP)"
   cisco.ios.ios_bgp_global:
     state: purged
 
@@ -2429,17 +2429,17 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       aggregate_addresses:
-      - address: 192.0.2.1
-        attribute_map: testMap1
-        netmask: 255.255.255.0
-        summary_only: true
-      - address: 192.0.2.2
-        as_set: true
-        netmask: 255.255.255.0
-      - address: 192.0.2.3
-        as_set: true
-        netmask: 255.255.255.0
-      as_number: '65000'
+        - address: 192.0.2.1
+          attribute_map: testMap1
+          netmask: 255.255.255.0
+          summary_only: true
+        - address: 192.0.2.2
+          as_set: true
+          netmask: 255.255.255.0
+        - address: 192.0.2.3
+          as_set: true
+          netmask: 255.255.255.0
+      as_number: "65000"
       auto_summary: true
       bgp:
         additional_paths:
@@ -2455,7 +2455,7 @@ EXAMPLES = """
             confed: true
             missing_as_worst: true
         confederation:
-          identifier: '22'
+          identifier: "22"
         consistency_checker:
           error_message:
             interval: 10
@@ -2467,17 +2467,17 @@ EXAMPLES = """
           restart_time: 2
           stalepath_time: 22
         graceful_shutdown:
-          community: '77'
+          community: "77"
           local_preference: 230
           vrfs:
             time: 31
         inject_maps:
-        - copy_attributes: true
-          exist_map_name: Testmap3
-          name: map2
-        - copy_attributes: true
-          exist_map_name: Testmap2
-          name: map1
+          - copy_attributes: true
+            exist_map_name: Testmap3
+            name: map2
+          - copy_attributes: true
+            exist_map_name: Testmap2
+            name: map1
         listen:
           limit: 200
           range:
@@ -2527,13 +2527,13 @@ EXAMPLES = """
           routes_internal: 3
           routes_local: 5
       distributes:
-      - in: true
-        prefix: prefixTest
-      - gateway: gatewayTest
-        out: true
-      - acl: '300'
-        interface: Loopback0
-        out: true
+        - in: true
+          prefix: prefixTest
+        - gateway: gatewayTest
+          out: true
+        - acl: "300"
+          interface: Loopback0
+          out: true
       maximum_paths:
         ibgp: 2
         paths: 2
@@ -2541,72 +2541,72 @@ EXAMPLES = """
         ibgp: 22
         paths: 22
       neighbors:
-      - neighbor_address: 192.0.2.10
-        remote_as: '64500'
-        update_source: Loopback1
-      - activate: true
-        neighbor_address: 192.0.2.11
-        remote_as: '45000'
-        send_community:
-          extended: true
-      - activate: true
-        neighbor_address: 192.0.2.12
-        remote_as: '45000'
-      - neighbor_address: 192.0.2.13
-        remote_as: '6553601'
-      - advertise:
-          diverse_path:
-            backup: true
-        neighbor_address: 192.0.2.8
-        route_reflector_client: true
-      - neighbor_address: 192.0.2.9
-        remote_as: '64500'
-        route_maps:
-        - in: true
-          name: rmp1
-        - in: true
-          name: rmp2
-        update_source: Loopback0
-      - activate: true
-        advertise:
-          additional_paths:
-            group_best: true
-        neighbor_address: 2001:DB8::1037
-      - neighbor_address: testNebTag
-        peer_group: '5'
-        soft_reconfiguration: true
-        version: 4
+        - neighbor_address: 192.0.2.10
+          remote_as: "64500"
+          update_source: Loopback1
+        - activate: true
+          neighbor_address: 192.0.2.11
+          remote_as: "45000"
+          send_community:
+            extended: true
+        - activate: true
+          neighbor_address: 192.0.2.12
+          remote_as: "45000"
+        - neighbor_address: 192.0.2.13
+          remote_as: "6553601"
+        - advertise:
+            diverse_path:
+              backup: true
+          neighbor_address: 192.0.2.8
+          route_reflector_client: true
+        - neighbor_address: 192.0.2.9
+          remote_as: "64500"
+          route_maps:
+            - in: true
+              name: rmp1
+            - in: true
+              name: rmp2
+          update_source: Loopback0
+        - activate: true
+          advertise:
+            additional_paths:
+              group_best: true
+          neighbor_address: 2001:DB8::1037
+        - neighbor_address: testNebTag
+          peer_group: "5"
+          soft_reconfiguration: true
+          version: 4
       networks:
-      - address: 192.0.2.15
-        backdoor: true
-        netmask: 55.255.255.0
-        route_map: mp1
-      - address: 192.0.2.16
-        backdoor: true
-        netmask: 255.255.255.0
-        route_map: mp2
-      - address: 192.0.2.17
-        backdoor: true
-        netmask: 255.255.255.0
-        route_map: mp2
-      redistribute:
-      - static:
-          metric: 33
-          route_map: rmp1
-          set: true
-      - application:
-          metric: 22
-          name: app1
-      - application:
-          metric: 33
-          name: app2
+        - address: 192.0.2.15
+          backdoor: true
+          netmask: 55.255.255.0
           route_map: mp1
-      - connected:
-          metric: 22
-          set: true
-      - mobile:
-          metric: 211
-          set: true
+        - address: 192.0.2.16
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+        - address: 192.0.2.17
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+      redistribute:
+        - static:
+            metric: 33
+            route_map: rmp1
+            set: true
+        - application:
+            metric: 22
+            name: app1
+        - application:
+            metric: 33
+            name: app2
+            route_map: mp1
+        - connected:
+            metric: 22
+            set: true
+        - mobile:
+            metric: 211
+            set: true
     state: rendered
 
 # Task Output:

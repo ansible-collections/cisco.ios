@@ -98,7 +98,6 @@ EXAMPLES = """
 #         "hostname Router1",
 # ],
 
-
 # After state:
 # ------------
 
@@ -150,7 +149,6 @@ EXAMPLES = """
       hostname: RouterTest
     state: overridden
 
-
 # Commands Fired:
 # ---------------
 # "commands": [
@@ -162,7 +160,6 @@ EXAMPLES = """
 
 # router-ios#show running-config | section ^hostname
 # hostname RouterTest
-
 
 # Using state: replaced
 
@@ -238,7 +235,6 @@ EXAMPLES = """
 # ----------------
 
 # hostname RouterTest
-
 
 # Parsed play:
 # ------------

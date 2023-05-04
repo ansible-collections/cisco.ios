@@ -157,7 +157,6 @@ EXAMPLES = """
 # vios#sh running-config | section ^lldp
 # vios1#
 
-
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_lldp_global:
     config:
@@ -175,7 +174,6 @@ EXAMPLES = """
 #  lldp reinit 3
 #  lldp run
 
-
 # Using replaced
 
 # Before state:
@@ -185,7 +183,6 @@ EXAMPLES = """
 #  lldp holdtime 10
 #  lldp reinit 3
 #  lldp run
-
 
 - name: Replaces LLDP device configuration with provided configuration
   cisco.ios.ios_lldp_global:
@@ -200,7 +197,6 @@ EXAMPLES = """
 #  lldp holdtime 20
 #  lldp reinit 5
 
-
 # Using Deleted without any config passed
 #"(NOTE: This will delete all of configured LLDP module attributes)"
 
@@ -211,7 +207,6 @@ EXAMPLES = """
 #  lldp holdtime 10
 #  lldp reinit 3
 #  lldp run
-
 
 - name: Delete LLDP attributes
   cisco.ios.ios_lldp_global:

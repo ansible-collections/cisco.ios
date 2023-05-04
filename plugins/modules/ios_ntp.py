@@ -80,24 +80,31 @@ options:
 """
 EXAMPLES = """
 # Set new NTP server and source interface
-- cisco.ios.ios_ntp:
+- name: Example ntp play
+  cisco.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     logging: false
     state: present
+
 # Remove NTP ACL and logging
-- cisco.ios.ios_ntp:
+- name: Example ntp play absent
+  cisco.ios.ios_ntp:
     acl: NTP_ACL
     logging: true
     state: absent
+
 # Set NTP authentication
-- cisco.ios.ios_ntp:
+- name: Example ntp play auth
+  cisco.ios.ios_ntp:
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
+
 # Set new NTP configuration
-- cisco.ios.ios_ntp:
+- name: Example ntp play auth
+  cisco.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     acl: NTP_ACL
@@ -107,6 +114,7 @@ EXAMPLES = """
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
+
 """
 RETURN = """
 commands:

@@ -400,8 +400,8 @@ options:
     default: merged
 
 """
-EXAMPLES = """
 
+EXAMPLES = """
 # Using deleted
 
 # Before state:
@@ -1040,8 +1040,8 @@ EXAMPLES = """
 #             "name": "GigabitEthernet0/0"
 #         }
 #     ]
-
 """
+
 RETURN = """
 before:
   description: The configuration prior to the model invocation.

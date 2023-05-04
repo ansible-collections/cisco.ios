@@ -50,6 +50,7 @@ options:
 extends_documentation_fragment:
 - cisco.ios.ios
 """
+
 EXAMPLES = """
 - name: Enable LLDP service
   cisco.ios.ios_lldp:
@@ -59,6 +60,7 @@ EXAMPLES = """
   cisco.ios.ios_lldp:
     state: absent
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

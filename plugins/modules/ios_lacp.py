@@ -213,7 +213,6 @@ EXAMPLES = """
 #             "priority": 123
 #         }
 #     }
-
 """
 
 RETURN = """
