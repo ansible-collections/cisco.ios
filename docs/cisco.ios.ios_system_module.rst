@@ -169,29 +169,29 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure hostname and domain name
+    - name: Configure hostname and domain name
       cisco.ios.ios_system:
         hostname: ios01
         domain_name: test.example.com
         domain_search:
-        - ansible.com
-        - redhat.com
-        - cisco.com
+          - ansible.com
+          - redhat.com
+          - cisco.com
 
-    - name: remove configuration
+    - name: Remove configuration
       cisco.ios.ios_system:
         state: absent
 
-    - name: configure DNS lookup sources
+    - name: Configure DNS lookup sources
       cisco.ios.ios_system:
         lookup_source: MgmtEth0/0/CPU0/0
-        lookup_enabled: yes
+        lookup_enabled: true
 
-    - name: configure name servers
+    - name: Configure name servers
       cisco.ios.ios_system:
         name_servers:
-        - 8.8.8.8
-        - 8.8.4.4
+          - 8.8.8.8
+          - 8.8.4.4
 
 
 

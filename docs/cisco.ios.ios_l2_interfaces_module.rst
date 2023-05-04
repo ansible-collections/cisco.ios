@@ -393,19 +393,19 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_l2_interfaces:
         config:
-        - name: GigabitEthernet0/1
-          mode: access
-          access:
-            vlan: 10
-          voice:
-            vlan: 40
-        - name: GigabitEthernet0/2
-          mode: trunk
-          trunk:
-            allowed_vlans: 10-20,40
-            native_vlan: 20
-            pruning_vlans: 10,20
-            encapsulation: dot1q
+          - name: GigabitEthernet0/1
+            mode: access
+            access:
+              vlan: 10
+            voice:
+              vlan: 40
+          - name: GigabitEthernet0/2
+            mode: trunk
+            trunk:
+              allowed_vlans: 10-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
         state: merged
 
     # Task Output
@@ -485,12 +485,12 @@ Examples
     - name: Replaces device configuration with provided configuration
       cisco.ios.ios_l2_interfaces:
         config:
-        - name: GigabitEthernet0/2
-          trunk:
-            allowed_vlans: 20-25,40
-            native_vlan: 20
-            pruning_vlans: 10
-            encapsulation: isl
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 20-25,40
+              native_vlan: 20
+              pruning_vlans: 10
+              encapsulation: isl
         state: replaced
 
     # Task Output
@@ -561,11 +561,11 @@ Examples
     - name: Override device configuration of all l2 interfaces with provided configuration
       cisco.ios.ios_l2_interfaces:
         config:
-        - name: GigabitEthernet0/2
-          access:
-            vlan: 20
-          voice:
-            vlan: 40
+          - name: GigabitEthernet0/2
+            access:
+              vlan: 20
+            voice:
+              vlan: 40
         state: overridden
 
     # Task Output
@@ -635,7 +635,7 @@ Examples
     - name: Delete IOS L2 interfaces as in given arguments
       cisco.ios.ios_l2_interfaces:
         config:
-        - name: GigabitEthernet0/1
+          - name: GigabitEthernet0/1
         state: deleted
 
     # Task Output
@@ -691,7 +691,6 @@ Examples
     #  switchport trunk pruning vlan 10
     #  media-type rj45
     #  negotiation auto
-
 
     # Using deleted without config - delete all configuration
 
@@ -811,15 +810,15 @@ Examples
     - name: Render the commands for provided  configuration
       cisco.ios.ios_l2_interfaces:
         config:
-        - name: GigabitEthernet0/1
-          access:
-            vlan: 30
-        - name: GigabitEthernet0/2
-          trunk:
-            allowed_vlans: 10-20,40
-            native_vlan: 20
-            pruning_vlans: 10,20
-            encapsulation: dot1q
+          - name: GigabitEthernet0/1
+            access:
+              vlan: 30
+          - name: GigabitEthernet0/2
+            trunk:
+              allowed_vlans: 10-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
         state: rendered
 
     # Task Output
