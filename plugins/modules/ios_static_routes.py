@@ -440,13 +440,12 @@ EXAMPLES = """
 
 # Before state:
 # -------------
-#
 # vios#show running-config | include ip route|ipv6 route
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Delete the exact static routes, with all the static routes explicitly mentioned in want
   cisco.ios.ios_static_routes:
@@ -540,11 +539,11 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | include ip route|ipv6 route
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Delete destination specific static routes
   cisco.ios.ios_static_routes:
@@ -628,11 +627,11 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | include ip route|ipv6 route
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Delete vrf specific static routes
   cisco.ios.ios_static_routes:
@@ -717,11 +716,11 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | include ip route|ipv6 route
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Delete ALL configured static routes
   cisco.ios.ios_static_routes:
@@ -782,11 +781,11 @@ EXAMPLES = """
 # -------------
 #
 # vios#show running-config | include ip route|ipv6 route
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Gather facts of static routes
   cisco.ios.ios_static_routes:
@@ -884,11 +883,11 @@ EXAMPLES = """
 # File: parsed.cfg
 # ----------------
 #
-# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 name test_vrf track 150 tag 50
-# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 multicast name route_1 tag 40
-# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route vrf blue 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150
 # ip route 198.51.100.0 255.255.255.0 198.51.101.3 name route_3
-# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 name test_v6 tag 105
+# ip route 198.51.100.0 255.255.255.0 198.51.101.2 30 name route_2
+# ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast
+# ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 105 name test_v6
 
 - name: Parse the provided configuration
   cisco.ios.ios_static_routes:

@@ -48,7 +48,7 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = ["description", "speed", "mtu", "duplex"]
+        self.parsers = ["description", "speed", "mtu", "duplex", "template"]
 
     def execute_module(self):
         """Execute the module
