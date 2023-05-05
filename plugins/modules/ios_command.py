@@ -19,20 +19,21 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_command
 author: Peter Sprygada (@privateip)
 short_description: Module to run commands on remote devices.
 description:
-- Sends arbitrary commands to an ios node and returns the results read from the device.
-  This module includes an argument that will cause the module to wait for a specific
-  condition before returning or timing out if the condition is not met.
-- This module does not support running commands in configuration mode. Please use
-  L(ios_config,https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module)
-  to configure IOS devices.
+  - Sends arbitrary commands to an ios node and returns the results read from the device.
+    This module includes an argument that will cause the module to wait for a specific
+    condition before returning or timing out if the condition is not met.
+  - This module does not support running commands in configuration mode. Please use
+    L(ios_config,https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html#ansible-collections-cisco-ios-ios-config-module)
+    to configure IOS devices.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -40,48 +41,48 @@ notes:
 options:
   commands:
     description:
-    - List of commands to send to the remote ios device over the configured provider.
-      The resulting output from the command is returned. If the I(wait_for) argument
-      is provided, the module is not returned until the condition is satisfied or
-      the number of retries has expired. If a command sent to the device requires
-      answering a prompt, it is possible to pass a dict containing I(command), I(answer)
-      and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
-      quotes). See examples.
+      - List of commands to send to the remote ios device over the configured provider.
+        The resulting output from the command is returned. If the I(wait_for) argument
+        is provided, the module is not returned until the condition is satisfied or
+        the number of retries has expired. If a command sent to the device requires
+        answering a prompt, it is possible to pass a dict containing I(command), I(answer)
+        and I(prompt). Common answers are 'y' or "\\r" (carriage return, must be double
+        quotes). See examples.
     required: true
     type: list
     elements: raw
   wait_for:
     description:
-    - List of conditions to evaluate against the output of the command. The task will
-      wait for each condition to be true before moving forward. If the conditional
-      is not true within the configured number of retries, the task fails. See examples.
+      - List of conditions to evaluate against the output of the command. The task will
+        wait for each condition to be true before moving forward. If the conditional
+        is not true within the configured number of retries, the task fails. See examples.
     aliases:
-    - waitfor
+      - waitfor
     type: list
     elements: str
   match:
     description:
-    - The I(match) argument is used in conjunction with the I(wait_for) argument to
-      specify the match policy.  Valid values are C(all) or C(any).  If the value
-      is set to C(all) then all conditionals in the wait_for must be satisfied.  If
-      the value is set to C(any) then only one of the values must be satisfied.
+      - The I(match) argument is used in conjunction with the I(wait_for) argument to
+        specify the match policy.  Valid values are C(all) or C(any).  If the value
+        is set to C(all) then all conditionals in the wait_for must be satisfied.  If
+        the value is set to C(any) then only one of the values must be satisfied.
     default: all
     type: str
     choices:
-    - any
-    - all
+      - any
+      - all
   retries:
     description:
-    - Specifies the number of retries a command should by tried before it is considered
-      failed. The command is run on the target device every retry and evaluated against
-      the I(wait_for) conditions.
+      - Specifies the number of retries a command should by tried before it is considered
+        failed. The command is run on the target device every retry and evaluated against
+        the I(wait_for) conditions.
     default: 9
     type: int
   interval:
     description:
-    - Configures the interval in seconds to wait between retries of the command. If
-      the command does not pass the specified conditions, the interval indicates how
-      long to wait before trying the command again.
+      - Configures the interval in seconds to wait between retries of the command. If
+        the command does not pass the specified conditions, the interval indicates how
+        long to wait before trying the command again.
     default: 1
     type: int
 """

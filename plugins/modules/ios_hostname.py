@@ -17,13 +17,13 @@ DOCUMENTATION = """
 module: ios_hostname
 short_description: Resource module to configure hostname.
 description:
-- This module provides declarative management of hostname on Cisco IOS devices.
+  - This module provides declarative management of hostname on Cisco IOS devices.
 version_added: 2.7.0
 author:
-- Sagar Paul (@KB-perByte)
+  - Sagar Paul (@KB-perByte)
 notes:
-- Tested against Cisco IOSXE Version 17.3 on CML.
-- This module works with connection C(network_cli).
+  - Tested against Cisco IOSXE Version 17.3 on CML.
+  - This module works with connection C(network_cli).
 options:
   config:
     description: A dictionary of hostname options
@@ -43,13 +43,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in

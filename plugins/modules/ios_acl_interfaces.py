@@ -16,12 +16,13 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_acl_interfaces
 short_description: Resource module to configure ACL interfaces.
-description: This module configures and manages the access-control (ACL) attributes
+description:
+  This module configures and manages the access-control (ACL) attributes
   of interfaces on IOS platforms.
 version_added: 1.0.0
 author:
- - Sumit Jaiswal (@justjais)
- - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -33,7 +34,8 @@ options:
     elements: dict
     suboptions:
       name:
-        description: Full name of the interface excluding any logical unit number,
+        description:
+          Full name of the interface excluding any logical unit number,
           i.e. GigabitEthernet0/1.
         type: str
         required: true
@@ -47,8 +49,8 @@ options:
             type: str
             required: true
             choices:
-            - ipv4
-            - ipv6
+              - ipv4
+              - ipv6
           acls:
             description: Specifies the ACLs for the provided AFI.
             type: list
@@ -60,15 +62,15 @@ options:
                 required: true
               direction:
                 description:
-                - Specifies the direction of packets that the ACL will be applied
-                  on.
-                - With one direction already assigned, other acl direction cannot
-                  be same.
+                  - Specifies the direction of packets that the ACL will be applied
+                    on.
+                  - With one direction already assigned, other acl direction cannot
+                    be same.
                 type: str
                 required: true
                 choices:
-                - in
-                - out
+                  - in
+                  - out
   running_config:
     description:
       - The module, by default, will connect to the remote device and retrieve the current
@@ -100,13 +102,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - parsed
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - parsed
+      - rendered
     default: merged
 """
 

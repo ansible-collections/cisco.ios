@@ -601,7 +601,7 @@ options:
         the IOS device by executing the command B(sh access-list).
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
-          and the value is then returned in the I(parsed) key within the result.
+        and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -642,9 +642,6 @@ options:
       - The state I(replaced), modify/add only the ACEs of the ACLs defined only.
         It does not perform any other change on the device.
       - The state I(deleted), deletes only the specified ACLs, or all if not specified.
-
-
-
     type: str
 short_description: Resource module to configure ACLs.
 version_added: 1.0.0

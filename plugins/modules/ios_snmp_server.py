@@ -173,9 +173,9 @@ options:
             elements: str
           version:
             choices:
-              - '1'
+              - "1"
               - 2c
-              - '3'
+              - "3"
             description: Notification message SNMP version.
             type: str
           version_option:

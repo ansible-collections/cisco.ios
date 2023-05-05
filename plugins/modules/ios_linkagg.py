@@ -19,6 +19,7 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = r"""
 module: ios_linkagg
 author: Trishna Guha (@trishnaguha)
@@ -26,10 +27,10 @@ short_description: Module to configure link aggregation groups.
 deprecated:
   alternative: ios_lag_interfaces
   why: Updated modules released with more functionality.
-  removed_at_date: '2024-06-01'
+  removed_at_date: "2024-06-01"
 description:
-- This module provides declarative management of link aggregation groups on Cisco
-  IOS network devices.
+  - This module provides declarative management of link aggregation groups on Cisco
+    IOS network devices.
 version_added: 1.0.0
 notes:
   - Tested against IOS 15.2
@@ -38,23 +39,23 @@ notes:
 options:
   group:
     description:
-    - Channel-group number for the port-channel Link aggregation group. Range 1-255.
+      - Channel-group number for the port-channel Link aggregation group. Range 1-255.
     type: int
   mode:
     description:
-    - Mode of the link aggregation group.
-    - On mode has to be quoted as 'on' or else pyyaml will convert
-      to True before it gets to Ansible.
+      - Mode of the link aggregation group.
+      - On mode has to be quoted as 'on' or else pyyaml will convert
+        to True before it gets to Ansible.
     choices:
-    - active
-    - 'on'
-    - passive
-    - auto
-    - desirable
+      - active
+      - "on"
+      - passive
+      - auto
+      - desirable
     type: str
   members:
     description:
-    - List of members of the link aggregation group.
+      - List of members of the link aggregation group.
     type: list
     elements: str
   aggregate:
@@ -64,48 +65,48 @@ options:
     suboptions:
       group:
         description:
-        - Channel-group number for the port-channel Link aggregation group. Range 1-255.
+          - Channel-group number for the port-channel Link aggregation group. Range 1-255.
         type: str
         required: true
       mode:
         description:
-        - Mode of the link aggregation group.
-        - On mode has to be quoted as 'on' or else pyyaml will convert
-          to True before it gets to Ansible.
+          - Mode of the link aggregation group.
+          - On mode has to be quoted as 'on' or else pyyaml will convert
+            to True before it gets to Ansible.
         choices:
-        - active
-        - 'on'
-        - passive
-        - auto
-        - desirable
+          - active
+          - "on"
+          - passive
+          - auto
+          - desirable
         type: str
       members:
         description:
-        - List of members of the link aggregation group.
+          - List of members of the link aggregation group.
         type: list
         elements: str
       state:
         description:
-        - State of the link aggregation group.
+          - State of the link aggregation group.
         choices:
-        - present
-        - absent
+          - present
+          - absent
         type: str
   state:
     description:
-    - State of the link aggregation group.
+      - State of the link aggregation group.
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
   purge:
     description:
-    - Purge links not defined in the I(aggregate) parameter.
+      - Purge links not defined in the I(aggregate) parameter.
     default: false
     type: bool
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 """
 
 EXAMPLES = """

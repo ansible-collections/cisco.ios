@@ -36,7 +36,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ospfv2
 short_description: Resource module to configure OSPFv2.
-description: This module configures and manages the Open Shortest Path First (OSPF)
+description:
+  This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -149,7 +150,7 @@ options:
                   direction:
                     description: The direction to apply on the filter networks sent to and from this area.
                     type: str
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                     required: true
               nssa:
                 description: Specify a NSSA area
@@ -189,7 +190,7 @@ options:
                       - Always translate LSAs on this ABR
                       - Suppress forwarding address in translated LSAs
                     type: str
-                    choices: ['always', 'suppress-fa']
+                    choices: ["always", "suppress-fa"]
               ranges:
                 description: Summarize routes matching address/mask (border routers only)
                 type: list
@@ -391,7 +392,7 @@ options:
                     description: Filter incoming and outgoing routing updates.
                     type: str
                     required: true
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                   interface:
                     description:
                       - Interface configuration (GigabitEthernet A/B)
@@ -417,7 +418,7 @@ options:
                     description: Filter incoming and outgoing routing updates.
                     type: str
                     required: true
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                   interface:
                     description:
                       - Interface configuration (GigabitEthernet A/B)
@@ -450,7 +451,7 @@ options:
                   secondary:
                     description: Secondary Domain-ID
                     type: bool
-              'null':
+              "null":
                 description: Null Domain-ID
                 type: bool
           domain_tag:
@@ -952,16 +953,16 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - parsed
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - parsed
+      - rendered
     default: merged
-
 """
+
 EXAMPLES = """
 # Using deleted
 

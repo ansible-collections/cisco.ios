@@ -35,25 +35,25 @@ options:
     suboptions:
       vrf:
         description:
-        - IP VPN Routing/Forwarding instance name.
-        - NOTE, In case of IPV4/IPV6 VRF routing table should pre-exist before configuring.
-        - NOTE, if the vrf information is not provided then the routes shall be configured
-          under global vrf.
+          - IP VPN Routing/Forwarding instance name.
+          - NOTE, In case of IPV4/IPV6 VRF routing table should pre-exist before configuring.
+          - NOTE, if the vrf information is not provided then the routes shall be configured
+            under global vrf.
         type: str
       address_families:
         elements: dict
         description:
-        - Address family to use for the static routes
+          - Address family to use for the static routes
         type: list
         suboptions:
           afi:
             description:
-            - Top level address family indicator.
+              - Top level address family indicator.
             required: true
             type: str
             choices:
-            - ipv4
-            - ipv6
+              - ipv4
+              - ipv6
           routes:
             description: Configuring static route
             type: list
@@ -65,13 +65,13 @@ options:
                 required: true
               topology:
                 description:
-                - Configure static route for a Topology Routing/Forwarding instance
-                - NOTE, VRF and Topology can be used together only with Multicast
-                  and Topology should pre-exist before it can be used
+                  - Configure static route for a Topology Routing/Forwarding instance
+                  - NOTE, VRF and Topology can be used together only with Multicast
+                    and Topology should pre-exist before it can be used
                 type: str
               next_hops:
                 description:
-                - next hop address or interface
+                  - next hop address or interface
                 type: list
                 elements: dict
                 suboptions:
@@ -104,15 +104,15 @@ options:
                     type: bool
                   tag:
                     description:
-                    - Set tag for this route
-                    - Refer to vendor documentation for valid values.
+                      - Set tag for this route
+                      - Refer to vendor documentation for valid values.
                     type: int
                   track:
                     description:
-                    - Install route depending on tracked item with tracked object
-                      number.
-                    - Tracking does not support multicast
-                    - Refer to vendor documentation for valid values.
+                      - Install route depending on tracked item with tracked object
+                        number.
+                      - Tracking does not support multicast
+                      - Refer to vendor documentation for valid values.
                     type: int
   running_config:
     description:
@@ -144,13 +144,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - rendered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - rendered
+      - parsed
     default: merged
 """
 

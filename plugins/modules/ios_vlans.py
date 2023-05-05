@@ -22,10 +22,12 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_vlans
 short_description: Resource module to configure VLANs.
-description: This module provides declarative management of VLANs on Cisco IOS network
+description:
+  This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -43,54 +45,54 @@ options:
     suboptions:
       name:
         description:
-        - Ascii name of the VLAN.
-        - NOTE, I(name) should not be named/appended with I(default) as it is reserved
-          for device default vlans.
+          - Ascii name of the VLAN.
+          - NOTE, I(name) should not be named/appended with I(default) as it is reserved
+            for device default vlans.
         type: str
       vlan_id:
         description:
-        - ID of the VLAN. Range 1-4094
+          - ID of the VLAN. Range 1-4094
         type: int
         required: true
       mtu:
         description:
-        - VLAN Maximum Transmission Unit.
-        - Refer to vendor documentation for valid values.
+          - VLAN Maximum Transmission Unit.
+          - Refer to vendor documentation for valid values.
         type: int
       state:
         description:
-        - Operational state of the VLAN
+          - Operational state of the VLAN
         type: str
         choices:
-        - active
-        - suspend
+          - active
+          - suspend
       remote_span:
         description:
-        - Configure as Remote SPAN VLAN
+          - Configure as Remote SPAN VLAN
         type: bool
       shutdown:
         description:
-        - Shutdown VLAN switching.
+          - Shutdown VLAN switching.
         type: str
         choices:
-        - enabled
-        - disabled
+          - enabled
+          - disabled
       private_vlan:
         description:
-        - Options for private vlan configuration.
+          - Options for private vlan configuration.
         type: dict
         suboptions:
           type:
             description:
-            - Private VLAN type
+              - Private VLAN type
             type: str
             choices:
-            - primary
-            - isolated
-            - community
+              - primary
+              - isolated
+              - community
           associated:
             description:
-            - "List of private VLANs associated with the primary . Only works with `type: primary`."
+              - "List of private VLANs associated with the primary . Only works with `type: primary`."
             type: list
             elements: int
   running_config:
@@ -122,13 +124,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
 """
 

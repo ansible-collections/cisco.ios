@@ -27,7 +27,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lacp_interfaces
 short_description: Resource module to configure LACP interfaces.
-description: This module provides declarative management of LACP on Cisco IOS network
+description:
+  This module provides declarative management of LACP on Cisco IOS network
   devices lacp_interfaces.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -43,22 +44,22 @@ options:
     suboptions:
       name:
         description:
-        - Name of the Interface for configuring LACP.
+          - Name of the Interface for configuring LACP.
         type: str
         required: true
       port_priority:
         description:
-        - LACP priority on this interface.
-        - Refer to vendor documentation for valid port values.
+          - LACP priority on this interface.
+          - Refer to vendor documentation for valid port values.
         type: int
       fast_switchover:
         description:
-        - LACP fast switchover supported on this port channel.
+          - LACP fast switchover supported on this port channel.
         type: bool
       max_bundle:
         description:
-        - LACP maximum number of ports to bundle in this port channel.
-        - Refer to vendor documentation for valid port values.
+          - LACP maximum number of ports to bundle in this port channel.
+          - Refer to vendor documentation for valid port values.
         type: int
   running_config:
     description:
@@ -89,13 +90,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
 """
 
