@@ -636,6 +636,7 @@ class TestIosSnmpServerModule(TestIosModule):
             },
         }
         merged = [
+            "snmp ifmib ifindex persist",
             "snmp-server accounting commands default",
             "snmp-server chassis-id this is a chassis id string",
             "snmp-server contact this is contact string",
@@ -708,7 +709,6 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server user paul familypaul v3 access ipv6 ipv6only",
             "snmp-server user replaceUser replaceUser v3 access 22",
             "snmp-server user flow mfamily v3 access 27",
-            "snmp ifmib ifindex persist",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
@@ -1084,6 +1084,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server inform pending 2
             snmp-server view no-write.test testiso excluded
             snmp-server view test-view! test-test included
+            snmp ifmib ifindex persist
             """,
         )
 
@@ -1336,7 +1337,6 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server view newView TestFamilyName included",
             "no snmp-server enable traps vtp",
             "no snmp-server view test-view! test-test included",
-            "snmp ifmib ifindex persist",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
