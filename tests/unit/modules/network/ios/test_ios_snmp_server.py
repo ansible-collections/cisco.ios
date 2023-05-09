@@ -149,6 +149,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
             snmp-server accounting commands default
             snmp-server inform pending 2
+            snmp-server ifindex persist
             """,
         )
 
@@ -214,6 +215,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
                     {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
+                "if_index": True,
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
                 "location": "thi sis a good location",
@@ -477,6 +479,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
                     {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
+                "if_index": True,
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
                 "location": "thi sis a good location",
@@ -705,6 +708,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server user paul familypaul v3 access ipv6 ipv6only",
             "snmp-server user replaceUser replaceUser v3 access 22",
             "snmp-server user flow mfamily v3 access 27",
+            "snmp ifmib ifindex persist",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
@@ -1145,6 +1149,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
                     {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
                 ],
+                "if_index": True,
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
                 "location": "thi sis a good location",
@@ -1331,6 +1336,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server view newView TestFamilyName included",
             "no snmp-server enable traps vtp",
             "no snmp-server view test-view! test-test included",
+            "snmp ifmib ifindex persist",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
