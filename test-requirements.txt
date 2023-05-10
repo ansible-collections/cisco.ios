@@ -1,12 +1,12 @@
-black==22.3.0 ; python_version > '3.5'
+# For ansible-tox-linters
+black==23.3.0 ; python_version >= '3.7'
 flake8
-mock ; python_version < '3.5'
-pexpect
-pytest-xdist
 yamllint
-pytest-forked
-git+https://github.com/ansible-community/pytest-ansible-units.git
-mypy
-pre-commit
-pylint
-ruff
+
+# Unit test runner
+pytest-ansible ; python_version >= '3.9'
+git+https://github.com/ansible-community/pytest-ansible-units.git ; python_version < '3.9'
+pytest-xdist
+
+# For integration tests
+pexpect

@@ -1,7 +1,90 @@
 [tool.black]
 line-length = 100
 
+[tool.pylint]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.master]
+# Add the collection tree root
+init-hook = 'import sys; sys.path += ["../../../"]'
+# pylint defaults + fh for with open .. as (f|fh)
+good-names = "i,j,k,ex,Run,_,f,fh"
+jobs = 0
+no-docstring-rgx = "__.*__"
+
+[tool.pylint.messages_control]
+# missing module docstring will be picked up by pydocstyle
+# could not do infile b/c older version of pylint didn't have it
+# and ansible-test sanity uses older version in earlier ansible
+disable = [
+  "duplicate-code",
+  "fixme",
+  "missing-module-docstring",
+  "too-few-public-methods",
+  "unsubscriptable-object",
+]
+enable = [
+  "useless-suppression", # Identify unneeded pylint disable statements
+
+]
+
 [tool.pytest.ini_options]
-addopts = ["-vvv", "-n", "2", "--log-level", "WARNING", "--color", "yes"]
+addopts = [
+  "--integration-tests-path=tests/integration/targets",
+  "-vvv",
+  "-n",
+  "2",
+  "--log-level",
+  "WARNING",
+  "--color",
+  "yes"
+]
 testpaths = ["tests"]
 filterwarnings = ['ignore:AnsibleCollectionFinder has already been configured']
+
+[tool.ruff]
+fix = true
+line-length = 100
+builtins = ["__"]
+select = ["ALL"]
+# ARG = flake8 argument, overlap with pylint
+# FBT = flake8 boolean, silly
+# TID = flake8 tidy imports, need relative for pylint
+ignore = ["ARG", "FBT", "TID"]
+target-version = "py38"
+
+[tool.ruff.per-file-ignores]
+# D100 Missing docstring in public module (ansible)
+"plugins/modules/**" = ["D100"]
+#
+# D104 Missing docstring in public package (ansible)
+"*/__init__.py" = ["D104"]
+#
+# E501 line too long, good examples
+"plugins/modules/git_publish.py" = ["E501"]
+"plugins/modules/git_retrieve.py" = ["E501"]
+#
+# S603, subprocess ok
+"plugins/plugin_utils/git_base.py" = ["S603"]
+#
+# T201 allow print in tests
+"tests/**" = ["T201"]
+#
+# UP001 until __metaclass__ is not required
+# UP010 until from __future__ is gone
+"**" = ["UP001", "UP010"]
+
+[tool.ruff.isort]
+lines-after-imports = 2 # Ensures consistency for cases when there's variable vs function/class definitions after imports
+lines-between-types = 1 # Separate import/from with 1 line
+required-imports = [
+  "from __future__ import absolute_import, division, print_function"
+]
+
+[tool.ruff.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.flake8-pytest-style]
+parametrize-values-type = "tuple"
