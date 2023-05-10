@@ -6,3 +6,7 @@ pytest-xdist
 yamllint
 pytest-forked
 git+https://github.com/ansible-community/pytest-ansible-units.git
+mypy
+pre-commit
+pylint
+ruff
