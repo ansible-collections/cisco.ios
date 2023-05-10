@@ -15,7 +15,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_l2_interfaces
-short_description: Resource Module to configure L2 interfaces.
+short_description: Resource module to configure L2 interfaces.
 description:
   This module provides declarative management of Layer-2 interface on Cisco
   IOS devices.
