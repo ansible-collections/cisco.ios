@@ -5,7 +5,7 @@
 cisco.ios.ios_l2_interfaces
 ***************************
 
-**Resource Module to configure L2 interfaces.**
+**Resource module to configure L2 interfaces.**
 
 
 Version added: 1.0.0
