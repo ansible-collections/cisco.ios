@@ -1,12 +1,11 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
 The facts class for ios
 this file validates each subset of facts and selectively
-calls the appropriate facts gathering function
+calls the appropriate facts gathering function.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -18,7 +17,6 @@ __metaclass__ = type
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts import (
     FactsBase,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
@@ -92,43 +90,43 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
 )
 
 
-FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
+FACT_LEGACY_SUBSETS = {"default": Default, "hardware": Hardware, "interfaces": Interfaces, "config": Config}
 
-FACT_RESOURCE_SUBSETS = dict(
-    interfaces=InterfacesFacts,
-    l2_interfaces=L2_interfacesFacts,
-    vlans=VlansFacts,
-    lag_interfaces=Lag_interfacesFacts,
-    lacp=LacpFacts,
-    lacp_interfaces=Lacp_InterfacesFacts,
-    lldp_global=Lldp_globalFacts,
-    lldp_interfaces=Lldp_InterfacesFacts,
-    l3_interfaces=L3_InterfacesFacts,
-    acl_interfaces=Acl_interfacesFacts,
-    static_routes=Static_routesFacts,
-    acls=AclsFacts,
-    ospfv2=Ospfv2Facts,
-    ospfv3=Ospfv3Facts,
-    ospf_interfaces=Ospf_InterfacesFacts,
-    bgp_global=Bgp_globalFacts,
-    bgp_address_family=Bgp_address_familyFacts,
-    logging_global=Logging_globalFacts,
-    route_maps=Route_mapsFacts,
-    prefix_lists=Prefix_listsFacts,
-    ntp_global=Ntp_globalFacts,
-    snmp_server=Snmp_serverFacts,
-    hostname=HostnameFacts,
-)
+FACT_RESOURCE_SUBSETS = {
+    "interfaces": InterfacesFacts,
+    "l2_interfaces": L2_interfacesFacts,
+    "vlans": VlansFacts,
+    "lag_interfaces": Lag_interfacesFacts,
+    "lacp": LacpFacts,
+    "lacp_interfaces": Lacp_InterfacesFacts,
+    "lldp_global": Lldp_globalFacts,
+    "lldp_interfaces": Lldp_InterfacesFacts,
+    "l3_interfaces": L3_InterfacesFacts,
+    "acl_interfaces": Acl_interfacesFacts,
+    "static_routes": Static_routesFacts,
+    "acls": AclsFacts,
+    "ospfv2": Ospfv2Facts,
+    "ospfv3": Ospfv3Facts,
+    "ospf_interfaces": Ospf_InterfacesFacts,
+    "bgp_global": Bgp_globalFacts,
+    "bgp_address_family": Bgp_address_familyFacts,
+    "logging_global": Logging_globalFacts,
+    "route_maps": Route_mapsFacts,
+    "prefix_lists": Prefix_listsFacts,
+    "ntp_global": Ntp_globalFacts,
+    "snmp_server": Snmp_serverFacts,
+    "hostname": HostnameFacts,
+}
 
 
 class Facts(FactsBase):
-    """The fact class for ios"""
+    """The fact class for ios."""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
     VALID_RESOURCE_SUBSETS = frozenset(FACT_RESOURCE_SUBSETS.keys())
 
-    def __init__(self, module):
-        super(Facts, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
         """Collect the facts for ios
@@ -136,7 +134,7 @@ class Facts(FactsBase):
         :param resource_facts_type: List of resource fact types
         :param data: previously collected conf
         :rtype: dict
-        :return: the facts gathered
+        :return: the facts gathered.
         """
         if self.VALID_RESOURCE_SUBSETS:
             self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,26 +22,26 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class Acl_interfacesTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Acl_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
         {
-            'name': 'interface',
-            'getval': re.compile(
-                r'''
+            "name": "interface",
+            "getval": re.compile(
+                r"""
               ^interface\s
-              (?P<name>\S+)$''', re.VERBOSE,
+              (?P<name>\S+)$""", re.VERBOSE,
             ),
-            'setval': 'interface {{ name }}',
-            'result': {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    'access_groups': {},
+            "setval": "interface {{ name }}",
+            "result": {
+                "{{ name }}": {
+                    "name": "{{ name }}",
+                    "access_groups": {},
                 },
             },
-            'shared': True,
+            "shared": True,
         },
         {
             "name": "access_groups",

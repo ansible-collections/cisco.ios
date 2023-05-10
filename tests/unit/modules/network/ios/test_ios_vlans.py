@@ -21,7 +21,7 @@ class TestIosVlansModule(TestIosModule):
     module = ios_vlans
 
     def setUp(self):
-        super(TestIosVlansModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -61,7 +61,7 @@ class TestIosVlansModule(TestIosModule):
         self._l2_device_command = self.mock_l2_device_command.start()
 
     def tearDown(self):
-        super(TestIosVlansModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -79,106 +79,106 @@ class TestIosVlansModule(TestIosModule):
 
     def test_ios_vlans_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="test_vlan_200",
-                        state="active",
-                        shutdown="disabled",
-                        remote_span=True,
-                        vlan_id=200,
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "test_vlan_200",
+                        "state": "active",
+                        "shutdown": "disabled",
+                        "remote_span": True,
+                        "vlan_id": 200,
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         result = self.execute_module(changed=True)
         commands = ["vlan 200", "name test_vlan_200", "state active", "remote-span", "no shutdown"]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_vlans_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
-                    dict(
-                        mtu=610,
-                        name="RemoteIsInMyName",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=123,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="VLAN0150",
-                        remote_span=True,
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=150,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="a_very_long_vlan_name_a_very_long_vlan_name",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=888,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddi-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1002,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trcrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1003,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddinet-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1004,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trbrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1005,
-                    ),
+            {
+                "config": [
+                    {"mtu": 1500, "name": "default", "shutdown": "disabled", "state": "active", "vlan_id": 1},
+                    {
+                        "mtu": 610,
+                        "name": "RemoteIsInMyName",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 123,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "VLAN0150",
+                        "remote_span": True,
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 150,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "a_very_long_vlan_name_a_very_long_vlan_name",
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 888,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddi-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1002,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trcrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1003,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddinet-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1004,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trbrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1005,
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_vlans_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="test_vlan_200",
-                        state="active",
-                        shutdown="disabled",
-                        remote_span=True,
-                        vlan_id=200,
-                    ),
-                    dict(name="Replace_RemoteIsInMyName", remote_span=True, vlan_id=123),
-                    dict(
-                        name="pvlan-primary",
-                        private_vlan=dict(type="primary", associated=[11, 12]),
-                        vlan_id=10,
-                    ),
-                    dict(name="pvlan-community", private_vlan=dict(type="community"), vlan_id=11),
-                    dict(name="pvlan-isolated", private_vlan=dict(type="isolated"), vlan_id=12),
+            {
+                "config": [
+                    {
+                        "name": "test_vlan_200",
+                        "state": "active",
+                        "shutdown": "disabled",
+                        "remote_span": True,
+                        "vlan_id": 200,
+                    },
+                    {"name": "Replace_RemoteIsInMyName", "remote_span": True, "vlan_id": 123},
+                    {
+                        "name": "pvlan-primary",
+                        "private_vlan": {"type": "primary", "associated": [11, 12]},
+                        "vlan_id": 10,
+                    },
+                    {"name": "pvlan-community", "private_vlan": {"type": "community"}, "vlan_id": 11},
+                    {"name": "pvlan-isolated", "private_vlan": {"type": "isolated"}, "vlan_id": 12},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -213,84 +213,84 @@ class TestIosVlansModule(TestIosModule):
             "name pvlan-isolated",
             "private-vlan isolated",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_vlans_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
-                    dict(
-                        mtu=610,
-                        name="RemoteIsInMyName",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=123,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="VLAN0150",
-                        remote_span=True,
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=150,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="a_very_long_vlan_name_a_very_long_vlan_name",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=888,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddi-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1002,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trcrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1003,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddinet-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1004,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trbrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1005,
-                    ),
+            {
+                "config": [
+                    {"mtu": 1500, "name": "default", "shutdown": "disabled", "state": "active", "vlan_id": 1},
+                    {
+                        "mtu": 610,
+                        "name": "RemoteIsInMyName",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 123,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "VLAN0150",
+                        "remote_span": True,
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 150,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "a_very_long_vlan_name_a_very_long_vlan_name",
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 888,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddi-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1002,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trcrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1003,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddinet-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1004,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trbrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1005,
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_vlans_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="test_vlan_200",
-                        state="active",
-                        shutdown="disabled",
-                        remote_span=True,
-                        vlan_id=200,
-                    ),
-                    dict(name="Override_RemoteIsInMyName", remote_span=True, vlan_id=123),
+            {
+                "config": [
+                    {
+                        "name": "test_vlan_200",
+                        "state": "active",
+                        "shutdown": "disabled",
+                        "remote_span": True,
+                        "vlan_id": 200,
+                    },
+                    {"name": "Override_RemoteIsInMyName", "remote_span": True, "vlan_id": 123},
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -309,98 +309,98 @@ class TestIosVlansModule(TestIosModule):
             "no shutdown",
         ]
 
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_vlans_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
-                    dict(
-                        mtu=610,
-                        name="RemoteIsInMyName",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=123,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="VLAN0150",
-                        remote_span=True,
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=150,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="a_very_long_vlan_name_a_very_long_vlan_name",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=888,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddi-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1002,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trcrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1003,
-                    ),
-                    dict(
-                        mtu=1500,
-                        name="fddinet-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1004,
-                    ),
-                    dict(
-                        mtu=4472,
-                        name="trbrf-default",
-                        shutdown="enabled",
-                        state="active",
-                        vlan_id=1005,
-                    ),
+            {
+                "config": [
+                    {"mtu": 1500, "name": "default", "shutdown": "disabled", "state": "active", "vlan_id": 1},
+                    {
+                        "mtu": 610,
+                        "name": "RemoteIsInMyName",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 123,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "VLAN0150",
+                        "remote_span": True,
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 150,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "a_very_long_vlan_name_a_very_long_vlan_name",
+                        "shutdown": "disabled",
+                        "state": "active",
+                        "vlan_id": 888,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddi-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1002,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trcrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1003,
+                    },
+                    {
+                        "mtu": 1500,
+                        "name": "fddinet-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1004,
+                    },
+                    {
+                        "mtu": 4472,
+                        "name": "trbrf-default",
+                        "shutdown": "enabled",
+                        "state": "active",
+                        "vlan_id": 1005,
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_delete_vlans_config(self):
-        set_module_args(dict(config=[dict(vlan_id=150)], state="deleted"))
+        set_module_args({"config": [{"vlan_id": 150}], "state": "deleted"})
         result = self.execute_module(changed=True)
         commands = ["no vlan 150"]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_vlans_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="test_vlan_200",
-                        state="active",
-                        shutdown="disabled",
-                        remote_span=True,
-                        vlan_id=200,
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "test_vlan_200",
+                        "state": "active",
+                        "shutdown": "disabled",
+                        "remote_span": True,
+                        "vlan_id": 200,
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = ["name test_vlan_200", "no shutdown", "remote-span", "state active", "vlan 200"]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), commands)
+        assert sorted(result["rendered"]) == commands
 
     def test_vlan_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     VLAN Name                             Status    Ports
                     ---- -------------------------------- --------- -------------------------------
@@ -453,8 +453,8 @@ class TestIosVlansModule(TestIosModule):
                     20      22        community
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         parsed = [
             {
@@ -581,10 +581,10 @@ class TestIosVlansModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_ios_vlans_gathered(self):
-        set_module_args(dict(state="gathered"))
+        set_module_args({"state": "gathered"})
         gathered = [
             {
                 "name": "default",
@@ -647,4 +647,4 @@ class TestIosVlansModule(TestIosModule):
         result = self.execute_module(changed=False)
 
         self.maxDiff = None
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered

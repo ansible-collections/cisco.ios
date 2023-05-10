@@ -21,7 +21,7 @@ class TestIosBgpGlobalModule(TestIosModule):
     module = ios_bgp_global
 
     def setUp(self):
-        super(TestIosBgpGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosBgpGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -263,7 +263,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "redistribute application ap112 metric 33 route-map mp1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_bgp_global_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -282,26 +282,26 @@ class TestIosBgpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65000",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath_options=dict(compare_routerid=True),
-                        nopeerup_delay_options=dict(post_boot=10),
-                    ),
-                    redistribute=[dict(connected=dict(set=True, metric=10))],
-                    neighbors=[
-                        dict(
-                            address="192.0.2.1",
-                            remote_as=100,
-                            route_map=dict(name="test-route", out=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {
+                        "advertise_best_external": True,
+                        "bestpath_options": {"compare_routerid": True},
+                        "nopeerup_delay_options": {"post_boot": 10},
+                    },
+                    "redistribute": [{"connected": {"set": True, "metric": 10}}],
+                    "neighbors": [
+                        {
+                            "address": "192.0.2.1",
+                            "remote_as": 100,
+                            "route_map": {"name": "test-route", "out": True},
+                        },
                     ],
-                    timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
-                ),
-                state="merged",
-            ),
+                    "timers": {"keepalive": 100, "holdtime": 200, "min_holdtime": 150},
+                },
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -322,34 +322,30 @@ class TestIosBgpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="6500",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath_options=dict(compare_routerid=True),
-                        nopeerup_delay_options=dict(post_boot=10),
-                    ),
-                    redistribute=[dict(connected=dict(set=True, metric=10))],
-                    neighbors=[
-                        dict(
-                            address="192.0.2.1",
-                            remote_as=100,
-                            route_map=dict(name="test-route", out=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "6500",
+                    "bgp": {
+                        "advertise_best_external": True,
+                        "bestpath_options": {"compare_routerid": True},
+                        "nopeerup_delay_options": {"post_boot": 10},
+                    },
+                    "redistribute": [{"connected": {"set": True, "metric": 10}}],
+                    "neighbors": [
+                        {
+                            "address": "192.0.2.1",
+                            "remote_as": 100,
+                            "route_map": {"name": "test-route", "out": True},
+                        },
                     ],
-                    timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
-                ),
-                state="merged",
-            ),
+                    "timers": {"keepalive": 100, "holdtime": 200, "min_holdtime": 150},
+                },
+                "state": "merged",
+            },
         )
-        # self.assertEqual(sorted(result["commands"]), sorted(commands))
         with self.assertRaises(AnsibleFailJson) as error:
             self.execute_module(changed=False, commands=[])
-        self.assertIn(
-            "BGP is already configured with ASN 65000. Please remove it with state: purged before configuring new ASN",
-            str(error.exception),
-        )
+        assert "BGP is already configured with ASN 65000. Please remove it with state: purged before configuring new ASN" in str(error.exception)
 
     def test_ios_bgp_global_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -369,29 +365,27 @@ class TestIosBgpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65000",
-                    aggregate_address=dict(
-                        dict(address="192.168.0.11", attribute_map="map1", netmask="255.255.0.0"),
-                    ),
-                    aggregate_addresses=[
-                        dict(address="192.168.0.1", attribute_map="map", netmask="255.255.0.0"),
-                        dict(address="192.168.0.2", attribute_map="map2", netmask="255.255.0.0"),
+            {
+                "config": {
+                    "as_number": "65000",
+                    "aggregate_address": {"address": "192.168.0.11", "attribute_map": "map1", "netmask": "255.255.0.0"},
+                    "aggregate_addresses": [
+                        {"address": "192.168.0.1", "attribute_map": "map", "netmask": "255.255.0.0"},
+                        {"address": "192.168.0.2", "attribute_map": "map2", "netmask": "255.255.0.0"},
                     ],
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath_options=dict(compare_routerid=True),
-                        log_neighbor_changes=True,
-                        nopeerup_delay_options=dict(cold_boot=20, post_boot=10),
-                    ),
-                    redistribute=[dict(connected=dict(set=True, metric=10))],
-                    neighbors=[
-                        dict(address="192.0.2.1", remote_as=200, description="replace neighbor"),
+                    "bgp": {
+                        "advertise_best_external": True,
+                        "bestpath_options": {"compare_routerid": True},
+                        "log_neighbor_changes": True,
+                        "nopeerup_delay_options": {"cold_boot": 20, "post_boot": 10},
+                    },
+                    "redistribute": [{"connected": {"set": True, "metric": 10}}],
+                    "neighbors": [
+                        {"address": "192.0.2.1", "remote_as": 200, "description": "replace neighbor"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
         )
         commands = [
             "router bgp 65000",
@@ -405,7 +399,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no neighbor 192.0.2.2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_bgp_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -424,26 +418,26 @@ class TestIosBgpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65000",
-                    bgp=dict(
-                        advertise_best_external=True,
-                        bestpath_options=dict(compare_routerid=True),
-                        nopeerup_delay_options=dict(post_boot=10),
-                    ),
-                    redistribute=[dict(connected=dict(set=True, metric=10))],
-                    neighbors=[
-                        dict(
-                            address="192.0.2.1",
-                            remote_as=100,
-                            route_map=dict(name="test-route", out=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {
+                        "advertise_best_external": True,
+                        "bestpath_options": {"compare_routerid": True},
+                        "nopeerup_delay_options": {"post_boot": 10},
+                    },
+                    "redistribute": [{"connected": {"set": True, "metric": 10}}],
+                    "neighbors": [
+                        {
+                            "address": "192.0.2.1",
+                            "remote_as": 100,
+                            "route_map": {"name": "test-route", "out": True},
+                        },
                     ],
-                    timers=dict(keepalive=100, holdtime=200, min_holdtime=150),
-                ),
-                state="replaced",
-            ),
+                    "timers": {"keepalive": 100, "holdtime": 200, "min_holdtime": 150},
+                },
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -463,7 +457,7 @@ class TestIosBgpGlobalModule(TestIosModule):
               neighbor 172.31.35.140 activate
             """,
         )
-        set_module_args(dict(config=dict(as_number=65000), state="deleted"))
+        set_module_args({"config": {"as_number": 65000}, "state": "deleted"})
         commands = [
             "router bgp 65000",
             "no timers bgp 100 200 150",
@@ -474,16 +468,16 @@ class TestIosBgpGlobalModule(TestIosModule):
             "no redistribute connected",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_bgp_global_deleted_empty(self):
         self.execute_show_command.return_value = dedent(
             """\
             """,
         )
-        set_module_args(dict(config=dict(as_number=65000), state="deleted"))
+        set_module_args({"config": {"as_number": 65000}, "state": "deleted"})
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_ios_bgp_global_purged(self):
         self.execute_show_command.return_value = dedent(
@@ -501,7 +495,7 @@ class TestIosBgpGlobalModule(TestIosModule):
               neighbor 172.31.35.140 activate
             """,
         )
-        set_module_args(dict(config=dict(as_number=65000), state="purged"))
+        set_module_args({"config": {"as_number": 65000}, "state": "purged"})
         commands = ["no router bgp 65000"]
         self.execute_module(changed=True, commands=commands)
 
@@ -692,12 +686,12 @@ class TestIosBgpGlobalModule(TestIosModule):
             "redistribute mobile metric 211",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)
 
     def test_ios_bgp_global_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     router bgp 65000
                      bgp nopeerup-delay post-boot 10
@@ -712,8 +706,8 @@ class TestIosBgpGlobalModule(TestIosModule):
                       neighbor 172.31.35.140 activate
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = {
@@ -733,4 +727,4 @@ class TestIosBgpGlobalModule(TestIosModule):
                 },
             ],
         }
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,24 +18,20 @@ __metaclass__ = type
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
 
 
-class VlansFacts(object):
-    """The ios vlans fact class"""
+class VlansFacts:
+    """The ios vlans fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = VlansArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -57,9 +52,8 @@ class VlansFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
-
         objs = []
         mtu_objs = []
         remote_objs = []
@@ -95,7 +89,7 @@ class VlansFacts(object):
             if temp:
                 conf = temp
                 temp = ""
-            if conf and " " not in filter(None, conf.split("-")) and not conf.split(" ")[0] == "":
+            if conf and " " not in filter(None, conf.split("-")) and conf.split(" ")[0] != "":
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
                     mtu_objs.append(obj)
@@ -111,13 +105,12 @@ class VlansFacts(object):
             final_objs.append(o)
 
         # Appending Remote Span value to related VLAN
-        if remote_objs:
-            if remote_objs.get("remote_span"):
-                for each in remote_objs.get("remote_span"):
-                    for every in final_objs:
-                        if each == every.get("vlan_id"):
-                            every.update({"remote_span": True})
-                            break
+        if remote_objs and remote_objs.get("remote_span"):
+            for each in remote_objs.get("remote_span"):
+                for every in final_objs:
+                    if each == every.get("vlan_id"):
+                        every.update({"remote_span": True})
+                        break
 
         # Appending private vlan information to related VLAN
         if pvlan_objs:
@@ -165,7 +158,7 @@ class VlansFacts(object):
     def render_config(self, spec, conf, vlan_info):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration

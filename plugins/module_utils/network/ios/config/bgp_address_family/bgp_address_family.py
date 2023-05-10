@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -26,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
@@ -34,9 +32,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Bgp_address_family(ResourceModule):
-    """
-    The cisco.ios_bgp_address_family config class
-    """
+    """The cisco.ios_bgp_address_family config class."""
 
     parsers = [
         "as_number",  # generic
@@ -84,8 +80,8 @@ class Bgp_address_family(ResourceModule):
         "redistribute.vrf",  # redistribute
     ]
 
-    def __init__(self, module):
-        super(Bgp_address_family, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -94,7 +90,7 @@ class Bgp_address_family(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -147,10 +143,7 @@ class Bgp_address_family(ResourceModule):
 
         # adds router bgp AS_NUMB command
         if len(self.commands) > 0:
-            if self.want.get("as_number"):
-                as_number = self.want
-            else:
-                as_number = self.have
+            as_number = self.want if self.want.get("as_number") else self.have
             self.commands.insert(0, self._tmplt.render(as_number, "as_number", False))
 
     def _compare(self, want, have):
@@ -184,7 +177,7 @@ class Bgp_address_family(ResourceModule):
         :param _parser: ospf or ospfv3
         :param w_attr: content of want['redistribute']['ospf']
         :param h_attr:content of have['redistribute']['ospf']
-        :return: None
+        :return: None.
         """
         for wkey, wentry in w_attr.items():
             if wentry != h_attr.pop(wkey, {}):
@@ -195,11 +188,11 @@ class Bgp_address_family(ResourceModule):
                 self.addcmd(wentry, f"redistribute.{_parser}", False)
 
         # remove remaining items in have for replaced state
-        for hkey, hentry in h_attr.items():
+        for _hkey, hentry in h_attr.items():
             self.addcmd(hentry, "redistribute.ospf", True)
 
     def _compare_neighbor_lists(self, want, have):
-        """Compare neighbor list of dict"""
+        """Compare neighbor list of dict."""
         neig_parses = [
             "peer_group",
             "peer_group_name",
@@ -292,7 +285,7 @@ class Bgp_address_family(ResourceModule):
                 self.addcmd(wentry, "networks", False)
 
         # remove remaining items in have for replaced state
-        for hkey, hentry in h_attr.items():
+        for _hkey, hentry in h_attr.items():
             self.addcmd(hentry, "networks", True)
 
     def _compare_agg_add_lists(self, w_attr, h_attr):
@@ -301,11 +294,11 @@ class Bgp_address_family(ResourceModule):
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, "aggregate_addresses", False)
         # remove remaining items in have for replaced state
-        for hkey, hentry in h_attr.items():
+        for _hkey, hentry in h_attr.items():
             self.addcmd(hentry, "aggregate_addresses", True)
 
     def _bgp_add_fam_list_to_dict(self, tmp_data):
-        """Convert all list of dicts to dicts of dicts, also deals with deprecated attributes"""
+        """Convert all list of dicts to dicts of dicts, also deals with deprecated attributes."""
         p_key = {
             "aggregate_address": "address",
             "aggregate_addresses": "address",
@@ -389,11 +382,11 @@ class Bgp_address_family(ResourceModule):
                                             "type_1",
                                             "type_2",
                                         ]:
-                                            if depr in _i["match"].keys():
+                                            if depr in _i["match"]:
                                                 val = _i["match"].pop(depr, False)
                                                 if depr.startswith("type"):
                                                     # map deprecated nssa_external type to new option
-                                                    if "nssa_externals" in _i["match"].keys():
+                                                    if "nssa_externals" in _i["match"]:
                                                         _i["match"]["nssa_externals"][depr] = val
                                                     else:
                                                         _i["match"]["nssa_externals"] = {

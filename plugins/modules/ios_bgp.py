@@ -416,7 +416,6 @@ commands:
     - exit-address-family
 """
 from ansible.module_utils._text import to_text
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.process import (
     REDISTRIBUTE_PROTOCOLS,
 )
@@ -426,67 +425,67 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.mo
 
 
 def main():
-    """main entry point for module execution"""
-    network_spec = {"prefix": dict(required=True), "masklen": dict(type="int"), "route_map": dict()}
+    """Main entry point for module execution."""
+    network_spec = {"prefix": {"required": True}, "masklen": {"type": "int"}, "route_map": {}}
     redistribute_spec = {
-        "protocol": dict(choices=REDISTRIBUTE_PROTOCOLS, required=True),
-        "id": dict(),
-        "metric": dict(type="int"),
-        "route_map": dict(),
+        "protocol": {"choices": REDISTRIBUTE_PROTOCOLS, "required": True},
+        "id": {},
+        "metric": {"type": "int"},
+        "route_map": {},
     }
     timer_spec = {
-        "keepalive": dict(type="int", required=True),
-        "holdtime": dict(type="int", required=True),
-        "min_neighbor_holdtime": dict(type="int"),
+        "keepalive": {"type": "int", "required": True},
+        "holdtime": {"type": "int", "required": True},
+        "min_neighbor_holdtime": {"type": "int"},
     }
     neighbor_spec = {
-        "neighbor": dict(required=True),
-        "remote_as": dict(type="int", required=True),
-        "local_as": dict(type="int"),
-        "update_source": dict(),
-        "password": dict(no_log=True),
-        "enabled": dict(type="bool"),
-        "description": dict(),
-        "ebgp_multihop": dict(type="int"),
-        "timers": dict(type="dict", options=timer_spec),
-        "peer_group": dict(),
+        "neighbor": {"required": True},
+        "remote_as": {"type": "int", "required": True},
+        "local_as": {"type": "int"},
+        "update_source": {},
+        "password": {"no_log": True},
+        "enabled": {"type": "bool"},
+        "description": {},
+        "ebgp_multihop": {"type": "int"},
+        "timers": {"type": "dict", "options": timer_spec},
+        "peer_group": {},
     }
     af_neighbor_spec = {
-        "neighbor": dict(required=True),
-        "activate": dict(type="bool"),
-        "advertisement_interval": dict(type="int"),
-        "remove_private_as": dict(type="bool"),
-        "next_hop_self": dict(type="bool"),
-        "next_hop_unchanged": dict(type="bool"),
-        "route_reflector_client": dict(type="bool"),
-        "route_server_client": dict(type="bool"),
-        "maximum_prefix": dict(type="int"),
-        "prefix_list_in": dict(),
-        "prefix_list_out": dict(),
+        "neighbor": {"required": True},
+        "activate": {"type": "bool"},
+        "advertisement_interval": {"type": "int"},
+        "remove_private_as": {"type": "bool"},
+        "next_hop_self": {"type": "bool"},
+        "next_hop_unchanged": {"type": "bool"},
+        "route_reflector_client": {"type": "bool"},
+        "route_server_client": {"type": "bool"},
+        "maximum_prefix": {"type": "int"},
+        "prefix_list_in": {},
+        "prefix_list_out": {},
     }
     address_family_spec = {
-        "afi": dict(choices=["ipv4", "ipv6"], required=True),
-        "safi": dict(
-            choices=["flowspec", "labeled-unicast", "multicast", "unicast"],
-            default="unicast",
-        ),
-        "auto_summary": dict(type="bool"),
-        "synchronization": dict(type="bool"),
-        "networks": dict(type="list", elements="dict", options=network_spec),
-        "redistribute": dict(type="list", elements="dict", options=redistribute_spec),
-        "neighbors": dict(type="list", elements="dict", options=af_neighbor_spec),
+        "afi": {"choices": ["ipv4", "ipv6"], "required": True},
+        "safi": {
+            "choices": ["flowspec", "labeled-unicast", "multicast", "unicast"],
+            "default": "unicast",
+        },
+        "auto_summary": {"type": "bool"},
+        "synchronization": {"type": "bool"},
+        "networks": {"type": "list", "elements": "dict", "options": network_spec},
+        "redistribute": {"type": "list", "elements": "dict", "options": redistribute_spec},
+        "neighbors": {"type": "list", "elements": "dict", "options": af_neighbor_spec},
     }
     config_spec = {
-        "bgp_as": dict(type="int", required=True),
-        "router_id": dict(),
-        "log_neighbor_changes": dict(type="bool"),
-        "neighbors": dict(type="list", elements="dict", options=neighbor_spec),
-        "address_family": dict(type="list", elements="dict", options=address_family_spec),
-        "networks": dict(type="list", elements="dict", options=network_spec),
+        "bgp_as": {"type": "int", "required": True},
+        "router_id": {},
+        "log_neighbor_changes": {"type": "bool"},
+        "neighbors": {"type": "list", "elements": "dict", "options": neighbor_spec},
+        "address_family": {"type": "list", "elements": "dict", "options": address_family_spec},
+        "networks": {"type": "list", "elements": "dict", "options": network_spec},
     }
     argument_spec = {
-        "config": dict(type="dict", options=config_spec),
-        "operation": dict(default="merge", choices=["merge", "replace", "override", "delete"]),
+        "config": {"type": "dict", "options": config_spec},
+        "operation": {"default": "merge", "choices": ["merge", "replace", "override", "delete"]},
     }
     module = NetworkModule(argument_spec=argument_spec, supports_check_mode=True)
     try:

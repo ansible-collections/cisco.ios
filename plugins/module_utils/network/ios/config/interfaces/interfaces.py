@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.interfaces import (
     InterfacesTemplate,
@@ -36,12 +34,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class Interfaces(ResourceModule):
-    """
-    The ios_interfaces config class
-    """
+    """The ios_interfaces config class."""
 
-    def __init__(self, module):
-        super(Interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -51,7 +47,7 @@ class Interfaces(ResourceModule):
         self.parsers = ["description", "speed", "mtu", "duplex", "template"]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -124,7 +120,7 @@ class Interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 
     def purge(self, have):
-        """Handle operation for purged state"""
+        """Handle operation for purged state."""
         self.commands.append(self._tmplt.render(have, "interface", True))
 
     def normalize_interface_names(self, param):

@@ -11,13 +11,14 @@ from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible.parsing.yaml.loader import AnsibleLoader
 
 
-class YamlTestUtils(object):
+class YamlTestUtils:
     """Mixin class to combine with a unittest.TestCase subclass."""
 
     def _loader(self, stream):
         """Vault related tests will want to override this.
 
-        Vault cases should setup a AnsibleLoader that has the vault password."""
+        Vault cases should setup a AnsibleLoader that has the vault password.
+        """
         return AnsibleLoader(stream)
 
     def _dump_stream(self, obj, stream, dumper=None):
@@ -28,7 +29,7 @@ class YamlTestUtils(object):
             return yaml.dump(obj, stream, Dumper=dumper, encoding=None)
 
     def _dump_string(self, obj, dumper=None):
-        """Dump to a py2-unicode or py3-string"""
+        """Dump to a py2-unicode or py3-string."""
         if PY3:
             return yaml.dump(obj, Dumper=dumper)
         else:
@@ -49,9 +50,9 @@ class YamlTestUtils(object):
         string_from_object_dump_2 = self._dump_string(obj_2, dumper=AnsibleDumper)
 
         # The gen 1 and gen 2 yaml strings
-        self.assertEqual(string_from_object_dump, string_from_object_dump_2)
+        assert string_from_object_dump == string_from_object_dump_2
         # the gen 1 (orig) and gen 2 py object
-        self.assertEqual(obj, obj_2)
+        assert obj == obj_2
 
         # again! gen 3... load strings into py objects
         stream_3 = io.StringIO(string_from_object_dump_2)
@@ -60,10 +61,10 @@ class YamlTestUtils(object):
 
         string_from_object_dump_3 = self._dump_string(obj_3, dumper=AnsibleDumper)
 
-        self.assertEqual(obj, obj_3)
+        assert obj == obj_3
         # should be transitive, but...
-        self.assertEqual(obj_2, obj_3)
-        self.assertEqual(string_from_object_dump, string_from_object_dump_3)
+        assert obj_2 == obj_3
+        assert string_from_object_dump == string_from_object_dump_3
 
     def _old_dump_load_cycle(self, obj):
         """Dump the passed in object to yaml, load it back up, dump again, compare."""
@@ -78,12 +79,10 @@ class YamlTestUtils(object):
         stream.seek(0)
 
         loader = self._loader(stream)
-        # loader = AnsibleLoader(stream, vault_password=self.vault_password)
         obj_from_stream = loader.get_data()
 
         stream_from_string = io.StringIO(yaml_string)
         loader2 = self._loader(stream_from_string)
-        # loader2 = AnsibleLoader(stream_from_string, vault_password=self.vault_password)
         obj_from_string = loader2.get_data()
 
         stream_obj_from_stream = io.StringIO()

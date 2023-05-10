@@ -21,7 +21,7 @@ class TestIosStaticRoutesModule(TestIosModule):
     module = ios_static_routes
 
     def setUp(self):
-        super(TestIosStaticRoutesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosStaticRoutesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -77,60 +77,60 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="ansible_vrf",
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.0 255.255.255.0",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.1",
-                                                name="test_vrf",
-                                                tag=50,
-                                                track=150,
-                                            ),
+            {
+                "config": [
+                    {
+                        "vrf": "ansible_vrf",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.0 255.255.255.0",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.1",
+                                                "name": "test_vrf",
+                                                "tag": 50,
+                                                "track": 150,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="198.51.100.0 255.255.255.0",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="198.51.101.1",
-                                                name="route_1",
-                                                distance_metric=110,
-                                                tag=40,
-                                                multicast=True,
-                                            ),
+                    },
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "198.51.100.0 255.255.255.0",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "198.51.101.1",
+                                                "name": "route_1",
+                                                "distance_metric": 110,
+                                                "tag": 40,
+                                                "multicast": True,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
             "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
             "ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_routes_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -155,8 +155,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -315,12 +315,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         result = self.execute_module(changed=False)
         commands = []
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_routes_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -345,8 +345,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -505,8 +505,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -537,7 +537,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10",
             "no ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_routes_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -562,8 +562,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -722,12 +722,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=False)
         commands = []
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_routes_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -752,8 +752,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -912,8 +912,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -944,7 +944,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10",
             "no ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_routes_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -969,8 +969,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1129,12 +1129,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=False)
         commands = []
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_config_del_all(self):
         self.execute_show_command.return_value = dedent(
@@ -1159,8 +1159,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1319,8 +1319,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1342,7 +1342,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
             "no ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_config_empty_del_all(self):
         self.execute_show_command.return_value = dedent(
@@ -1367,10 +1367,10 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[],
-                state="deleted",
-            ),
+            {
+                "config": [],
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1392,7 +1392,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
             "no ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_config(self):
         self.execute_show_command.return_value = dedent(
@@ -1417,8 +1417,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1469,8 +1469,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1480,7 +1480,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3",
             "no ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.11 22 tag 22 permanent name nm1 multicast",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_config_second_check(self):
         self.execute_show_command.return_value = dedent(
@@ -1505,8 +1505,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1569,8 +1569,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1579,7 +1579,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ipv6 route 2001:DB8:0:3::/64 Null0",
             "no ip route vrf testVrf2 192.0.2.0 255.255.255.0 192.0.2.3 tag 30 name test_vrf2 track 120",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_dest_based(self):
         self.execute_show_command.return_value = dedent(
@@ -1604,8 +1604,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1630,8 +1630,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1647,7 +1647,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3 22 multicast permanent name pp1",
             "no ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_dest_based_second_check(self):
         self.execute_show_command.return_value = dedent(
@@ -1674,8 +1674,8 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1695,8 +1695,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1708,7 +1708,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ip route 198.51.100.1 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route track 150",
             "no ip route 198.51.100.1 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_delete_static_route_vrf_based(self):
         self.execute_show_command.return_value = dedent(
@@ -1737,21 +1737,21 @@ class TestIosStaticRoutesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="testVrf2",
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])],
-                    ),
-                    dict(
-                        vrf="testVrfv6",
-                        address_families=[
-                            dict(afi="ipv6", routes=[dict(dest="2001:DB8:0:4::/64")]),
+            {
+                "config": [
+                    {
+                        "vrf": "testVrf2",
+                        "address_families": [{"afi": "ipv4", "routes": [{"dest": "192.0.2.0/24"}]}],
+                    },
+                    {
+                        "vrf": "testVrfv6",
+                        "address_families": [
+                            {"afi": "ipv6", "routes": [{"dest": "2001:DB8:0:4::/64"}]},
                         ],
-                    ),
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -1759,12 +1759,12 @@ class TestIosStaticRoutesModule(TestIosModule):
             "no ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::3 22 multicast permanent name pp1",
             "no ipv6 route vrf testVrfv6 2001:DB8:0:4::/64 2001:DB8:0:3::2 tag 22 track 22 name name1",
         ]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_static_route_rendered(self):
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "address_families": [
                             {
@@ -1923,8 +1923,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                         ],
                     },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "ip route 198.51.100.0 255.255.255.0 GigabitEthernet2 198.51.101.12 34 tag 22 name nm12 track 11",
@@ -1946,12 +1946,12 @@ class TestIosStaticRoutesModule(TestIosModule):
             "ip route vrf testVrf 192.0.2.0 255.255.255.0 192.0.2.2 tag 50 name test_vrf track 150",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)
 
     def test_ios_static_routes_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.2 track 10
                     ip route vrf testVrf2 192.168.1.0 255.255.255.0 10.1.1.3 22 track 10
@@ -1972,8 +1972,8 @@ class TestIosStaticRoutesModule(TestIosModule):
                     ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 22 track 22 name name1
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         parsed = [
             {
@@ -2135,7 +2135,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             },
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_ios_static_route_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -2143,7 +2143,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 10.0.0.0 255.0.0.0 Null0 permanent
             """,
         )
-        set_module_args(dict(state="gathered"))
+        set_module_args({"state": "gathered"})
         gathered = [
             {
                 "address_families": [
@@ -2162,5 +2162,4 @@ class TestIosStaticRoutesModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.maxDiff = None
         print(result["gathered"])
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
-        # self.assertEqual(result["gathered"], gathered)
+        assert sorted(result["gathered"]) == sorted(gathered)

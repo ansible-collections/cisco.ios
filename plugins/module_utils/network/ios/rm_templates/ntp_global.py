@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,8 +22,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class Ntp_globalTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Ntp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

@@ -21,7 +21,7 @@ class TestIosAclsModule(TestIosModule):
     module = ios_acls
 
     def setUp(self):
-        super(TestIosAclsModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosAclsModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -80,88 +80,88 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                aces=[
-                                    dict(
-                                        destination=dict(any=True),
-                                        grant="permit",
-                                        precedence="immediate",
-                                        protocol="ip",
-                                        sequence=20,
-                                        source=dict(any=True),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "precedence": "immediate",
+                                        "protocol": "ip",
+                                        "sequence": 20,
+                                        "source": {"any": True},
+                                    },
                                 ],
-                                acl_type="extended",
-                                name="test_pre",
-                            ),
-                            dict(
-                                name="std_acl",
-                                acl_type="standard",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
-                                    ),
+                                "acl_type": "extended",
+                                "name": "test_pre",
+                            },
+                            {
+                                "name": "std_acl",
+                                "acl_type": "standard",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "source": {"address": "192.0.2.0", "wildcard_bits": "0.0.0.255"},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                name="in_to_out",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        protocol="tcp",
-                                        source=dict(host="10.1.1.2"),
-                                        destination=dict(
-                                            host="172.16.1.1",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        log_input=dict(user_cookie="test_logInput"),
-                                        protocol="ip",
-                                        source=dict(any=True),
-                                        destination=dict(any=True),
-                                    ),
+                            },
+                            {
+                                "name": "in_to_out",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"host": "10.1.1.2"},
+                                        "destination": {
+                                            "host": "172.16.1.1",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "log_input": {"user_cookie": "test_logInput"},
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                name="test_acl_merge",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="80"),
-                                        ),
-                                        protocol="tcp",
-                                        sequence=100,
-                                        source=dict(host="192.0.2.1"),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
-                                        sequence="200",
-                                        source=dict(object_group="test_network_og"),
-                                        destination=dict(object_group="test_network_og"),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
+                            },
+                            {
+                                "name": "test_acl_merge",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {
+                                            "address": "192.0.2.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "80"},
+                                        },
+                                        "protocol": "tcp",
+                                        "sequence": 100,
+                                        "source": {"host": "192.0.2.1"},
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"tcp": {"ack": "true"}},
+                                        "sequence": "200",
+                                        "source": {"object_group": "test_network_og"},
+                                        "destination": {"object_group": "test_network_og"},
+                                        "dscp": "ef",
+                                        "ttl": {"eq": 10},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -176,7 +176,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -192,8 +192,8 @@ class TestIosAclsModule(TestIosModule):
         )
 
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "afi": "ipv4",
                         "acls": [
@@ -224,12 +224,11 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), [])
-        # self.execute_module(changed=False, commands=[], sort=True)
+        assert sorted(result["commands"]) == []
 
     def test_ios_acls_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -248,41 +247,41 @@ class TestIosAclsModule(TestIosModule):
         )
 
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="replace_acl",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        tos=dict(min_monetary_cost=True),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "replace_acl",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"tcp": {"ack": "true"}},
+                                        "source": {
+                                            "address": "198.51.100.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.101.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "tos": {"min_monetary_cost": True},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                name="test_acl",
-                                acl_type="standard",
-                                aces=[dict(remarks=["Another remark here"])],
-                            ),
+                            },
+                            {
+                                "name": "test_acl",
+                                "acl_type": "standard",
+                                "aces": [{"remarks": ["Another remark here"]}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -293,7 +292,7 @@ class TestIosAclsModule(TestIosModule):
             "no remark remark check 1",
             "no remark some random remark 2",
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -310,8 +309,8 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "afi": "ipv4",
                         "acls": [
@@ -397,11 +396,11 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), [])
+        assert sorted(result["commands"]) == []
 
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -416,37 +415,37 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="150",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(syn="true")),
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        destination=dict(
-                                            address="198.51.110.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "150",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"tcp": {"syn": "true"}},
+                                        "source": {
+                                            "address": "198.51.100.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "destination": {
+                                            "address": "198.51.110.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "dscp": "ef",
+                                        "ttl": {"eq": 10},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -456,7 +455,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -475,8 +474,8 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "afi": "ipv4",
                         "acls": [
@@ -548,12 +547,12 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=False)
         command = []
-        self.assertEqual(sorted(result["commands"]), sorted(command))
+        assert sorted(result["commands"]) == sorted(command)
 
     def test_ios_acls_deleted_afi_based(self):
         self.execute_show_command.return_value = dedent(
@@ -567,10 +566,10 @@ class TestIosAclsModule(TestIosModule):
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             """,
         )
-        set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
+        set_module_args({"config": [{"afi": "ipv4"}], "state": "deleted"})
         result = self.execute_module(changed=True)
         commands = ["no ip access-list extended 110", "no ip access-list standard test_acl"]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_deleted_acl_based(self):
         self.execute_show_command.return_value = dedent(
@@ -585,91 +584,91 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="110",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(icmp=dict(echo="true")),
-                                        sequence="10",
-                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "110",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"icmp": {"echo": "true"}},
+                                        "sequence": "10",
+                                        "source": {"address": "192.0.2.0", "wildcard_bits": "0.0.0.255"},
+                                        "destination": {
+                                            "address": "192.0.3.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "dscp": "ef",
+                                        "ttl": {"eq": 10},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="R1_TRAFFIC",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
-                                        sequence="10",
-                                        source=dict(any="true", port_protocol=dict(eq="www")),
-                                        destination=dict(
-                                            any="true",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        dscp="af11",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "R1_TRAFFIC",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"tcp": {"ack": "true"}},
+                                        "sequence": "10",
+                                        "source": {"any": "true", "port_protocol": {"eq": "www"}},
+                                        "destination": {
+                                            "any": "true",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "dscp": "af11",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         result = self.execute_module(changed=True)
         commands = ["no ip access-list extended 110", "no ipv6 access-list R1_TRAFFIC"]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="110",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        sequence="10",
-                                        remarks=["check for remark", "remark for acl 110"],
-                                        protocol_options=dict(tcp=dict(syn="true")),
-                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
-                                        destination=dict(
-                                            address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="www"),
-                                        ),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "110",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "sequence": "10",
+                                        "remarks": ["check for remark", "remark for acl 110"],
+                                        "protocol_options": {"tcp": {"syn": "true"}},
+                                        "source": {"address": "192.0.2.0", "wildcard_bits": "0.0.0.255"},
+                                        "destination": {
+                                            "address": "192.0.3.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "www"},
+                                        },
+                                        "dscp": "ef",
+                                        "ttl": {"eq": 10},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "ip access-list extended 110",
@@ -678,15 +677,15 @@ class TestIosAclsModule(TestIosModule):
             "remark remark for acl 110",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)
 
     def test_ios_acls_parsed(self):
         set_module_args(
-            dict(
-                running_config="""IPv6 access list R1_TRAFFIC\n deny tcp any eq www any range 10 20 ack dscp af11 sequence 10
+            {
+                "running_config": """IPv6 access list R1_TRAFFIC\n deny tcp any eq www any range 10 20 ack dscp af11 sequence 10
                 20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -729,15 +728,15 @@ class TestIosAclsModule(TestIosModule):
                 ],
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_acls_parsed_matches(self):
         set_module_args(
-            dict(
-                running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
+            {
+                "running_config": """Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
                 40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)\n60 permit 134.107.136.0, wildcard bits 0.0.0.255 (1 match)""",
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -770,7 +769,7 @@ class TestIosAclsModule(TestIosModule):
                 ],
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_acls_overridden_remark(self):
         self.execute_show_command.return_value = dedent(
@@ -785,8 +784,8 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "afi": "ipv4",
                         "acls": [
@@ -799,8 +798,8 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True, sort=True)
         cmds = [
@@ -809,7 +808,7 @@ class TestIosAclsModule(TestIosModule):
             "no 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10",
             "no 30 deny icmp object-group test_network_og any dscp ef ttl eq 10",
         ]
-        self.assertEqual(sorted(result["commands"]), cmds)
+        assert sorted(result["commands"]) == cmds
 
     def test_ios_acls_overridden_option(self):
         self.execute_show_command.return_value = dedent(
@@ -822,82 +821,82 @@ class TestIosAclsModule(TestIosModule):
         )
 
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="113",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        tos=dict(min_monetary_cost=True),
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        protocol_options=dict(protocol_number=433),
-                                        source=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.102.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        log=dict(user_cookie="check"),
-                                        tos=dict(max_throughput=True),
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        source=dict(
-                                            address="198.51.102.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.103.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        precedence=10,
-                                        tos=dict(normal=True),
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        source=dict(
-                                            address="198.51.105.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.106.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        time_range=20,
-                                        tos=dict(max_throughput=True),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "113",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "protocol_options": {"tcp": {"ack": "true"}},
+                                        "source": {
+                                            "address": "198.51.100.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.101.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "tos": {"min_monetary_cost": True},
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "protocol_options": {"protocol_number": 433},
+                                        "source": {
+                                            "address": "198.51.101.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.102.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                            "port_protocol": {"eq": "telnet"},
+                                        },
+                                        "log": {"user_cookie": "check"},
+                                        "tos": {"max_throughput": True},
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "source": {
+                                            "address": "198.51.102.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.103.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "precedence": 10,
+                                        "tos": {"normal": True},
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "source": {
+                                            "address": "198.51.105.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.106.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "time_range": 20,
+                                        "tos": {"max_throughput": True},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                name="test_acl",
-                                acl_type="standard",
-                                aces=[dict(remarks=["Another remark here"])],
-                            ),
+                            },
+                            {
+                                "name": "test_acl",
+                                "acl_type": "standard",
+                                "aces": [{"remarks": ["Another remark here"]}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -911,7 +910,7 @@ class TestIosAclsModule(TestIosModule):
             "no remark remark check 1",
             "no remark some random remark 2",
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_acls_overridden_clear(self):
         self.execute_show_command.return_value = dedent(
@@ -920,54 +919,54 @@ class TestIosAclsModule(TestIosModule):
         )
 
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="113",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        tos=dict(max_reliability=True),
-                                        enable_fragments=True,
-                                    ),
-                                    dict(
-                                        remarks=["extended ACL remark"],
-                                        grant="permit",
-                                        source=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.102.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        log=dict(user_cookie="check"),
-                                        tos=dict(service_value="119"),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "113",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "source": {
+                                            "address": "198.51.100.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.101.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "tos": {"max_reliability": True},
+                                        "enable_fragments": True,
+                                    },
+                                    {
+                                        "remarks": ["extended ACL remark"],
+                                        "grant": "permit",
+                                        "source": {
+                                            "address": "198.51.101.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {
+                                            "address": "198.51.102.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "log": {"user_cookie": "check"},
+                                        "tos": {"service_value": "119"},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                name="23",
-                                acl_type="standard",
-                                aces=[dict(remarks=["check remark here"])],
-                            ),
+                            },
+                            {
+                                "name": "23",
+                                "acl_type": "standard",
+                                "aces": [{"remarks": ["check remark here"]}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -978,7 +977,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list standard 23",
             "remark check remark here",
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_delete_acl(self):
         self.execute_show_command.return_value = dedent(
@@ -990,31 +989,31 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="2",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "2",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 10,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
 
         result = self.execute_module(changed=True)
         commands = ["no ip access-list standard 2"]
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_failed_extra_param_standard_acl(self):
         self.execute_show_command.return_value = dedent(
@@ -1027,34 +1026,34 @@ class TestIosAclsModule(TestIosModule):
         )
 
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="test_acl",
-                                acl_type="standard",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        sequence=10,
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(any="True"),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "test_acl",
+                                "acl_type": "standard",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "198.51.100.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "destination": {"any": "True"},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         result = self.execute_module(failed=True)
-        self.assertEqual(result, {"failed": True})
+        assert result == {"failed": True}
 
     def test_ios_failed_update_with_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -1066,41 +1065,35 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="test_acl",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-                state="merged",
-            ),
-        )
-
-        result = self.execute_module(failed=True)
-        self.assertEqual(
-            result,
             {
-                "msg": "Cannot update existing sequence 10 of ACLs test_acl with state merged. Please use state replaced or overridden.",
-                "failed": True,
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "test_acl",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 10,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                "state": "merged",
             },
         )
 
+        result = self.execute_module(failed=True)
+        assert result == {"msg": "Cannot update existing sequence 10 of ACLs test_acl with state merged. Please use state replaced or overridden.", "failed": True}
+
     def test_ios_acls_parsed_multioption(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     Standard IP access list 2
                         30 permit 172.16.1.11
@@ -1128,8 +1121,8 @@ class TestIosAclsModule(TestIosModule):
                         permit any host 0100.0ccc.cccc
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -1279,12 +1272,12 @@ class TestIosAclsModule(TestIosModule):
                 ],
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_acls_rendered_muiltioption(self):
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "afi": "ipv4",
                         "acls": [
@@ -1452,8 +1445,8 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "ip access-list extended 101",
@@ -1478,4 +1471,4 @@ class TestIosAclsModule(TestIosModule):
             "40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

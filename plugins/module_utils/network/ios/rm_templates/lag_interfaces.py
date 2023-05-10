@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,25 +22,25 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class Lag_interfacesTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Lag_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
         {
-            'name': 'member',
-            'getval': re.compile(
-                r'''
+            "name": "member",
+            "getval": re.compile(
+                r"""
               ^interface\s
-              (?P<member>\S+)$''', re.VERBOSE,
+              (?P<member>\S+)$""", re.VERBOSE,
             ),
-            'setval': 'interface {{ member }}',
-            'result': {
-                '{{ member }}': {
-                    'member': '{{ member }}',
+            "setval": "interface {{ member }}",
+            "result": {
+                "{{ member }}": {
+                    "member": "{{ member }}",
                 },
             },
-            'shared': True,
+            "shared": True,
         },
         {
             "name": "channel",
@@ -58,11 +57,11 @@ class Lag_interfacesTemplate(NetworkTemplate):
             "{{ (' mode ' + mode) if mode is defined else '' }}"
             "{{ (' link ' + link|string) if link is defined else '' }}",
             "result": {
-                '{{ member }}': {
-                    'member': '{{ member }}',
-                    'mode': '{{ mode }}',
-                    'channel': 'Port-channel{{ channel }}',
-                    'link': '{{ link }}',
+                "{{ member }}": {
+                    "member": "{{ member }}",
+                    "mode": "{{ mode }}",
+                    "channel": "Port-channel{{ channel }}",
+                    "link": "{{ link }}",
                 },
             },
         },

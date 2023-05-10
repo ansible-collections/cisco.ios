@@ -21,7 +21,7 @@ class TestIosHostnameModule(TestIosModule):
     module = ios_hostname
 
     def setUp(self):
-        super(TestIosHostnameModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosHostnameModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosHostnameModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -71,10 +71,10 @@ class TestIosHostnameModule(TestIosModule):
             hostname testname
             """,
         )
-        set_module_args(dict(config=dict(hostname="testname"), state="merged"))
+        set_module_args({"config": {"hostname": "testname"}, "state": "merged"})
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_hostname_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -82,10 +82,10 @@ class TestIosHostnameModule(TestIosModule):
             hostname testname
             """,
         )
-        set_module_args(dict(config=dict(hostname="testnameNew"), state="merged"))
+        set_module_args({"config": {"hostname": "testnameNew"}, "state": "merged"})
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_hostname_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -93,29 +93,29 @@ class TestIosHostnameModule(TestIosModule):
             hostname testname
             """,
         )
-        set_module_args(dict(config=dict(), state="deleted"))
+        set_module_args({"config": {}, "state": "deleted"})
         commands = ["no hostname testname"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_hostname_deleted_blank(self):
         self.execute_show_command.return_value = dedent(
             """\
             """,
         )
-        set_module_args(dict(config=dict(), state="deleted"))
+        set_module_args({"config": {}, "state": "deleted"})
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_hostname_replaced_overridden(self):
-        """both the replaced and overridden states are supported to have same behaviour"""
+        """Both the replaced and overridden states are supported to have same behaviour."""
         self.execute_show_command.return_value = dedent(
             """\
             hostname testname
             """,
         )
-        set_module_args(dict(config=dict(hostname="testnameNew"), state="replaced"))
+        set_module_args({"config": {"hostname": "testnameNew"}, "state": "replaced"})
         commands = ["hostname testnameNew"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)

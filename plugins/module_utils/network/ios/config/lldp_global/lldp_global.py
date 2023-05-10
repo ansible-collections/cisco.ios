@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
@@ -7,7 +6,7 @@ The ios_lldp_global class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -20,7 +19,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     dict_to_set,
@@ -29,9 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class Lldp_global(ConfigBase):
-    """
-    The ios_lldp_global class
-    """
+    """The ios_lldp_global class."""
 
     gather_subset = ["!all", "!min"]
 
@@ -49,11 +45,11 @@ class Lldp_global(ConfigBase):
         "system_name": "system-name",
     }
 
-    def __init__(self, module):
-        super(Lldp_global, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_lldp_global_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -70,19 +66,19 @@ class Lldp_global(ConfigBase):
         return lldp_global_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
         if self.state in self.ACTION_STATES:
             existing_lldp_global_facts = self.get_lldp_global_facts()
         else:
-            existing_lldp_global_facts = dict()
+            existing_lldp_global_facts = {}
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_lldp_global_facts))
@@ -105,7 +101,7 @@ class Lldp_global(ConfigBase):
                 )
             result["parsed"] = self.get_lldp_global_facts(data=running_config)
         else:
-            changed_lldp_global_facts = dict()
+            changed_lldp_global_facts = {}
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_lldp_global_facts
@@ -119,7 +115,7 @@ class Lldp_global(ConfigBase):
 
     def set_config(self, existing_lldp_global_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -131,7 +127,7 @@ class Lldp_global(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -142,7 +138,7 @@ class Lldp_global(ConfigBase):
         commands = []
         if self.state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(self.state),
+                msg=f"value of config parameter must not be empty for state {self.state}",
             )
 
         if self.state == "overridden":
@@ -157,7 +153,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -174,7 +170,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :param want: the additive configuration as a dictionary
         :param obj_in_have: the current configuration as a dictionary
@@ -189,7 +185,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :param want: the objects from which the configuration should be removed
         :param obj_in_have: the current configuration as a dictionary
@@ -229,22 +225,22 @@ class Lldp_global(ConfigBase):
             tlv_select = diff.get("tlv_select")
 
             if holdtime:
-                cmd = "lldp holdtime {0}".format(holdtime)
+                cmd = f"lldp holdtime {holdtime}"
                 self.add_command_to_config_list(cmd, commands)
             if enabled:
                 cmd = "lldp run"
                 self.add_command_to_config_list(cmd, commands)
             if timer:
-                cmd = "lldp timer {0}".format(timer)
+                cmd = f"lldp timer {timer}"
                 self.add_command_to_config_list(cmd, commands)
             if reinit:
-                cmd = "lldp reinit {0}".format(reinit)
+                cmd = f"lldp reinit {reinit}"
                 self.add_command_to_config_list(cmd, commands)
             if tlv_select:
                 tlv_selec_dict = dict(tlv_select)
                 for k, v in iteritems(self.tlv_select_params):
                     if k in tlv_selec_dict and tlv_selec_dict[k]:
-                        cmd = "lldp tlv-select {0}".format(v)
+                        cmd = f"lldp tlv-select {v}"
                         self.add_command_to_config_list(cmd, commands)
 
         return commands

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Bgp_globalFacts(object):
-    """The cisco.ios bgp_global facts class"""
+class Bgp_globalFacts:
+    """The cisco.ios bgp_global facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
 
@@ -36,7 +34,7 @@ class Bgp_globalFacts(object):
         return connection.get("show running-config | section ^router bgp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Bgp_global network resource
+        """Populate the facts for Bgp_global network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -56,8 +54,7 @@ class Bgp_globalFacts(object):
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
             objs["neighbors"] = sorted(
-                list(neighbor_list.values()),
-                key=lambda k, pk="neighbor_address": k[pk],
+                neighbor_list.values(), key=lambda k, pk="neighbor_address": k[pk],
             )
 
         obj = utils.remove_empties(objs)

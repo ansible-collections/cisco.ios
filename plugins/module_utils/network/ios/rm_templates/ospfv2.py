@@ -28,6 +28,7 @@ def _tmplt_ospf_adjacency_cmd(config_data):
         if "max_adjacency" in config_data["adjacency"]:
             command += " {min_adjacency}".format(**config_data["adjacency"])
         return command
+    return None
 
 
 def _tmplt_ospf_address_family_cmd(config_data):
@@ -42,6 +43,7 @@ def _tmplt_ospf_address_family_cmd(config_data):
                     cmd += " tid {tid}".format(**config_data["address_family"].get("topology"))
                 command.insert(1, cmd)
         return command
+    return None
 
 
 def _tmplt_ospf_area_authentication(config_data):
@@ -50,17 +52,19 @@ def _tmplt_ospf_area_authentication(config_data):
         if config_data["authentication"].get("message_digest"):
             command += " message-digest"
         return command
+    return None
 
 
 def _tmplt_ospf_area_filter(config_data):
     if "filter_list" in config_data:
         command = []
-        for key, value in iteritems(config_data.get("filter_list")):
+        for _key, value in iteritems(config_data.get("filter_list")):
             cmd = "area {area_id}".format(**config_data)
             if value.get("name") and value.get("direction"):
                 cmd += " filter-list prefix {name} {direction}".format(**value)
             command.append(cmd)
         return command
+    return None
 
 
 def _tmplt_ospf_area_nssa(config_data):
@@ -85,6 +89,7 @@ def _tmplt_ospf_area_nssa(config_data):
         if config_data["nssa"].get("no_summary"):
             command += " no-summary"
         return command
+    return None
 
 
 def _tmplt_ospf_area_nssa_translate(config_data):
@@ -93,12 +98,13 @@ def _tmplt_ospf_area_nssa_translate(config_data):
         if "translate" in config_data["nssa"]:
             command += " translate type7 {translate}".format(**config_data["nssa"])
         return command
+    return None
 
 
 def _tmplt_ospf_area_ranges(config_data):
     if "ranges" in config_data:
         commands = []
-        for k, v in iteritems(config_data["ranges"]):
+        for _k, v in iteritems(config_data["ranges"]):
             cmd = "area {area_id} range".format(**config_data)
             temp_cmd = " {address} {netmask}".format(**v)
             if "advertise" in v:
@@ -110,6 +116,7 @@ def _tmplt_ospf_area_ranges(config_data):
             cmd += temp_cmd
             commands.append(cmd)
         return commands
+    return None
 
 
 def _tmplt_ospf_area_sham_link(config_data):
@@ -122,6 +129,7 @@ def _tmplt_ospf_area_sham_link(config_data):
         if "ttl_security" in config_data["sham_link"]:
             command += " ttl-security hops {ttl_security}".format(**config_data["sham_link"])
         return command
+    return None
 
 
 def _tmplt_ospf_area_stub_link(config_data):
@@ -132,6 +140,7 @@ def _tmplt_ospf_area_stub_link(config_data):
         if "no_summary" in config_data["stub"]:
             command += " no-summary"
         return command
+    return None
 
 
 def _tmplt_ospf_auto_cost(config_data):
@@ -142,6 +151,7 @@ def _tmplt_ospf_auto_cost(config_data):
                 **config_data["auto_cost"],
             )
         return command
+    return None
 
 
 def _tmplt_ospf_capability(config_data):
@@ -155,6 +165,7 @@ def _tmplt_ospf_capability(config_data):
         elif "vrf_lite" in config_data["capability"]:
             command = "capability vrf-lite"
         return command
+    return None
 
 
 def _tmplt_ospf_compatible(config_data):
@@ -166,6 +177,7 @@ def _tmplt_ospf_compatible(config_data):
         elif "rfc5243" in config_data["compatible"]:
             command = "compatible rfc5243"
         return command
+    return None
 
 
 def _tmplt_ospf_default_information(config_data):
@@ -182,6 +194,7 @@ def _tmplt_ospf_default_information(config_data):
         if "metric" in config_data["default_information"]:
             command += " route-map {route_map}".format(**config_data["default_information"])
         return command
+    return None
 
 
 def _tmplt_ospf_discard_route(config_data):
@@ -192,6 +205,7 @@ def _tmplt_ospf_discard_route(config_data):
         if "internal" in config_data["discard_route"]:
             command += " internal {internal}".format(**config_data["discard_route"])
         return command
+    return None
 
 
 def _tmplt_ospf_distance_admin_distance(config_data):
@@ -204,6 +218,7 @@ def _tmplt_ospf_distance_admin_distance(config_data):
         if "acl" in config_data["distance"]["admin_distance"]:
             command += " {acl}".format(**config_data["distance"]["admin_distance"])
         return command
+    return None
 
 
 def _tmplt_ospf_distance_ospf(config_data):
@@ -216,12 +231,13 @@ def _tmplt_ospf_distance_ospf(config_data):
         if config_data["distance"].get("ospf").get("external"):
             command += " external {external}".format(**config_data["distance"]["ospf"])
         return command
+    return None
 
 
 def _tmplt_ospf_distribute_list_acls(config_data):
     if "acls" in config_data.get("distribute_list"):
         command = []
-        for k, v in iteritems(config_data["distribute_list"]["acls"]):
+        for _k, v in iteritems(config_data["distribute_list"]["acls"]):
             cmd = "distribute-list {name} {direction}".format(**v)
             if "interface" in v:
                 cmd += " {interface}".format(**v)
@@ -229,6 +245,7 @@ def _tmplt_ospf_distribute_list_acls(config_data):
                 cmd += " {protocol}".format(**v)
             command.append(cmd)
         return command
+    return None
 
 
 def _tmplt_ospf_distribute_list_prefix(config_data):
@@ -243,6 +260,7 @@ def _tmplt_ospf_distribute_list_prefix(config_data):
         if "protocol" in config_data["distribute_list"]["prefix"]:
             command += " {protocol}".format(**config_data["distribute_list"]["prefix"])
         return command
+    return None
 
 
 def _tmplt_ospf_domain_id(config_data):
@@ -256,6 +274,7 @@ def _tmplt_ospf_domain_id(config_data):
         elif "null" in config_data["domain_id"]:
             command += " null"
         return command
+    return None
 
 
 def _tmplt_ospf_event_log(config_data):
@@ -268,6 +287,7 @@ def _tmplt_ospf_event_log(config_data):
         if "size" in config_data["event_log"]:
             command += " size {size}".format(**config_data["event_log"])
         return command
+    return None
 
 
 def _tmplt_ospf_limit(config_data):
@@ -284,6 +304,7 @@ def _tmplt_ospf_limit(config_data):
             if "disable" in config_data["limit"]["dc"]:
                 command += " non-dc disable"
         return command
+    return None
 
 
 def _tmplt_ospf_vrf_local_rib_criteria(config_data):
@@ -296,6 +317,7 @@ def _tmplt_ospf_vrf_local_rib_criteria(config_data):
         if "nssa_translation" in config_data["local_rib_criteria"]:
             command += " nssa-translation"
         return command
+    return None
 
 
 def _tmplt_ospf_log_adjacency_changes(config_data):
@@ -304,6 +326,7 @@ def _tmplt_ospf_log_adjacency_changes(config_data):
         if "detail" in config_data["log_adjacency_changes"]:
             command += " detail"
         return command
+    return None
 
 
 def _tmplt_ospf_max_lsa(config_data):
@@ -320,6 +343,7 @@ def _tmplt_ospf_max_lsa(config_data):
         if "warning_only" in config_data["max_lsa"]:
             command += " warning-only"
         return command
+    return None
 
 
 def _tmplt_ospf_max_metric(config_data):
@@ -339,6 +363,7 @@ def _tmplt_ospf_max_metric(config_data):
         if "summary_lsa" in config_data["max_metric"]:
             command += " summary-lsa {summary_lsa}".format(**config_data["max_metric"])
         return command
+    return None
 
 
 def _tmplt_ospf_mpls_ldp(config_data):
@@ -381,6 +406,7 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
                 **config_data["mpls"]["traffic_eng"],
             )
         return command
+    return None
 
 
 def _tmplt_ospf_neighbor(config_data):
@@ -397,6 +423,7 @@ def _tmplt_ospf_neighbor(config_data):
         if "priority" in config_data["neighbor"]:
             command += " priority {priority}".format(**config_data["neighbor"])
         return command
+    return None
 
 
 def _tmplt_ospf_network(config_data):
@@ -410,6 +437,7 @@ def _tmplt_ospf_network(config_data):
                 cmd += " area {area}".format(**each)
             command.append(cmd)
         return command
+    return None
 
 
 def _tmplt_ospf_nsf_cisco(config_data):
@@ -418,6 +446,7 @@ def _tmplt_ospf_nsf_cisco(config_data):
         if "disable" in config_data["nsf"]["cisco"]:
             command += " disable"
         return command
+    return None
 
 
 def _tmplt_ospf_nsf_ietf(config_data):
@@ -428,6 +457,7 @@ def _tmplt_ospf_nsf_ietf(config_data):
         elif "strict_lsa_checking" in config_data["nsf"]["ietf"]:
             command += " strict-lsa-checking"
         return command
+    return None
 
 
 def _tmplt_ospf_queue_depth_hello(config_data):
@@ -438,6 +468,7 @@ def _tmplt_ospf_queue_depth_hello(config_data):
         elif "unlimited" in config_data["queue_depth"]["hello"]:
             command += " unlimited"
         return command
+    return None
 
 
 def _tmplt_ospf_queue_depth_update(config_data):
@@ -448,6 +479,7 @@ def _tmplt_ospf_queue_depth_update(config_data):
         elif "unlimited" in config_data["queue_depth"]["update"]:
             command += " unlimited"
         return command
+    return None
 
 
 def _tmplt_ospf_passive_interfaces(config_data):
@@ -457,11 +489,12 @@ def _tmplt_ospf_passive_interfaces(config_data):
         if config_data["passive_interfaces"].get("interface"):
             if config_data["passive_interfaces"].get("set_interface"):
                 for each in config_data["passive_interfaces"]["interface"]:
-                    cmd = "passive-interface {0}".format(each)
+                    cmd = f"passive-interface {each}"
             elif not config_data["passive_interfaces"].get("set_interface"):
                 for each in config_data["passive_interfaces"]["interface"]:
-                    cmd = "no passive-interface {0}".format(each)
+                    cmd = f"no passive-interface {each}"
         return cmd
+    return None
 
 
 def _tmplt_ospf_summary_address(config_data):
@@ -474,6 +507,7 @@ def _tmplt_ospf_summary_address(config_data):
             if "tag" in config_data["summary_address"]:
                 command += " tag {tag}".format(**config_data["summary_address"])
         return command
+    return None
 
 
 def _tmplt_ospf_timers_pacing(config_data):
@@ -486,6 +520,7 @@ def _tmplt_ospf_timers_pacing(config_data):
         elif "retransmission" in config_data["timers"]["pacing"]:
             command += " retransmission {retransmission}".format(**config_data["timers"]["pacing"])
         return command
+    return None
 
 
 def _tmplt_ospf_ttl_security(config_data):
@@ -494,11 +529,12 @@ def _tmplt_ospf_ttl_security(config_data):
         if "hops" in config_data["ttl_security"]:
             command += " hops {hops}".format(**config_data["ttl_security"])
         return command
+    return None
 
 
 class Ospfv2Template(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Ospfv2Template, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     PARSERS = [
         {

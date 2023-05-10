@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class L2_interfacesFacts(object):
-    """The ios l2_interfaces facts class"""
+class L2_interfacesFacts:
+    """The ios l2_interfaces facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = L2_interfacesArgs.argument_spec
 
@@ -36,7 +34,7 @@ class L2_interfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for L2_interfaces network resource
+        """Populate the facts for L2_interfaces network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

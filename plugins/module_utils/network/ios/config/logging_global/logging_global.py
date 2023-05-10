@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -27,7 +26,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.logging_global import (
     Logging_globalTemplate,
@@ -35,12 +33,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Logging_global(ResourceModule):
-    """
-    The ios_logging_global config class
-    """
+    """The ios_logging_global config class."""
 
-    def __init__(self, module):
-        super(Logging_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -76,7 +72,7 @@ class Logging_global(ResourceModule):
         self.complex_parsers = ["message_counter", "discriminator", "snmp_trap"]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -90,7 +86,6 @@ class Logging_global(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-
         wantd = self.list_to_dict(self.want)
         haved = self.list_to_dict(self.have)
 
@@ -113,7 +108,7 @@ class Logging_global(ResourceModule):
         self._compare_complex_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-        """Compare list of dict"""
+        """Compare list of dict."""
         for _par in self.list_parsers:
             i_want = want.get(_par, {})
             i_have = have.get(_par, {})
@@ -133,7 +128,7 @@ class Logging_global(ResourceModule):
                 self.addcmd(haveing, _parser, negate=True)
 
     def _compare_complex_attrs(self, want, have):
-        """Compare dict of list"""
+        """Compare dict of list."""
         for _par in self.complex_parsers:
             i_want = want.get(_par, {})
             i_have = have.get(_par, {})
@@ -147,7 +142,7 @@ class Logging_global(ResourceModule):
                 self.addcmd(haveing, _par, negate=True)
 
     def list_to_dict(self, data):
-        """Convert all list of dicts to dicts of dicts"""
+        """Convert all list of dicts to dicts of dicts."""
         p_key = {"filter": "url", "hosts": "host", "source_interface": "interface"}
         if data.get("hosts"):  # handle aliased hostname as host
             for v in data.get("hosts"):

@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-"""
-The module file for ios_lldp_global
-"""
+"""The module file for ios_lldp_global."""
 from __future__ import absolute_import, division, print_function
 
 
@@ -323,7 +321,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )
@@ -334,7 +331,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lldp_
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

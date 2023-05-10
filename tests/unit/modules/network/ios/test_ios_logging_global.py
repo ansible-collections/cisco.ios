@@ -21,7 +21,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
     module = ios_logging_global
 
     def setUp(self):
-        super(TestIosLoggingGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLoggingGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -66,9 +66,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         self.mock_execute_show_command.stop()
 
     def test_ios_logging_global_merged_idempotent(self):
-        """
-        passing all commands as have and expecting [] commands
-        """
+        """Passing all commands as have and expecting [] commands."""
         self.execute_show_command.return_value = dedent(
             """\
             logging on
@@ -109,54 +107,54 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging filter tftp://172.16.2.14/ESM/escalate.tcl args TESTInst
             """,
         )
-        playbook = dict(
-            config=dict(
-                logging_on="enable",
-                buffered=dict(size=5099, severity="notifications", xml=True),
-                buginf=True,
-                cns_events="warnings",
-                console=dict(severity="critical", xml=True),
-                count=True,
-                delimiter=dict(tcp=True),
-                discriminator=["msglog01 severity includes 5"],
-                dmvpn=dict(rate_limit=10),
-                esm=dict(config=True),
-                exception=4099,
-                facility="local5",
-                filter=[
-                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
-                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
+        playbook = {
+            "config": {
+                "logging_on": "enable",
+                "buffered": {"size": 5099, "severity": "notifications", "xml": True},
+                "buginf": True,
+                "cns_events": "warnings",
+                "console": {"severity": "critical", "xml": True},
+                "count": True,
+                "delimiter": {"tcp": True},
+                "discriminator": ["msglog01 severity includes 5"],
+                "dmvpn": {"rate_limit": 10},
+                "esm": {"config": True},
+                "exception": 4099,
+                "facility": "local5",
+                "filter": [
+                    {"url": "tftp://172.16.2.18/ESM/elate.tcl", "args": "TESTInst2"},
+                    {"url": "tftp://172.16.2.14/ESM/escalate.tcl", "args": "TESTInst"},
                 ],
-                history=dict(severity="alerts", size=400),
-                hosts=[
-                    dict(hostname="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
+                "history": {"severity": "alerts", "size": 400},
+                "hosts": [
+                    {"hostname": "172.16.1.1"},
+                    {"hostname": "172.16.1.11", "xml": True},
+                    {"hostname": "172.16.1.25", "filtered": True},
+                    {"hostname": "172.16.1.10", "stream": 10, "filtered": True},
+                    {"hostname": "172.16.1.13", "transport": {"tcp": {"port": 514}}},
                 ],
-                message_counter=["log", "debug"],
-                monitor=dict(severity="warnings"),
-                origin_id=dict(tag="hostname"),
-                persistent=dict(batch=4444),
-                policy_firewall=dict(rate_limit=10),
-                queue_limit=dict(esm=150),
-                rate_limit=dict(all=True, size=2, except_severity="warnings"),
-                reload=dict(severity="alerts"),
-                server_arp=True,
-                snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
-                trap="errors",
-                userinfo=True,
-            ),
-        )
+                "message_counter": ["log", "debug"],
+                "monitor": {"severity": "warnings"},
+                "origin_id": {"tag": "hostname"},
+                "persistent": {"batch": 4444},
+                "policy_firewall": {"rate_limit": 10},
+                "queue_limit": {"esm": 150},
+                "rate_limit": {"all": True, "size": 2, "except_severity": "warnings"},
+                "reload": {"severity": "alerts"},
+                "server_arp": True,
+                "snmp_trap": ["errors"],
+                "source_interface": [{"interface": "GBit1/0"}, {"interface": "CTunnel2"}],
+                "trap": "errors",
+                "userinfo": True,
+            },
+        }
         merged = []
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module()
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        assert sorted(result["commands"]) == sorted(merged)
 
     def test_ios_logging_global_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -185,31 +183,31 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging trap errors
             """,
         )
-        playbook = dict(
-            config=dict(
-                logging_on="enable",
-                count=True,
-                buffered=dict(size=5099, severity="notifications", xml=True),
-                buginf=True,
-                console=dict(severity="critical", xml=True),
-                delimiter=dict(tcp=True),
-                dmvpn=dict(rate_limit=10),
-                esm=dict(config=True),
-                exception=4099,
-                facility="local5",
-                history=dict(severity="alerts", size=400),
-                monitor=dict(severity="warnings"),
-                origin_id=dict(tag="hostname"),
-                persistent=dict(batch=4444),
-                policy_firewall=dict(rate_limit=10),
-                queue_limit=dict(esm=150),
-                rate_limit=dict(all=True, size=2, except_severity="warnings"),
-                reload=dict(severity="alerts"),
-                server_arp=True,
-                trap="errors",
-                userinfo=True,
-            ),
-        )
+        playbook = {
+            "config": {
+                "logging_on": "enable",
+                "count": True,
+                "buffered": {"size": 5099, "severity": "notifications", "xml": True},
+                "buginf": True,
+                "console": {"severity": "critical", "xml": True},
+                "delimiter": {"tcp": True},
+                "dmvpn": {"rate_limit": 10},
+                "esm": {"config": True},
+                "exception": 4099,
+                "facility": "local5",
+                "history": {"severity": "alerts", "size": 400},
+                "monitor": {"severity": "warnings"},
+                "origin_id": {"tag": "hostname"},
+                "persistent": {"batch": 4444},
+                "policy_firewall": {"rate_limit": 10},
+                "queue_limit": {"esm": 150},
+                "rate_limit": {"all": True, "size": 2, "except_severity": "warnings"},
+                "reload": {"severity": "alerts"},
+                "server_arp": True,
+                "trap": "errors",
+                "userinfo": True,
+            },
+        }
         deleted = [
             "no logging on",
             "no logging count",
@@ -239,7 +237,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        assert sorted(result["commands"]) == sorted(deleted)
 
     def test_ios_logging_global_deleted_list(self):
         self.execute_show_command.return_value = dedent(
@@ -259,25 +257,25 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging source-interface CTunnel2
             """,
         )
-        playbook = dict(
-            config=dict(
-                discriminator=["msglog01 severity includes 5"],
-                filter=[
-                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
-                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
+        playbook = {
+            "config": {
+                "discriminator": ["msglog01 severity includes 5"],
+                "filter": [
+                    {"url": "tftp://172.16.2.18/ESM/elate.tcl", "args": "TESTInst2"},
+                    {"url": "tftp://172.16.2.14/ESM/escalate.tcl", "args": "TESTInst"},
                 ],
-                hosts=[
-                    dict(host="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(host="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
+                "hosts": [
+                    {"host": "172.16.1.1"},
+                    {"hostname": "172.16.1.11", "xml": True},
+                    {"host": "172.16.1.25", "filtered": True},
+                    {"hostname": "172.16.1.10", "stream": 10, "filtered": True},
+                    {"hostname": "172.16.1.13", "transport": {"tcp": {"port": 514}}},
                 ],
-                message_counter=["log", "debug"],
-                snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
-            ),
-        )
+                "message_counter": ["log", "debug"],
+                "snmp_trap": ["errors"],
+                "source_interface": [{"interface": "GBit1/0"}, {"interface": "CTunnel2"}],
+            },
+        }
         deleted = [
             "no logging discriminator msglog01 severity includes 5",
             "no logging filter tftp://172.16.2.18/ESM/elate.tcl args TESTInst2",
@@ -297,7 +295,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        assert sorted(result["commands"]) == sorted(deleted)
 
     def test_ios_logging_global_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -326,25 +324,25 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging trap errors
             """,
         )
-        playbook = dict(
-            config=dict(
-                discriminator=["msglog01 severity includes 5"],
-                filter=[
-                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
-                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
+        playbook = {
+            "config": {
+                "discriminator": ["msglog01 severity includes 5"],
+                "filter": [
+                    {"url": "tftp://172.16.2.18/ESM/elate.tcl", "args": "TESTInst2"},
+                    {"url": "tftp://172.16.2.14/ESM/escalate.tcl", "args": "TESTInst"},
                 ],
-                hosts=[
-                    dict(hostname="172.16.1.1"),
-                    dict(hostname="172.16.1.11", xml=True),
-                    dict(hostname="172.16.1.25", filtered=True),
-                    dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
+                "hosts": [
+                    {"hostname": "172.16.1.1"},
+                    {"hostname": "172.16.1.11", "xml": True},
+                    {"hostname": "172.16.1.25", "filtered": True},
+                    {"hostname": "172.16.1.10", "stream": 10, "filtered": True},
+                    {"hostname": "172.16.1.13", "transport": {"tcp": {"port": 514}}},
                 ],
-                message_counter=["log", "debug"],
-                snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
-            ),
-        )
+                "message_counter": ["log", "debug"],
+                "snmp_trap": ["errors"],
+                "source_interface": [{"interface": "GBit1/0"}, {"interface": "CTunnel2"}],
+            },
+        }
         overridden = [
             "no logging on",
             "no logging count",
@@ -386,7 +384,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        assert sorted(result["commands"]) == sorted(overridden)
 
     def test_ios_logging_global_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -397,20 +395,20 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging facility local6
             """,
         )
-        playbook = dict(
-            config=dict(
-                buffered=dict(size=5099, severity="warnings", xml=True),
-                facility="local6",
-                hosts=[dict(host="172.16.1.11", xml=True)],
-                monitor=dict(severity="critical"),
-            ),
-        )
+        playbook = {
+            "config": {
+                "buffered": {"size": 5099, "severity": "warnings", "xml": True},
+                "facility": "local6",
+                "hosts": [{"host": "172.16.1.11", "xml": True}],
+                "monitor": {"severity": "critical"},
+            },
+        }
         overridden = []
         playbook["state"] = "overridden"
         set_module_args(playbook)
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        assert sorted(result["commands"]) == sorted(overridden)
 
     def test_ios_logging_global_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -418,49 +416,49 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1
             """,
         )
-        playbook = dict(
-            config=dict(
-                monitor=dict(discriminator="TEST"),
-                hosts=[
-                    dict(hostname="172.16.2.15", session_id=dict(text="Test")),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7304",
-                        discriminator="msglog01 severity includes 5",
-                    ),
-                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314", sequence_num_session=True),
-                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7324", vrf="vpn1"),
-                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334", stream=10, filtered=True),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7344",
-                        session_id=dict(tag="ipv4"),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7354",
-                        transport=dict(tcp=dict(port=514, xml=True)),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7374",
-                        vrf="Apn2",
-                        transport=dict(udp=dict(discriminator="msglog01 severity includes 5")),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7384",
-                        transport=dict(udp=dict(sequence_num_session=True)),
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
-                        transport=dict(
-                            tcp=dict(
-                                audit=True,
-                                filtered=True,
-                                stream=10,
-                                session_id=dict(text="Test"),
-                            ),
-                        ),
-                    ),
+        playbook = {
+            "config": {
+                "monitor": {"discriminator": "TEST"},
+                "hosts": [
+                    {"hostname": "172.16.2.15", "session_id": {"text": "Test"}},
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7304",
+                        "discriminator": "msglog01 severity includes 5",
+                    },
+                    {"ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7314", "sequence_num_session": True},
+                    {"ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7324", "vrf": "vpn1"},
+                    {"ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7334", "stream": 10, "filtered": True},
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7344",
+                        "session_id": {"tag": "ipv4"},
+                    },
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7354",
+                        "transport": {"tcp": {"port": 514, "xml": True}},
+                    },
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7374",
+                        "vrf": "Apn2",
+                        "transport": {"udp": {"discriminator": "msglog01 severity includes 5"}},
+                    },
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7384",
+                        "transport": {"udp": {"sequence_num_session": True}},
+                    },
+                    {
+                        "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7364",
+                        "transport": {
+                            "tcp": {
+                                "audit": True,
+                                "filtered": True,
+                                "stream": 10,
+                                "session_id": {"text": "Test"},
+                            },
+                        },
+                    },
                 ],
-            ),
-        )
+            },
+        }
         merged = [
             "logging monitor discriminator TEST",
             "logging host 172.16.2.15 session-id string Test",
@@ -479,12 +477,12 @@ class TestIosLoggingGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        assert sorted(result["commands"]) == sorted(merged)
 
     def test_ios_logging_global_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     logging on
                     logging buffered xml 5099 notifications
@@ -496,22 +494,22 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     logging host 172.16.2.15 session-id string Test
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
-        parsed = dict(
-            logging_on="enable",
-            buffered=dict(size=5099, severity="notifications", xml=True),
-            buginf=True,
-            cns_events="warnings",
-            console=dict(severity="critical", xml=True),
-            count=True,
-            delimiter=dict(tcp=True),
-            hosts=[dict(host="172.16.2.15", session_id=dict(text="Test"))],
-        )
+        parsed = {
+            "logging_on": "enable",
+            "buffered": {"size": 5099, "severity": "notifications", "xml": True},
+            "buginf": True,
+            "cns_events": "warnings",
+            "console": {"severity": "critical", "xml": True},
+            "count": True,
+            "delimiter": {"tcp": True},
+            "hosts": [{"host": "172.16.2.15", "session_id": {"text": "Test"}}],
+        }
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["parsed"]), sorted(parsed))
+        assert sorted(result["parsed"]) == sorted(parsed)
 
     def test_ios_logging_global_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -519,12 +517,12 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging persistent notify
             """,
         )
-        set_module_args(dict(state="gathered"))
-        gathered = dict(persistent=dict(notify=True))
+        set_module_args({"state": "gathered"})
+        gathered = {"persistent": {"notify": True}}
         result = self.execute_module(changed=False)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+        assert sorted(result["gathered"]) == sorted(gathered)
 
     def test_ios_logging_global_gathered_host(self):
         self.execute_show_command.return_value = dedent(
@@ -532,39 +530,39 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1 vrf vpn-1 transport tcp audit
             """,
         )
-        set_module_args(dict(state="gathered"))
-        gathered = dict(
-            hosts=[dict(hostname="172.16.1.1", vrf="vpn-1", transport=dict(tcp=dict(audit=True)))],
-        )
+        set_module_args({"state": "gathered"})
+        gathered = {
+            "hosts": [{"hostname": "172.16.1.1", "vrf": "vpn-1", "transport": {"tcp": {"audit": True}}}],
+        }
         result = self.execute_module(changed=False)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+        assert sorted(result["gathered"]) == sorted(gathered)
 
     def test_ios_logging_global_rendered(self):
         set_module_args(
-            dict(
-                config=dict(
-                    rate_limit=dict(console=True, size=2, except_severity="warnings"),
-                    reload=dict(message_limit=10, severity="alerts"),
-                    persistent=dict(
-                        url="flash0:172.16.0.1",
-                        threshold=2,
-                        immediate=True,
-                        protected=True,
-                        notify=True,
-                    ),
-                    queue_limit=dict(trap=1000),
-                    buffered=dict(discriminator="notifications", filtered=True),
-                    hosts=[
-                        dict(
-                            ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
-                            transport=dict(tcp=dict(session_id=dict(tag="hostname"))),
-                        ),
+            {
+                "config": {
+                    "rate_limit": {"console": True, "size": 2, "except_severity": "warnings"},
+                    "reload": {"message_limit": 10, "severity": "alerts"},
+                    "persistent": {
+                        "url": "flash0:172.16.0.1",
+                        "threshold": 2,
+                        "immediate": True,
+                        "protected": True,
+                        "notify": True,
+                    },
+                    "queue_limit": {"trap": 1000},
+                    "buffered": {"discriminator": "notifications", "filtered": True},
+                    "hosts": [
+                        {
+                            "ipv6": "2001:0db8:85a3:0000:0000:8a2e:0370:7364",
+                            "transport": {"tcp": {"session_id": {"tag": "hostname"}}},
+                        },
                     ],
-                ),
-                state="rendered",
-            ),
+                },
+                "state": "rendered",
+            },
         )
         rendered = [
             "logging reload message-limit 10 alerts",
@@ -576,7 +574,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+        assert sorted(result["rendered"]) == sorted(rendered)
 
     def test_ios_logging_global_deleted_empty(self):
         self.execute_show_command.return_value = dedent(
@@ -593,7 +591,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging filter flash:172.16.1.1 1 args Test
             """,
         )
-        playbook = dict(config=dict())
+        playbook = {"config": {}}
         deleted = [
             "no logging rate-limit all 2 except warnings",
             "no logging server-arp",
@@ -611,7 +609,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        assert sorted(result["commands"]) == sorted(deleted)
 
     def test_ios_logging_global_deleted_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -626,14 +624,14 @@ class TestIosLoggingGlobalModule(TestIosModule):
             no logging trap
             """,
         )
-        playbook = dict(config=dict())
+        playbook = {"config": {}}
         deleted = []
         playbook["state"] = "deleted"
         set_module_args(playbook)
         result = self.execute_module(changed=False)
 
         self.maxDiff = None
-        self.assertEqual(result["commands"], deleted)
+        assert result["commands"] == deleted
 
     def test_ios_logging_global_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -641,16 +639,16 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1
             """,
         )
-        playbook = dict(
-            config=dict(hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))]),
-        )
+        playbook = {
+            "config": {"hosts": [{"hostname": "172.16.2.15", "session_id": {"text": "Test"}}]},
+        }
         replaced = ["no logging host 172.16.1.1", "logging host 172.16.2.15 session-id string Test"]
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+        assert sorted(result["commands"]) == sorted(replaced)
 
     def test_ios_logging_global_replaced_ordering_host(self):
         self.execute_show_command.return_value = dedent(
@@ -693,7 +691,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+        assert sorted(result["commands"]) == sorted(replaced)
 
     def test_ios_logging_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -701,11 +699,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.2.15
             """,
         )
-        playbook = dict(config=dict(hosts=[dict(hostname="172.16.2.15")]))
+        playbook = {"config": {"hosts": [{"hostname": "172.16.2.15"}]}}
         replaced = []
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=False)
 
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+        assert sorted(result["commands"]) == sorted(replaced)

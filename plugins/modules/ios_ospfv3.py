@@ -23,9 +23,7 @@
 #
 #############################################
 
-"""
-The module file for ios_ospfv3
-"""
+"""The module file for ios_ospfv3."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -1939,7 +1937,6 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
@@ -1951,7 +1948,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv
 def main():
     """
     Main entry point for module execution
-    :returns: the result form module invocation
+    :returns: the result form module invocation.
     """
     required_if = [
         ("state", "merged", ("config",)),

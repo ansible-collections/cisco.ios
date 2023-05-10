@@ -9,15 +9,14 @@ __metaclass__ = type
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers import providers
 
 
 class NetworkModule(AnsibleModule):
     fail_on_missing_provider = True
 
-    def __init__(self, connection=None, *args, **kwargs):
-        super(NetworkModule, self).__init__(*args, **kwargs)
+    def __init__(self, connection=None, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
         if connection is None:
             connection = Connection(self._socket_path)
@@ -46,9 +45,9 @@ class NetworkModule(AnsibleModule):
 
             obj = cls(self.params, self.connection, self.check_mode)
 
-            setattr(self, "_provider", obj)
+            self._provider = obj
 
-        return getattr(self, "_provider")
+        return self._provider
 
     def get_facts(self, subset=None):
         try:

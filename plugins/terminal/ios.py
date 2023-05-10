@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import contextlib
 import json
 import re
 
@@ -40,7 +41,6 @@ class TerminalModule(TerminalBase):
 
     terminal_stderr_re = [
         re.compile(rb"% ?Error"),
-        # re.compile(rb"^% \w+", re.M),
         re.compile(rb"% ?Bad secret"),
         re.compile(rb"[\r\n%] Bad passwords"),
         re.compile(rb"invalid input", re.I),
@@ -90,10 +90,9 @@ class TerminalModule(TerminalBase):
                 self._exec_cli_command(b"screen-width 512")  # support to SD-WAN mode
             else:
                 self._exec_cli_command(b"terminal width 512")
-                try:
+                with contextlib.suppress(AnsibleConnectionFailure):
                     self._exec_cli_command(b"terminal width 0")
-                except AnsibleConnectionFailure:
-                    pass
+
         except AnsibleConnectionFailure:
             display.display(
                 "WARNING: Unable to set terminal/screen width, command responses may be truncated",
@@ -117,8 +116,7 @@ class TerminalModule(TerminalBase):
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
             raise AnsibleConnectionFailure(
-                "failed to elevate privilege to enable mode, at prompt [%s] with error: %s"
-                % (prompt, e.message),
+                f"failed to elevate privilege to enable mode, at prompt [{prompt}] with error: {e.message}",
             )
 
         if prompt is None or not prompt.endswith(b"#") or privilege_level != 15:

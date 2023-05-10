@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -27,7 +26,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ntp_global import (
     Ntp_globalTemplate,
@@ -35,12 +33,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Ntp_global(ResourceModule):
-    """
-    The ios_ntp_global config class
-    """
+    """The ios_ntp_global config class."""
 
-    def __init__(self, module):
-        super(Ntp_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -77,7 +73,7 @@ class Ntp_global(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -113,7 +109,7 @@ class Ntp_global(ResourceModule):
         self._compare_lists_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-        """Compare list of dict"""
+        """Compare list of dict."""
         for _parser in self.complex_parser[4:8]:  # other list attrs
             i_want = want.get(_parser, {})
             i_have = have.get(_parser, {})
@@ -146,7 +142,7 @@ class Ntp_global(ResourceModule):
                 self.addcmd(haveing, _parser, negate=True)
 
     def _ntp_list_to_dict(self, data):
-        """Convert all list of dicts to dicts of dicts"""
+        """Convert all list of dicts to dicts of dicts."""
         p_key = {
             "servers": "server",
             "peers": "peer",

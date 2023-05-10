@@ -34,7 +34,7 @@ class TestIosLoggingModule(TestIosModule):
     module = ios_logging
 
     def setUp(self):
-        super(TestIosLoggingModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config",
@@ -53,7 +53,7 @@ class TestIosLoggingModule(TestIosModule):
         self.get_capabilities.return_value = {"device_info": {"network_os_version": "15.6(2)T"}}
 
     def tearDown(self):
-        super(TestIosLoggingModule, self).tearDown()
+        super().tearDown()
 
         self.mock_get_config.stop()
         self.mock_load_config.stop()
@@ -64,37 +64,37 @@ class TestIosLoggingModule(TestIosModule):
         self.load_config.return_value = None
 
     def test_ios_logging_buffer_size_changed_implicit(self):
-        set_module_args(dict(dest="buffered"))
+        set_module_args({"dest": "buffered"})
         commands = ["logging buffered 4096"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_logging_buffer_size_changed_explicit(self):
-        set_module_args(dict(dest="buffered", size=6000))
+        set_module_args({"dest": "buffered", "size": 6000})
         commands = ["logging buffered 6000"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_logging_add_host(self):
-        set_module_args(dict(dest="host", name="192.168.1.1"))
+        set_module_args({"dest": "host", "name": "192.168.1.1"})
         commands = ["logging host 192.168.1.1"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_logging_host_idempotent(self):
-        set_module_args(dict(dest="host", name="2.3.4.5"))
+        set_module_args({"dest": "host", "name": "2.3.4.5"})
         commands = []
         self.execute_module(changed=False, commands=commands)
 
     def test_ios_logging_delete_non_exist_host(self):
-        set_module_args(dict(dest="host", name="192.168.1.1", state="absent"))
+        set_module_args({"dest": "host", "name": "192.168.1.1", "state": "absent"})
         commands = []
         self.execute_module(changed=False, commands=commands)
 
     def test_ios_logging_delete_host(self):
-        set_module_args(dict(dest="host", name="2.3.4.5", state="absent"))
+        set_module_args({"dest": "host", "name": "2.3.4.5", "state": "absent"})
         commands = ["no logging host 2.3.4.5"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_logging_configure_disabled_monitor_destination(self):
-        set_module_args(dict(dest="monitor", level="debugging"))
+        set_module_args({"dest": "monitor", "level": "debugging"})
         commands = ["logging monitor debugging"]
         self.execute_module(changed=True, commands=commands)
 
@@ -103,7 +103,7 @@ class TestIosLoggingModuleIOS12(TestIosModule):
     module = ios_logging
 
     def setUp(self):
-        super(TestIosLoggingModuleIOS12, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.ios.plugins.modules.ios_logging.get_config",
@@ -122,7 +122,7 @@ class TestIosLoggingModuleIOS12(TestIosModule):
         self.get_capabilities.return_value = {"device_info": {"network_os_version": "12.1(2)T"}}
 
     def tearDown(self):
-        super(TestIosLoggingModuleIOS12, self).tearDown()
+        super().tearDown()
 
         self.mock_get_config.stop()
         self.mock_load_config.stop()
@@ -133,21 +133,21 @@ class TestIosLoggingModuleIOS12(TestIosModule):
         self.load_config.return_value = None
 
     def test_ios_logging_add_host(self):
-        set_module_args(dict(dest="host", name="192.168.1.1"))
+        set_module_args({"dest": "host", "name": "192.168.1.1"})
         commands = ["logging 192.168.1.1"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_logging_host_idempotent(self):
-        set_module_args(dict(dest="host", name="2.3.4.5"))
+        set_module_args({"dest": "host", "name": "2.3.4.5"})
         commands = []
         self.execute_module(changed=False, commands=commands)
 
     def test_ios_logging_delete_non_exist_host(self):
-        set_module_args(dict(dest="host", name="192.168.1.1", state="absent"))
+        set_module_args({"dest": "host", "name": "192.168.1.1", "state": "absent"})
         commands = []
         self.execute_module(changed=False, commands=commands)
 
     def test_ios_logging_delete_host(self):
-        set_module_args(dict(dest="host", name="2.3.4.5", state="absent"))
+        set_module_args({"dest": "host", "name": "2.3.4.5", "state": "absent"})
         commands = ["no logging 2.3.4.5"]
         self.execute_module(changed=True, commands=commands)

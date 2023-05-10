@@ -21,7 +21,7 @@ class TestIosLacpModule(TestIosModule):
     module = ios_lacp
 
     def setUp(self):
-        super(TestIosLacpModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLacpModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLacpModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -72,14 +72,14 @@ class TestIosLacpModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"system": {"priority": 32768}},
-                state="merged",
-            ),
+            {
+                "config": {"system": {"priority": 32768}},
+                "state": "merged",
+            },
         )
         commands = ["lacp system-priority 32768"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -88,10 +88,10 @@ class TestIosLacpModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"system": {"priority": 123}},
-                state="merged",
-            ),
+            {
+                "config": {"system": {"priority": 123}},
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False)
 
@@ -102,14 +102,14 @@ class TestIosLacpModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"system": {"priority": 12300}},
-                state="replaced",
-            ),
+            {
+                "config": {"system": {"priority": 12300}},
+                "state": "replaced",
+            },
         )
         commands = ["lacp system-priority 12300"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -118,29 +118,29 @@ class TestIosLacpModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"system": {"priority": 1}},
-                state="deleted",
-            ),
+            {
+                "config": {"system": {"priority": 1}},
+                "state": "deleted",
+            },
         )
         commands = ["no lacp system-priority"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     123, 5e00.0000.8000
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = {"system": {"priority": 123}}
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_lacp_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -148,11 +148,11 @@ class TestIosLacpModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"system": {"priority": 123}},
-                state="rendered",
-            ),
+            {
+                "config": {"system": {"priority": 123}},
+                "state": "rendered",
+            },
         )
         commands = ["lacp system-priority 123"]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

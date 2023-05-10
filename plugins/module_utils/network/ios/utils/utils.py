@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -38,7 +37,7 @@ def reverify_diff_py35(want, have):
     """Function to re-verify the set diff for py35 as it doesn't maintains dict order which results
         into unexpected set diff
     :param config: want and have set config
-    :returns: True/False post checking if there's any actual diff b/w want and have sets
+    :returns: True/False post checking if there's any actual diff b/w want and have sets.
     """
     if not have:
         return True
@@ -62,13 +61,13 @@ def check_n_return_valid_ipv6_addr(module, input_list, filtered_ipv6_list):
                 if socket.inet_pton(socket.AF_INET6, each):
                     filtered_ipv6_list.append(each)
         return filtered_ipv6_list
-    except socket.error:
+    except OSError:
         module.fail_json(msg="Incorrect IPV6 address!")
 
 
 def new_dict_to_set(input_dict, temp_list, test_set, count=0):
     # recursive function to convert input dict to set for comparision
-    test_dict = dict()
+    test_dict = {}
     if isinstance(input_dict, dict):
         input_dict_len = len(input_dict)
         for k, v in sorted(iteritems(input_dict)):
@@ -92,7 +91,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                     temp_dict = {}
 
                     def expand_dict(dict_to_expand):
-                        temp = dict()
+                        temp = {}
                         for k, v in iteritems(dict_to_expand):
                             if isinstance(v, dict):
                                 expand_dict(v)
@@ -109,7 +108,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
 
 def dict_to_set(sample_dict):
     # Generate a set with passed dictionary for comparison
-    test_dict = dict()
+    test_dict = {}
     if isinstance(sample_dict, dict):
         for k, v in iteritems(sample_dict):
             if v is not None:
@@ -132,7 +131,7 @@ def dict_to_set(sample_dict):
                     li.extend(tuple(iteritems(v)))
                     v = tuple(li)
                 test_dict.update({k: v})
-        return_set = set(tuple(iteritems(test_dict)))
+        return_set = set(iteritems(test_dict))
     else:
         return_set = set(sample_dict)
     return return_set
@@ -140,7 +139,7 @@ def dict_to_set(sample_dict):
 
 def filter_dict_having_none_value(want, have):
     # Generate dict with have dict value which is None in want dict
-    test_dict = dict()
+    test_dict = {}
     name = want.get("name")
     if name:
         test_dict["name"] = name
@@ -148,7 +147,7 @@ def filter_dict_having_none_value(want, have):
     for k, v in iteritems(want):
         if isinstance(v, dict):
             for key, value in iteritems(v):
-                test_key_dict = dict()
+                test_key_dict = {}
                 if value is None:
                     if have.get(k):
                         dict_val = have.get(k).get(key)
@@ -166,7 +165,7 @@ def filter_dict_having_none_value(want, have):
                     test_dict.update({k: test_key_dict})
         if isinstance(v, list):
             for key, value in iteritems(v[0]):
-                test_key_dict = dict()
+                test_key_dict = {}
                 if value is None:
                     if have.get(k) and key in have.get(k):
                         dict_val = have.get(k)[0].get(key)
@@ -216,12 +215,12 @@ def validate_ipv4(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(value),
+                msg=f"address format is <ipv4 address>/<mask>, got invalid format {value}",
             )
 
         if not is_masklen(address[1]):
             module.fail_json(
-                msg="invalid value for mask: {0}, mask should be in range 0-32".format(address[1]),
+                msg=f"invalid value for mask: {address[1]}, mask should be in range 0-32",
             )
 
 
@@ -230,12 +229,12 @@ def validate_ipv6(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv6 address>/<mask>, got invalid format {0}".format(value),
+                msg=f"address format is <ipv6 address>/<mask>, got invalid format {value}",
             )
         else:
             if not 0 <= int(address[1]) <= 128:
                 module.fail_json(
-                    msg="invalid value for mask: {0}, mask should be in range 0-128".format(
+                    msg="invalid value for mask: {}, mask should be in range 0-128".format(
                         address[1],
                     ),
                 )
@@ -249,7 +248,7 @@ def validate_n_expand_ipv4(module, want):
     validate_ipv4(ip_addr_want, module)
     ip = ip_addr_want.split("/")
     if len(ip) == 2:
-        ip_addr_want = "{0} {1}".format(ip[0], to_netmask(ip[1]))
+        ip_addr_want = f"{ip[0]} {to_netmask(ip[1])}"
 
     return ip_addr_want
 
@@ -266,15 +265,15 @@ def is_valid_ip(ip_str):
             socket.inet_pton(socket.AF_INET6, ip_str)  # for IPv6
         else:
             socket.inet_pton(socket.AF_INET, ip_str)  # for IPv4
-    except socket.error:
+    except OSError:
         valid = False
     return valid
 
 
 def normalize_interface(name):
-    """Return the normalized interface name"""
+    """Return the normalized interface name."""
     if not name:
-        return
+        return None
 
     def _get_number(name):
         digits = ""
@@ -321,22 +320,15 @@ def normalize_interface(name):
         if_type = None
 
     number_list = name.split(" ")
-    if len(number_list) == 2:
-        number = number_list[-1].strip()
-    else:
-        number = _get_number(name)
+    number = number_list[-1].strip() if len(number_list) == 2 else _get_number(name)
 
-    if if_type:
-        proper_interface = if_type + number
-    else:
-        proper_interface = name
+    proper_interface = if_type + number if if_type else name
 
     return proper_interface
 
 
 def get_interface_type(interface):
-    """Gets the type of interface"""
-
+    """Gets the type of interface."""
     if interface.upper().startswith("GI"):
         return "GigabitEthernet"
     elif interface.upper().startswith("TW"):
@@ -386,7 +378,6 @@ def get_ranges(data):
 
 def numerical_sort(string_int_list):
     """Sorts list of integers that are digits in numerical order."""
-
     as_int_list = []
 
     for vlan in string_int_list:

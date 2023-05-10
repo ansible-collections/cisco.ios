@@ -21,7 +21,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
     module = ios_lacp_interfaces
 
     def setUp(self):
-        super(TestIosLacpInterfaceModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLacpInterfaceModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -82,16 +82,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
                     {"name": "GigabitEthernet0/2", "port_priority": 30},
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "interface Port-channel10",
@@ -102,7 +102,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "lacp port-priority 30",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_interface_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -120,16 +120,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 2},
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 30},
                     {"name": "GigabitEthernet0/2", "port_priority": 20},
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False)
 
@@ -149,16 +149,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
                     {"name": "GigabitEthernet0/2", "port_priority": 30},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface Port-channel10",
@@ -169,7 +169,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "lacp port-priority 30",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_interface_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -187,16 +187,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
                     {"name": "GigabitEthernet0/2", "port_priority": 30},
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "interface Port-channel10",
@@ -207,7 +207,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "lacp port-priority 30",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_interface_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -225,16 +225,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
                     {"name": "GigabitEthernet0/2", "port_priority": 30},
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         commands = [
             "interface Port-channel10",
@@ -248,12 +248,12 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "no lacp port-priority",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lacp_interface_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface Port-channel10
                      lacp fast-switchover
@@ -267,8 +267,8 @@ class TestIosLacpInterfaceModule(TestIosModule):
                      lacp port-priority 20
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -278,7 +278,7 @@ class TestIosLacpInterfaceModule(TestIosModule):
             {"name": "GigabitEthernet0/1", "port_priority": 30},
             {"name": "GigabitEthernet0/2", "port_priority": 20},
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_lacp_interface_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -286,16 +286,16 @@ class TestIosLacpInterfaceModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"fast_switchover": True, "max_bundle": 2, "name": "Port-channel10"},
                     {"max_bundle": 5, "name": "Port-channel40"},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 30},
                     {"name": "GigabitEthernet0/2", "port_priority": 20},
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface Port-channel10",
@@ -309,4 +309,4 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "lacp port-priority 20",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

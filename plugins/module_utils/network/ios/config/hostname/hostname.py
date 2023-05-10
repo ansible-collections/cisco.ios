@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,7 +20,6 @@ created.
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hostname import (
     HostnameTemplate,
@@ -29,12 +27,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Hostname(ResourceModule):
-    """
-    The ios_hostname config class
-    """
+    """The ios_hostname config class."""
 
-    def __init__(self, module):
-        super(Hostname, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -44,7 +40,7 @@ class Hostname(ResourceModule):
         self.parsers = ["hostname"]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution

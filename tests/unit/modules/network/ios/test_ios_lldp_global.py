@@ -21,7 +21,7 @@ class TestIosLldpGlobalModule(TestIosModule):
     module = ios_lldp_global
 
     def setUp(self):
-        super(TestIosLldpGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLldpGlobalModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLldpGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -75,14 +75,14 @@ class TestIosLldpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"timer": 20, "holdtime": 10, "reinit": 3, "enabled": True},
-                state="merged",
-            ),
+            {
+                "config": {"timer": 20, "holdtime": 10, "reinit": 3, "enabled": True},
+                "state": "merged",
+            },
         )
         commands = ["lldp timer 20"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lldp_global_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -94,10 +94,10 @@ class TestIosLldpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
-                state="merged",
-            ),
+            {
+                "config": {"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False)
 
@@ -111,14 +111,14 @@ class TestIosLldpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"timer": 15, "reinit": 9},
-                state="replaced",
-            ),
+            {
+                "config": {"timer": 15, "reinit": 9},
+                "state": "replaced",
+            },
         )
         commands = ["no lldp holdtime", "no lldp run", "lldp timer 15", "lldp reinit 9"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lldp_global_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -130,19 +130,19 @@ class TestIosLldpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"timer": 15, "reinit": 9},
-                state="deleted",
-            ),
+            {
+                "config": {"timer": 15, "reinit": 9},
+                "state": "deleted",
+            },
         )
         commands = ["no lldp holdtime", "no lldp run", "no lldp timer", "no lldp reinit"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lldp_global_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     lldp timer 10
                     lldp holdtime 10
@@ -150,12 +150,12 @@ class TestIosLldpGlobalModule(TestIosModule):
                     lldp run
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = {"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True}
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_lldp_global_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -163,11 +163,11 @@ class TestIosLldpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config={"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
-                state="rendered",
-            ),
+            {
+                "config": {"timer": 10, "holdtime": 10, "reinit": 3, "enabled": True},
+                "state": "rendered",
+            },
         )
         commands = ["lldp holdtime 10", "lldp run", "lldp timer 10", "lldp reinit 3"]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

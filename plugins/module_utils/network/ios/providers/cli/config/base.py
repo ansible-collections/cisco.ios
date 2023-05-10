@@ -13,14 +13,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
 
-class ConfigBase(object):
+class ConfigBase:
     argument_spec = {}
 
     mutually_exclusive = []
 
     identifier = ()
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.values = {}
         self._rendered_configuration = {}
         self.active_configuration = None
@@ -33,35 +33,35 @@ class ConfigBase(object):
                 setattr(self, key, value)
 
         for key, value in iteritems(self.argument_spec):
-            if value.get("default"):
-                if not getattr(self, key, None):
-                    setattr(self, key, value.get("default"))
+            if value.get("default") and not getattr(self, key, None):
+                setattr(self, key, value.get("default"))
 
     def __getattr__(self, key):
         if key in self.argument_spec:
             return self.values.get(key)
+        return None
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key, value) -> None:
         if key in self.argument_spec:
             if key in self.identifier:
                 raise TypeError("cannot set value")
             elif value is not None:
                 self.values[key] = value
         else:
-            super(ConfigBase, self).__setattr__(key, value)
+            super().__setattr__(key, value)
 
     def context_config(self, cmd):
         if "context" not in self._rendered_configuration:
-            self._rendered_configuration["context"] = list()
+            self._rendered_configuration["context"] = []
         self._rendered_configuration["context"].extend(to_list(cmd))
 
     def global_config(self, cmd):
         if "global" not in self._rendered_configuration:
-            self._rendered_configuration["global"] = list()
+            self._rendered_configuration["global"] = []
         self._rendered_configuration["global"].extend(to_list(cmd))
 
     def get_rendered_configuration(self):
-        config = list()
+        config = []
         for section in ("context", "global"):
             config.extend(self._rendered_configuration.get(section, []))
         return config
@@ -80,3 +80,4 @@ class ConfigBase(object):
             except ValueError:
                 config = None
             return config
+        return None

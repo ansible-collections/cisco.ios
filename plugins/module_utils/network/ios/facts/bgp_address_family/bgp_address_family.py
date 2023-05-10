@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Bgp_address_familyFacts(object):
-    """The cisco.ios_bgp_address_family facts class"""
+class Bgp_address_familyFacts:
+    """The cisco.ios_bgp_address_family facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Bgp_address_familyArgs.argument_spec
 
@@ -36,13 +34,13 @@ class Bgp_address_familyFacts(object):
         return connection.get("show running-config | section ^router bgp")
 
     def _process_facts(self, objs):
-        """makes data as per the facts after data obtained from parsers"""
+        """Makes data as per the facts after data obtained from parsers."""
         addr_fam_facts = {}
         temp_af = []
 
         addr_fam_facts["as_number"] = objs["as_number"]
         if objs.get("address_family"):
-            for kaf, afs in (objs["address_family"]).items():  # remove unique value from add_fam
+            for _kaf, afs in (objs["address_family"]).items():  # remove unique value from add_fam
                 af = {}
                 for af_key, afs_val in afs.items():
                     if af_key == "neighbors":
@@ -61,7 +59,7 @@ class Bgp_address_familyFacts(object):
         return addr_fam_facts
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

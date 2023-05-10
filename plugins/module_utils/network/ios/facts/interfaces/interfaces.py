@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -17,7 +16,6 @@ based on the configuration.
 
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
@@ -26,10 +24,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class InterfacesFacts(object):
-    """The ios interfaces facts class"""
+class InterfacesFacts:
+    """The ios interfaces facts class."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self.argument_spec = InterfacesArgs.argument_spec
 
@@ -37,7 +35,7 @@ class InterfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Interfaces network resource
+        """Populate the facts for Interfaces network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -51,7 +49,7 @@ class InterfacesFacts(object):
 
         # parse native config using the Interfaces template
         interfaces_parser = InterfacesTemplate(lines=data.splitlines(), module=self._module)
-        objs = sorted(list(interfaces_parser.parse().values()), key=lambda k, sk="name": k[sk])
+        objs = sorted(interfaces_parser.parse().values(), key=lambda k, sk="name": k[sk])
 
         ansible_facts["ansible_network_resources"].pop("interfaces", None)
         facts = {"interfaces": []}

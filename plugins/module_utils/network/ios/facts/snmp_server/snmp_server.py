@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
     Snmp_serverArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Snmp_serverFacts(object):
-    """The ios snmp_server facts class"""
+class Snmp_serverFacts:
+    """The ios snmp_server facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Snmp_serverArgs.argument_spec
 
@@ -56,9 +54,10 @@ class Snmp_serverFacts(object):
                 if element.get("traps", {}):
                     element["traps"] = list(element.get("traps").split())
             return hosts
+        return None
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Snmp_server network resource
+        """Populate the facts for Snmp_server network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

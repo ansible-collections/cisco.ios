@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
@@ -7,7 +6,7 @@ The ios_acl_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acl_interfaces import (
     Acl_interfacesTemplate,
@@ -30,12 +28,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Acl_interfaces(ResourceModule):
-    """
-    The ios_acl_interfaces class
-    """
+    """The ios_acl_interfaces class."""
 
-    def __init__(self, module):
-        super(Acl_interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -44,7 +40,7 @@ class Acl_interfaces(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -58,7 +54,7 @@ class Acl_interfaces(ResourceModule):
         """Select the appropriate function based on the state provided
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+                  to the desired configuration.
         """
         # convert list of dicts to dicts of dicts
         wantd = {entry["name"]: entry for entry in self.want}

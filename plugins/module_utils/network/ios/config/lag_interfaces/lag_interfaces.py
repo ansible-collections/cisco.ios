@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -26,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
     Lag_interfacesTemplate,
@@ -34,12 +32,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Lag_interfaces(ResourceModule):
-    """
-    The ios_lag_interfaces config class
-    """
+    """The ios_lag_interfaces config class."""
 
-    def __init__(self, module):
-        super(Lag_interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -48,7 +44,7 @@ class Lag_interfaces(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -89,7 +85,6 @@ class Lag_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Lag_interfaces network resource.
         """
-
         for key, entry in wants.items():
             begin = len(self.commands)
             if entry != haveing.pop(key, {}):

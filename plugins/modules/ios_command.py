@@ -367,7 +367,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_lines,
     transform_commands,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
 
 
@@ -385,19 +384,19 @@ def parse_commands(module, warnings):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        commands=dict(type="list", elements="raw", required=True),
-        wait_for=dict(type="list", elements="str", aliases=["waitfor"]),
-        match=dict(default="all", choices=["all", "any"]),
-        retries=dict(default=9, type="int"),
-        interval=dict(default=1, type="int"),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "commands": {"type": "list", "elements": "raw", "required": True},
+        "wait_for": {"type": "list", "elements": "str", "aliases": ["waitfor"]},
+        "match": {"default": "all", "choices": ["all", "any"]},
+        "retries": {"default": 9, "type": "int"},
+        "interval": {"default": 1, "type": "int"},
+    }
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-    warnings = list()
+    warnings = []
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
-    wait_for = module.params["wait_for"] or list()
+    wait_for = module.params["wait_for"] or []
     conditionals = []
     try:
         conditionals = [Conditional(c) for c in wait_for]
@@ -411,7 +410,7 @@ def main():
         for item in list(conditionals):
             if item(responses):
                 if match == "any":
-                    conditionals = list()
+                    conditionals = []
                     break
                 conditionals.remove(item)
         if not conditionals:

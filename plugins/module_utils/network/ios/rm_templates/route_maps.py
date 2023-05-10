@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -54,7 +53,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match as-path "
             if match["as_path"].get("acls"):
                 temp = []
-                for k, v in iteritems(match["as_path"]["acls"]):
+                for _k, v in iteritems(match["as_path"]["acls"]):
                     temp.append(str(v))
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -70,7 +69,7 @@ def _tmplt_route_map_match(config_data):
         if match.get("community"):
             cmd = "match community "
             temp = []
-            for k, v in iteritems(match["community"]["name"]):
+            for _k, v in iteritems(match["community"]["name"]):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             if match["community"].get("exact_match"):
@@ -79,14 +78,14 @@ def _tmplt_route_map_match(config_data):
         if match.get("extcommunity"):
             cmd = "match extcommunity "
             temp = []
-            for k, v in iteritems(match["extcommunity"]):
+            for _k, v in iteritems(match["extcommunity"]):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("interfaces"):
             cmd = "match interface "
             temp = []
-            for k, v in iteritems(match["interfaces"]):
+            for _k, v in iteritems(match["interfaces"]):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -96,7 +95,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match local-preference "
             if match["local_preference"].get("value"):
                 temp = []
-                for k, v in iteritems(match["local_preference"]["value"]):
+                for _k, v in iteritems(match["local_preference"]["value"]):
                     temp.append(v)
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -104,7 +103,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match mdt-group "
             if match["mdt_group"].get("acls"):
                 temp = []
-                for k, v in iteritems(match["mdt_group"]["acls"]):
+                for _k, v in iteritems(match["mdt_group"]["acls"]):
                     temp.append(v)
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -124,7 +123,7 @@ def _tmplt_route_map_match(config_data):
         if match.get("policy_lists"):
             cmd = "match policy-list "
             temp = []
-            for k, v in iteritems(match["policy_lists"]):
+            for _k, v in iteritems(match["policy_lists"]):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -165,13 +164,13 @@ def _tmplt_route_map_match(config_data):
             if match["security_group"].get("source"):
                 cmd += " source tag "
                 temp = []
-                for k, v in iteritems(match["security_group"]["source"]):
+                for _k, v in iteritems(match["security_group"]["source"]):
                     temp.append(str(v))
                 cmd += " ".join(sorted(temp))
             elif match["security_group"].get("destination"):
                 cmd += " destination tag"
                 for each in match["destination"]:
-                    cmd += " {0}".format(each)
+                    cmd += f" {each}"
             command.append(cmd)
         if match.get("source_protocol"):
             cmd = "match source-protocol"
@@ -201,14 +200,15 @@ def _tmplt_route_map_match(config_data):
             if match["tag"].get("tag_list"):
                 cmd += " list"
                 for each in match["tag"]["tag_list"]:
-                    cmd += " {0}".format(each)
+                    cmd += f" {each}"
             elif match["tag"].get("value"):
                 for each in match["tag"]["value"]:
-                    cmd += " {0}".format(each)
+                    cmd += f" {each}"
             command.append(cmd)
         if match.get("track"):
             command.append("match track {track}".format(**match))
         return command
+    return None
 
 
 def _tmplt_route_map_match_ip(config_data):
@@ -216,7 +216,7 @@ def _tmplt_route_map_match_ip(config_data):
 
         def construct_cmd_from_list(cmd, config):
             temp = []
-            for k, v in iteritems(config):
+            for _k, v in iteritems(config):
                 temp.append(v)
             cmd += " " + " ".join(sorted(temp))
             return cmd
@@ -285,6 +285,7 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["route_source"]["acls"],
                 )
         return cmd
+    return None
 
 
 def _tmplt_route_map_match_ipv6(config_data):
@@ -327,6 +328,7 @@ def _tmplt_route_map_match_ipv6(config_data):
             elif config_data["match"]["ipv6"]["route_source"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["route_source"])
         return cmd
+    return None
 
 
 def _tmplt_route_map_set(config_data):
@@ -345,7 +347,7 @@ def _tmplt_route_map_set(config_data):
             if set["as_path"].get("prepend"):
                 cmd += " prepend"
                 if set["as_path"]["prepend"].get("as_number"):
-                    cmd += " {0}".format(set["as_path"]["prepend"].get("as_number"))
+                    cmd += " {}".format(set["as_path"]["prepend"].get("as_number"))
                 elif set["as_path"]["prepend"].get("last_as"):
                     cmd += " last-as {last_as}".format(**set["as_path"]["prepend"])
             if set["as_path"].get("tag"):
@@ -428,7 +430,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("interfaces"):
             cmd = "set interface "
             temp = []
-            for k, v in iteritems(set["interfaces"]):
+            for _k, v in iteritems(set["interfaces"]):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -497,6 +499,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("weight"):
             command.append("set weight {weight}".format(**set))
         return command
+    return None
 
 
 def _tmplt_route_map_set_ip(config_data):
@@ -522,15 +525,15 @@ def _tmplt_route_map_set_ip(config_data):
             if set_ip["next_hop"].get("address"):
                 command.append("{0} {address}".format(cmd, **set_ip["next_hop"]))
             if set_ip["next_hop"].get("dynamic"):
-                command.append("{0} dynamic dhcp".format(cmd))
+                command.append(f"{cmd} dynamic dhcp")
             if set_ip["next_hop"].get("encapsulate"):
                 command.append(
                     "{0} encapsulate l3vpn {encapsulate}".format(cmd, **set_ip["next_hop"]),
                 )
             if set_ip["next_hop"].get("peer_address"):
-                command.append("{0} peer-address".format(cmd))
+                command.append(f"{cmd} peer-address")
             if set_ip["next_hop"].get("recursive"):
-                child_cmd = "{0} recursive".format(cmd)
+                child_cmd = f"{cmd} recursive"
                 if set_ip["next_hop"]["recursive"].get("global_route"):
                     child_cmd += " global"
                 elif set_ip["next_hop"]["recursive"].get("vrf"):
@@ -539,7 +542,7 @@ def _tmplt_route_map_set_ip(config_data):
                     child_cmd += " {address}".format(**set_ip["next_hop"]["recursive"])
                 command.append(child_cmd)
             if set_ip["next_hop"].get("self"):
-                command.append("{0} self".format(cmd))
+                command.append(f"{cmd} self")
             if set_ip["next_hop"].get("verify_availability"):
                 command.append(
                     "{0} verify-availability {address} {sequence} track {track}".format(
@@ -591,6 +594,7 @@ def _tmplt_route_map_set_ip(config_data):
                 cmd += " {address}".format(**set_ip["vrf"])
             command.append(cmd)
         return command
+    return None
 
 
 def _tmplt_route_map_set_ipv6(config_data):
@@ -626,11 +630,12 @@ def _tmplt_route_map_set_ipv6(config_data):
                 )
             )
         return cmd
+    return None
 
 
 class Route_mapsTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Route_mapsTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     PARSERS = [
         {

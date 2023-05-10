@@ -21,7 +21,7 @@ class TestIosInterfacesModule(TestIosModule):
     module = ios_interfaces
 
     def setUp(self):
-        super(TestIosInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosInterfacesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -136,7 +136,7 @@ class TestIosInterfacesModule(TestIosModule):
             "no switchport",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -253,7 +253,7 @@ class TestIosInterfacesModule(TestIosModule):
             "switchport",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -390,7 +390,7 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -427,7 +427,7 @@ class TestIosInterfacesModule(TestIosModule):
              ipv6 dhcp server
             """,
         )
-        set_module_args(dict(config=[dict(name="GigabitEthernet1")], state="deleted"))
+        set_module_args({"config": [{"name": "GigabitEthernet1"}], "state": "deleted"})
         commands = [
             "interface GigabitEthernet1",
             "no description Ansible UT interface 1",
@@ -435,7 +435,7 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_purged(self):
         self.execute_show_command.return_value = dedent(
@@ -472,8 +472,8 @@ class TestIosInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "GigabitEthernet0/1",
                         "description": "Ansible UT interface 2",
@@ -488,12 +488,12 @@ class TestIosInterfacesModule(TestIosModule):
                         "duplex": "auto",
                     },
                 ],
-                state="purged",
-            ),
+                "state": "purged",
+            },
         )
         commands = ["no interface GigabitEthernet0/1", "no interface GigabitEthernet3"]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_purged_extreme(self):
         self.execute_show_command.return_value = dedent(
@@ -529,7 +529,7 @@ class TestIosInterfacesModule(TestIosModule):
              ipv6 dhcp server
             """,
         )
-        set_module_args(dict(config=[], state="purged"))
+        set_module_args({"config": [], "state": "purged"})
         commands = [
             "no interface GigabitEthernet0/1",
             "no interface GigabitEthernet1",
@@ -538,12 +538,12 @@ class TestIosInterfacesModule(TestIosModule):
             "no interface GigabitEthernet5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface GigabitEthernet1
                      description Ansible UT interface 1
@@ -583,8 +583,8 @@ class TestIosInterfacesModule(TestIosModule):
                      source template ANSIBLE
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -623,7 +623,7 @@ class TestIosInterfacesModule(TestIosModule):
                 "template": "ANSIBLE",
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -631,8 +631,8 @@ class TestIosInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "GigabitEthernet1",
                         "description": "Ansible UT interface 1",
@@ -716,8 +716,8 @@ class TestIosInterfacesModule(TestIosModule):
                         "description": "Ansible UT Serial",
                     },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
 
         commands = [
@@ -782,4 +782,4 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

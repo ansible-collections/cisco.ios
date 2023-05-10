@@ -33,7 +33,7 @@ class TestIosSystemModule(TestIosModule):
     module = ios_system
 
     def setUp(self):
-        super(TestIosSystemModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.ios.plugins.modules.ios_system.get_config",
@@ -46,7 +46,7 @@ class TestIosSystemModule(TestIosModule):
         self.load_config = self.mock_load_config.start()
 
     def tearDown(self):
-        super(TestIosSystemModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
@@ -55,12 +55,12 @@ class TestIosSystemModule(TestIosModule):
         self.load_config.return_value = None
 
     def test_ios_system_hostname_changed(self):
-        set_module_args(dict(hostname="foo"))
+        set_module_args({"hostname": "foo"})
         commands = ["hostname foo"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_system_domain_name(self):
-        set_module_args(dict(domain_name=["test.com"]))
+        set_module_args({"domain_name": ["test.com"]})
         commands = [
             "ip domain name test.com",
             "no ip domain name eng.example.net",
@@ -70,7 +70,7 @@ class TestIosSystemModule(TestIosModule):
 
     def test_ios_system_domain_name_complex(self):
         set_module_args(
-            dict(domain_name=[{"name": "test.com", "vrf": "test"}, {"name": "eng.example.net"}]),
+            {"domain_name": [{"name": "test.com", "vrf": "test"}, {"name": "eng.example.net"}]},
         )
         commands = [
             "ip domain name vrf test test.com",
@@ -79,7 +79,7 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_system_domain_search(self):
-        set_module_args(dict(domain_search=["ansible.com", "redhat.com"]))
+        set_module_args({"domain_search": ["ansible.com", "redhat.com"]})
         commands = [
             "no ip domain list vrf management example.net",
             "no ip domain list example.net",
@@ -90,7 +90,7 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_system_domain_search_complex(self):
-        set_module_args(dict(domain_search=[{"name": "ansible.com", "vrf": "test"}]))
+        set_module_args({"domain_search": [{"name": "ansible.com", "vrf": "test"}]})
         commands = [
             "no ip domain list vrf management example.net",
             "no ip domain list example.net",
@@ -100,19 +100,19 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_system_lookup_source(self):
-        set_module_args(dict(lookup_source="Ethernet1"))
+        set_module_args({"lookup_source": "Ethernet1"})
         commands = ["ip domain lookup source-interface Ethernet1"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_system_name_servers(self):
         name_servers = ["8.8.8.8", "8.8.4.4"]
-        set_module_args(dict(name_servers=name_servers))
+        set_module_args({"name_servers": name_servers})
         commands = ["no ip name-server vrf management 8.8.8.8", "ip name-server 8.8.4.4"]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def rest_ios_system_name_servers_complex(self):
-        name_servers = dict(server="8.8.8.8", vrf="test")
-        set_module_args(dict(name_servers=name_servers))
+        name_servers = {"server": "8.8.8.8", "vrf": "test"}
+        set_module_args({"name_servers": name_servers})
         commands = [
             "no name-server 8.8.8.8",
             "no name-server vrf management 8.8.8.8",
@@ -121,7 +121,7 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_system_state_absent(self):
-        set_module_args(dict(state="absent"))
+        set_module_args({"state": "absent"})
         commands = [
             "no hostname",
             "no ip domain lookup source-interface GigabitEthernet0/0",
@@ -135,10 +135,10 @@ class TestIosSystemModule(TestIosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_system_no_change(self):
-        set_module_args(dict(hostname="ios01"))
+        set_module_args({"hostname": "ios01"})
         self.execute_module(commands=[])
 
     def test_ios_system_missing_vrf(self):
-        name_servers = dict(server="8.8.8.8", vrf="missing")
-        set_module_args(dict(name_servers=name_servers))
+        name_servers = {"server": "8.8.8.8", "vrf": "missing"}
+        set_module_args({"name_servers": name_servers})
         self.execute_module(failed=True)

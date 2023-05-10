@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2023 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.static_routes.static_routes import (
     Static_routesArgs,
 )
@@ -28,10 +26,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 )
 
 
-class Static_routesFacts(object):
-    """The ios static_routes facts class"""
+class Static_routesFacts:
+    """The ios static_routes facts class."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self.argument_spec = Static_routesArgs.argument_spec
 
@@ -44,7 +42,7 @@ class Static_routesFacts(object):
             return dest
 
         strout = {}
-        for k, obj in objs.items():
+        for _k, obj in objs.items():
             _routes = {"next_hops": []}
             _nx_hop = []
             is_vrf = False
@@ -117,7 +115,7 @@ class Static_routesFacts(object):
         return _static_route_facts
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Static_routes network resource
+        """Populate the facts for Static_routes network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

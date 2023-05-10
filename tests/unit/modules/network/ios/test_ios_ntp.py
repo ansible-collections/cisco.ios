@@ -30,7 +30,7 @@ class TestIosNtpModule(TestIosModule):
     module = ios_ntp
 
     def setUp(self):
-        super(TestIosNtpModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.ios.plugins.modules.ios_ntp.get_config",
@@ -43,60 +43,60 @@ class TestIosNtpModule(TestIosModule):
         self.load_config = self.mock_load_config.start()
 
     def tearDown(self):
-        super(TestIosNtpModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
     def load_fixtures(self, commands=None):
         self.get_config.return_value = load_fixture("ios_ntp_config.cfg").strip()
-        self.load_config.return_value = dict(diff=None, session="session")
+        self.load_config.return_value = {"diff": None, "session": "session"}
 
     def test_ios_ntp_idempotent(self):
         set_module_args(
-            dict(
-                server="10.75.32.5",
-                source_int="Loopback0",
-                acl="NTP_ACL",
-                logging=True,
-                auth=True,
-                auth_key="15435A030726242723273C21181319000A",
-                key_id="10",
-                vrf="my_mgmt_vrf",
-                state="present",
-            ),
+            {
+                "server": "10.75.32.5",
+                "source_int": "Loopback0",
+                "acl": "NTP_ACL",
+                "logging": True,
+                "auth": True,
+                "auth_key": "15435A030726242723273C21181319000A",
+                "key_id": "10",
+                "vrf": "my_mgmt_vrf",
+                "state": "present",
+            },
         )
         commands = []
         self.execute_module(changed=False, commands=commands)
 
     def test_ios_ntp_config(self):
         set_module_args(
-            dict(
-                server="10.75.33.5",
-                source_int="Vlan2",
-                acl="NTP_ACL",
-                logging=True,
-                auth=True,
-                auth_key="15435A030726242723273C21181319000A",
-                key_id="10",
-                state="present",
-            ),
+            {
+                "server": "10.75.33.5",
+                "source_int": "Vlan2",
+                "acl": "NTP_ACL",
+                "logging": True,
+                "auth": True,
+                "auth_key": "15435A030726242723273C21181319000A",
+                "key_id": "10",
+                "state": "present",
+            },
         )
         commands = ["ntp server 10.75.33.5", "ntp source Vlan2"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_ntp_remove(self):
         set_module_args(
-            dict(
-                server="10.75.32.5",
-                source_int="Loopback0",
-                acl="NTP_ACL",
-                logging=True,
-                auth=True,
-                auth_key="15435A030726242723273C21181319000A",
-                key_id="10",
-                vrf="my_mgmt_vrf",
-                state="absent",
-            ),
+            {
+                "server": "10.75.32.5",
+                "source_int": "Loopback0",
+                "acl": "NTP_ACL",
+                "logging": True,
+                "auth": True,
+                "auth_key": "15435A030726242723273C21181319000A",
+                "key_id": "10",
+                "vrf": "my_mgmt_vrf",
+                "state": "absent",
+            },
         )
         commands = [
             "no ntp server vrf my_mgmt_vrf 10.75.32.5",

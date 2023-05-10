@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-"""
-The module file for ios_lacp
-"""
+"""The module file for ios_lacp."""
 from __future__ import absolute_import, division, print_function
 
 
@@ -239,7 +237,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp.lacp import (
     LacpArgs,
 )
@@ -248,7 +245,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.lacp.
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

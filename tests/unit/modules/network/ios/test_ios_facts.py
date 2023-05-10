@@ -21,7 +21,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import assertCountEqual
-
 from ansible_collections.cisco.ios.plugins.modules import ios_facts
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -33,7 +32,7 @@ class TestIosFactsModule(TestIosModule):
     module = ios_facts
 
     def setUp(self):
-        super(TestIosFactsModule, self).setUp()
+        super().setUp()
         self.mock_run_commands = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy.base.run_commands",
         )
@@ -60,14 +59,14 @@ class TestIosFactsModule(TestIosModule):
         }
 
     def tearDown(self):
-        super(TestIosFactsModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_get_capabilities.stop()
 
     def load_fixtures(self, commands=None):
         def load_from_file(*args, **kwargs):
             commands = kwargs["commands"]
-            output = list()
+            output = []
 
             for command in commands:
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_")
@@ -77,59 +76,31 @@ class TestIosFactsModule(TestIosModule):
         self.run_commands.side_effect = load_from_file
 
     def test_ios_facts_stacked(self):
-        set_module_args(dict(gather_subset="default"))
+        set_module_args({"gather_subset": "default"})
         result = self.execute_module()
-        self.assertEqual(result["ansible_facts"]["ansible_net_model"], "WS-C3750-24TS")
-        self.assertEqual(result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU")
-        self.assertEqual(result["ansible_facts"]["ansible_net_operatingmode"], "autonomous")
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_stacked_models"],
-            ["WS-C3750-24TS-E", "WS-C3750-24TS-E", "WS-C3750G-12S-E"],
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_stacked_serialnums"],
-            ["CAT0726R0ZU", "CAT0726R10A", "CAT0732R0M4"],
-        )
+        assert result["ansible_facts"]["ansible_net_model"] == "WS-C3750-24TS"
+        assert result["ansible_facts"]["ansible_net_serialnum"] == "CAT0726R0ZU"
+        assert result["ansible_facts"]["ansible_net_operatingmode"] == "autonomous"
+        assert result["ansible_facts"]["ansible_net_stacked_models"] == ["WS-C3750-24TS-E", "WS-C3750-24TS-E", "WS-C3750G-12S-E"]
+        assert result["ansible_facts"]["ansible_net_stacked_serialnums"] == ["CAT0726R0ZU", "CAT0726R10A", "CAT0732R0M4"]
 
     def test_ios_facts_tunnel_address_and_lineprotocol(self):
-        set_module_args(dict(gather_subset="interfaces"))
+        set_module_args({"gather_subset": "interfaces"})
         result = self.execute_module()
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"],
-            "5e00.0003.0000",
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["macaddress"],
-            "5e00.0006.0000",
-        )
-        self.assertIsNone(
-            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"]["macaddress"],
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["lineprotocol"],
-            "up",
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["TenGigabitEthernet2/5/5"][
-                "lineprotocol"
-            ],
-            "down",
-        )
+        assert result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"] == "5e00.0003.0000"
+        assert result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["macaddress"] == "5e00.0006.0000"
+        assert result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"]["macaddress"] is None
+        assert result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["lineprotocol"] == "up"
+        assert result["ansible_facts"]["ansible_net_interfaces"]["TenGigabitEthernet2/5/5"]["lineprotocol"] == "down"
 
     def test_ios_facts_filesystems_info(self):
-        set_module_args(dict(gather_subset="hardware"))
+        set_module_args({"gather_subset": "hardware"})
         result = self.execute_module()
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacetotal_kb"],
-            7712692.0,
-        )
-        self.assertEqual(
-            result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacefree_kb"],
-            6453180.0,
-        )
+        assert result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacetotal_kb"] == 7712692.0
+        assert result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacefree_kb"] == 6453180.0
 
     def test_ios_facts_memory_info(self):
-        set_module_args(dict(gather_subset="hardware"))
+        set_module_args({"gather_subset": "hardware"})
         result = self.execute_module()
         self.assertEqual(
             result["ansible_facts"]["ansible_net_memfree_mb"],
@@ -141,7 +112,7 @@ class TestIosFactsModule(TestIosModule):
         )
 
     def test_ios_facts_neighbors(self):
-        set_module_args(dict(gather_subset="interfaces"))
+        set_module_args({"gather_subset": "interfaces"})
         result = self.execute_module()
         assertCountEqual(
             self,

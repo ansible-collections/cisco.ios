@@ -368,7 +368,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     get_connection,
@@ -378,9 +377,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 
 def check_args(module, warnings):
-    if module.params["multiline_delimiter"]:
-        if len(module.params["multiline_delimiter"]) != 1:
-            module.fail_json(msg="multiline_delimiter value can only be a single character")
+    if module.params["multiline_delimiter"] and len(module.params["multiline_delimiter"]) != 1:
+        module.fail_json(msg="multiline_delimiter value can only be a single character")
 
 
 def edit_config_or_macro(connection, commands):
@@ -398,7 +396,7 @@ def get_candidate_config(module):
         candidate = module.params["src"]
     elif module.params["lines"]:
         candidate_obj = NetworkConfig(indent=1)
-        parents = module.params["parents"] or list()
+        parents = module.params["parents"] or []
         candidate_obj.add(module.params["lines"], parents=parents)
         candidate = dumps(candidate_obj, "raw")
     return candidate
@@ -425,26 +423,26 @@ def save_config(module, result):
 
 
 def main():
-    """main entry point for module execution"""
-    backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
-    argument_spec = dict(
-        src=dict(type="str"),
-        lines=dict(aliases=["commands"], type="list", elements="str"),
-        parents=dict(type="list", elements="str"),
-        before=dict(type="list", elements="str"),
-        after=dict(type="list", elements="str"),
-        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
-        replace=dict(default="line", choices=["line", "block"]),
-        multiline_delimiter=dict(default="@"),
-        running_config=dict(aliases=["config"]),
-        intended_config=dict(),
-        defaults=dict(type="bool", default=False),
-        backup=dict(type="bool", default=False),
-        backup_options=dict(type="dict", options=backup_spec),
-        save_when=dict(choices=["always", "never", "modified", "changed"], default="never"),
-        diff_against=dict(choices=["startup", "intended", "running"]),
-        diff_ignore_lines=dict(type="list", elements="str"),
-    )
+    """Main entry point for module execution."""
+    backup_spec = {"filename": {}, "dir_path": {"type": "path"}}
+    argument_spec = {
+        "src": {"type": "str"},
+        "lines": {"aliases": ["commands"], "type": "list", "elements": "str"},
+        "parents": {"type": "list", "elements": "str"},
+        "before": {"type": "list", "elements": "str"},
+        "after": {"type": "list", "elements": "str"},
+        "match": {"default": "line", "choices": ["line", "strict", "exact", "none"]},
+        "replace": {"default": "line", "choices": ["line", "block"]},
+        "multiline_delimiter": {"default": "@"},
+        "running_config": {"aliases": ["config"]},
+        "intended_config": {},
+        "defaults": {"type": "bool", "default": False},
+        "backup": {"type": "bool", "default": False},
+        "backup_options": {"type": "dict", "options": backup_spec},
+        "save_when": {"choices": ["always", "never", "modified", "changed"], "default": "never"},
+        "diff_against": {"choices": ["startup", "intended", "running"]},
+        "diff_ignore_lines": {"type": "list", "elements": "str"},
+    }
     mutually_exclusive = [("lines", "src"), ("parents", "src")]
     required_if = [
         ("match", "strict", ["lines"]),
@@ -459,7 +457,7 @@ def main():
         supports_check_mode=True,
     )
     result = {"changed": False}
-    warnings = list()
+    warnings = []
     check_args(module, warnings)
     result["warnings"] = warnings
     diff_ignore_lines = module.params["diff_ignore_lines"]

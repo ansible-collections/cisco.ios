@@ -1,5 +1,4 @@
 # pylint: skip-file
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acls.acls import (
     AclsArgs,
 )
@@ -31,10 +29,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class AclsFacts(object):
-    """The ios_acls fact class"""
+class AclsFacts:
+    """The ios_acls fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
@@ -50,7 +48,7 @@ class AclsFacts(object):
         return _acl_data
 
     def sanitize_data(self, data):
-        """removes matches or extra config info that is added on acl match"""
+        """Removes matches or extra config info that is added on acl match."""
         re_data = ""
         for da in data.split("\n"):
             if "match" in da:
@@ -66,9 +64,8 @@ class AclsFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
-
         if not data:
             data = self.get_acl_data(connection)
 
@@ -82,7 +79,7 @@ class AclsFacts(object):
         temp_v6 = []
 
         if current.get("acls"):
-            for k, v in iteritems(current.get("acls")):
+            for _k, v in iteritems(current.get("acls")):
                 if v.get("afi") == "ipv4" and v.get("acl_type") in ["standard", "extended"]:
                     del v["afi"]
                     temp_v4.append(v)
@@ -129,7 +126,7 @@ class AclsFacts(object):
                         }
 
             def collect_remarks(aces):
-                """makes remarks list per ace"""
+                """Makes remarks list per ace."""
                 ace_entry = []
                 rem = []
                 for i in aces:

@@ -285,7 +285,6 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
@@ -318,7 +317,7 @@ def add_command_to_vrf(name, cmd, commands):
 
 
 def map_obj_to_commands(updates, module):
-    commands = list()
+    commands = []
     for update in updates:
         want, have = update
 
@@ -341,7 +340,7 @@ def map_obj_to_commands(updates, module):
                     [
                         k
                         for k, v in module.params.items()
-                        if (k.endswith("_ipv6") or k.endswith("_both")) and v
+                        if (k.endswith(("_ipv6", "_both"))) and v
                     ],
                 )
                 != 0
@@ -351,7 +350,7 @@ def map_obj_to_commands(updates, module):
                     [
                         k
                         for k, v in module.params.items()
-                        if (k.endswith("_ipv4") or k.endswith("_both")) and v
+                        if (k.endswith(("_ipv4", "_both"))) and v
                     ],
                 )
                 != 0
@@ -427,6 +426,7 @@ def parse_description(configobj, name):
     match = re.search("description (.+)$", cfg, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def parse_rd(configobj, name):
@@ -435,11 +435,12 @@ def parse_rd(configobj, name):
     match = re.search("rd (.+)$", cfg, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def parse_interfaces(configobj):
     vrf_cfg = "vrf forwarding"
-    interfaces = dict()
+    interfaces = {}
     for intf in set(re.findall("^interface .+", str(configobj), re.M)):
         for line in configobj[intf].children:
             if vrf_cfg in line:
@@ -466,7 +467,7 @@ def parse_export(configobj, name):
 
 def parse_both(configobj, name, address_family="global"):
     rd_pattern = re.compile("(?P<rd>.+:.+)")
-    matches = list()
+    matches = []
     export_match = None
     import_match = None
     if address_family == "global":
@@ -540,8 +541,8 @@ def map_config_to_obj(module):
     configobj = NetworkConfig(indent=1, contents=config)
     match = re.findall("^vrf definition (\\S+)", config, re.M)
     if not match:
-        return list()
-    instances = list()
+        return []
+    instances = []
     interfaces = parse_interfaces(configobj)
     for item in set(match):
         obj = {
@@ -585,12 +586,12 @@ def map_params_to_obj(module):
     vrfs = module.params.get("vrfs")
     if not vrfs:
         if not module.params["name"] and module.params["purge"]:
-            return list()
+            return []
         elif not module.params["name"]:
             module.fail_json(msg="name is required")
         collection = [{"name": module.params["name"]}]
     else:
-        collection = list()
+        collection = []
         for item in vrfs:
             if not isinstance(item, dict):
                 collection.append({"name": item})
@@ -598,7 +599,7 @@ def map_params_to_obj(module):
                 module.fail_json(msg="name is required")
             else:
                 collection.append(item)
-    objects = list()
+    objects = []
     for item in collection:
         get_value = partial(get_param_value, item=item, module=module)
         item["description"] = get_value("description")
@@ -618,9 +619,9 @@ def map_params_to_obj(module):
         for address_family in both_addresses_family:
             if item["route_both%s" % address_family]:
                 if not item["route_export%s" % address_family]:
-                    item["route_export%s" % address_family] = list()
+                    item["route_export%s" % address_family] = []
                 if not item["route_import%s" % address_family]:
-                    item["route_import%s" % address_family] = list()
+                    item["route_import%s" % address_family] = []
                 item["route_export%s" % address_family].extend(
                     get_value("route_both%s" % address_family),
                 )
@@ -633,7 +634,7 @@ def map_params_to_obj(module):
 
 
 def update_objects(want, have):
-    updates = list()
+    updates = []
     for entry in want:
         item = next((i for i in have if i["name"] == entry["name"]), None)
         if all((item is None, entry["state"] == "present")):
@@ -643,12 +644,10 @@ def update_objects(want, have):
                 if value:
                     try:
                         if isinstance(value, list):
-                            if sorted(value) != sorted(item[key]):
-                                if (entry, item) not in updates:
-                                    updates.append((entry, item))
-                        elif value != item[key]:
-                            if (entry, item) not in updates:
+                            if sorted(value) != sorted(item[key]) and (entry, item) not in updates:
                                 updates.append((entry, item))
+                        elif value != item[key] and (entry, item) not in updates:
+                            updates.append((entry, item))
                     except TypeError:
                         pass
     return updates
@@ -659,7 +658,7 @@ def check_declarative_intent_params(want, module, result):
         if result["changed"]:
             time.sleep(module.params["delay"])
         name = module.params["name"]
-        rc, out, err = exec_command(module, "show vrf | include {0}".format(name))
+        rc, out, err = exec_command(module, f"show vrf | include {name}")
         if rc == 0:
             data = out.strip().split()
             if not data:
@@ -673,32 +672,32 @@ def check_declarative_intent_params(want, module, result):
                     for i in w["associated_interfaces"]:
                         if get_interface_type(i) is not get_interface_type(interface):
                             module.fail_json(
-                                msg="Interface %s not configured on vrf %s" % (interface, name),
+                                msg=f"Interface {interface} not configured on vrf {name}",
                             )
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        vrfs=dict(type="list", elements="raw"),
-        name=dict(),
-        description=dict(),
-        rd=dict(),
-        route_export=dict(type="list", elements="str"),
-        route_import=dict(type="list", elements="str"),
-        route_both=dict(type="list", elements="str"),
-        route_export_ipv4=dict(type="list", elements="str"),
-        route_import_ipv4=dict(type="list", elements="str"),
-        route_both_ipv4=dict(type="list", elements="str"),
-        route_export_ipv6=dict(type="list", elements="str"),
-        route_import_ipv6=dict(type="list", elements="str"),
-        route_both_ipv6=dict(type="list", elements="str"),
-        interfaces=dict(type="list", elements="str"),
-        associated_interfaces=dict(type="list", elements="str"),
-        delay=dict(default=10, type="int"),
-        purge=dict(type="bool", default=False),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "vrfs": {"type": "list", "elements": "raw"},
+        "name": {},
+        "description": {},
+        "rd": {},
+        "route_export": {"type": "list", "elements": "str"},
+        "route_import": {"type": "list", "elements": "str"},
+        "route_both": {"type": "list", "elements": "str"},
+        "route_export_ipv4": {"type": "list", "elements": "str"},
+        "route_import_ipv4": {"type": "list", "elements": "str"},
+        "route_both_ipv4": {"type": "list", "elements": "str"},
+        "route_export_ipv6": {"type": "list", "elements": "str"},
+        "route_import_ipv6": {"type": "list", "elements": "str"},
+        "route_both_ipv6": {"type": "list", "elements": "str"},
+        "interfaces": {"type": "list", "elements": "str"},
+        "associated_interfaces": {"type": "list", "elements": "str"},
+        "delay": {"default": 10, "type": "int"},
+        "purge": {"type": "bool", "default": False},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
     mutually_exclusive = [("name", "vrfs")]
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -706,7 +705,7 @@ def main():
         supports_check_mode=True,
     )
     result = {"changed": False}
-    warnings = list()
+    warnings = []
     result["warnings"] = warnings
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)

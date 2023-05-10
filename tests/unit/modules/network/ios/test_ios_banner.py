@@ -30,7 +30,7 @@ class TestIosBannerModule(TestIosModule):
     module = ios_banner
 
     def setUp(self):
-        super(TestIosBannerModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.ios.plugins.modules.ios_banner.get_config",
@@ -43,7 +43,7 @@ class TestIosBannerModule(TestIosModule):
         self.load_config = self.mock_load_config.start()
 
     def tearDown(self):
-        super(TestIosBannerModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
@@ -55,31 +55,31 @@ class TestIosBannerModule(TestIosModule):
 
     def test_ios_banner_create(self):
         for banner_type in ("login", "motd", "exec", "incoming", "slip-ppp"):
-            set_module_args(dict(banner=banner_type, text="test\nbanner\nstring"))
-            commands = ["banner {0} @\ntest\nbanner\nstring\n@".format(banner_type)]
+            set_module_args({"banner": banner_type, "text": "test\nbanner\nstring"})
+            commands = [f"banner {banner_type} @\ntest\nbanner\nstring\n@"]
             self.execute_module(changed=True, commands=commands)
 
     def test_ios_banner_remove(self):
-        set_module_args(dict(banner="login", state="absent"))
+        set_module_args({"banner": "login", "state": "absent"})
         commands = ["no banner login"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_banner_nochange(self):
         banner_text = load_fixture("ios_banner_show_banner.txt")
-        set_module_args(dict(banner="login", text=banner_text[:-1]))
+        set_module_args({"banner": "login", "text": banner_text[:-1]})
         self.execute_module()
 
     def test_ios_banner_idemp(self):
         banner_text = ""
-        set_module_args(dict(banner="login", text=banner_text))
+        set_module_args({"banner": "login", "text": banner_text})
         self.execute_module()
 
     def test_ios_banner_create_delimiter(self):
         for banner_type in ("login", "motd", "exec", "incoming", "slip-ppp"):
             set_module_args(
-                dict(banner=banner_type, text="test\nbanner\nstring", multiline_delimiter="c"),
+                {"banner": banner_type, "text": "test\nbanner\nstring", "multiline_delimiter": "c"},
             )
-            commands = ["banner {0} c\ntest\nbanner\nstring\nc".format(banner_type)]
+            commands = [f"banner {banner_type} c\ntest\nbanner\nstring\nc"]
             self.execute_module(changed=True, commands=commands)
 
 
@@ -92,5 +92,5 @@ class TestIosBannerIos12Module(TestIosBannerModule):
 
     def test_ios_banner_nochange(self):
         banner_text = load_fixture("ios_banner_show_banner.txt")
-        set_module_args(dict(banner="exec", text=banner_text[:-1]))
+        set_module_args({"banner": "exec", "text": banner_text[:-1]})
         self.execute_module()

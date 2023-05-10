@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -35,13 +34,13 @@ def _tmplt_access_list_entries(aces):
             command += " object-group {object_group}".format(**config_data[attr])
         if config_data[attr].get("port_protocol"):
             if config_data[attr].get("port_protocol").get("range"):
-                command += " range {0} {1}".format(
+                command += " range {} {}".format(
                     config_data[attr]["port_protocol"]["range"].get("start"),
                     config_data[attr]["port_protocol"]["range"].get("end"),
                 )
             else:
                 port_proto_type = list(config_data[attr]["port_protocol"].keys())[0]
-                command += " {0} {1}".format(
+                command += " {} {}".format(
                     port_proto_type,
                     config_data[attr]["port_protocol"][port_proto_type],
                 )
@@ -62,7 +61,7 @@ def _tmplt_access_list_entries(aces):
             if "protocol_number" in aces["protocol_options"]:
                 command += " {protocol_number}".format(**aces["protocol_options"])
             else:
-                command += " {0}".format(list(aces["protocol_options"])[0])
+                command += " {}".format(list(aces["protocol_options"])[0])
                 proto_option = aces["protocol_options"].get(list(aces["protocol_options"])[0])
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
@@ -71,7 +70,7 @@ def _tmplt_access_list_entries(aces):
         if aces.get("destination"):
             command = source_destination_common_config(aces, command, "destination")
         if isinstance(proto_option, dict):
-            command += " {0}".format(list(proto_option.keys())[0].replace("_", "-"))
+            command += " {}".format(list(proto_option.keys())[0].replace("_", "-"))
         if aces.get("dscp"):
             command += " dscp {dscp}".format(**aces)
         if aces.get("sequence") and aces.get("afi") == "ipv6":
@@ -88,7 +87,7 @@ def _tmplt_access_list_entries(aces):
                 command += " {user_cookie}".format(**aces["log_input"])
         if aces.get("option"):
             option_val = list(aces.get("option").keys())[0]
-            command += " option {0}".format(option_val)
+            command += f" option {option_val}"
         if aces.get("precedence"):
             command += " precedence {precedence}".format(**aces)
         if aces.get("time_range"):
@@ -108,15 +107,15 @@ def _tmplt_access_list_entries(aces):
             elif aces["tos"].get("normal"):
                 command += " normal"
         if aces.get("ttl"):
-            command += " ttl {0}".format(list(aces["ttl"])[0])
+            command += " ttl {}".format(list(aces["ttl"])[0])
             proto_option = aces["ttl"].get(list(aces["ttl"])[0])
-            command += " {0}".format(proto_option)
+            command += f" {proto_option}"
     return command
 
 
 class AclsTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(AclsTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     PARSERS = [
         {

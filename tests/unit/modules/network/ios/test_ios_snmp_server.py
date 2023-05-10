@@ -21,7 +21,7 @@ class TestIosSnmpServerModule(TestIosModule):
     module = ios_snmp_server
 
     def setUp(self):
-        super(TestIosSnmpServerModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosSnmpServerModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosSnmpServerModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -379,7 +379,7 @@ class TestIosSnmpServerModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module()
 
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        assert sorted(result["commands"]) == sorted(merged)
 
     def test_ios_snmp_server_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -698,7 +698,7 @@ class TestIosSnmpServerModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=True)
 
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        assert sorted(result["commands"]) == sorted(merged)
 
     def test_ios_snmp_server_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -901,7 +901,7 @@ class TestIosSnmpServerModule(TestIosModule):
         set_module_args(playbook)
         self.maxDiff = None
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        assert sorted(result["commands"]) == sorted(deleted)
 
     def test_ios_snmp_server_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -1220,7 +1220,7 @@ class TestIosSnmpServerModule(TestIosModule):
         playbook["state"] = "overridden"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        assert sorted(result["commands"]) == sorted(overridden)
 
     def test_ios_snmp_server_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -1256,14 +1256,14 @@ class TestIosSnmpServerModule(TestIosModule):
         set_module_args(playbook)
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        assert sorted(result["commands"]) == sorted(overridden)
 
     ####################
 
     def test_ios_snmp_server_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     snmp-server engineID local AB0C5342FA0A
                     snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
@@ -1295,8 +1295,8 @@ class TestIosSnmpServerModule(TestIosModule):
                     snmp-server host 172.16.1.1 version 3 auth group0  tty bgp
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         parsed = {
             "engine_id": [
@@ -1397,7 +1397,7 @@ class TestIosSnmpServerModule(TestIosModule):
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_ios_snmp_server_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -1407,7 +1407,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
             """,
         )
-        set_module_args(dict(state="gathered"))
+        set_module_args({"state": "gathered"})
         gathered = {
             "hosts": [
                 {
@@ -1429,7 +1429,7 @@ class TestIosSnmpServerModule(TestIosModule):
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+        assert sorted(result["gathered"]) == sorted(gathered)
 
     def test_ios_snmp_server_rendered(self):
         set_module_args(
@@ -1571,7 +1571,7 @@ class TestIosSnmpServerModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+        assert sorted(result["rendered"]) == sorted(rendered)
 
     def test_ios_snmp_server_rendered_user_options(self):
         set_module_args(
@@ -1597,4 +1597,4 @@ class TestIosSnmpServerModule(TestIosModule):
         rendered = ["snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+        assert sorted(result["rendered"]) == sorted(rendered)

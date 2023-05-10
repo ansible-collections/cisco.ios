@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -37,11 +36,12 @@ def _tmplt_set_prefix_lists(config_data):
                 if config_data["prefix_list"].get("le"):
                     cmd += " le {le}".format(**config_data["prefix_list"])
         return cmd
+    return None
 
 
 class Prefix_listsTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Prefix_listsTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     PARSERS = [
         {

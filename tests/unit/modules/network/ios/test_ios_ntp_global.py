@@ -21,7 +21,7 @@ class TestIosNtpGlobalModule(TestIosModule):
     module = ios_ntp_global
 
     def setUp(self):
-        super(TestIosNtpGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosNtpGlobalModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosNtpGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -100,49 +100,49 @@ class TestIosNtpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "2", "kod": True},
+                            {"access_list": "preauth_ipv6_acl", "ipv6": True, "kod": True},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=4)),
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                    },
+                    "allow": {"control": {"rate_limit": 4}},
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"algorithm": "md5", "encryption": 7, "id": 2, "key": "SomeSecurePassword"},
                     ],
-                    broadcast_delay=22,
-                    logging=True,
-                    master=dict(stratum=4),
-                    max_associations=34,
-                    max_distance=3,
-                    min_distance=10,
-                    orphan=4,
-                    panic_update=True,
-                    peers=[
-                        dict(peer="172.16.1.10", version=2),
-                        dict(key_id=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
-                        dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                    "broadcast_delay": 22,
+                    "logging": True,
+                    "master": {"stratum": 4},
+                    "max_associations": 34,
+                    "max_distance": 3,
+                    "min_distance": 10,
+                    "orphan": 4,
+                    "panic_update": True,
+                    "peers": [
+                        {"peer": "172.16.1.10", "version": 2},
+                        {"key_id": 2, "minpoll": 5, "peer": "172.16.1.11", "prefer": True, "version": 2},
+                        {"peer": "checkPeerDomainIpv4.com", "prefer": True, "use_ipv4": True},
+                        {"peer": "checkPeerDomainIpv6.com", "use_ipv6": True},
+                        {"peer": "testPeerDomainIpv6.com", "prefer": True, "use_ipv6": True},
                     ],
-                    servers=[
-                        dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                    "servers": [
+                        {"server": "172.16.1.12", "version": 2},
+                        {"server": "172.16.1.13", "source": "GigabitEthernet0/1"},
+                        {"server": "checkServerDomainIpv6.com", "use_ipv6": True},
                     ],
-                    source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
-                    update_calendar=True,
-                ),
-                state="merged",
-            ),
+                    "source": "GigabitEthernet0/1",
+                    "trusted_keys": [{"range_start": 21}, {"range_end": 13, "range_start": 3}],
+                    "update_calendar": True,
+                },
+                "state": "merged",
+            },
         )
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ntp_global_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -152,46 +152,46 @@ class TestIosNtpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "2", "kod": True},
+                            {"access_list": "preauth_ipv6_acl", "ipv6": True, "kod": True},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=4)),
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                    },
+                    "allow": {"control": {"rate_limit": 4}},
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"algorithm": "md5", "encryption": 7, "id": 2, "key": "SomeSecurePassword"},
                     ],
-                    broadcast_delay=22,
-                    logging=True,
-                    master=dict(stratum=4),
-                    max_associations=34,
-                    max_distance=3,
-                    min_distance=10,
-                    orphan=4,
-                    panic_update=True,
-                    peers=[
-                        dict(peer="172.16.1.10", version=2),
-                        dict(key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
-                        dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                    "broadcast_delay": 22,
+                    "logging": True,
+                    "master": {"stratum": 4},
+                    "max_associations": 34,
+                    "max_distance": 3,
+                    "min_distance": 10,
+                    "orphan": 4,
+                    "panic_update": True,
+                    "peers": [
+                        {"peer": "172.16.1.10", "version": 2},
+                        {"key": 2, "minpoll": 5, "peer": "172.16.1.11", "prefer": True, "version": 2},
+                        {"peer": "checkPeerDomainIpv4.com", "prefer": True, "use_ipv4": True},
+                        {"peer": "checkPeerDomainIpv6.com", "use_ipv6": True},
+                        {"peer": "testPeerDomainIpv6.com", "prefer": True, "use_ipv6": True},
                     ],
-                    servers=[
-                        dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.110", key_id=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                    "servers": [
+                        {"server": "172.16.1.12", "version": 2},
+                        {"server": "172.16.1.110", "key_id": 2},
+                        {"server": "172.16.1.13", "source": "GigabitEthernet0/1"},
+                        {"server": "checkServerDomainIpv6.com", "use_ipv6": True},
                     ],
-                    source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
-                    update_calendar=True,
-                ),
-                state="merged",
-            ),
+                    "source": "GigabitEthernet0/1",
+                    "trusted_keys": [{"range_start": 21}, {"range_end": 13, "range_start": 3}],
+                    "update_calendar": True,
+                },
+                "state": "merged",
+            },
         )
         commands = [
             "ntp authenticate",
@@ -221,7 +221,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             "ntp trusted-key 3 - 13",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ntp_global_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -257,7 +257,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             ntp trusted-key 21
             """,
         )
-        set_module_args(dict(config=dict(), state="deleted"))
+        set_module_args({"config": {}, "state": "deleted"})
         commands = [
             "no ntp allow mode control 4",
             "no ntp allow mode private",
@@ -290,20 +290,20 @@ class TestIosNtpGlobalModule(TestIosModule):
             "no ntp trusted-key 3 - 13",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ntp_global_deleted_blank(self):
         self.execute_show_command.return_value = dedent(
             """\
             """,
         )
-        set_module_args(dict(config=dict(), state="deleted"))
+        set_module_args({"config": {}, "state": "deleted"})
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ntp_global_replaced_overridden(self):
-        """both the replaced and overridden states are supported to have same behaviour"""
+        """Both the replaced and overridden states are supported to have same behaviour."""
         self.execute_show_command.return_value = dedent(
             """\
             ntp allow mode control 4
@@ -338,45 +338,45 @@ class TestIosNtpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "2", "kod": True},
+                            {"access_list": "preauth_ipv6_acl", "ipv6": True, "kod": True},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=4)),
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                    },
+                    "allow": {"control": {"rate_limit": 4}},
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"algorithm": "md5", "encryption": 7, "id": 2, "key": "SomeSecurePassword"},
                     ],
-                    broadcast_delay=22,
-                    logging=True,
-                    master=dict(stratum=4),
-                    max_associations=34,
-                    max_distance=3,
-                    min_distance=10,
-                    orphan=4,
-                    panic_update=True,
-                    peers=[
-                        dict(peer="172.16.1.10", version=2),
-                        dict(key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
-                        dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
-                        dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
+                    "broadcast_delay": 22,
+                    "logging": True,
+                    "master": {"stratum": 4},
+                    "max_associations": 34,
+                    "max_distance": 3,
+                    "min_distance": 10,
+                    "orphan": 4,
+                    "panic_update": True,
+                    "peers": [
+                        {"peer": "172.16.1.10", "version": 2},
+                        {"key": 2, "minpoll": 5, "peer": "172.16.1.11", "prefer": True, "version": 2},
+                        {"peer": "checkPeerDomainIpv4.com", "prefer": True, "use_ipv4": True},
+                        {"peer": "checkPeerDomainIpv6.com", "use_ipv6": True},
+                        {"peer": "testPeerDomainIpv6.com", "prefer": True, "use_ipv6": True},
                     ],
-                    servers=[
-                        dict(server="172.16.1.12", version=2),
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                    "servers": [
+                        {"server": "172.16.1.12", "version": 2},
+                        {"server": "172.16.1.13", "source": "GigabitEthernet0/1"},
+                        {"server": "checkServerDomainIpv6.com", "use_ipv6": True},
                     ],
-                    source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
-                    update_calendar=True,
-                ),
-                state="replaced",
-            ),
+                    "source": "GigabitEthernet0/1",
+                    "trusted_keys": [{"range_start": 21}, {"range_end": 13, "range_start": 3}],
+                    "update_calendar": True,
+                },
+                "state": "replaced",
+            },
         )
         commands = [
             "no ntp allow mode private",
@@ -399,10 +399,10 @@ class TestIosNtpGlobalModule(TestIosModule):
             "ntp trusted-key 3 - 13",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ntp_global_replaced_overridden_idempotent(self):
-        """both the replaced and overridden states are supported to have same behaviour"""
+        """Both the replaced and overridden states are supported to have same behaviour."""
         self.execute_show_command.return_value = dedent(
             """\
             ntp allow mode control 4
@@ -429,42 +429,42 @@ class TestIosNtpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="2", kod=True),
-                            dict(access_list="preauth_ipv6_acl", ipv6=True, kod=True),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "2", "kod": True},
+                            {"access_list": "preauth_ipv6_acl", "ipv6": True, "kod": True},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=4)),
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                    },
+                    "allow": {"control": {"rate_limit": 4}},
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"algorithm": "md5", "encryption": 7, "id": 2, "key": "SomeSecurePassword"},
                     ],
-                    broadcast_delay=22,
-                    logging=True,
-                    master=dict(stratum=4),
-                    max_associations=34,
-                    max_distance=3,
-                    min_distance=10,
-                    orphan=4,
-                    panic_update=True,
-                    peers=[
-                        dict(key_id=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
+                    "broadcast_delay": 22,
+                    "logging": True,
+                    "master": {"stratum": 4},
+                    "max_associations": 34,
+                    "max_distance": 3,
+                    "min_distance": 10,
+                    "orphan": 4,
+                    "panic_update": True,
+                    "peers": [
+                        {"key_id": 2, "minpoll": 5, "peer": "172.16.1.11", "prefer": True, "version": 2},
+                        {"peer": "checkPeerDomainIpv4.com", "prefer": True, "use_ipv4": True},
                     ],
-                    servers=[
-                        dict(server="172.16.1.13", source="GigabitEthernet0/1"),
-                        dict(server="checkServerDomainIpv6.com", use_ipv6=True),
+                    "servers": [
+                        {"server": "172.16.1.13", "source": "GigabitEthernet0/1"},
+                        {"server": "checkServerDomainIpv6.com", "use_ipv6": True},
                     ],
-                    source="Loopback888",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
-                    update_calendar=True,
-                ),
-                state="overridden",
-            ),
+                    "source": "Loopback888",
+                    "trusted_keys": [{"range_start": 21}, {"range_end": 13, "range_start": 3}],
+                    "update_calendar": True,
+                },
+                "state": "overridden",
+            },
         )
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)

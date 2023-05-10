@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-"""
-The module file for ios_vlans
-"""
+"""The module file for ios_vlans."""
 from __future__ import absolute_import, division, print_function
 
 
@@ -769,7 +767,6 @@ commands:
   sample: ['vlan 20', 'name vlan_20', 'mtu 600', 'remote-span']
 """
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
@@ -778,7 +775,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import g
 
 
 def _is_l2_device(module):
-    """fails module if device is L3."""
+    """Fails module if device is L3."""
     connection = get_connection(module)
     check_os_type = connection.get_device_info()
     if check_os_type.get("network_os_type") == "L3":
@@ -788,7 +785,7 @@ def _is_l2_device(module):
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

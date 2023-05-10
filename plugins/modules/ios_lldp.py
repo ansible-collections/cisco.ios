@@ -68,7 +68,6 @@ commands:
     - lldp run
 """
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     load_config,
     run_commands,
@@ -84,12 +83,12 @@ def has_lldp(module):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        state=dict(default="present", choices=["present", "absent", "enabled", "disabled"]),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "state": {"default": "present", "choices": ["present", "absent", "enabled", "disabled"]},
+    }
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-    warnings = list()
+    warnings = []
     result = {"changed": False}
     if warnings:
         result["warnings"] = warnings

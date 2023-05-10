@@ -11,7 +11,6 @@ import re
 from ansible.module_utils.common.network import to_netmask
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.cli.config.bgp.address_family import (
     AddressFamily,
 )
@@ -41,7 +40,7 @@ REDISTRIBUTE_PROTOCOLS = [
 @register_provider("ios", "ios_bgp")
 class Provider(CliProvider):
     def render(self, config=None):
-        commands = list()
+        commands = []
 
         existing_as = None
         if config:
@@ -73,7 +72,7 @@ class Provider(CliProvider):
                     commands.append("no router bgp %s" % existing_as)
                 config = None
 
-            context_commands = list()
+            context_commands = []
 
             for key, value in iteritems(self.get_value("config")):
                 if value is not None:
@@ -93,6 +92,7 @@ class Provider(CliProvider):
         cmd = "bgp router-id %s" % self.get_value("config.router_id")
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_log_neighbor_changes(self, config=None):
         cmd = "bgp log-neighbor-changes"
@@ -100,13 +100,14 @@ class Provider(CliProvider):
         if log_neighbor_changes is True:
             if not config or cmd not in config:
                 return cmd
-        elif log_neighbor_changes is False:
-            if config and cmd in config:
-                return "no %s" % cmd
+            return None
+        elif log_neighbor_changes is False and config and cmd in config:
+            return "no %s" % cmd
+        return None
 
     def _render_networks(self, config=None):
-        commands = list()
-        safe_list = list()
+        commands = []
+        safe_list = []
 
         for entry in self.get_value("config.networks"):
             network = entry["prefix"]
@@ -124,20 +125,19 @@ class Provider(CliProvider):
             if not config or cmd not in config:
                 commands.append(cmd)
 
-        if self.params["operation"] == "replace":
-            if config:
-                matches = re.findall(r"network (.*)", config, re.M)
-                for entry in set(matches).difference(safe_list):
-                    commands.append("no network %s" % entry)
+        if self.params["operation"] == "replace" and config:
+            matches = re.findall(r"network (.*)", config, re.M)
+            for entry in set(matches).difference(safe_list):
+                commands.append("no network %s" % entry)
 
         return commands
 
     def _render_neighbors(self, config):
-        """generate bgp neighbor configuration"""
+        """Generate bgp neighbor configuration."""
         return Neighbors(self.params).render(config)
 
     def _render_address_family(self, config):
-        """generate address-family configuration"""
+        """Generate address-family configuration."""
         return AddressFamily(self.params).render(config)
 
     def _validate_input(self, config=None):
@@ -153,8 +153,7 @@ class Provider(CliProvider):
                 for item in address_family:
                     if item["networks"]:
                         raise ValueError(
-                            "operation is replace but provided both root level network(s) and network(s) under %s %s address family"
-                            % (item["afi"], item["safi"]),
+                            "operation is replace but provided both root level network(s) and network(s) under {} {} address family".format(item["afi"], item["safi"]),
                         )
 
             if root_networks and config and device_has_AF(config):

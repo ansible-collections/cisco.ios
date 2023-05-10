@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,9 +20,7 @@
 #
 #############################################
 
-"""
-The arg spec for the ios_ospfv2 module
-"""
+"""The arg spec for the ios_ospfv2 module."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -31,8 +28,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-class Ospfv2Args(object):
-    """The arg spec for the ios_ospfv2 module"""
+class Ospfv2Args:
+    """The arg spec for the ios_ospfv2 module."""
 
     argument_spec = {
         "config": {

@@ -118,9 +118,9 @@ def load_config(module, commands):
 
 
 def normalize_interface(name):
-    """Return the normalized interface name"""
+    """Return the normalized interface name."""
     if not name:
-        return
+        return None
 
     def _get_number(name):
         digits = ""
@@ -161,14 +161,8 @@ def normalize_interface(name):
         if_type = None
 
     number_list = name.split(" ")
-    if len(number_list) == 2:
-        if_number = number_list[-1].strip()
-    else:
-        if_number = _get_number(name)
+    if_number = number_list[-1].strip() if len(number_list) == 2 else _get_number(name)
 
-    if if_type:
-        proper_interface = if_type + if_number
-    else:
-        proper_interface = name
+    proper_interface = if_type + if_number if if_type else name
 
     return proper_interface

@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-"""
-The module file for ios_l3_interfaces
-"""
+"""The module file for ios_l3_interfaces."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -877,7 +874,6 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )
@@ -888,7 +884,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.l3_in
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

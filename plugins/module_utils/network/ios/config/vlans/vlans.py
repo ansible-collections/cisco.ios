@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The ios_vlans class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -21,25 +20,22 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Vlans(ConfigBase):
-    """
-    The ios_vlans class
-    """
+    """The ios_vlans class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["vlans"]
 
-    def __init__(self, module):
-        super(Vlans, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_vlans_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -55,19 +51,16 @@ class Vlans(ConfigBase):
         return vlans_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
-        if self.state in self.ACTION_STATES:
-            existing_vlans_facts = self.get_vlans_facts()
-        else:
-            existing_vlans_facts = []
+        existing_vlans_facts = self.get_vlans_facts() if self.state in self.ACTION_STATES else []
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_vlans_facts))
@@ -104,7 +97,7 @@ class Vlans(ConfigBase):
 
     def set_config(self, existing_vlans_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -116,7 +109,7 @@ class Vlans(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -124,10 +117,9 @@ class Vlans(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-
         if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(self.state),
+                msg=f"value of config parameter must not be empty for state {self.state}",
             )
 
         if self.state == "overridden":
@@ -141,7 +133,7 @@ class Vlans(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -159,12 +151,12 @@ class Vlans(ConfigBase):
             if check:
                 commands.extend(self._set_config(each, every))
             else:
-                commands.extend(self._set_config(each, dict()))
+                commands.extend(self._set_config(each, {}))
 
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -193,12 +185,12 @@ class Vlans(ConfigBase):
         # Iterating through want_local list which now only have new VLANs to be
         # configured
         for each in want_local:
-            commands.extend(self._set_config(each, dict()))
+            commands.extend(self._set_config(each, {}))
 
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -216,12 +208,12 @@ class Vlans(ConfigBase):
             if check:
                 commands.extend(self._set_config(each, every))
             else:
-                commands.extend(self._set_config(each, dict()))
+                commands.extend(self._set_config(each, {}))
 
         return commands
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -242,7 +234,7 @@ class Vlans(ConfigBase):
                     commands.extend(self._clear_config(each, every))
         else:
             for each in have:
-                commands.extend(self._clear_config(dict(), each))
+                commands.extend(self._clear_config({}, each))
 
         return commands
 
@@ -264,21 +256,21 @@ class Vlans(ConfigBase):
     def _set_config(self, want, have):
         # Set the interface config based on the want and have config
         commands = []
-        vlan = "vlan {0}".format(want.get("vlan_id"))
+        vlan = "vlan {}".format(want.get("vlan_id"))
 
         def negate_have_config(want_diff, have_diff, vlan, commands):
             name = dict(have_diff).get("name")
             if name and not dict(want_diff).get("name"):
-                self.remove_command_from_config_list(vlan, "name {0}".format(name), commands)
+                self.remove_command_from_config_list(vlan, f"name {name}", commands)
             state = dict(have_diff).get("state")
             if state and not dict(want_diff).get("state"):
-                self.remove_command_from_config_list(vlan, "state {0}".format(state), commands)
+                self.remove_command_from_config_list(vlan, f"state {state}", commands)
             shutdown = dict(have_diff).get("shutdown")
             if shutdown and not dict(want_diff).get("shutdown"):
                 self.remove_command_from_config_list(vlan, "shutdown", commands)
             mtu = dict(have_diff).get("mtu")
             if mtu and not dict(want_diff).get("mtu"):
-                self.remove_command_from_config_list(vlan, "mtu {0}".format(mtu), commands)
+                self.remove_command_from_config_list(vlan, f"mtu {mtu}", commands)
             remote_span = dict(have_diff).get("remote_span")
             if remote_span and not dict(want_diff).get("remote_span"):
                 self.remove_command_from_config_list(vlan, "remote-span", commands)
@@ -287,7 +279,7 @@ class Vlans(ConfigBase):
                 private_vlan_type = dict(private_vlan).get("type")
                 self.remove_command_from_config_list(
                     vlan,
-                    "private-vlan {0}".format(private_vlan_type),
+                    f"private-vlan {private_vlan_type}",
                     commands,
                 )
                 if private_vlan_type == "primary" and dict(private_vlan).get("associated"):
@@ -311,11 +303,11 @@ class Vlans(ConfigBase):
             private_vlan = dict(diff).get("private_vlan")
 
             if name:
-                self.add_command_to_config_list(vlan, "name {0}".format(name), commands)
+                self.add_command_to_config_list(vlan, f"name {name}", commands)
             if state:
-                self.add_command_to_config_list(vlan, "state {0}".format(state), commands)
+                self.add_command_to_config_list(vlan, f"state {state}", commands)
             if mtu:
-                self.add_command_to_config_list(vlan, "mtu {0}".format(mtu), commands)
+                self.add_command_to_config_list(vlan, f"mtu {mtu}", commands)
             if remote_span:
                 self.add_command_to_config_list(vlan, "remote-span", commands)
 
@@ -325,7 +317,7 @@ class Vlans(ConfigBase):
                 if private_vlan_type:
                     self.add_command_to_config_list(
                         vlan,
-                        "private-vlan {0}".format(private_vlan_type),
+                        f"private-vlan {private_vlan_type}",
                         commands,
                     )
                 if private_vlan_associated:
@@ -334,7 +326,7 @@ class Vlans(ConfigBase):
                     )  # Convert python list to string with elements separated by a comma
                     self.add_command_to_config_list(
                         vlan,
-                        "private-vlan association {0}".format(associated_list),
+                        f"private-vlan association {associated_list}",
                         commands,
                     )
 
@@ -350,7 +342,7 @@ class Vlans(ConfigBase):
     def _clear_config(self, want, have):
         # Delete the interface config based on the want and have config
         commands = []
-        vlan = "vlan {0}".format(have.get("vlan_id"))
+        vlan = "vlan {}".format(have.get("vlan_id"))
 
         if (
             have.get("vlan_id")

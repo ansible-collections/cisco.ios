@@ -21,7 +21,7 @@ class TestIosLagInterfacesModule(TestIosModule):
     module = ios_lag_interfaces
 
     def setUp(self):
-        super(TestIosLagInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLagInterfacesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLagInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -88,8 +88,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
@@ -104,13 +104,12 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = ["interface GigabitEthernet0/3", "channel-group 22 mode passive"]
         result = self.execute_module(changed=True)
-        # print(result["commands"])
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lag_interfaces_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -135,8 +134,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
@@ -151,8 +150,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -179,8 +178,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/3", "mode": "active"}],
                         "name": "Port-channel11",
@@ -195,8 +194,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -209,7 +208,7 @@ class TestIosLagInterfacesModule(TestIosModule):
             "no channel-group 22 mode active",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lag_interfaces_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -234,8 +233,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
@@ -250,8 +249,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -278,8 +277,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
@@ -290,8 +289,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
 
         commands = [
@@ -304,7 +303,7 @@ class TestIosLagInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         print(result["commands"])
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lag_interfaces_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -329,8 +328,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
@@ -345,8 +344,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
@@ -372,7 +371,7 @@ class TestIosLagInterfacesModule(TestIosModule):
              channel-group 22 link 22
             """,
         )
-        set_module_args(dict(config=[], state="deleted"))
+        set_module_args({"config": [], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/1",
             "no channel-group 11 mode active",
@@ -387,7 +386,7 @@ class TestIosLagInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         print(result["commands"])
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lag_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -411,7 +410,7 @@ class TestIosLagInterfacesModule(TestIosModule):
              channel-group 22 link 22
             """,
         )
-        set_module_args(dict(config=[dict(name="Port-channel11")], state="deleted"))
+        set_module_args({"config": [{"name": "Port-channel11"}], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/1",
             "no channel-group 11 mode active",
@@ -419,12 +418,12 @@ class TestIosLagInterfacesModule(TestIosModule):
             "no channel-group 11 mode active",
         ]
         res = self.execute_module(changed=True)
-        self.assertEqual(res["commands"], commands)
+        assert res["commands"] == commands
 
     def test_ios_lag_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface Port-channel11
                     interface Port-channel22
@@ -445,8 +444,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                      channel-group 22 link 22
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -466,7 +465,7 @@ class TestIosLagInterfacesModule(TestIosModule):
                 ],
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_lag_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -474,8 +473,8 @@ class TestIosLagInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "members": [{"member": "GigabitEthernet0/1", "mode": "active"}],
                         "name": "Port-channel11",
@@ -490,8 +489,8 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "name": "Port-channel22",
                     },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -506,4 +505,4 @@ class TestIosLagInterfacesModule(TestIosModule):
             "channel-group 22 link 22",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

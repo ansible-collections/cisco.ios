@@ -10,7 +10,6 @@ import re
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers import (
     CliProvider,
 )
@@ -18,15 +17,15 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.pr
 
 class Neighbors(CliProvider):
     def render(self, config=None, nbr_list=None):
-        commands = list()
-        safe_list = list()
+        commands = []
+        safe_list = []
         if not nbr_list:
             nbr_list = self.get_value("config.neighbors")
 
         for item in nbr_list:
-            neighbor_commands = list()
+            neighbor_commands = []
             context = "neighbor %s" % item["neighbor"]
-            cmd = "%s remote-as %s" % (context, item["remote_as"])
+            cmd = "{} remote-as {}".format(context, item["remote_as"])
 
             if not config or cmd not in config:
                 neighbor_commands.append(cmd)
@@ -42,33 +41,35 @@ class Neighbors(CliProvider):
             commands.extend(neighbor_commands)
             safe_list.append(context)
 
-        if self.params["operation"] == "replace":
-            if config and safe_list:
-                commands.extend(self._negate_config(config, safe_list))
+        if self.params["operation"] == "replace" and config and safe_list:
+            commands.extend(self._negate_config(config, safe_list))
 
         return commands
 
     def _negate_config(self, config, safe_list=None):
-        commands = list()
+        commands = []
         matches = re.findall(r"(neighbor \S+)", config, re.M)
         for item in set(matches).difference(safe_list):
             commands.append("no %s" % item)
         return commands
 
     def _render_local_as(self, item, config=None):
-        cmd = "neighbor %s local-as %s" % (item["neighbor"], item["local_as"])
+        cmd = "neighbor {} local-as {}".format(item["neighbor"], item["local_as"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_port(self, item, config=None):
-        cmd = "neighbor %s port %s" % (item["neighbor"], item["port"])
+        cmd = "neighbor {} port {}".format(item["neighbor"], item["port"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_description(self, item, config=None):
-        cmd = "neighbor %s description %s" % (item["neighbor"], item["description"])
+        cmd = "neighbor {} description {}".format(item["neighbor"], item["description"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_enabled(self, item, config=None):
         cmd = "neighbor %s shutdown" % item["neighbor"]
@@ -76,52 +77,60 @@ class Neighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_update_source(self, item, config=None):
-        cmd = "neighbor %s update-source %s" % (item["neighbor"], item["update_source"])
+        cmd = "neighbor {} update-source {}".format(item["neighbor"], item["update_source"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_password(self, item, config=None):
-        cmd = "neighbor %s password %s" % (item["neighbor"], item["password"])
+        cmd = "neighbor {} password {}".format(item["neighbor"], item["password"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_ebgp_multihop(self, item, config=None):
-        cmd = "neighbor %s ebgp-multihop %s" % (item["neighbor"], item["ebgp_multihop"])
+        cmd = "neighbor {} ebgp-multihop {}".format(item["neighbor"], item["ebgp_multihop"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_peer_group(self, item, config=None):
-        cmd = "neighbor %s peer-group %s" % (item["neighbor"], item["peer_group"])
+        cmd = "neighbor {} peer-group {}".format(item["neighbor"], item["peer_group"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_timers(self, item, config):
-        """generate bgp timer related configuration"""
+        """Generate bgp timer related configuration."""
         keepalive = item["timers"]["keepalive"]
         holdtime = item["timers"]["holdtime"]
         min_neighbor_holdtime = item["timers"]["min_neighbor_holdtime"]
         neighbor = item["neighbor"]
 
         if keepalive and holdtime:
-            cmd = "neighbor %s timers %s %s" % (neighbor, keepalive, holdtime)
+            cmd = f"neighbor {neighbor} timers {keepalive} {holdtime}"
             if min_neighbor_holdtime:
                 cmd += " %s" % min_neighbor_holdtime
             if not config or cmd not in config:
                 return cmd
+            return None
+        return None
 
 
 class AFNeighbors(CliProvider):
     def render(self, config=None, nbr_list=None):
-        commands = list()
+        commands = []
         if not nbr_list:
-            return
+            return None
 
         for item in nbr_list:
-            neighbor_commands = list()
+            neighbor_commands = []
             for key, value in iteritems(item):
                 if value is not None:
                     meth = getattr(self, "_render_%s" % key, None)
@@ -135,12 +144,13 @@ class AFNeighbors(CliProvider):
         return commands
 
     def _render_advertisement_interval(self, item, config=None):
-        cmd = "neighbor %s advertisement-interval %s" % (
+        cmd = "neighbor {} advertisement-interval {}".format(
             item["neighbor"],
             item["advertisement_interval"],
         )
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_route_reflector_client(self, item, config=None):
         cmd = "neighbor %s route-reflector-client" % item["neighbor"]
@@ -148,8 +158,10 @@ class AFNeighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_route_server_client(self, item, config=None):
         cmd = "neighbor %s route-server-client" % item["neighbor"]
@@ -157,8 +169,10 @@ class AFNeighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_remove_private_as(self, item, config=None):
         cmd = "neighbor %s remove-private-as" % item["neighbor"]
@@ -166,8 +180,10 @@ class AFNeighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_next_hop_self(self, item, config=None):
         cmd = "neighbor %s next-hop-self" % item["neighbor"]
@@ -175,8 +191,10 @@ class AFNeighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_activate(self, item, config=None):
         cmd = "neighbor %s activate" % item["neighbor"]
@@ -184,20 +202,25 @@ class AFNeighbors(CliProvider):
             if not config or cmd in config:
                 cmd = "no %s" % cmd
                 return cmd
+            return None
         elif not config or cmd not in config:
             return cmd
+        return None
 
     def _render_maximum_prefix(self, item, config=None):
-        cmd = "neighbor %s maximum-prefix %s" % (item["neighbor"], item["maximum_prefix"])
+        cmd = "neighbor {} maximum-prefix {}".format(item["neighbor"], item["maximum_prefix"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_prefix_list_in(self, item, config=None):
-        cmd = "neighbor %s prefix-list %s in" % (item["neighbor"], item["prefix_list_in"])
+        cmd = "neighbor {} prefix-list {} in".format(item["neighbor"], item["prefix_list_in"])
         if not config or cmd not in config:
             return cmd
+        return None
 
     def _render_prefix_list_out(self, item, config=None):
-        cmd = "neighbor %s prefix-list %s out" % (item["neighbor"], item["prefix_list_out"])
+        cmd = "neighbor {} prefix-list {} out".format(item["neighbor"], item["prefix_list_out"])
         if not config or cmd not in config:
             return cmd
+        return None

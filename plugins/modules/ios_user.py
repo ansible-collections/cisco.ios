@@ -315,7 +315,6 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
@@ -353,7 +352,7 @@ def sshkey_fingerprint(sshkey):
 
 
 def map_obj_to_commands(updates, module):
-    commands = list()
+    commands = []
     update_password = module.params["update_password"]
     password_type = module.params["password_type"]
 
@@ -361,10 +360,10 @@ def map_obj_to_commands(updates, module):
         return want.get(x) and want.get(x) != have.get(x)
 
     def add(command, want, x):
-        command.append("username %s %s" % (want["name"], x))
+        command.append("username {} {}".format(want["name"], x))
 
     def add_hashed_password(command, want, x):
-        command.append("username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")))
+        command.append("username {} secret {} {}".format(want["name"], x.get("type"), x.get("value")))
 
     def add_ssh(command, want, x=None):
         command.append("ip ssh pubkey-chain")
@@ -397,7 +396,7 @@ def map_obj_to_commands(updates, module):
                         msg="Can not have both a user password and a user secret."
                         + " Please choose one or the other.",
                     )
-                add(commands, want, "%s %s" % (password_type, want["configured_password"]))
+                add(commands, want, "{} {}".format(password_type, want["configured_password"]))
         if needs_update(want, have, "hashed_password"):
             add_hashed_password(commands, want, want["hashed_password"])
         if needs_update(want, have, "nopassword"):
@@ -412,6 +411,7 @@ def parse_view(data):
     match = re.search("view (\\S+)", data, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def parse_sshkey(data, user):
@@ -429,6 +429,7 @@ def parse_privilege(data):
     match = re.search("privilege (\\S+)", data, re.M)
     if match:
         return int(match.group(1))
+    return None
 
 
 def parse_password_type(data):
@@ -442,8 +443,8 @@ def map_config_to_obj(module):
     data = get_config(module, flags=["| section username"])
     match = re.findall("(?:^(?:u|\\s{2}u))sername (\\S+)", data, re.M)
     if not match:
-        return list()
-    instances = list()
+        return []
+    instances = []
     for user in set(match):
         regex = "username %s .+$" % user
         cfg = re.findall(regex, data, re.M)
@@ -484,13 +485,13 @@ def map_params_to_obj(module):
     users = module.params["aggregate"]
     if not users:
         if not module.params["name"] and module.params["purge"]:
-            return list()
+            return []
         elif not module.params["name"]:
             module.fail_json(msg="username is required")
         else:
             aggregate = [{"name": module.params["name"]}]
     else:
-        aggregate = list()
+        aggregate = []
         for item in users:
             if not isinstance(item, dict):
                 aggregate.append({"name": item})
@@ -498,7 +499,7 @@ def map_params_to_obj(module):
                 module.fail_json(msg="name is required")
             else:
                 aggregate.append(item)
-    objects = list()
+    objects = []
     for item in aggregate:
         get_value = partial(get_param_value, item=item, module=module)
         item["configured_password"] = get_value("configured_password")
@@ -521,7 +522,7 @@ def render_key_list(ssh_keys):
 
 
 def update_objects(want, have):
-    updates = list()
+    updates = []
     for entry in want:
         item = next((i for i in have if i["name"] == entry["name"]), None)
         if all((item is None, entry["state"] == "present")):
@@ -534,36 +535,36 @@ def update_objects(want, have):
 
 
 def main():
-    """main entry point for module execution"""
-    hashed_password_spec = dict(
-        type=dict(type="int", required=True),
-        value=dict(no_log=True, required=True),
-    )
-    element_spec = dict(
-        name=dict(),
-        configured_password=dict(no_log=True),
-        hashed_password=dict(no_log=True, type="dict", options=hashed_password_spec),
-        nopassword=dict(type="bool"),
-        update_password=dict(default="always", choices=["on_create", "always"]),
-        password_type=dict(default="secret", choices=["secret", "password"]),
-        privilege=dict(type="int"),
-        view=dict(aliases=["role"]),
-        sshkey=dict(type="list", elements="str", no_log=False),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    hashed_password_spec = {
+        "type": {"type": "int", "required": True},
+        "value": {"no_log": True, "required": True},
+    }
+    element_spec = {
+        "name": {},
+        "configured_password": {"no_log": True},
+        "hashed_password": {"no_log": True, "type": "dict", "options": hashed_password_spec},
+        "nopassword": {"type": "bool"},
+        "update_password": {"default": "always", "choices": ["on_create", "always"]},
+        "password_type": {"default": "secret", "choices": ["secret", "password"]},
+        "privilege": {"type": "int"},
+        "view": {"aliases": ["role"]},
+        "sshkey": {"type": "list", "elements": "str", "no_log": False},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
     aggregate_spec = deepcopy(element_spec)
-    aggregate_spec["name"] = dict(required=True)
+    aggregate_spec["name"] = {"required": True}
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
-    argument_spec = dict(
-        aggregate=dict(
-            type="list",
-            elements="dict",
-            options=aggregate_spec,
-            aliases=["users", "collection"],
-        ),
-        purge=dict(type="bool", default=False),
-    )
+    argument_spec = {
+        "aggregate": {
+            "type": "list",
+            "elements": "dict",
+            "options": aggregate_spec,
+            "aliases": ["users", "collection"],
+        },
+        "purge": {"type": "bool", "default": False},
+    }
     argument_spec.update(element_spec)
     mutually_exclusive = [
         ("name", "aggregate"),
@@ -574,7 +575,7 @@ def main():
         mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
-    warnings = list()
+    warnings = []
     result = {"changed": False, "warnings": warnings}
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)

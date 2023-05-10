@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
@@ -7,7 +6,7 @@ The ios_acls class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
@@ -30,12 +28,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Acls(ResourceModule):
-    """
-    The ios_acls config class
-    """
+    """The ios_acls config class."""
 
-    def __init__(self, module):
-        super(Acls, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -44,7 +40,7 @@ class Acls(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -58,7 +54,7 @@ class Acls(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        haved, wantd = dict(), dict()
+        haved, wantd = {}, {}
 
         if self.have:
             haved = self.list_to_dict(self.have)
@@ -140,11 +136,12 @@ class Acls(ResourceModule):
                 self.commands.append("no " + _cmd)
 
     def _compare_aces(self, want, have, afi, name):
-        """compares all aces"""
+        """Compares all aces."""
 
         def add_afi(entry, afi):
-            """adds afi needed for
-            setval processing"""
+            """Adds afi needed for
+            setval processing.
+            """
             if entry:
                 entry["afi"] = afi
             return entry
@@ -186,17 +183,15 @@ class Acls(ResourceModule):
                 self.addcmd(add_afi(hseq, afi), "aces", negate=True)
 
     def sanitize_protocol_options(self, wace, hace):
-        """handles protocol and protocol options as optional attribute"""
-        if wace.get("protocol_options"):
-            if not wace.get("protocol") and (
-                list(wace.get("protocol_options"))[0] == hace.get("protocol")
-            ):
-                hace.pop("protocol")
+        """Handles protocol and protocol options as optional attribute."""
+        if wace.get("protocol_options") and not wace.get("protocol") and (
+            list(wace.get("protocol_options"))[0] == hace.get("protocol")
+        ):
+            hace.pop("protocol")
         return hace
 
     def acl_name_cmd(self, name, afi, acl_type):
-        """generate parent acl command"""
-
+        """Generate parent acl command."""
         if afi == "ipv4":
             if not acl_type:
                 try:
@@ -208,15 +203,14 @@ class Acls(ResourceModule):
                             acl_type = "extended"
                 except ValueError:
                     acl_type = "extended"
-            command = "ip access-list {0} {1}".format(acl_type, name)
+            command = f"ip access-list {acl_type} {name}"
         elif afi == "ipv6":
-            command = "ipv6 access-list {0}".format(name)
+            command = f"ipv6 access-list {name}"
         return command
 
     def list_to_dict(self, param):
-        """converts list attributes to dict"""
-
-        temp, count = dict(), 0
+        """Converts list attributes to dict."""
+        temp, count = {}, 0
         if param:
             for each in param:  # ipv4 and ipv6 acl
                 temp_acls = {}
@@ -246,7 +240,7 @@ class Acls(ResourceModule):
                                             "log",
                                         ]:  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
-                                                "Unsupported attribute for standard ACL - {0}.".format(
+                                                "Unsupported attribute for standard ACL - {}.".format(
                                                     ks,
                                                 ),
                                             )
@@ -273,6 +267,7 @@ class Acls(ResourceModule):
                 each["acls"] = temp_acls
                 temp.update({each["afi"]: {"acls": temp_acls}})
             return temp
+        return None
 
     def port_protocl_no_to_protocol(self, num):
         map_protocol = {

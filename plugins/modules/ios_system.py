@@ -122,7 +122,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     ComplexList,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
@@ -153,7 +152,7 @@ def diff_list(want, have):
 
 
 def map_obj_to_commands(want, have, module):
-    commands = list()
+    commands = []
     state = module.params["state"]
 
     def needs_update(x):
@@ -204,39 +203,39 @@ def map_obj_to_commands(want, have, module):
             adds, removes = diff_list(want["domain_name"], have["domain_name"])
             for item in removes:
                 if item["vrf"]:
-                    commands.append("no ip domain name vrf %s %s" % (item["vrf"], item["name"]))
+                    commands.append("no ip domain name vrf {} {}".format(item["vrf"], item["name"]))
                 else:
                     commands.append("no ip domain name %s" % item["name"])
             for item in adds:
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
-                    commands.append("ip domain name vrf %s %s" % (item["vrf"], item["name"]))
+                    commands.append("ip domain name vrf {} {}".format(item["vrf"], item["name"]))
                 else:
                     commands.append("ip domain name %s" % item["name"])
         if want["domain_search"]:
             adds, removes = diff_list(want["domain_search"], have["domain_search"])
             for item in removes:
                 if item["vrf"]:
-                    commands.append("no ip domain list vrf %s %s" % (item["vrf"], item["name"]))
+                    commands.append("no ip domain list vrf {} {}".format(item["vrf"], item["name"]))
                 else:
                     commands.append("no ip domain list %s" % item["name"])
             for item in adds:
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
-                    commands.append("ip domain list vrf %s %s" % (item["vrf"], item["name"]))
+                    commands.append("ip domain list vrf {} {}".format(item["vrf"], item["name"]))
                 else:
                     commands.append("ip domain list %s" % item["name"])
         if want["name_servers"]:
             adds, removes = diff_list(want["name_servers"], have["name_servers"])
             for item in removes:
                 if item["vrf"]:
-                    commands.append("no ip name-server vrf %s %s" % (item["vrf"], item["server"]))
+                    commands.append("no ip name-server vrf {} {}".format(item["vrf"], item["server"]))
                 else:
                     commands.append("no ip name-server %s" % item["server"])
             for item in adds:
                 if item["vrf"]:
                     requires_vrf(module, item["vrf"])
-                    commands.append("ip name-server vrf %s %s" % (item["vrf"], item["server"]))
+                    commands.append("ip name-server vrf {} {}".format(item["vrf"], item["server"]))
                 else:
                     commands.append("ip name-server %s" % item["server"])
     return commands
@@ -249,7 +248,7 @@ def parse_hostname(config):
 
 def parse_domain_name(config):
     match = re.findall("^ip domain[- ]name (?:vrf (\\S+) )*(\\S+)", config, re.M)
-    matches = list()
+    matches = []
     for vrf, name in match:
         if not vrf:
             vrf = None
@@ -259,7 +258,7 @@ def parse_domain_name(config):
 
 def parse_domain_search(config):
     match = re.findall("^ip domain[- ]list (?:vrf (\\S+) )*(\\S+)", config, re.M)
-    matches = list()
+    matches = []
     for vrf, name in match:
         if not vrf:
             vrf = None
@@ -269,7 +268,7 @@ def parse_domain_search(config):
 
 def parse_name_servers(config):
     match = re.findall("^ip name-server (?:vrf (\\S+) )*(.*)", config, re.M)
-    matches = list()
+    matches = []
     for vrf, servers in match:
         if not vrf:
             vrf = None
@@ -282,6 +281,7 @@ def parse_lookup_source(config):
     match = re.search("ip domain[- ]lookup source-interface (\\S+)", config, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def map_config_to_obj(module):
@@ -303,9 +303,9 @@ def map_params_to_obj(module):
         "lookup_source": module.params["lookup_source"],
         "lookup_enabled": module.params["lookup_enabled"],
     }
-    domain_name = ComplexList(dict(name=dict(key=True), vrf=dict()), module)
-    domain_search = ComplexList(dict(name=dict(key=True), vrf=dict()), module)
-    name_servers = ComplexList(dict(server=dict(key=True), vrf=dict()), module)
+    domain_name = ComplexList({"name": {"key": True}, "vrf": {}}, module)
+    domain_search = ComplexList({"name": {"key": True}, "vrf": {}}, module)
+    name_servers = ComplexList({"server": {"key": True}, "vrf": {}}, module)
     for arg, cast in [
         ("domain_name", domain_name),
         ("domain_search", domain_search),
@@ -319,19 +319,19 @@ def map_params_to_obj(module):
 
 
 def main():
-    """Main entry point for Ansible module execution"""
-    argument_spec = dict(
-        hostname=dict(),
-        domain_name=dict(type="list", elements="raw"),
-        domain_search=dict(type="list", elements="raw"),
-        name_servers=dict(type="list", elements="raw"),
-        lookup_source=dict(),
-        lookup_enabled=dict(type="bool"),
-        state=dict(choices=["present", "absent"], default="present"),
-    )
+    """Main entry point for Ansible module execution."""
+    argument_spec = {
+        "hostname": {},
+        "domain_name": {"type": "list", "elements": "raw"},
+        "domain_search": {"type": "list", "elements": "raw"},
+        "name_servers": {"type": "list", "elements": "raw"},
+        "lookup_source": {},
+        "lookup_enabled": {"type": "bool"},
+        "state": {"choices": ["present", "absent"], "default": "present"},
+    }
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     result = {"changed": False}
-    warnings = list()
+    warnings = []
     result["warnings"] = warnings
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)

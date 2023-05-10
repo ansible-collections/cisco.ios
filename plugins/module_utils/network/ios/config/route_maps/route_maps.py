@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.route_maps import (
     Route_mapsTemplate,
@@ -33,14 +31,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Route_maps(ResourceModule):
-    """
-    The cisco.ios_route_maps config class
-    """
+    """The cisco.ios_route_maps config class."""
 
     parsers = ["continue_entry", "description"]
 
-    def __init__(self, module):
-        super(Route_maps, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -49,7 +45,7 @@ class Route_maps(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -63,16 +59,9 @@ class Route_maps(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
+        wantd = {entry["route_map"]: entry for entry in self.want} if self.want else {}
 
-        if self.want:
-            wantd = {(entry["route_map"]): entry for entry in self.want}
-        else:
-            wantd = {}
-
-        if self.have:
-            haved = {(entry["route_map"]): entry for entry in self.have}
-        else:
-            haved = {}
+        haved = {entry["route_map"]: entry for entry in self.have} if self.have else {}
 
         # Convert each of config list to dict
         for each in wantd, haved:
@@ -121,21 +110,21 @@ class Route_maps(ResourceModule):
                             and have_entry.get("description")
                             != want["entries"][k].get("description")
                         ):
-                            self.compare(parsers=["description"], want=dict(), have=have_entry)
+                            self.compare(parsers=["description"], want={}, have=have_entry)
                         self.compare(parsers=self.parsers, want=want["entries"][k], have=have_entry)
                         have_match = have_entry.get("match")
                         want_match = v.get("match")
                         if have_match and want_match:
                             self.list_type_compare("match", want=want_match, have=have_match)
                         elif not have_match and want_match:
-                            self.list_type_compare("match", want=want_match, have=dict())
+                            self.list_type_compare("match", want=want_match, have={})
                         have_set = have_entry.get("set")
                         want_set = v.get("set")
 
                         if have_set and want_set:
                             self.list_type_compare("set", want=want_set, have=have_set)
                         elif not have_set and want_set:
-                            self.list_type_compare("set", want=want_set, have=dict())
+                            self.list_type_compare("set", want=want_set, have={})
 
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
@@ -147,13 +136,13 @@ class Route_maps(ResourceModule):
                         cmd_len = len(self.commands)
             else:
                 for k, v in iteritems(want["entries"]):
-                    self.compare(parsers=self.parsers, want=want["entries"][k], have=dict())
+                    self.compare(parsers=self.parsers, want=want["entries"][k], have={})
                     want_match = v.get("match")
                     if want_match:
-                        self.list_type_compare("match", want=want_match, have=dict())
+                        self.list_type_compare("match", want=want_match, have={})
                     want_set = v.get("set")
                     if want_set:
-                        self.list_type_compare("set", want=want_set, have=dict())
+                        self.list_type_compare("set", want=want_set, have={})
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
                         if want["entries"][k].get("action"):
@@ -175,9 +164,9 @@ class Route_maps(ResourceModule):
 
     def list_type_compare(self, compare_type, want, have):
         parsers = [
-            "{0}".format(compare_type),
-            "{0}.ip".format(compare_type),
-            "{0}.ipv6".format(compare_type),
+            f"{compare_type}",
+            f"{compare_type}.ip",
+            f"{compare_type}.ipv6",
         ]
         for k, v in iteritems(want):
             have_v = have.pop(k, {})
@@ -189,7 +178,7 @@ class Route_maps(ResourceModule):
                         have={compare_type: {k: have_v}},
                     )
                 else:
-                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
+                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have={})
 
             if k in ["community"]:
                 if have_v:
@@ -209,7 +198,7 @@ class Route_maps(ResourceModule):
                             have={compare_type: {k: have_v}},
                         )
                 else:
-                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
+                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have={})
 
             if k in ["ip", "ipv6"]:
                 for key, val in iteritems(v):
@@ -219,7 +208,7 @@ class Route_maps(ResourceModule):
                             if self.state == "overridden" or self.state == "replaced":
                                 self.compare(
                                     parsers=parsers,
-                                    want=dict(),
+                                    want={},
                                     have={compare_type: {k: {key: have_val}}},
                                 )
                             self.compare(
@@ -231,13 +220,13 @@ class Route_maps(ResourceModule):
                             self.compare(
                                 parsers=parsers,
                                 want={compare_type: {k: {key: val}}},
-                                have=dict(),
+                                have={},
                             )
                 if (self.state == "overridden" or self.state == "replaced") and have_v:
                     for key, val in iteritems(have_v):
                         self.compare(
                             parsers=parsers,
-                            want=dict(),
+                            want={},
                             have={compare_type: {k: {key: val}}},
                         )
 
@@ -248,23 +237,23 @@ class Route_maps(ResourceModule):
                         if key and val:
                             self.compare(
                                 parsers=parsers,
-                                want=dict(),
+                                want={},
                                 have={compare_type: {k: {key: val}}},
                             )
                 else:
-                    self.compare(parsers=parsers, want=dict(), have={compare_type: {k: v}})
+                    self.compare(parsers=parsers, want={}, have={compare_type: {k: v}})
 
     def list_to_dict(self, param):
         if param:
 
             def convert_to_dict(inner_match, key):
-                temp = dict()
+                temp = {}
                 for each in inner_match:
                     temp.update({key + "_" + str(each): each})
                 return dict(sorted(temp.items(), key=lambda x: x[1]))
 
-            for key, val in iteritems(param):
-                temp_entries = dict()
+            for _key, val in iteritems(param):
+                temp_entries = {}
                 if val.get("entries"):
                     for every in val["entries"]:
                         match = every.get("match")
@@ -340,9 +329,8 @@ class Route_maps(ResourceModule):
                                 set["interfaces"] = convert_to_dict(set["interfaces"], "interface")
                             if set.get("as_path"):
                                 _k = set.get("as_path").get("prepend")
-                                if _k:
-                                    if _k.get("as_number"):
-                                        _k["as_number"] = " ".join(_k["as_number"])
+                                if _k and _k.get("as_number"):
+                                    _k["as_number"] = " ".join(_k["as_number"])
 
                             if set.get("community"):
                                 _k = set.get("community")

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,7 +18,6 @@ created.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ping import (
     PingTemplate,
@@ -27,16 +25,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Ping:
-    """
-    The ios_ping config class
-    """
+    """The ios_ping config class."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self.module = module
         self.result = {}
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -52,9 +48,7 @@ class Ping:
         return cmd
 
     def validate_results(self, module, loss, results):
-        """
-        This function is used to validate whether the ping results were unexpected per "state" param.
-        """
+        """This function is used to validate whether the ping results were unexpected per "state" param."""
         state = module.params["state"]
         if state == "present" and loss == 100:
             module.fail_json(msg="Ping failed unexpectedly", **results)
@@ -65,7 +59,7 @@ class Ping:
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        warnings = list()
+        warnings = []
         if warnings:
             self.result["warnings"] = warnings
         self.result["commands"] = self.build_ping(self.module.params)
@@ -80,7 +74,6 @@ class Ping:
         Example: "Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/8 ms"
         Returns the percent of packet loss, received packets, transmitted packets, and RTT data.
         """
-
         if type(ping_results) == list:
             ping_results = ping_results[0]
 

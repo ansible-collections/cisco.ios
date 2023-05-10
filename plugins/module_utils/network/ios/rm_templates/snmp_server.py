@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -51,7 +50,7 @@ def cmd_option_file_transfer(config_data):  # contain sub list attr
         if conf.get("protocol"):
             cmd += " protocol"
             for protocol in list(conf.get("protocol").keys()):
-                cmd += " {protocol}".format(protocol=protocol)
+                cmd += f" {protocol}"
     return cmd
 
 
@@ -75,7 +74,7 @@ def cmd_option_hosts(config_data):  # contain sub list attr
             )
         if config_data.get("traps"):
             for protocol in list(config_data.get("traps").keys()):
-                cmd += " {protocol}".format(protocol=protocol)
+                cmd += f" {protocol}"
     return cmd
 
 
@@ -104,8 +103,8 @@ def cmd_option_trap_bgp(config_data):
 
 
 class Snmp_serverTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

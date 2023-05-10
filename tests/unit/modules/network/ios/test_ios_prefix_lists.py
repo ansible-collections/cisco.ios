@@ -19,7 +19,7 @@ class TestIosPrefixListsModule(TestIosModule):
     module = ios_prefix_lists
 
     def setUp(self):
-        super(TestIosPrefixListsModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -55,7 +55,7 @@ class TestIosPrefixListsModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosPrefixListsModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -71,61 +71,61 @@ class TestIosPrefixListsModule(TestIosModule):
 
     def test_ios_prefix_lists_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is merge test",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="25.0.0.0/8",
-                                        sequence=25,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is merge test",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "25.0.0.0/8",
+                                        "sequence": 25,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is for prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="35.0.0.0/8",
-                                        sequence=5,
-                                    ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is for prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "35.0.0.0/8",
+                                        "sequence": 5,
+                                    },
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_prefix",
-                            ),
+                                "name": "test_prefix",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is merged ipv6 prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        le=100,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=20,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is merged ipv6 prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "le": 100,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "ip prefix-list 10 description this is merge test",
@@ -134,128 +134,128 @@ class TestIosPrefixListsModule(TestIosModule):
             "ipv6 prefix-list test_ipv6 seq 20 deny 2001:DB8:0:4::/64 ge 80 le 100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_prefix_lists_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is test description",
-                                entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
-                                    dict(
-                                        action="deny",
-                                        ge=20,
-                                        le=21,
-                                        prefix="14.0.0.0/8",
-                                        sequence=20,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is test description",
+                                "entries": [
+                                    {"action": "deny", "le": 15, "prefix": "1.0.0.0/8", "sequence": 5},
+                                    {"action": "deny", "ge": 10, "prefix": "35.0.0.0/8", "sequence": 10},
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 15},
+                                    {
+                                        "action": "deny",
+                                        "ge": 20,
+                                        "le": 21,
+                                        "prefix": "14.0.0.0/8",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is test",
-                                entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is test",
+                                "entries": [
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 50},
                                 ],
-                                name="test",
-                            ),
-                            dict(
-                                description="this is for prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="35.0.0.0/8",
-                                        sequence=5,
-                                    ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "test",
+                            },
+                            {
+                                "description": "this is for prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "35.0.0.0/8",
+                                        "sequence": 5,
+                                    },
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_prefix",
-                            ),
+                                "name": "test_prefix",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_prefix_lists_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is replace test",
-                                entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
-                                    dict(
-                                        action="deny",
-                                        ge=20,
-                                        le=21,
-                                        prefix="14.0.0.0/8",
-                                        sequence=20,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is replace test",
+                                "entries": [
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 15},
+                                    {
+                                        "action": "deny",
+                                        "ge": 20,
+                                        "le": 21,
+                                        "prefix": "14.0.0.0/8",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is replace test",
-                                entries=[
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is replace test",
+                                "entries": [
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_replace",
-                            ),
+                                "name": "test_replace",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 replace test",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        le=100,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 replace test",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "le": 100,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "ip prefix-list 10 description this is replace test",
@@ -268,128 +268,128 @@ class TestIosPrefixListsModule(TestIosModule):
             "ipv6 prefix-list test_ipv6 description this is ipv6 replace test",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_prefix_lists_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is test description",
-                                entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
-                                    dict(
-                                        action="deny",
-                                        ge=20,
-                                        le=21,
-                                        prefix="14.0.0.0/8",
-                                        sequence=20,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is test description",
+                                "entries": [
+                                    {"action": "deny", "le": 15, "prefix": "1.0.0.0/8", "sequence": 5},
+                                    {"action": "deny", "ge": 10, "prefix": "35.0.0.0/8", "sequence": 10},
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 15},
+                                    {
+                                        "action": "deny",
+                                        "ge": 20,
+                                        "le": 21,
+                                        "prefix": "14.0.0.0/8",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is test",
-                                entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is test",
+                                "entries": [
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 50},
                                 ],
-                                name="test",
-                            ),
-                            dict(
-                                description="this is for prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="35.0.0.0/8",
-                                        sequence=5,
-                                    ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "test",
+                            },
+                            {
+                                "description": "this is for prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "35.0.0.0/8",
+                                        "sequence": 5,
+                                    },
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_prefix",
-                            ),
+                                "name": "test_prefix",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_prefix_lists_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is override test",
-                                entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
-                                    dict(
-                                        action="deny",
-                                        ge=20,
-                                        le=21,
-                                        prefix="14.0.0.0/8",
-                                        sequence=20,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is override test",
+                                "entries": [
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 15},
+                                    {
+                                        "action": "deny",
+                                        "ge": 20,
+                                        "le": 21,
+                                        "prefix": "14.0.0.0/8",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is override test",
-                                entries=[
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is override test",
+                                "entries": [
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_override",
-                            ),
+                                "name": "test_override",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 override test",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        le=100,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 override test",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "le": 100,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "no ip prefix-list test",
@@ -404,79 +404,79 @@ class TestIosPrefixListsModule(TestIosModule):
             "ipv6 prefix-list test_ipv6 description this is ipv6 override test",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_prefix_lists_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is test description",
-                                entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
-                                    dict(
-                                        action="deny",
-                                        ge=20,
-                                        le=21,
-                                        prefix="14.0.0.0/8",
-                                        sequence=20,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is test description",
+                                "entries": [
+                                    {"action": "deny", "le": 15, "prefix": "1.0.0.0/8", "sequence": 5},
+                                    {"action": "deny", "ge": 10, "prefix": "35.0.0.0/8", "sequence": 10},
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 15},
+                                    {
+                                        "action": "deny",
+                                        "ge": 20,
+                                        "le": 21,
+                                        "prefix": "14.0.0.0/8",
+                                        "sequence": 20,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is test",
-                                entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is test",
+                                "entries": [
+                                    {"action": "deny", "ge": 15, "prefix": "12.0.0.0/8", "sequence": 50},
                                 ],
-                                name="test",
-                            ),
-                            dict(
-                                description="this is for prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="35.0.0.0/8",
-                                        sequence=5,
-                                    ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "test",
+                            },
+                            {
+                                "description": "this is for prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "35.0.0.0/8",
+                                        "sequence": 5,
+                                    },
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_prefix",
-                            ),
+                                "name": "test_prefix",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_prefix_lists_delete_without_config(self):
-        set_module_args(dict(state="deleted"))
+        set_module_args({"state": "deleted"})
         commands = [
             "no ip prefix-list test",
             "no ip prefix-list 10",
@@ -484,65 +484,65 @@ class TestIosPrefixListsModule(TestIosModule):
             "no ipv6 prefix-list test_ipv6",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_prefix_lists_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        prefix_lists=[
-                            dict(
-                                description="this is merge test",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="25.0.0.0/8",
-                                        sequence=25,
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "prefix_lists": [
+                            {
+                                "description": "this is merge test",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "25.0.0.0/8",
+                                        "sequence": 25,
+                                    },
                                 ],
-                                name="10",
-                            ),
-                            dict(
-                                description="this is for prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=10,
-                                        le=15,
-                                        prefix="35.0.0.0/8",
-                                        sequence=5,
-                                    ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                "name": "10",
+                            },
+                            {
+                                "description": "this is for prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 10,
+                                        "le": 15,
+                                        "prefix": "35.0.0.0/8",
+                                        "sequence": 5,
+                                    },
+                                    {"action": "deny", "ge": 20, "prefix": "35.0.0.0/8", "sequence": 10},
                                 ],
-                                name="test_prefix",
-                            ),
+                                "name": "test_prefix",
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        prefix_lists=[
-                            dict(
-                                description="this is ipv6 prefix-list",
-                                entries=[
-                                    dict(
-                                        action="deny",
-                                        ge=80,
-                                        le=100,
-                                        prefix="2001:DB8:0:4::/64",
-                                        sequence=10,
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "prefix_lists": [
+                            {
+                                "description": "this is ipv6 prefix-list",
+                                "entries": [
+                                    {
+                                        "action": "deny",
+                                        "ge": 80,
+                                        "le": 100,
+                                        "prefix": "2001:DB8:0:4::/64",
+                                        "sequence": 10,
+                                    },
                                 ],
-                                name="test_ipv6",
-                            ),
+                                "name": "test_ipv6",
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "ip prefix-list 10 description this is merge test",
@@ -554,4 +554,4 @@ class TestIosPrefixListsModule(TestIosModule):
             "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

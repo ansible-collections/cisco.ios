@@ -21,7 +21,7 @@ class TestIosL2InterfacesModule(TestIosModule):
     module = ios_l2_interfaces
 
     def setUp(self):
-        super(TestIosL2InterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosL2InterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -90,33 +90,33 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="GigabitEthernet0/1",
-                        voice=dict(vlan=40),
-                    ),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["60"],
-                            encapsulation="isl",
-                            native_vlan=20,
-                            pruning_vlans=["9-15", "20"],
-                        ),
-                    ),
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="TwoGigabitEthernet1/0/1",
-                        trunk=dict(pruning_vlans=["9-19", "20"]),
-                    ),
+            {
+                "config": [
+                    {
+                        "access": {"vlan": 20},
+                        "mode": "access",
+                        "name": "GigabitEthernet0/1",
+                        "voice": {"vlan": 40},
+                    },
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["60"],
+                            "encapsulation": "isl",
+                            "native_vlan": 20,
+                            "pruning_vlans": ["9-15", "20"],
+                        },
+                    },
+                    {
+                        "access": {"vlan": 20},
+                        "mode": "access",
+                        "name": "TwoGigabitEthernet1/0/1",
+                        "trunk": {"pruning_vlans": ["9-19", "20"]},
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -132,7 +132,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -159,24 +159,24 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["10-20", "40"],
-                            encapsulation="dot1q",
-                            native_vlan=10,
-                            pruning_vlans=["10", "20"],
-                        ),
-                    ),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/3",
-                        trunk=dict(
-                            allowed_vlans=[
+            {
+                "config": [
+                    {"access": {"vlan": 10}, "mode": "access", "name": "GigabitEthernet0/1"},
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["10-20", "40"],
+                            "encapsulation": "dot1q",
+                            "native_vlan": 10,
+                            "pruning_vlans": ["10", "20"],
+                        },
+                    },
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/3",
+                        "trunk": {
+                            "allowed_vlans": [
                                 "11",
                                 "59",
                                 "67",
@@ -204,13 +204,13 @@ class TestIosL2InterfacesModule(TestIosModule):
                                 "988",
                                 "993",
                             ],
-                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
-                            encapsulation="dot1q",
-                        ),
-                    ),
+                            "pruning_vlans": ["10", "11", "12", "13", "14", "15"],
+                            "encapsulation": "dot1q",
+                        },
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.maxDiff = None
         self.execute_module(changed=False, commands=[])
@@ -240,20 +240,20 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["20-25", "40"],
-                            encapsulation="isl",
-                            native_vlan=20,
-                            pruning_vlans=["10"],
-                        ),
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["20-25", "40"],
+                            "encapsulation": "isl",
+                            "native_vlan": 20,
+                            "pruning_vlans": ["10"],
+                        },
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -266,7 +266,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -293,25 +293,25 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["10-20", "40"],
-                            encapsulation="dot1q",
-                            native_vlan=10,
-                            pruning_vlans=["10", "20"],
-                        ),
-                    ),
-                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/3",
-                        trunk=dict(
-                            allowed_vlans=[
+            {
+                "config": [
+                    {"access": {"vlan": 10}, "mode": "access", "name": "GigabitEthernet0/1"},
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["10-20", "40"],
+                            "encapsulation": "dot1q",
+                            "native_vlan": 10,
+                            "pruning_vlans": ["10", "20"],
+                        },
+                    },
+                    {"access": {"vlan": 20}, "mode": "access", "name": "TwoGigabitEthernet1/0/1"},
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/3",
+                        "trunk": {
+                            "allowed_vlans": [
                                 "11",
                                 "59",
                                 "67",
@@ -339,18 +339,18 @@ class TestIosL2InterfacesModule(TestIosModule):
                                 "988",
                                 "993",
                             ],
-                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
-                            encapsulation="dot1q",
-                        ),
-                    ),
+                            "pruning_vlans": ["10", "11", "12", "13", "14", "15"],
+                            "encapsulation": "dot1q",
+                        },
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         result = self.execute_module(changed=False)
         commands = []
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -377,17 +377,17 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        access=dict(vlan=10),
-                        voice=dict(vlan=20),
-                        mode="access",
-                        name="GigabitEthernet0/2",
-                    ),
+            {
+                "config": [
+                    {
+                        "access": {"vlan": 10},
+                        "voice": {"vlan": 20},
+                        "mode": "access",
+                        "name": "GigabitEthernet0/2",
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -412,7 +412,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -439,25 +439,25 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["10-20", "40"],
-                            encapsulation="dot1q",
-                            native_vlan=10,
-                            pruning_vlans=["10", "20"],
-                        ),
-                    ),
-                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/3",
-                        trunk=dict(
-                            allowed_vlans=[
+            {
+                "config": [
+                    {"access": {"vlan": 10}, "mode": "access", "name": "GigabitEthernet0/1"},
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["10-20", "40"],
+                            "encapsulation": "dot1q",
+                            "native_vlan": 10,
+                            "pruning_vlans": ["10", "20"],
+                        },
+                    },
+                    {"access": {"vlan": 20}, "mode": "access", "name": "TwoGigabitEthernet1/0/1"},
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/3",
+                        "trunk": {
+                            "allowed_vlans": [
                                 "11",
                                 "59",
                                 "67",
@@ -485,13 +485,13 @@ class TestIosL2InterfacesModule(TestIosModule):
                                 "988",
                                 "993",
                             ],
-                            pruning_vlans=["10", "11", "12", "13", "14", "15"],
-                            encapsulation="dot1q",
-                        ),
-                    ),
+                            "pruning_vlans": ["10", "11", "12", "13", "14", "15"],
+                            "encapsulation": "dot1q",
+                        },
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.maxDiff = None
         self.execute_module(changed=False, commands=[])
@@ -520,7 +520,7 @@ class TestIosL2InterfacesModule(TestIosModule):
              switchport mode trunk
             """,
         )
-        set_module_args(dict(config=[dict(name="GigabitEthernet0/1")], state="deleted"))
+        set_module_args({"config": [{"name": "GigabitEthernet0/1"}], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/1",
             "no switchport mode",
@@ -553,7 +553,7 @@ class TestIosL2InterfacesModule(TestIosModule):
              switchport mode trunk
             """,
         )
-        set_module_args(dict(config=[], state="deleted"))
+        set_module_args({"config": [], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/1",
             "no switchport access vlan",
@@ -575,12 +575,12 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface GigabitEthernet0/1
                      switchport mode access
@@ -601,8 +601,8 @@ class TestIosL2InterfacesModule(TestIosModule):
                      switchport mode private-vlan trunk secondary
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -629,7 +629,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             },
         ]
         self.maxDiff = None
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_l2_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -656,27 +656,27 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        access=dict(vlan=20),
-                        mode="access",
-                        name="GigabitEthernet0/1",
-                        voice=dict(vlan=40),
-                    ),
-                    dict(
-                        mode="trunk",
-                        name="GigabitEthernet0/2",
-                        trunk=dict(
-                            allowed_vlans=["10-20", "40"],
-                            encapsulation="isl",
-                            native_vlan=20,
-                            pruning_vlans=["12-15", "20"],
-                        ),
-                    ),
+            {
+                "config": [
+                    {
+                        "access": {"vlan": 20},
+                        "mode": "access",
+                        "name": "GigabitEthernet0/1",
+                        "voice": {"vlan": 40},
+                    },
+                    {
+                        "mode": "trunk",
+                        "name": "GigabitEthernet0/2",
+                        "trunk": {
+                            "allowed_vlans": ["10-20", "40"],
+                            "encapsulation": "isl",
+                            "native_vlan": 20,
+                            "pruning_vlans": ["12-15", "20"],
+                        },
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -692,7 +692,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        self.assertEqual(result["rendered"], commands)
+        assert result["rendered"] == commands
 
     def test_ios_l2_interfaces_merged_mode_change(self):
         self.execute_show_command.return_value = dedent(
@@ -719,15 +719,15 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[dict(access=dict(vlan=20), mode="trunk", name="TwoGigabitEthernet1/0/1")],
-                state="merged",
-            ),
+            {
+                "config": [{"access": {"vlan": 20}, "mode": "trunk", "name": "TwoGigabitEthernet1/0/1"}],
+                "state": "merged",
+            },
         )
         commands = ["interface TwoGigabitEthernet1/0/1", "switchport mode trunk"]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_l2_interfaces_fiveGibBit(self):
         self.execute_show_command.return_value = dedent(
@@ -754,22 +754,22 @@ class TestIosL2InterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(access=dict(vlan=20), mode="trunk", name="FiveGigabitEthernet1/0/1"),
-                    dict(
-                        access=dict(vlan_name="vlan12"),
-                        mode="trunk",
-                        name="FiveGigabitEthernet1/0/2",
-                    ),
-                    dict(
-                        voice=dict(vlan_tag="dot1p"),
-                        mode="trunk",
-                        name="FiveGigabitEthernet1/0/3",
-                    ),
+            {
+                "config": [
+                    {"access": {"vlan": 20}, "mode": "trunk", "name": "FiveGigabitEthernet1/0/1"},
+                    {
+                        "access": {"vlan_name": "vlan12"},
+                        "mode": "trunk",
+                        "name": "FiveGigabitEthernet1/0/2",
+                    },
+                    {
+                        "voice": {"vlan_tag": "dot1p"},
+                        "mode": "trunk",
+                        "name": "FiveGigabitEthernet1/0/3",
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "interface FiveGigabitEthernet1/0/3",
@@ -784,4 +784,4 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)

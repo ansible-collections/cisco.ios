@@ -14,7 +14,7 @@ from ansible.module_utils.common._collections_compat import MutableMapping
 from ansible.module_utils.six import string_types
 
 
-@pytest.fixture
+@pytest.fixture()
 def patch_ansible_module(request, mocker):
     if isinstance(request.param, string_types):
         args = request.param

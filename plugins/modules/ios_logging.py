@@ -199,7 +199,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
     validate_ip_address,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_capabilities,
     get_config,
@@ -211,13 +210,15 @@ def validate_size(value, module):
     if value:
         if not int(4096) <= int(value) <= int(4294967295):
             module.fail_json(msg="size must be between 4096 and 4294967295")
+            return None
         else:
             return value
+    return None
 
 
 def map_obj_to_commands(updates, module, os_version):
     dest_group = "console", "monitor", "buffered", "on", "trap"
-    commands = list()
+    commands = []
     want, have = updates
     for w in want:
         dest = w["dest"]
@@ -233,17 +234,17 @@ def map_obj_to_commands(updates, module, os_version):
             if dest:
                 if dest == "host":
                     if os_version.startswith("12."):
-                        commands.append("no logging {0}".format(name))
+                        commands.append(f"no logging {name}")
                     else:
-                        commands.append("no logging host {0}".format(name))
+                        commands.append(f"no logging host {name}")
                 elif dest in dest_group:
-                    commands.append("no logging {0}".format(dest))
+                    commands.append(f"no logging {dest}")
                 else:
                     module.fail_json(
                         msg="dest must be among console, monitor, buffered, host, on, trap",
                     )
             if facility:
-                commands.append("no logging facility {0}".format(facility))
+                commands.append(f"no logging facility {facility}")
         if state == "present" and w not in have:
             if facility:
                 present = False
@@ -251,12 +252,12 @@ def map_obj_to_commands(updates, module, os_version):
                     if entry["dest"] == "facility" and entry["facility"] == facility:
                         present = True
                 if not present:
-                    commands.append("logging facility {0}".format(facility))
+                    commands.append(f"logging facility {facility}")
             if dest == "host":
                 if os_version.startswith("12."):
-                    commands.append("logging {0}".format(name))
+                    commands.append(f"logging {name}")
                 else:
-                    commands.append("logging host {0}".format(name))
+                    commands.append(f"logging host {name}")
             elif dest == "on":
                 commands.append("logging on")
             elif dest == "buffered" and size:
@@ -270,13 +271,13 @@ def map_obj_to_commands(updates, module, os_version):
                         present = True
                 if not present:
                     if level and level != "debugging":
-                        commands.append("logging buffered {0} {1}".format(size, level))
+                        commands.append(f"logging buffered {size} {level}")
                     else:
-                        commands.append("logging buffered {0}".format(size))
+                        commands.append(f"logging buffered {size}")
             elif dest:
-                dest_cmd = "logging {0}".format(dest)
+                dest_cmd = f"logging {dest}"
                 if level:
-                    dest_cmd += " {0}".format(level)
+                    dest_cmd += f" {level}"
                 commands.append(dest_cmd)
     return commands
 
@@ -295,10 +296,7 @@ def parse_size(line, dest):
     if dest == "buffered":
         match = re.search("logging buffered(?: (\\d+))?(?: [a-z]+)?", line, re.M)
         if match:
-            if match.group(1) is not None:
-                size = match.group(1)
-            else:
-                size = "4096"
+            size = match.group(1) if match.group(1) is not None else "4096"
     return size
 
 
@@ -329,11 +327,8 @@ def parse_level(line, dest):
         if dest == "buffered":
             match = re.search("logging buffered(?: \\d+)?(?: ([a-z]+))?", line, re.M)
         else:
-            match = re.search("logging {0} (\\S+)".format(dest), line, re.M)
-        if match and match.group(1) in level_group:
-            level = match.group(1)
-        else:
-            level = "debugging"
+            match = re.search(f"logging {dest} (\\S+)", line, re.M)
+        level = match.group(1) if match and match.group(1) in level_group else "debugging"
     return level
 
 
@@ -441,16 +436,16 @@ def map_params_to_obj(module, required_if=None):
 
 
 def main():
-    """main entry point for module execution"""
-    element_spec = dict(
-        dest=dict(type="str", choices=["on", "host", "console", "monitor", "buffered", "trap"]),
-        name=dict(type="str"),
-        size=dict(type="int"),
-        facility=dict(type="str"),
-        level=dict(
-            type="str",
-            default="debugging",
-            choices=[
+    """Main entry point for module execution."""
+    element_spec = {
+        "dest": {"type": "str", "choices": ["on", "host", "console", "monitor", "buffered", "trap"]},
+        "name": {"type": "str"},
+        "size": {"type": "int"},
+        "facility": {"type": "str"},
+        "level": {
+            "type": "str",
+            "default": "debugging",
+            "choices": [
                 "emergencies",
                 "alerts",
                 "critical",
@@ -460,13 +455,13 @@ def main():
                 "informational",
                 "debugging",
             ],
-        ),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+        },
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
     aggregate_spec = deepcopy(element_spec)
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
-    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
+    argument_spec = {"aggregate": {"type": "list", "elements": "dict", "options": aggregate_spec}}
     argument_spec.update(element_spec)
     required_if = [("dest", "host", ["name"])]
     module = AnsibleModule(
@@ -476,7 +471,7 @@ def main():
     )
     device_info = get_capabilities(module)
     os_version = device_info["device_info"]["network_os_version"]
-    warnings = list()
+    warnings = []
     result = {"changed": False}
     if warnings:
         result["warnings"] = warnings

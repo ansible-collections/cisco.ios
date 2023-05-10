@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,9 +20,7 @@
 #   builder template.
 #
 #############################################
-"""
-The arg spec for the ios_lldp_global module
-"""
+"""The arg spec for the ios_lldp_global module."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -31,8 +28,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-class Lldp_globalArgs(object):
-    def __init__(self, **kwargs):
+class Lldp_globalArgs:
+    def __init__(self, **kwargs) -> None:
         pass
 
     argument_spec = {

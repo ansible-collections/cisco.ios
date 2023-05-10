@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,25 +22,25 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class InterfacesTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(InterfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
         {
-            'name': 'interface',
-            'getval': re.compile(
-                r'''
+            "name": "interface",
+            "getval": re.compile(
+                r"""
               ^interface\s
-              (?P<name>\S+)$''', re.VERBOSE,
+              (?P<name>\S+)$""", re.VERBOSE,
             ),
-            'setval': 'interface {{ name }}',
-            'result': {
-                '{{ name }}': {
-                    'name': '{{ name }}',
+            "setval": "interface {{ name }}",
+            "result": {
+                "{{ name }}": {
+                    "name": "{{ name }}",
                 },
             },
-            'shared': True,
+            "shared": True,
         },
         {
             "name": "description",
@@ -52,8 +51,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "description {{ description }}",
             "result": {
-                '{{ name }}': {
-                    'description': '{{ description }}',
+                "{{ name }}": {
+                    "description": "{{ description }}",
                 },
             },
         },
@@ -67,8 +66,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                '{{ name }}': {
-                    'enabled': "{{ False if shutdown is defined and negate is not defined else True }}",
+                "{{ name }}": {
+                    "enabled": "{{ False if shutdown is defined and negate is not defined else True }}",
                 },
             },
         },
@@ -82,8 +81,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "switchport",
             "result": {
-                '{{ name }}': {
-                    'mode': "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
+                "{{ name }}": {
+                    "mode": "{{ 'layer2' if switchport is defined and negate is not defined else 'layer3' }}",
                 },
             },
         },
@@ -96,8 +95,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "speed {{ speed|string }}",
             "result": {
-                '{{ name }}': {
-                    'speed': '{{ speed }}',
+                "{{ name }}": {
+                    "speed": "{{ speed }}",
                 },
             },
         },
@@ -110,8 +109,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "mtu {{ mtu|string }}",
             "result": {
-                '{{ name }}': {
-                    'mtu': '{{ mtu }}',
+                "{{ name }}": {
+                    "mtu": "{{ mtu }}",
                 },
             },
         },
@@ -124,8 +123,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "duplex {{ duplex }}",
             "result": {
-                '{{ name }}': {
-                    'duplex': '{{ duplex }}',
+                "{{ name }}": {
+                    "duplex": "{{ duplex }}",
                 },
             },
         },
@@ -138,8 +137,8 @@ class InterfacesTemplate(NetworkTemplate):
             ),
             "setval": "source template {{ template }}",
             "result": {
-                '{{ name }}': {
-                    'template': '{{ template }}',
+                "{{ name }}": {
+                    "template": "{{ template }}",
                 },
             },
         },

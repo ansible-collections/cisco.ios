@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+import contextlib
 import json
 
 from threading import RLock
@@ -51,10 +52,10 @@ def get(network_os, module_name, connection_type):
     return network_os_providers[connection_type][module_name]
 
 
-class ProviderBase(object):
+class ProviderBase:
     supported_connections = ()
 
-    def __init__(self, params, connection=None, check_mode=False):
+    def __init__(self, params, connection=None, check_mode=False) -> None:
         self.params = params
         self.connection = connection
         self.check_mode = check_mode
@@ -63,8 +64,8 @@ class ProviderBase(object):
     def capabilities(self):
         if not hasattr(self, "_capabilities"):
             resp = self.from_json(self.connection.get_capabilities())
-            setattr(self, "_capabilities", resp)
-        return getattr(self, "_capabilities")
+            self._capabilities = resp
+        return self._capabilities
 
     def get_value(self, path):
         params = self.params.copy()
@@ -86,8 +87,8 @@ class CliProvider(ProviderBase):
     def capabilities(self):
         if not hasattr(self, "_capabilities"):
             resp = self.from_json(self.connection.get_capabilities())
-            setattr(self, "_capabilities", resp)
-        return getattr(self, "_capabilities")
+            self._capabilities = resp
+        return self._capabilities
 
     def get_config_context(self, config, path, indent=1):
         if config is not None:
@@ -97,6 +98,7 @@ class CliProvider(ProviderBase):
             except ValueError:
                 config = None
             return config
+        return None
 
     def render(self, config=None):
         raise NotImplementedError(self.__class__.__name__)
@@ -104,14 +106,13 @@ class CliProvider(ProviderBase):
     def cli(self, command):
         try:
             if not hasattr(self, "_command_output"):
-                setattr(self, "_command_output", {})
+                self._command_output = {}
             return self._command_output[command]
         except KeyError:
             out = self.connection.get(command)
-            try:
+            with contextlib.suppress(ValueError):
                 out = json.loads(out)
-            except ValueError:
-                pass
+
             self._command_output[command] = out
             return out
 

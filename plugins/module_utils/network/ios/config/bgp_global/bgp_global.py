@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
     Bgp_globalTemplate,
@@ -33,9 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Bgp_global(ResourceModule):
-    """
-    The cisco.ios_bgp_global config class
-    """
+    """The cisco.ios_bgp_global config class."""
 
     parsers = [
         "auto_summary",
@@ -124,8 +120,8 @@ class Bgp_global(ResourceModule):
         "bgp.upgrade_cli.af_mode",
     ]
 
-    def __init__(self, module):
-        super(Bgp_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -134,7 +130,7 @@ class Bgp_global(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -219,13 +215,10 @@ class Bgp_global(ResourceModule):
             self.commands.insert(0, self._tmplt.render(want or have, "as_number", False))
 
     def _has_bgp_inject_maps(self, want):
-        if want.get("bgp", {}).get("inject_maps", {}):
-            return True
-        else:
-            return False
+        return bool(want.get("bgp", {}).get("inject_maps", {}))
 
     def _compare_redistribute_lists(self, want, have):
-        """Compare redistribute list of dict"""
+        """Compare redistribute list of dict."""
         redist_parses = [
             "application",
             "bgp",
@@ -251,7 +244,7 @@ class Bgp_global(ResourceModule):
             self.compare(parsers=redist_parses, want={}, have=h_redist)
 
     def _compare_neighbor_lists(self, want, have):
-        """Compare neighbor list of dict"""
+        """Compare neighbor list of dict."""
         neig_parses = [
             "remote_as",
             "peer_group",
@@ -350,11 +343,11 @@ class Bgp_global(ResourceModule):
                 self.addcmd(wentry, parser, False)
 
         # remove remaining items in have for replaced state
-        for hkey, hentry in iteritems(h_attr):
+        for _hkey, hentry in iteritems(h_attr):
             self.addcmd(hentry, parser, True)
 
     def _bgp_global_list_to_dict(self, tmp_data):
-        """Convert all list of dicts to dicts of dicts"""
+        """Convert all list of dicts to dicts of dicts."""
         p_key = {
             "aggregate_addresses": "address",
             "inject_maps": "name",
@@ -410,7 +403,7 @@ class Bgp_global(ResourceModule):
         distributed_list [dict] - distributes [list:dict]
         neighbor.address.(tag/ipv4/v6_address) [multiple] - neighbor.address.neighbor_address
         neighbor.password [str] - neighbor.password [dict]
-        neighbor.route_map [dict] - neighbor.route_maps [list:dict]
+        neighbor.route_map [dict] - neighbor.route_maps [list:dict].
 
         Args:
             want (_type_): Handle want attributes for deprecated values

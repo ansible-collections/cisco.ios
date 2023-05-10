@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -7,7 +6,7 @@ The ios_ospfv3 class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +20,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv3 import (
     Ospfv3Template,
@@ -29,16 +27,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Ospfv3(ResourceModule):
-    """
-    The ios_ospfv3 class
-    """
+    """The ios_ospfv3 class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["ospfv3"]
 
-    def __init__(self, module):
-        super(Ospfv3, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -47,7 +43,7 @@ class Ospfv3(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -57,7 +53,7 @@ class Ospfv3(ResourceModule):
         return self.result
 
     def gen_config(self):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -94,12 +90,11 @@ class Ospfv3(ResourceModule):
                 for entry in proc.get("areas", []):
                     temp.update({entry["area_id"]: entry})
                 proc["areas"] = temp
-                if proc.get("distribute_list"):
-                    if "acls" in proc.get("distribute_list"):
-                        temp = {}
-                        for entry in proc["distribute_list"].get("acls", []):
-                            temp.update({entry["name"]: entry})
-                        proc["distribute_list"]["acls"] = temp
+                if proc.get("distribute_list") and "acls" in proc.get("distribute_list"):
+                    temp = {}
+                    for entry in proc["distribute_list"].get("acls", []):
+                        temp.update({entry["name"]: entry})
+                    proc["distribute_list"]["acls"] = temp
 
         # if state is merged, merge want onto have
         if self.state == "merged":
@@ -276,7 +271,7 @@ class Ospfv3(ResourceModule):
                                     {"areas": af_have_areas},
                                 )
                             else:
-                                self._areas_compare({"areas": af_want_areas}, dict())
+                                self._areas_compare({"areas": af_want_areas}, {})
                             if delete_exit_family:
                                 self.commands.append("exit-address-family")
                 else:
@@ -285,14 +280,14 @@ class Ospfv3(ResourceModule):
                     self.compare(
                         parsers=["address_family"],
                         want={"address_family": each_want_af},
-                        have=dict(),
+                        have={},
                     )
-                    self.compare(parsers=af_parsers, want=each_want_af, have=dict())
+                    self.compare(parsers=af_parsers, want=each_want_af, have={})
                     if each_want_af.get("areas"):
                         af_areas = {}
                         for each_area in each_want_af["areas"]:
                             af_areas.update({each_area["area_id"]: each_area})
-                        self._areas_compare({"areas": af_areas}, dict())
+                        self._areas_compare({"areas": af_areas}, {})
                     del self.commands[self.commands.index("exit-address-family")]
                     self.commands.append("exit-address-family")
                     self.commands[0:0] = temp_cmd_before

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -7,7 +6,7 @@ The ios_ospfv2 class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +20,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospfv2 import (
     Ospfv2Template,
@@ -29,16 +27,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Ospfv2(ResourceModule):
-    """
-    The ios_ospfv2 class
-    """
+    """The ios_ospfv2 class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["ospfv2"]
 
-    def __init__(self, module):
-        super(Ospfv2, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -47,7 +43,7 @@ class Ospfv2(ResourceModule):
         )
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -57,7 +53,7 @@ class Ospfv2(ResourceModule):
         return self.result
 
     def gen_config(self):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -211,7 +207,7 @@ class Ospfv2(ResourceModule):
                         self.compare(
                             parsers=parsers,
                             want={"passive_interfaces": temp},
-                            have=dict(),
+                            have={},
                         )
                     else:
                         h_interface_name.pop(each)
@@ -222,13 +218,13 @@ class Ospfv2(ResourceModule):
                         self.compare(
                             parsers=parsers,
                             want={"passive_interfaces": temp},
-                            have=dict(),
+                            have={},
                         )
                 elif k == "default":
                     self.compare(
                         parsers=parsers,
                         want={"passive_interfaces": {"default": True}},
-                        have=dict(),
+                        have={},
                     )
             else:
                 h_pi.pop(k)
@@ -244,12 +240,12 @@ class Ospfv2(ResourceModule):
                             self.compare(
                                 parsers=parsers,
                                 want={"passive_interface": temp},
-                                have=dict(),
+                                have={},
                             )
                     elif k == "default":
                         self.compare(
                             parsers=parsers,
-                            want=dict(),
+                            want={},
                             have={"passive_interface": {"default": True}},
                         )
 
@@ -271,12 +267,11 @@ class Ospfv2(ResourceModule):
                 for entry in proc.get("areas", []):
                     temp.update({entry["area_id"]: entry})
                 proc["areas"] = temp
-                if proc.get("distribute_list"):
-                    if "acls" in proc.get("distribute_list"):
-                        temp = {}
-                        for entry in proc["distribute_list"].get("acls", []):
-                            temp.update({entry["name"]: entry})
-                        proc["distribute_list"]["acls"] = temp
+                if proc.get("distribute_list") and "acls" in proc.get("distribute_list"):
+                    temp = {}
+                    for entry in proc["distribute_list"].get("acls", []):
+                        temp.update({entry["name"]: entry})
+                    proc["distribute_list"]["acls"] = temp
                 if proc.get("passive_interfaces") and proc["passive_interfaces"].get("interface"):
                     temp = {}
                     for entry in proc["passive_interfaces"]["interface"].get("name", []):

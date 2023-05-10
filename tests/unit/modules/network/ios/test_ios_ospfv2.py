@@ -19,7 +19,7 @@ class TestIosOspfV2Module(TestIosModule):
     module = ios_ospfv2
 
     def setUp(self):
-        super(TestIosOspfV2Module, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -55,7 +55,7 @@ class TestIosOspfV2Module(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosOspfV2Module, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -71,40 +71,40 @@ class TestIosOspfV2Module(TestIosModule):
 
     def test_ios_ospfv2_merged(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "distribute_list": {
+                                "acls": [
+                                    {"direction": "out", "name": "10"},
+                                    {"direction": "in", "name": "123"},
                                 ],
-                                prefix=dict(
-                                    direction="in",
-                                    name="123",
-                                    gateway_name="gateway",
-                                    interface="GigabitEthernet0/1",
-                                    protocol="icmp",
-                                ),
-                            ),
-                            network=[
-                                dict(address="198.51.100.0", wildcard_bits="0.0.0.255", area=5),
-                                dict(address="192.0.2.0", wildcard_bits="0.0.0.255", area=5),
+                                "prefix": {
+                                    "direction": "in",
+                                    "name": "123",
+                                    "gateway_name": "gateway",
+                                    "interface": "GigabitEthernet0/1",
+                                    "protocol": "icmp",
+                                },
+                            },
+                            "network": [
+                                {"address": "198.51.100.0", "wildcard_bits": "0.0.0.255", "area": 5},
+                                {"address": "192.0.2.0", "wildcard_bits": "0.0.0.255", "area": 5},
                             ],
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            passive_interfaces=dict(
-                                interface=dict(set_interface=False, name=["GigabitEthernet0/2"]),
-                            ),
-                            vrf="blue",
-                        ),
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
+                            "passive_interfaces": {
+                                "interface": {"set_interface": False, "name": ["GigabitEthernet0/2"]},
+                            },
+                            "vrf": "blue",
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
         )
         commands = [
             "router ospf 100 vrf blue",
@@ -119,12 +119,12 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospfv2_merged_specific_param(self):
         set_module_args(
-            dict(
-                config={
+            {
+                "config": {
                     "processes": [
                         {
                             "process_id": 1,
@@ -135,63 +135,63 @@ class TestIosOspfV2Module(TestIosModule):
                         },
                     ],
                 },
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = ["router ospf 1 vrf vrf", "capability vrf-lite", "router-id 0.0.0.1"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospfv2_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "200",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "distribute_list": {
+                                "acls": [
+                                    {"direction": "out", "name": "10"},
+                                    {"direction": "in", "name": "123"},
                                 ],
-                            ),
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                },
+                            },
+                            "vrf": "blue",
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospfv2_replaced(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            domain_id=dict(ip_address=dict(address="192.0.1.1")),
-                            max_metric=dict(on_startup=dict(time=200), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            vrf="blue",
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "200",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "domain_id": {"ip_address": {"address": "192.0.1.1"}},
+                            "max_metric": {"on_startup": {"time": 200}, "router_lsa": True},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "vrf": "blue",
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
         )
         commands = [
             "router ospf 200 vrf blue",
@@ -201,78 +201,78 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospfv2_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "200",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "distribute_list": {
+                                "acls": [
+                                    {"direction": "out", "name": "10"},
+                                    {"direction": "in", "name": "123"},
                                 ],
-                            ),
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                },
+                            },
+                            "vrf": "blue",
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospfv2_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "200",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "distribute_list": {
+                                "acls": [
+                                    {"direction": "out", "name": "10"},
+                                    {"direction": "in", "name": "123"},
                                 ],
-                            ),
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                },
+                            },
+                            "vrf": "blue",
+                        },
                     ],
-                ),
-                state="overridden",
-            ),
+                },
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospfv2_overridden(self):
         set_module_args(
-            dict(
-                config={
+            {
+                "config": {
                     "processes": [
                         {
                             "address_family": {
@@ -479,7 +479,6 @@ class TestIosOspfV2Module(TestIosModule):
                                     "strict_lsa_checking": True,
                                 },
                             },
-                            # "passive_interface": "GigabitEthernet0/1",
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
@@ -535,8 +534,8 @@ class TestIosOspfV2Module(TestIosModule):
                         },
                     ],
                 },
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
 
         commands = [
@@ -591,21 +590,21 @@ class TestIosOspfV2Module(TestIosModule):
             "no passive-interface GigabitEthernet0/2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(commands, result["commands"])
+        assert commands == result["commands"]
 
     def test_ios_ospfv2_deleted(self):
         set_module_args(
-            dict(config=dict(processes=[dict(process_id="200", vrf="blue")]), state="deleted"),
+            {"config": {"processes": [{"process_id": "200", "vrf": "blue"}]}, "state": "deleted"},
         )
         commands = ["no router ospf 200 vrf blue"]
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_ospfv2_parsed(self):
         set_module_args(
-            dict(
-                running_config="router ospf 1\n area 5 authentication\n area 5 capability default-exclusion",
-                state="parsed",
-            ),
+            {
+                "running_config": "router ospf 1\n area 5 authentication\n area 5 capability default-exclusion",
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = {
@@ -618,12 +617,12 @@ class TestIosOspfV2Module(TestIosModule):
                 },
             ],
         }
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_ospfv2_rendered(self):
         set_module_args(
-            dict(
-                config={
+            {
+                "config": {
                     "processes": [
                         {
                             "address_family": {
@@ -830,7 +829,6 @@ class TestIosOspfV2Module(TestIosModule):
                                     "strict_lsa_checking": True,
                                 },
                             },
-                            # "passive_interface": "GigabitEthernet0/1",
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
@@ -886,8 +884,8 @@ class TestIosOspfV2Module(TestIosModule):
                         },
                     ],
                 },
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "address-family ipv4 multicast",
@@ -940,4 +938,4 @@ class TestIosOspfV2Module(TestIosModule):
             "ttl-security all-interfaces hops 12",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), commands)
+        assert sorted(result["rendered"]) == commands

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.acl_interfaces.acl_interfaces import (
     Acl_interfacesArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Acl_interfacesFacts(object):
-    """The ios_acl_interfaces fact class"""
+class Acl_interfacesFacts:
+    """The ios_acl_interfaces fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Acl_interfacesArgs.argument_spec
 
@@ -43,18 +41,17 @@ class Acl_interfacesFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         if not data:
             data = self.get_acl_interfaces_data(connection)
 
         config_parser = Acl_interfacesTemplate(lines=data.splitlines())
-        entry = sorted(list(config_parser.parse().values()), key=lambda k, sk="name": k[sk])
+        entry = sorted(config_parser.parse().values(), key=lambda k, sk="name": k[sk])
         if entry:
             for item in entry:
                 item["access_groups"] = sorted(
-                    list(item["access_groups"].values()),
-                    key=lambda k, sk="afi": k[sk],
+                    item["access_groups"].values(), key=lambda k, sk="afi": k[sk],
                 )
 
         ansible_facts["ansible_network_resources"].pop("acl_interfaces", None)

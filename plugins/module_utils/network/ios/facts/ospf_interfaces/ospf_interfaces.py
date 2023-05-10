@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,7 +18,6 @@ from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf_interfaces.ospf_interfaces import (
     Ospf_InterfacesArgs,
 )
@@ -28,18 +26,15 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Ospf_InterfacesFacts(object):
-    """The cisco.ios ospf_interfaces facts class"""
+class Ospf_InterfacesFacts:
+    """The cisco.ios ospf_interfaces facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Ospf_InterfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -49,7 +44,7 @@ class Ospf_InterfacesFacts(object):
         return connection.get("show running-config | section ^interface")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Ospf_interfaces network resource
+        """Populate the facts for Ospf_interfaces network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -72,7 +67,7 @@ class Ospf_InterfacesFacts(object):
 
         objs = ospf_interfaces_parser.parse()
         final_objs = []
-        for key, value in iteritems(objs):
+        for _key, value in iteritems(objs):
             temp_af = []
             if value["address_family"].get("ip"):
                 temp_af.append(value["address_family"].get("ip"))

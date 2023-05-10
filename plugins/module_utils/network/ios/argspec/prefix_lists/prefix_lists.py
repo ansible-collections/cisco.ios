@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -28,8 +27,8 @@ The arg spec for the cisco.ios_prefix_lists module
 """
 
 
-class Prefix_listsArgs(object):
-    """The arg spec for the cisco.ios_prefix_lists module"""
+class Prefix_listsArgs:
+    """The arg spec for the cisco.ios_prefix_lists module."""
 
     argument_spec = {
         "config": {

@@ -21,7 +21,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
     module = ios_lldp_interfaces
 
     def setUp(self):
-        super(TestIosLldpInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosLldpInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -94,19 +94,18 @@ class TestIosLldpInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "GigabitEthernet0/1", "receive": True, "transmit": True},
                     {"name": "GigabitEthernet0/2", "receive": True},
                     {"name": "GigabitEthernet0/3", "transmit": True},
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = ["interface GigabitEthernet0/2", "lldp receive"]
         result = self.execute_module(changed=True)
-        # print(result["commands"])
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lldp_interfaces_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -137,13 +136,13 @@ class TestIosLldpInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "GigabitEthernet0/2", "receive": True, "transmit": True},
                     {"name": "GigabitEthernet0/3", "receive": False},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -154,7 +153,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
             "no lldp receive",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lag_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -185,12 +184,12 @@ class TestIosLldpInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "GigabitEthernet0/2", "receive": True, "transmit": True},
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
 
         commands = [
@@ -209,7 +208,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         print(result["commands"])
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_ios_lldp_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -240,10 +239,10 @@ class TestIosLldpInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[dict(name="GigabitEthernet0/2"), dict(name="GigabitEthernet0/1")],
-                state="deleted",
-            ),
+            {
+                "config": [{"name": "GigabitEthernet0/2"}, {"name": "GigabitEthernet0/1"}],
+                "state": "deleted",
+            },
         )
         commands = [
             "interface GigabitEthernet0/1",
@@ -251,12 +250,12 @@ class TestIosLldpInterfacesModule(TestIosModule):
             "no lldp transmit",
         ]
         res = self.execute_module(changed=True)
-        self.assertEqual(res["commands"], commands)
+        assert res["commands"] == commands
 
     def test_ios_lldp_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     GigabitEthernet0/0:
                         Tx: enabled
@@ -277,8 +276,8 @@ class TestIosLldpInterfacesModule(TestIosModule):
                         Rx state: INIT
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -286,7 +285,7 @@ class TestIosLldpInterfacesModule(TestIosModule):
             {"name": "GigabitEthernet0/1", "transmit": True, "receive": True},
             {"name": "GigabitEthernet0/2", "transmit": False, "receive": True},
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]
 
     def test_ios_lldp_interfaces_rendered(self):
         self.execute_show_command.return_value = dedent(
@@ -294,14 +293,14 @@ class TestIosLldpInterfacesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {"name": "GigabitEthernet0/0", "transmit": True, "receive": False},
                     {"name": "GigabitEthernet0/1", "transmit": True, "receive": True},
                     {"name": "GigabitEthernet0/2", "transmit": False, "receive": True},
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface GigabitEthernet0/0",
@@ -315,4 +314,4 @@ class TestIosLldpInterfacesModule(TestIosModule):
             "no lldp transmit",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

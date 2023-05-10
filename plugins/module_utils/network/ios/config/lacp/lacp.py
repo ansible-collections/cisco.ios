@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The ios_lacp class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -21,25 +20,22 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Lacp(ConfigBase):
-    """
-    The ios_lacp class
-    """
+    """The ios_lacp class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["lacp"]
 
-    def __init__(self, module):
-        super(Lacp, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_lacp_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -51,24 +47,21 @@ class Lacp(ConfigBase):
         )
         lacp_facts = facts["ansible_network_resources"].get("lacp")
         if not lacp_facts:
-            return dict()
+            return {}
 
         return lacp_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
-        if self.state in self.ACTION_STATES:
-            existing_lacp_facts = self.get_lacp_facts()
-        else:
-            existing_lacp_facts = dict()
+        existing_lacp_facts = self.get_lacp_facts() if self.state in self.ACTION_STATES else {}
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_lacp_facts))
@@ -91,7 +84,7 @@ class Lacp(ConfigBase):
                 )
             result["parsed"] = self.get_lacp_facts(data=running_config)
         else:
-            changed_lacp_facts = dict()
+            changed_lacp_facts = {}
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_lacp_facts
@@ -105,7 +98,7 @@ class Lacp(ConfigBase):
 
     def set_config(self, existing_lacp_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -118,7 +111,7 @@ class Lacp(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -128,7 +121,7 @@ class Lacp(ConfigBase):
         """
         if self.state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(self.state),
+                msg=f"value of config parameter must not be empty for state {self.state}",
             )
 
         if self.state == "deleted":
@@ -141,7 +134,7 @@ class Lacp(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -154,7 +147,7 @@ class Lacp(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -167,7 +160,7 @@ class Lacp(ConfigBase):
         return commands
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -199,7 +192,7 @@ class Lacp(ConfigBase):
         diff = want_dict - have_dict
 
         if diff:
-            cmd = "lacp system-priority {0}".format(want.get("system").get("priority"))
+            cmd = "lacp system-priority {}".format(want.get("system").get("priority"))
             self._add_command_to_config_list(cmd, commands)
 
         return commands

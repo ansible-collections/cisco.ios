@@ -19,7 +19,7 @@ class TestIosRouteMapsModule(TestIosModule):
     module = ios_route_maps
 
     def setUp(self):
-        super(TestIosRouteMapsModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -55,7 +55,7 @@ class TestIosRouteMapsModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosRouteMapsModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -71,85 +71,85 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=20),
-                                description="this is merge test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_merge"]),
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    length=dict(maximum=50000, minimum=5000),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                ),
-                                set=dict(
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    ip=dict(
-                                        address="192.0.2.1",
-                                        df=1,
-                                        next_hop=dict(
-                                            recursive=dict(
-                                                global_route=True,
-                                                address="198.51.110.1",
-                                            ),
-                                            verify_availability=dict(
-                                                address="198.51.111.1",
-                                                sequence=100,
-                                                track=10,
-                                            ),
-                                        ),
-                                        precedence=dict(critical=True),
-                                    ),
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                                sequence=10,
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 20},
+                                "description": "this is merge test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {"exact_match": True, "name": ["new_merge"]},
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "length": {"maximum": 50000, "minimum": 5000},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                },
+                                "set": {
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "ip": {
+                                        "address": "192.0.2.1",
+                                        "df": 1,
+                                        "next_hop": {
+                                            "recursive": {
+                                                "global_route": True,
+                                                "address": "198.51.110.1",
+                                            },
+                                            "verify_availability": {
+                                                "address": "198.51.111.1",
+                                                "sequence": 100,
+                                                "track": 10,
+                                            },
+                                        },
+                                        "precedence": {"critical": True},
+                                    },
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_1",
-                    ),
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                match=dict(
-                                    ipv6=dict(
-                                        address=dict(acl="test_ip_acl"),
-                                        next_hop=dict(prefix_list="test_new"),
-                                        route_source=dict(acl="route_src_acl"),
-                                    ),
-                                    security_group=dict(source=[10, 20]),
-                                    local_preference=dict(value=[55, 105]),
-                                    mpls_label=True,
-                                ),
-                                sequence=10,
-                            ),
+                        "route_map": "test_1",
+                    },
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "match": {
+                                    "ipv6": {
+                                        "address": {"acl": "test_ip_acl"},
+                                        "next_hop": {"prefix_list": "test_new"},
+                                        "route_source": {"acl": "route_src_acl"},
+                                    },
+                                    "security_group": {"source": [10, 20]},
+                                    "local_preference": {"value": [55, 105]},
+                                    "mpls_label": True,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_2",
-                    ),
+                        "route_map": "test_2",
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "route-map test_1 deny 10",
@@ -176,171 +176,171 @@ class TestIosRouteMapsModule(TestIosModule):
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_route_maps_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=100),
-                                description="this is test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(
-                                        exact_match=True,
-                                        name=["99", "98", "test_1", "test_2"],
-                                    ),
-                                    extcommunity=["110", "130"],
-                                    interfaces=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    ipv6=dict(route_source=dict(acl="test_ipv6")),
-                                    length=dict(maximum=10000, minimum=1000),
-                                    local_preference=dict(value=[100]),
-                                    mdt_group=dict(acls=["25", "30"]),
-                                    metric=dict(external=True, value=100),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                    rpki=dict(invalid=True),
-                                    security_group=dict(destination=[100]),
-                                    tag=dict(tag_list=["test_tag"]),
-                                    track=100,
-                                ),
-                                sequence=10,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=20,
-                                set=dict(
-                                    aigp_metric=dict(value=1000),
-                                    as_path=dict(prepend=dict(last_as=10)),
-                                    automatic_tag=True,
-                                    clns="11.1111",
-                                    comm_list="test_comm",
-                                    community=dict(additive=True, internet=True),
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
-                                    level=dict(level_1_2=True),
-                                    lisp="test_lisp",
-                                    local_preference=100,
-                                    metric=dict(deviation="plus", metric_value=100),
-                                    metric_type=dict(type_1=True),
-                                    mpls_label=True,
-                                    origin=dict(igp=True),
-                                    tag=50529027,
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 100},
+                                "description": "this is test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {
+                                        "exact_match": True,
+                                        "name": ["99", "98", "test_1", "test_2"],
+                                    },
+                                    "extcommunity": ["110", "130"],
+                                    "interfaces": ["GigabitEthernet0/1"],
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "ipv6": {"route_source": {"acl": "test_ipv6"}},
+                                    "length": {"maximum": 10000, "minimum": 1000},
+                                    "local_preference": {"value": [100]},
+                                    "mdt_group": {"acls": ["25", "30"]},
+                                    "metric": {"external": True, "value": 100},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                    "rpki": {"invalid": True},
+                                    "security_group": {"destination": [100]},
+                                    "tag": {"tag_list": ["test_tag"]},
+                                    "track": 100,
+                                },
+                                "sequence": 10,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 20,
+                                "set": {
+                                    "aigp_metric": {"value": 1000},
+                                    "as_path": {"prepend": {"last_as": 10}},
+                                    "automatic_tag": True,
+                                    "clns": "11.1111",
+                                    "comm_list": "test_comm",
+                                    "community": {"additive": True, "internet": True},
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "global_route": True,
+                                    "interfaces": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "level": {"level_1_2": True},
+                                    "lisp": "test_lisp",
+                                    "local_preference": 100,
+                                    "metric": {"deviation": "plus", "metric_value": 100},
+                                    "metric_type": {"type_1": True},
+                                    "mpls_label": True,
+                                    "origin": {"igp": True},
+                                    "tag": 50529027,
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                            },
                         ],
-                        route_map="test_1",
-                    ),
+                        "route_map": "test_1",
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_route_maps_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=20),
-                                description="this is replace test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_replace"]),
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    length=dict(maximum=50000, minimum=5000),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                ),
-                                set=dict(
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    ip=dict(
-                                        address="192.0.2.1",
-                                        df=1,
-                                        next_hop=dict(
-                                            recursive=dict(
-                                                global_route=True,
-                                                address="198.51.110.1",
-                                            ),
-                                            verify_availability=dict(
-                                                address="198.51.111.1",
-                                                sequence=100,
-                                                track=10,
-                                            ),
-                                        ),
-                                        precedence=dict(critical=True),
-                                    ),
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                                sequence=10,
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 20},
+                                "description": "this is replace test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {"exact_match": True, "name": ["new_replace"]},
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "length": {"maximum": 50000, "minimum": 5000},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                },
+                                "set": {
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "ip": {
+                                        "address": "192.0.2.1",
+                                        "df": 1,
+                                        "next_hop": {
+                                            "recursive": {
+                                                "global_route": True,
+                                                "address": "198.51.110.1",
+                                            },
+                                            "verify_availability": {
+                                                "address": "198.51.111.1",
+                                                "sequence": 100,
+                                                "track": 10,
+                                            },
+                                        },
+                                        "precedence": {"critical": True},
+                                    },
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_1",
-                    ),
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                match=dict(
-                                    ipv6=dict(
-                                        address=dict(acl="test_ip_acl"),
-                                        next_hop=dict(prefix_list="test_new"),
-                                        route_source=dict(acl="route_src_acl"),
-                                    ),
-                                    security_group=dict(source=[10, 20]),
-                                    local_preference=dict(value=[55, 105]),
-                                    mpls_label=True,
-                                ),
-                                sequence=10,
-                            ),
+                        "route_map": "test_1",
+                    },
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "match": {
+                                    "ipv6": {
+                                        "address": {"acl": "test_ip_acl"},
+                                        "next_hop": {"prefix_list": "test_new"},
+                                        "route_source": {"acl": "route_src_acl"},
+                                    },
+                                    "security_group": {"source": [10, 20]},
+                                    "local_preference": {"value": [55, 105]},
+                                    "mpls_label": True,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_2",
-                    ),
+                        "route_map": "test_2",
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "route-map test_1 deny 10",
@@ -380,172 +380,172 @@ class TestIosRouteMapsModule(TestIosModule):
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_route_maps_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=100),
-                                description="this is test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(
-                                        exact_match=True,
-                                        name=["99", "98", "test_1", "test_2"],
-                                    ),
-                                    extcommunity=["110", "130"],
-                                    interfaces=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    ipv6=dict(route_source=dict(acl="test_ipv6")),
-                                    length=dict(maximum=10000, minimum=1000),
-                                    local_preference=dict(value=[100]),
-                                    mdt_group=dict(acls=["25", "30"]),
-                                    metric=dict(external=True, value=100),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                    rpki=dict(invalid=True),
-                                    security_group=dict(destination=[100]),
-                                    source_protocol=dict(ospfv3=10000, static=True),
-                                    tag=dict(tag_list=["test_tag"]),
-                                    track=100,
-                                ),
-                                sequence=10,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=20,
-                                set=dict(
-                                    aigp_metric=dict(value=1000),
-                                    as_path=dict(prepend=dict(last_as=10)),
-                                    automatic_tag=True,
-                                    clns="11.1111",
-                                    comm_list="test_comm",
-                                    community=dict(additive=True, internet=True),
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
-                                    level=dict(level_1_2=True),
-                                    lisp="test_lisp",
-                                    local_preference=100,
-                                    metric=dict(deviation="plus", metric_value=100),
-                                    metric_type=dict(type_1=True),
-                                    mpls_label=True,
-                                    origin=dict(igp=True),
-                                    tag=50529027,
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 100},
+                                "description": "this is test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {
+                                        "exact_match": True,
+                                        "name": ["99", "98", "test_1", "test_2"],
+                                    },
+                                    "extcommunity": ["110", "130"],
+                                    "interfaces": ["GigabitEthernet0/1"],
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "ipv6": {"route_source": {"acl": "test_ipv6"}},
+                                    "length": {"maximum": 10000, "minimum": 1000},
+                                    "local_preference": {"value": [100]},
+                                    "mdt_group": {"acls": ["25", "30"]},
+                                    "metric": {"external": True, "value": 100},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                    "rpki": {"invalid": True},
+                                    "security_group": {"destination": [100]},
+                                    "source_protocol": {"ospfv3": 10000, "static": True},
+                                    "tag": {"tag_list": ["test_tag"]},
+                                    "track": 100,
+                                },
+                                "sequence": 10,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 20,
+                                "set": {
+                                    "aigp_metric": {"value": 1000},
+                                    "as_path": {"prepend": {"last_as": 10}},
+                                    "automatic_tag": True,
+                                    "clns": "11.1111",
+                                    "comm_list": "test_comm",
+                                    "community": {"additive": True, "internet": True},
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "global_route": True,
+                                    "interfaces": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "level": {"level_1_2": True},
+                                    "lisp": "test_lisp",
+                                    "local_preference": 100,
+                                    "metric": {"deviation": "plus", "metric_value": 100},
+                                    "metric_type": {"type_1": True},
+                                    "mpls_label": True,
+                                    "origin": {"igp": True},
+                                    "tag": 50529027,
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                            },
                         ],
-                        route_map="test_1",
-                    ),
+                        "route_map": "test_1",
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_route_maps_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=20),
-                                description="this is override test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_override"]),
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    length=dict(maximum=50000, minimum=5000),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                ),
-                                set=dict(
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    ip=dict(
-                                        address="192.0.2.1",
-                                        df=1,
-                                        next_hop=dict(
-                                            recursive=dict(
-                                                global_route=True,
-                                                address="198.51.110.1",
-                                            ),
-                                            verify_availability=dict(
-                                                address="198.51.111.1",
-                                                sequence=100,
-                                                track=10,
-                                            ),
-                                        ),
-                                        precedence=dict(critical=True),
-                                    ),
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                                sequence=10,
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 20},
+                                "description": "this is override test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {"exact_match": True, "name": ["new_override"]},
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "length": {"maximum": 50000, "minimum": 5000},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                },
+                                "set": {
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "ip": {
+                                        "address": "192.0.2.1",
+                                        "df": 1,
+                                        "next_hop": {
+                                            "recursive": {
+                                                "global_route": True,
+                                                "address": "198.51.110.1",
+                                            },
+                                            "verify_availability": {
+                                                "address": "198.51.111.1",
+                                                "sequence": 100,
+                                                "track": 10,
+                                            },
+                                        },
+                                        "precedence": {"critical": True},
+                                    },
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_1",
-                    ),
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                match=dict(
-                                    ipv6=dict(
-                                        address=dict(acl="test_ip_acl"),
-                                        next_hop=dict(prefix_list="test_new"),
-                                        route_source=dict(acl="route_src_acl"),
-                                    ),
-                                    security_group=dict(source=[10, 20]),
-                                    local_preference=dict(value=[55, 105]),
-                                    mpls_label=True,
-                                ),
-                                sequence=10,
-                            ),
+                        "route_map": "test_1",
+                    },
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "match": {
+                                    "ipv6": {
+                                        "address": {"acl": "test_ip_acl"},
+                                        "next_hop": {"prefix_list": "test_new"},
+                                        "route_source": {"acl": "route_src_acl"},
+                                    },
+                                    "security_group": {"source": [10, 20]},
+                                    "local_preference": {"value": [55, 105]},
+                                    "mpls_label": True,
+                                },
+                                "sequence": 10,
+                            },
                         ],
-                        route_map="test_2",
-                    ),
+                        "route_map": "test_2",
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "route-map test_1 deny 10",
@@ -585,192 +585,192 @@ class TestIosRouteMapsModule(TestIosModule):
             "match mpls-label",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_route_maps_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=100),
-                                description="this is test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(
-                                        exact_match=True,
-                                        name=["99", "98", "test_1", "test_2"],
-                                    ),
-                                    extcommunity=["110", "130"],
-                                    interfaces=["GigabitEthernet0/1"],
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    ipv6=dict(route_source=dict(acl="test_ipv6")),
-                                    length=dict(maximum=10000, minimum=1000),
-                                    local_preference=dict(value=[100]),
-                                    mdt_group=dict(acls=["25", "30"]),
-                                    metric=dict(external=True, value=100),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                    rpki=dict(invalid=True),
-                                    security_group=dict(destination=[100]),
-                                    source_protocol=dict(ospfv3=10000, static=True),
-                                    tag=dict(tag_list=["test_tag"]),
-                                    track=100,
-                                ),
-                                sequence=10,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=20,
-                                set=dict(
-                                    aigp_metric=dict(value=1000),
-                                    as_path=dict(prepend=dict(last_as=10)),
-                                    automatic_tag=True,
-                                    clns="11.1111",
-                                    comm_list="test_comm",
-                                    community=dict(additive=True, internet=True),
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
-                                    level=dict(level_1_2=True),
-                                    lisp="test_lisp",
-                                    local_preference=100,
-                                    metric=dict(deviation="plus", metric_value=100),
-                                    metric_type=dict(type_1=True),
-                                    mpls_label=True,
-                                    origin=dict(igp=True),
-                                    tag=50529027,
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 100},
+                                "description": "this is test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {
+                                        "exact_match": True,
+                                        "name": ["99", "98", "test_1", "test_2"],
+                                    },
+                                    "extcommunity": ["110", "130"],
+                                    "interfaces": ["GigabitEthernet0/1"],
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "ipv6": {"route_source": {"acl": "test_ipv6"}},
+                                    "length": {"maximum": 10000, "minimum": 1000},
+                                    "local_preference": {"value": [100]},
+                                    "mdt_group": {"acls": ["25", "30"]},
+                                    "metric": {"external": True, "value": 100},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                    "rpki": {"invalid": True},
+                                    "security_group": {"destination": [100]},
+                                    "source_protocol": {"ospfv3": 10000, "static": True},
+                                    "tag": {"tag_list": ["test_tag"]},
+                                    "track": 100,
+                                },
+                                "sequence": 10,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 20,
+                                "set": {
+                                    "aigp_metric": {"value": 1000},
+                                    "as_path": {"prepend": {"last_as": 10}},
+                                    "automatic_tag": True,
+                                    "clns": "11.1111",
+                                    "comm_list": "test_comm",
+                                    "community": {"additive": True, "internet": True},
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "global_route": True,
+                                    "interfaces": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "level": {"level_1_2": True},
+                                    "lisp": "test_lisp",
+                                    "local_preference": 100,
+                                    "metric": {"deviation": "plus", "metric_value": 100},
+                                    "metric_type": {"type_1": True},
+                                    "mpls_label": True,
+                                    "origin": {"igp": True},
+                                    "tag": 50529027,
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                            },
                         ],
-                        route_map="test_1",
-                    ),
+                        "route_map": "test_1",
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_route_maps_deleted(self):
-        set_module_args(dict(config=[dict(route_map="test_1")], state="deleted"))
+        set_module_args({"config": [{"route_map": "test_1"}], "state": "deleted"})
         commands = ["no route-map test_1"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_route_maps_delete_without_config(self):
-        set_module_args(dict(state="deleted"))
+        set_module_args({"state": "deleted"})
         commands = ["no route-map test_1"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_route_maps_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        entries=[
-                            dict(
-                                action="deny",
-                                continue_entry=dict(entry_sequence=100),
-                                description="this is test",
-                                match=dict(
-                                    additional_paths=dict(all=True),
-                                    as_path=dict(acls=[100, 120]),
-                                    clns=dict(address="test_osi"),
-                                    community=dict(
-                                        exact_match=True,
-                                        name=["99", "98", "test_1", "test_2"],
-                                    ),
-                                    extcommunity=["110", "130"],
-                                    interfaces=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                    ip=dict(address=dict(acls=[10, 100])),
-                                    ipv6=dict(route_source=dict(acl="test_ipv6")),
-                                    length=dict(maximum=10000, minimum=1000),
-                                    local_preference=dict(value=[100]),
-                                    mdt_group=dict(acls=["25", "30"]),
-                                    metric=dict(external=True, value=100),
-                                    mpls_label=True,
-                                    policy_lists=["ip_policy"],
-                                    route_type=dict(
-                                        external=dict(type_1=True),
-                                        nssa_external=dict(type_1=True),
-                                    ),
-                                    rpki=dict(invalid=True),
-                                    security_group=dict(destination=[100]),
-                                    source_protocol=dict(ospfv3=10000, static=True),
-                                    tag=dict(tag_list=["test_tag"]),
-                                    track=100,
-                                ),
-                                sequence=10,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=30,
-                                set=dict(
-                                    as_path=dict(
-                                        prepend=dict(as_number=["65512", 65522, "65532", 65543]),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=20,
-                                set=dict(
-                                    aigp_metric=dict(value=1000),
-                                    as_path=dict(prepend=dict(last_as=10)),
-                                    automatic_tag=True,
-                                    clns="11.1111",
-                                    comm_list="test_comm",
-                                    community=dict(additive=True, internet=True),
-                                    dampening=dict(
-                                        penalty_half_time=10,
-                                        reuse_route_val=100,
-                                        suppress_route_val=100,
-                                        max_suppress=10,
-                                    ),
-                                    extcomm_list="test_excomm",
-                                    extcommunity=dict(
-                                        vpn_distinguisher=dict(address="192.0.2.1:12"),
-                                    ),
-                                    global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
-                                    level=dict(level_1_2=True),
-                                    lisp="test_lisp",
-                                    local_preference=100,
-                                    metric=dict(deviation="plus", metric_value=100),
-                                    metric_type=dict(type_1=True),
-                                    mpls_label=True,
-                                    origin=dict(igp=True),
-                                    tag=50529027,
-                                    traffic_index=10,
-                                    weight=100,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "entries": [
+                            {
+                                "action": "deny",
+                                "continue_entry": {"entry_sequence": 100},
+                                "description": "this is test",
+                                "match": {
+                                    "additional_paths": {"all": True},
+                                    "as_path": {"acls": [100, 120]},
+                                    "clns": {"address": "test_osi"},
+                                    "community": {
+                                        "exact_match": True,
+                                        "name": ["99", "98", "test_1", "test_2"],
+                                    },
+                                    "extcommunity": ["110", "130"],
+                                    "interfaces": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                    "ip": {"address": {"acls": [10, 100]}},
+                                    "ipv6": {"route_source": {"acl": "test_ipv6"}},
+                                    "length": {"maximum": 10000, "minimum": 1000},
+                                    "local_preference": {"value": [100]},
+                                    "mdt_group": {"acls": ["25", "30"]},
+                                    "metric": {"external": True, "value": 100},
+                                    "mpls_label": True,
+                                    "policy_lists": ["ip_policy"],
+                                    "route_type": {
+                                        "external": {"type_1": True},
+                                        "nssa_external": {"type_1": True},
+                                    },
+                                    "rpki": {"invalid": True},
+                                    "security_group": {"destination": [100]},
+                                    "source_protocol": {"ospfv3": 10000, "static": True},
+                                    "tag": {"tag_list": ["test_tag"]},
+                                    "track": 100,
+                                },
+                                "sequence": 10,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 30,
+                                "set": {
+                                    "as_path": {
+                                        "prepend": {"as_number": ["65512", 65522, "65532", 65543]},
+                                    },
+                                },
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 20,
+                                "set": {
+                                    "aigp_metric": {"value": 1000},
+                                    "as_path": {"prepend": {"last_as": 10}},
+                                    "automatic_tag": True,
+                                    "clns": "11.1111",
+                                    "comm_list": "test_comm",
+                                    "community": {"additive": True, "internet": True},
+                                    "dampening": {
+                                        "penalty_half_time": 10,
+                                        "reuse_route_val": 100,
+                                        "suppress_route_val": 100,
+                                        "max_suppress": 10,
+                                    },
+                                    "extcomm_list": "test_excomm",
+                                    "extcommunity": {
+                                        "vpn_distinguisher": {"address": "192.0.2.1:12"},
+                                    },
+                                    "global_route": True,
+                                    "interfaces": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "level": {"level_1_2": True},
+                                    "lisp": "test_lisp",
+                                    "local_preference": 100,
+                                    "metric": {"deviation": "plus", "metric_value": 100},
+                                    "metric_type": {"type_1": True},
+                                    "mpls_label": True,
+                                    "origin": {"igp": True},
+                                    "tag": 50529027,
+                                    "traffic_index": 10,
+                                    "weight": 100,
+                                },
+                            },
                         ],
-                        route_map="test_1",
-                    ),
+                        "route_map": "test_1",
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "route-map test_1 deny 10",
@@ -817,4 +817,4 @@ class TestIosRouteMapsModule(TestIosModule):
             "set as-path prepend 65512 65522 65532 65543",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)

@@ -30,15 +30,12 @@ from io import BytesIO, StringIO
 
 from ansible.module_utils._text import to_bytes
 from ansible.module_utils.six import PY3
-
 from ansible_collections.cisco.ios.tests.unit.compat import unittest
 
 
 @contextmanager
-def swap_stdin_and_argv(stdin_data="", argv_data=tuple()):
-    """
-    context manager that temporarily masks the test runner's values for stdin and argv
-    """
+def swap_stdin_and_argv(stdin_data="", argv_data=()):
+    """Context manager that temporarily masks the test runner's values for stdin and argv."""
     real_stdin = sys.stdin
     real_argv = sys.argv
 
@@ -60,15 +57,10 @@ def swap_stdin_and_argv(stdin_data="", argv_data=tuple()):
 
 @contextmanager
 def swap_stdout():
-    """
-    context manager that temporarily replaces stdout for tests that need to verify output
-    """
+    """Context manager that temporarily replaces stdout for tests that need to verify output."""
     old_stdout = sys.stdout
 
-    if PY3:
-        fake_stream = StringIO()
-    else:
-        fake_stream = BytesIO()
+    fake_stream = StringIO() if PY3 else BytesIO()
 
     try:
         sys.stdout = fake_stream
@@ -83,7 +75,7 @@ class ModuleTestCase(unittest.TestCase):
         if module_args is None:
             module_args = {"_ansible_remote_tmp": "/tmp", "_ansible_keep_remote_files": False}
 
-        args = json.dumps(dict(ANSIBLE_MODULE_ARGS=module_args))
+        args = json.dumps({"ANSIBLE_MODULE_ARGS": module_args})
 
         # unittest doesn't have a clean place to use a context manager, so we have to enter/exit manually
         self.stdin_swap = swap_stdin_and_argv(stdin_data=args)

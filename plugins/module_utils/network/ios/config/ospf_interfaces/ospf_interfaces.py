@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospf_interfaces import (
     Ospf_InterfacesTemplate,
@@ -33,12 +31,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Ospf_Interfaces(ResourceModule):
-    """
-    The cisco.ios_ospf_interfaces config class
-    """
+    """The cisco.ios_ospf_interfaces config class."""
 
-    def __init__(self, module):
-        super(Ospf_Interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -48,7 +44,7 @@ class Ospf_Interfaces(ResourceModule):
         self.parsers = []
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -62,7 +58,6 @@ class Ospf_Interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-
         wantd = {}
         haved = {}
         if self.want:
@@ -152,12 +147,11 @@ class Ospf_Interfaces(ResourceModule):
                             self.compare(parsers=parsers, want=each, have=h_each)
                         have_elements -= 1
                 else:
-                    h_each = dict()
+                    h_each = {}
                     self.compare(parsers=parsers, want=each, have=h_each)
                     set_want = False
                 if set_want:
-                    self.compare(parsers=parsers, want=each, have=dict())
-        if self.state in ["overridden", "deleted"]:
-            if have.get("address_family"):
-                for each in have["address_family"]:
-                    self.compare(parsers=parsers, want=dict(), have=each)
+                    self.compare(parsers=parsers, want=each, have={})
+        if self.state in ["overridden", "deleted"] and have.get("address_family"):
+            for each in have["address_family"]:
+                self.compare(parsers=parsers, want={}, have=each)

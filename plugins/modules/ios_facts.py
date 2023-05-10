@@ -210,7 +210,6 @@ ansible_net_neighbors:
   type: dict
 """
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
 )
@@ -222,7 +221,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: ansible_facts
     """

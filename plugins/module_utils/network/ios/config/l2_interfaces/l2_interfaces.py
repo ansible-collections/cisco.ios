@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l2_interfaces import (
     L2_interfacesTemplate,
@@ -38,12 +36,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class L2_interfaces(ResourceModule):
-    """
-    The ios_l2_interfaces config class
-    """
+    """The ios_l2_interfaces config class."""
 
-    def __init__(self, module):
-        super(L2_interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -62,7 +58,7 @@ class L2_interfaces(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -126,11 +122,11 @@ class L2_interfaces(ResourceModule):
                     not want.get("trunk", {}).get(vlan, []) and rem_vlan
                 ):  # remove vlan all as want blank
                     self.commands.append(
-                        "no switchport trunk {0} vlan".format(vlan.split("_", maxsplit=1)[0]),
+                        "no switchport trunk {} vlan".format(vlan.split("_", maxsplit=1)[0]),
                     )
                 elif rem_vlan:  # remove excess vlans for replaced overridden with vlan entries
                     self.commands.append(
-                        "switchport trunk {0} vlan remove {1}".format(
+                        "switchport trunk {} vlan remove {}".format(
                             vlan.split("_", maxsplit=1)[0],
                             vlan_list_to_range(sorted(rem_vlan)),
                         ),
@@ -138,7 +134,7 @@ class L2_interfaces(ResourceModule):
             if self.state != "deleted" and cmd_always:  # add configuration needed
                 add = "add " if have.get("trunk", {}).get(vlan, []) else ""
                 self.commands.append(
-                    "switchport trunk {0} vlan {1}{2}".format(
+                    "switchport trunk {} vlan {}{}".format(
                         vlan.split("_", maxsplit=1)[0],
                         add,
                         vlan_list_to_range(sorted(cmd_always)),

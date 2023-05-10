@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,22 +22,22 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 class PingTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(PingTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [
         {
-            'name': 'rate',
-            'getval': re.compile(
-                r'''
+            "name": "rate",
+            "getval": re.compile(
+                r"""
                 ^Success\srate\sis
                 (\s(?P<pct>\d+))?
                 (\spercent\s\((?P<rx>\d+)/(?P<tx>\d+)\))?
                 (,\s+round-trip\smin/avg/max\s=)?
                 (\s(?P<min>\d+)/(?P<avg>\d+)/(?P<max>\d+))?
                 (\s+\w+\s*$|.*\s*$)?
-                ''', re.VERBOSE,
+                """, re.VERBOSE,
             ),
             "setval": "ping"
             "{{ (' vrf ' + vrf) if vrf is defined else '' }}"
@@ -50,16 +49,16 @@ class PingTemplate(NetworkTemplate):
             "{{ (' ingress ' + ingress) if ingress is defined else '' }}"
             "{{ (' egress ' + egress) if egress is defined else '' }}"
             "{{ (' source ' + source) if source is defined else '' }}",
-            'result': {
+            "result": {
                 "ping": {
-                    'loss_percentage': '{{ 100 - pct|int }}%',
-                    'loss': '{{ 100 - pct|int }}',
-                    'rx': '{{ rx|int }}',
-                    'tx': '{{ tx|int }}',
-                    'rtt': {
-                        'min': '{{ min }}',
-                        'avg': '{{ avg }}',
-                        'max': '{{ max }}',
+                    "loss_percentage": "{{ 100 - pct|int }}%",
+                    "loss": "{{ 100 - pct|int }}",
+                    "rx": "{{ rx|int }}",
+                    "tx": "{{ tx|int }}",
+                    "rtt": {
+                        "min": "{{ min }}",
+                        "avg": "{{ avg }}",
+                        "max": "{{ max }}",
                     },
                 },
             },

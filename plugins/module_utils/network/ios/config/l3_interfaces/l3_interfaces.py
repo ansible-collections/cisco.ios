@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 """
@@ -7,7 +6,7 @@ The ios_l3_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
@@ -35,12 +33,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class L3_interfaces(ResourceModule):
-    """
-    The ios_l3_interfaces class
-    """
+    """The ios_l3_interfaces class."""
 
-    def __init__(self, module):
-        super(L3_interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -57,7 +53,7 @@ class L3_interfaces(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -131,17 +127,15 @@ class L3_interfaces(ResourceModule):
             v4_addr = validate_n_expand_ipv4(self._module, want) if want.get("address") else {}
             if v4_addr:
                 want["address"] = v4_addr
-        elif afi == "ipv6" and want:
-            if want.get("address"):
-                validate_ipv6(want["address"], self._module)
+        elif afi == "ipv6" and want and want.get("address"):
+            validate_ipv6(want["address"], self._module)
 
         if afi == "ipv4" and have:
             v4_addr_h = validate_n_expand_ipv4(self._module, have) if have.get("address") else {}
             if v4_addr_h:
                 have["address"] = v4_addr_h
-        elif afi == "ipv6" and have:
-            if have.get("address"):
-                validate_ipv6(have["address"], self._module)
+        elif afi == "ipv6" and have and have.get("address"):
+            validate_ipv6(have["address"], self._module)
 
     def list_to_dict(self, param):
         if param:

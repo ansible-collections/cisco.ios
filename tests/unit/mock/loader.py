@@ -29,11 +29,11 @@ from ansible.parsing.dataloader import DataLoader
 
 
 class DictDataLoader(DataLoader):
-    def __init__(self, file_mapping=None):
+    def __init__(self, file_mapping=None) -> None:
         file_mapping = {} if file_mapping is None else file_mapping
         assert type(file_mapping) == dict
 
-        super(DictDataLoader, self).__init__()
+        super().__init__()
 
         self._file_mapping = file_mapping
         self._build_known_directories()
@@ -70,9 +70,8 @@ class DictDataLoader(DataLoader):
         ret = []
         path = to_text(path)
         for x in list(self._file_mapping.keys()) + self._known_directories:
-            if x.startswith(path):
-                if os.path.dirname(x) == path:
-                    ret.append(os.path.basename(x))
+            if x.startswith(path) and os.path.dirname(x) == path:
+                ret.append(os.path.basename(x))
         return ret
 
     def is_executable(self, path):
@@ -107,7 +106,7 @@ class DictDataLoader(DataLoader):
             self._build_known_directories()
 
     def clear(self):
-        self._file_mapping = dict()
+        self._file_mapping = {}
         self._known_directories = []
 
     def get_basedir(self):

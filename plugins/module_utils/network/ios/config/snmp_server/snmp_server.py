@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -27,7 +26,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.snmp_server import (
     Snmp_serverTemplate,
@@ -35,12 +33,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Snmp_server(ResourceModule):
-    """
-    The ios_snmp_server config class
-    """
+    """The ios_snmp_server config class."""
 
-    def __init__(self, module):
-        super(Snmp_server, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -146,7 +142,7 @@ class Snmp_server(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -184,7 +180,7 @@ class Snmp_server(ResourceModule):
         self._compare_lists_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-        """Compare list of dict"""
+        """Compare list of dict."""
         for _parser in self.list_parsers:
             i_want = want.get(_parser, {})
             i_have = have.get(_parser, {})
@@ -198,7 +194,7 @@ class Snmp_server(ResourceModule):
                 self.addcmd(haveing, _parser, negate=True)
 
     def _snmp_list_to_dict(self, data):
-        """Convert all list of dicts to dicts of dicts"""
+        """Convert all list of dicts to dicts of dicts."""
         p_key = {
             "hosts": "host",
             "groups": "group",
@@ -214,9 +210,9 @@ class Snmp_server(ResourceModule):
         for k, _v in p_key.items():
             if k in tmp_data:
                 if k == "hosts":
-                    tmp_host = dict()
+                    tmp_host = {}
                     for i in tmp_data[k]:
-                        tmp = dict()
+                        tmp = {}
                         if i.get("traps"):
                             for t in i.get("traps"):
                                 tmp.update({t: t})
@@ -234,12 +230,11 @@ class Snmp_server(ResourceModule):
                 elif k == "context":
                     tmp_data[k] = {i: {"context": i} for i in tmp_data[k]}
                 elif k == "file_transfer":
-                    if tmp_data.get(k):
-                        if tmp_data[k].get("protocol"):
-                            tmp = dict()
-                            for t in tmp_data[k].get("protocol"):
-                                tmp.update({t: t})
-                            tmp_data[k]["protocol"] = tmp
+                    if tmp_data.get(k) and tmp_data[k].get("protocol"):
+                        tmp = {}
+                        for t in tmp_data[k].get("protocol"):
+                            tmp.update({t: t})
+                        tmp_data[k]["protocol"] = tmp
                 elif k == "groups":
                     tmp_data[k] = {
                         str(i[p_key.get(k)] + i.get("version_option", "")): i for i in tmp_data[k]

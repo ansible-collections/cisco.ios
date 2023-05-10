@@ -108,7 +108,6 @@ commands:
 from re import M, search
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
@@ -116,11 +115,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
 
 
 def map_obj_to_commands(updates, module):
-    commands = list()
+    commands = []
     want, have = updates
     state = module.params["state"]
     multiline_delimiter = module.params.get("multiline_delimiter")
-    if state == "absent" and "text" in have.keys() and have["text"]:
+    if state == "absent" and "text" in have and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
         if have.get("text") and len(have.get("text")) > 1:
@@ -129,9 +128,9 @@ def map_obj_to_commands(updates, module):
             haved = ""
         if want["text"] and (want["text"].rstrip("\n") != haved):
             banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " {0}\n".format(multiline_delimiter)
+            banner_cmd += f" {multiline_delimiter}\n"
             banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n{0}".format(multiline_delimiter)
+            banner_cmd += f"\n{multiline_delimiter}"
             commands.append(banner_cmd)
     return commands
 
@@ -171,20 +170,20 @@ def map_params_to_obj(module):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        banner=dict(required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"]),
-        multiline_delimiter=dict(default="@"),
-        text=dict(),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "banner": {"required": True, "choices": ["login", "motd", "exec", "incoming", "slip-ppp"]},
+        "multiline_delimiter": {"default": "@"},
+        "text": {},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
     required_if = [("state", "present", ("text",))]
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_if=required_if,
         supports_check_mode=True,
     )
-    warnings = list()
+    warnings = []
     result = {"changed": False}
     if warnings:
         result["warnings"] = warnings

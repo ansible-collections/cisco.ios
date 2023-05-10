@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.prefix_lists import (
     Prefix_listsTemplate,
@@ -33,12 +31,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 
 
 class Prefix_lists(ResourceModule):
-    """
-    The cisco.ios_prefix_lists config class
-    """
+    """The cisco.ios_prefix_lists config class."""
 
-    def __init__(self, module):
-        super(Prefix_lists, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -48,7 +44,7 @@ class Prefix_lists(ResourceModule):
         self.parsers = ["prefix_list"]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -92,20 +88,20 @@ class Prefix_lists(ResourceModule):
                 haved.pop(k)
             wantd = {}
             for k, have in iteritems(haved):
-                for key, val in iteritems(have["prefix_lists"]):
+                for key, _val in iteritems(have["prefix_lists"]):
                     if k == "ipv4":
                         k = "ip"
-                    self.commands.append("no {0} prefix-list {1}".format(k, key))
+                    self.commands.append(f"no {k} prefix-list {key}")
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 want_afi = wantd.get(k, {})
-                for key, val in iteritems(have["prefix_lists"]):
+                for key, _val in iteritems(have["prefix_lists"]):
                     if k == "ipv4":
                         k = "ip"
                     if want_afi and key not in want_afi.get("prefix_lists"):
-                        self.commands.append("no {0} prefix-list {1}".format(k, key))
+                        self.commands.append(f"no {k} prefix-list {key}")
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
@@ -162,7 +158,7 @@ class Prefix_lists(ResourceModule):
                                     "sequence",
                                 ) == val.get("sequence"):
                                     self._module.fail_json(
-                                        "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
+                                        "Cannot update existing sequence {} of Prefix Lists {} with state merged.".format(
                                             val.get("sequence"),
                                             k,
                                         )
@@ -170,7 +166,7 @@ class Prefix_lists(ResourceModule):
                                     )
                                 self.compare(
                                     parsers=self.parsers,
-                                    want=dict(),
+                                    want={},
                                     have={
                                         "afi": have["afi"],
                                         "name": k,
@@ -190,7 +186,7 @@ class Prefix_lists(ResourceModule):
                             self.compare(
                                 parsers=self.parsers,
                                 want={"afi": want["afi"], "name": k, "prefix_list": val},
-                                have=dict(),
+                                have={},
                             )
                     if have_prefix and (self.state == "replaced" or self.state == "overridden"):
                         if have_prefix.get("description"):
@@ -198,7 +194,7 @@ class Prefix_lists(ResourceModule):
                             # entries level as this supports deprecated level of Description
                             self.compare(
                                 parsers=self.parsers,
-                                want=dict(),
+                                want={},
                                 have={
                                     "afi": want["afi"],
                                     "name": k,
@@ -208,7 +204,7 @@ class Prefix_lists(ResourceModule):
                         for key, val in iteritems(have_prefix.get("entries")):
                             self.compare(
                                 parsers=self.parsers,
-                                want=dict(),
+                                want={},
                                 have={"afi": have["afi"], "name": k, "prefix_list": val},
                             )
                 elif v:
@@ -220,22 +216,22 @@ class Prefix_lists(ResourceModule):
                                 "name": k,
                                 "prefix_list": {"description": v["description"]},
                             },
-                            have=dict(),
+                            have={},
                         )
                     for key, val in iteritems(v.get("entries")):
                         self.compare(
                             parsers=self.parsers,
                             want={"afi": want["afi"], "name": k, "prefix_list": val},
-                            have=dict(),
+                            have={},
                         )
 
     def list_to_dict(self, param):
         if param:
-            for key, val in iteritems(param):
+            for _key, val in iteritems(param):
                 if val.get("prefix_lists"):
                     temp_prefix_list = {}
                     for each in val["prefix_lists"]:
-                        temp_entries = dict()
+                        temp_entries = {}
                         if each.get("entries"):
                             for every in each["entries"]:
                                 temp_entries.update({str(every["sequence"]): every})

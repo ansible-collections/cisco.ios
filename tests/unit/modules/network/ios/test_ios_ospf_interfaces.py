@@ -21,7 +21,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
     module = ios_ospf_interfaces
 
     def setUp(self):
-        super(TestIosOspfInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -57,7 +57,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosOspfInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -73,45 +73,45 @@ class TestIosOspfInterfacesModule(TestIosModule):
 
     def test_ios_ospf_interfaces_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet0/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                bfd=True,
-                                cost=dict(interface_cost=30),
-                                network=dict(broadcast=True),
-                                priority=60,
-                                resync_timeout=90,
-                                ttl_security=dict(hops=120),
-                                authentication=dict(key_chain="test_key"),
-                            ),
-                            dict(
-                                afi="ipv6",
-                                bfd=True,
-                                dead_interval=dict(time=100),
-                                network=dict(manet=True),
-                                priority=50,
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "bfd": True,
+                                "cost": {"interface_cost": 30},
+                                "network": {"broadcast": True},
+                                "priority": 60,
+                                "resync_timeout": 90,
+                                "ttl_security": {"hops": 120},
+                                "authentication": {"key_chain": "test_key"},
+                            },
+                            {
+                                "afi": "ipv6",
+                                "bfd": True,
+                                "dead_interval": {"time": 100},
+                                "network": {"manet": True},
+                                "priority": 50,
+                            },
                         ],
-                    ),
-                    dict(
-                        name="GigabitEthernet0/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                bfd=True,
-                                cost=dict(interface_cost=50),
-                                priority=50,
-                                ttl_security=dict(hops=150),
-                            ),
+                    },
+                    {
+                        "name": "GigabitEthernet0/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "bfd": True,
+                                "cost": {"interface_cost": 50},
+                                "priority": 50,
+                                "ttl_security": {"hops": 150},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -133,62 +133,62 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf priority 50",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                adjacency=True,
-                                cost=dict(interface_cost=30),
-                                priority=40,
-                                process=dict(id=10, area_id="20"),
-                                ttl_security=dict(hops=50),
-                            ),
+            {
+                "config": [
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "adjacency": True,
+                                "cost": {"interface_cost": 30},
+                                "priority": 40,
+                                "process": {"id": 10, "area_id": "20"},
+                                "ttl_security": {"hops": 50},
+                            },
                         ],
-                        name="GigabitEthernet0/2",
-                    ),
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                adjacency=True,
-                                priority=20,
-                                process=dict(id=55, area_id="105"),
-                                transmit_delay=30,
-                            ),
+                        "name": "GigabitEthernet0/2",
+                    },
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "adjacency": True,
+                                "priority": 20,
+                                "process": {"id": 55, "area_id": "105"},
+                                "transmit_delay": 30,
+                            },
                         ],
-                        name="GigabitEthernet0/3",
-                    ),
+                        "name": "GigabitEthernet0/3",
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet0/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                bfd=True,
-                                cost=dict(interface_cost=50),
-                                priority=50,
-                                ttl_security=dict(hops=150),
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "bfd": True,
+                                "cost": {"interface_cost": 50},
+                                "priority": 50,
+                                "ttl_security": {"hops": 150},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface GigabitEthernet0/3",
@@ -198,62 +198,62 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                adjacency=True,
-                                cost=dict(interface_cost=30),
-                                priority=40,
-                                process=dict(id=10, area_id="20"),
-                                ttl_security=dict(hops=50),
-                            ),
+            {
+                "config": [
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "adjacency": True,
+                                "cost": {"interface_cost": 30},
+                                "priority": 40,
+                                "process": {"id": 10, "area_id": "20"},
+                                "ttl_security": {"hops": 50},
+                            },
                         ],
-                        name="GigabitEthernet0/2",
-                    ),
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                adjacency=True,
-                                priority=20,
-                                process=dict(id=55, area_id="105"),
-                                transmit_delay=30,
-                            ),
+                        "name": "GigabitEthernet0/2",
+                    },
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "adjacency": True,
+                                "priority": 20,
+                                "process": {"id": 55, "area_id": "105"},
+                                "transmit_delay": 30,
+                            },
                         ],
-                        name="GigabitEthernet0/3",
-                    ),
+                        "name": "GigabitEthernet0/3",
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                manet=dict(cost=dict(percent=10)),
-                                priority=40,
-                                process=dict(id=10, area_id="20"),
-                                transmit_delay=50,
-                            ),
+            {
+                "config": [
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "manet": {"cost": {"percent": 10}},
+                                "priority": 40,
+                                "process": {"id": 10, "area_id": "20"},
+                                "transmit_delay": 50,
+                            },
                         ],
-                        name="GigabitEthernet0/3",
-                    ),
+                        "name": "GigabitEthernet0/3",
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -270,45 +270,45 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf transmit-delay 50" "",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                adjacency=True,
-                                cost=dict(interface_cost=30),
-                                priority=40,
-                                process=dict(id=10, area_id="20"),
-                                ttl_security=dict(hops=50),
-                            ),
+            {
+                "config": [
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "adjacency": True,
+                                "cost": {"interface_cost": 30},
+                                "priority": 40,
+                                "process": {"id": 10, "area_id": "20"},
+                                "ttl_security": {"hops": 50},
+                            },
                         ],
-                        name="GigabitEthernet0/2",
-                    ),
-                    dict(
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                adjacency=True,
-                                priority=20,
-                                process=dict(id=55, area_id="105"),
-                                transmit_delay=30,
-                            ),
+                        "name": "GigabitEthernet0/2",
+                    },
+                    {
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "adjacency": True,
+                                "priority": 20,
+                                "process": {"id": 55, "area_id": "105"},
+                                "transmit_delay": 30,
+                            },
                         ],
-                        name="GigabitEthernet0/3",
-                    ),
+                        "name": "GigabitEthernet0/3",
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_deleted_interface(self):
-        set_module_args(dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"))
+        set_module_args({"config": [{"name": "GigabitEthernet0/2"}], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/2",
             "no ip ospf priority 40",
@@ -318,10 +318,10 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "no ip ospf cost 30",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_deleted_all(self):
-        set_module_args(dict(config=[], state="deleted"))
+        set_module_args({"config": [], "state": "deleted"})
         commands = [
             "interface GigabitEthernet0/3",
             "no ipv6 ospf 55 area 105",
@@ -336,81 +336,79 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "no ip ospf ttl-security hops 50",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet0/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                bfd=True,
-                                cost=dict(interface_cost=30),
-                                network=dict(broadcast=True),
-                                dead_interval=dict(minimal=100),
-                                demand_circuit=dict(enable=True, ignore=True),
-                                multi_area=dict(id=15, cost=20),
-                                priority=60,
-                                resync_timeout=90,
-                                ttl_security=dict(hops=120),
-                            ),
-                            dict(
-                                afi="ipv6",
-                                bfd=True,
-                                dead_interval=dict(time=100),
-                                demand_circuit=dict(enable=True, ignore=True),
-                                network=dict(manet=True),
-                                neighbor=dict(
-                                    address="10.0.2.15",
-                                    cost=14,
-                                    database_filter=True,
-                                    # poll_interval=13,
-                                    # priority=56,
-                                ),
-                                priority=50,
-                                authentication=dict(
-                                    key_chain="thekeychain",
-                                    message_digest=True,
-                                    null=True,
-                                ),
-                                cost=dict(
-                                    interface_cost=10,
-                                    dynamic_cost=dict(
-                                        default=10,
-                                        hysteresis=dict(
-                                            percent=15,
-                                            threshold=25,
-                                        ),
-                                        weight=dict(
-                                            l2_factor=12,
-                                            latency=14,
-                                            oc=True,
-                                            resources=13,
-                                            throughput=56,
-                                        ),
-                                    ),
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "bfd": True,
+                                "cost": {"interface_cost": 30},
+                                "network": {"broadcast": True},
+                                "dead_interval": {"minimal": 100},
+                                "demand_circuit": {"enable": True, "ignore": True},
+                                "multi_area": {"id": 15, "cost": 20},
+                                "priority": 60,
+                                "resync_timeout": 90,
+                                "ttl_security": {"hops": 120},
+                            },
+                            {
+                                "afi": "ipv6",
+                                "bfd": True,
+                                "dead_interval": {"time": 100},
+                                "demand_circuit": {"enable": True, "ignore": True},
+                                "network": {"manet": True},
+                                "neighbor": {
+                                    "address": "10.0.2.15",
+                                    "cost": 14,
+                                    "database_filter": True,
+                                },
+                                "priority": 50,
+                                "authentication": {
+                                    "key_chain": "thekeychain",
+                                    "message_digest": True,
+                                    "null": True,
+                                },
+                                "cost": {
+                                    "interface_cost": 10,
+                                    "dynamic_cost": {
+                                        "default": 10,
+                                        "hysteresis": {
+                                            "percent": 15,
+                                            "threshold": 25,
+                                        },
+                                        "weight": {
+                                            "l2_factor": 12,
+                                            "latency": 14,
+                                            "oc": True,
+                                            "resources": 13,
+                                            "throughput": 56,
+                                        },
+                                    },
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        name="GigabitEthernet0/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                bfd=True,
-                                cost=dict(interface_cost=50),
-                                priority=50,
-                                ttl_security=dict(hops=150),
-                            ),
+                    },
+                    {
+                        "name": "GigabitEthernet0/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "bfd": True,
+                                "cost": {"interface_cost": 50},
+                                "priority": 50,
+                                "ttl_security": {"hops": 150},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface GigabitEthernet0/2",
@@ -439,12 +437,12 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        assert sorted(result["rendered"]) == sorted(commands)
 
     def test_ios_ospf_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface GigabitEthernet0/0
                      ip ospf dead-interval 10
@@ -470,8 +468,8 @@ class TestIosOspfInterfacesModule(TestIosModule):
                      ip ospf dead-interval minimal hello-multiplier 10
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -512,4 +510,4 @@ class TestIosOspfInterfacesModule(TestIosModule):
                 "address_family": [{"afi": "ipv4", "dead_interval": {"minimal": 10}}],
             },
         ]
-        self.assertEqual(parsed_list, result["parsed"])
+        assert parsed_list == result["parsed"]

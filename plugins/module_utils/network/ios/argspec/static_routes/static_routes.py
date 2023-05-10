@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2023 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -29,8 +28,8 @@ The arg spec for the ios_static_routes module
 """
 
 
-class Static_routesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_static_routes module"""
+class Static_routesArgs:  # pylint: disable=R0903
+    """The arg spec for the ios_static_routes module."""
 
     argument_spec = {
         "config": {

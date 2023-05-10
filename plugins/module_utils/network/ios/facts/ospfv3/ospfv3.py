@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
@@ -31,10 +29,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Ospfv3Facts(object):
-    """The ios ospfv3 fact class"""
+class Ospfv3Facts:
+    """The ios ospfv3 fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Ospfv3Args.argument_spec
 
@@ -42,7 +40,7 @@ class Ospfv3Facts(object):
         return connection.get("show running-config | section ^router ospfv3")
 
     def parse(self, net_template_obj):
-        """Overrided network template parse"""
+        """Overrided network template parse."""
         result = {}
         shared = {}
         temp_pid = None
@@ -77,7 +75,7 @@ class Ospfv3Facts(object):
         return result
 
     def parse_for_address_family(self, current):
-        """Parsing and Fishing out address family contents"""
+        """Parsing and Fishing out address family contents."""
         pid_addr_family_dict = {}
         temp_dict = {}
         temp_pid = None
@@ -89,13 +87,13 @@ class Ospfv3Facts(object):
                     if temp_pid == each.get("exit")["pid"]:
                         temp.append(temp_dict)
                         pid_addr_family_dict[temp_pid] = temp
-                        temp_dict = dict()
+                        temp_dict = {}
                     else:
                         temp_pid = each.get("exit")["pid"]
                         pid_addr_family_dict[temp_pid] = [temp_dict]
                         temp = []
                         temp.append(temp_dict)
-                        temp_dict = dict()
+                        temp_dict = {}
                 elif each.get("manet") and temp_dict.get("manet"):
                     for k, v in iteritems(each.get("manet")):
                         if k in temp_dict.get("manet"):
@@ -114,7 +112,7 @@ class Ospfv3Facts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         if not data:
             data = self.get_ospfv3_data(connection)
