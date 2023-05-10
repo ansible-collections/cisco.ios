@@ -19,7 +19,7 @@ module: ios_service
 short_description: Resource module to configure service.
 description:
   - This module configures and manages service attributes on IOS platforms
-version_added: 4.5.0
+version_added: 4.6.0
 author:
   - Ambroise Rosset (@earendilfr)
 notes:
@@ -558,7 +558,7 @@ EXAMPLES = """
 # - service timestamps log datetime msec localtime show-timezone year
 # - service timestamps debug datetime
 
-# Use parsed
+# Using parsed
 
 # File: parsed.cfg
 # ----------------
@@ -625,17 +625,19 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - no service config
+    - service tcp-keepalives-in
+    - service tcp-keepalives-out
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - service dhcp
+    - service password-encryption
+    - service password-recovery
+    - service prompt config
+    - service slave-log
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
@@ -674,7 +676,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

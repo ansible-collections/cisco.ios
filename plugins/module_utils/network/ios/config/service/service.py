@@ -77,9 +77,6 @@ class Service(ResourceModule):
             "telnet_zeroidle",
             "unsupported_transceiver",
         ]
-        self.list_parsers = [
-            "timestamps",
-        ]
 
     def execute_module(self):
         """Execute the module
@@ -132,17 +129,16 @@ class Service(ResourceModule):
 
     def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
-        for _parser in self.list_parsers:
-            i_want = want.get(_parser, {})
-            i_have = have.get(_parser, {})
-            for key, wanting in iteritems(i_want):
-                haveing = i_have.pop(key, {})
-                if wanting != haveing:
-                    if haveing and self.state in ["overridden", "replaced"]:
-                        self.addcmd(haveing, _parser, negate=True)
-                    self.addcmd(wanting, _parser)
-            for key, haveing in iteritems(i_have):
-                self.addcmd(haveing, _parser, negate=True)
+        i_want = want.get("timestamps", {})
+        i_have = have.get("timestamps", {})
+        for key, wanting in iteritems(i_want):
+            haveing = i_have.pop(key, {})
+            if wanting != haveing:
+                if haveing and self.state in ["overridden", "replaced"]:
+                    self.addcmd(haveing, _parser, negate=True)
+                self.addcmd(wanting, _parser)
+        for key, haveing in iteritems(i_have):
+            self.addcmd(haveing, _parser, negate=True)
 
     def _service_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""

@@ -35,15 +35,6 @@ class ServiceFacts(object):
     def get_service_data(self, connection):
         return connection.get("show running-config all | section ^service ")
 
-    def sort_list_dicts(self, objs):
-        p_key = {
-            "timestamps": "msg",
-        }
-        for k, _v in p_key.items():
-            if k in objs:
-                objs[k] = sorted(objs[k], key=lambda _k: str(_k[p_key[k]]))
-        return objs
-
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Service network resource
 
@@ -64,9 +55,6 @@ class ServiceFacts(object):
         # parse native config using the ServiceTemplate
         service_parser = ServiceTemplate(lines=data.splitlines(), module=self._module)
         objs = service_parser.parse()
-
-        if objs:
-            self.sort_list_dicts(objs)
 
         ansible_facts["ansible_network_resources"].pop("service", None)
 
