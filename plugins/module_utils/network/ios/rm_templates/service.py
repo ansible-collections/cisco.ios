@@ -61,7 +61,7 @@ class ServiceTemplate(NetworkTemplate):
             ),
             "setval": "service config",
             "result": {
-                "compress_config": "{{ not not config }}",
+                "config": "{{ not not config }}",
             },
         },
         {
@@ -71,7 +71,7 @@ class ServiceTemplate(NetworkTemplate):
                 ^service\scounters\smax\sage(\s(?P<max_age>\d+))?
                 """, re.VERBOSE,
             ),
-            "setval": "service counters max age {{ service.counters.max_age }}",
+            "setval": "service counters max age {{ counters }}",
             "result": {
                 "counters": "{{ max_age|int }}",
             },

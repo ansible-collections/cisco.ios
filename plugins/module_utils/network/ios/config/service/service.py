@@ -66,6 +66,7 @@ class Service(ResourceModule):
             "pad_to_xot",
             "password_encryption",
             "password_recovery",
+            "private_config_encryption",
             "prompt",
             "pt_vty_logging",
             "scripting",
@@ -102,6 +103,7 @@ class Service(ResourceModule):
             "prompt": True,
             "slave_log": True,
             "password_recovery": True,
+            "private_config_encryption": True,
         }
 
         # if state is merged, merge want onto have and then compare
@@ -134,11 +136,9 @@ class Service(ResourceModule):
         for key, wanting in iteritems(i_want):
             haveing = i_have.pop(key, {})
             if wanting != haveing:
-                if haveing and self.state in ["overridden", "replaced"]:
-                    self.addcmd(haveing, _parser, negate=True)
-                self.addcmd(wanting, _parser)
+                self.addcmd(wanting, "timestamps")
         for key, haveing in iteritems(i_have):
-            self.addcmd(haveing, _parser, negate=True)
+            self.addcmd(haveing, "timestamps", negate=True)
 
     def _service_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
