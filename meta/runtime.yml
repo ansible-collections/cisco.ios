@@ -99,6 +99,8 @@ plugin_routing:
       redirect: cisco.ios.ios
     route_maps:
       redirect: cisco.ios.ios
+    service:
+      redirect: cisco.ios.ios
     snmp_server:
       redirect: cisco.ios.ios
     static_routes:
@@ -201,6 +203,8 @@ plugin_routing:
       redirect: cisco.ios.ios_prefix_lists
     route_maps:
       redirect: cisco.ios.ios_route_maps
+    service:
+      redirect: cisco.ios.ios_service
     snmp_server:
       redirect: cisco.ios.ios_snmp_server
     static_routes:

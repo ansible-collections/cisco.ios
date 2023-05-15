@@ -64,6 +64,7 @@ Name | Description
 [cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from IOS switch.
 [cisco.ios.ios_prefix_lists](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_prefix_lists_module.rst)|Resource module to configure prefix lists.
 [cisco.ios.ios_route_maps](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_route_maps_module.rst)|Resource module to configure route maps.
+[cisco.ios.ios_service](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_service_module.rst)|Resource module to configure service.
 [cisco.ios.ios_snmp_server](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_snmp_server_module.rst)|Resource module to configure snmp server.
 [cisco.ios.ios_spanning_tree](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_spanning_tree_module.rst)|Resource module to configure Spanning Tree.
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Resource module to configure static routes.
