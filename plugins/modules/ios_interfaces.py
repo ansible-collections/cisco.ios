@@ -78,6 +78,10 @@ options:
         - full
         - half
         - auto
+      template:
+        description:
+        - IOS template name.
+        type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
