@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - ios_snmp_server - Update the module to manage correctly a lot of traps not take in count
+  - ios_snmp_server - Fixe an issue with cbgp2 to take in count correctly for bgp traps

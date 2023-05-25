@@ -33,7 +33,7 @@ class Snmp_serverFacts(object):
         self.argument_spec = Snmp_serverArgs.argument_spec
 
     def get_snmp_data(self, connection):
-        return connection.get("show running-config | section ^snmp-server")
+        return connection.get("show running-config | section ^snmp")
 
     def sort_list_dicts(self, objs):
         p_key = {
