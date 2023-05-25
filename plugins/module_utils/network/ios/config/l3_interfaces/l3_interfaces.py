@@ -121,7 +121,6 @@ class L3_interfaces(ResourceModule):
                 hacl = hacls.get(key, {})
                 if hacl.get("secondary", False) == True:
                     hacl = {}
-                # hacl is set as primary (if set as secondary it's handled in remaining items)
                 self.validate_ips(afi, want=entry, have=hacl)
 
                 if hacl:
@@ -139,8 +138,12 @@ class L3_interfaces(ResourceModule):
                 # entry is set as secondary
                 hacl = hacls.get(key, {})
                 if hacl.get("secondary", False) == False:
-                    hacl = {}
-                # hacl is set as secondary (if set as primary it's handled in remaining items)
+                    # hacl is set as primary, if wacls has no other primary entry we must keep
+                    # this entry as primary (so we'll compare entry to hacl and not
+                    # generate commands)
+                    if list(filter(lambda w: w.get("secondary", False) == False, wacls.values())):
+                        # another primary is in wacls
+                        hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
 
                 if hacl:
