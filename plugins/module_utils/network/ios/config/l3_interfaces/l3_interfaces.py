@@ -115,13 +115,47 @@ class L3_interfaces(ResourceModule):
             hacls = have.pop(afi, {})
 
             for key, entry in wacls.items():
-                self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
+                if entry.get('secondary', False) == True:
+                    continue
+                # entry is set as primary
+                hacl = hacls.get(key, {})
+                if hacl.get('secondary', False) == True:
+                    hacl = {}
+                # hacl is set as primary (if set as secondary it's handled in remaining items)
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
                 self.compare(
                     parsers=self.parsers,
                     want={afi: entry},
-                    have={afi: hacls.pop(key, {})},
+                    have={afi: hacl},
                 )
+
+            for key, entry in wacls.items():
+                if entry.get('secondary', False) == False:
+                    continue
+                # entry is set as secondary
+                hacl = hacls.get(key, {})
+                if hacl.get('secondary', False) == False:
+                    hacl = {}
+                # hacl is set as secondary (if set as primary it's handled in remaining items)
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
+                self.compare(
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacl},
+                )
+
             # remove remaining items in have for replaced
+            # these can be subnets that are no longer used
+            # or secondaries that have moved to primary
+            # or primary that has moved to secondary
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
                 self.compare(parsers=self.parsers, want={}, have={afi: entry})
