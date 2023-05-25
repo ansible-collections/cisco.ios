@@ -115,11 +115,11 @@ class L3_interfaces(ResourceModule):
             hacls = have.pop(afi, {})
 
             for key, entry in wacls.items():
-                if entry.get('secondary', False) == True:
+                if entry.get("secondary", False) == True:
                     continue
                 # entry is set as primary
                 hacl = hacls.get(key, {})
-                if hacl.get('secondary', False) == True:
+                if hacl.get("secondary", False) == True:
                     hacl = {}
                 # hacl is set as primary (if set as secondary it's handled in remaining items)
                 self.validate_ips(afi, want=entry, have=hacl)
@@ -134,11 +134,11 @@ class L3_interfaces(ResourceModule):
                 )
 
             for key, entry in wacls.items():
-                if entry.get('secondary', False) == False:
+                if entry.get("secondary", False) == False:
                     continue
                 # entry is set as secondary
                 hacl = hacls.get(key, {})
-                if hacl.get('secondary', False) == False:
+                if hacl.get("secondary", False) == False:
                     hacl = {}
                 # hacl is set as secondary (if set as primary it's handled in remaining items)
                 self.validate_ips(afi, want=entry, have=hacl)
