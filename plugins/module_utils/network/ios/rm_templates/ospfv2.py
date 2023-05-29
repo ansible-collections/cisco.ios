@@ -514,7 +514,9 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "router ospf {{ process_id }}"
             "{{ (' vrf ' + vrf ) if vrf is defined else '' }}",
             "result": {
-                "processes": {"{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"}},
+                "processes": {
+                    "{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"}
+                },
             },
             "shared": True,
         },
@@ -812,7 +814,7 @@ class Ospfv2Template(NetworkTemplate):
                                     "source": "{{ source }}",
                                     "destination": "{{ destination }}",
                                     "cost": "{{ cost }}",
-                                    "ttl_security": '{{ ttl_security }}',
+                                    "ttl_security": "{{ ttl_security }}",
                                 },
                             },
                         },
@@ -866,7 +868,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "auto_cost": {
                             "set": "{{ True if auto_cost is defined and ref_band is undefined }}",
-                            "reference_bandwidth": '{{ ref_band }}',
+                            "reference_bandwidth": "{{ ref_band }}",
                         },
                     },
                 },
