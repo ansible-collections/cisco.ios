@@ -515,7 +515,7 @@ class Ospfv2Template(NetworkTemplate):
             "{{ (' vrf ' + vrf ) if vrf is defined else '' }}",
             "result": {
                 "processes": {
-                    "{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"}
+                    "{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"},
                 },
             },
             "shared": True,
