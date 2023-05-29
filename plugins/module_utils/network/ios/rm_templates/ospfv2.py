@@ -934,13 +934,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "default_information",
             "getval": re.compile(
-                r"""\s+default-information*
-                    \s*(?P<originate>originate)*
-                    \s*(?P<always>always)*
-                    \s*(?P<metric>metric\s\d+)*
-                    \s*(?P<metric_type>metric-type\s\d+)*
-                    \s*(?P<route_map>route-map\s\S+)
-                    *$""",
+                r"""
+                \sdefault-information
+                (\s(?P<originate>originate))?
+                (\s(?P<always>always))?
+                (\smetric\s(?P<metric>\d+))?
+                (\smetric-type\s(?P<metric_type>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_default_information,
@@ -950,9 +951,9 @@ class Ospfv2Template(NetworkTemplate):
                         "default_information": {
                             "originate": "{{ True if originate is defined }}",
                             "always": "{{ True if always is defined }}",
-                            "metric": "{{ metric.split(" ")[1]|int }}",
-                            "metric_type": "{{ metric_type.split(" ")[1]|int }}",
-                            "route_map": "{{ route_map.split(" ")[1] }}",
+                            "metric": "{{ metric }}",
+                            "metric_type": "{{ metric_type }}",
+                            "route_map": "{{ route_map }}",
                         },
                     },
                 },
@@ -961,20 +962,22 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "default_metric",
             "getval": re.compile(
-                r"""\s+default-metric(?P<default_metric>\s\d+)
-                    *$""",
+                r"""
+                \sdefault-metric\s(?P<default_metric>\d+)?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "default-metric {{ default_metric }}",
-            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric| int}}"}}},
+            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric|int }}"}}},
         },
         {
             "name": "discard_route",
             "getval": re.compile(
-                r"""\s+(?P<discard_route>discard-route)*
-                    \s*(?P<external>external\s\d+)*
-                    \s*(?P<internal>internal\s\d+)
-                    *$""",
+                r"""
+                \s(?P<discard_route>discard-route)
+                (\sexternal\s(?P<external>\d+))?
+                (\sinternal\s(?P<internal>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_discard_route,
@@ -983,8 +986,8 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "discard_route": {
                             "set": "{{ True if discard_route is defined and external is undefined and internal is undefined }}",
-                            "external": "{{ external.split(" ")[1]|int }}",
-                            "internal": "{{ internal.split(" ")[1]|int }}",
+                            "external": "{{ external }}",
+                            "internal": "{{ internal }}",
                         },
                     },
                 },
@@ -993,12 +996,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distance.admin_distance",
             "getval": re.compile(
-                r"""\s+distance
-                    \s(?P<admin_dist>\S+)*
-                    \s*(?P<source>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<acl>\S+)
-                    *$""",
+                r"""
+                \sdistance\s(?P<admin_dist>\S+)?
+                (\s(?P<source>\S+))?
+                (\s(?P<wildcard>\S+))?
+                (\s(?P<acl>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_admin_distance,
@@ -1021,12 +1024,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distance.ospf",
             "getval": re.compile(
-                r"""\s+distance
-                    \sospf*
-                    \s*(?P<intra>intra-area\s\d+)*
-                    \s*(?P<inter>inter-area\s\d+)*
-                    \s*(?P<external>external\s\d+)
-                    *$""",
+                r"""
+                \sdistance\sospf
+                (\sintra-area\s(?P<intra>\d+))?
+                (\sinter-area\s(?P<inter>\d+))?
+                (\sexternal\s(?P<external>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_ospf,
@@ -1036,9 +1039,9 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "distance": {
                             "ospf": {
-                                "inter_area": "{{ inter.split(" ")[1]|int }}",
-                                "intra_area": "{{ intra.split(" ")[1]|int }}",
-                                "external": "{{ external.split(" ")[1]|int }}",
+                                "inter_area": "{{ inter }}",
+                                "intra_area": "{{ intra }}",
+                                "external": "{{ external }}",
                             },
                         },
                     },
@@ -1048,11 +1051,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.acls",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<name>\S+)*
-                    \s*(?P<dir>\S+)*
-                    \s*(?P<int_pro>\S+\s\d+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\s(?P<name>\S+))?
+                (\s(?P<dir>\S+))?
+                (\s(?P<int_pro>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_acls,
@@ -1077,12 +1081,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.prefix",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<prefix>prefix\s\S+)*
-                    \s*(?P<gateway>gateway\s\S+)*
-                    \s*(?P<dir>\S+)*
-                    \s*(?P<int_pro>\S+\s\S+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\sprefix\s(?P<prefix>\S+))?
+                (\sgateway\s(?P<gateway>\S+))?
+                (\s(?P<dir>\S+))?
+                (\s(?P<int_pro>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_prefix,
@@ -1092,8 +1097,8 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "distribute_list": {
                             "prefix": {
-                                "name": "{{ prefix.split(" ")[1] }}",
-                                "gateway_name": "{{ gateway.split(" ")[1] if prefix is defined }}",
+                                "name": "{{ prefix }}",
+                                "gateway_name": "{{ gateway if prefix is defined }}",
                                 "direction": "{{ dir if gateway is undefined }}",
                                 "interface": '{{ int_pro if dir == "in" }}',
                                 "protocol": '{{ int_pro if dir == "out" }}',
@@ -1106,10 +1111,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.route_map",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<route_map>route-map\s\S+)*
-                    \s*(?P<dir>\S+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\sroute-map\s(?P<route_map>\S+))?
+                (\s(?P<dir>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "distribute-list route-map {{ distribute_list.route_map.name }} in",
@@ -1117,7 +1123,7 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "distribute_list": {"route_map": {"name": "{{ route_map.split(" ")[1] }}"}},
+                        "distribute_list": {"route_map": {"name": "{{ route_map }}"}},
                     },
                 },
             },
@@ -1125,11 +1131,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "domain_id",
             "getval": re.compile(
-                r"""\s+domain-id
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<secondary>secondary)*
-                    \s*(?P<null>null)
-                    *$""",
+                r"""
+                \sdomain-id
+                (\s(?P<address>\S+))?
+                (\s(?P<secondary>secondary))?
+                (\s(?P<null>null))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_domain_id,
@@ -1150,9 +1157,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "domain_tag",
             "getval": re.compile(
-                r"""\s+domain-tag
-                    \s(?P<tag>\d+)
-                    *$""",
+                r"""
+                \sdomain-tag
+                (\s(?P<tag>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "domain-tag {{ domain_tag }}",
