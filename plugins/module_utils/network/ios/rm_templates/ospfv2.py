@@ -505,42 +505,27 @@ class Ospfv2Template(NetworkTemplate):
             "name": "pid",
             "getval": re.compile(
                 r"""
-                        ^router\s
-                        ospf*
-                        \s(?P<pid>\S+)
-                        \svrf
-                        \s(?P<vrf>\S+)
-                        $""",
+                ^router\sospf*
+                (\s(?P<pid>\d+))?
+                (\s(vrf\s(?P<vrf_value>\S+)))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_vrf_cmd,
+            "setval": "router ospf {{ process_id }}"
+            "{{ (' vrf ' + vrf ) if vrf is defined else '' }}",
             "result": {
-                "processes": {"{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf }}"}},
+                "processes": {"{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"}},
             },
-            "shared": True,
-        },
-        {
-            "name": "pid",
-            "getval": re.compile(
-                r"""
-                        ^router\s
-                        ospf*
-                        \s(?P<pid>\S+)
-                        $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_ospf_vrf_cmd,
-            "result": {"processes": {"{{ pid }}": {"process_id": "{{ pid|int }}"}}},
             "shared": True,
         },
         {
             "name": "adjacency",
             "getval": re.compile(
-                r"""\s+adjacency
-                    \sstagger*
-                    \s*((?P<min>\d+)|(?P<none_adj>none))*
-                    \s*(?P<max>\S+)
-                    *$""",
+                r"""
+                \sadjacency\sstagger
+                (?:\s+(?P<min>\S+|none))?
+                (\s+(?P<max>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_adjacency_cmd,
@@ -559,11 +544,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "address_family",
             "getval": re.compile(
-                r"""\s+topology
-                    \s(?P<base>base)*
-                    \s*(?P<name>\S+)*
-                    \s*(?P<tid>tid\s\d+)
-                    *$""",
+                r"""
+                \stopology
+                (\s(?P<base>base))?
+                (\s(?P<name>\S+))?
+                (\stid\s(?P<tid>\S+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_address_family_cmd,
@@ -574,7 +560,7 @@ class Ospfv2Template(NetworkTemplate):
                             "topology": {
                                 "base": "{{ True if base is defined }}",
                                 "name": "{{ name }}",
-                                "tid": "{{ tid.split(" ")[1] }}",
+                                "tid": "{{ tid }}",
                             },
                         },
                     },
@@ -584,11 +570,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.authentication",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \s*(?P<auth>authentication)*
-                    \s*(?P<md>message-digest)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<auth>authentication))?
+                (\s(?P<md>message-digest))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_authentication,
@@ -612,11 +599,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.capability",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \s*(?P<capability>capability)*
-                    \s*(?P<df>default-exclusion)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<capability>capability))?
+                (\s(?P<df>default-exclusion))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} capability default-exclusion",
@@ -637,11 +625,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.default_cost",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \sdefault-cost*
-                    \s*(?P<default_cost>\S+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                \sdefault-cost
+                (\s(?P<default_cost>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} default-cost {{ default_cost }}",
@@ -662,12 +651,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.filter_list",
             "getval": re.compile(
-                r"""\s+area
-                    \s*(?P<area_id>\S+)*
-                    \s*filter-list\sprefix*
-                    \s*(?P<name>\S+)*
-                    \s*(?P<dir>\S+)
-                    *$""",
+                r"""
+                \s+area
+                (\s(?P<area_id>\S+))?
+                \sfilter-list\sprefix
+                (\s(?P<name>\S+))?
+                (\s(?P<dir>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_filter,
@@ -688,14 +678,17 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.nssa",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \s(?P<nssa>nssa)*
-                    \s*(?P<no_redis>no-redistribution)*
-                    \s*(?P<def_origin>default-information-originate)*
-                    \s*(?P<metric>metric\s\d+)*
-                    \s*(?P<metric_type>metric-type\s\d+)*
-                    \s*(?P<no_summary>no-summary)*
-                    \s*(?P<no_ext>no-ext-capability)*$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<nssa>nssa))?
+                (\s(?P<no_redis>no-redistribution))?
+                (\s(?P<def_origin>default-information-originate))?
+                (\s(?P<metric>metric\s\d+))?
+                (\s(?P<metric_type>metric-type\s\d+))?
+                (\s(?P<no_summary>no-summary))?
+                (\s(?P<no_ext>no-ext-capability))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_nssa_translate,
@@ -729,13 +722,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.nssa.translate",
             "getval": re.compile(
-                r"""\s+area*
-                    \s*(?P<area_id>\S+)*
-                    \s*(?P<nssa>nssa)*
-                    \stranslate\stype7*
-                    \s(?P<translate_always>always)*
-                    \s* (?P<translate_supress>suppress-fa)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<nssa>nssa))?
+                \stranslate\stype7
+                (\s(?P<translate_always>always))?
+                (\s(?P<translate_supress>suppress-fa))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_nssa,
@@ -758,13 +752,15 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.ranges",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \srange
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    \s(?P<netmask>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*((?P<advertise>advertise)|(?P<not_advertise>not-advertise))*
-                    \s*(?P<cost>cost\s\d+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\srange)?
+                (\s(?P<address>\S+))?
+                (\s(?P<netmask>\S+))?
+                (\s((?P<advertise>advertise)|(?P<not_advertise>not-advertise)))?
+                (\s(cost\s(?P<cost>\d+)))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_ranges,
@@ -780,7 +776,7 @@ class Ospfv2Template(NetworkTemplate):
                                         "address": "{{ address }}",
                                         "netmask": "{{ netmask }}",
                                         "advertise": "{{ True if advertise is defined }}",
-                                        "cost": "{{ cost.split(" ")[1]|int }}",
+                                        "cost": "{{ cost }}",
                                         "not_advertise": "{{ True if not_advertise is defined }}",
                                     },
                                 ],
@@ -793,13 +789,15 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.sham_link",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \ssham-link
-                    \s(?P<source>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    \s(?P<destination>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<cost>cost\s\d+)*
-                    \s*(?P<ttl_security>ttl-security\shops\s\d+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\ssham-link)?
+                (\s(?P<source>\S+))?
+                (\s(?P<destination>\S+))?
+                (\s(cost\s(?P<cost>\d+)))?
+                (\s(ttl-security\shops\s(?P<ttl_security>\d+)))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_sham_link,
@@ -813,8 +811,8 @@ class Ospfv2Template(NetworkTemplate):
                                 "sham_link": {
                                     "source": "{{ source }}",
                                     "destination": "{{ destination }}",
-                                    "cost": "{{ cost.split(" ")[1]|int }}",
-                                    "ttl_security": '{{ ttl_security.split("hops ")[1] }}',
+                                    "cost": "{{ cost }}",
+                                    "ttl_security": '{{ ttl_security }}',
                                 },
                             },
                         },
@@ -825,11 +823,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.stub",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \s(?P<stub>stub)*
-                    \s*(?P<no_ext>no-ext-capability)*
-                    \s*(?P<no_sum>no-summary)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<stub>stub))?
+                (\s(?P<no_ext>no-ext-capability))?
+                (\s(?P<no_sum>no-summary))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_stub_link,
@@ -854,9 +854,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "auto_cost",
             "getval": re.compile(
-                r"""\s+(?P<auto_cost>auto-cost)*
-                    \s*(?P<ref_band>reference-bandwidth\s\d+)
-                    *$""",
+                r"""
+                (\s(?P<auto_cost>auto-cost))?
+                (\sreference-bandwidth\s(?P<ref_band>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_auto_cost,
@@ -865,7 +866,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "auto_cost": {
                             "set": "{{ True if auto_cost is defined and ref_band is undefined }}",
-                            "reference_bandwidth": '{{ ref_band.split(" ")[1] }}',
+                            "reference_bandwidth": '{{ ref_band }}',
                         },
                     },
                 },
@@ -874,9 +875,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "bfd",
             "getval": re.compile(
-                r"""\s+bfd*
-                    \s*(?P<bfd>all-interfaces)
-                    *$""",
+                r"""
+                \sbfd
+                (\s(?P<bfd>all-interfaces))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "bfd all-interfaces",
@@ -885,9 +887,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "capability",
             "getval": re.compile(
-                r"""\s+capability*
-                    \s*((?P<lls>lls)|(?P<opaque>opaque)|(?P<transit>transit)|(?P<vrf_lite>vrf-lite))
-                    *$""",
+                r"""
+                \scapability
+                (\s((?P<lls>lls)|(?P<opaque>opaque)|(?P<transit>transit)|(?P<vrf_lite>vrf-lite)))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_capability,
@@ -907,9 +910,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "compatible",
             "getval": re.compile(
-                r"""\s+compatible*
-                    \s*((?P<rfc1583>rfc1583)|(?P<rfc1587>rfc1587)|(?P<rfc5243>rfc5243))
-                    *$""",
+                r"""
+                \scompatible
+                (\s((?P<rfc1583>rfc1583)|(?P<rfc1587>rfc1587)|(?P<rfc5243>rfc5243)))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_compatible,
