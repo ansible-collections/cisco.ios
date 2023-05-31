@@ -1,4 +1,0 @@
----
-doc_changes:
-  - ios_interfaces - Corrected inteface names in documentation.
-  - ios_static_routes - Corrected static routes before state in documentation.

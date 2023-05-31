@@ -1,8 +1,0 @@
----
-doc_changes:
-  - ios_interfaces - Fixed module documentation and examples.
-  - ios_l2_interfaces - Fixed module documentation and examples.
-  - ios_l3_interfaces - Fixed module documentation and examples.
-  - ios_bgp_global - Fixed examples formatting.
-  - ios_bgp_address_family - Fixed examples formatting.
-  - ios_static_routes - Fixed examples formatting.

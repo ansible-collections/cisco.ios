@@ -551,6 +551,8 @@ Minor Changes
 
 - Add ios_route_maps Resource Module (https://github.com/ansible-collections/cisco.ios/pull/297).
 - Add support for ansible_network_resources key allows to fetch the available resources for a platform (https://github.com/ansible-collections/cisco.ios/pull/292).
+- ios_interfaces - Add template attribute to provide support for cisco ios templates.
+- ios_service - Create module to manage service configuration on IOS switches
 
 Security Fixes
 --------------
@@ -561,6 +563,22 @@ Bugfixes
 --------
 
 - To fix the wrong arg being passed in acls template function (https://github.com/ansible-collections/cisco.ios/pull/305).
+- ios_facts - fix calculation of memory from bytes to megabytes; grab correct output element for free memory (https://github.com/ansible-collections/cisco.ios/issues/763)
+- ospfv2 - Fixed rendering of capability command with vrf_lite.
+- ospfv3 - Fixed rendering of capability command with vrf_lite.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_address_family - Fixed examples formatting.
+- ios_bgp_global - Fixed examples formatting.
+- ios_interfaces - Corrected inteface names in documentation.
+- ios_interfaces - Fixed module documentation and examples.
+- ios_l2_interfaces - Fixed module documentation and examples.
+- ios_l3_interfaces - Fixed module documentation and examples.
+- ios_l3_interfaces - Fixed module examples, update tasks to generate address and not network interface.
+- ios_static_routes - Corrected static routes before state in documentation.
+- ios_static_routes - Fixed examples formatting.
 
 New Modules
 -----------
