@@ -1,0 +1,37 @@
+---
+dictionaryDefinitions:
+  - name: words
+    path: .config/dictionary.txt
+    addWords: true
+dictionaries:
+  - bash
+  - networking-terms
+  - python
+  - words
+  - "!aws"
+  - "!backwards-compatibility"
+  - "!cryptocurrencies"
+  - "!cpp"
+ignorePaths:
+  # All dot files in the root
+  - \.*
+  # This file
+  - cspell.config.yaml
+  # Generated rst files in the docs directory
+  - docs/*.rst
+  # The mypy configuration file
+  - mypy.ini
+  # The shared file for tool configuration
+  - pyproject.toml
+  # requirements.txt
+  - requirements.txt
+  # test-requirements.txt
+  - test-requirements.txt
+  # the bindep file
+  - bindep.txt
+  # The tox configuration file
+  - tox.ini
+
+languageSettings:
+  - languageId: python
+    allowCompoundWords: false
