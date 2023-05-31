@@ -2,15 +2,6 @@
 line-length = 100
 
 [tool.pytest.ini_options]
-addopts = [
-  "--integration-tests-path=tests/integration/targets",
-  "-vvv",
-  "-n",
-  "2",
-  "--log-level",
-  "WARNING",
-  "--color",
-  "yes"
-]
+addopts = ["-vvv", "-n", "2", "--log-level", "WARNING", "--color", "yes"]
 testpaths = ["tests"]
 filterwarnings = ['ignore:AnsibleCollectionFinder has already been configured']
