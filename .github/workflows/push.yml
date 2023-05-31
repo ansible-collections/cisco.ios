@@ -1,3 +1,4 @@
+---
 # push workflow is shared and expected to perform actions after a merge happens
 # on a maintenance branch (default or release). For example updating the
 # draft release-notes.

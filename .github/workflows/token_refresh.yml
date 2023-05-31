@@ -1,3 +1,4 @@
+---
 name: refresh_automation_hub_token
 on:
   schedule:
