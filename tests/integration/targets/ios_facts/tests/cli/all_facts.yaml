@@ -46,6 +46,7 @@
       - snmp_server
       - prefix_lists
       - ntp_global
+      - service
       - hostname
 
 - name: Collect list of available network resources for IOS

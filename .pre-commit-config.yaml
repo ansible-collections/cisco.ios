@@ -3,7 +3,7 @@ repos:
   - repo: https://github.com/ansible-network/collection_prep
     rev: 1.1.1
     hooks:
-      - id: autoversion
+      # - id: autoversion # removed as being handled by GHA push and release drafter
       - id: update-docs
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -26,20 +26,6 @@ repos:
     rev: "v3.0.0-alpha.9-for-vscode"
     hooks:
       - id: prettier
-        # Original hook implementation is flaky due to *several* bugs described
-        # in https://github.com/prettier/prettier/issues/12364
-        # a) CI=1 needed to avoid incomplete output
-        # b) two executions are needed because --list-different works correctly
-        # only when run with --check as with --write the output will also
-        # include other entries and logging level cannot be used to keep only
-        # modified files listed (any file is listed using the log level, regardless if
-        # is modified or not).
-        # c) We avoid letting pre-commit pass each filename in order to avoid
-        # running multiple instances in parallel. This also ensures that running
-        # prettier from the command line behaves identically with the pre-commit
-        # one. No real performance downsides.
-        # d) exit with the return code from list-different (0=none, 1=some)
-        # rather than the write (0=successfully rewrote files). pre-commit.ci
         entry: env CI=1 bash -c "prettier --list-different . || ec=$? && prettier --loglevel=error --write . && exit $ec"
         pass_filenames: false
         args: []
@@ -52,6 +38,7 @@ repos:
     hooks:
       - id: isort
         name: Sort import statements using isort
+        args: ["--filter-files"]
 
   - repo: https://github.com/psf/black
     rev: 23.3.0
