@@ -1,3 +1,0 @@
----
-doc_changes:
-  - ios_l3_interfaces - Fixed module examples, update tasks to generate address and not network interface.
