@@ -686,8 +686,8 @@ class Ospfv2Template(NetworkTemplate):
                 (\s(?P<nssa>nssa))?
                 (\s(?P<no_redis>no-redistribution))?
                 (\s(?P<def_origin>default-information-originate))?
-                (\s(?P<metric>metric\s\d+))?
-                (\s(?P<metric_type>metric-type\s\d+))?
+                (\smetric\s(?P<metric>\d+))?
+                (\smetric-type\s(?P<metric_type>\d+))?
                 (\s(?P<no_summary>no-summary))?
                 (\s(?P<no_ext>no-ext-capability))?
                 $""",
@@ -705,8 +705,8 @@ class Ospfv2Template(NetworkTemplate):
                                     "set": "{{ True if nssa is defined and def_origin is undefined and "
                                     "no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
                                     "default_information_originate": {
-                                        "metric": "{{ metric.split(" ")[1]|int }}",
-                                        "metric_type": "{{ metric_type.split(" ")[1]|int }}",
+                                        "metric": "{{ metric }}",
+                                        "metric_type": "{{ metric_type }}",
                                         "nssa_only": "{{ True if nssa_only is defined }}",
                                     },
                                     "no_ext_capability": "{{ True if no_ext is defined }}",
