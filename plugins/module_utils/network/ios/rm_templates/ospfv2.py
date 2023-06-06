@@ -1559,12 +1559,12 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "passive_interfaces",
+            "name": "passive_interfaces.interface",
             "getval": re.compile(
-                r"""\s*(?P<no>no)*
-                    \s*passive-interface*
-                    \s*(?P<interface>\S+\s\S+|\S+)
-                    *$""",
+                r"""(\s(?P<no>no))?
+                    \spassive-interface
+                    \s(?P<interface>\S+)
+                    $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_passive_interfaces,
@@ -1572,9 +1572,8 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "passive_interfaces": {
-                            "default": "{{ True if 'default' in interface }}",
                             "interface": {
-                                "set_interface": "{% if no is defined %}{{ False }}{% elif 'default' not in interface %}{{ True }}{% endif %}",
+                                "set_interface": "{{ not not no }}",
                                 "name": ["{{ interface if 'default' not in interface }}"],
                             },
                         },
@@ -1582,16 +1581,24 @@ class Ospfv2Template(NetworkTemplate):
                 },
             },
         },
-        {
-            "name": "passive_interface",
+                {
+            "name": "passive_interfaces.default",
             "getval": re.compile(
-                r"""\s+passive-interface
-                    \s(?P<interface>\S+\s\S+)
-                    *$""",
+                r"""\spassive-interface
+                    \s(?P<default>default)
+                    $""",
                 re.VERBOSE,
             ),
-            "setval": "passive-interface {{ passive_interface }}",
-            "result": {"processes": {"{{ pid }}": {"passive_interface": "{{ interface }}"}}},
+            "setval": "passive-interface default",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "passive_interfaces": {
+                            "default": "{{ True if default in defined }}",
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "prefix_suppression",

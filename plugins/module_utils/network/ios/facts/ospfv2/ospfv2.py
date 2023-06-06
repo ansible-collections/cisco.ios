@@ -37,6 +37,9 @@ class Ospfv2Facts(object):
     def get_ospfv2_data(self, connection):
         return connection.get("show running-config | section ^router ospf")
 
+    def dict_to_list(self, dict_to_change):
+        pass
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for ospfv2
         :param connection: the device connection
@@ -45,42 +48,28 @@ class Ospfv2Facts(object):
         :rtype: dictionary
         :returns: facts
         """
+        facts = {}        
+        
         if not data:
             data = self.get_ospfv2_data(connection)
 
-        ipv4 = {"processes": []}
-        rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=Ospfv2Template())
-        current = rmmod.parse()
+        output = {"processes": []}
+        ospfv2_parser_obj = NetworkTemplate(lines=data.splitlines(), tmplt=Ospfv2Template())
+        ospf_parsed = ospfv2_parser_obj.parse()
 
-        # convert some of the dicts to lists
-        for key, sortv in [("processes", "process_id")]:
-            if key in current and current[key]:
-                current[key] = current[key].values()
-                current[key] = sorted(current[key], key=lambda k, sk=sortv: k[sk])
+        # Convert dict to list
+        ospf_parsed["processes"] = ospf_parsed["processes"].values()
 
-        for process in current.get("processes", []):
-            if "passive_interfaces" in process and process["passive_interfaces"].get("default"):
-                if process["passive_interfaces"].get("interface"):
-                    temp = []
-                    for each in process["passive_interfaces"]["interface"]["name"]:
-                        if each:
-                            temp.append(each)
-                    process["passive_interfaces"]["interface"]["name"] = temp
+        # converts areas in each process to list
+        for process in ospf_parsed.get("processes", []):
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
-                process["areas"] = sorted(process["areas"], key=lambda k, sk="area_id": k[sk])
-                for area in process["areas"]:
-                    if "filters" in area:
-                        area["filters"].sort()
-            ipv4["processes"].append(process)
+            output["processes"].append(process)
 
         ansible_facts["ansible_network_resources"].pop("ospfv2", None)
-        facts = {}
-        if current:
-            params = utils.validate_config(self.argument_spec, {"config": ipv4})
-            params = utils.remove_empties(params)
+        params = utils.validate_config(self.argument_spec, {"config": output})
+        params = utils.remove_empties(params)
+        facts["ospfv2"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
-            facts["ospfv2"] = params["config"]
-
-            ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
