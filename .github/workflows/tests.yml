@@ -1,5 +1,5 @@
 ---
-name: Test collection
+name: test_collection
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
