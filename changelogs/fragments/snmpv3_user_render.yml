@@ -1,3 +1,0 @@
----
-bugfixes:
-  - snmp_server - update module to get snmp_server user configuration.
