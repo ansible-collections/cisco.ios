@@ -33,7 +33,21 @@ class Snmp_serverFacts(object):
         self.argument_spec = Snmp_serverArgs.argument_spec
 
     def get_snmp_data(self, connection):
-        return connection.get("show running-config | section ^snmp-server")
+        _get_snmp_data = connection.get("show running-config | section ^snmp-server")
+        return _get_snmp_data
+
+    def get_snmpv3_user_data(self, connection):
+        """get snmpv3 user data from the device
+
+        :param connection: the device connection
+
+        :rtype: string
+        :returns: snmpv3 user data
+
+        Note: The seperate method is needed because the snmpv3 user data is not returned within the snmp-server config
+        """
+        _get_snmpv3_user = connection.get("show snmp user")
+        return _get_snmpv3_user
 
     def sort_list_dicts(self, objs):
         p_key = {
@@ -57,7 +71,33 @@ class Snmp_serverFacts(object):
                     element["traps"] = list(element.get("traps").split())
             return hosts
 
-    def populate_facts(self, connection, ansible_facts, data=None):
+    def get_snmpv3_user_facts(self, snmpv3_user):
+        """Parse the snmpv3_user data and return a list of users
+
+        :param snmpv3_user: the snmpv3_user data which is a string
+
+        :rtype: list
+        :returns: list of users
+        """
+        user_sets = snmpv3_user.split("User ")
+        user_list = []
+        for user_set in user_sets:
+            one_set = {}
+            lines = user_set.splitlines()
+            for line in lines:
+                if line.startswith("name"):
+                    one_set["username"] = line.split(": ")[1]
+                if line.startswith("Group-name:"):
+                    one_set["group"] = line.split(": ")[1]
+                if "IPv6 access-list:" in line:
+                    one_set["acl_v6"] = line.split(": ")[-1]
+                if "active\taccess-list:" in line:
+                    one_set["acl_v4"] = line.split(": ")[-1]
+            if len(one_set):
+                user_list.append(one_set)
+        return user_list
+
+    def populate_facts(self, connection, ansible_facts, data=None, snmpv3_user=None):
         """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
@@ -73,11 +113,21 @@ class Snmp_serverFacts(object):
 
         if not data:
             data = self.get_snmp_data(connection)
+        if not snmpv3_user:
+            snmpv3_user = self.get_snmpv3_user_data(connection)
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
+        # parse snmpv3_user data using the get_snmpv3_user_facts method
+        snmp_user_data = self.get_snmpv3_user_facts(snmpv3_user)
         objs = snmp_server_parser.parse()
 
+        # add snmpv3_user data to the objs dictionary
+        if snmp_user_data:
+            if objs.get("users") is None:
+                objs["users"] = snmp_user_data
+            else:
+                objs["users"] = objs["users"] + snmp_user_data
         if objs:
             self.host_traps_string_to_list(objs.get("hosts"))
             self.sort_list_dicts(objs)
