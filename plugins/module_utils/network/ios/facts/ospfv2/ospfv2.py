@@ -48,8 +48,8 @@ class Ospfv2Facts(object):
         :rtype: dictionary
         :returns: facts
         """
-        facts = {}        
-        
+        facts = {}
+
         if not data:
             data = self.get_ospfv2_data(connection)
 

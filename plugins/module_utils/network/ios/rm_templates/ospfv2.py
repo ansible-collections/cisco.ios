@@ -1581,7 +1581,7 @@ class Ospfv2Template(NetworkTemplate):
                 },
             },
         },
-                {
+        {
             "name": "passive_interfaces.default",
             "getval": re.compile(
                 r"""\spassive-interface
