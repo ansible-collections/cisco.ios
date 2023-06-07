@@ -19,61 +19,62 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_logging
 author: Trishna Guha (@trishnaguha)
 short_description: (deprecated, removed after 2023-06-01) Manage logging on network devices
 description:
-- This module provides declarative management of logging on Cisco Ios devices.
+  - This module provides declarative management of logging on Cisco Ios devices.
 version_added: 1.0.0
 deprecated:
   alternative: ios_logging_global
   why: Newer and updated modules released with more functionality.
-  removed_at_date: '2023-06-01'
+  removed_at_date: "2023-06-01"
 notes:
-- Tested against IOS 15.6
-- The 'Default System Message Logging Configuration' of the ios device
-  like facility Local7 or logging on is not subjected to idempotency causes
+  - Tested against IOS 15.6
+  - The 'Default System Message Logging Configuration' of the ios device
+    like facility Local7 or logging on is not subjected to idempotency causes
 options:
   dest:
     description:
-    - Destination of the logs.
-    - On dest has to be quoted as 'on' or else pyyaml will convert
-      to True before it gets to Ansible.
+      - Destination of the logs.
+      - On dest has to be quoted as 'on' or else pyyaml will convert
+        to True before it gets to Ansible.
     choices:
-    - 'on'
-    - host
-    - console
-    - monitor
-    - buffered
-    - trap
+      - "on"
+      - host
+      - console
+      - monitor
+      - buffered
+      - trap
     type: str
   name:
     description:
-    - The hostname or IP address of the destination.
-    - Required when I(dest=host).
+      - The hostname or IP address of the destination.
+      - Required when I(dest=host).
     type: str
   size:
     description:
-    - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
+      - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
     type: int
   facility:
     description:
-    - Set logging facility.
+      - Set logging facility.
     type: str
   level:
     description:
-    - Set logging severity levels.
+      - Set logging severity levels.
     default: debugging
     choices:
-    - emergencies
-    - alerts
-    - critical
-    - errors
-    - warnings
-    - notifications
-    - informational
-    - debugging
+      - emergencies
+      - alerts
+      - critical
+      - errors
+      - warnings
+      - notifications
+      - informational
+      - debugging
     type: str
   aggregate:
     description: List of logging definitions.
@@ -82,61 +83,62 @@ options:
     suboptions:
       dest:
         description:
-        - Destination of the logs.
-        - On dest has to be quoted as 'on' or else pyyaml will convert
-          to True before it gets to Ansible.
+          - Destination of the logs.
+          - On dest has to be quoted as 'on' or else pyyaml will convert
+            to True before it gets to Ansible.
         choices:
-        - 'on'
-        - host
-        - console
-        - monitor
-        - buffered
-        - trap
+          - "on"
+          - host
+          - console
+          - monitor
+          - buffered
+          - trap
         type: str
       name:
         description:
-        - The hostname or IP address of the destination.
-        - Required when I(dest=host).
+          - The hostname or IP address of the destination.
+          - Required when I(dest=host).
         type: str
       size:
         description:
-        - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
+          - Size of buffer. The acceptable value is in range from 4096 to 4294967295 bytes.
         type: int
       facility:
         description:
-        - Set logging facility.
+          - Set logging facility.
         type: str
       level:
         description:
-        - Set logging severity levels.
+          - Set logging severity levels.
         type: str
         choices:
-        - emergencies
-        - alerts
-        - critical
-        - errors
-        - warnings
-        - notifications
-        - informational
-        - debugging
+          - emergencies
+          - alerts
+          - critical
+          - errors
+          - warnings
+          - notifications
+          - informational
+          - debugging
       state:
         description:
-        - State of the logging configuration.
+          - State of the logging configuration.
         choices:
-        - present
-        - absent
+          - present
+          - absent
         type: str
   state:
     description:
-    - State of the logging configuration.
+      - State of the logging configuration.
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 """
+
 EXAMPLES = """
 - name: Configure host logging
   cisco.ios.ios_logging:
@@ -169,16 +171,17 @@ EXAMPLES = """
 - name: Configure logging using aggregate
   cisco.ios.ios_logging:
     aggregate:
-    - {dest: console, level: notifications}
-    - {dest: buffered, size: 9000}
+      - { dest: console, level: notifications }
+      - { dest: buffered, size: 9000 }
 
 - name: Remove logging using aggregate
   cisco.ios.ios_logging:
     aggregate:
-    - {dest: console, level: notifications}
-    - {dest: buffered, size: 9000}
+      - { dest: console, level: notifications }
+      - { dest: buffered, size: 9000 }
     state: absent
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

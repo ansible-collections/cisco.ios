@@ -36,7 +36,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ospfv2
 short_description: Resource module to configure OSPFv2.
-description: This module configures and manages the Open Shortest Path First (OSPF)
+description:
+  This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -149,7 +150,7 @@ options:
                   direction:
                     description: The direction to apply on the filter networks sent to and from this area.
                     type: str
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                     required: true
               nssa:
                 description: Specify a NSSA area
@@ -189,7 +190,7 @@ options:
                       - Always translate LSAs on this ABR
                       - Suppress forwarding address in translated LSAs
                     type: str
-                    choices: ['always', 'suppress-fa']
+                    choices: ["always", "suppress-fa"]
               ranges:
                 description: Summarize routes matching address/mask (border routers only)
                 type: list
@@ -391,7 +392,7 @@ options:
                     description: Filter incoming and outgoing routing updates.
                     type: str
                     required: true
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                   interface:
                     description:
                       - Interface configuration (GigabitEthernet A/B)
@@ -417,7 +418,7 @@ options:
                     description: Filter incoming and outgoing routing updates.
                     type: str
                     required: true
-                    choices: ['in', 'out']
+                    choices: ["in", "out"]
                   interface:
                     description:
                       - Interface configuration (GigabitEthernet A/B)
@@ -450,7 +451,7 @@ options:
                   secondary:
                     description: Secondary Domain-ID
                     type: bool
-              'null':
+              "null":
                 description: Null Domain-ID
                 type: bool
           domain_tag:
@@ -952,18 +953,17 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - parsed
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - parsed
+      - rendered
     default: merged
-
 """
-EXAMPLES = """
 
+EXAMPLES = """
 # Using deleted
 
 # Before state:
@@ -991,9 +991,9 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-      - process_id: 1
-      - process_id: 200
-        vrf: blue
+        - process_id: 1
+        - process_id: 200
+          vrf: blue
     state: deleted
 
 # Commands Fired:
@@ -1066,62 +1066,62 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          - address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            area: 5
-        default_information:
-          originate: true
-        passive_interfaces:
-          default: true
-          interface:
-            set_interface: False
-            name:
-              - GigabitEthernet0/1
-              - GigabitEthernet0/2
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          areas:
+            - area_id: "5"
+              capability: true
+              authentication:
+                enable: true
+            - area_id: "10"
+              authentication:
+                message_digest: true
+              nssa:
+                default_information_originate:
+                  metric: 10
+                translate: suppress-fa
+              default_cost: 10
+              filter_list:
+                - name: test_prefix_in
+                  direction: in
+                - name: test_prefix_out
+                  direction: out
+          network:
+            - address: 198.51.100.0
+              wildcard_bits: 0.0.0.255
+              area: 5
+          default_information:
+            originate: true
+          passive_interfaces:
+            default: true
+            interface:
+              set_interface: False
+              name:
+                - GigabitEthernet0/1
+                - GigabitEthernet0/2
+        - process_id: 200
+          vrf: blue
+          domain_id:
+            ip_address:
+              address: 192.0.3.1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
+          areas:
+            - area_id: "10"
+              capability: true
+          distribute_list:
+            acls:
+              - name: 10
+                direction: out
+              - name: 123
+                direction: in
     state: merged
 
 # Commands Fired:
@@ -1202,38 +1202,38 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+        - process_id: 200
+          vrf: blue
+          domain_id:
+            ip_address:
+              address: 192.0.4.1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 200
+          maximum_paths: 15
+          ttl_security:
+            hops: 7
+          areas:
+            - area_id: "10"
+              default_cost: 10
+              authentication:
+                message_digest: true
+        - process_id: 100
+          vrf: ospf_vrf
+          domain_id:
+            ip_address:
+              address: 192.0.5.1
+          auto_cost:
+            reference_bandwidth: 5
+          areas:
+            - area_id: "5"
+              authentication:
+                message_digest: true
+              nssa:
+                default_information_originate:
+                  metric: 10
+                translate: suppress-fa
     state: overridden
 
 # Commands Fired:
@@ -1305,38 +1305,38 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.4.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 200
-        maximum_paths: 15
-        ttl_security:
-          hops: 7
-        areas:
-        - area_id: '10'
-          default_cost: 10
-          authentication:
-            message_digest: true
-      - process_id: 100
-        vrf: ospf_vrf
-        domain_id:
-          ip_address:
-            address: 192.0.5.1
-        auto_cost:
-          reference_bandwidth: 5
-        areas:
-        - area_id: '5'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
+        - process_id: 200
+          vrf: blue
+          domain_id:
+            ip_address:
+              address: 192.0.4.1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 200
+          maximum_paths: 15
+          ttl_security:
+            hops: 7
+          areas:
+            - area_id: "10"
+              default_cost: 10
+              authentication:
+                message_digest: true
+        - process_id: 100
+          vrf: ospf_vrf
+          domain_id:
+            ip_address:
+              address: 192.0.5.1
+          auto_cost:
+            reference_bandwidth: 5
+          areas:
+            - area_id: "5"
+              authentication:
+                message_digest: true
+              nssa:
+                default_information_originate:
+                  metric: 10
+                translate: suppress-fa
     state: replaced
 
 # Commands Fired:
@@ -1538,55 +1538,55 @@ EXAMPLES = """
   cisco.ios.ios_ospfv2:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        areas:
-        - area_id: '5'
-          capability: true
-          authentication:
-            enable: true
-        - area_id: '10'
-          authentication:
-            message_digest: true
-          nssa:
-            default_information_originate:
-              metric: 10
-            translate: suppress-fa
-          default_cost: 10
-          filter_list:
-          - name: test_prefix_in
-            direction: in
-          - name: test_prefix_out
-            direction: out
-        network:
-          - address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            area: 5
-        default_information:
-          originate: true
-      - process_id: 200
-        vrf: blue
-        domain_id:
-          ip_address:
-            address: 192.0.3.1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
-        areas:
-        - area_id: '10'
-          capability: true
-        distribute_list:
-          acls:
-          - name: 10
-            direction: out
-          - name: 123
-            direction: in
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          areas:
+            - area_id: "5"
+              capability: true
+              authentication:
+                enable: true
+            - area_id: "10"
+              authentication:
+                message_digest: true
+              nssa:
+                default_information_originate:
+                  metric: 10
+                translate: suppress-fa
+              default_cost: 10
+              filter_list:
+                - name: test_prefix_in
+                  direction: in
+                - name: test_prefix_out
+                  direction: out
+          network:
+            - address: 198.51.100.0
+              wildcard_bits: 0.0.0.255
+              area: 5
+          default_information:
+            originate: true
+        - process_id: 200
+          vrf: blue
+          domain_id:
+            ip_address:
+              address: 192.0.3.1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
+          areas:
+            - area_id: "10"
+              capability: true
+          distribute_list:
+            acls:
+              - name: 10
+                direction: out
+              - name: 123
+                direction: in
     state: rendered
 
 # Module Execution Result:
@@ -1663,8 +1663,8 @@ EXAMPLES = """
 #             }
 #         ]
 #     }
-
 """
+
 RETURN = """
 before:
   description: The configuration prior to the model invocation.

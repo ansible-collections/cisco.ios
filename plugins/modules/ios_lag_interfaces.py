@@ -16,12 +16,13 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lag_interfaces
 short_description: Resource module to configure LAG interfaces.
-description: This module manages properties of Link Aggregation Group on Cisco IOS
+description:
+  This module manages properties of Link Aggregation Group on Cisco IOS
   devices.
 version_added: 1.0.0
 author:
-- Sagar Paul (@KB-perByte)
-- Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -34,37 +35,37 @@ options:
     suboptions:
       name:
         description:
-        - ID of Ethernet Channel of interfaces.
-        - Refer to vendor documentation for valid port values.
+          - ID of Ethernet Channel of interfaces.
+          - Refer to vendor documentation for valid port values.
         type: str
         required: true
       members:
         description:
-        - Interface options for the link aggregation group.
+          - Interface options for the link aggregation group.
         type: list
         elements: dict
         suboptions:
           member:
             description:
-            - Interface member of the link aggregation group.
+              - Interface member of the link aggregation group.
             type: str
           mode:
             description:
-            - Etherchannel Mode of the interface for link aggregation.
-            - On mode has to be quoted as 'on' or else pyyaml will convert
-              to True before it gets to Ansible.
+              - Etherchannel Mode of the interface for link aggregation.
+              - On mode has to be quoted as 'on' or else pyyaml will convert
+                to True before it gets to Ansible.
             type: str
             choices:
-            - auto
-            - 'on'
-            - desirable
-            - active
-            - passive
+              - auto
+              - "on"
+              - desirable
+              - active
+              - passive
           link:
             description:
-            - Assign a link identifier used for load-balancing.
-            - Refer to vendor documentation for valid values.
-            - NOTE, parameter only supported on Cisco IOS XE platform.
+              - Assign a link identifier used for load-balancing.
+              - Refer to vendor documentation for valid values.
+              - NOTE, parameter only supported on Cisco IOS XE platform.
             type: int
   running_config:
     description:
@@ -95,13 +96,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - parsed
-    - gathered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - parsed
+      - gathered
     default: merged
 """
 
@@ -125,20 +126,20 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: Port-channel10
-      members:
-      - member: GigabitEthernet0/1
-        mode: auto
-      - member: GigabitEthernet0/2
-        mode: auto
-    - name: Port-channel20
-      members:
-      - member: GigabitEthernet0/3
-        mode: on
-    - name: Port-channel30
-      members:
-      - member: GigabitEthernet0/4
-        mode: active
+      - name: Port-channel10
+        members:
+          - member: GigabitEthernet0/1
+            mode: auto
+          - member: GigabitEthernet0/2
+            mode: auto
+      - name: Port-channel20
+        members:
+          - member: GigabitEthernet0/3
+            mode: on
+      - name: Port-channel30
+        members:
+          - member: GigabitEthernet0/4
+            mode: active
     state: merged
 
 # Task Output:
@@ -199,12 +200,12 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: Port-channel20
-      members:
-      - member: GigabitEthernet0/2
-        mode: auto
-      - member: GigabitEthernet0/3
-        mode: auto
+      - name: Port-channel20
+        members:
+          - member: GigabitEthernet0/2
+            mode: auto
+          - member: GigabitEthernet0/3
+            mode: auto
     state: overridden
 
 # Task Output:
@@ -265,10 +266,10 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: Port-channel30
-      members:
-      - member: GigabitEthernet0/3
-        mode: auto
+      - name: Port-channel30
+        members:
+          - member: GigabitEthernet0/3
+            mode: auto
     state: replaced
 
 # Task Output:
@@ -324,8 +325,8 @@ EXAMPLES = """
 - name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
   cisco.ios.ios_lag_interfaces:
     config:
-    - name: Port-channel10
-    - name: Port-channel20
+      - name: Port-channel10
+      - name: Port-channel20
     state: deleted
 
 # Task Output:

@@ -15,8 +15,9 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_l2_interfaces
-short_description: Resource Module to configure L2 interfaces.
-description: This module provides declarative management of Layer-2 interface on Cisco
+short_description: Resource module to configure L2 interfaces.
+description:
+  This module provides declarative management of Layer-2 interface on Cisco
   IOS devices.
 version_added: 1.0.0
 author:
@@ -36,95 +37,95 @@ options:
     suboptions:
       name:
         description:
-        - Full name of the interface excluding any logical unit
-          number, i.e GigabitEthernet0/1.
+          - Full name of the interface excluding any logical unit
+            number, i.e GigabitEthernet0/1.
         type: str
         required: true
       access:
         description:
-        - Switchport mode access command to configure the interface as a layer 2 access.
+          - Switchport mode access command to configure the interface as a layer 2 access.
         type: dict
         suboptions:
           vlan:
             description:
-            - Configure given VLAN in access port. It's used as the access VLAN ID.
+              - Configure given VLAN in access port. It's used as the access VLAN ID.
             type: int
           vlan_name:
             description:
-            - Set VLAN when interface is in access mode.
+              - Set VLAN when interface is in access mode.
             type: str
       voice:
         description:
-        - Switchport mode voice command to configure the interface with a voice vlan.
+          - Switchport mode voice command to configure the interface with a voice vlan.
         type: dict
         suboptions:
           vlan:
             description:
-            - Configure given voice VLAN on access port. It's used as the voice VLAN
-              ID.
+              - Configure given voice VLAN on access port. It's used as the voice VLAN
+                ID.
             type: int
           vlan_tag:
             description:
-            - Set VLAN Tag.
-              dot1p (Priority tagged on PVID)
-              none (Don't tell telephone about voice vlan)
-              untagged (Untagged on PVID)
+              - Set VLAN Tag.
+                dot1p (Priority tagged on PVID)
+                none (Don't tell telephone about voice vlan)
+                untagged (Untagged on PVID)
             choices:
-            - dot1p
-            - none
-            - untagged
+              - dot1p
+              - none
+              - untagged
             type: str
           vlan_name:
             description:
-            - Set VLAN when interface is in access mode.
+              - Set VLAN when interface is in access mode.
             type: str
       trunk:
         description:
-        - Switchport mode trunk command to configure the interface as a Layer 2 trunk.
-          Note The encapsulation is always set to dot1q.
+          - Switchport mode trunk command to configure the interface as a Layer 2 trunk.
+            Note The encapsulation is always set to dot1q.
         type: dict
         suboptions:
           allowed_vlans:
             description:
-            - List of allowed VLANs in a given trunk port. These are the only VLANs
-              that will be configured on the trunk.
+              - List of allowed VLANs in a given trunk port. These are the only VLANs
+                that will be configured on the trunk.
             type: list
             elements: str
           native_vlan:
             description:
-            - Native VLAN to be configured in trunk port. It's used as the trunk native
-              VLAN ID.
+              - Native VLAN to be configured in trunk port. It's used as the trunk native
+                VLAN ID.
             type: int
           encapsulation:
             description:
-            - Trunking encapsulation when interface is in trunking mode.
+              - Trunking encapsulation when interface is in trunking mode.
             choices:
-            - dot1q
-            - isl
-            - negotiate
+              - dot1q
+              - isl
+              - negotiate
             type: str
           pruning_vlans:
             description:
-            - Pruning VLAN to be configured in trunk port. It's used as the trunk
-              pruning VLAN ID.
+              - Pruning VLAN to be configured in trunk port. It's used as the trunk
+                pruning VLAN ID.
             type: list
             elements: str
       mode:
         description:
-        - Mode in which interface needs to be configured.
-        - An interface whose trunk encapsulation is "Auto" can not be configured to
-          "trunk" mode.
+          - Mode in which interface needs to be configured.
+          - An interface whose trunk encapsulation is "Auto" can not be configured to
+            "trunk" mode.
         type: str
         choices:
-        - access
-        - trunk
-        - dot1q_tunnel
-        - dynamic
-        - dynamic_auto
-        - dynamic_desirable
-        - private_vlan_host
-        - private_vlan_promiscuous
-        - private_vlan_trunk
+          - access
+          - trunk
+          - dot1q_tunnel
+          - dynamic
+          - dynamic_auto
+          - dynamic_desirable
+          - private_vlan_host
+          - private_vlan_promiscuous
+          - private_vlan_trunk
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -136,13 +137,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -183,19 +184,19 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_l2_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      mode: access
-      access:
-        vlan: 10
-      voice:
-        vlan: 40
-    - name: GigabitEthernet0/2
-      mode: trunk
-      trunk:
-        allowed_vlans: 10-20,40
-        native_vlan: 20
-        pruning_vlans: 10,20
-        encapsulation: dot1q
+      - name: GigabitEthernet0/1
+        mode: access
+        access:
+          vlan: 10
+        voice:
+          vlan: 40
+      - name: GigabitEthernet0/2
+        mode: trunk
+        trunk:
+          allowed_vlans: 10-20,40
+          native_vlan: 20
+          pruning_vlans: 10,20
+          encapsulation: dot1q
     state: merged
 
 # Task Output
@@ -275,12 +276,12 @@ EXAMPLES = """
 - name: Replaces device configuration with provided configuration
   cisco.ios.ios_l2_interfaces:
     config:
-    - name: GigabitEthernet0/2
-      trunk:
-        allowed_vlans: 20-25,40
-        native_vlan: 20
-        pruning_vlans: 10
-        encapsulation: isl
+      - name: GigabitEthernet0/2
+        trunk:
+          allowed_vlans: 20-25,40
+          native_vlan: 20
+          pruning_vlans: 10
+          encapsulation: isl
     state: replaced
 
 # Task Output
@@ -351,11 +352,11 @@ EXAMPLES = """
 - name: Override device configuration of all l2 interfaces with provided configuration
   cisco.ios.ios_l2_interfaces:
     config:
-    - name: GigabitEthernet0/2
-      access:
-        vlan: 20
-      voice:
-        vlan: 40
+      - name: GigabitEthernet0/2
+        access:
+          vlan: 20
+        voice:
+          vlan: 40
     state: overridden
 
 # Task Output
@@ -425,7 +426,7 @@ EXAMPLES = """
 - name: Delete IOS L2 interfaces as in given arguments
   cisco.ios.ios_l2_interfaces:
     config:
-    - name: GigabitEthernet0/1
+      - name: GigabitEthernet0/1
     state: deleted
 
 # Task Output
@@ -481,7 +482,6 @@ EXAMPLES = """
 #  switchport trunk pruning vlan 10
 #  media-type rj45
 #  negotiation auto
-
 
 # Using deleted without config - delete all configuration
 
@@ -601,15 +601,15 @@ EXAMPLES = """
 - name: Render the commands for provided  configuration
   cisco.ios.ios_l2_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      access:
-        vlan: 30
-    - name: GigabitEthernet0/2
-      trunk:
-        allowed_vlans: 10-20,40
-        native_vlan: 20
-        pruning_vlans: 10,20
-        encapsulation: dot1q
+      - name: GigabitEthernet0/1
+        access:
+          vlan: 30
+      - name: GigabitEthernet0/2
+        trunk:
+          allowed_vlans: 10-20,40
+          native_vlan: 20
+          pruning_vlans: 10,20
+          encapsulation: dot1q
     state: rendered
 
 # Task Output
