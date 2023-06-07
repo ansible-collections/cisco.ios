@@ -33,10 +33,6 @@ class Ospfv2(ResourceModule):
     The ios_ospfv2 class
     """
 
-    gather_subset = ["!all", "!min"]
-
-    gather_network_resources = ["ospfv2"]
-
     def __init__(self, module):
         super(Ospfv2, self).__init__(
             empty_fact_val={},
@@ -52,23 +48,28 @@ class Ospfv2(ResourceModule):
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        self.gen_config()
-        self.run_commands()
+        if self.state not in ["parsed", "gathered"]:
+            self.generate_commands()
+            self.run_commands()
         return self.result
 
-    def gen_config(self):
-        """Select the appropriate function based on the state provided
+    def generate_commands(self):
+        """Generate the configuration commands necessary to generate based
+        on the want and have and desired state
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
+
         if self.want:
             wantd = {}
             for entry in self.want.get("processes", []):
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
         else:
             wantd = {}
+        
+
         if self.have:
             haved = {}
             for entry in self.have.get("processes", []):
@@ -105,6 +106,7 @@ class Ospfv2(ResourceModule):
     def _compare(self, want, have):
         parsers = [
             "adjacency",
+            "adjacency.none",
             "address_family",
             "auto_cost",
             "bfd",
@@ -199,7 +201,7 @@ class Ospfv2(ResourceModule):
                 self.addcmd(entry, "area.filter_list", True)
 
     def _passive_interfaces_compare(self, want, have):
-        parsers = ["passive_interfaces"]
+        parsers = ["passive_interfaces.interface", "passive_interfaces.default"]
         h_pi = None
         for k, v in iteritems(want["passive_interfaces"]):
             h_pi = have.get("passive_interfaces", [])

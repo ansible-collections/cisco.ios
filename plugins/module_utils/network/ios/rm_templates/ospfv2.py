@@ -505,8 +505,8 @@ class Ospfv2Template(NetworkTemplate):
             "name": "pid",
             "getval": re.compile(
                 r"""
-                ^router\sospf*
-                (\s(?P<pid>\d+))?
+                ^router\sospf
+                (\s(?P<pid>\d+))
                 (\s(vrf\s(?P<vrf_value>\S+)))?
                 $""",
                 re.VERBOSE,
@@ -525,8 +525,8 @@ class Ospfv2Template(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sadjacency\sstagger
-                (?:\s+(?P<min>\S+|none))?
-                (\s+(?P<max>\S+))?
+                (\s(?P<min>\d+))
+                (\s(?P<max>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -536,6 +536,27 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "adjacency": {
                             "min_adjacency": "{{ min|int }}",
+                            "max_adjacency": "{{ max|int }}",
+                        },
+                    },
+                },
+            },
+        },
+                {
+            "name": "adjacency.none",
+            "getval": re.compile(
+                r"""
+                \sadjacency\sstagger
+                (\s(?P<none>none))
+                (\s(?P<max>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": _tmplt_ospf_adjacency_cmd,
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "adjacency": {
                             "max_adjacency": "{{ max|int }}",
                             "none": "{{ True if none_adj is defined else None }}",
                         },
@@ -550,7 +571,7 @@ class Ospfv2Template(NetworkTemplate):
                 \stopology
                 (\s(?P<base>base))?
                 (\s(?P<name>\S+))?
-                (\stid\s(?P<tid>\S+))
+                (\stid\s(?P<tid>\S+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -1484,11 +1505,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "network",
             "getval": re.compile(
-                r"""\s+network
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<area>area\s\S+)
-                    *$""",
+                r"""
+                \snetwork
+                \s(?P<address>\S+)
+                \s(?P<wildcard>\S+)
+                (\sarea\s(?P<area>\S+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_network,
@@ -1499,7 +1521,7 @@ class Ospfv2Template(NetworkTemplate):
                             {
                                 "address": "{{ address }}",
                                 "wildcard_bits": "{{ wildcard }}",
-                                "area": "{{ area.split(" ")[1] }}",
+                                "area": "{{ area }}",
                             },
                         ],
                     },
@@ -1573,7 +1595,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "passive_interfaces": {
                             "interface": {
-                                "set_interface": "{{ not not no }}",
+                                "set_interface": "{{ not no }}",
                                 "name": ["{{ interface if 'default' not in interface }}"],
                             },
                         },
@@ -1584,9 +1606,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "passive_interfaces.default",
             "getval": re.compile(
-                r"""\spassive-interface
-                    \s(?P<default>default)
-                    $""",
+                r"""
+                \spassive-interface
+                \s(?P<default_value>default)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "passive-interface default",
@@ -1594,7 +1617,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "passive_interfaces": {
-                            "default": "{{ True if default in defined }}",
+                            "default": "{{ True if default_value is defined }}",
                         },
                     },
                 },
@@ -1603,8 +1626,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "prefix_suppression",
             "getval": re.compile(
-                r"""\s+(?P<prefix_sup>prefix-suppression)
-                    *$""",
+                r"""
+                \s(?P<prefix_sup>prefix-suppression)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "prefix-suppression",
@@ -1617,9 +1641,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "priority",
             "getval": re.compile(
-                r"""\s+priority
-                    \s(?P<priority>\d+)
-                    *$""",
+                r"""
+                \spriority
+                \s(?P<priority>\d+)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "priority {{ priority }}",
@@ -1628,11 +1653,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "queue_depth.hello",
             "getval": re.compile(
-                r"""\s+queue-depth
-                    \shello*
-                    \s*(?P<max_packets>\d+)*
-                    \s*(?P<unlimited>unlimited)
-                    *$""",
+                r"""
+                \squeue-depth
+                \shello
+                (\s(?P<max_packets>\d+))
+                (\s(?P<unlimited>unlimited))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_hello,
@@ -1653,11 +1679,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "queue_depth.update",
             "getval": re.compile(
-                r"""\s+queue-depth
-                    \supdate*
-                    \s*(?P<max_packets>\d+)*
-                    \s*(?P<unlimited>unlimited)
-                    *$""",
+                r"""
+                \squeue-depth\supdate
+                (\s(?P<max_packets>\d+))
+                (\s(?P<unlimited>unlimited))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_update,
@@ -1678,9 +1704,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "router_id",
             "getval": re.compile(
-                r"""\s+router-id
-                    \s(?P<id>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    *$""",
+                r"""
+                \srouter-id
+                (\s(?P<id>\S+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "router-id {{ router_id }}",
@@ -1689,8 +1716,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "shutdown",
             "getval": re.compile(
-                r"""\s+(?P<shutdown>shutdown)
-                    *$""",
+                r"""
+                \s(?P<shutdown>shutdown)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "shutdown",
@@ -1701,13 +1729,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "summary_address",
             "getval": re.compile(
-                r"""\s+summary-address
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<mask>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<not_adv>not-advertise)*
-                    \s*(?P<nssa>nssa-only)*
-                    \s*(?P<tag>tag\s\d+)
-                    *$""",
+                r"""
+                \ssummary-address
+                \s(?P<address>\S+)
+                \s(?P<mask>\S+)
+                \s(?P<not_adv>not-advertise)
+                \s(?P<nssa>nssa-only)
+                (\stag\s(?P<tag>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_summary_address,
@@ -1719,7 +1748,7 @@ class Ospfv2Template(NetworkTemplate):
                             "mask": "{{ mask }}",
                             "not_advertise": "{{ True if not_adv is defined }}",
                             "nssa_only": "{{ True if nssa is defined }}",
-                            "tag": "{{ tag.split(" ")[1] }}",
+                            "tag": "{{ tag }}",
                         },
                     },
                 },
@@ -1728,11 +1757,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.lsa",
             "getval": re.compile(
-                r"""\s+timers
-                    \slsa
-                    \sarrival
-                    \s(?P<lsa>\d+)
-                    *$""",
+                r"""
+                \stimers
+                \slsa
+                \sarrival
+                (\s(?P<lsa>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
@@ -1742,12 +1772,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.pacing",
             "getval": re.compile(
-                r"""\s+timers
-                    \spacing
-                    \s(?P<flood>flood\s\d+)*
-                    \s*(?P<lsa_group>lsa-group\s\d+)*
-                    \s*(?P<retransmission>retransmission\s\d+)
-                    *$""",
+                r"""
+                \stimers
+                \spacing
+                (\sflood\s(?P<flood>\d+))
+                (\slsa-group\s(?P<lsa_group>\d+))
+                (\sretransmission\s(?P<retransmission>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_timers_pacing,
@@ -1757,9 +1788,9 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "timers": {
                             "pacing": {
-                                "flood": "{{ flood.split(" ")[1] }}",
-                                "lsa_group": "{{ lsa_group.split(" ")[1] }}",
-                                "retransmission": "{{ retransmission.split(" ")[1] }}",
+                                "flood": "{{ flood }}",
+                                "lsa_group": "{{ lsa_group }}",
+                                "retransmission": "{{ retransmission }}",
                             },
                         },
                     },
@@ -1769,13 +1800,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.throttle.lsa",
             "getval": re.compile(
-                r"""\s+timers
-                    \sthrottle
-                    \s*(?P<lsa>lsa)*
-                    \s*(?P<first_delay>\d+)*
-                    \s*(?P<min_delay>\d+)*
-                    \s*(?P<max_delay>\d+)
-                    *$""",
+                r"""
+                \stimers
+                \sthrottle
+                \slsa
+                (\s(?P<first_delay>\d+))
+                (\s(?P<min_delay>\d+))
+                (\s(?P<max_delay>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}",
