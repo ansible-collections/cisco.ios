@@ -116,12 +116,12 @@ Examples
     - name: Gather only the config and default facts
       cisco.ios.ios_facts:
         gather_subset:
-        - config
+          - config
 
     - name: Do not gather hardware facts
       cisco.ios.ios_facts:
         gather_subset:
-        - '!hardware'
+          - "!hardware"
 
     - name: Gather legacy and resource facts
       cisco.ios.ios_facts:
@@ -131,10 +131,10 @@ Examples
     - name: Gather only the interfaces resource facts and no legacy facts
       cisco.ios.ios_facts:
         gather_subset:
-        - '!all'
-        - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
-        - interfaces
+          - interfaces
 
     - name: Gather interfaces resource and minimal legacy facts
       cisco.ios.ios_facts:

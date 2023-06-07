@@ -19,15 +19,16 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_user
 author: Trishna Guha (@trishnaguha)
 short_description: Module to manage the aggregates of local users.
 description:
-- This module provides declarative management of the local usernames configured on
-  network devices. It allows playbooks to manage either individual usernames or the
-  aggregate of usernames in the current running config. It also supports purging usernames
-  from the configuration that are not explicitly defined.
+  - This module provides declarative management of the local usernames configured on
+    network devices. It allows playbooks to manage either individual usernames or the
+    aggregate of usernames in the current running config. It also supports purging usernames
+    from the configuration that are not explicitly defined.
 version_added: 1.0.0
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
@@ -36,224 +37,225 @@ notes:
 options:
   aggregate:
     description:
-    - The set of username objects to be configured on the remote Cisco IOS device.
-      The list entries can either be the username or a hash of username and properties.
-      This argument is mutually exclusive with the C(name) argument.
+      - The set of username objects to be configured on the remote Cisco IOS device.
+        The list entries can either be the username or a hash of username and properties.
+        This argument is mutually exclusive with the C(name) argument.
     aliases:
-    - users
-    - collection
+      - users
+      - collection
     type: list
     elements: dict
     suboptions:
       name:
         description:
-        - The username to be configured on the Cisco IOS device. This argument accepts
-          a string value and is mutually exclusive with the C(aggregate) argument. Please
-          note that this option is not same as C(provider username).
+          - The username to be configured on the Cisco IOS device. This argument accepts
+            a string value and is mutually exclusive with the C(aggregate) argument. Please
+            note that this option is not same as C(provider username).
         type: str
         required: true
       configured_password:
         description:
-        - The password to be configured on the Cisco IOS device. The password needs to
-          be provided in clear and it will be encrypted on the device. Please note that
-          this option is not same as C(provider password).
+          - The password to be configured on the Cisco IOS device. The password needs to
+            be provided in clear and it will be encrypted on the device. Please note that
+            this option is not same as C(provider password).
         type: str
       update_password:
         description:
-        - Since passwords are encrypted in the device running config, this argument will
-          instruct the module when to change the password.  When set to C(always), the
-          password will always be updated in the device and when set to C(on_create) the
-          password will be updated only if the username is created.
+          - Since passwords are encrypted in the device running config, this argument will
+            instruct the module when to change the password.  When set to C(always), the
+            password will always be updated in the device and when set to C(on_create) the
+            password will be updated only if the username is created.
         choices:
-        - on_create
-        - always
+          - on_create
+          - always
         type: str
       password_type:
         description:
-        - This argument determines whether a 'password' or 'secret' will be configured.
+          - This argument determines whether a 'password' or 'secret' will be configured.
         choices:
-        - secret
-        - password
+          - secret
+          - password
         type: str
       hashed_password:
         description:
-        - This option allows configuring hashed passwords on Cisco IOS devices.
+          - This option allows configuring hashed passwords on Cisco IOS devices.
         type: dict
         suboptions:
           type:
             description:
-            - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
-            - For this to work, the device needs to support the desired hash type
+              - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
+              - For this to work, the device needs to support the desired hash type
             type: int
             required: true
           value:
             description:
-            - The actual hashed password to be configured on the device
+              - The actual hashed password to be configured on the device
             required: true
             type: str
       privilege:
         description:
-        - The C(privilege) argument configures the privilege level of the user when logged
-          into the system. This argument accepts integer values in the range of 1 to 15.
+          - The C(privilege) argument configures the privilege level of the user when logged
+            into the system. This argument accepts integer values in the range of 1 to 15.
         type: int
       view:
         description:
-        - Configures the view for the username in the device running configuration. The
-          argument accepts a string value defining the view name. This argument does not
-          check if the view has been configured on the device.
+          - Configures the view for the username in the device running configuration. The
+            argument accepts a string value defining the view name. This argument does not
+            check if the view has been configured on the device.
         aliases:
-        - role
+          - role
         type: str
       sshkey:
         description:
-        - Specifies one or more SSH public key(s) to configure for the given username.
-        - This argument accepts a valid SSH key value.
+          - Specifies one or more SSH public key(s) to configure for the given username.
+          - This argument accepts a valid SSH key value.
         type: list
         elements: str
       nopassword:
         description:
-        - Defines the username without assigning a password. This will allow the user
-          to login to the system without being authenticated by a password.
+          - Defines the username without assigning a password. This will allow the user
+            to login to the system without being authenticated by a password.
         type: bool
       state:
         description:
-        - Configures the state of the username definition as it relates to the device
-          operational configuration. When set to I(present), the username(s) should be
-          configured in the device active configuration and when set to I(absent) the
-          username(s) should not be in the device active configuration
+          - Configures the state of the username definition as it relates to the device
+            operational configuration. When set to I(present), the username(s) should be
+            configured in the device active configuration and when set to I(absent) the
+            username(s) should not be in the device active configuration
         choices:
-        - present
-        - absent
+          - present
+          - absent
         type: str
   name:
     description:
-    - The username to be configured on the Cisco IOS device. This argument accepts
-      a string value and is mutually exclusive with the C(aggregate) argument. Please
-      note that this option is not same as C(provider username).
+      - The username to be configured on the Cisco IOS device. This argument accepts
+        a string value and is mutually exclusive with the C(aggregate) argument. Please
+        note that this option is not same as C(provider username).
     type: str
   configured_password:
     description:
-    - The password to be configured on the Cisco IOS device. The password needs to
-      be provided in clear and it will be encrypted on the device. Please note that
-      this option is not same as C(provider password).
+      - The password to be configured on the Cisco IOS device. The password needs to
+        be provided in clear and it will be encrypted on the device. Please note that
+        this option is not same as C(provider password).
     type: str
   update_password:
     description:
-    - Since passwords are encrypted in the device running config, this argument will
-      instruct the module when to change the password.  When set to C(always), the
-      password will always be updated in the device and when set to C(on_create) the
-      password will be updated only if the username is created.
+      - Since passwords are encrypted in the device running config, this argument will
+        instruct the module when to change the password.  When set to C(always), the
+        password will always be updated in the device and when set to C(on_create) the
+        password will be updated only if the username is created.
     default: always
     choices:
-    - on_create
-    - always
+      - on_create
+      - always
     type: str
   password_type:
     description:
-    - This argument determines whether a 'password' or 'secret' will be configured.
+      - This argument determines whether a 'password' or 'secret' will be configured.
     default: secret
     choices:
-    - secret
-    - password
+      - secret
+      - password
     type: str
   hashed_password:
     description:
-    - This option allows configuring hashed passwords on Cisco IOS devices.
+      - This option allows configuring hashed passwords on Cisco IOS devices.
     type: dict
     suboptions:
       type:
         description:
-        - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
-        - For this to work, the device needs to support the desired hash type
+          - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
+          - For this to work, the device needs to support the desired hash type
         type: int
         required: true
       value:
         description:
-        - The actual hashed password to be configured on the device
+          - The actual hashed password to be configured on the device
         required: true
         type: str
   privilege:
     description:
-    - The C(privilege) argument configures the privilege level of the user when logged
-      into the system. This argument accepts integer values in the range of 1 to 15.
+      - The C(privilege) argument configures the privilege level of the user when logged
+        into the system. This argument accepts integer values in the range of 1 to 15.
     type: int
   view:
     description:
-    - Configures the view for the username in the device running configuration. The
-      argument accepts a string value defining the view name. This argument does not
-      check if the view has been configured on the device.
+      - Configures the view for the username in the device running configuration. The
+        argument accepts a string value defining the view name. This argument does not
+        check if the view has been configured on the device.
     aliases:
-    - role
+      - role
     type: str
   sshkey:
     description:
-    - Specifies one or more SSH public key(s) to configure for the given username.
-    - This argument accepts a valid SSH key value.
+      - Specifies one or more SSH public key(s) to configure for the given username.
+      - This argument accepts a valid SSH key value.
     type: list
     elements: str
   nopassword:
     description:
-    - Defines the username without assigning a password. This will allow the user
-      to login to the system without being authenticated by a password.
+      - Defines the username without assigning a password. This will allow the user
+        to login to the system without being authenticated by a password.
     type: bool
   purge:
     description:
-    - Instructs the module to consider the resource definition absolute. It will remove
-      any previously configured usernames on the device with the exception of the
-      `admin` user (the current defined set of users).
+      - Instructs the module to consider the resource definition absolute. It will remove
+        any previously configured usernames on the device with the exception of the
+        `admin` user (the current defined set of users).
     type: bool
     default: false
   state:
     description:
-    - Configures the state of the username definition as it relates to the device
-      operational configuration. When set to I(present), the username(s) should be
-      configured in the device active configuration and when set to I(absent) the
-      username(s) should not be in the device active configuration
+      - Configures the state of the username definition as it relates to the device
+        operational configuration. When set to I(present), the username(s) should be
+        configured in the device active configuration and when set to I(absent) the
+        username(s) should not be in the device active configuration
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 """
+
 EXAMPLES = """
-- name: create a new user
+- name: Create a new user
   cisco.ios.ios_user:
     name: ansible
     nopassword: true
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
-- name: create a new user with multiple keys
+- name: Create a new user with multiple keys
   cisco.ios.ios_user:
     name: ansible
     sshkey:
-    - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    - "{{ lookup('file', '~/path/to/public_key') }}"
+      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      - "{{ lookup('file', '~/path/to/public_key') }}"
     state: present
 
-- name: remove all users except admin
+- name: Remove all users except admin
   cisco.ios.ios_user:
-    purge: yes
+    purge: true
 
-- name: remove all users except admin and these listed users
+- name: Remove all users except admin and these listed users
   cisco.ios.ios_user:
     aggregate:
-    - name: testuser1
-    - name: testuser2
-    - name: testuser3
-    purge: yes
+      - name: testuser1
+      - name: testuser2
+      - name: testuser3
+    purge: true
 
-- name: set multiple users to privilege level 15
+- name: Set multiple users to privilege level 15
   cisco.ios.ios_user:
     aggregate:
-    - name: netop
-    - name: netend
+      - name: netop
+      - name: netend
     privilege: 15
     state: present
 
-- name: set user view/role
+- name: Set user view/role
   cisco.ios.ios_user:
     name: netop
     view: network-operator
@@ -262,21 +264,21 @@ EXAMPLES = """
 - name: Change Password for User netop
   cisco.ios.ios_user:
     name: netop
-    configured_password: '{{ new_password }}'
+    configured_password: "{{ new_password }}"
     update_password: always
     state: present
 
 - name: Aggregate of users
   cisco.ios.ios_user:
     aggregate:
-    - name: ansibletest2
-    - name: ansibletest3
+      - name: ansibletest2
+      - name: ansibletest3
     view: network-admin
 
 - name: Add a user specifying password type
   cisco.ios.ios_user:
     name: ansibletest4
-    configured_password: '{{ new_password }}'
+    configured_password: "{{ new_password }}"
     password_type: password
 
 - name: Add a user with MD5 hashed password
@@ -289,11 +291,12 @@ EXAMPLES = """
 - name: Delete users with aggregate
   cisco.ios.ios_user:
     aggregate:
-    - name: ansibletest1
-    - name: ansibletest2
-    - name: ansibletest3
+      - name: ansibletest1
+      - name: ansibletest2
+      - name: ansibletest3
     state: absent
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

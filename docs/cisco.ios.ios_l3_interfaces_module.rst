@@ -678,19 +678,19 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_l3_interfaces:
         config:
-        - name: GigabitEthernet0/1
-          ipv4:
-          - address: 192.168.0.1/24
-            secondary: true
-        - name: GigabitEthernet2
-          ipv4:
-          - address: 192.168.0.2/24
-        - name: GigabitEthernet3
-          ipv6:
-          - address: fd5d:12c9:2201:1::1/64
-        - name: GigabitEthernet3.100
-          ipv4:
-          - address: 192.168.0.3/24
+          - name: GigabitEthernet0/1
+            ipv4:
+              - address: 192.168.0.1/24
+                secondary: true
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 192.168.0.2/24
+          - name: GigabitEthernet3
+            ipv6:
+              - address: fd5d:12c9:2201:1::1/64
+          - name: GigabitEthernet3.100
+            ipv4:
+              - address: 192.168.0.3/24
         state: merged
 
     # Task Output
@@ -796,14 +796,14 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.ios.ios_l3_interfaces:
         config:
-        - name: GigabitEthernet2
-          ipv4:
-          - address: 192.168.2.0/24
-        - name: GigabitEthernet3
-          ipv4:
-          - dhcp:
-              client_id: GigabitEthernet2
-              hostname: test.com
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 192.168.2.0/24
+          - name: GigabitEthernet3
+            ipv4:
+              - dhcp:
+                  client_id: GigabitEthernet2
+                  hostname: test.com
         state: replaced
 
     # Task Output
@@ -909,14 +909,14 @@ Examples
     - name: Override device configuration of all interfaces with provided configuration
       cisco.ios.ios_l3_interfaces:
         config:
-        - ipv4:
-          - dhcp:
-              enable: true
-          name: GigabitEthernet1
-        - name: GigabitEthernet2
-          ipv4:
-          - address: 192.168.0.1/24
-        - name: GigabitEthernet3
+          - ipv4:
+              - dhcp:
+                  enable: true
+            name: GigabitEthernet1
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 192.168.0.1/24
+          - name: GigabitEthernet3
         state: overridden
 
     # Task Output
@@ -1018,8 +1018,8 @@ Examples
     - name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces)"
       cisco.ios.ios_l3_interfaces:
         config:
-        - name: GigabitEthernet2
-        - name: GigabitEthernet3.100
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3.100
         state: deleted
 
     # Task Output
@@ -1231,18 +1231,18 @@ Examples
     - name: Render the commands for provided configuration
       cisco.ios.ios_l3_interfaces:
         config:
-        - name: GigabitEthernet1
-          ipv4:
-          - dhcp:
-              client_id: GigabitEthernet0/0
-              hostname: test.com
-        - name: GigabitEthernet2
-          ipv4:
-          - address: 198.51.100.1/24
-            secondary: true
-          - address: 198.51.100.2/24
-          ipv6:
-          - address: 2001:db8:0:3::/64
+          - name: GigabitEthernet1
+            ipv4:
+              - dhcp:
+                  client_id: GigabitEthernet0/0
+                  hostname: test.com
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:0:3::/64
         state: rendered
 
     # Task Output
