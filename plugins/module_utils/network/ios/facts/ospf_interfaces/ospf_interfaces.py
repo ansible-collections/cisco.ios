@@ -21,19 +21,19 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf_interfaces.ospf_interfaces import (
-    Ospf_InterfacesArgs,
+    Ospf_interfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.ospf_interfaces import (
-    Ospf_InterfacesTemplate,
+    Ospf_interfacesTemplate,
 )
 
 
-class Ospf_InterfacesFacts(object):
+class Ospf_interfacesFacts(object):
     """The cisco.ios ospf_interfaces facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Ospf_InterfacesArgs.argument_spec
+        self.argument_spec = Ospf_interfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
             if options:
@@ -65,7 +65,7 @@ class Ospf_InterfacesFacts(object):
             data = self.get_ospf_interfaces_data(connection)
 
         # parse native config using the Ospf_interfaces template
-        ospf_interfaces_parser = Ospf_InterfacesTemplate(
+        ospf_interfaces_parser = Ospf_interfacesTemplate(
             lines=data.splitlines(),
             module=self._module,
         )

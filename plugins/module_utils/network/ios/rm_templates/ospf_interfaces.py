@@ -198,17 +198,16 @@ def _tmplt_ip_ospf_ttl_security(config_data):
     return command
 
 
-class Ospf_InterfacesTemplate(NetworkTemplate):
+class Ospf_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Ospf_InterfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Ospf_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     PARSERS = [
         {
             "name": "name",
             "getval": re.compile(
                 r"""
-                  ^interface
-                  \s(?P<name>\S+)$""",
+                ^interface\s(?P<name>\S+)$""",
                 re.VERBOSE,
             ),
             "setval": "interface {{ name }}",
@@ -219,12 +218,12 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "process",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<id>\d+)*
-                \s*(?P<area>area\s\d+)*
-                \s*(?P<secondaries>secondaries)*
-                \s*(?P<instance>instance*\s*\d+)*
+                \s+(?P<afi>ip|ipv6)\sospf
+                (\s(?P<id>\d+)
+                (\sarea\s(?P<area>\d+)?
+                (\sarea\s(?P<area_ip>\s+)?
+                (\s(?P<secondaries>secondaries)?
+                (\sinstance\s(?P<instance>\d+)?
                 $""",
                 re.VERBOSE,
             ),
@@ -236,9 +235,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "process": {
                                 "id": "{{ id }}",
-                                "area_id": "{{ area.split(' ')[1] }}",
-                                "secondaries": "{{ True if secondaries is defined }}",
-                                "instance_id": "{{ instance.split(' ')[1]}}",
+                                "area_id": "{{ area }}",
+                                "secondaries": "{{ not not secondaries }}",
+                                "instance_id": "{{ instance }}",
                             },
                         },
                     },
@@ -249,10 +248,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "adjacency",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<adjacency>adjacency*\s*stagger)*
-                \s*(?P<disable>disable)*
+                \s+(?P<afi>ip|ipv6)\sospf
+                \s(?P<adjacency>adjacency\sstagger\sdisable)
                 $""",
                 re.VERBOSE,
             ),
@@ -262,7 +259,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "adjacency": "{{ True if adjacency is defined }}",
+                            "adjacency": "{{ not not adjacency }}",
                         },
                     },
                 },
@@ -272,12 +269,10 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "authentication",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*authentication*
-                \s*(?P<key_chain>key-chain*\s*\S+)*
-                \s*(?P<message_digest>message-digest)*
-                \s*(?P<null>null)*
+                \s+(?P<afi>ip|ipv6)\sospf\sauthentication
+                (\skey-chain\s(?P<key_chain>\S+))?
+                (\s(?P<message_digest>message-digest))?
+                (\s(?P<isnull>null))?
                 $""",
                 re.VERBOSE,
             ),
@@ -288,9 +283,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "authentication": {
-                                "key_chain": "{{ key_chain.split(' ')[1] }}",
-                                "message_digest": "{{ True if message_digest is defined }}",
-                                "null": "{{ True if null is defined }}",
+                                "key_chain": "{{ key_chain }}",
+                                "message_digest": "{{ not not message_digest }}",
+                                "null": "{{ not not isnull }}",
                             },
                         },
                     },
@@ -301,10 +296,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "bfd",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<bfd>bfd)*
-                \s*(?P<disable>disable)*
+                \s+(?P<afi>ip|ipv6)\sospf\sbfd
                 $""",
                 re.VERBOSE,
             ),
@@ -314,7 +306,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "bfd": "{{ True if bfd is defined }}",
+                            "bfd": True,
                         },
                     },
                 },
@@ -324,9 +316,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "cost_ip",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)*
-                \s*ospf*
-                \s*(?P<cost>cost*\s*\d+)*
+                \s+(?P<afi>ip)\sospf
+                (\scost\s(?P<cost>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -335,9 +326,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "cost": {"interface_cost": "{{ cost.split(' ')[1] }}"},
+                        "ip": {
+                            "afi": "ipv4",
+                            "cost": {"interface_cost": "{{ cost }}"},
                         },
                     },
                 },
@@ -347,17 +338,18 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "cost_ipv6_dynamic_cost",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ipv6)*
-                \s*ospf*
-                \s*cost*
-                \s*(?P<interface_cost>\d+)*
-                \s*dynamic*
-                \s*(?P<default>default*\s*\d+)*
-                \s*(?P<hysteresis>hysteresis*\s*)*
-                \s*(?P<h_params>(percent|threshold)*\s*\d+)*
-                \s*(?P<weight>weight)*
-                \s*(?P<w_params>(L2-factor|latency|resources|throughput)*\s*\d+)*
-                \s*(?P<weight_oc>oc)*
+                \s+ipv6\sospf\scost\s(?P<interface_cost>\d+)
+                (\sdynamic)?
+                (\sdefault\s(?P<default>\d+)?
+                (\shysteresis)?
+                (\spercent\s(?P<h_params_p>\d+))?
+                (\sthreshold\s(?P<h_params_t>\d+))?
+                (\sweight)?
+                (\sL2-factor\s(?P<l2_factor>\d+))?
+                (\slatency\s(?P<latency>\d+))?
+                (\sresources\s(?P<resources>\d+))?
+                (\sthroughput\s(?P<throughput>\d+))?
+                (\s(?P<weight_oc>oc)*
                 $""",
                 re.VERBOSE,
             ),
@@ -366,22 +358,22 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ipv6": {
+                            "afi": "ipv6",
                             "cost": {
                                 "interface_cost": "{{ interface_cost }}",
                                 "dynamic_cost": {
-                                    "default": "{{ default.split(' ')[1] }}",
+                                    "default": "{{ default }}",
                                     "hysteresis": {
-                                        "percent": "{{ h_params.split(' ')[1] if h_params is defined and 'percent' in h_params }}",
-                                        "threshold": "{{ h_params.split(' ')[1] if h_params is defined and 'threshold' in h_params  }}",
+                                        "percent": "{{ h_params_p }}",
+                                        "threshold": "{{ h_params_t  }}",
                                     },
                                     "weight": {
-                                        "l2_factor": "{{ w_params.split(' ')[1] if w_params is defined and 'L2-factor' in w_params  }}",
-                                        "latency": "{{ w_params.split(' ')[1] if w_params is defined and 'latency' in w_params  }}",
-                                        "oc": "{{ True if weight_oc is defined}}",
-                                        "resources": "{{ w_params.split(' ')[1] if w_params is defined and 'resources' in w_params  }}",
-                                        "throughput": "{{ w_params.split(' ')[1] if w_params is defined and 'throughput' in w_params  }}",
+                                        "l2_factor": "{{ l2_factor  }}",
+                                        "latency": "{{ latency  }}",
+                                        "oc": "{{ not not weight_oc }}",
+                                        "resources": "{{ resources  }}",
+                                        "throughput": "{{ throughput }}",
                                     },
                                 },
                             },
@@ -394,10 +386,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "database_filter",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<database_filter>database-filter\sall\sout)*
-                \s*(?P<disable>disable)*
+                \s+(?P<afi>ip|ipv6)\sospf\sdatabase-filter\sall\sout
                 $""",
                 re.VERBOSE,
             ),
@@ -407,7 +396,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "database_filter": "{{ True if database_filter is defined }}",
+                            "database_filter": True,
                         },
                     },
                 },
@@ -417,7 +406,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "dead_interval",
             "getval": re.compile(
                 r"""
-                \s((?P<afi>ip|ipv6)\sospf\sdead-interval)?
+                \s+(?P<afi>ip|ipv6)\sospf\sdead-interval
                 (\s(?P<seconds>\d+))?
                 (\sminimal\shello-multiplier\s(?P<minimal>\d+))?
                 $""",
@@ -439,11 +428,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "demand_circuit",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<demand_circuit>demand-circuit)*
-                \s*(?P<ignore>ignore)*
-                \s*(?P<disable>disable)*
+                \s+(?P<afi>ip|ipv6)\sospf\sdemand-circuit
+                (\s(?P<ignore>ignore))?
+                (\s(?P<disable>disable))?
                 $""",
                 re.VERBOSE,
             ),
@@ -454,9 +441,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "demand_circuit": {
-                                "enable": "{{ True if demand_circuit is defined and ignore is not defined }}",
-                                "ignore": "{{ True if ignore is defined }}",
-                                "disable": "{{ True if disable is defined }}",
+                                "enable": True,
+                                "ignore": "{{ not not ignore }}",
+                                "disable": "{{ not not disable }}",
                             },
                         },
                     },
@@ -467,9 +454,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "flood_reduction",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<flood_reduction>flood-reduction)*
+                \s+(?P<afi>ip|ipv6)\sospf\sflood-reduction
                 $""",
                 re.VERBOSE,
             ),
@@ -479,7 +464,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "flood_reduction": "{{ True if flood_reduction is defined }}",
+                            "flood_reduction": True,
                         },
                     },
                 },
@@ -489,9 +474,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "hello_interval",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<hello_interval>hello-interval\s\d+)*
+                \s+(?P<afi>ip|ipv6)\sospf(\shello-interval\s(?P<hello_interval>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -501,7 +484,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "hello_interval": "{{ hello_interval.split(' ')[1] }}",
+                            "hello_interval": "{{ hello_interval }}",
                         },
                     },
                 },
@@ -510,20 +493,16 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
         {
             "name": "lls",
             "getval": re.compile(
-                r"""
-                \s+(?P<afi>ip)*
-                \s*ospf*
-                \s*(?P<lls>lls)*
-                $""",
+                r"""\s+ip\sospf\slls$""",
                 re.VERBOSE,
             ),
             "setval": "{{ 'ip ospf' if afi == 'ipv4' else 'ipv6 ospf' }} lls",
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "lls": "{{ True if lls is defined }}",
+                        "ip": {
+                            "afi": "ipv4",
+                            "lls": True,
                         },
                     },
                 },
@@ -533,11 +512,10 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "manet",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ipv6)*
-                \s*ospf*
-                \s*(?P<manet>manet\speering)*
-                \s*(?P<cost>(cost\spercent|cost\sthreshold)\s\d+)*
-                \s*(?P<link_metrics>link-metrics\s\d+)*
+                \s+ipv6\sospf\smanet\speering
+                (\scost\spercent\s(?P<cost_p>\d+))?
+                (\scost\sthreshold\s(?P<cost_t>\d+))?
+                (\slink-metrics\s(?P<link_metrics>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -545,16 +523,16 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ipv6": {
+                            "afi": "ipv6",
                             "manet": {
                                 "cost": {
-                                    "percent": "{{ cost.split(' ')[2] }}",
-                                    "threshold": "{{ cost.split(' ')[2] }}",
+                                    "percent": "{{ cost_p }}",
+                                    "threshold": "{{ cost_t }}",
                                 },
                                 "link_metrics": {
                                     "set": "{{ True if link_metrics is not defined and link_metrics is defined  }}",
-                                    "cost_threshold": "{{ link_metrics.split(' ')[1] }}",
+                                    "cost_threshold": "{{ link_metrics }}",
                                 },
                             },
                         },
@@ -566,9 +544,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "mtu_ignore",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<mtu_ignore>mtu-ignore)*
+                \s+(?P<afi>ip|ipv6)\sospf\smtu-ignore
                 $""",
                 re.VERBOSE,
             ),
@@ -578,7 +554,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "mtu_ignore": "{{ True if mtu_ignore is defined }}",
+                            "mtu_ignore": True,
                         },
                     },
                 },
@@ -588,10 +564,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "multi_area",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)*
-                \s*ospf*
-                \s*(?P<multi_area>multi-area\s\d+)*
-                \s*(?P<cost>cost\s\d+)*
+                \s+(?P<afi>ip)\sospf
+                (\smulti-area\s(?P<multi_area>\d+))
+                (\scost\s(?P<cost>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -602,8 +577,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "multi_area": {
-                                "id": "{{ multi_area.split(' ')[1] }}",
-                                "cost": "{{ cost.split(' ')[1] }}",
+                                "id": "{{ multi_area }}",
+                                "cost": "{{ cost }}",
                             },
                         },
                     },
@@ -614,14 +589,11 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "neighbor",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ipv6)*
-                \s*ospf*
-                \s*neighbor*
-                \s*(?P<address>(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\S+)*
-                \s*(?P<cost>cost\s\d+)*
-                \s*(?P<database_filter>database-filter\sall\sout)*
-                \s*(?P<poll_interval>poll-interval\s\d+)*
-                \s*(?P<priority>priority\s\d+)*
+                \s+ipv6\sospf\sneighbor(\s(?P<address>\S+)
+                (\scost\s(?P<cost>\d+)?
+                (\s(?P<database_filter>database-filter\sall\sout)?
+                (\spoll-interval\s(?P<poll_interval>\d+)?
+                (\spriority\s(?P<priority>\d+)?
                 $""",
                 re.VERBOSE,
             ),
@@ -629,14 +601,14 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ipv6": {
+                            "afi": "ipv6",
                             "neighbor": {
                                 "address": "{{ address }}",
-                                "cost": "{{ cost.split(' ')[1] }}",
-                                "database_filter": "{{ True if database_filter is defined }}",
-                                "poll_interval": "{{ poll_interval.split(' ')[1] }}",
-                                "priority": "{{ priority.split(' ')[1] }}",
+                                "cost": "{{ cost }}",
+                                "database_filter": "{{ not not database_filter }}",
+                                "poll_interval": "{{ poll_interval }}",
+                                "priority": "{{ priority }}",
                             },
                         },
                     },
@@ -647,14 +619,12 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "network",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<network>network)*
-                \s*(?P<broadcast>broadcast)*
-                \s*(?P<manet>manet)*
-                \s*(?P<non_broadcast>non-broadcast)*
-                \s*(?P<point_to_multipoint>point-to-multipoint)*
-                \s*(?P<point_to_point>point-to-point)*
+                \s+(?P<afi>ip|ipv6)\sospf\snetwork
+                (\s(?P<broadcast>broadcast))?
+                (\s(?P<manet>manet))?
+                (\s(?P<non_broadcast>non-broadcast))?
+                (\s(?P<point_to_multipoint>point-to-multipoint))?
+                (\s(?P<point_to_point>point-to-point))?
                 $""",
                 re.VERBOSE,
             ),
@@ -665,11 +635,11 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                             "network": {
-                                "broadcast": "{{ True if broadcast is defined }}",
-                                "manet": "{{ True if manet is defined }}",
-                                "non_broadcast": "{{ True if non_broadcast is defined }}",
-                                "point_to_multipoint": "{{ True if point_to_multipoint is defined }}",
-                                "point_to_point": "{{ True if point_to_point is defined }}",
+                                "broadcast": "{{ not not broadcast }}",
+                                "manet": "{{ not not manet }}",
+                                "non_broadcast": "{{ not not non_broadcast }}",
+                                "point_to_multipoint": "{{ not not point_to_multipoint }}",
+                                "point_to_point": "{{ not not point_to_point }}",
                             },
                         },
                     },
@@ -680,9 +650,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "prefix_suppression",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<prefix_suppression>prefix-suppression)*
+                \s+(?P<afi>ip|ipv6)\sospf\sprefix-suppression
                 $""",
                 re.VERBOSE,
             ),
@@ -692,7 +660,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "prefix_suppression": "{{ True if prefix_suppression is defined }}",
+                            "prefix_suppression": True,
                         },
                     },
                 },
@@ -702,9 +670,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "priority",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<priority>priority*\s*\d+)*
+                \s+(?P<afi>ip|ipv6)\sospf
+                (\spriority\s(?P<priority>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -714,7 +681,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "priority": "{{ priority.split(' ')[1] }}",
+                            "priority": "{{ priority }}",
                         },
                     },
                 },
@@ -724,9 +691,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "resync_timeout",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)*
-                \s*ospf*
-                \s*(?P<resync_timeout>resync-timeout*\s*\d+)*
+                \s+ip\sospf
+                (\sresync-timeout\s(?P<resync_timeout>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -734,9 +700,9 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "resync_timeout": "{{ resync_timeout.split(' ')[1] }}",
+                        "ip": {
+                            "afi": "ipv4",
+                            "resync_timeout": "{{ resync_timeout }}",
                         },
                     },
                 },
@@ -746,9 +712,8 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "retransmit_interval",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<retransmit_interval>retransmit-interval*\s*\d+)*
+                \s+(?P<afi>ip|ipv6)\sospf
+                (\sretransmit-interval\s(?P<retransmit_interval>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -758,7 +723,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "retransmit_interval": "{{ retransmit_interval.split(' ')[1] }}",
+                            "retransmit_interval": "{{ retransmit_interval }}",
                         },
                     },
                 },
@@ -768,9 +733,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "shutdown",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)*
-                \s*ospf*
-                \s*(?P<shutdown>shutdown)*
+                \s+(?P<afi>ip|ipv6)\sospf\sshutdown
                 $""",
                 re.VERBOSE,
             ),
@@ -780,7 +743,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi }}": {
                             "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "shutdown": "{{ True if shutdown is defined }}",
+                            "shutdown": True,
                         },
                     },
                 },
@@ -790,19 +753,17 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "transmit_delay",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ipv6)*
-                \s*ospf*
-                \s*(?P<transmit_delay>transmit-delay*\s*\d+)
-                *$""",
+                \s+ipv6\sospf\stransmit-delay\s(?P<transmit_delay>\d+)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "ipv6 ospf transmit-delay {{ transmit_delay }}",
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
-                            "transmit_delay": "{{ transmit_delay.split(' ')[1] }}",
+                        "ipv6": {
+                            "afi": "ipv6",
+                            "transmit_delay": "{{ transmit_delay }}",
                         },
                     },
                 },
@@ -812,10 +773,7 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "name": "ttl_security",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)*
-                \s*ospf*
-                \s*(?P<ttl_security>ttl-security)*
-                \s*(?P<hops>hops\s\d+)
+                \s+ip\sospf\sttl-security\shops\s(?P<hops>\d+)
                 *$""",
                 re.VERBOSE,
             ),
@@ -823,11 +781,11 @@ class Ospf_InterfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ip": {
+                            "afi": "ipv4",
                             "ttl_security": {
-                                "set": "{{ True if hops is not defined and ttl_security is defined }}",
-                                "hops": "{{ hops.split(' ')[1] }}",
+                                "set": True,
+                                "hops": "{{ hops }}",
                             },
                         },
                     },

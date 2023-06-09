@@ -52,7 +52,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospf_interfaces.ospf_interfaces."
-            "Ospf_InterfacesFacts.get_ospf_interfaces_data",
+            "Ospf_interfacesFacts.get_ospf_interfaces_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
