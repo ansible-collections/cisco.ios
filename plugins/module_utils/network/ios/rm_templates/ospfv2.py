@@ -1831,13 +1831,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.throttle.spf",
             "getval": re.compile(
-                r"""\s+timers
-                    \sthrottle
-                    \s*(?P<spf>spf)*
-                    \s*(?P<first_delay>\d+)*
-                    \s*(?P<min_delay>\d+)*
-                    \s*(?P<max_delay>\d+)
-                    *$""",
+                r"""
+                \stimers
+                \sthrottle
+                \sspf
+                (\s(?P<first_delay>\d+))
+                (\s(?P<min_delay>\d+))
+                (\s(?P<max_delay>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}",
@@ -1861,8 +1862,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "traffic_share",
             "getval": re.compile(
-                r"""\s+(?P<traffic>traffic-share\smin\sacross-interfaces)
-                    *$""",
+                r"""
+                \s(?P<traffic>traffic-share\smin\sacross-interfaces)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "traffic-share min across-interfaces",
@@ -1873,10 +1875,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "ttl_security",
             "getval": re.compile(
-                r"""\s+ttl-security
-                    \s(?P<interfaces>all-interfaces)*
-                    \s*(?P<hops>hops\s\d+)
-                    *$""",
+                r"""
+                \sttl-security
+                (\s(?P<interfaces>all-interfaces))
+                (\shops\s(?P<hops>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_ttl_security,
@@ -1885,7 +1888,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "ttl_security": {
                             "set": "{{ True if interfaces is defined and hops is undefined }}",
-                            "hops": "{{ hops.split(" ")[1] }}",
+                            "hops": "{{ hops }}",
                         },
                     },
                 },
