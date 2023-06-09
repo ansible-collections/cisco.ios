@@ -32,13 +32,13 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Ospf_Interfaces(ResourceModule):
+class Ospf_interfaces(ResourceModule):
     """
     The cisco.ios_ospf_interfaces config class
     """
 
     def __init__(self, module):
-        super(Ospf_Interfaces, self).__init__(
+        super(Ospf_interfaces, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,

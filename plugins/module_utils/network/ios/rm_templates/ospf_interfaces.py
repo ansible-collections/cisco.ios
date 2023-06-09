@@ -219,11 +219,11 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+(?P<afi>ip|ipv6)\sospf
-                (\s(?P<id>\d+)
-                (\sarea\s(?P<area>\d+)?
-                (\sarea\s(?P<area_ip>\s+)?
-                (\s(?P<secondaries>secondaries)?
-                (\sinstance\s(?P<instance>\d+)?
+                (\s(?P<id>\d+))
+                (\sarea\s(?P<area>\d+))?
+                (\sarea\s(?P<area_ip>\s+))?
+                (\s(?P<secondaries>secondaries))?
+                (\sinstance\s(?P<instance>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -269,7 +269,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "authentication",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip|ipv6)\sospf\sauthentication
+                \s+ip\sospf\sauthentication
                 (\skey-chain\s(?P<key_chain>\S+))?
                 (\s(?P<message_digest>message-digest))?
                 (\s(?P<isnull>null))?
@@ -280,8 +280,8 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ip": {
+                            "afi": "ipv4",
                             "authentication": {
                                 "key_chain": "{{ key_chain }}",
                                 "message_digest": "{{ not not message_digest }}",
@@ -316,7 +316,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "cost_ip",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)\sospf
+                \s+ip\sospf
                 (\scost\s(?P<cost>\d+))
                 $""",
                 re.VERBOSE,
@@ -340,7 +340,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
                 r"""
                 \s+ipv6\sospf\scost\s(?P<interface_cost>\d+)
                 (\sdynamic)?
-                (\sdefault\s(?P<default>\d+)?
+                (\sdefault\s(?P<default>\d+))?
                 (\shysteresis)?
                 (\spercent\s(?P<h_params_p>\d+))?
                 (\sthreshold\s(?P<h_params_t>\d+))?
@@ -349,7 +349,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
                 (\slatency\s(?P<latency>\d+))?
                 (\sresources\s(?P<resources>\d+))?
                 (\sthroughput\s(?P<throughput>\d+))?
-                (\s(?P<weight_oc>oc)*
+                (\s(?P<weight_oc>oc))?
                 $""",
                 re.VERBOSE,
             ),
@@ -564,8 +564,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "multi_area",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)\sospf
-                (\smulti-area\s(?P<multi_area>\d+))
+                \s+ip\sospf\smulti-area\s(?P<multi_area>\d+)
                 (\scost\s(?P<cost>\d+))?
                 $""",
                 re.VERBOSE,
@@ -574,8 +573,8 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ afi }}": {
-                            "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
+                        "ip": {
+                            "afi": "ipv4",
                             "multi_area": {
                                 "id": "{{ multi_area }}",
                                 "cost": "{{ cost }}",
@@ -589,11 +588,11 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "neighbor",
             "getval": re.compile(
                 r"""
-                \s+ipv6\sospf\sneighbor(\s(?P<address>\S+)
-                (\scost\s(?P<cost>\d+)?
-                (\s(?P<database_filter>database-filter\sall\sout)?
-                (\spoll-interval\s(?P<poll_interval>\d+)?
-                (\spriority\s(?P<priority>\d+)?
+                \s+ipv6\sospf\sneighbor\s(?P<address>\S+)
+                (\scost\s(?P<cost>\d+))?
+                (\s(?P<database_filter>database-filter\sall\sout))?
+                (\spoll-interval\s(?P<poll_interval>\d+))?
+                (\spriority\s(?P<priority>\d+))?
                 $""",
                 re.VERBOSE,
             ),
