@@ -80,7 +80,7 @@ class Ospf_interfaces(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    self._compare(want={}, have=have, interface=k)
 
         for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}), interface=k)
