@@ -5,6 +5,14 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.6.1
+======
+
+Bugfixes
+--------
+
+- ios_l3_interfaces account for secondary when comparing addresses (https://github.com/ansible-collections/cisco.ios/pull/827)
+
 v4.6.0
 ======
 
