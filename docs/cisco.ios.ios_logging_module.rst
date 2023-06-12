@@ -342,14 +342,14 @@ Examples
     - name: Configure logging using aggregate
       cisco.ios.ios_logging:
         aggregate:
-        - {dest: console, level: notifications}
-        - {dest: buffered, size: 9000}
+          - { dest: console, level: notifications }
+          - { dest: buffered, size: 9000 }
 
     - name: Remove logging using aggregate
       cisco.ios.ios_logging:
         aggregate:
-        - {dest: console, level: notifications}
-        - {dest: buffered, size: 9000}
+          - { dest: console, level: notifications }
+          - { dest: buffered, size: 9000 }
         state: absent
 
 

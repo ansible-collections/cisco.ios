@@ -36,7 +36,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_ospfv3
 short_description: Resource module to configure OSPFv3.
-description: This module configures and manages the Open Shortest Path First (OSPF)
+description:
+  This module configures and manages the Open Shortest Path First (OSPF)
   version 3 on IOS platforms.
 version_added: 1.1.0
 author: Sumit Jaiswal (@justjais)
@@ -113,7 +114,7 @@ options:
                       key_chain:
                         description: Use a key-chain for cryptographic authentication keys
                         type: str
-                      'null':
+                      "null":
                         description: Use no authentication
                         type: bool
                   default_cost:
@@ -133,7 +134,7 @@ options:
                       direction:
                         description: The direction to apply on the filter networks sent to and from this area.
                         type: str
-                        choices: ['in', 'out']
+                        choices: ["in", "out"]
                         required: true
                   normal:
                     description: Specify a normal area type
@@ -173,7 +174,7 @@ options:
                           - Always translate LSAs on this ABR
                           - Suppress forwarding address in translated LSAs
                         type: str
-                        choices: ['always', 'suppress-fa']
+                        choices: ["always", "suppress-fa"]
                   ranges:
                     description: Summarize routes matching address/mask (border routers only)
                     type: list
@@ -215,7 +216,7 @@ options:
                           key_chain:
                             description: Use a key-chain for cryptographic authentication keys
                             type: str
-                          'null':
+                          "null":
                             description: Use no authentication
                             type: bool
                       cost:
@@ -353,7 +354,7 @@ options:
                         description: Filter incoming and outgoing routing updates.
                         type: str
                         required: true
-                        choices: ['in', 'out']
+                        choices: ["in", "out"]
                       interface:
                         description:
                           - Interface configuration (GigabitEthernet A/B)
@@ -379,7 +380,7 @@ options:
                         description: Filter incoming and outgoing routing updates.
                         type: str
                         required: true
-                        choices: ['in', 'out']
+                        choices: ["in", "out"]
                       interface:
                         description:
                           - Interface configuration (GigabitEthernet A/B)
@@ -891,7 +892,7 @@ options:
                       - Always translate LSAs on this ABR
                       - Suppress forwarding address in translated LSAs
                     type: str
-                    choices: ['always', 'suppress-fa']
+                    choices: ["always", "suppress-fa"]
               stub:
                 description:
                   - Specify a stub area
@@ -1271,12 +1272,12 @@ options:
                         type: int
   running_config:
     description:
-    - This option is used only with state I(parsed).
-    - The value of this option should be the output received from the IOS device by
-      executing the command B(sh running-config | section ^router ospfv3).
-    - The state I(parsed) reads the configuration from C(running_config) option and
-      transforms it into Ansible structured data as per the resource module's argspec
-      and the value is then returned in the I(parsed) key within the result.
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS device by
+        executing the command B(sh running-config | section ^router ospfv3).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     description:
@@ -1298,18 +1299,17 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - parsed
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - parsed
+      - rendered
     default: merged
-
 """
-EXAMPLES = """
 
+EXAMPLES = """
 # Using deleted
 
 # Before state:
@@ -1336,7 +1336,7 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
+        - process_id: 1
     state: deleted
 
 # Commands Fired:
@@ -1408,48 +1408,48 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        address_family:
-          - afi: ipv4
-            unicast: true
-            vrf: blue
-            adjacency:
-              min_adjacency: 50
-              max_adjacency: 50
-            areas:
-              - area_id: 25
-                nssa:
-                  default_information_originate:
-                    metric: 25
-                    nssa_only: true
-        areas:
-          - area_id: "10"
-            nssa:
-              default_information_originate:
-                metric: 10
-        timers:
-          throttle:
-            lsa:
-              first_delay: 12
-              min_delay: 14
-              max_delay: 16
-      - process_id: 200
-        address_family:
-          - afi: ipv4
-            unicast: true
-            adjacency:
-              min_adjacency: 200
-              max_adjacency: 200
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          address_family:
+            - afi: ipv4
+              unicast: true
+              vrf: blue
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 25
+                  nssa:
+                    default_information_originate:
+                      metric: 25
+                      nssa_only: true
+          areas:
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
+          timers:
+            throttle:
+              lsa:
+                first_delay: 12
+                min_delay: 14
+                max_delay: 16
+        - process_id: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 200
+                max_adjacency: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
     state: merged
 
 # Commands Fired:
@@ -1775,48 +1775,48 @@ EXAMPLES = """
   cisco.ios.ios_ospfv3:
     config:
       processes:
-      - process_id: 1
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 110
-        address_family:
-          - afi: ipv4
-            unicast: true
-            vrf: blue
-            adjacency:
-              min_adjacency: 50
-              max_adjacency: 50
-            areas:
-              - area_id: 25
-                nssa:
-                  default_information_originate:
-                    metric: 25
-                    nssa_only: true
-        areas:
-          - area_id: "10"
-            nssa:
-              default_information_originate:
-                metric: 10
-        timers:
-          throttle:
-            lsa:
-              first_delay: 12
-              min_delay: 14
-              max_delay: 16
-      - process_id: 200
-        address_family:
-          - afi: ipv4
-            unicast: true
-            adjacency:
-              min_adjacency: 200
-              max_adjacency: 200
-        max_metric:
-          router_lsa: true
-          on_startup:
-            time: 100
-        auto_cost:
-          reference_bandwidth: 4
+        - process_id: 1
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 110
+          address_family:
+            - afi: ipv4
+              unicast: true
+              vrf: blue
+              adjacency:
+                min_adjacency: 50
+                max_adjacency: 50
+              areas:
+                - area_id: 25
+                  nssa:
+                    default_information_originate:
+                      metric: 25
+                      nssa_only: true
+          areas:
+            - area_id: "10"
+              nssa:
+                default_information_originate:
+                  metric: 10
+          timers:
+            throttle:
+              lsa:
+                first_delay: 12
+                min_delay: 14
+                max_delay: 16
+        - process_id: 200
+          address_family:
+            - afi: ipv4
+              unicast: true
+              adjacency:
+                min_adjacency: 200
+                max_adjacency: 200
+          max_metric:
+            router_lsa: true
+            on_startup:
+              time: 100
+          auto_cost:
+            reference_bandwidth: 4
     state: rendered
 
 # Module Execution Result:

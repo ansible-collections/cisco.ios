@@ -24,8 +24,8 @@ on:
   workflow_dispatch:
 
 env:
-  NAMESPACE: ansible
-  COLLECTION_NAME: utils
+  NAMESPACE: cisco
+  COLLECTION_NAME: ios
   ANSIBLE_COLLECTIONS_PATHS: ./
 
 jobs:
