@@ -19,17 +19,18 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_system
 author: Peter Sprygada (@privateip)
 short_description: Module to manage the system attributes.
 description:
-- This module provides declarative management of node system attributes on Cisco IOS
-  devices.  It provides an option to configure host system parameters or remove those
-  parameters from the device active configuration.
+  - This module provides declarative management of node system attributes on Cisco IOS
+    devices.  It provides an option to configure host system parameters or remove those
+    parameters from the device active configuration.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -37,76 +38,78 @@ notes:
 options:
   hostname:
     description:
-    - Configure the device hostname parameter. This option takes an ASCII string value.
+      - Configure the device hostname parameter. This option takes an ASCII string value.
     type: str
   domain_name:
     description:
-    - Configure the IP domain name on the remote device to the provided value. Value
-      should be in the dotted name form and will be appended to the C(hostname) to
-      create a fully-qualified domain name.
+      - Configure the IP domain name on the remote device to the provided value. Value
+        should be in the dotted name form and will be appended to the C(hostname) to
+        create a fully-qualified domain name.
     type: list
     elements: raw
   domain_search:
     description:
-    - Provides the list of domain suffixes to append to the hostname for the purpose
-      of doing name resolution. This argument accepts a list of names and will be
-      reconciled with the current active configuration on the running node.
+      - Provides the list of domain suffixes to append to the hostname for the purpose
+        of doing name resolution. This argument accepts a list of names and will be
+        reconciled with the current active configuration on the running node.
     type: list
     elements: raw
   lookup_source:
     description:
-    - Provides one or more source interfaces to use for performing DNS lookups.  The
-      interface provided in C(lookup_source) must be a valid interface configured
-      on the device.
+      - Provides one or more source interfaces to use for performing DNS lookups.  The
+        interface provided in C(lookup_source) must be a valid interface configured
+        on the device.
     type: str
   lookup_enabled:
     description:
-    - Administrative control for enabling or disabling DNS lookups.  When this argument
-      is set to True, lookups are performed and when it is set to False, lookups are
-      not performed.
+      - Administrative control for enabling or disabling DNS lookups.  When this argument
+        is set to True, lookups are performed and when it is set to False, lookups are
+        not performed.
     type: bool
   name_servers:
     description:
-    - List of DNS name servers by IP address to use to perform name resolution lookups.  This
-      argument accepts either a list of DNS servers See examples.
+      - List of DNS name servers by IP address to use to perform name resolution lookups.  This
+        argument accepts either a list of DNS servers See examples.
     type: list
     elements: raw
   state:
     description:
-    - State of the configuration values in the device's current active configuration.  When
-      set to I(present), the values should be configured in the device active configuration
-      and when set to I(absent) the values should not be in the device active configuration
+      - State of the configuration values in the device's current active configuration.  When
+        set to I(present), the values should be configured in the device active configuration
+        and when set to I(absent) the values should not be in the device active configuration
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
 """
+
 EXAMPLES = """
-- name: configure hostname and domain name
+- name: Configure hostname and domain name
   cisco.ios.ios_system:
     hostname: ios01
     domain_name: test.example.com
     domain_search:
-    - ansible.com
-    - redhat.com
-    - cisco.com
+      - ansible.com
+      - redhat.com
+      - cisco.com
 
-- name: remove configuration
+- name: Remove configuration
   cisco.ios.ios_system:
     state: absent
 
-- name: configure DNS lookup sources
+- name: Configure DNS lookup sources
   cisco.ios.ios_system:
     lookup_source: MgmtEth0/0/CPU0/0
-    lookup_enabled: yes
+    lookup_enabled: true
 
-- name: configure name servers
+- name: Configure name servers
   cisco.ios.ios_system:
     name_servers:
-    - 8.8.8.8
-    - 8.8.4.4
+      - 8.8.8.8
+      - 8.8.4.4
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

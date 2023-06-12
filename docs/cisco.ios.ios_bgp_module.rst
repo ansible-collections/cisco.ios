@@ -1015,26 +1015,26 @@ Examples
           router_id: 192.0.2.1
           log_neighbor_changes: true
           neighbors:
-          - neighbor: 203.0.113.5
-            remote_as: 64511
-            timers:
-              keepalive: 300
-              holdtime: 360
-              min_neighbor_holdtime: 360
-          - neighbor: 198.51.100.2
-            remote_as: 64498
+            - neighbor: 203.0.113.5
+              remote_as: 64511
+              timers:
+                keepalive: 300
+                holdtime: 360
+                min_neighbor_holdtime: 360
+            - neighbor: 198.51.100.2
+              remote_as: 64498
           networks:
-          - prefix: 198.51.100.0
-            route_map: RMAP_1
-          - prefix: 192.0.2.0
-            masklen: 23
+            - prefix: 198.51.100.0
+              route_map: RMAP_1
+            - prefix: 192.0.2.0
+              masklen: 23
           address_family:
-          - afi: ipv4
-            safi: unicast
-            redistribute:
-            - protocol: ospf
-              id: 223
-              metric: 10
+            - afi: ipv4
+              safi: unicast
+              redistribute:
+                - protocol: ospf
+                  id: 223
+                  metric: 10
         operation: merge
 
     - name: Configure BGP neighbors
@@ -1042,19 +1042,19 @@ Examples
         config:
           bgp_as: 64496
           neighbors:
-          - neighbor: 192.0.2.10
-            remote_as: 64496
-            password: ansible
-            description: IBGP_NBR_1
-            ebgp_multihop: 100
-            timers:
-              keepalive: 300
-              holdtime: 360
-              min_neighbor_holdtime: 360
-          - neighbor: 192.0.2.15
-            remote_as: 64496
-            description: IBGP_NBR_2
-            ebgp_multihop: 150
+            - neighbor: 192.0.2.10
+              remote_as: 64496
+              password: ansible
+              description: IBGP_NBR_1
+              ebgp_multihop: 100
+              timers:
+                keepalive: 300
+                holdtime: 360
+                min_neighbor_holdtime: 360
+            - neighbor: 192.0.2.15
+              remote_as: 64496
+              description: IBGP_NBR_2
+              ebgp_multihop: 150
         operation: merge
 
     - name: Configure root-level networks for BGP
@@ -1062,12 +1062,12 @@ Examples
         config:
           bgp_as: 64496
           networks:
-          - prefix: 203.0.113.0
-            masklen: 27
-            route_map: RMAP_1
-          - prefix: 203.0.113.32
-            masklen: 27
-            route_map: RMAP_2
+            - prefix: 203.0.113.0
+              masklen: 27
+              route_map: RMAP_1
+            - prefix: 203.0.113.32
+              masklen: 27
+              route_map: RMAP_2
         operation: merge
 
     - name: Configure BGP neighbors under address family mode
@@ -1075,16 +1075,16 @@ Examples
         config:
           bgp_as: 64496
           address_family:
-          - afi: ipv4
-            safi: unicast
-            neighbors:
-            - neighbor: 203.0.113.10
-              activate: yes
-              maximum_prefix: 250
-              advertisement_interval: 120
-            - neighbor: 192.0.2.15
-              activate: yes
-              route_reflector_client: true
+            - afi: ipv4
+              safi: unicast
+              neighbors:
+                - neighbor: 203.0.113.10
+                  activate: true
+                  maximum_prefix: 250
+                  advertisement_interval: 120
+                - neighbor: 192.0.2.15
+                  activate: true
+                  route_reflector_client: true
         operation: merge
 
     - name: Remove bgp as 64496 from config
