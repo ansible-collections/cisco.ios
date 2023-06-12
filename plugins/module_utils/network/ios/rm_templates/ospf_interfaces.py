@@ -23,6 +23,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 def _tmplt_ospf_interface_process(config_data):
+    import q
+
+    q(config_data)
     if "process" in config_data:
         if config_data.get("afi") == "ipv4":
             command = "ip ospf {id} area {area_id}".format(**config_data["process"])
@@ -313,7 +316,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "cost_ip",
+            "name": "cost",
             "getval": re.compile(
                 r"""
                 \s+ip\sospf
@@ -322,7 +325,6 @@ class Ospf_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ip_ospf_cost,
-            "compval": "cost.interface_cost",
             "result": {
                 "{{ name }}": {
                     "address_family": {
@@ -353,7 +355,6 @@ class Ospf_interfacesTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "compval": "cost.dynamic_cost",
             "setval": _tmplt_ip_ospf_cost,
             "result": {
                 "{{ name }}": {
