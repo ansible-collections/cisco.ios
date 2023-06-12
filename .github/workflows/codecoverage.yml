@@ -1,5 +1,5 @@
 ---
-name: Code Coverage
+name: code_coverage
 
 on:
   push:
