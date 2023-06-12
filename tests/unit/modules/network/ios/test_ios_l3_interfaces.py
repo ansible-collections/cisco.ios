@@ -445,3 +445,29 @@ class TestIosL3InterfacesModule(TestIosModule):
         commands = []
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_remove_primary_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/3.100
+             encapsulation dot1Q 20
+             ip address 192.168.0.3 255.255.255.0
+             ip address 192.168.1.3 255.255.255.0 secondary
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.1.3/24")]),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/3.100",
+            "ip address 192.168.1.3 255.255.255.0",
+            "no ip address 192.168.0.3 255.255.255.0",
+            "no ip address 192.168.1.3 255.255.255.0 secondary",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
