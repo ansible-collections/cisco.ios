@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -130,45 +129,6 @@ class Ospf_interfaces(ResourceModule):
             hacls = have.pop(afi, {})
 
             self.compare(parsers=parsers, want=wacls, have=hacls)
-
-            # for key, entry in wacls.items():
-            #     if entry != hacls.pop(key, {}):
-            #         entry["afi"] = afi
-            #         self.addcmd(entry, "access_groups", False)
-            # # remove remaining items in have for replaced
-            # for entry in hacls.values():
-            #     entry["afi"] = afi
-            #     self.addcmd(entry, "access_groups", True)
-
-        # if want != have:  # and (want.get('address_family') or self.state == 'deleted'):
-        #     if have.get("address_family"):
-        #         self.addcmd(have, "name", False)
-        #     elif want.get("address_family"):
-        #         self.addcmd(want, "name", False)
-
-        # if want.get("address_family"):
-        #     for each in want["address_family"]:
-        #         set_want = True
-        #         if have.get("address_family"):
-        #             have_elements = len(have.get("address_family"))
-        #             while have_elements:
-        #                 if have.get("address_family")[have_elements - 1].get("afi") == each.get(
-        #                     "afi",
-        #                 ):
-        #                     set_want = False
-        #                     h_each = have["address_family"].pop(have_elements - 1)
-        #                     self.compare(parsers=parsers, want=each, have=h_each)
-        #                 have_elements -= 1
-        #         else:
-        #             h_each = dict()
-        #             self.compare(parsers=parsers, want=each, have=h_each)
-        #             set_want = False
-        #         if set_want:
-        #             self.compare(parsers=parsers, want=each, have=dict())
-        # if self.state in ["overridden", "deleted"]:
-        #     if have.get("address_family"):
-        #         for each in have["address_family"]:
-        #             self.compare(parsers=parsers, want=dict(), have=each)
 
     def _list_to_dict(self, entry):
         list_to_dict = {}
