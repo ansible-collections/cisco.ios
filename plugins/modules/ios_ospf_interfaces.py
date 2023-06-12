@@ -20,7 +20,9 @@ description:
   This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -366,8 +368,7 @@ options:
         option and transforms it into JSON format as per the resource module
         parameters and the value is returned in the I(parsed) key within the
         result. The value of C(running_config) option should be the same format
-        as the output of command I(show running-config | include ip route|ipv6
-        route) executed on device. For state I(parsed) active connection to
+        as the output of command I(show running-config | section ^interface) executed on device. For state I(parsed) active connection to
         remote host is not required.
     type: str
     choices:
@@ -1042,17 +1043,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet2
+    - ip ospf priority 40
+    - ip ospf adjacency stagger disable
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - interface GigabitEthernet2
+    - ip ospf priority 40
+    - ip ospf adjacency stagger disable
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
