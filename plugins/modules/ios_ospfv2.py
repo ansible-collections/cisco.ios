@@ -1688,8 +1688,6 @@ commands:
 """
 
 
-import debugpy
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospfv2.ospfv2 import (
@@ -1698,10 +1696,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.ospf
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv2.ospfv2 import (
     Ospfv2,
 )
-
-
-debugpy.listen(3007)
-debugpy.wait_for_client()
 
 
 def main():

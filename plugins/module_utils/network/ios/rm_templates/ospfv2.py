@@ -542,7 +542,7 @@ class Ospfv2Template(NetworkTemplate):
                 },
             },
         },
-                {
+        {
             "name": "adjacency.none",
             "getval": re.compile(
                 r"""

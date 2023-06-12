@@ -33,6 +33,55 @@ class Ospfv2(ResourceModule):
     The ios_ospfv2 class
     """
 
+    parsers = [
+        "adjacency",
+        "adjacency.none",
+        "address_family",
+        "auto_cost",
+        "bfd",
+        "capability",
+        "compatible",
+        "default_information",
+        "default_metric",
+        "discard_route",
+        "distance.admin_distance",
+        "distance.ospf",
+        "distribute_list.acls",
+        "distribute_list.prefix",
+        "distribute_list.route_map",
+        "domain_id",
+        "domain_tag",
+        "event_log",
+        "help",
+        "ignore",
+        "interface_id",
+        "ispf",
+        "limit",
+        "local_rib_criteria",
+        "log_adjacency_changes",
+        "max_lsa",
+        "max_metric",
+        "maximum_paths",
+        "mpls.ldp",
+        "mpls.traffic_eng",
+        "neighbor",
+        "network",
+        "nsf.cisco",
+        "nsf.ietf",
+        "passive_interface",
+        "prefix_suppression",
+        "priority",
+        "queue_depth.hello",
+        "queue_depth.update",
+        "router_id",
+        "shutdown",
+        "summary_address",
+        "timers.throttle.lsa",
+        "timers.throttle.spf",
+        "traffic_share",
+        "ttl_security",
+    ]
+
     def __init__(self, module):
         super(Ospfv2, self).__init__(
             empty_fact_val={},
@@ -62,20 +111,15 @@ class Ospfv2(ResourceModule):
                   to the desired configuration
         """
 
-        if self.want:
-            wantd = {}
-            for entry in self.want.get("processes", []):
-                wantd.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            wantd = {}
-        
+        wantd = {
+            (entry["process_id"], entry.get("vrf")): entry
+            for entry in self.want.get("processes", [])
+        }
 
-        if self.have:
-            haved = {}
-            for entry in self.have.get("processes", []):
-                haved.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            haved = {}
+        haved = {
+            (entry["process_id"], entry.get("vrf")): entry
+            for entry in self.have.get("processes", [])
+        }
 
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
@@ -84,14 +128,9 @@ class Ospfv2(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, limit the have to anything in want
-        # set want to nothing
+        # if state is deleted, limit the have to anything in want and set want to nothing
         if self.state == "deleted":
-            temp = {}
-            for k, v in iteritems(haved):
-                if k in wantd or not wantd:
-                    temp.update({k: v})
-            haved = temp
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # delete processes first so we do run into "more than one" errors
@@ -104,58 +143,9 @@ class Ospfv2(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
-        parsers = [
-            "adjacency",
-            "adjacency.none",
-            "address_family",
-            "auto_cost",
-            "bfd",
-            "capability",
-            "compatible",
-            "default_information",
-            "default_metric",
-            "discard_route",
-            "distance.admin_distance",
-            "distance.ospf",
-            "distribute_list.acls",
-            "distribute_list.prefix",
-            "distribute_list.route_map",
-            "domain_id",
-            "domain_tag",
-            "event_log",
-            "help",
-            "ignore",
-            "interface_id",
-            "ispf",
-            "limit",
-            "local_rib_criteria",
-            "log_adjacency_changes",
-            "max_lsa",
-            "max_metric",
-            "maximum_paths",
-            "mpls.ldp",
-            "mpls.traffic_eng",
-            "neighbor",
-            "network",
-            "nsf.cisco",
-            "nsf.ietf",
-            "passive_interface",
-            "prefix_suppression",
-            "priority",
-            "queue_depth.hello",
-            "queue_depth.update",
-            "router_id",
-            "shutdown",
-            "summary_address",
-            "timers.throttle.lsa",
-            "timers.throttle.spf",
-            "traffic_share",
-            "ttl_security",
-        ]
-
         if want != have:
             self.addcmd(want or have, "pid", False)
-            self.compare(parsers, want, have)
+            self.compare(self.parsers, want, have)
             self._areas_compare(want, have)
             if want.get("passive_interfaces"):
                 self._passive_interfaces_compare(want, have)
@@ -169,7 +159,7 @@ class Ospfv2(ResourceModule):
             self._area_compare(want={}, have=entry)
 
     def _area_compare(self, want, have):
-        parsers = [
+        area_parsers = [
             "area.authentication",
             "area.capability",
             "area.default_cost",
@@ -179,7 +169,7 @@ class Ospfv2(ResourceModule):
             "area.sham_link",
             "area.stub",
         ]
-        self.compare(parsers=parsers, want=want, have=have)
+        self.compare(parsers=area_parsers, want=want, have=have)
         self._area_compare_filters(want, have)
 
     def _area_compare_filters(self, wantd, haved):
