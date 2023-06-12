@@ -65,13 +65,22 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None):
-        def load_from_file(*args, **kwargs):
-            return load_fixture("ios_ospf_interfaces.cfg")
-
-        self.execute_show_command.side_effect = load_from_file
-
     def test_ios_ospf_interfaces_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -114,15 +123,9 @@ class TestIosOspfInterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            "interface GigabitEthernet0/3",
-            "ip ospf bfd",
-            "ip ospf cost 50",
-            "ip ospf priority 50",
-            "ip ospf ttl-security hops 150",
             "interface GigabitEthernet0/2",
             "ip ospf authentication key-chain test_key",
             "ip ospf bfd",
-            "ip ospf cost 30",
             "ip ospf network broadcast",
             "ip ospf priority 60",
             "ip ospf resync-timeout 90",
@@ -131,11 +134,31 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ipv6 ospf dead-interval 100",
             "ipv6 ospf network manet",
             "ipv6 ospf priority 50",
+            "interface GigabitEthernet0/3",
+            "ip ospf bfd",
+            "ip ospf cost 50",
+            "ip ospf priority 50",
+            "ip ospf ttl-security hops 150",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_ospf_interfaces_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -171,6 +194,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -196,11 +234,30 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf cost 50",
             "ip ospf priority 50",
             "ip ospf ttl-security hops 150",
+            "no ipv6 ospf 55 area 105",
+            "no ipv6 ospf adjacency stagger disable",
+            "no ipv6 ospf priority 20",
+            "no ipv6 ospf transmit-delay 30",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -212,7 +269,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 cost=dict(interface_cost=30),
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
-                                ttl_security=dict(hops=50),
+                                ttl_security=dict(set=True, hops=50),
                             ),
                         ],
                         name="GigabitEthernet0/2",
@@ -236,6 +293,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -273,6 +345,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -284,7 +371,7 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 cost=dict(interface_cost=30),
                                 priority=40,
                                 process=dict(id=10, area_id="20"),
-                                ttl_security=dict(hops=50),
+                                ttl_security=dict(set=True, hops=50),
                             ),
                         ],
                         name="GigabitEthernet0/2",
@@ -308,6 +395,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospf_interfaces_deleted_interface(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"))
         commands = [
             "interface GigabitEthernet0/2",
@@ -321,6 +423,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_deleted_all(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(dict(config=[], state="deleted"))
         commands = [
             "interface GigabitEthernet0/3",
@@ -339,6 +456,21 @@ class TestIosOspfInterfacesModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospf_interfaces_rendered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -350,11 +482,16 @@ class TestIosOspfInterfacesModule(TestIosModule):
                                 bfd=True,
                                 cost=dict(interface_cost=30),
                                 network=dict(broadcast=True),
-                                dead_interval=dict(minimal=100),
+                                dead_interval=dict(time=20, minimal=100),
                                 demand_circuit=dict(enable=True, ignore=True),
                                 multi_area=dict(id=15, cost=20),
                                 priority=60,
                                 resync_timeout=90,
+                                authentication=dict(
+                                    key_chain="thekeychain",
+                                    message_digest=True,
+                                    null=True,
+                                ),
                                 ttl_security=dict(hops=120),
                             ),
                             dict(
@@ -416,19 +553,17 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "interface GigabitEthernet0/2",
             "ip ospf bfd",
             "ip ospf cost 30",
-            "ip ospf dead-interval minimal hello-multiplier 100",
+            "ip ospf dead-interval 20 minimal hello-multiplier 100",
             "ip ospf demand-circuit ignore",
             "ip ospf multi-area 15 cost 20",
             "ip ospf network broadcast",
             "ip ospf priority 60",
             "ip ospf resync-timeout 90",
             "ip ospf ttl-security hops 120",
-            "ipv6 ospf authentication key-chain thekeychain",
             "ipv6 ospf bfd",
-            "ipv6 ospf cost 10 dynamic default 10",
-            "ipv6 ospf cost 10 dynamic default 10",
+            "ipv6 ospf cost 10",
             "ipv6 ospf dead-interval 100",
-            "ipv6 ospf demand-circuit",
+            "ipv6 ospf demand-circuit ignore",
             "ipv6 ospf neighbor 10.0.2.15 cost 14 database-filter all out",
             "ipv6 ospf network manet",
             "ipv6 ospf priority 50",
@@ -438,10 +573,26 @@ class TestIosOspfInterfacesModule(TestIosModule):
             "ip ospf priority 50",
             "ip ospf ttl-security hops 150",
         ]
+
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        self.assertEqual(result["rendered"], commands)
 
     def test_ios_ospf_interfaces_parsed(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/2
+             ip ospf priority 40
+             ip ospf adjacency stagger disable
+             ip ospf ttl-security hops 50
+             ip ospf 10 area 20
+             ip ospf cost 30
+            interface GigabitEthernet0/3
+             ipv6 ospf 55 area 105
+             ipv6 ospf priority 20
+             ipv6 ospf transmit-delay 30
+             ipv6 ospf adjacency stagger disable
+            """,
+        )
         set_module_args(
             dict(
                 running_config=dedent(
@@ -488,10 +639,10 @@ class TestIosOspfInterfacesModule(TestIosModule):
                         "resync_timeout": 10,
                         "dead_interval": {"time": 5},
                         "priority": 25,
-                        "demand_circuit": {"ignore": True},
+                        "demand_circuit": {"enable": True, "ignore": True},
                         "bfd": True,
                         "adjacency": True,
-                        "ttl_security": {"hops": 50},
+                        "ttl_security": {"set": True, "hops": 50},
                         "shutdown": True,
                         "process": {"id": 10, "area_id": "30"},
                         "cost": {"interface_cost": 5},

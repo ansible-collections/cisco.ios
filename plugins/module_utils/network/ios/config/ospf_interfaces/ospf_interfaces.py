@@ -63,7 +63,7 @@ class Ospf_interfaces(ResourceModule):
         """
 
         # turn all lists of dicts into dicts prior to merge
-        wantd = self._list_to_dict(self.want)
+        wantd = self._list_to_dict(self.want, "want")
         haved = self._list_to_dict(self.have)
 
         # if state is merged, merge want onto have and then compare
@@ -130,7 +130,13 @@ class Ospf_interfaces(ResourceModule):
 
             self.compare(parsers=parsers, want=wacls, have=hacls)
 
-    def _list_to_dict(self, entry):
+    def _list_to_dict(self, entry, attr_type=None):
+        if self.state == "deleted" and attr_type == "want":
+            del_list = {}
+            for intf in entry:
+                del_list[intf.get("name")] = {}
+            return del_list
+
         list_to_dict = {}
         for intf in entry:
             if intf.get("address_family"):
