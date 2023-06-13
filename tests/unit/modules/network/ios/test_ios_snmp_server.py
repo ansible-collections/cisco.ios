@@ -1792,11 +1792,9 @@ class TestIosSnmpServerModule(TestIosModule):
             },
         }
         overridden = [
-            "no snmp-server user flow mfamily",
-            "no snmp-server user newuser newfamily v1 access 24",
-            "no snmp-server user replaceUser replaceUser",
-            "snmp-server user replaceUser replaceUser v3",
+            "no snmp-server user flow mfamily v3",
             "snmp-server user flow mfamily v3 access 27",
+            "no snmp-server user newuser newfamily v1 access 24",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)

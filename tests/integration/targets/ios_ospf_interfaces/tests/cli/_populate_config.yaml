@@ -30,4 +30,4 @@
             database_filter: true
             priority: 55
             transmit_delay: 45
-    state: merged
+    state: replaced

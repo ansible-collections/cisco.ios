@@ -5,6 +5,24 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v4.6.1
+======
+
+Bugfixes
+--------
+
+- ios_l3_interfaces - account for secondary/primary when comparing ipv4 addresses. (https://github.com/ansible-collections/cisco.ios/issues/826)
+- ios_lag_interfaces - Fix empty facts to be a list.
+- ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
+- ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous configuration.
+- ios_snmp_server - Add default versions to version 3 users.
+- snmp_server - update module to get snmp_server user configuration.
+
+Documentation Changes
+---------------------
+
+- Lint examples as per ansible-lint.
+
 v4.6.0
 ======
 
