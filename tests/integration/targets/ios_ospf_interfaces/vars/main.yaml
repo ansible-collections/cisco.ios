@@ -65,32 +65,32 @@ replaced:
     - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
-      - adjacency: true
-        afi: ipv4
-        bfd: true
-        cost:
-          interface_cost: 5
-        dead_interval:
-          time: 5
-        demand_circuit:
-          enable: true
-          ignore: true
-        network:
-          broadcast: true
-        priority: 25
-        process:
-          area_id: '30'
-          id: 10
-        resync_timeout: 10
-        shutdown: true
-        ttl_security:
-          hops: 50
-          set: true
-      - adjacency: true
-        afi: ipv6
-        database_filter: true
-        priority: 55
-        transmit_delay: 45
+        - adjacency: true
+          afi: ipv4
+          bfd: true
+          cost:
+            interface_cost: 5
+          dead_interval:
+            time: 5
+          demand_circuit:
+            enable: true
+            ignore: true
+          network:
+            broadcast: true
+          priority: 25
+          process:
+            area_id: "30"
+            id: 10
+          resync_timeout: 10
+          shutdown: true
+          ttl_security:
+            hops: 50
+            set: true
+        - adjacency: true
+          afi: ipv6
+          database_filter: true
+          priority: 55
+          transmit_delay: 45
       name: GigabitEthernet2
     - name: GigabitEthernet3
     - name: GigabitEthernet4
@@ -104,38 +104,38 @@ replaced:
     - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
-      - adjacency: true
-        afi: ipv4
-        bfd: true
-        cost:
-          interface_cost: 5
-        dead_interval:
-          time: 5
-        demand_circuit:
-          enable: true
-          ignore: true
-        network:
-          broadcast: true
-        priority: 25
-        process:
-          area_id: '30'
-          id: 10
-        resync_timeout: 10
-        shutdown: true
-        ttl_security:
-          hops: 50
-          set: true
-      - adjacency: true
-        afi: ipv6
-        database_filter: true
-        priority: 55
-        transmit_delay: 45
+        - adjacency: true
+          afi: ipv4
+          bfd: true
+          cost:
+            interface_cost: 5
+          dead_interval:
+            time: 5
+          demand_circuit:
+            enable: true
+            ignore: true
+          network:
+            broadcast: true
+          priority: 25
+          process:
+            area_id: "30"
+            id: 10
+          resync_timeout: 10
+          shutdown: true
+          ttl_security:
+            hops: 50
+            set: true
+        - adjacency: true
+          afi: ipv6
+          database_filter: true
+          priority: 55
+          transmit_delay: 45
       name: GigabitEthernet2
     - address_family:
-      - adjacency: true
-        afi: ipv6
-        priority: 20
-        transmit_delay: 30
+        - adjacency: true
+          afi: ipv6
+          priority: 20
+          transmit_delay: 30
       name: GigabitEthernet3
     - name: GigabitEthernet4
 
@@ -273,37 +273,37 @@ parsed:
     - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
-      - adjacency: true
-        afi: ipv4
-        authentication:
-          message_digest: true
-        bfd: true
-        cost:
-          interface_cost: 5
-        dead_interval:
-          time: 5
-        demand_circuit:
-          enable: true
-          ignore: true
-        network:
-          broadcast: true
-        priority: 25
-        process:
-          area_id: '30'
-          id: 10
-        resync_timeout: 10
-        shutdown: true
-        ttl_security:
-          hops: 50
-          set: true
-      - adjacency: true
-        afi: ipv6
-        database_filter: true
-        manet:
-          link_metrics:
-            cost_threshold: 10
-        priority: 55
-        transmit_delay: 45
+        - adjacency: true
+          afi: ipv4
+          authentication:
+            message_digest: true
+          bfd: true
+          cost:
+            interface_cost: 5
+          dead_interval:
+            time: 5
+          demand_circuit:
+            enable: true
+            ignore: true
+          network:
+            broadcast: true
+          priority: 25
+          process:
+            area_id: "30"
+            id: 10
+          resync_timeout: 10
+          shutdown: true
+          ttl_security:
+            hops: 50
+            set: true
+        - adjacency: true
+          afi: ipv6
+          database_filter: true
+          manet:
+            link_metrics:
+              cost_threshold: 10
+          priority: 55
+          transmit_delay: 45
       name: GigabitEthernet2
     - name: GigabitEthernet3
 
