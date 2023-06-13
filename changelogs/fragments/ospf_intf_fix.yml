@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
+  - ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous configuration.
